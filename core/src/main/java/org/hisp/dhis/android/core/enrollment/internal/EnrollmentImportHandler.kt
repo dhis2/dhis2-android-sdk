@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -39,12 +38,15 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentImportHandler @Inject constructor(
@@ -53,30 +55,33 @@ internal class EnrollmentImportHandler @Inject constructor(
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEnrollmentHandler: JobReportEnrollmentHandler,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
 ) {
 
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
-        enrollments: List<Enrollment>
+        enrollments: List<Enrollment>,
+        fileResources: List<String>
     ) {
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
                 val teiUid = enrollments.find { it.uid() == enrollmentUid }!!.trackedEntityInstance()!!
 
+                val enrollment = enrollments.find { it.uid() == enrollmentUid }
                 val syncState = getSyncState(enrollmentImportSummary.status())
                 trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
 
                 val handleAction = enrollmentStore.setSyncStateOrDelete(enrollmentUid, syncState)
 
                 if (syncState == State.ERROR || syncState == State.WARNING) {
-                    dataStatePropagator.resetUploadingEventStates(enrollmentUid)
+                    resetNestedDataStates(enrollment, fileResources)
                 }
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
-                    handleEventImportSummaries(enrollmentImportSummary, enrollments)
+                    handleEventImportSummaries(enrollmentImportSummary, enrollments, fileResources)
                     dataStatePropagator.refreshEnrollmentAggregatedSyncState(enrollmentUid)
                 }
 
@@ -88,14 +93,7 @@ internal class EnrollmentImportHandler @Inject constructor(
             }
         }
 
-        val processedEnrollments = getReferences(enrollmentImportSummaries)
-
-        enrollments.filterNot { processedEnrollments.contains(it.uid()) }.forEach { enrollment ->
-            val state = State.TO_UPDATE
-            trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
-            enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
-            dataStatePropagator.resetUploadingEventStates(enrollment.uid())
-        }
+        processIgnoredEnrollments(enrollmentImportSummaries, enrollments, fileResources)
 
         val teiUids = enrollments.mapNotNull { it.trackedEntityInstance() }.distinct()
 
@@ -106,13 +104,15 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
-        enrollments: List<Enrollment>
+        enrollments: List<Enrollment>,
+        fileResources: List<String>
     ) {
         enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
             val enrollmentUid = enrollmentImportSummary.reference()!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
-                getEvents(enrollmentUid, enrollments)
+                getEvents(enrollmentUid, enrollments),
+                fileResources
             )
         }
     }
@@ -141,6 +141,43 @@ internal class EnrollmentImportHandler @Inject constructor(
         }
 
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+    }
+
+    private fun processIgnoredEnrollments(
+        enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
+        enrollments: List<Enrollment>,
+        fileResources: List<String>
+    ) {
+        val processedEnrollments = getReferences(enrollmentImportSummaries)
+
+        enrollments.filterNot { processedEnrollments.contains(it.uid()) }.forEach { enrollment ->
+            val state = State.TO_UPDATE
+            trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
+            enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
+            resetNestedDataStates(enrollment, fileResources)
+        }
+    }
+
+    private fun resetNestedDataStates(enrollment: Enrollment?, fileResources: List<String>) {
+        enrollment?.let {
+            dataStatePropagator.resetUploadingEventStates(enrollment.uid())
+            setEventFileResourcesState(enrollment, fileResources, State.TO_POST)
+        }
+    }
+
+    private fun setEventFileResourcesState(enrollment: Enrollment?,
+                                           fileResources: List<String>,
+                                           state: State) {
+        enrollment?.let {
+            val dataValues = EnrollmentInternalAccessor.accessEvents(enrollment)
+                .filterNotNull()
+                .flatMap { it.trackedEntityDataValues() ?: emptyList() }
+                .mapNotNull { it.value() }
+
+            fileResources.filter { dataValues.contains(it) }.forEach {
+                fileResourceStore.setSyncStateIfUploading(it, state)
+            }
+        }
     }
 
     private fun getEvents(

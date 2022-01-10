@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class StatePersistorHelper @Inject internal constructor() {
@@ -55,7 +55,7 @@ internal class StatePersistorHelper @Inject internal constructor() {
             ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
     }
 
-    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {
+    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDataObjectStore<*>) {
         for ((key, value) in map) {
             store.setSyncState(value, key)
         }

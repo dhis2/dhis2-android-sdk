@@ -48,8 +48,14 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     private var selectStateQuery: String? = null
     private var existsQuery: String? = null
     private var setStateStatement: StatementWrapper? = null
+    private var setStateIfUploadingStatement: StatementWrapper? = null
+
     val tableName: String = builder.tableName
     private var adapterHashCode: Int? = null
+
+    companion object {
+        private const val EQ = " = "
+    }
 
     private fun compileStatements() {
         resetStatementsIfDbChanged()
@@ -58,6 +64,10 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
             val setState = "UPDATE " + tableName + " SET " +
                 DataColumns.SYNC_STATE + " =?" + whereUid
             setStateStatement = databaseAdapter.compileStatement(setState)
+
+            val setStateIfUploading = setState + " AND " + DataColumns.SYNC_STATE + EQ + "'" + State.UPLOADING + "'"
+            setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading)
+
             selectStateQuery = "SELECT " + DataColumns.SYNC_STATE + " FROM " + tableName + whereUid
             existsQuery = "SELECT 1 FROM $tableName$whereUid"
         }
@@ -72,7 +82,9 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     private fun resetStatementsIfDbChanged() {
         if (hasAdapterChanged()) {
             setStateStatement!!.close()
+            setStateIfUploadingStatement!!.close()
             setStateStatement = null
+            setStateIfUploadingStatement = null
         }
     }
 
@@ -94,6 +106,17 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
             .appendInKeyStringValues(IdentifiableColumns.UID, uids)
             .build()
         return databaseAdapter.update(tableName, updates, whereClause, null)
+    }
+
+    override fun setSyncStateIfUploading(uid: String, state: State): Int {
+        compileStatements()
+        setStateIfUploadingStatement!!.bind(1, state)
+
+        // bind the where argument
+        setStateIfUploadingStatement!!.bind(2, uid)
+        val affectedRows = databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement)
+        setStateIfUploadingStatement!!.clearBindings()
+        return affectedRows
     }
 
     override fun getSyncState(uid: String): State? {

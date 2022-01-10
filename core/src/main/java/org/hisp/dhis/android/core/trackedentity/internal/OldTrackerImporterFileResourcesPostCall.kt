@@ -48,34 +48,34 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
     fun uploadTrackedEntityFileResources(
         trackedEntityInstances: List<TrackedEntityInstance>
-    ): Single<List<TrackedEntityInstance>> {
+    ): Single<Pair<List<TrackedEntityInstance>, List<String>>> {
         return Single.create { emitter ->
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                emitter.onSuccess(trackedEntityInstances)
+                emitter.onSuccess(Pair(trackedEntityInstances, emptyList()))
             } else {
                 val successfulTeis = trackedEntityInstances.mapNotNull {
                     catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
                 }
-                emitter.onSuccess(successfulTeis)
+                emitter.onSuccess(Pair(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second }))
             }
         }
     }
 
     fun uploadEventsFileResources(
         events: List<Event>
-    ): Single<List<Event>> {
+    ): Single<Pair<List<Event>, List<String>>> {
         return Single.create { emitter ->
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                emitter.onSuccess(events)
+                emitter.onSuccess(Pair(events, emptyList()))
             } else {
                 val successfulEvents = events.mapNotNull {
                     catchErrorToNull { uploadEvent(it, fileResources) }
                 }
-                emitter.onSuccess(successfulEvents)
+                emitter.onSuccess(Pair(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second }))
             }
         }
     }
@@ -83,50 +83,68 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     private fun uploadTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
         fileResources: List<FileResource>
-    ): TrackedEntityInstance {
+    ): Pair<TrackedEntityInstance, List<String>> {
+        val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
             fileResources.find { it.uid() == attributeValue.value() }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
+                uploadedFileResources.add(newUid)
                 attributeValue.toBuilder().value(newUid).build()
             } ?: attributeValue
         }
 
         val updatedEnrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
-            .map { uploadEnrollment(it, fileResources) }
+            .map { enrollment ->
+                uploadEnrollment(enrollment, fileResources)
+                    .also { uploadedFileResources.addAll(it.second) }
+                    .first
+            }
 
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
-            .trackedEntityAttributeValues(updatedAttributes)
-            .build()
+        return Pair(
+            TrackedEntityInstanceInternalAccessor
+                .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
+                .trackedEntityAttributeValues(updatedAttributes)
+                .build(),
+            uploadedFileResources
+        )
     }
 
     private fun uploadEnrollment(
         enrollment: Enrollment,
         fileResources: List<FileResource>
-    ): Enrollment {
+    ): Pair<Enrollment, List<String>> {
+        val uploadedFileResources = mutableListOf<String>()
         val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
-            .map { uploadEvent(it, fileResources) }
+            .map { event ->
+                uploadEvent(event, fileResources)
+                    .also { uploadedFileResources.addAll(it.second) }
+                    .first
+            }
 
-        return EnrollmentInternalAccessor
-            .insertEvents(enrollment.toBuilder(), updatedEvents)
-            .build()
+        return Pair(
+            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), updatedEvents).build(),
+            uploadedFileResources
+        )
     }
 
     private fun uploadEvent(
         event: Event,
         fileResources: List<FileResource>
-    ): Event {
+    ): Pair<Event, List<String>> {
+        val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
             // TODO Filter by value type
             fileResources.find { it.uid() == dataValue.value() }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
+                uploadedFileResources.add(newUid)
                 dataValue.toBuilder().value(newUid).build()
             } ?: dataValue
         }
 
-        return event.toBuilder()
-            .trackedEntityDataValues(updatedDataValues)
-            .build()
+        return Pair(
+            event.toBuilder().trackedEntityDataValues(updatedDataValues).build(),
+            uploadedFileResources
+        )
     }
 
     private fun <T> catchErrorToNull(f: () -> T): T? {

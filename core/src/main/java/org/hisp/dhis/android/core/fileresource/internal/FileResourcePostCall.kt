@@ -166,7 +166,7 @@ internal class FileResourcePostCall @Inject constructor(
         fileResourceStore.delete(fileResource.uid()!!)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
-                .syncState(State.SYNCED)
+                .syncState(State.UPLOADING)
                 .path(file.absolutePath)
                 .build()
         )

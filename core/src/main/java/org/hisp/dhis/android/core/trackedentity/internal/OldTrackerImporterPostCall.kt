@@ -98,15 +98,15 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             val teiPartitions = trackedEntityInstances
                 .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
                 .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
-                .filter { it.isNotEmpty() }
+                .filter { it.first.isNotEmpty() }
 
             for (partition in teiPartitions) {
                 try {
                     trackerStateManager.setPayloadStates(
-                        trackedEntityInstances = partition,
+                        trackedEntityInstances = partition.first,
                         forcedState = State.UPLOADING
                     )
-                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition)
+                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition.first)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         trackedEntityInstanceService.postTrackedEntityInstances(
                             trackedEntityInstancePayload, "SYNC"
@@ -115,10 +115,13 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                         listOf(HTTP_CONFLICT),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, partition)
+                    teiWebResponseHandler.handleWebResponse(webResponse, partition.first, partition.second)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(partition)
+                    trackerStateManager.restorePayloadStates(
+                        trackedEntityInstances = partition.first,
+                        fileResources = partition.second
+                    )
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break
@@ -149,7 +152,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                 val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
 
                 val payload = EventPayload()
-                payload.events = validEvents
+                payload.events = validEvents.first
 
                 trackerStateManager.setPayloadStates(
                     events = payload.events,
@@ -166,11 +169,15 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     )
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = payload.events
+                        events = payload.events,
+                        fileResources = validEvents.second
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(events = payload.events)
+                    trackerStateManager.restorePayloadStates(
+                        events = payload.events,
+                        fileResources = validEvents.second
+                    )
                     Observable.error<D2Progress>(e)
                 }
             }

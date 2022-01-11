@@ -66,7 +66,7 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResource(fileResource: FileResource): String {
+    fun uploadFileResource(fileResource: FileResource, successState: State = State.UPLOADING): String {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
             pingCall.getCompletable(true).blockingAwait()
@@ -78,7 +78,7 @@ internal class FileResourcePostCall @Inject constructor(
 
         val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
 
-        return handleResponse(responseBody.string(), fileResource, file)
+        return handleResponse(responseBody.string(), fileResource, file, successState)
     }
 
     private fun getFilePart(file: File): MultipartBody.Part {
@@ -89,13 +89,16 @@ internal class FileResourcePostCall @Inject constructor(
             .createFormData("file", file.name, RequestBody.create(MediaType.parse(type), file))
     }
 
-    private fun handleResponse(responseBody: String, fileResource: FileResource, file: File): String {
+    private fun handleResponse(responseBody: String,
+                               fileResource: FileResource,
+                               file: File,
+                               successState: State): String {
         try {
             val downloadedFileResource = getDownloadedFileResource(responseBody)
             updateValue(fileResource, downloadedFileResource)
 
-            val downloadedFile = FileResourceUtil.renameFile(file, fileResource.uid(), context)
-            updateFileResource(fileResource, downloadedFileResource, downloadedFile)
+            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid(), context)
+            updateFileResource(fileResource, downloadedFileResource, downloadedFile, successState)
 
             return downloadedFileResource.uid()!!
         } catch (e: IOException) {
@@ -151,11 +154,14 @@ internal class FileResourcePostCall @Inject constructor(
         }
     }
 
-    private fun updateFileResource(fileResource: FileResource, downloadedFileResource: FileResource, file: File) {
+    private fun updateFileResource(fileResource: FileResource,
+                                   downloadedFileResource: FileResource,
+                                   file: File,
+                                   successState: State) {
         fileResourceStore.delete(fileResource.uid()!!)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
-                .syncState(State.UPLOADING)
+                .syncState(successState)
                 .path(file.absolutePath)
                 .build()
         )

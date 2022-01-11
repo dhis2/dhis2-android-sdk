@@ -33,6 +33,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -55,7 +56,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
                 Observable.create { emitter ->
                     for (fileResource in fileResources) {
                         catchErrorToNull {
-                            fileResourcePostCall.uploadFileResource(fileResource)
+                            fileResourcePostCall.uploadFileResource(fileResource, State.SYNCED)
                         }
                         emitter.onNext(d2ProgressManager.increaseProgress(FileResource::class.java, false))
                     }

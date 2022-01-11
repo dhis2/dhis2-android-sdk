@@ -58,9 +58,9 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.defer {
-            postPayloadWrapper(
+            postPayloadWrapper {
                 payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances)
-            )
+            }
         }
     }
 
@@ -68,19 +68,24 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         filteredEvents: List<Event>
     ): Observable<D2Progress> {
         return Observable.defer {
-            postPayloadWrapper(
+            postPayloadWrapper {
                 payloadGenerator.getEventPayload(filteredEvents)
-            )
+            }
         }
     }
 
     private fun postPayloadWrapper(
-        payloadWrapper: NewTrackerImporterPayloadWrapper
+        getPayloadWrapper: () -> NewTrackerImporterPayloadWrapper
     ): Observable<D2Progress> {
         return Observable.concat(
             fileResourcesPostCall.uploadFileResources(),
-            doPostCall(payloadWrapper.deleted, IMPORT_STRATEGY_DELETE),
-            doPostCall(payloadWrapper.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+            Observable.defer {
+                val payload = getPayloadWrapper()
+                Observable.concat(
+                    doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE),
+                    doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+                )
+            }
         )
     }
 

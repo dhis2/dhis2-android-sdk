@@ -42,8 +42,8 @@ class IndicatorLegendSetLinkTableInfo {
                 return "IndicatorLegendSetLink"
             }
 
-            override fun columns(): DataSetIndicatorLinkTableInfo.Columns {
-                return DataSetIndicatorLinkTableInfo.Columns()
+            override fun columns(): Columns {
+                return Columns()
             }
         }
 
@@ -60,16 +60,16 @@ class IndicatorLegendSetLinkTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                LEGEND_SET, INDICATOR
+                INDICATOR, LEGEND_SET
             )
         }
 
         override fun whereUpdate(): Array<String> {
-            return arrayOf(LEGEND_SET, INDICATOR)
+            return arrayOf(INDICATOR, LEGEND_SET)
         }
 
         companion object {
-            const val LEGEND_SET = "legendSets"
+            const val LEGEND_SET = "legendSet"
             const val INDICATOR = "indicator"
         }
     }

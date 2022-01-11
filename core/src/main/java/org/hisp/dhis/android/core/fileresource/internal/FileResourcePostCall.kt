@@ -31,12 +31,13 @@ import android.content.Context
 import android.util.Log
 import android.webkit.MimeTypeMap
 import dagger.Reusable
-import io.reactivex.Observable
+import java.io.File
+import java.io.IOException
+import javax.inject.Inject
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
@@ -44,14 +45,12 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectM
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.PingCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import java.io.File
-import java.io.IOException
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourcePostCall @Inject constructor(
@@ -67,10 +66,6 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResources(filteredFileResources: List<FileResource>): Observable<D2Progress> {
-        return Observable.empty<D2Progress>()
-    }
-
     fun uploadFileResource(fileResource: FileResource): String {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
@@ -78,17 +73,12 @@ internal class FileResourcePostCall @Inject constructor(
             alreadyPinged = true
         }
 
-        val file = getRelatedFile(fileResource)
+        val file = FileResourceUtil.getFile(context, fileResource)
         val filePart = getFilePart(file)
 
         val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
 
         return handleResponse(responseBody.string(), fileResource, file)
-    }
-
-    @Throws(D2Error::class)
-    private fun getRelatedFile(fileResource: FileResource): File {
-        return FileResourceUtil.getFile(context, fileResource)
     }
 
     private fun getFilePart(file: File): MultipartBody.Part {
@@ -104,13 +94,16 @@ internal class FileResourcePostCall @Inject constructor(
             val downloadedFileResource = getDownloadedFileResource(responseBody)
             updateValue(fileResource, downloadedFileResource)
 
-            val downloadedFile = updateFile(file, downloadedFileResource, context)
+            val downloadedFile = FileResourceUtil.renameFile(file, fileResource.uid(), context)
             updateFileResource(fileResource, downloadedFileResource, downloadedFile)
 
             return downloadedFileResource.uid()!!
         } catch (e: IOException) {
             Log.v(FileResourcePostCall::class.java.canonicalName, e.message!!)
-            throw RuntimeException("Resource cannot be handled")
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
+                .errorDescription(e.message!!)
+                .build()
         }
     }
 
@@ -156,10 +149,6 @@ internal class FileResourcePostCall @Inject constructor(
                     .build()
             )
         }
-    }
-
-    private fun updateFile(file: File, fileResource: FileResource?, context: Context): File {
-        return FileResourceUtil.renameFile(file, fileResource!!.uid(), context)
     }
 
     private fun updateFileResource(fileResource: FileResource, downloadedFileResource: FileResource, file: File) {

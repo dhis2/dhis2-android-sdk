@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import java.util.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 @Reusable
+@Suppress("LongParameterList")
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentImportHandler: EnrollmentImportHandler,
@@ -174,9 +175,11 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         }
     }
 
-    private fun setTEIFileResourcesState(instance: TrackedEntityInstance?,
-                                         fileResources: List<String>,
-                                         state: State) {
+    private fun setTEIFileResourcesState(
+        instance: TrackedEntityInstance?,
+        fileResources: List<String>,
+        state: State
+    ) {
         instance?.let {
             val attributeValues = instance.trackedEntityAttributeValues()?.mapNotNull { it.value() }
 
@@ -186,9 +189,11 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         }
     }
 
-    private fun setEventFileResourcesState(instance: TrackedEntityInstance?,
-                                           fileResources: List<String>,
-                                           state: State) {
+    private fun setEventFileResourcesState(
+        instance: TrackedEntityInstance?,
+        fileResources: List<String>,
+        state: State
+    ) {
         instance?.let {
             val dataValues = TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)
                 ?.flatMap { EnrollmentInternalAccessor.accessEvents(it) }

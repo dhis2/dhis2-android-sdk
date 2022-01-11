@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import javax.inject.Inject
 
 @Reusable
 class PingCall @Inject internal constructor(

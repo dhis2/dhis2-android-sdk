@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -64,12 +63,10 @@ import io.reactivex.Single;
 import static org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Columns;
 
 @Reusable
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class FileResourceCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<FileResource, File> {
 
-    private final FileResourcePostCall postCall;
     private final IdentifiableDataObjectStore<FileResource> store;
     private final Context context;
 
@@ -77,15 +74,13 @@ public final class FileResourceCollectionRepository
     FileResourceCollectionRepository(final IdentifiableDataObjectStore<FileResource> store,
                                      final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
                                      final RepositoryScope scope,
-                                     final FileResourcePostCall postCall,
                                      final Transformer<File, FileResource> transformer,
                                      final DataStatePropagator dataStatePropagator,
                                      final Context context) {
         super(store, childrenAppenders, scope, transformer,
                 new FilterConnectorFactory<>(scope, s -> new FileResourceCollectionRepository(
-                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator, context)));
+                        store, childrenAppenders, s, transformer, dataStatePropagator, context)));
         this.store = store;
-        this.postCall = postCall;
         this.context = context;
     }
 
@@ -97,9 +92,7 @@ public final class FileResourceCollectionRepository
      */
     @Deprecated
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
-                .blockingGetWithoutChildren())
-                .flatMap(postCall::uploadFileResources);
+        return Observable.empty();
     }
 
     /**

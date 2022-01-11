@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import javax.inject.Inject
 
 @Reusable
 internal class OldTrackerImporterFileResourcesPostCall @Inject internal constructor(
@@ -147,6 +147,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         )
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun <T> catchErrorToNull(f: () -> T): T? {
         return try {
             f()

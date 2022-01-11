@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.data.fileresource
 
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.State
 import java.text.ParseException
 import java.util.*
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
 
 object FileResourceSamples {
     fun get(): FileResource {

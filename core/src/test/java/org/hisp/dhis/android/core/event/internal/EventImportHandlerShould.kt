@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.nhaarman.mockitokotlin2.*
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -46,7 +47,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
-import java.util.*
 
 @RunWith(JUnit4::class)
 class EventImportHandlerShould {

@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 

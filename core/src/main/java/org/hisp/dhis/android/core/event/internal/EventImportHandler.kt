@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -44,8 +46,6 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class EventImportHandler @Inject constructor(
@@ -156,9 +156,11 @@ internal class EventImportHandler @Inject constructor(
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
     }
 
-    private fun setEventFileResourceStates(event: Event?,
-                                           fileResources: List<String>,
-                                           state: State) {
+    private fun setEventFileResourceStates(
+        event: Event?,
+        fileResources: List<String>,
+        state: State
+    ) {
         event?.let {
             val values = event.trackedEntityDataValues()?.mapNotNull { it.value() }
 

@@ -191,12 +191,12 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                                            state: State) {
         instance?.let {
             val dataValues = TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)
-                .flatMap { EnrollmentInternalAccessor.accessEvents(it) }
-                .filterNotNull()
-                .flatMap { it.trackedEntityDataValues() ?: emptyList() }
-                .mapNotNull { it.value() }
+                ?.flatMap { EnrollmentInternalAccessor.accessEvents(it) }
+                ?.filterNotNull()
+                ?.flatMap { it.trackedEntityDataValues() ?: emptyList() }
+                ?.mapNotNull { it.value() }
 
-            fileResources.filter { dataValues.contains(it) }.forEach {
+            fileResources.filter { dataValues?.contains(it) ?: false }.forEach {
                 fileResourceStore.setSyncStateIfUploading(it, state)
             }
         }

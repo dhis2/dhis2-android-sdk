@@ -43,6 +43,9 @@ import java.util.List;
 public abstract class ImportConflict {
     private static final String OBJECT = "object";
     private static final String VALUE = "value";
+    private static final String ERROR_CODE = "errorCode";
+    private static final String PROPERTY = "property";
+    private static final String INDEXES = "indexes";
 
     @NonNull
     @JsonProperty(OBJECT)
@@ -53,31 +56,30 @@ public abstract class ImportConflict {
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(ERROR_CODE)
     public abstract String errorCode();
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(PROPERTY)
     public abstract String property();
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(INDEXES)
     public abstract List<Integer> indexes();
 
-    @JsonCreator
     public static ImportConflict create(
             @JsonProperty(OBJECT) String object,
-            @JsonProperty(OBJECT) String value) {
+            @JsonProperty(VALUE) String value) {
         return new AutoValue_ImportConflict(object, value, null, null, null);
     }
 
     @JsonCreator
     public static ImportConflict create(
             @JsonProperty(OBJECT) String object,
-            @JsonProperty(OBJECT) String value,
-            @JsonProperty() String errorCode,
-            @JsonProperty() String property,
-            @JsonProperty() List<Integer> indexes) {
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(ERROR_CODE) String errorCode,
+            @JsonProperty(PROPERTY) String property,
+            @JsonProperty(INDEXES) List<Integer> indexes) {
         return new AutoValue_ImportConflict(object, value, errorCode, property, indexes);
     }
 }

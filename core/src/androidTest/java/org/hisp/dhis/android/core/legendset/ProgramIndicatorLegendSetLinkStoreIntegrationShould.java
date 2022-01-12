@@ -26,35 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.legendset;
+package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-public class ProgramIndicatorLegendSetLinkTableInfoPublicAccessShould
-        extends BasePublicAccessShould<ProgramIndicatorLegendSetLink> {
+@RunWith(D2JunitRunner.class)
+public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
 
-    @Mock
-    private ProgramIndicatorLegendSetLink object;
-
-    @Override
-    public ProgramIndicatorLegendSetLink object() {
-        return object;
+    public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
+        super(ProgramIndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override
-    public void has_public_create_method() {
-        ProgramIndicatorLegendSetLink.create(null);
+    protected String addMasterUid() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator();
     }
 
     @Override
-    public void has_public_builder_method() {
-        ProgramIndicatorLegendSetLink.builder();
+    protected ProgramIndicatorLegendSetLink buildObject() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink();
     }
 
     @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+    protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .programIndicator("new_program_indicator")
+                .build();
     }
 }

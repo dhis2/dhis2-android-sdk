@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.legendset;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -36,9 +38,6 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import android.util.Log;
 
 @RunWith(D2JunitRunner.class)
 public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.LegendSet
 
 @Module
-class IndicatorLegendSetEntityDIModule {
+internal class IndicatorLegendSetEntityDIModule {
 
     @Provides
     @Reusable

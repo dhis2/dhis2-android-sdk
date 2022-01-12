@@ -54,8 +54,6 @@ class IndicatorLegendSetLinkTableInfo {
         )
     }
 
-
-
     class Columns : CoreColumns() {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(

@@ -91,7 +91,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
     @Override
     public boolean deleteByEventAndNotInDataElements(@NonNull String eventUid,
-                                                 @NonNull List<String> dataElementUids) {
+                                                     @NonNull List<String> dataElementUids) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
                 .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
@@ -140,7 +140,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
     private String eventInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.uploadableStatesIncludingError())));
         return "(Event." + EventTableInfo.Columns.AGGREGATED_SYNC_STATE + " IN (" + states + "))";
     }
 

@@ -152,7 +152,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
 
         List<Event> events = payloadGenerator.getEvents(
                 d2.eventModule().events().byProgramUid().eq(program.uid())
-                .bySyncState().in(State.uploadableStates()).blockingGet());
+                .bySyncState().in(State.uploadableStatesIncludingError()).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))

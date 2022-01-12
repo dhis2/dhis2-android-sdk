@@ -84,7 +84,8 @@ object VisualizationTableInfo {
                 USER_ORGANISATION_UNIT_CHILDREN,
                 USER_ORGANISATION_UNIT_GRAND_CHILDREN,
                 ORGANISATION_UNITS,
-                PERIODS
+                PERIODS,
+                LEGEND
             )
         }
 
@@ -124,6 +125,7 @@ object VisualizationTableInfo {
             const val USER_ORGANISATION_UNIT_GRAND_CHILDREN = "userOrganisationUnitGrandChildren"
             const val ORGANISATION_UNITS = "organisationUnits"
             const val PERIODS = "periods"
+            const val LEGEND = "legend"
         }
     }
 }

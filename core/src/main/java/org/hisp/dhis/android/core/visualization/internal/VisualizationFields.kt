@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.*
 
 internal object VisualizationFields {
@@ -42,6 +43,7 @@ internal object VisualizationFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                 fh.field<String>(VisualizationTableInfo.Columns.DESCRIPTION),
+                fh.nestedField<ObjectWithUid>(VisualizationTableInfo.Columns.LEGEND).with(ObjectWithUid.uid),
                 fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
                 fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_FORM_NAME),
                 fh.field<VisualizationType>(VisualizationTableInfo.Columns.TYPE),

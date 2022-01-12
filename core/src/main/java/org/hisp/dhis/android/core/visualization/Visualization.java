@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSepa
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataDimensionItemListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -154,6 +155,11 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     public abstract Boolean skipRounding();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid legend();
 
     @Nullable
     @JsonProperty()
@@ -285,6 +291,8 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
         public abstract Builder skipRounding(Boolean skipRounding);
 
         public abstract Builder displayDensity(DisplayDensity displayDensity);
+
+        public abstract Builder legend(ObjectWithUid visualizationLegend);
 
         public abstract Builder digitGroupSeparator(DigitGroupSeparator digitGroupSeparator);
 

@@ -81,6 +81,10 @@ public final class VisualizationCollectionRepository
         return cf.string(Columns.SUBTITLE);
     }
 
+    public StringFilterConnector<VisualizationCollectionRepository> byLegendUid() {
+        return cf.string(Columns.LEGEND);
+    }
+
     public StringFilterConnector<VisualizationCollectionRepository> byDisplaySubtitle() {
         return cf.string(Columns.DISPLAY_SUBTITLE);
     }

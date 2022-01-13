@@ -28,30 +28,38 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.DataValueImportConflictSamples.indexedImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects.getDataValues
+import org.junit.Before
+import org.junit.Test
 
-object DataValueImportConflictSamples {
+internal class IndexedDataValueConflictShould {
 
-    fun invalidDataElementType(): ImportConflict = ImportConflict.create(
-        "40L",
-        "Data value is not a positive integer, must match data element type: vANAXwtLwcT"
-    )
+    private lateinit var indexedDataValueConflict: IndexedDataValueConflict
+    private val conflict: ImportConflict = indexedImportConflict()
+    private val dataValues: List<DataValue> = getDataValues()
 
-    fun pastExpiryDate(): ImportConflict = ImportConflict.create(
-        "202104",
-        "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt"
-    )
+    @Before
+    fun setUp() {
+        indexedDataValueConflict = IndexedDataValueConflict()
+    }
 
-    fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict.create(
-        "202111",
-        "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6"
-    )
+    @Test
+    fun `Should get data value conflicts right`() {
+        val result = indexedDataValueConflict.getDataValues(conflict, dataValues)
+        assert(result.size == 2)
+        assert(result[0].value() == "Replacement")
+        assert(result[1].value() == "true")
+    }
 
-    fun indexedImportConflict(): ImportConflict = ImportConflict.create(
-        "UOlfIjgN8X6",
-        "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
-        "E7619",
-        "value",
-        listOf(1, 3)
-    )
+    @Test
+    fun `Should return no data value conflicts`() {
+        val result = indexedDataValueConflict.getDataValues(
+            conflict.toBuilder().indexes(emptyList()).build(),
+            dataValues
+        )
+        assert(result.isEmpty())
+    }
 }

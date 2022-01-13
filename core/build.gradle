@@ -78,7 +78,7 @@ ext {
             equalsVerifier  : "3.4.1",
             flipper         : "0.83.0",
             soloader        : "0.10.1",
-            liveDataTesting : "1.1.2",
+            liveDataTesting : "1.2.0",
             commonsLogging  : "1.2",
 
             // google

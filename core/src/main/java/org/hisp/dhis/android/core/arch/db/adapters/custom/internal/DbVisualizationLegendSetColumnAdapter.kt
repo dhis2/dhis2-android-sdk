@@ -26,54 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
-
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_VisualizationLegend.Builder.class)
-public abstract class VisualizationLegend {
-
-    @Nullable
-    @JsonProperty()
-//    @JsonSerialize(using = GeometryTypeSerializer.class)
-//    @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
-    public abstract VisualizationLegendSet set();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String showKey();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String strategy();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String style();
-
-    public abstract VisualizationLegend.Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationLegend.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder  {
-
-        public abstract VisualizationLegend.Builder showKey(String showKey);
-
-        public abstract VisualizationLegend.Builder style(String showKey);
-
-        public abstract VisualizationLegend.Builder strategy(String showKey);
-
-        public abstract VisualizationLegend.Builder set(VisualizationLegendSet set);
-
-        public abstract VisualizationLegend build();
-    }
+class DbVisualizationLegendSetColumnAdapter /*: ColumnTypeAdapter<VisualizationLegend>*/ {
 }

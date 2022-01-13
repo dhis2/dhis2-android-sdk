@@ -85,7 +85,10 @@ object VisualizationTableInfo {
                 USER_ORGANISATION_UNIT_GRAND_CHILDREN,
                 ORGANISATION_UNITS,
                 PERIODS,
-                LEGEND
+                LEGEND_SHOW_KEY,
+                LEGEND_STYLE,
+                LEGEND_SET_ID,
+                LEGEND_STRATEGY
             )
         }
 
@@ -125,7 +128,10 @@ object VisualizationTableInfo {
             const val USER_ORGANISATION_UNIT_GRAND_CHILDREN = "userOrganisationUnitGrandChildren"
             const val ORGANISATION_UNITS = "organisationUnits"
             const val PERIODS = "periods"
-            const val LEGEND = "legend"
+            const val LEGEND_SHOW_KEY = "legendShowKey"
+            const val LEGEND_STYLE = "legendStyle"
+            const val LEGEND_SET_ID = "legendSetId"
+            const val LEGEND_STRATEGY = "legendStrategy"
         }
     }
 }

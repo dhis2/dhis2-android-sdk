@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.visualization;
 
+
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,44 +37,24 @@ import com.google.auto.value.AutoValue;
 
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_VisualizationLegend.Builder.class)
-public abstract class VisualizationLegend {
+@JsonDeserialize(builder = AutoValue_VisualizationLegendSet.Builder.class)
+public abstract class VisualizationLegendSet {
 
     @Nullable
     @JsonProperty()
-//    @JsonSerialize(using = GeometryTypeSerializer.class)
-//    @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
-    public abstract VisualizationLegendSet set();
+    public abstract String id();
 
-    @Nullable
-    @JsonProperty()
-    public abstract String showKey();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String strategy();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String style();
-
-    public abstract VisualizationLegend.Builder toBuilder();
+    public abstract VisualizationLegendSet.Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_VisualizationLegend.Builder();
+        return new AutoValue_VisualizationLegendSet.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder  {
 
-        public abstract VisualizationLegend.Builder showKey(String showKey);
+        public abstract VisualizationLegendSet.Builder id(String id);
 
-        public abstract VisualizationLegend.Builder style(String showKey);
-
-        public abstract VisualizationLegend.Builder strategy(String showKey);
-
-        public abstract VisualizationLegend.Builder set(VisualizationLegendSet set);
-
-        public abstract VisualizationLegend build();
+        public abstract VisualizationLegendSet build();
     }
 }

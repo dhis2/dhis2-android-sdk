@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.*
 
 internal object VisualizationFields {
@@ -43,7 +42,6 @@ internal object VisualizationFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                 fh.field<String>(VisualizationTableInfo.Columns.DESCRIPTION),
-                fh.nestedField<ObjectWithUid>(VisualizationTableInfo.Columns.LEGEND).with(ObjectWithUid.uid),
                 fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
                 fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_FORM_NAME),
                 fh.field<VisualizationType>(VisualizationTableInfo.Columns.TYPE),
@@ -75,7 +73,11 @@ internal object VisualizationFields {
                 fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_CHILDREN),
                 fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN),
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.ORGANISATION_UNITS),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS),
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY),
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_STYLE),
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_SET_ID),
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_STRATEGY)
             )
             .build()
 }

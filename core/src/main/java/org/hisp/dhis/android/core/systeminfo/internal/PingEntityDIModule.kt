@@ -25,42 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.datavalue.internal
-
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementType37Conflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import retrofit2.Retrofit
 
-@Reusable
-internal class DataValueConflictParser @Inject constructor(
-    dataElementStore: IdentifiableObjectStore<DataElement>,
-    dataValueStore: DataValueStore,
-    dataSetStore: IdentifiableObjectStore<DataSet>
-) {
+@Module
+internal class PingEntityDIModule {
 
-    private val conflicts = listOf(
-        InvalidDataElementTypeConflict(dataElementStore),
-        InvalidDataElementType37Conflict(dataElementStore),
-        PastExpiryDateConflict(dataValueStore, dataSetStore),
-        PeriodAfterLatestOpenFutureConflict(dataElementStore)
-    )
-
-    fun getDataValueConflicts(
-        conflict: ImportConflict,
-        dataValues: List<DataValue>
-    ): List<DataValueConflict> {
-        return conflicts.find {
-            it.matches(conflict)
-        }?.getDataValues(conflict, dataValues) ?: emptyList()
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): PingService {
+        return retrofit.create(PingService::class.java)
     }
 }

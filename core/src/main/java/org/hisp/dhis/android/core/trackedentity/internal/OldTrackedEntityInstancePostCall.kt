@@ -51,6 +51,7 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
+    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
     private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
 ) {
 
@@ -70,13 +71,16 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
             val teiPartitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(filteredTrackedEntityInstances)
+                .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
+                .filter { it.first.isNotEmpty() }
+
             val progressManager = D2ProgressManager(teiPartitions.size)
             for (partition in teiPartitions) {
                 stateManager.setPayloadStates(
-                    trackedEntityInstances = partition,
+                    trackedEntityInstances = partition.first,
                     forcedState = State.UPLOADING
                 )
-                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition)
+                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition.first)
                 try {
                     val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
@@ -87,10 +91,13 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                         listOf(409),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
+                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition, partition.second)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    stateManager.restorePayloadStates(trackedEntityInstances = thisPartition)
+                    stateManager.restorePayloadStates(
+                        trackedEntityInstances = thisPartition,
+                        fileResources = partition.second
+                    )
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break

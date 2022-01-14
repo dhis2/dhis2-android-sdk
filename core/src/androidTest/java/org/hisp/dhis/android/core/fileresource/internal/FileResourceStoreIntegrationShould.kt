@@ -25,38 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        PingEntityDIModule.class,
-        SystemInfoEntityDIModule.class
-})
-public final class SystemInfoPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemInfoService service(Retrofit retrofit) {
-        return retrofit.create(SystemInfoService.class);
+@RunWith(D2JunitRunner::class)
+class FileResourceStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<FileResource>(
+    FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
+    FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): FileResource {
+        return FileResourceSamples.get()
     }
 
-    @Provides
-    @Reusable
-    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DHISVersionManager versionManager(DHISVersionManagerImpl impl) {
-        return impl;
+    override fun buildObjectToUpdate(): FileResource {
+        return FileResourceSamples.get().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

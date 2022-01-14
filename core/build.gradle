@@ -30,7 +30,7 @@ plugins {
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-kapt"
-    id "io.gitlab.arturbosch.detekt" version "1.10.0"
+    //id "io.gitlab.arturbosch.detekt" version "1.18.0"
     id "org.jetbrains.dokka" version "1.4.30" apply false
 }
 
@@ -77,7 +77,7 @@ ext {
             equalsVerifier  : "3.4.1",
             flipper         : "0.83.0",
             soloader        : "0.10.1",
-            liveDataTesting : "1.1.2",
+            liveDataTesting : "1.2.0",
             commonsLogging  : "1.2",
 
             // google
@@ -229,7 +229,7 @@ dependencies {
     androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "androidx.arch.core:core-testing:${libraries.coreTesting}"
-    androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    //androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
@@ -253,7 +253,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
-detekt {
-    config = files("config/detekt.yml")
-    buildUponDefaultConfig = false
-}
+//detekt {
+//    config = files("config/detekt.yml")
+//    buildUponDefaultConfig = false
+//}

@@ -32,7 +32,7 @@ plugins {
     id "kotlin-android-extensions"
     id "kotlin-kapt"
     //id "io.gitlab.arturbosch.detekt" version "1.18.0"
-    //id "org.jetbrains.dokka" version "1.4.30" apply false
+    id "org.jetbrains.dokka" version "1.4.30" apply false
 }
 
 apply from: project.file("plugins/android-checkstyle.gradle")

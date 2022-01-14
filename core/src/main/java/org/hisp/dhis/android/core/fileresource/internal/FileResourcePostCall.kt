@@ -89,10 +89,12 @@ internal class FileResourcePostCall @Inject constructor(
             .createFormData("file", file.name, RequestBody.create(MediaType.parse(type), file))
     }
 
-    private fun handleResponse(responseBody: String,
-                               fileResource: FileResource,
-                               file: File,
-                               successState: State): String {
+    private fun handleResponse(
+        responseBody: String,
+        fileResource: FileResource,
+        file: File,
+        successState: State
+    ): String {
         try {
             val downloadedFileResource = getDownloadedFileResource(responseBody)
             updateValue(fileResource, downloadedFileResource)
@@ -154,10 +156,12 @@ internal class FileResourcePostCall @Inject constructor(
         }
     }
 
-    private fun updateFileResource(fileResource: FileResource,
-                                   downloadedFileResource: FileResource,
-                                   file: File,
-                                   successState: State) {
+    private fun updateFileResource(
+        fileResource: FileResource,
+        downloadedFileResource: FileResource,
+        file: File,
+        successState: State
+    ) {
         fileResourceStore.delete(fileResource.uid()!!)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()

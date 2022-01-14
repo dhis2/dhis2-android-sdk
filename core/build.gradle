@@ -32,7 +32,7 @@ plugins {
     id "kotlin-android-extensions"
     id "kotlin-kapt"
     //id "io.gitlab.arturbosch.detekt" version "1.18.0"
-    id "org.jetbrains.dokka" version "1.4.30" apply false
+    //id "org.jetbrains.dokka" version "1.4.30" apply false
 }
 
 apply from: project.file("plugins/android-checkstyle.gradle")
@@ -227,7 +227,7 @@ dependencies {
     androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
-    androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    //androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {

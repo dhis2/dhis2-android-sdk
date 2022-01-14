@@ -26,41 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementType37Conflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.ArrayList
 
-@Reusable
-internal class DataValueConflictParser @Inject constructor(
-    dataElementStore: IdentifiableObjectStore<DataElement>,
-    dataValueStore: DataValueStore,
-    dataSetStore: IdentifiableObjectStore<DataSet>
-) {
+internal class InvalidDataElementType37Conflict(
+    dataElementStore: IdentifiableObjectStore<DataElement>
+) : InvalidDataElementTypeConflict(dataElementStore) {
 
-    private val conflicts = listOf(
-        InvalidDataElementTypeConflict(dataElementStore),
-        InvalidDataElementType37Conflict(dataElementStore),
-        PastExpiryDateConflict(dataValueStore, dataSetStore),
-        PeriodAfterLatestOpenFutureConflict(dataElementStore)
-    )
+    override val regex: Regex
+        get() = Regex("Value must match data element's `(\\w{11})` type constraints:.*")
 
-    fun getDataValueConflicts(
-        conflict: ImportConflict,
-        dataValues: List<DataValue>
-    ): List<DataValueConflict> {
-        return conflicts.find {
-            it.matches(conflict)
-        }?.getDataValues(conflict, dataValues) ?: emptyList()
+    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+        val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
+        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        dataValues.forEach { dataValue ->
+            if (dataValue.dataElement() == dataElementUid) {
+                foundDataValuesConflicts.add(
+                    getConflictBuilder(
+                        dataValue = dataValue,
+                        conflict = conflict,
+                        displayDescription = getDisplayDescription(
+                            conflict,
+                            dataValue.value() ?: "",
+                            dataValue.dataElement()
+                        )
+                    ).build()
+                )
+            }
+        }
+
+        return foundDataValuesConflicts
     }
 }

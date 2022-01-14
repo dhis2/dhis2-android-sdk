@@ -25,37 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.data.fileresource;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+@Reusable
+class PingCall @Inject internal constructor(
+    private val pingService: PingService,
+    private val apiCallExecutor: RxAPICallExecutor
+) : CompletableProvider {
 
-import java.text.ParseException;
-import java.util.Date;
-
-public class FileResourceSamples {
-
-    public static FileResource get() {
-        return FileResource.builder()
-                .id(1L)
-                .uid("file_resource_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .syncState(State.TO_POST)
-                .contentLength(1024L)
-                .contentType("image/*")
-                .path("path")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    override fun getCompletable(storeError: Boolean): Completable {
+        return apiCallExecutor.wrapCompletableTransactionally(pingService.getPing(), storeError)
     }
 }

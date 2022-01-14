@@ -25,39 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import java.util.*
+import io.reactivex.Observable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Reusable
-internal class StatePersistorHelper @Inject internal constructor() {
+internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourcePostCall: FileResourcePostCall
+) {
 
-    fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>>,
-        o: O,
-        forcedState: State?
-    ) where O : DataObject, O : ObjectWithUidInterface {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
+    fun uploadFileResources(): Observable<D2Progress> {
+        return Observable.defer {
+            val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
+
+            if (fileResources.isEmpty()) {
+                Observable.empty<D2Progress>()
+            } else {
+                val d2ProgressManager = D2ProgressManager(fileResources.size)
+
+                Observable.create { emitter ->
+                    for (fileResource in fileResources) {
+                        catchErrorToNull {
+                            fileResourcePostCall.uploadFileResource(fileResource, State.SYNCED)
+                        }
+                        emitter.onNext(d2ProgressManager.increaseProgress(FileResource::class.java, false))
+                    }
+                    emitter.onComplete()
+                }
+            }
         }
-        stateMap[s]!!.add(o.uid())
     }
 
-    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
-        return forcedState
-            ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
-    }
-
-    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDataObjectStore<*>) {
-        for ((key, value) in map) {
-            store.setSyncState(value, key)
+    @Suppress("TooGenericExceptionCaught")
+    private fun <T> catchErrorToNull(f: () -> T): T? {
+        return try {
+            f()
+        } catch (e: java.lang.RuntimeException) {
+            null
+        } catch (e: RuntimeException) {
+            null
+        } catch (e: D2Error) {
+            null
         }
     }
 }

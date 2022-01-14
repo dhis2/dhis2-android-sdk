@@ -26,24 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+class IndicatorLegendSetLinkTableInfo {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    companion object {
+        val TABLE_INFO: TableInfo = object : TableInfo() {
+            override fun name(): String {
+                return "IndicatorLegendSetLink"
+            }
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+            override fun columns(): Columns {
+                return Columns()
+            }
+        }
+
+        val CHILD_PROJECTION = LinkTableChildProjection(
+            LegendSetTableInfo.TABLE_INFO,
+            Columns.INDICATOR,
+            Columns.LEGEND_SET
+        )
+    }
+
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                INDICATOR, LEGEND_SET
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return arrayOf(INDICATOR, LEGEND_SET)
+        }
+
+        companion object {
+            const val LEGEND_SET = "legendSet"
+            const val INDICATOR = "indicator"
+        }
     }
 }

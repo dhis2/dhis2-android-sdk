@@ -26,24 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@Reusable
+internal class IndicatorHandler @Inject constructor(
+    indicatorStore: IdentifiableObjectStore<Indicator>,
+    private val legendSetHandler: Handler<LegendSet>,
+    private val indicatorLegendSetLinkHandler: LinkHandler<LegendSet, IndicatorLegendSetLink>
+) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
+        super.afterObjectHandled(indicator, action)
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+        if (indicator.legendSets() != null) {
+            legendSetHandler.handleMany(indicator.legendSets())
+
+            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet ->
+                IndicatorLegendSetLink.builder()
+                    .indicator(indicator.uid())
+                    .legendSet(legendSet.uid())
+                    .build()
+            }
+        }
     }
 }

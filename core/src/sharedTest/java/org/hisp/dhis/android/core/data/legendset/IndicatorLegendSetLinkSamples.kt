@@ -26,24 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.data.legendset
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
-
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+object IndicatorLegendSetLinkSamples {
+    fun getIndicatorLegendSetLink(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLink.builder()
+            .id(1L)
+            .indicator("indicator")
+            .legendSet("legendSet")
+            .build()
     }
 }

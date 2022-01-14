@@ -26,24 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.legendset
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.IndicatorLegendSetLinkSamples
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@RunWith(D2JunitRunner::class)
+class IndicatorLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<IndicatorLegendSetLink>(
+        IndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        IndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!
+    }
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    override fun buildObject(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink()
+    }
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    override fun buildObjectWithOtherMasterUid(): IndicatorLegendSetLink {
+        return buildObject().toBuilder()
+            .indicator("new_indicator")
+            .build()
     }
 }

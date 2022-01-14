@@ -25,25 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.core.legendset.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+@RunWith(D2JunitRunner::class)
+class DataElementLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataElementLegendSetLink>(
+        DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement()!!
+    }
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    override fun buildObject(): DataElementLegendSetLink {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink()
+    }
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
-
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    override fun buildObjectWithOtherMasterUid(): DataElementLegendSetLink {
+        return buildObject().toBuilder()
+            .dataElement("new_data_element")
+            .build()
     }
 }

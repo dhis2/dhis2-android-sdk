@@ -26,24 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+internal class IndicatorLegendSetLinkStore private constructor() {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    companion object {
+        private val BINDER = StatementBinder { o: IndicatorLegendSetLink, w: StatementWrapper ->
+            w.bind(1, o.indicator())
+            w.bind(2, o.legendSet())
+        }
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+        fun create(databaseAdapter: DatabaseAdapter?): LinkStore<IndicatorLegendSetLink> {
+            return linkStore(
+                databaseAdapter!!, IndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
+                BINDER
+            ) { cursor: Cursor? ->
+                IndicatorLegendSetLink.create(cursor)
+            }
+        }
     }
 }

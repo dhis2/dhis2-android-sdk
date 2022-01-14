@@ -25,46 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.helpers.internal
+
+package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.LegendSet
 
 @Reusable
-internal class MultiDimensionalPartitioner @Inject constructor() {
+internal class IndicatorHandler @Inject constructor(
+    indicatorStore: IdentifiableObjectStore<Indicator>,
+    private val legendSetHandler: Handler<LegendSet>,
+    private val indicatorLegendSetLinkHandler: LinkHandler<LegendSet, IndicatorLegendSetLink>
+) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
-    fun partitionForSize(size: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
-        return partitionInternal(
-            UrlLengthHelper.getHowManyUidsFitInURL(size),
-            listOf(partitions.map { it.toList() })
-        )
-    }
+    override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
+        super.afterObjectHandled(indicator, action)
 
-    fun partition(maxValues: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
-        return partitionInternal(
-            maxValues,
-            listOf(partitions.map { it.toList() })
-        )
-    }
+        if (indicator.legendSets() != null) {
+            legendSetHandler.handleMany(indicator.legendSets())
 
-    private fun partitionInternal(maxValues: Int, partitions: List<List<List<String>>>): List<List<List<String>>> {
-        return partitions.flatMap { part ->
-            val count = part.map { it.size }.sum()
-            if (count <= maxValues) {
-                listOf(part)
-            } else {
-                val largerDimension = part.maxByOrNull { it.size }!!
-                val lds = largerDimension.size
-                val largerDimensionPart1 = largerDimension.subList(0, lds / 2)
-                val largerDimensionPart2 = largerDimension.subList(lds / 2, lds)
-                val divided1 = replace(part, largerDimension, largerDimensionPart1)
-                val divided2 = replace(part, largerDimension, largerDimensionPart2)
-                partitionInternal(maxValues, listOf(divided1, divided2))
+            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet ->
+                IndicatorLegendSetLink.builder()
+                    .indicator(indicator.uid())
+                    .legendSet(legendSet.uid())
+                    .build()
             }
         }
-    }
-
-    private fun replace(parent: List<List<String>>, check: List<String>, repl: List<String>): List<List<String>> {
-        return parent.map { valueList -> if (valueList == check) repl else valueList }
     }
 }

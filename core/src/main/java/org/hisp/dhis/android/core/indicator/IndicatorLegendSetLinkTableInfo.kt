@@ -26,44 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.indicator
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+class IndicatorLegendSetLinkTableInfo {
 
-class BaseDatabaseOpenHelper {
+    companion object {
+        val TABLE_INFO: TableInfo = object : TableInfo() {
+            override fun name(): String {
+                return "IndicatorLegendSetLink"
+            }
 
-    static final int VERSION = 116;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+            override fun columns(): Columns {
+                return Columns()
+            }
         }
 
-        databaseAdapter.enableWriteAheadLogging();
+        val CHILD_PROJECTION = LinkTableChildProjection(
+            LegendSetTableInfo.TABLE_INFO,
+            Columns.INDICATOR,
+            Columns.LEGEND_SET
+        )
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                INDICATOR, LEGEND_SET
+            )
+        }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        override fun whereUpdate(): Array<String> {
+            return arrayOf(INDICATOR, LEGEND_SET)
+        }
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val LEGEND_SET = "legendSet"
+            const val INDICATOR = "indicator"
+        }
     }
 }

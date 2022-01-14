@@ -84,7 +84,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
 
         List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost());
 
-        assertThat(events.size()).isEqualTo(3);
+        assertThat(events.size()).isEqualTo(4);
 
         for (Event event : events) {
             assertThat(event.trackedEntityDataValues().size()).isEqualTo(1);

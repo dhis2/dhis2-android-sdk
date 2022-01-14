@@ -26,44 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.legendset
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.IndicatorLegendSetLinkSamples
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 116;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@RunWith(D2JunitRunner::class)
+class IndicatorLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<IndicatorLegendSetLink>(
+        IndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        IndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    override fun buildObject(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink()
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun buildObjectWithOtherMasterUid(): IndicatorLegendSetLink {
+        return buildObject().toBuilder()
+            .indicator("new_indicator")
+            .build()
     }
 }

@@ -26,40 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples;
-import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore;
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-@RunWith(D2JunitRunner.class)
-public class DataElementLegendSetLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataElementLegendSetLink> {
+internal class IndicatorLegendSetChildrenAppender(
+    private val linkChildStore: LinkChildStore<Indicator, LegendSet>
+) : ChildrenAppender<Indicator>() {
 
-    public DataElementLegendSetLinkStoreIntegrationShould() {
-        super(DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
-                DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    override fun appendChildren(indicator: Indicator): Indicator {
+        val builder = indicator.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(indicator))
+        return builder.build()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement();
-    }
-
-    @Override
-    protected DataElementLegendSetLink buildObject() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink();
-    }
-
-    @Override
-    protected DataElementLegendSetLink buildObjectWithOtherMasterUid() {
-        return buildObject().toBuilder()
-                .dataElement("new_data_element")
-                .build();
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Indicator> {
+            return IndicatorLegendSetChildrenAppender(
+                StoreFactory.linkChildStore(
+                    databaseAdapter,
+                    IndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                    IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
+                ) { cursor: Cursor? ->
+                    LegendSet.create(cursor)
+                }
+            )
+        }
     }
 }

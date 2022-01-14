@@ -131,8 +131,11 @@ internal class DataValueImportHandler @Inject constructor(
 
         return dataValueImportConflicts.mapNotNull { dataValueConflict ->
             dataValues.find { dataValue ->
-                dataValue.attributeOptionCombo().equals(dataValueConflict.attributeOptionCombo()) &&
-                    dataValue.categoryOptionCombo().equals(dataValueConflict.categoryOptionCombo())
+                dataValue.dataElement().equals(dataValueConflict.dataElement()) &&
+                        dataValue.period().equals(dataValueConflict.period()) &&
+                        dataValue.organisationUnit().equals(dataValueConflict.orgUnit()) &&
+                        dataValue.attributeOptionCombo().equals(dataValueConflict.attributeOptionCombo()) &&
+                        dataValue.categoryOptionCombo().equals(dataValueConflict.categoryOptionCombo())
             }
         }.toSet()
     }

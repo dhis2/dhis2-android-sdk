@@ -1,5 +1,6 @@
 [main]
 host = https://www.transifex.com
+lang_map = fa_AF: prs, uz@Cyrl: uz, uz@Latn: b+uz+Latn, zh_CN: zh-rCN, pt_BR: pt-rBR
 
 [dhis2-android-sdk.strings-xml]
 file_filter = core/src/main/res/values-<lang>/strings.xml

@@ -204,7 +204,8 @@ class TrackedEntityInstanceImportHandlerShould {
     fun deleted_tei_if_not_present_in_server_and_is_deleted_locally() {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(null)
-        whenever(importSummary.description()).doReturn("Tracked entity instance $sampleTeiUid cannot be deleted as it is not present in the system")
+        whenever(importSummary.description())
+            .doReturn("Tracked entity instance $sampleTeiUid cannot be deleted as it is not present in the system")
 
         whenever(trackedEntityInstanceStore.selectByUid(sampleTeiUid)).doReturn(trackedEntityInstance)
         whenever(trackedEntityInstance.deleted()).doReturn(true)

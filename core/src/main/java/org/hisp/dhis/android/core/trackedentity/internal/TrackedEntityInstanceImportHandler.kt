@@ -67,13 +67,21 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
 ) {
 
+    private val alreadyDeletedInServerRegex =
+        Regex("Tracked entity instance (\\w{11}) cannot be deleted as it is not present in the system")
+
     fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
         instances: List<TrackedEntityInstance>,
         fileResources: List<String>
     ) {
+        val processedTeis = mutableListOf<String>()
+
         teiImportSummaries?.filterNotNull()?.forEach { teiImportSummary ->
-            teiImportSummary.reference()?.let { teiUid ->
+            val teiUid = teiImportSummary.reference() ?: checkAlreadyDeletedInServer(teiImportSummary)
+
+            if (teiUid != null) {
+                processedTeis.add(teiUid)
 
                 val instance = instances.find { it.uid() == teiUid }
                 val state = getSyncState(teiImportSummary.status())
@@ -102,7 +110,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             }
         }
 
-        processIgnoredTEIs(teiImportSummaries, instances, fileResources)
+        processIgnoredTEIs(processedTeis, instances, fileResources)
     }
 
     private fun handleEnrollmentImportSummaries(
@@ -111,7 +119,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         fileResources: List<String>
     ) {
         teiImportSummary.enrollments()?.importSummaries().let { importSummaries ->
-            val teiUid = teiImportSummary.reference()!!
+            val teiUid = teiImportSummary.reference()
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
                 getEnrollments(teiUid, instances),
@@ -153,12 +161,10 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     }
 
     private fun processIgnoredTEIs(
-        teiImportSummaries: List<TEIImportSummary?>?,
+        processedTEIs: List<String>,
         instances: List<TrackedEntityInstance>,
         fileResources: List<String>
     ) {
-        val processedTEIs = getReferences(teiImportSummaries)
-
         instances.filterNot { processedTEIs.contains(it.uid()) }.forEach { instance ->
             trackerImportConflictStore.deleteTrackedEntityConflicts(instance.uid())
             trackedEntityInstanceStore.setSyncStateOrDelete(instance.uid(), State.TO_UPDATE)
@@ -208,12 +214,24 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     }
 
     private fun getEnrollments(
-        trackedEntityInstanceUid: String,
+        trackedEntityInstanceUid: String?,
         instances: List<TrackedEntityInstance>
     ): List<Enrollment> {
         return instances.find { it.uid() == trackedEntityInstanceUid }?.let {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
         } ?: listOf()
+    }
+
+    private fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
+        val teiUid = summary.description()?.let {
+            alreadyDeletedInServerRegex.find(it)?.groupValues?.get(1)
+        }
+
+        return if (teiUid != null && trackedEntityInstanceStore.selectByUid(teiUid)?.deleted() == true) {
+            teiUid
+        } else {
+            null
+        }
     }
 
     private fun getConflictBuilder(teiImportSummary: TEIImportSummary): TrackerImportConflict.Builder {

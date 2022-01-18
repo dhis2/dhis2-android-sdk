@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.indicator;
 
 import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -46,6 +47,17 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .blockingGet();
         assertThat(indicators.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void include_legend_sets_as_children() {
+        Indicator indicator = d2.indicatorModule().indicators()
+                .withLegendSets()
+                .one()
+                .blockingGet();
+
+        assertThat(indicator.legendSets().size()).isEqualTo(1);
+        assertThat(indicator.legendSets().get(0).name()).isEqualTo("Age 40y interval");
     }
 
     @Test

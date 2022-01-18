@@ -49,7 +49,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                Observable.empty<D2Progress>()
+                Observable.empty()
             } else {
                 val d2ProgressManager = D2ProgressManager(fileResources.size)
 

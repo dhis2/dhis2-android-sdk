@@ -66,7 +66,7 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResource(fileResource: FileResource, successState: State = State.UPLOADING): String {
+    fun uploadFileResource(fileResource: FileResource, successState: State = State.UPLOADING): String? {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
             pingCall.getCompletable(true).blockingAwait()
@@ -74,11 +74,15 @@ internal class FileResourcePostCall @Inject constructor(
         }
 
         val file = FileResourceUtil.getFile(context, fileResource)
-        val filePart = getFilePart(file)
 
-        val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
-
-        return handleResponse(responseBody.string(), fileResource, file, successState)
+        return if (file != null) {
+            val filePart = getFilePart(file)
+            val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
+            handleResponse(responseBody.string(), fileResource, file, successState)
+        } else {
+            handleMissingFile(fileResource)
+            null
+        }
     }
 
     private fun getFilePart(file: File): MultipartBody.Part {
@@ -112,6 +116,15 @@ internal class FileResourcePostCall @Inject constructor(
         }
     }
 
+    private fun handleMissingFile(fileResource: FileResource) {
+        fileResource.uid()?.let {
+            if (!updateTrackedEntityAttributeValue(fileResource, null)) {
+                updateTrackedEntityDataValue(fileResource, null)
+            }
+            fileResourceStore.deleteIfExists(it)
+        }
+    }
+
     @Throws(IOException::class)
     private fun getDownloadedFileResource(responseBody: String): FileResource {
         val fileResourceResponse = objectMapper().readValue(responseBody, FileResourceResponse::class.java)
@@ -119,15 +132,12 @@ internal class FileResourcePostCall @Inject constructor(
     }
 
     private fun updateValue(fileResource: FileResource, downloadedFileResource: FileResource) {
-        if (!updateTrackedEntityAttributeValue(fileResource, downloadedFileResource)) {
-            updateTrackedEntityDataValue(fileResource, downloadedFileResource)
+        if (!updateTrackedEntityAttributeValue(fileResource, downloadedFileResource.uid())) {
+            updateTrackedEntityDataValue(fileResource, downloadedFileResource.uid())
         }
     }
 
-    private fun updateTrackedEntityAttributeValue(
-        fileResource: FileResource,
-        downloadedFileResource: FileResource
-    ): Boolean {
+    private fun updateTrackedEntityAttributeValue(fileResource: FileResource, newUid: String?): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
             .build()
@@ -135,14 +145,14 @@ internal class FileResourcePostCall @Inject constructor(
         return trackedEntityAttributeValueStore.selectOneWhere(whereClause)?.let { attributeValue ->
             trackedEntityAttributeValueStore.updateWhere(
                 attributeValue.toBuilder()
-                    .value(downloadedFileResource.uid())
+                    .value(newUid)
                     .build()
             )
             true
         } ?: false
     }
 
-    private fun updateTrackedEntityDataValue(fileResource: FileResource, downloadedFileResource: FileResource) {
+    private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
             .build()
@@ -150,7 +160,7 @@ internal class FileResourcePostCall @Inject constructor(
         trackedEntityDataValueStore.selectOneWhere(whereClause)?.let { dataValue ->
             trackedEntityDataValueStore.updateWhere(
                 dataValue.toBuilder()
-                    .value(downloadedFileResource.uid())
+                    .value(newUid)
                     .build()
             )
         }

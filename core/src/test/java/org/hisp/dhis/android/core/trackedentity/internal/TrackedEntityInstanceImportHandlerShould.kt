@@ -144,7 +144,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-            eq(enrollmentSummaries), anyList(), anyList()
+            eq(enrollmentSummaries), anyList(), eq(State.SYNCED), anyList()
         )
     }
 

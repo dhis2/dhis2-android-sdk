@@ -62,6 +62,7 @@ internal class EnrollmentImportHandler @Inject constructor(
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
+        teiState: State,
         fileResources: List<String>
     ) {
 
@@ -93,7 +94,7 @@ internal class EnrollmentImportHandler @Inject constructor(
             }
         }
 
-        processIgnoredEnrollments(enrollmentImportSummaries, enrollments, fileResources)
+        processIgnoredEnrollments(enrollmentImportSummaries, enrollments, teiState, fileResources)
 
         val teiUids = enrollments.mapNotNull { it.trackedEntityInstance() }.distinct()
 
@@ -146,12 +147,18 @@ internal class EnrollmentImportHandler @Inject constructor(
     private fun processIgnoredEnrollments(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
+        teiState: State,
         fileResources: List<String>
     ) {
         val processedEnrollments = getReferences(enrollmentImportSummaries)
 
         enrollments.filterNot { processedEnrollments.contains(it.uid()) }.forEach { enrollment ->
-            val state = State.TO_UPDATE
+            // Tracker importer does not notify about enrollments already deleted in the server.
+            // This is a workaround to accept as SUCCESS a missing enrollment only if it was deleted in the device.
+            val state =
+                if (teiState == State.SYNCED && enrollment.deleted() == true) State.SYNCED
+                else State.TO_UPDATE
+
             trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
             enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
             resetNestedDataStates(enrollment, fileResources)

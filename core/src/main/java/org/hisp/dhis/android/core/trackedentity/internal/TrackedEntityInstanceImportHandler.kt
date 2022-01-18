@@ -98,7 +98,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
-                    handleEnrollmentImportSummaries(teiImportSummary, instances, fileResources)
+                    handleEnrollmentImportSummaries(teiImportSummary, instances, state, fileResources)
                     dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
                 }
 
@@ -116,6 +116,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private fun handleEnrollmentImportSummaries(
         teiImportSummary: TEIImportSummary,
         instances: List<TrackedEntityInstance>,
+        teiState: State,
         fileResources: List<String>
     ) {
         teiImportSummary.enrollments()?.importSummaries().let { importSummaries ->
@@ -123,6 +124,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
                 getEnrollments(teiUid, instances),
+                teiState,
                 fileResources
             )
         }

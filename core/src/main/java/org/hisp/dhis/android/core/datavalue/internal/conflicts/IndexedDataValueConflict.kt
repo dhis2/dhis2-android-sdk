@@ -34,9 +34,6 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal class IndexedDataValueConflict : DataValueImportConflictItem {
 
-    override val regex: Regex
-        get() = TODO("Not necessary")
-
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         return conflict.indexes()?.map {
             getConflictBuilder(

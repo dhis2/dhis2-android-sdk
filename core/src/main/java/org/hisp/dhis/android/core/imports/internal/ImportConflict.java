@@ -28,18 +28,24 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.auto.value.AutoValue;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
 @AutoValue
 @JsonRootName("conflicts")
 public abstract class ImportConflict {
     private static final String OBJECT = "object";
     private static final String VALUE = "value";
+    private static final String ERROR_CODE = "errorCode";
+    private static final String PROPERTY = "property";
+    private static final String INDEXES = "indexes";
 
     @NonNull
     @JsonProperty(OBJECT)
@@ -49,11 +55,61 @@ public abstract class ImportConflict {
     @JsonProperty(VALUE)
     public abstract String value();
 
-    @JsonCreator
+    @Nullable
+    @JsonProperty(ERROR_CODE)
+    public abstract String errorCode();
+
+    @Nullable
+    @JsonProperty(PROPERTY)
+    public abstract String property();
+
+    @Nullable
+    @JsonProperty(INDEXES)
+    public abstract List<Integer> indexes();
+
     public static ImportConflict create(
             @JsonProperty(OBJECT) String object,
             @JsonProperty(VALUE) String value) {
-        return new AutoValue_ImportConflict(object, value);
+        return builder()
+                .object(object)
+                .value(value)
+                .build();
     }
 
+    @JsonCreator
+    public static ImportConflict create(
+            @JsonProperty(OBJECT) String object,
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(ERROR_CODE) String errorCode,
+            @JsonProperty(PROPERTY) String property,
+            @JsonProperty(INDEXES) List<Integer> indexes) {
+        return builder()
+                .object(object)
+                .value(value)
+                .errorCode(errorCode)
+                .property(property)
+                .indexes(indexes)
+                .build();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ImportConflict.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder object(String object);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder errorCode(String errorCode);
+
+        public abstract Builder property(String property);
+
+        public abstract Builder indexes(List<Integer> indexes);
+
+        public abstract ImportConflict build();
+    }
 }

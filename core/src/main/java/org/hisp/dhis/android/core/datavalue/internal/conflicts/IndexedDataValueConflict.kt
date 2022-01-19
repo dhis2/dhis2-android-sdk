@@ -28,43 +28,19 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.ArrayList
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal class PastExpiryDateConflict(
-    private val dataValueStore: DataValueStore,
-    private val dataSetStore: IdentifiableObjectStore<DataSet>
-) : LegacyDataValueImportConflictItem {
-
-    override val regex: Regex
-        get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
+internal class IndexedDataValueConflict : DataValueImportConflictItem {
 
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
-        val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val period = conflict.`object`()
-        val dataSetUid = regex.find(conflict.value())?.groupValues?.get(2)
-        dataValues.forEach { dataValue ->
-            if (dataValue.period() == period && dataValueStore.existsInDataSet(dataValue, dataSetUid)) {
-                foundDataValuesConflicts.add(
-                    getConflictBuilder(
-                        dataValue = dataValue,
-                        conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid!!)
-                    ).build()
-                )
-            }
-        }
-
-        return foundDataValuesConflicts
+        return conflict.indexes()?.map {
+            getConflictBuilder(
+                dataValue = dataValues[it],
+                conflict = conflict,
+                displayDescription = conflict.value() // TODO Add interpreters for translations
+            ).build()
+        }.orEmpty()
     }
-
-    private fun getDisplayDescription(conflict: ImportConflict, dataValue: DataValue, dataSetUid: String) =
-        dataSetStore.selectByUid(dataSetUid)?.let { dataSet ->
-            "Current date is past expiry days for period ${dataValue.period()} and data set: ${dataSet.displayName()}"
-        } ?: conflict.value()
 }

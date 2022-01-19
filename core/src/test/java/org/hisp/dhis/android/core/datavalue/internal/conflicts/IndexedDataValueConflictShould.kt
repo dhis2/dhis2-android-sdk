@@ -28,32 +28,38 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.Date
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.DataValueImportConflictSamples.indexedImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects.getDataValues
+import org.junit.Before
+import org.junit.Test
 
-internal interface DataValueImportConflictItem {
+internal class IndexedDataValueConflictShould {
 
-    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
+    private lateinit var indexedDataValueConflict: IndexedDataValueConflict
+    private val conflict: ImportConflict = indexedImportConflict()
+    private val dataValues: List<DataValue> = getDataValues()
 
-    fun getConflictBuilder(
-        dataValue: DataValue,
-        conflict: ImportConflict,
-        displayDescription: String
-    ): DataValueConflict.Builder {
-        return DataValueConflict.builder()
-            .conflict(conflict.value())
-            .value(dataValue.value())
-            .attributeOptionCombo(dataValue.attributeOptionCombo())
-            .categoryOptionCombo(dataValue.categoryOptionCombo())
-            .dataElement(dataValue.dataElement())
-            .orgUnit(dataValue.organisationUnit())
-            .period(dataValue.period())
-            .status(ImportStatus.WARNING)
-            .displayDescription(displayDescription)
-            .errorCode(conflict.errorCode())
-            .created(Date())
+    @Before
+    fun setUp() {
+        indexedDataValueConflict = IndexedDataValueConflict()
+    }
+
+    @Test
+    fun `Should get data value conflicts right`() {
+        val result = indexedDataValueConflict.getDataValues(conflict, dataValues)
+        assert(result.size == 2)
+        assert(result[0].value() == "Replacement")
+        assert(result[1].value() == "true")
+    }
+
+    @Test
+    fun `Should return no data value conflicts`() {
+        val result = indexedDataValueConflict.getDataValues(
+            conflict.toBuilder().indexes(emptyList()).build(),
+            dataValues
+        )
+        assert(result.isEmpty())
     }
 }

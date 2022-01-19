@@ -28,32 +28,12 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.Date
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface DataValueImportConflictItem {
+internal interface LegacyDataValueImportConflictItem : DataValueImportConflictItem {
+    val regex: Regex
 
-    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
-
-    fun getConflictBuilder(
-        dataValue: DataValue,
-        conflict: ImportConflict,
-        displayDescription: String
-    ): DataValueConflict.Builder {
-        return DataValueConflict.builder()
-            .conflict(conflict.value())
-            .value(dataValue.value())
-            .attributeOptionCombo(dataValue.attributeOptionCombo())
-            .categoryOptionCombo(dataValue.categoryOptionCombo())
-            .dataElement(dataValue.dataElement())
-            .orgUnit(dataValue.organisationUnit())
-            .period(dataValue.period())
-            .status(ImportStatus.WARNING)
-            .displayDescription(displayDescription)
-            .errorCode(conflict.errorCode())
-            .created(Date())
+    fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
     }
 }

@@ -88,7 +88,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
             fileResources.find { it.uid() == attributeValue.value() }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
-                uploadedFileResources.add(newUid)
+                newUid?.let { uploadedFileResources.add(newUid) }
                 attributeValue.toBuilder().value(newUid).build()
             } ?: attributeValue
         }
@@ -136,7 +136,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
             // TODO Filter by value type
             fileResources.find { it.uid() == dataValue.value() }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
-                uploadedFileResources.add(newUid)
+                newUid?.let { uploadedFileResources.add(newUid) }
                 dataValue.toBuilder().value(newUid).build()
             } ?: dataValue
         }

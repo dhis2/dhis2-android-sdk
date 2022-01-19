@@ -72,7 +72,9 @@ class EnrollmentImportHandlerShould {
 
     private val enrollmentUid = "enrollment_uid"
 
-    private var enrollments: List<Enrollment>? = null
+    private val teiState = State.SYNCED
+
+    private lateinit var enrollments: List<Enrollment>
 
     // object to test
     private lateinit var enrollmentImportHandler: EnrollmentImportHandler
@@ -85,7 +87,7 @@ class EnrollmentImportHandlerShould {
             jobReportEnrollmentHandler, dataStatePropagator, fileResourceStore
         )
 
-        whenever(enrollment!!.trackedEntityInstance()).thenReturn("tei_uid")
+        whenever(enrollment.trackedEntityInstance()).thenReturn("tei_uid")
         whenever(enrollment.uid()).thenReturn(enrollmentUid)
         whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.SYNCED)).thenReturn(HandleAction.Update)
         enrollments = listOf(enrollment)
@@ -96,7 +98,7 @@ class EnrollmentImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).thenReturn(enrollmentUid)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments!!, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
     }
@@ -106,7 +108,7 @@ class EnrollmentImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).thenReturn(enrollmentUid)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments!!, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.ERROR)
     }
@@ -120,7 +122,7 @@ class EnrollmentImportHandlerShould {
         val eventSummaries: List<EventImportSummary> = listOf(eventSummary)
         whenever(importEvent.importSummaries()).thenReturn(eventSummaries)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments!!, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
         verify(eventImportHandler, times(1)).handleEventImportSummaries(eq(eventSummaries), anyList(), anyList())
     }
@@ -133,7 +135,7 @@ class EnrollmentImportHandlerShould {
         val enrollments = listOf(enrollment, missingEnrollment)
         whenever(missingEnrollment.uid()).thenReturn("missing_enrollment_uid")
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("missing_enrollment_uid", State.TO_UPDATE)

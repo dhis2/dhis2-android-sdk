@@ -30,7 +30,7 @@ plugins {
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-kapt"
-    //id "io.gitlab.arturbosch.detekt" version "1.18.0"
+    id "io.gitlab.arturbosch.detekt" version "1.18.0"
     id "org.jetbrains.dokka" version "1.4.30" apply false
 }
 
@@ -250,7 +250,11 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
-//detekt {
-//    config = files("config/detekt.yml")
-//    buildUponDefaultConfig = false
-//}
+detekt {
+    toolVersion = "1.18.0"
+    config = files("config/detekt.yml")
+    parallel = true
+    buildUponDefaultConfig = false
+}
+
+

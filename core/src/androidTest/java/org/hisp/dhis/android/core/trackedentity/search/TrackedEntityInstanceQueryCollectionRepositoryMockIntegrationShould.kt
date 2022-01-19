@@ -25,38 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity.search;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagedList
+import com.jraska.livedata.TestObserver
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TestRule
+import org.junit.runner.RunWith
 
-import com.jraska.livedata.TestObserver;
+@RunWith(D2JunitRunner::class)
+class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
-    @Rule
-    public TestRule rule = new InstantTaskExecutorRule();
+    @get:Rule
+    var rule: TestRule = InstantTaskExecutorRule()
 
     @Test
-    public void get_offline_initial_objects() throws InterruptedException {
-        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
-                .offlineOnly().getPaged(2);
+    fun get_offline_initial_objects() {
+        val liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .offlineOnly().getPaged(2)
 
         TestObserver.test(liveData)
-                .awaitValue()
-                .assertHasValue()
-                .assertValue(pagedList -> pagedList.size() == 2);
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<TrackedEntityInstance> -> pagedList.size == 2 }
     }
 }

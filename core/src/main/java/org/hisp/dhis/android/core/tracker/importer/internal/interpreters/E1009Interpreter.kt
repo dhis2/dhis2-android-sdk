@@ -32,7 +32,6 @@ import org.hisp.dhis.android.R
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class E1009Interpreter internal constructor(
-    private val interpreterHelper: InterpreterHelper,
     override val regex: Regex
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1009

@@ -45,6 +45,7 @@ class RelativePeriodGeneratorImplShould {
     }
 
     @Test
+    @Suppress("ComplexMethod")
     fun `Should create relative periods for all period types`() {
         RelativePeriod.values().forEach { relativePeriod ->
             val periods = periodGenerator.generateRelativePeriods(relativePeriod)

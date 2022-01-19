@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -126,7 +127,7 @@ class EventQueryBundleFactoryShould {
                     assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
                 }
                 else -> {
-                    throw RuntimeException("Not a valid bundle")
+                    fail("Not a valid bundle")
                 }
             }
         }

@@ -52,7 +52,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 @Reusable
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentImportHandler: EnrollmentImportHandler,

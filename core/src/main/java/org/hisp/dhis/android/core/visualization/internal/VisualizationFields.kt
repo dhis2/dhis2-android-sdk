@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.visualization.*
 internal object VisualizationFields {
     internal const val CATEGORY_DIMENSIONS = "categoryDimensions"
     internal const val DATA_DIMENSION_ITEMS = "dataDimensionItems"
+    internal const val LEGEND = "legend"
     private val fh = FieldsHelper<Visualization>()
     val uid = fh.uid()
 
@@ -74,10 +75,7 @@ internal object VisualizationFields {
                 fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN),
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.ORGANISATION_UNITS),
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_STYLE),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_SET_ID),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.LEGEND_STRATEGY)
+                fh.field<VisualizationLegend>(LEGEND)
             )
             .build()
 }

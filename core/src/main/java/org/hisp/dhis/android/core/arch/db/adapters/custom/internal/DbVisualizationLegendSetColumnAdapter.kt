@@ -28,5 +28,4 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-class DbVisualizationLegendSetColumnAdapter /*: ColumnTypeAdapter<VisualizationLegend>*/ {
-}
+class DbVisualizationLegendSetColumnAdapter /*: ColumnTypeAdapter<VisualizationLegend>*/

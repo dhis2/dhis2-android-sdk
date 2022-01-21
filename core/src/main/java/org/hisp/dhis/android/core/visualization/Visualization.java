@@ -59,7 +59,7 @@ import java.util.Map;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.CouplingBetweenObjects"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

@@ -96,11 +96,40 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    // Todo : Modifier this test
-    public void filter_by_legend() {
-        List<Visualization> indicators = d2.visualizationModule().visualizations()
+    public void filter_by_legend_id() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
             .byLegendUid()
-            .eq("lxAQ7Zs9VYR")
+            .eq("Yf6UHoPkd56")
+            .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_legend_style() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+                .byLegendStyle()
+                .eq("FILL")
+                .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_legend_show_key() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+            .byLegendShowKey()
+            .eq("false")
+            .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_legend_strategy() {
+        List<Visualization> indicators = d2.visualizationModule().visualizations()
+            .byLegendStrategy()
+            .eq("FIXED")
             .blockingGet();
 
         assertThat(indicators.size()).isEqualTo(2);

@@ -80,6 +80,10 @@ internal object VisualizationStore {
             w.bind(39, o.userOrganisationUnitGrandChildren())
             w.bind(40, ObjectWithUidListColumnAdapter.serialize(o.organisationUnits()))
             w.bind(41, ObjectWithUidListColumnAdapter.serialize(o.periods()))
+            w.bind(42, o.legend()?.showKey())
+            w.bind(43, o.legend()?.style())
+            w.bind(44, o.legend()?.set()?.id())
+            w.bind(45, o.legend()?.strategy())
         }
     }
 

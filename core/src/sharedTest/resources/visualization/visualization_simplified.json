@@ -33,6 +33,14 @@
     "thisYear": false,
     "last12Months": true
   },
+  "legend": {
+    "showKey": false,
+    "style": "FILL",
+    "strategy": "FIXED",
+    "set": {
+      "id": "Yf6UHoPkd56"
+    }
+  },
   "categoryDimensions": [
     {
       "category": {

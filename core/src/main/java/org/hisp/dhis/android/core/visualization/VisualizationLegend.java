@@ -28,11 +28,18 @@
 
 package org.hisp.dhis.android.core.visualization;
 
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationLegendSetColumnAdapter;
 
 
 @AutoValue
@@ -41,8 +48,7 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-//    @JsonSerialize(using = GeometryTypeSerializer.class)
-//    @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
+    @ColumnAdapter(VisualizationLegendSetColumnAdapter.class)
     public abstract VisualizationLegendSet set();
 
     @Nullable
@@ -57,6 +63,11 @@ public abstract class VisualizationLegend {
     @JsonProperty()
     public abstract String style();
 
+    @NonNull
+    public static VisualizationLegend create(Cursor cursor) {
+        return AutoValue_VisualizationLegend.createFromCursor(cursor);
+    }
+
     public abstract VisualizationLegend.Builder toBuilder();
 
     public static Builder builder() {
@@ -64,15 +75,16 @@ public abstract class VisualizationLegend {
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder  {
 
-        public abstract VisualizationLegend.Builder showKey(String showKey);
+        public abstract Builder showKey(String showKey);
 
-        public abstract VisualizationLegend.Builder style(String showKey);
+        public abstract Builder style(String showKey);
 
-        public abstract VisualizationLegend.Builder strategy(String showKey);
+        public abstract Builder strategy(String showKey);
 
-        public abstract VisualizationLegend.Builder set(VisualizationLegendSet set);
+        public abstract Builder set(VisualizationLegendSet set);
 
         public abstract VisualizationLegend build();
     }

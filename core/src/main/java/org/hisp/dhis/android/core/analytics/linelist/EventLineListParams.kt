@@ -40,7 +40,9 @@ internal data class EventLineListParams(
 
     val eventDates: List<DateFilterPeriod>? = null,
 
-    val organisationUnits: List<OrganisationUnitFilter>? = null
+    val organisationUnits: List<OrganisationUnitFilter>? = null,
+
+    val legendStrategy: LegendStrategy = LegendStrategy.ByDataItem
 ) : BaseScope
 
 internal data class LineListItem(

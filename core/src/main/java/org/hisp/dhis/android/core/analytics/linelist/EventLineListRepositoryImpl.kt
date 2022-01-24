@@ -86,6 +86,13 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun withLegendStrategy(legendStrategy: LegendStrategy): EventLineListRepository {
+        return EventLineListRepositoryImpl(
+            eventLineListService,
+            eventLineListParams.copy(legendStrategy = legendStrategy)
+        )
+    }
+
     override fun evaluate(): Single<List<LineListResponse>> {
         return Single.fromCallable { blockingEvaluate() }
     }

@@ -29,35 +29,33 @@ package org.hisp.dhis.android.core.common
 
 import java.util.*
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) {
-    TEXT(String::class.java, TextValidator),
-    LONG_TEXT(String::class.java, LongTextValidator),
-    LETTER(String::class.java, LetterValidator),
-    BOOLEAN(Boolean::class.java, BooleanValidator),
-    TRUE_ONLY(Boolean::class.java, TrueOnlyValidator),
-    DATE(Date::class.java, DateValidator),
-    DATETIME(Date::class.java, DateTimeValidator),
-    TIME(String::class.java, TimeValidator),
-    NUMBER(Double::class.java, NumberValidator),
-    UNIT_INTERVAL(Double::class.java, UnitIntervalValidator),
-    PERCENTAGE(Double::class.java, PercentageValidator),
-    INTEGER(Int::class.java, IntegerValidator),
-    INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),
-    INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
-    INTEGER_ZERO_OR_POSITIVE(Int::class.java, IntegerZeroOrPositiveValidator),
-    FILE_RESOURCE(String::class.java, UidValidator),
-    COORDINATE(String::class.java, CoordinateValidator),
-    PHONE_NUMBER(String::class.java, PhoneNumberValidator),
-    EMAIL(String::class.java, EmailValidator),
-    USERNAME(String::class.java, TextValidator),
-    ORGANISATION_UNIT(OrganisationUnit::class.java, UidValidator),
-    TRACKER_ASSOCIATE(TrackedEntityInstance::class.java, UidValidator),
-    AGE(Date::class.java, DateValidator),
-    URL(String::class.java, TextValidator),
-    IMAGE(String::class.java, UidValidator);
+enum class ValueType(val validator: ValueTypeValidator<*>) {
+    TEXT(TextValidator),
+    LONG_TEXT(LongTextValidator),
+    LETTER(LetterValidator),
+    BOOLEAN(BooleanValidator),
+    TRUE_ONLY(TrueOnlyValidator),
+    DATE(DateValidator),
+    DATETIME(DateTimeValidator),
+    TIME(TimeValidator),
+    NUMBER(NumberValidator),
+    UNIT_INTERVAL(UnitIntervalValidator),
+    PERCENTAGE(PercentageValidator),
+    INTEGER(IntegerValidator),
+    INTEGER_POSITIVE(IntegerPositiveValidator),
+    INTEGER_NEGATIVE(IntegerNegativeValidator),
+    INTEGER_ZERO_OR_POSITIVE(IntegerZeroOrPositiveValidator),
+    FILE_RESOURCE(UidValidator),
+    COORDINATE(CoordinateValidator),
+    PHONE_NUMBER(PhoneNumberValidator),
+    EMAIL(EmailValidator),
+    USERNAME(TextValidator),
+    ORGANISATION_UNIT(UidValidator),
+    TRACKER_ASSOCIATE(UidValidator),
+    AGE(DateValidator),
+    URL(TextValidator),
+    IMAGE(UidValidator);
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)

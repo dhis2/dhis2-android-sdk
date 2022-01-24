@@ -26,37 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.legendset
 
-import com.jraska.livedata.TestObserver;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.IndicatorLegendSetLinkSamples
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
+@RunWith(D2JunitRunner::class)
+class IndicatorLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<IndicatorLegendSetLink>(
+        IndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        IndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!
+    }
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
+    override fun buildObject(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink()
+    }
 
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
-    @Rule
-    public TestRule rule = new InstantTaskExecutorRule();
-
-    @Test
-    public void get_offline_initial_objects() throws InterruptedException {
-        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
-                .offlineOnly().getPaged(2);
-
-        TestObserver.test(liveData)
-                .awaitValue()
-                .assertHasValue()
-                .assertValue(pagedList -> pagedList.size() == 2);
+    override fun buildObjectWithOtherMasterUid(): IndicatorLegendSetLink {
+        return buildObject().toBuilder()
+            .indicator("new_indicator")
+            .build()
     }
 }

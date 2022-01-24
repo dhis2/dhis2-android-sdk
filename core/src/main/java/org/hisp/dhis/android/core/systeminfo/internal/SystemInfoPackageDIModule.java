@@ -36,7 +36,10 @@ import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {SystemInfoEntityDIModule.class})
+@Module(includes = {
+        PingEntityDIModule.class,
+        SystemInfoEntityDIModule.class
+})
 public final class SystemInfoPackageDIModule {
 
     @Provides

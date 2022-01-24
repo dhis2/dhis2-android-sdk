@@ -56,7 +56,8 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
     private val apiCallExecutor: APICallExecutor,
-    private val relationshipPostCall: RelationshipPostCall
+    private val relationshipPostCall: RelationshipPostCall,
+    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall
 ) {
 
     fun uploadTrackedEntityInstances(
@@ -94,15 +95,18 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
             val progressManager = D2ProgressManager(null)
-            val teiPartitions = trackedEntityInstances.chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+            val teiPartitions = trackedEntityInstances
+                .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+                .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
+                .filter { it.first.isNotEmpty() }
 
             for (partition in teiPartitions) {
                 try {
                     trackerStateManager.setPayloadStates(
-                        trackedEntityInstances = partition,
+                        trackedEntityInstances = partition.first,
                         forcedState = State.UPLOADING
                     )
-                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition)
+                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition.first)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         trackedEntityInstanceService.postTrackedEntityInstances(
                             trackedEntityInstancePayload, "SYNC"
@@ -111,10 +115,13 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                         listOf(HTTP_CONFLICT),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, partition)
+                    teiWebResponseHandler.handleWebResponse(webResponse, partition.first, partition.second)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(partition)
+                    trackerStateManager.restorePayloadStates(
+                        trackedEntityInstances = partition.first,
+                        fileResources = partition.second
+                    )
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break
@@ -142,28 +149,35 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
         } else {
             Observable.defer {
-                val eventPayload = EventPayload()
+                val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
+
+                val payload = EventPayload()
+                payload.events = validEvents.first
+
                 trackerStateManager.setPayloadStates(
-                    events = events,
+                    events = payload.events,
                     forcedState = State.UPLOADING
                 )
 
-                eventPayload.events = events
                 val strategy = "SYNC"
                 try {
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        eventService.postEvents(eventPayload, strategy),
+                        eventService.postEvents(payload, strategy),
                         @Suppress("MagicNumber")
                         listOf(HTTP_CONFLICT),
                         EventWebResponse::class.java
                     )
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = events
+                        events = payload.events,
+                        fileResources = validEvents.second
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(events = events)
+                    trackerStateManager.restorePayloadStates(
+                        events = payload.events,
+                        fileResources = validEvents.second
+                    )
                     Observable.error<D2Progress>(e)
                 }
             }

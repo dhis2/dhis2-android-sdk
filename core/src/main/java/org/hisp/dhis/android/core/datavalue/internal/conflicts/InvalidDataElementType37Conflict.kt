@@ -26,36 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.fileresource;
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+import java.util.ArrayList
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import java.text.ParseException;
-import java.util.Date;
+internal class InvalidDataElementType37Conflict(
+    dataElementStore: IdentifiableObjectStore<DataElement>
+) : InvalidDataElementTypeConflict(dataElementStore) {
 
-public class FileResourceSamples {
+    override val regex: Regex
+        get() = Regex("Value must match data element's `(\\w{11})` type constraints:.*")
 
-    public static FileResource get() {
-        return FileResource.builder()
-                .id(1L)
-                .uid("file_resource_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .syncState(State.TO_POST)
-                .contentLength(1024L)
-                .contentType("image/*")
-                .path("path")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+        val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
+        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        dataValues.forEach { dataValue ->
+            if (dataValue.dataElement() == dataElementUid) {
+                foundDataValuesConflicts.add(
+                    getConflictBuilder(
+                        dataValue = dataValue,
+                        conflict = conflict,
+                        displayDescription = getDisplayDescription(
+                            conflict,
+                            dataValue.value() ?: "",
+                            dataValue.dataElement()
+                        )
+                    ).build()
+                )
+            }
         }
+
+        return foundDataValuesConflicts
     }
 }

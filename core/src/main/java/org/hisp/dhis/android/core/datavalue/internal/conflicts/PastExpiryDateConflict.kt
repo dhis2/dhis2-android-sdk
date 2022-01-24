@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal class PastExpiryDateConflict(
     private val dataValueStore: DataValueStore,
     private val dataSetStore: IdentifiableObjectStore<DataSet>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")

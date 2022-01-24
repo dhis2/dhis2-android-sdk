@@ -25,43 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import io.reactivex.ObservableEmitter
+import org.hisp.dhis.android.core.fileresource.FileResource
+import javax.inject.Inject
 
 @Reusable
-public final class FileResourceModuleImpl implements FileResourceModule {
+class FileResourceCall @Inject internal constructor(
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val fileResourceModuleDownloader: FileResourceModuleDownloader
+) {
 
-    private final FileResourceCollectionRepository fileResources;
-    private final FileResourceCall fileResourceCall;
-
-    @Inject
-    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
-                           FileResourceCall fileResourceCall) {
-        this.fileResources = fileResources;
-        this.fileResourceCall = fileResourceCall;
+    fun download(): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(1)
+        return rxCallExecutor.wrapObservableTransactionally(
+            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+                fileResourceModuleDownloader.downloadMetadata().call()
+                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
+                emitter.onComplete()
+            }, true
+        )
     }
 
-    @Override
-    public Observable<D2Progress> download() {
-        return fileResourceCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        fileResourceCall.blockingDownload();
-    }
-
-    @Override
-    public FileResourceCollectionRepository fileResources() {
-        return fileResources;
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 }

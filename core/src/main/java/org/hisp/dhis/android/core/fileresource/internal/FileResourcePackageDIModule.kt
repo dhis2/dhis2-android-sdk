@@ -25,11 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
-interface HandlerWithTransformer<O> : Handler<O> {
-    fun handle(o: O?, transformer: (O) -> O)
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import retrofit2.Retrofit
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O)
+@Module(includes = [
+    FileResourceEntityDIModule::class
+])
+internal class FileResourcePackageDIModule {
+
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): FileResourceService {
+        return retrofit.create(FileResourceService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: FileResourceModuleImpl): FileResourceModule {
+        return impl
+    }
 }

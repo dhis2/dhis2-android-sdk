@@ -25,49 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.fileresource.FileResource
+import retrofit2.Call
+import retrofit2.http.*
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+internal interface FileResourceService {
 
-import java.io.File;
-import java.util.Collections;
-import java.util.Map;
+    @Multipart
+    @POST(FILE_RESOURCES)
+    fun uploadFile(@Part filePart: MultipartBody.Part): Call<ResponseBody>
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
+    fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): Call<FileResource>
 
-@Module
-public final class FileResourceEntityDIModule {
+    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
+    fun getFileFromTrackedEntityAttribute(
+        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
+        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
+        @Query("dimension") dimension: String
+    ): Call<ResponseBody>
 
-    @Provides
-    @Reusable
-    public IdentifiableDataObjectStore<FileResource> store(DatabaseAdapter databaseAdapter) {
-        return FileResourceStoreImpl.create(databaseAdapter);
-    }
+    @GET("$EVENTS/files")
+    fun getFileFromDataElement(
+        @Query("eventUid") eventUid: String,
+        @Query("dataElementUid") dataElementUid: String,
+        @Query("dimension") dimension: String
+    ): Call<ResponseBody>
 
-    @Provides
-    @Reusable
-    public HandlerWithTransformer<FileResource> handler(IdentifiableDataObjectStore<FileResource> store) {
-        return new IdentifiableWithoutDeleteInterfaceHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Transformer<File, FileResource> transformer() {
-        return new FileResourceProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<FileResource>> childrenAppenders() {
-        return Collections.emptyMap();
+    companion object {
+        const val FILE_RESOURCES = "fileResources"
+        const val FILE_RESOURCE = "fileResource"
+        const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"
+        const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+        const val TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute"
+        const val EVENTS = "events"
     }
 }

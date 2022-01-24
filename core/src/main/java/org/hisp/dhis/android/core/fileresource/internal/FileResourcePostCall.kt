@@ -103,7 +103,7 @@ internal class FileResourcePostCall @Inject constructor(
             val downloadedFileResource = getDownloadedFileResource(responseBody)
             updateValue(fileResource, downloadedFileResource)
 
-            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid(), context)
+            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
             updateFileResource(fileResource, downloadedFileResource, downloadedFile, successState)
 
             return downloadedFileResource.uid()!!

@@ -25,49 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.core.fileresource.internal
 
-import androidx.annotation.NonNull;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
+import java.io.File
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+@Module
+internal class FileResourceEntityDIModule {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-@Reusable
-public class FileResourceCall {
-
-    private final RxAPICallExecutor rxCallExecutor;
-
-    private final FileResourceModuleDownloader fileResourceModuleDownloader;
-
-    @Inject
-    FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                     @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
-        this.rxCallExecutor = rxCallExecutor;
-        this.fileResourceModuleDownloader = fileResourceModuleDownloader;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStore<FileResource> {
+        return create(databaseAdapter)
     }
 
-    public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(1);
-
-        return rxCallExecutor.wrapObservableTransactionally(
-                Observable.create(emitter -> {
-
-                    fileResourceModuleDownloader.downloadMetadata().call();
-                    emitter.onNext(progressManager.increaseProgress(FileResource.class, false));
-
-                    emitter.onComplete();
-
-                }), true);
+    @Provides
+    @Reusable
+    fun handler(store: IdentifiableDataObjectStore<FileResource>): HandlerWithTransformer<FileResource> {
+        return IdentifiableWithoutDeleteInterfaceHandlerImpl(store)
     }
 
-    public void blockingDownload() {
-        download().blockingSubscribe();
+    @Provides
+    @Reusable
+    fun transformer(): Transformer<File, FileResource> {
+        return FileResourceProjectionTransformer()
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
+        return emptyMap()
     }
 }

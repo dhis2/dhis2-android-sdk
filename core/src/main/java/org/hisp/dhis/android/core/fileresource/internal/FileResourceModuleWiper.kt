@@ -25,30 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
+@Reusable
+internal class FileResourceModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        FileResourceEntityDIModule.class
-})
-public final class FileResourcePackageDIModule {
-
-    @Provides
-    @Reusable
-    FileResourceService service(Retrofit retrofit) {
-        return retrofit.create(FileResourceService.class);
+    override fun wipeMetadata() {
+        // No metadata to wipe
     }
 
-    @Provides
-    @Reusable
-    FileResourceModule module(FileResourceModuleImpl impl) {
-        return impl;
+    override fun wipeData() {
+        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO)
     }
 }

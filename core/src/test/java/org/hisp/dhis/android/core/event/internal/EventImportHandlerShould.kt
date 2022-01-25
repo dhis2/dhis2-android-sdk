@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
@@ -68,6 +69,8 @@ class EventImportHandlerShould {
 
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
 
+    private val fileResourceHelper: FileResourceHelper = mock()
+
     private val events: List<Event> = ArrayList()
 
     private val event: Event = mock()
@@ -81,8 +84,8 @@ class EventImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
 
         eventImportHandler = EventImportHandler(
-            eventStore, enrollmentStore, trackerImportConflictStore, trackerImportConflictParser,
-            jobReportEventHandler, dataStatePropagator, trackedEntityDataValueStore, fileResourceStore
+            eventStore, enrollmentStore, trackerImportConflictStore, trackerImportConflictParser, jobReportEventHandler,
+            dataStatePropagator, trackedEntityDataValueStore, fileResourceStore, fileResourceHelper
         )
     }
 
@@ -136,6 +139,10 @@ class EventImportHandlerShould {
             sampleEvent("test_event_uid", listOf(sampleDataValue("test_event_uid", "de1", "resource1")))
         )
 
+        whenever(
+            fileResourceHelper.isPresentInDataValues("resource1", events.first().trackedEntityDataValues())
+        ).doReturn(true)
+
         eventImportHandler.handleEventImportSummaries(
             listOf(importSummary), events, listOf("resource1", "resource2")
         )
@@ -153,6 +160,10 @@ class EventImportHandlerShould {
         val events = listOf(
             sampleEvent("test_event_uid", listOf(sampleDataValue("test_event_uid", "de1", "resource1")))
         )
+
+        whenever(
+            fileResourceHelper.isPresentInDataValues("resource1", events.first().trackedEntityDataValues())
+        ).doReturn(true)
 
         eventImportHandler.handleEventImportSummaries(
             listOf(importSummary), events, listOf("resource1", "resource2")

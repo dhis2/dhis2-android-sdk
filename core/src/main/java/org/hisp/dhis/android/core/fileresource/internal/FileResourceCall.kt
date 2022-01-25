@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import io.reactivex.ObservableEmitter
 import org.hisp.dhis.android.core.fileresource.FileResource
-import javax.inject.Inject
 
 @Reusable
 class FileResourceCall @Inject internal constructor(
@@ -49,7 +49,8 @@ class FileResourceCall @Inject internal constructor(
                 fileResourceModuleDownloader.downloadMetadata().call()
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
                 emitter.onComplete()
-            }, true
+            },
+            true
         )
     }
 

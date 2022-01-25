@@ -33,9 +33,11 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import retrofit2.Retrofit
 
-@Module(includes = [
-    FileResourceEntityDIModule::class
-])
+@Module(
+    includes = [
+        FileResourceEntityDIModule::class
+    ]
+)
 internal class FileResourcePackageDIModule {
 
     @Provides

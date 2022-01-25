@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceModuleImpl @Inject internal constructor(

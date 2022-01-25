@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import java.io.File
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
-import java.io.File
 
 @Module
 internal class FileResourceEntityDIModule {

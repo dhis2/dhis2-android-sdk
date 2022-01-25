@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import javax.inject.Inject
 
 internal class FileResourceHelper @Inject constructor(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,

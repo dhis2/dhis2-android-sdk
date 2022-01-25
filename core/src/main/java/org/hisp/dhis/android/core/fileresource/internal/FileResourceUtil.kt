@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
+import java.io.*
+import java.net.URLConnection
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
-import java.io.*
-import java.net.URLConnection
 
 internal object FileResourceUtil {
 

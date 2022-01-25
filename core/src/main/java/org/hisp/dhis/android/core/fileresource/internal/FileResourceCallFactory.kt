@@ -30,18 +30,18 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.common.Unit
-import org.hisp.dhis.android.core.maintenance.D2Error
 import java.util.ArrayList
 import java.util.concurrent.Callable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.Unit
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 @Reusable
 internal class FileResourceCallFactory @Inject constructor(

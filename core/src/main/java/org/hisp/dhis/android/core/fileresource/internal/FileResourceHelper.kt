@@ -30,22 +30,13 @@ package org.hisp.dhis.android.core.fileresource.internal
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.trackedentity.*
 
 internal class FileResourceHelper @Inject constructor(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
 ) {
-
-    fun isFileDataElement(dataElementUid: String?): Boolean {
-        return dataElementUid?.let { dataElementStore.selectByUid(it)?.valueType()?.isFile } ?: false
-    }
-
-    fun isFileAttribute(attributeUid: String?): Boolean {
-        return attributeUid?.let { attributeStore.selectByUid(it)?.valueType()?.isFile } ?: false
-    }
 
     fun isPresentInDataValues(fileResourceUid: String, dataValues: Collection<TrackedEntityDataValue>?): Boolean {
         return dataValues?.any {
@@ -61,4 +52,49 @@ internal class FileResourceHelper @Inject constructor(
             fileResourceUid == it.value() && isFileAttribute(it.trackedEntityAttribute())
         } ?: false
     }
+
+    fun findAttributeFileResource(
+        attributeValue: NewTrackerImporterTrackedEntityAttributeValue,
+        fileResources: List<FileResource>
+    ): FileResource? {
+        return fileResources.find {
+            it.uid() == attributeValue.value() && isFileAttribute(attributeValue.trackedEntityAttribute())
+        }
+    }
+
+    fun findAttributeFileResource(
+        attributeValue: TrackedEntityAttributeValue,
+        fileResources: List<FileResource>
+    ): FileResource? {
+        return fileResources.find {
+            it.uid() == attributeValue.value() && isFileAttribute(attributeValue.trackedEntityAttribute())
+        }
+    }
+
+    fun findDataValueFileResource(
+        dataValue: NewTrackerImporterTrackedEntityDataValue,
+        fileResources: List<FileResource>
+    ): FileResource? {
+        return fileResources.find {
+            it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
+        }
+    }
+
+    fun findDataValueFileResource(
+        dataValue: TrackedEntityDataValue,
+        fileResources: List<FileResource>
+    ): FileResource? {
+        return fileResources.find {
+            it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
+        }
+    }
+
+    private fun isFileDataElement(dataElementUid: String?): Boolean {
+        return dataElementUid?.let { dataElementStore.selectByUid(it)?.valueType()?.isFile } ?: false
+    }
+
+    private fun isFileAttribute(attributeUid: String?): Boolean {
+        return attributeUid?.let { attributeStore.selectByUid(it)?.valueType()?.isFile } ?: false
+    }
+
 }

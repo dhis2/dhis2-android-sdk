@@ -28,42 +28,135 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourcePostCall: FileResourcePostCall
+    private val fileResourcePostCall: FileResourcePostCall,
+    private val fileResourceHelper: FileResourceHelper
 ) {
 
-    fun uploadFileResources(): Observable<D2Progress> {
-        return Observable.defer {
+    fun uploadFileResources(
+        payloadWrapper: NewTrackerImporterPayloadWrapper
+    ): Single<NewTrackerImporterPayloadWrapper> {
+        return Single.create { emitter ->
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                Observable.empty<D2Progress>()
+                emitter.onSuccess(payloadWrapper)
             } else {
-                val d2ProgressManager = D2ProgressManager(fileResources.size)
-
-                Observable.create { emitter ->
-                    for (fileResource in fileResources) {
-                        catchErrorToNull {
-                            fileResourcePostCall.uploadFileResource(fileResource, State.SYNCED)
-                        }
-                        emitter.onNext(d2ProgressManager.increaseProgress(FileResource::class.java, false))
-                    }
-                    emitter.onComplete()
-                }
+                emitter.onSuccess(
+                    NewTrackerImporterPayloadWrapper(
+                        deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
+                        updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources)
+                    )
+                )
             }
         }
+    }
+
+    private fun uploadPayloadFileResources(
+        payload: NewTrackerImporterPayload,
+        fileResources: List<FileResource>
+    ): NewTrackerImporterPayload {
+        val uploadedAttributes = uploadAttributes(payload.trackedEntities, payload.enrollments, fileResources)
+        val uploadedDataValues = uploadDataValues(payload.events, fileResources)
+
+        return payload.copy(
+            trackedEntities = uploadedAttributes.first.toMutableList(),
+            enrollments = uploadedAttributes.second.toMutableList(),
+            events = uploadedDataValues.first.toMutableList(),
+            fileResources = (uploadedAttributes.third + uploadedDataValues.second).toMutableList()
+        )
+    }
+
+    private fun uploadAttributes(
+        entities: List<NewTrackerImporterTrackedEntity>,
+        enrollments: List<NewTrackerImporterEnrollment>,
+        fileResources: List<FileResource>
+    ): Triple<List<NewTrackerImporterTrackedEntity>, List<NewTrackerImporterEnrollment>, List<FileResource>> {
+        val uploadedFileResources = mutableMapOf<String, FileResource>()
+
+        val successfulEntities: List<NewTrackerImporterTrackedEntity> = entities.mapNotNull { entity ->
+            catchErrorToNull {
+                val updatedAttributes = getUpdatedAttributes(
+                    attributeValues = entity.trackedEntityAttributeValues(),
+                    fileResources = fileResources,
+                    uploadedFileResources = uploadedFileResources
+                )
+                entity.toBuilder().trackedEntityAttributeValues(updatedAttributes).build()
+            }
+        }
+
+        val successfulEnrollments: List<NewTrackerImporterEnrollment> = enrollments.mapNotNull { enrollment ->
+            catchErrorToNull {
+                val updatedAttributes = getUpdatedAttributes(
+                    attributeValues = enrollment.attributes(),
+                    fileResources = fileResources,
+                    uploadedFileResources = uploadedFileResources
+                )
+                enrollment.toBuilder().attributes(updatedAttributes).build()
+            }
+        }
+
+        return Triple(successfulEntities, successfulEnrollments, uploadedFileResources.values.toList())
+    }
+
+    private fun getUpdatedAttributes(
+        attributeValues: List<NewTrackerImporterTrackedEntityAttributeValue>?,
+        fileResources: List<FileResource>,
+        uploadedFileResources: MutableMap<String, FileResource>
+    ): List<NewTrackerImporterTrackedEntityAttributeValue>? {
+        return attributeValues?.map { attributeValue ->
+            fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
+                val uploadedFileResource = uploadedFileResources[fileResource.uid()]
+
+                val newUid = if (uploadedFileResource != null) {
+                    uploadedFileResource.uid()!!
+                } else {
+                    fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                        uploadedFileResources[fileResource.uid()!!] = fileResource.toBuilder().uid(it).build()
+                    }
+                }
+                attributeValue.toBuilder().value(newUid).build()
+            } ?: attributeValue
+        }
+    }
+
+    private fun uploadDataValues(
+        events: List<NewTrackerImporterEvent>,
+        fileResources: List<FileResource>
+    ): Pair<List<NewTrackerImporterEvent>, List<FileResource>> {
+        val uploadedFileResources = mutableListOf<FileResource>()
+
+        val successfulEvents = events.mapNotNull { event ->
+            catchErrorToNull {
+                val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
+                    fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                        val newUid = fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                            uploadedFileResources.add(fileResource.toBuilder().uid(it).build())
+                        }
+                        dataValue.toBuilder().value(newUid).build()
+                    } ?: dataValue
+                }
+                event.toBuilder().trackedEntityDataValues(updatedDataValues).build()
+            }
+        }
+
+        return Pair(successfulEvents, uploadedFileResources)
     }
 
     @Suppress("TooGenericExceptionCaught")

@@ -88,12 +88,10 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     ): Pair<TrackedEntityInstance, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
-            fileResources.find {
-                it.uid() == attributeValue.value() &&
-                    fileResourceHelper.isFileAttribute(attributeValue.trackedEntityAttribute())
-            }?.let { fileResource ->
-                val newUid = fileResourcePostCall.uploadFileResource(fileResource)
-                newUid?.let { uploadedFileResources.add(newUid) }
+            fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
+                val newUid = fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                    uploadedFileResources.add(it)
+                }
                 attributeValue.toBuilder().value(newUid).build()
             } ?: attributeValue
         }
@@ -138,11 +136,10 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     ): Pair<Event, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
-            fileResources.find {
-                it.uid() == dataValue.value() && fileResourceHelper.isFileDataElement(dataValue.dataElement())
-            }?.let { fileResource ->
-                val newUid = fileResourcePostCall.uploadFileResource(fileResource)
-                newUid?.let { uploadedFileResources.add(newUid) }
+            fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                val newUid = fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                    uploadedFileResources.add(it)
+                }
                 dataValue.toBuilder().value(newUid).build()
             } ?: dataValue
         }

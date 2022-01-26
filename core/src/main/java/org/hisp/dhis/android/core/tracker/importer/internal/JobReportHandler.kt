@@ -32,10 +32,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.common.internal.DataStateUidHolder
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.ENROLLMENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.TRACKED_ENTITY
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.*
 
 @Reusable
 internal class JobReportHandler @Inject internal constructor(
@@ -130,6 +127,7 @@ internal class JobReportHandler @Inject internal constructor(
             ENROLLMENT -> enrollmentHandler
             TRACKED_ENTITY -> trackedEntityHandler
             RELATIONSHIP -> relationshipHandler
+            FILE_RESOURCE -> TODO()
         }
     }
 }

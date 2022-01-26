@@ -25,23 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.tracker.importer.internal
 
-package org.hisp.dhis.android.core.data.tracker.importer.internal;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
+object TrackerJobObjectSamples {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-import static org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT;
-
-public class TrackerJobObjectSamples {
-
-    public static TrackerJobObject get1() {
+    fun get1(): TrackerJobObject {
         return TrackerJobObject.builder()
-                .id(1L)
-                .trackerType(EVENT)
-                .objectUid("oUid")
-                .jobUid("jUid")
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+            .id(1L)
+            .trackerType(TrackerImporterObjectType.EVENT)
+            .objectUid("oUid")
+            .jobUid("jUid")
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .fileResources(listOf("resource1", "resource2"))
+            .build()
     }
 }

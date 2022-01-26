@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,10 +39,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
@@ -61,6 +64,9 @@ public abstract class TrackerJobObject extends BaseObject {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
+    @NonNull
+    @ColumnAdapter(StringArrayColumnAdapter.class)
+    public abstract List<String> fileResources();
 
     @NonNull
     public static TrackerJobObject create(Cursor cursor) {
@@ -84,6 +90,8 @@ public abstract class TrackerJobObject extends BaseObject {
         public abstract Builder jobUid(String jobUid);
 
         public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder fileResources(List<String> fileResources);
 
         public abstract TrackerJobObject build();
     }

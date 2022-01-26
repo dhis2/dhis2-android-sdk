@@ -33,7 +33,7 @@
       "digitGroupSeparator": "COMMA",
       "legend": {
         "showKey": false,
-        "style": "NONE",
+        "style": "FILL",
         "strategy": "FIXED",
         "set": {
           "id": "Yf6UHoPkd57"
@@ -141,7 +141,7 @@
       "digitGroupSeparator": "COMMA",
       "legend": {
         "showKey": false,
-        "style": "FILL",
+        "style": "TEXT",
         "strategy": "FIXED",
         "set": {
           "id": "Yf6UHoPkd56"

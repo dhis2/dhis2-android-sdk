@@ -39,7 +39,10 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationLegendSetColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LegendStrategyColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LegendStyleColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 
 @AutoValue
@@ -48,8 +51,8 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(VisualizationLegendSetColumnAdapter.class)
-    public abstract VisualizationLegendSet set();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid set();
 
     @Nullable
     @JsonProperty()
@@ -57,11 +60,13 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-    public abstract String strategy();
+    @ColumnAdapter(LegendStrategyColumnAdapter.class)
+    public abstract LegendStrategy strategy();
 
     @Nullable
     @JsonProperty()
-    public abstract String style();
+    @ColumnAdapter(LegendStyleColumnAdapter.class)
+    public abstract LegendStyle style();
 
     @NonNull
     public static VisualizationLegend create(Cursor cursor) {
@@ -80,11 +85,11 @@ public abstract class VisualizationLegend {
 
         public abstract Builder showKey(String showKey);
 
-        public abstract Builder style(String showKey);
+        public abstract Builder style(LegendStyle showKey);
 
-        public abstract Builder strategy(String showKey);
+        public abstract Builder strategy(LegendStrategy showKey);
 
-        public abstract Builder set(VisualizationLegendSet set);
+        public abstract Builder set(ObjectWithUid set);
 
         public abstract VisualizationLegend build();
     }

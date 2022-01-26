@@ -314,6 +314,7 @@
   "numberType": "VALUE",
   "aggregationType": "DEFAULT",
   "legend": {
+    "hidden": false,
     "showKey": false,
     "style": "FILL",
     "strategy": "FIXED",

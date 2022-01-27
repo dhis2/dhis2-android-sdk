@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.data.tracker.importer.internal
 
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 
 object TrackerJobObjectSamples {
 

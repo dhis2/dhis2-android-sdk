@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
@@ -44,8 +46,9 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore
-) : JobReportTypeHandler(relationshipStore) {
+    relationshipStore: RelationshipStore,
+    fileResourceStore: IdentifiableDataObjectStore<FileResource>
+) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)

@@ -43,6 +43,10 @@ import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPaylo
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.ENROLLMENT
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.TRACKED_ENTITY
 
 @Reusable
 internal class TrackerImporterPostCall @Inject internal constructor(
@@ -123,22 +127,23 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         val enrollments = payload.trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
         val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
 
-        return generateTypeObjects(builder, TrackerImporterObjectType.TRACKED_ENTITY, payload.trackedEntities) +
-                generateTypeObjects(builder, TrackerImporterObjectType.ENROLLMENT, enrollments) +
-                generateTypeObjects(builder, TrackerImporterObjectType.EVENT, events) +
-                generateTypeObjects(builder, TrackerImporterObjectType.RELATIONSHIP, payload.relationships) +
-                generateTypeObjects(builder, TrackerImporterObjectType.FILE_RESOURCE, payload.fileResources)
+        return generateTypeObjects(builder, TRACKED_ENTITY, payload.trackedEntities, payload.fileResourcesMap) +
+            generateTypeObjects(builder, ENROLLMENT, enrollments, payload.fileResourcesMap) +
+            generateTypeObjects(builder, EVENT, events, payload.fileResourcesMap) +
+            generateTypeObjects(builder, RELATIONSHIP, payload.relationships, payload.fileResourcesMap)
     }
 
     private fun generateTypeObjects(
         builder: TrackerJobObject.Builder,
         objectType: TrackerImporterObjectType,
-        objects: List<ObjectWithUidInterface>
+        objects: List<ObjectWithUidInterface>,
+        fileResourcesMap: Map<String, List<String>>
     ): List<TrackerJobObject> {
         return objects.map {
             builder
                 .trackerType(objectType)
                 .objectUid(it.uid())
+                .fileResources(fileResourcesMap[it.uid()] ?: emptyList())
                 .build()
         }
     }

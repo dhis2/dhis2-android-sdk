@@ -31,6 +31,5 @@ internal enum class TrackerImporterObjectType {
     EVENT,
     TRACKED_ENTITY,
     ENROLLMENT,
-    RELATIONSHIP,
-    FILE_RESOURCE
+    RELATIONSHIP
 }

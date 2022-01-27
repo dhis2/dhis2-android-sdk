@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -72,7 +71,6 @@ public abstract class TrackerJobObject extends BaseObject {
     public static TrackerJobObject create(Cursor cursor) {
         return AutoValue_TrackerJobObject.createFromCursor(cursor);
     }
-
 
     public static Builder builder() {
         return new $$AutoValue_TrackerJobObject.Builder();

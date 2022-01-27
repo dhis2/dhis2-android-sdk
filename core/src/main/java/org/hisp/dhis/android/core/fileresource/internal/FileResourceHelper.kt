@@ -96,5 +96,4 @@ internal class FileResourceHelper @Inject constructor(
     private fun isFileAttribute(attributeUid: String?): Boolean {
         return attributeUid?.let { attributeStore.selectByUid(it)?.valueType()?.isFile } ?: false
     }
-
 }

@@ -25,38 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
+import io.reactivex.Completable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
-import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 
 @Reusable
-internal class NewTrackerImporterEventPostPayloadGenerator @Inject internal constructor(
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: EventPostNoteStore
-) {
+class PingCall @Inject internal constructor(
+    private val pingService: PingService,
+    private val apiCallExecutor: RxAPICallExecutor
+) : CompletableProvider {
 
-    fun getEvents(events: List<Event>): List<NewTrackerImporterEvent> {
-        val noteTransformer = NewTrackerImporterNoteTransformer()
-        val dataValueTransformer = NewTrackerImporterTrackedEntityDataValueTransformer()
-        val eventTransformer = NewTrackerImporterEventTransformer()
-
-        val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
-        val notes = noteStore.queryNotes().map { noteTransformer.transform(it) }
-        return events
-            .map { eventTransformer.transform(it) }
-            .map { event ->
-                val dataValues = dataValueMap[event.uid()]?.map { dataValueTransformer.transform(it) }
-                event.toBuilder()
-                    .trackedEntityDataValues(dataValues)
-                    .notes(notes.filter { it.event() == event.uid() })
-                    .build()
-            }
+    override fun getCompletable(storeError: Boolean): Completable {
+        return apiCallExecutor.wrapCompletableTransactionally(pingService.getPing(), storeError)
     }
 }

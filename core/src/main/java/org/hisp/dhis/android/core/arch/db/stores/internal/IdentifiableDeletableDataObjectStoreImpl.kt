@@ -44,22 +44,13 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
 ) : IdentifiableDataObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDeletableDataObjectStore<O> where O : ObjectWithUidInterface, O : DeletableDataObject {
 
-    private var setStateIfUploadingStatement: StatementWrapper? = null
     private var setDeletedStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null
 
-    companion object {
-        private const val EQ = " = "
-    }
-
     private fun compileStatements() {
         resetStatementsIfDbChanged()
-        if (setStateIfUploadingStatement == null) {
+        if (setDeletedStatement == null) {
             val whereUid = " WHERE " + IdentifiableColumns.UID + " =?"
-            val setState = "UPDATE " + tableName + " SET " +
-                DataColumns.SYNC_STATE + " =?" + whereUid
-            val setStateIfUploading = setState + " AND " + DataColumns.SYNC_STATE + EQ + "'" + State.UPLOADING + "'"
-            setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading)
             val setDeleted = "UPDATE " + tableName + " SET " +
                 DeletableDataColumns.DELETED + " = 1" + whereUid
             setDeletedStatement = databaseAdapter.compileStatement(setDeleted)
@@ -74,9 +65,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
 
     private fun resetStatementsIfDbChanged() {
         if (hasAdapterChanged()) {
-            setStateIfUploadingStatement!!.close()
             setDeletedStatement!!.close()
-            setStateIfUploadingStatement = null
             setDeletedStatement = null
         }
     }
@@ -94,19 +83,8 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         return if (deleted) {
             HandleAction.Delete
         } else {
-            if (setStateIfUploading(uid, state) == 0) HandleAction.NoAction else HandleAction.Update
+            if (setSyncStateIfUploading(uid, state) == 0) HandleAction.NoAction else HandleAction.Update
         }
-    }
-
-    private fun setStateIfUploading(uid: String, state: State): Int {
-        compileStatements()
-        setStateIfUploadingStatement!!.bind(1, state)
-
-        // bind the where argument
-        setStateIfUploadingStatement!!.bind(2, uid)
-        val affectedRows = databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement)
-        setStateIfUploadingStatement!!.clearBindings()
-        return affectedRows
     }
 
     override fun setDeleted(uid: String): Int {

@@ -214,70 +214,109 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Test
     @Throws(D2Error::class)
     fun propagate_tei_relationship_update() {
-        val teiUid = createTEIWithState(State.SYNCED)
+        listOf(true, false).forEach { bidirectional ->
+            val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
+            relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
 
-        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
-            Relationship.builder()
-                .relationshipType(relationshipType)
-                .from(RelationshipHelper.teiItem(teiUid))
-                .to(RelationshipHelper.teiItem(teiUid))
-                .build()
-        )
+            val teiUid = createTEIWithState(State.SYNCED)
+            val toTeiUid = createTEIWithState(State.SYNCED)
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+            val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+                Relationship.builder()
+                    .relationshipType(relationshipType)
+                    .from(RelationshipHelper.teiItem(teiUid))
+                    .to(RelationshipHelper.teiItem(toTeiUid))
+                    .build()
+            )
 
-        trackedEntityInstanceStore.delete(teiUid)
-        relationshipStore.delete(relationshipUid)
+            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+            ).isEqualTo(State.TO_UPDATE)
+
+            val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
+
+            trackedEntityInstanceStore.delete(teiUid)
+            trackedEntityInstanceStore.delete(toTeiUid)
+            relationshipStore.delete(relationshipUid)
+            relationshipTypeStore.update(originalRelationshipType)
+        }
     }
 
     @Test
     @Throws(D2Error::class)
     fun propagate_enrollment_relationship_update() {
-        val teiUid = createTEIWithState(State.SYNCED)
-        val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
+        listOf(true, false).forEach { bidirectional ->
+            val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
+            relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
 
-        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
-            Relationship.builder()
-                .relationshipType(relationshipType)
-                .from(RelationshipHelper.enrollmentItem(enrollmentUid))
-                .to(RelationshipHelper.enrollmentItem(enrollmentUid))
-                .build()
-        )
+            val teiUid = createTEIWithState(State.SYNCED)
+            val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
+            val toTeiUid = createTEIWithState(State.SYNCED)
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
-        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+            val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+                Relationship.builder()
+                    .relationshipType(relationshipType)
+                    .from(RelationshipHelper.enrollmentItem(enrollmentUid))
+                    .to(RelationshipHelper.teiItem(toTeiUid))
+                    .build()
+            )
 
-        trackedEntityInstanceStore.delete(teiUid)
-        relationshipStore.delete(relationshipUid)
+            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+            ).isEqualTo(State.TO_UPDATE)
+            assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+
+            val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
+
+            trackedEntityInstanceStore.delete(teiUid)
+            trackedEntityInstanceStore.delete(toTeiUid)
+            relationshipStore.delete(relationshipUid)
+            relationshipTypeStore.update(originalRelationshipType)
+        }
     }
 
     @Test
     @Throws(D2Error::class)
     fun propagate_event_relationship_update() {
-        val teiUid = createTEIWithState(State.SYNCED)
-        val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
-        val eventUid = createEventWithState(State.SYNCED, enrollmentUid)
+        listOf(true, false).forEach { bidirectional ->
+            val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
+            relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
 
-        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
-            Relationship.builder()
-                .relationshipType(relationshipType)
-                .from(RelationshipHelper.eventItem(eventUid))
-                .to(RelationshipHelper.eventItem(eventUid))
-                .build()
-        )
+            val teiUid = createTEIWithState(State.SYNCED)
+            val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
+            val eventUid = createEventWithState(State.SYNCED, enrollmentUid)
+            val toTeiUid = createTEIWithState(State.SYNCED)
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
-        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
-        assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.SYNCED)
-        assertThat(eventStore.selectByUid(eventUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+            val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+                Relationship.builder()
+                    .relationshipType(relationshipType)
+                    .from(RelationshipHelper.eventItem(eventUid))
+                    .to(RelationshipHelper.teiItem(toTeiUid))
+                    .build()
+            )
 
-        trackedEntityInstanceStore.delete(teiUid)
-        relationshipStore.delete(relationshipUid)
+            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+            ).isEqualTo(State.TO_UPDATE)
+            assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+            assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.SYNCED)
+            assertThat(eventStore.selectByUid(eventUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+
+            val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
+
+            trackedEntityInstanceStore.delete(teiUid)
+            trackedEntityInstanceStore.delete(toTeiUid)
+            relationshipStore.delete(relationshipUid)
+            relationshipTypeStore.update(originalRelationshipType)
+        }
     }
 
     @Throws(D2Error::class)

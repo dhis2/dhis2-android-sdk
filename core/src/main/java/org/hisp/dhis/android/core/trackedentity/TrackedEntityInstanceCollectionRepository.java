@@ -98,7 +98,7 @@ public final class TrackedEntityInstanceCollectionRepository
         return Observable.concat(
                 jobQueryCall.queryPendingJobs(),
                 Observable.fromCallable(() ->
-                        byAggregatedSyncState().in(State.uploadableStates()).blockingGetWithoutChildren()
+                        byAggregatedSyncState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
                 ).flatMap(postCall::uploadTrackedEntityInstances)
         );
     }

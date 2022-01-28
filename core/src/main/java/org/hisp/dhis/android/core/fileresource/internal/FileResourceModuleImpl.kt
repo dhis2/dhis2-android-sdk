@@ -25,49 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.core.fileresource.internal
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
 
 @Reusable
-public class FileResourceCall {
+internal class FileResourceModuleImpl @Inject internal constructor(
+    private val fileResources: FileResourceCollectionRepository,
+    private val fileResourceCall: FileResourceCall
+) : FileResourceModule {
 
-    private final RxAPICallExecutor rxCallExecutor;
-
-    private final FileResourceModuleDownloader fileResourceModuleDownloader;
-
-    @Inject
-    FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                     @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
-        this.rxCallExecutor = rxCallExecutor;
-        this.fileResourceModuleDownloader = fileResourceModuleDownloader;
+    override fun download(): Observable<D2Progress> {
+        return fileResourceCall.download()
     }
 
-    public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(1);
-
-        return rxCallExecutor.wrapObservableTransactionally(
-                Observable.create(emitter -> {
-
-                    fileResourceModuleDownloader.downloadMetadata().call();
-                    emitter.onNext(progressManager.increaseProgress(FileResource.class, false));
-
-                    emitter.onComplete();
-
-                }), true);
+    override fun blockingDownload() {
+        fileResourceCall.blockingDownload()
     }
 
-    public void blockingDownload() {
-        download().blockingSubscribe();
+    override fun fileResources(): FileResourceCollectionRepository {
+        return fileResources
     }
 }

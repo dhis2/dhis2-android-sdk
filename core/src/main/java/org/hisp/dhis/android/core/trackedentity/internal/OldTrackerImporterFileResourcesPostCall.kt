@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -43,7 +44,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 @Reusable
 internal class OldTrackerImporterFileResourcesPostCall @Inject internal constructor(
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourcePostCall: FileResourcePostCall
+    private val fileResourcePostCall: FileResourcePostCall,
+    private val fileResourceHelper: FileResourceHelper
 ) {
 
     fun uploadTrackedEntityFileResources(
@@ -86,7 +88,10 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     ): Pair<TrackedEntityInstance, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
-            fileResources.find { it.uid() == attributeValue.value() }?.let { fileResource ->
+            fileResources.find {
+                it.uid() == attributeValue.value() &&
+                    fileResourceHelper.isFileAttribute(attributeValue.trackedEntityAttribute())
+            }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
                 newUid?.let { uploadedFileResources.add(newUid) }
                 attributeValue.toBuilder().value(newUid).build()
@@ -133,8 +138,9 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     ): Pair<Event, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
-            // TODO Filter by value type
-            fileResources.find { it.uid() == dataValue.value() }?.let { fileResource ->
+            fileResources.find {
+                it.uid() == dataValue.value() && fileResourceHelper.isFileDataElement(dataValue.dataElement())
+            }?.let { fileResource ->
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource)
                 newUid?.let { uploadedFileResources.add(newUid) }
                 dataValue.toBuilder().value(newUid).build()

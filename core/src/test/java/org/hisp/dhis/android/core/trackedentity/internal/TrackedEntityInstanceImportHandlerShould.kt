@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.*
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -77,6 +78,8 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
 
+    private val fileResourceHelper: FileResourceHelper = mock()
+
     private val trackedEntityInstance: TrackedEntityInstance = mock()
 
     private val instances: List<TrackedEntityInstance> = ArrayList()
@@ -91,7 +94,7 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
             trackerImportConflictParser, relationshipStore, dataStatePropagator, relationshipDHISVersionManager,
-            relationshipCollectionRepository, trackedEntityAttributeValueStore, fileResourceStore
+            relationshipCollectionRepository, trackedEntityAttributeValueStore, fileResourceStore, fileResourceHelper
         )
 
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)
@@ -173,6 +176,10 @@ class TrackedEntityInstanceImportHandlerShould {
             sampleTei(sampleTeiUid, listOf(sampleAttributeValue(sampleTeiUid, "att1", "resource1")))
         )
 
+        whenever(
+            fileResourceHelper.isPresentInAttributeValues("resource1", teis.first().trackedEntityAttributeValues())
+        ).doReturn(true)
+
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary), teis, listOf("resource1", "resource2")
         )
@@ -190,6 +197,10 @@ class TrackedEntityInstanceImportHandlerShould {
         val teis = listOf(
             sampleTei(sampleTeiUid, listOf(sampleAttributeValue(sampleTeiUid, "att1", "resource1")))
         )
+
+        whenever(
+            fileResourceHelper.isPresentInAttributeValues("resource1", teis.first().trackedEntityAttributeValues())
+        ).doReturn(true)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary), teis, listOf("resource1", "resource2")

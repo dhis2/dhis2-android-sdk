@@ -25,49 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class FileResourceEntityDIModule {
+@Module(
+    includes = [
+        FileResourceEntityDIModule::class
+    ]
+)
+internal class FileResourcePackageDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableDataObjectStore<FileResource> store(DatabaseAdapter databaseAdapter) {
-        return FileResourceStoreImpl.create(databaseAdapter);
+    fun service(retrofit: Retrofit): FileResourceService {
+        return retrofit.create(FileResourceService::class.java)
     }
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<FileResource> handler(IdentifiableDataObjectStore<FileResource> store) {
-        return new IdentifiableWithoutDeleteInterfaceHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Transformer<File, FileResource> transformer() {
-        return new FileResourceProjectionTransformer();
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<FileResource>> childrenAppenders() {
-        return Collections.emptyMap();
+    fun module(impl: FileResourceModuleImpl): FileResourceModule {
+        return impl
     }
 }

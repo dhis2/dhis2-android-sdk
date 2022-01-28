@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
@@ -56,7 +57,8 @@ internal class EventImportHandler @Inject constructor(
     private val jobReportEventHandler: JobReportEventHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceHelper: FileResourceHelper
 ) {
 
     fun handleEventImportSummaries(
@@ -162,9 +164,9 @@ internal class EventImportHandler @Inject constructor(
         state: State
     ) {
         event?.let {
-            val values = event.trackedEntityDataValues()?.mapNotNull { it.value() }
+            val dataValues = event.trackedEntityDataValues()
 
-            fileResources.filter { values?.contains(it) ?: false }.forEach {
+            fileResources.filter { fileResourceHelper.isPresentInDataValues(it, dataValues) }.forEach {
                 fileResourceStore.setSyncStateIfUploading(it, state)
             }
         }

@@ -25,33 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
-
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.fileresource.FileResource
 
 @Reusable
-public final class FileResourceModuleWiper implements ModuleWiper {
-    private final TableWiper tableWiper;
+class FileResourceCall @Inject internal constructor(
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val fileResourceModuleDownloader: FileResourceModuleDownloader
+) {
 
-    @Inject
-    FileResourceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    fun download(): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(1)
+        return rxCallExecutor.wrapObservableTransactionally(
+            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+                fileResourceModuleDownloader.downloadMetadata().call()
+                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
+                emitter.onComplete()
+            },
+            true
+        )
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO);
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 }

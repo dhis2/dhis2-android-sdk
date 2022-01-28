@@ -25,45 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.fileresource.FileResource
+import retrofit2.Call
+import retrofit2.http.*
 
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-interface FileResourceService {
-    String FILE_RESOURCES = "fileResources";
-    String FILE_RESOURCE = "fileResource";
-    String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
-    String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    String EVENTS = "events";
+internal interface FileResourceService {
 
     @Multipart
     @POST(FILE_RESOURCES)
-    Call<ResponseBody> uploadFile(@Part MultipartBody.Part filePart);
+    fun uploadFile(@Part filePart: MultipartBody.Part): Call<ResponseBody>
 
-    @GET(FILE_RESOURCES + "/{" + FILE_RESOURCE + "}")
-    Call<FileResource> getFileResource(@Path(FILE_RESOURCE) String fileResource);
+    @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
+    fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): Call<FileResource>
 
-    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE + "}/{" + TRACKED_ENTITY_ATTRIBUTE + "}/image")
-    Call<ResponseBody> getFileFromTrackedEntityAttribute(
-            @Path(TRACKED_ENTITY_INSTANCE) String trackedEntityInstanceUid,
-            @Path(TRACKED_ENTITY_ATTRIBUTE) String trackedEntityAttributeUid,
-            @Query("dimension") String dimension);
+    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
+    fun getFileFromTrackedEntityAttribute(
+        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
+        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
+        @Query("dimension") dimension: String
+    ): Call<ResponseBody>
 
-    @GET(EVENTS + "/files")
-    Call<ResponseBody> getFileFromDataElement(
-            @Query("eventUid") String eventUid,
-            @Query("dataElementUid") String dataElementUid,
-            @Query("dimension") String dimension);
+    @GET("$EVENTS/files")
+    fun getFileFromDataElement(
+        @Query("eventUid") eventUid: String,
+        @Query("dataElementUid") dataElementUid: String,
+        @Query("dimension") dimension: String
+    ): Call<ResponseBody>
+
+    companion object {
+        const val FILE_RESOURCES = "fileResources"
+        const val FILE_RESOURCE = "fileResource"
+        const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"
+        const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+        const val TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute"
+        const val EVENTS = "events"
+    }
 }

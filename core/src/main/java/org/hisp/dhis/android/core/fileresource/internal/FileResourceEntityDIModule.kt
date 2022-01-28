@@ -25,43 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.io.File
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
+@Module
+internal class FileResourceEntityDIModule {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-@Reusable
-public final class FileResourceModuleImpl implements FileResourceModule {
-
-    private final FileResourceCollectionRepository fileResources;
-    private final FileResourceCall fileResourceCall;
-
-    @Inject
-    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
-                           FileResourceCall fileResourceCall) {
-        this.fileResources = fileResources;
-        this.fileResourceCall = fileResourceCall;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStore<FileResource> {
+        return create(databaseAdapter)
     }
 
-    @Override
-    public Observable<D2Progress> download() {
-        return fileResourceCall.download();
+    @Provides
+    @Reusable
+    fun handler(store: IdentifiableDataObjectStore<FileResource>): HandlerWithTransformer<FileResource> {
+        return IdentifiableWithoutDeleteInterfaceHandlerImpl(store)
     }
 
-    @Override
-    public void blockingDownload() {
-        fileResourceCall.blockingDownload();
+    @Provides
+    @Reusable
+    fun transformer(): Transformer<File, FileResource> {
+        return FileResourceProjectionTransformer()
     }
 
-    @Override
-    public FileResourceCollectionRepository fileResources() {
-        return fileResources;
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
+        return emptyMap()
     }
 }

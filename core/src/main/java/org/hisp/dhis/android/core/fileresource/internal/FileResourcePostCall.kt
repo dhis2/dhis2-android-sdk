@@ -66,7 +66,7 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResource(fileResource: FileResource, successState: State = State.UPLOADING): String? {
+    fun uploadFileResource(fileResource: FileResource): String? {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
             pingCall.getCompletable(true).blockingAwait()
@@ -78,7 +78,7 @@ internal class FileResourcePostCall @Inject constructor(
         return if (file != null) {
             val filePart = getFilePart(file)
             val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
-            handleResponse(responseBody.string(), fileResource, file, successState)
+            handleResponse(responseBody.string(), fileResource, file)
         } else {
             handleMissingFile(fileResource)
             null
@@ -96,15 +96,14 @@ internal class FileResourcePostCall @Inject constructor(
     private fun handleResponse(
         responseBody: String,
         fileResource: FileResource,
-        file: File,
-        successState: State
+        file: File
     ): String {
         try {
             val downloadedFileResource = getDownloadedFileResource(responseBody)
             updateValue(fileResource, downloadedFileResource)
 
             val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
-            updateFileResource(fileResource, downloadedFileResource, downloadedFile, successState)
+            updateFileResource(fileResource, downloadedFileResource, downloadedFile)
 
             return downloadedFileResource.uid()!!
         } catch (e: IOException) {
@@ -169,13 +168,12 @@ internal class FileResourcePostCall @Inject constructor(
     private fun updateFileResource(
         fileResource: FileResource,
         downloadedFileResource: FileResource,
-        file: File,
-        successState: State
+        file: File
     ) {
         fileResourceStore.delete(fileResource.uid()!!)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
-                .syncState(successState)
+                .syncState(State.UPLOADING)
                 .path(file.absolutePath)
                 .build()
         )

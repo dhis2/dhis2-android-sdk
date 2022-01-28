@@ -25,23 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.data.tracker.importer.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
+@RunWith(D2JunitRunner::class)
+class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
+    create(TestDatabaseAdapterFactory.get()),
+    TrackerJobObjectTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): TrackerJobObject {
+        return TrackerJobObjectSamples.get1()
+    }
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-import static org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT;
-
-public class TrackerJobObjectSamples {
-
-    public static TrackerJobObject get1() {
-        return TrackerJobObject.builder()
-                .id(1L)
-                .trackerType(EVENT)
-                .objectUid("oUid")
-                .jobUid("jUid")
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    override fun buildObjectToUpdate(): TrackerJobObject {
+        return TrackerJobObjectSamples.get1()
+            .toBuilder()
+            .jobUid("anotherJobId")
+            .build()
     }
 }

@@ -57,12 +57,13 @@ public final class TrackerJobObjectTableInfo {
         public static final String TRACKER_TYPE = "trackerType";
         public static final String OBJECT_UID = "objectUid";
         public static final String JOB_UID = "jobUid";
+        public static final String FILE_RESOURCES = "fileResources";
 
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    TRACKER_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
+                    TRACKER_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED, FILE_RESOURCES);
         }
 
         @Override

@@ -31,27 +31,39 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.LegendStyle
 import org.hisp.dhis.android.core.visualization.VisualizationLegend
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
-class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<VisualizationLegend> {
+internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<VisualizationLegend> {
 
     override fun fromCursor(cursor: Cursor, columnName: String): VisualizationLegend? {
         val legendShowKeyColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY)
         val legendStrategyColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_STRATEGY)
         val legendStyleColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_STYLE)
+        val legendSetIdColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_SET_ID)
 
         val legendShowKey = cursor.getString(legendShowKeyColumnIndex)
         val legendStrategy = cursor.getString(legendStrategyColumnIndex)
         val legendStyle = cursor.getString(legendStyleColumnIndex)
+        val legendSetId = cursor.getString(legendSetIdColumnIndex)
 
         val isLegendInfoPresent = listOf(legendShowKey, legendStrategy, legendStyle).any {
             it != null
         }
 
         return if (isLegendInfoPresent) {
+            val set = ObjectWithUid.create(legendSetId)
+            val style = LegendStyle.valueOf(legendStyle)
+            val strategy = LegendStrategy.valueOf(legendStrategy)
             VisualizationLegend.builder()
+                .style(style)
                 .showKey(legendShowKey)
+                .strategy(strategy)
+                .set(set)
                 .build()
         } else {
             null
@@ -61,6 +73,9 @@ class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<VisualizationLegend
     override fun toContentValues(values: ContentValues, columnName: String?, value: VisualizationLegend?) {
         value?.let {
             values.put(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY, it.showKey())
+            values.put(VisualizationTableInfo.Columns.LEGEND_STRATEGY, it.strategy().toString())
+            values.put(VisualizationTableInfo.Columns.LEGEND_STYLE, it.style().toString())
+            values.put(VisualizationTableInfo.Columns.LEGEND_SET_ID, UidsHelper.getUidOrNull(it.set()) )
         }
     }
 }

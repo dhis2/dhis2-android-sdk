@@ -56,7 +56,9 @@ internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<Visualizat
         }
 
         return if (isLegendInfoPresent) {
-            val set = ObjectWithUid.create(legendSetId)
+            val set = legendSetId?.let {
+                ObjectWithUid.create(it)
+            }
             val style = LegendStyle.valueOf(legendStyle)
             val strategy = LegendStrategy.valueOf(legendStrategy)
             VisualizationLegend.builder()

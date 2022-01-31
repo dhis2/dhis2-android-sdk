@@ -36,12 +36,8 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LegendStrategyColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LegendStyleColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 
@@ -51,7 +47,6 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid set();
 
     @Nullable
@@ -60,12 +55,10 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(LegendStrategyColumnAdapter.class)
     public abstract LegendStrategy strategy();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(LegendStyleColumnAdapter.class)
     public abstract LegendStyle style();
 
     @NonNull

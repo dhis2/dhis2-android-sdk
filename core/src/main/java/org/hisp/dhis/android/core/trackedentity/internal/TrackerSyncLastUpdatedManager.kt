@@ -51,19 +51,23 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             .toMap()
     }
 
-    private fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
-        return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
-    }
-
     fun getLastUpdatedStr(commonParams: TrackerQueryCommonParams): String? {
         return getLastUpdated(commonParams)?.let { BaseIdentifiableObject.dateToDateStr(it) }
     }
 
-    fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
+    private fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
+        return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
+    }
+
+    private fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
         return if (params.uids().isEmpty()) {
-            val storedSync = syncMap[Pair(programId, orgUnitHashCode)]
-            return getLastUpdatedIfValid(storedSync, limit) ?: getDefaultLastUpdated(programId)
+            val programSync = syncMap[Pair(programId, orgUnitHashCode)]
+            val globalSync = syncMap[Pair(null, orgUnitHashCode)]
+
+            return getLastUpdatedIfValid(programSync, limit)
+                ?: getLastUpdatedIfValid(globalSync, limit)
+                ?: getDefaultLastUpdated(programId)
         } else {
             null
         }

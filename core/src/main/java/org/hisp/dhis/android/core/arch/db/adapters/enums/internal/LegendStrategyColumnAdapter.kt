@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
 import org.hisp.dhis.android.core.visualization.LegendStrategy
 
-class LegendStrategyColumnAdapter : EnumColumnAdapter<LegendStrategy>() {
+internal class LegendStrategyColumnAdapter : EnumColumnAdapter<LegendStrategy>() {
     override fun getEnumClass(): Class<LegendStrategy> {
         return LegendStrategy::class.java
     }

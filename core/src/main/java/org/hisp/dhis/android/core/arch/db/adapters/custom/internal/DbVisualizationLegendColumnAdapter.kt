@@ -75,7 +75,7 @@ internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<Visualizat
             values.put(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY, it.showKey())
             values.put(VisualizationTableInfo.Columns.LEGEND_STRATEGY, it.strategy().toString())
             values.put(VisualizationTableInfo.Columns.LEGEND_STYLE, it.style().toString())
-            values.put(VisualizationTableInfo.Columns.LEGEND_SET_ID, UidsHelper.getUidOrNull(it.set()) )
+            values.put(VisualizationTableInfo.Columns.LEGEND_SET_ID, UidsHelper.getUidOrNull(it.set()))
         }
     }
 }

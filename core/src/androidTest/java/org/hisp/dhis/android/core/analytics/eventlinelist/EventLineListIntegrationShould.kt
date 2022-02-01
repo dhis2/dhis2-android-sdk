@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.enrollment
-import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.generator
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.legendSet1
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.legendSet2
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.organisationUnit1
@@ -47,7 +48,6 @@ import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.u
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListParams
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListService
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListServiceImpl
-import org.hisp.dhis.android.core.analytics.linelist.LegendStrategy
 import org.hisp.dhis.android.core.analytics.linelist.LineListItem
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
@@ -125,11 +125,15 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programIndicatorRepository = d2.programModule().programIndicators(),
         organisationUnitRepository = d2.organisationUnitModule().organisationUnits(),
         programStageRepository = d2.programModule().programStages(),
-        legendRepository = d2.legendSetModule().legends(),
         programIndicatorEngine = d2.programModule().programIndicatorEngine(),
         periodHelper = d2.periodModule().periodHelper(),
         dateFilterPeriodHelper = dateFilterPeriodHelper,
-        organisationUnitHelper = organisationUnitHelper
+        organisationUnitHelper = organisationUnitHelper,
+        legendEvaluator = LegendEvaluator(
+            dataElementRepository = d2.dataElementModule().dataElements(),
+            programIndicatorRepository = d2.programModule().programIndicators(),
+            legendRepository = d2.legendSetModule().legends(),
+            indicatorRepository = d2.indicatorModule().indicators())
     )
 
     @Before

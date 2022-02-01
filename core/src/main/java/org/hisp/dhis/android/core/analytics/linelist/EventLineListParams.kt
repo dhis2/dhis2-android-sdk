@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.OrganisationUnitFilter

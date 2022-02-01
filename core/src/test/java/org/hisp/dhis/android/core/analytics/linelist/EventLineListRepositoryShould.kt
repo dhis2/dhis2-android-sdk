@@ -33,6 +33,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod

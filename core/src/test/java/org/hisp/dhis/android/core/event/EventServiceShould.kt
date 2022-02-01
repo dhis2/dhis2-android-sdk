@@ -52,9 +52,7 @@ import org.mockito.Mockito
 
 class EventServiceShould {
 
-    private val enrollmentUid: String = "enrollmentUid"
     private val eventUid: String = "eventUid"
-    private val programStageUid: String = "programStageUid"
     private val attributeOptionComboUid = "attOptionComboUid"
 
     private val readDataAccess = AccessHelper.createForDataWrite(false)

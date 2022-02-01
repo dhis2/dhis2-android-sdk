@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbVisualizationLegendColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter;
@@ -58,7 +59,7 @@ import java.util.Map;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.CouplingBetweenObjects"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -154,6 +155,11 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     public abstract Boolean skipRounding();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbVisualizationLegendColumnAdapter.class)
+    public abstract VisualizationLegend legend();
 
     @Nullable
     @JsonProperty()
@@ -285,6 +291,8 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
         public abstract Builder skipRounding(Boolean skipRounding);
 
         public abstract Builder displayDensity(DisplayDensity displayDensity);
+
+        public abstract Builder legend(VisualizationLegend visualizationLegend);
 
         public abstract Builder digitGroupSeparator(DigitGroupSeparator digitGroupSeparator);
 

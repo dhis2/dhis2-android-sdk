@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.visualization.*
 internal object VisualizationFields {
     internal const val CATEGORY_DIMENSIONS = "categoryDimensions"
     internal const val DATA_DIMENSION_ITEMS = "dataDimensionItems"
+    internal const val LEGEND = "legend"
     private val fh = FieldsHelper<Visualization>()
     val uid = fh.uid()
 
@@ -73,7 +74,8 @@ internal object VisualizationFields {
                 fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_CHILDREN),
                 fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN),
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.ORGANISATION_UNITS),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
+                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS),
+                fh.field<VisualizationLegend>(LEGEND)
             )
             .build()
 }

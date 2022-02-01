@@ -39,9 +39,13 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
@@ -80,6 +84,11 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
     @JsonProperty()
     public abstract Integer decimals();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
+    public abstract List<LegendSet> legendSets();
+
     public static Builder builder() {
         return new $$AutoValue_Indicator.Builder();
     }
@@ -106,6 +115,8 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
         public abstract Builder denominator(String denominator);
 
         public abstract Builder denominatorDescription(String denominatorDescription);
+
+        public abstract Builder legendSets(List<LegendSet> legendSets);
 
         public abstract Builder url(String url);
 

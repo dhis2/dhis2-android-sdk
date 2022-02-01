@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val trackedEntityInstanceService: TrackedEntityInstanceService
 ) {
 
     fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
@@ -52,7 +51,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             true,
             query.page(),
             query.pageSize(),
-            lastUpdatedManager.getLastUpdatedStr(query.commonParams()),
+            query.lastUpdatedStr(),
             true,
             true
         )

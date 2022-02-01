@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -54,11 +56,11 @@ internal class EventLineListServiceImpl @Inject constructor(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
-    private val legendRepository: LegendCollectionRepository,
     private val programIndicatorEngine: ProgramIndicatorEngine,
     private val periodHelper: PeriodHelper,
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
-    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper
+    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper,
+    private val legendEvaluator: LegendEvaluator
 ) : EventLineListService {
 
     override fun evaluate(params: EventLineListParams): List<LineListResponse> {
@@ -94,8 +96,8 @@ internal class EventLineListServiceImpl @Inject constructor(
 
                     val legend = when (params.legendStrategy) {
                         is LegendStrategy.None -> null
-                        is LegendStrategy.ByDataItem -> getLegendByDataElementAndValue(de.uid, dv?.value())
-                        is LegendStrategy.Fixed -> getLegendByLegendSetAndValue(
+                        is LegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(de.uid, dv?.value())
+                        is LegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
                             params.legendStrategy.legendSetUid,
                             dv?.value()
                         )
@@ -115,8 +117,8 @@ internal class EventLineListServiceImpl @Inject constructor(
 
                     val legend = when (params.legendStrategy) {
                         is LegendStrategy.None -> null
-                        is LegendStrategy.ByDataItem -> getLegendByIndicatorAndValue(pi.uid, value)
-                        is LegendStrategy.Fixed -> getLegendByLegendSetAndValue(
+                        is LegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(pi.uid, value)
+                        is LegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
                             params.legendStrategy.legendSetUid, value
                         )
                     }
@@ -210,72 +212,5 @@ internal class EventLineListServiceImpl @Inject constructor(
 
             relativeOrgunitUids + filter.organisationUnitUid
         }?.filterNotNull()
-    }
-
-    private fun getLegendByIndicatorAndValue(
-        programIndicatorUid: String,
-        value: String?
-    ): Legend? {
-        return if (value == null) {
-            null
-        } else try {
-            val programIndicator = programIndicatorRepository
-                .byUid().eq(programIndicatorUid)
-                .withLegendSets()
-                .one().blockingGet()
-
-            val legendSet = programIndicator.legendSets()!![0]
-
-            return getLegendByLegendSetAndValue(legendSet.uid(), value)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun getLegendByDataElementAndValue(
-        dataElementUid: String,
-        value: String?
-    ): Legend? {
-        return if (value == null) {
-            null
-        } else try {
-            val dataElement = dataElementRepository
-                .byUid().eq(dataElementUid)
-                .withLegendSets()
-                .one().blockingGet()
-            if (dataElement?.valueType()?.isNumeric == true &&
-                dataElement.legendSets()?.isNotEmpty() == true
-            ) {
-                val legendSet = dataElement.legendSets()!![0]
-
-                return getLegendByLegendSetAndValue(legendSet.uid(), value)
-            }
-            null
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun getLegendByLegendSetAndValue(
-        legendSetUid: String,
-        value: String?
-    ): Legend? {
-
-        return if (value == null || value.toDouble().isNaN()) {
-            null
-        } else try {
-            return legendRepository
-                .byStartValue().smallerThan(value.toDouble())
-                .byEndValue().biggerThan(value.toDouble())
-                .byLegendSet().eq(legendSetUid)
-                .one()
-                .blockingGet() ?: legendRepository
-                .byEndValue().eq(value.toDouble())
-                .byLegendSet().eq(legendSetUid)
-                .one()
-                .blockingGet()
-        } catch (e: Exception) {
-            null
-        }
     }
 }

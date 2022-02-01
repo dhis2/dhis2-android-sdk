@@ -1,0 +1,102 @@
+package org.hisp.dhis.android.core.analytics
+
+import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
+import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import javax.inject.Inject
+
+internal class LegendEvaluator @Inject constructor(
+    private val dataElementRepository: DataElementCollectionRepository,
+    private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
+    private val indicatorRepository: IndicatorCollectionRepository,
+    private val legendRepository: LegendCollectionRepository
+) {
+    fun getLegendByProgramIndicator(
+        programIndicatorUid: String,
+        value: String?
+    ): Legend? {
+        return if (value == null) {
+            null
+        } else try {
+            val programIndicator = programIndicatorRepository
+                .byUid().eq(programIndicatorUid)
+                .withLegendSets()
+                .one().blockingGet()
+
+            val legendSet = programIndicator.legendSets()!![0]
+
+            return getLegendByLegendSet(legendSet.uid(), value)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun getLegendByDataElement(
+        dataElementUid: String,
+        value: String?
+    ): Legend? {
+        return if (value == null) {
+            null
+        } else try {
+            val dataElement = dataElementRepository
+                .byUid().eq(dataElementUid)
+                .withLegendSets()
+                .one().blockingGet()
+            if (dataElement?.valueType()?.isNumeric == true &&
+                dataElement.legendSets()?.isNotEmpty() == true
+            ) {
+                val legendSet = dataElement.legendSets()!![0]
+
+                return getLegendByLegendSet(legendSet.uid(), value)
+            }
+            null
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun getLegendByIndicator(
+        indicatorUid: String,
+        value: String?
+    ): Legend? {
+        return if (value == null) {
+            null
+        } else try {
+            val indicator = indicatorRepository
+                .byUid().eq(indicatorUid)
+                .withLegendSets()
+                .one().blockingGet()
+
+            val legendSet = indicator.legendSets()!![0]
+
+            return getLegendByLegendSet(legendSet.uid(), value)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun getLegendByLegendSet(
+        legendSetUid: String,
+        value: String?
+    ): Legend? {
+
+        return if (value == null || value.toDouble().isNaN()) {
+            null
+        } else try {
+            return legendRepository
+                .byStartValue().smallerThan(value.toDouble())
+                .byEndValue().biggerThan(value.toDouble())
+                .byLegendSet().eq(legendSetUid)
+                .one()
+                .blockingGet() ?: legendRepository
+                .byEndValue().eq(value.toDouble())
+                .byLegendSet().eq(legendSetUid)
+                .one()
+                .blockingGet()
+        } catch (e: Exception) {
+            null
+        }
+    }
+}

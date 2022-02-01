@@ -28,16 +28,11 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
-
-sealed class LegendStrategy {
-    object None : LegendStrategy()
-    object ByDataItem : LegendStrategy()
-    data class Fixed(val legendSetUid: String) : LegendStrategy()
-}
 
 interface EventLineListRepository : BaseRepository {
 

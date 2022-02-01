@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.analytics.linelist
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.LegendStrategy
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector

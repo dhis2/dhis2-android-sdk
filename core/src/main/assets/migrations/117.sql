@@ -1,6 +1,3 @@
-# Add legendSet info to visualizations (ANDROSDK-1472)
+# Add IndicatorLegendSetLink table (ANDROSDK-1469)
 
-ALTER TABLE Visualization ADD COLUMN legendShowKey TEXT;
-ALTER TABLE Visualization ADD COLUMN legendStyle TEXT;
-ALTER TABLE Visualization ADD COLUMN legendSetId TEXT;
-ALTER TABLE Visualization ADD COLUMN legendStrategy TEXT;
+CREATE TABLE IndicatorLegendSetLink(_id INTEGER PRIMARY KEY AUTOINCREMENT, indicator TEXT NOT NULL, legendSet TEXT NOT NULL, FOREIGN KEY (indicator) REFERENCES Indicator (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (indicator, legendSet));

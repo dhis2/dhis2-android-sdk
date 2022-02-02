@@ -25,33 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+@Module(
+    includes = [
+        FileResourceEntityDIModule::class
+    ]
+)
+internal class FileResourcePackageDIModule {
 
-@RunWith(D2JunitRunner.class)
-public class TrackerJobObjectStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject> {
-
-    public TrackerJobObjectStoreIntegrationShould() {
-        super(TrackerJobObjectStore.create(TestDatabaseAdapterFactory.get()), TrackerJobObjectTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): FileResourceService {
+        return retrofit.create(FileResourceService::class.java)
     }
 
-    @Override
-    protected TrackerJobObject buildObject() {
-        return TrackerJobObjectSamples.get1();
-    }
-
-    @Override
-    protected TrackerJobObject buildObjectToUpdate() {
-        return TrackerJobObjectSamples.get1()
-                .toBuilder()
-                .jobUid("anotherJobId")
-                .build();
+    @Provides
+    @Reusable
+    fun module(impl: FileResourceModuleImpl): FileResourceModule {
+        return impl
     }
 }

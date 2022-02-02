@@ -25,33 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class FileResourceModuleWiper implements ModuleWiper {
-    private final TableWiper tableWiper;
-
-    @Inject
-    FileResourceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+@RunWith(D2JunitRunner::class)
+class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
+    create(TestDatabaseAdapterFactory.get()),
+    TrackerJobObjectTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): TrackerJobObject {
+        return TrackerJobObjectSamples.get1()
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO);
+    override fun buildObjectToUpdate(): TrackerJobObject {
+        return TrackerJobObjectSamples.get1()
+            .toBuilder()
+            .jobUid("anotherJobId")
+            .build()
     }
 }

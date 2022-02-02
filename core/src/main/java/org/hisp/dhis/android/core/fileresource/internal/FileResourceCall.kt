@@ -25,23 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.data.tracker.importer.internal;
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.fileresource.FileResource
 
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
+@Reusable
+class FileResourceCall @Inject internal constructor(
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val fileResourceModuleDownloader: FileResourceModuleDownloader
+) {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-import static org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT;
+    fun download(): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(1)
+        return rxCallExecutor.wrapObservableTransactionally(
+            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+                fileResourceModuleDownloader.downloadMetadata().call()
+                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
+                emitter.onComplete()
+            },
+            true
+        )
+    }
 
-public class TrackerJobObjectSamples {
-
-    public static TrackerJobObject get1() {
-        return TrackerJobObject.builder()
-                .id(1L)
-                .trackerType(EVENT)
-                .objectUid("oUid")
-                .jobUid("jUid")
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 }

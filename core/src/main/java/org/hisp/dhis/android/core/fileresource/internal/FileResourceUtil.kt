@@ -86,6 +86,7 @@ internal object FileResourceUtil {
     fun writeInputStream(inputStream: InputStream, file: File, fileSize: Long): File {
         var outputStream: OutputStream? = null
         try {
+            @Suppress("MagicNumber")
             val fileReader = ByteArray(1024)
             var fileSizeDownloaded: Long = 0
             outputStream = FileOutputStream(file)
@@ -104,20 +105,20 @@ internal object FileResourceUtil {
             }
             outputStream.flush()
         } catch (e: IOException) {
-            Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+            logMessage(e)
         } finally {
             try {
                 inputStream.close()
                 outputStream?.close()
             } catch (e: IOException) {
-                Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+                logMessage(e)
             }
         }
         if (outputStream != null) {
             try {
                 outputStream.close()
             } catch (e: IOException) {
-                Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+                logMessage(e)
             }
         }
         return file
@@ -125,5 +126,9 @@ internal object FileResourceUtil {
 
     private fun generateFileName(mediaType: MediaType, fileName: String): String {
         return String.format("%s.%s", fileName, mediaType.subtype())
+    }
+
+    private fun logMessage(e: Exception) {
+        e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
     }
 }

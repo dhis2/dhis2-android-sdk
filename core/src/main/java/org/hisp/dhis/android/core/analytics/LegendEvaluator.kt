@@ -44,13 +44,11 @@ internal class LegendEvaluator @Inject constructor(
                 .byUid().eq(dataElementUid)
                 .withLegendSets()
                 .one().blockingGet()
-            if (dataElement?.valueType()?.isNumeric == true &&
-                dataElement.legendSets()?.isNotEmpty() == true
-            ) {
-                val legendSet = dataElement.legendSets()!![0]
 
-                return getLegendByLegendSet(legendSet.uid(), value)
-            }
+            val legendSet = dataElement.legendSets()!![0]
+
+            return getLegendByLegendSet(legendSet.uid(), value)
+            
             null
         } catch (e: Exception) {
             null

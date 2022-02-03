@@ -48,6 +48,8 @@ internal object ProgramSectionStore {
                 w.bind(10, getUidOrNull(o.program()))
                 w.bind(11, o.sortOrder())
                 w.bind(12, o.formName())
+                w.bind(13, o.renderType()?.desktop()?.type())
+                w.bind(14, o.renderType()?.mobile()?.type())
             }
         }
     val CHILD_PROJECTION = SingleParentChildProjection(

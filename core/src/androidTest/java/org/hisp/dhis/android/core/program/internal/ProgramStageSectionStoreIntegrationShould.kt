@@ -25,34 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramStageSectionSamples.programStageSection
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramStageSectionSamples;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramStageSectionStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection> {
-
-    public ProgramStageSectionStoreIntegrationShould() {
-        super(ProgramStageSectionStore.create(TestDatabaseAdapterFactory.get()), ProgramStageSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramStageSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection>(
+    create(TestDatabaseAdapterFactory.get()),
+    ProgramStageSectionTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): ProgramStageSection {
+        return programStageSection
     }
 
-    @Override
-    protected ProgramStageSection buildObject() {
-        return ProgramStageSectionSamples.getProgramStageSection();
-    }
-
-    @Override
-    protected ProgramStageSection buildObjectToUpdate() {
-        return ProgramStageSectionSamples.getProgramStageSection().toBuilder()
-                .sortOrder(2)
-                .build();
+    override fun buildObjectToUpdate(): ProgramStageSection {
+        return programStageSection.toBuilder()
+            .sortOrder(2)
+            .build()
     }
 }

@@ -25,49 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.*
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
+object ProgramSectionSamples {
 
-public final class ProgramSectionTableInfo {
-
-    private ProgramSectionTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramSection";
+    val programSection: ProgramSection
+        get() {
+            return ProgramSection.builder().apply {
+                fillIdentifiableProperties(this)
+                id(1L)
+                description("description")
+                program(ObjectWithUid.create("program_uid"))
+                sortOrder(3)
+                formName("form_name")
+                renderType(
+                    ProgramSectionRendering.create(
+                        ProgramSectionDeviceRendering.create(
+                            ProgramSectionRenderingType.SEQUENTIAL
+                        ),
+                        ProgramSectionDeviceRendering.create(
+                            ProgramSectionRenderingType.LISTING
+                        )
+                    )
+                )
+            }.build()
         }
-
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableWithStyleColumns {
-        public static final String DESCRIPTION = "description";
-        public static final String PROGRAM = "program";
-        public static final String SORT_ORDER = "sortOrder";
-        public static final String FORM_NAME = "formName";
-        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
-        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DESCRIPTION,
-                    PROGRAM,
-                    SORT_ORDER,
-                    FORM_NAME,
-                    DESKTOP_RENDER_TYPE,
-                    MOBILE_RENDER_TYPE
-            );
-        }
-    }
 }

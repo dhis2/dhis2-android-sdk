@@ -298,7 +298,15 @@
             {
               "id": "cejWyOfXge6"
             }
-          ]
+          ],
+          "renderType": {
+            "DESKTOP": {
+              "type": "LISTING"
+            },
+            "MOBILE": {
+              "type": "LISTING"
+            }
+          }
         },
         {
           "code": "Exp",

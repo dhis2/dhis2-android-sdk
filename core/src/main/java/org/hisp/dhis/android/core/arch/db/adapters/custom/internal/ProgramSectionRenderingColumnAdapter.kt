@@ -25,49 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.program;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.program.*
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
-
-public final class ProgramSectionTableInfo {
-
-    private ProgramSectionTableInfo() {
+internal class ProgramSectionRenderingColumnAdapter : ColumnTypeAdapter<ProgramSectionRendering> {
+    override fun fromCursor(cursor: Cursor, columnName: String): ProgramSectionRendering {
+        return ProgramSectionRendering.create(
+            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE),
+            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
+        )
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    override fun toContentValues(values: ContentValues, columnName: String, value: ProgramSectionRendering) {
+        value.desktop()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, it.name) }
+        value.mobile()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, it.name) }
+    }
 
-        @Override
-        public String name() {
-            return "ProgramSection";
-        }
-
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableWithStyleColumns {
-        public static final String DESCRIPTION = "description";
-        public static final String PROGRAM = "program";
-        public static final String SORT_ORDER = "sortOrder";
-        public static final String FORM_NAME = "formName";
-        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
-        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DESCRIPTION,
-                    PROGRAM,
-                    SORT_ORDER,
-                    FORM_NAME,
-                    DESKTOP_RENDER_TYPE,
-                    MOBILE_RENDER_TYPE
-            );
+    private fun getFromCursor(cursor: Cursor, column: String): ProgramSectionDeviceRendering? {
+        val index = cursor.getColumnIndex(column)
+        val renderingType = cursor.getString(index)
+        return renderingType?.let {
+            ProgramSectionDeviceRendering.create(ProgramSectionRenderingType.valueOf(it))
         }
     }
 }

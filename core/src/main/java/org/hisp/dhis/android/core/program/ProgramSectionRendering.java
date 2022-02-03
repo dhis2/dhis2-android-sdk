@@ -26,34 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramSectionSamples;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import androidx.annotation.Nullable;
 
-@RunWith(D2JunitRunner.class)
-public class ProgramSectionStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection> {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    public ProgramSectionStoreIntegrationShould() {
-        super(ProgramSectionStore.create(TestDatabaseAdapterFactory.get()),
-                ProgramSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
+@AutoValue
+public abstract class ProgramSectionRendering {
+    private static final String DESKTOP = "DESKTOP";
+    private static final String MOBILE = "MOBILE";
 
-    @Override
-    protected ProgramSection buildObject() {
-        return ProgramSectionSamples.getProgramSection();
-    }
+    @Nullable
+    @JsonProperty(DESKTOP)
+    public abstract ProgramSectionDeviceRendering desktop();
 
-    @Override
-    protected ProgramSection buildObjectToUpdate() {
-        return ProgramSectionSamples.getProgramSection().toBuilder()
-                .sortOrder(2)
-                .build();
+    @Nullable
+    @JsonProperty(MOBILE)
+    public abstract ProgramSectionDeviceRendering mobile();
+
+    @JsonCreator
+    public static ProgramSectionRendering create(
+            @JsonProperty(DESKTOP) ProgramSectionDeviceRendering desktop,
+            @JsonProperty(MOBILE) ProgramSectionDeviceRendering mobile) {
+
+        return new AutoValue_ProgramSectionRendering(desktop, mobile);
     }
 }

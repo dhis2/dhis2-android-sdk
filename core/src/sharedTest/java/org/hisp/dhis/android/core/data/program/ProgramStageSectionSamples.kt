@@ -25,33 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.data.program;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering
+import org.hisp.dhis.android.core.program.ProgramStageSectionRendering
+import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+object ProgramStageSectionSamples {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramStageSectionSamples {
-
-    public static ProgramStageSection getProgramStageSection() {
-        ProgramStageSection.Builder builder = ProgramStageSection.builder();
-
-
-        fillIdentifiableProperties(builder);
-        builder
-                .id(1L)
-                .sortOrder(1)
-                .renderType(ProgramStageSectionRendering.create(
+    val programStageSection: ProgramStageSection
+        get() {
+            return ProgramStageSection.builder().apply {
+                fillIdentifiableProperties(this)
+                id(1L)
+                sortOrder(1)
+                renderType(
+                    ProgramStageSectionRendering.create(
                         ProgramStageSectionDeviceRendering.create(
-                                ProgramStageSectionRenderingType.SEQUENTIAL),
+                            ProgramStageSectionRenderingType.SEQUENTIAL
+                        ),
                         ProgramStageSectionDeviceRendering.create(
-                                ProgramStageSectionRenderingType.LISTING)))
-                .programStage(ObjectWithUid.create("program_stage_uid"));
-        return builder.build();
-    }
+                            ProgramStageSectionRenderingType.LISTING
+                        )
+                    )
+                )
+                programStage(ObjectWithUid.create("program_stage_uid"))
+            }.build()
+        }
 }

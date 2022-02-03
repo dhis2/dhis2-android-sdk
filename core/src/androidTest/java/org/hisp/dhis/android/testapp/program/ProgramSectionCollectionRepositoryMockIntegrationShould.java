@@ -122,4 +122,26 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         assertThat(programSections.size()).isEqualTo(1);
     }
 
+    @Test
+    public void filter_by_desktop_render_type() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byDesktopRenderType()
+                        .eq("LISTING")
+                        .blockingGet();
+
+        assertThat(programSections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_mobile_render_type() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byMobileRenderType()
+                        .eq("LISTING")
+                        .blockingGet();
+
+        assertThat(programSections.size()).isEqualTo(1);
+    }
+
 }

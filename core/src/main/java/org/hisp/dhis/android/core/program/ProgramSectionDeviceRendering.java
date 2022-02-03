@@ -28,46 +28,24 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
+import androidx.annotation.Nullable;
 
-public final class ProgramSectionTableInfo {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    private ProgramSectionTableInfo() {
-    }
+@AutoValue
+public abstract class ProgramSectionDeviceRendering {
+    private static final String TYPE = "type";
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Nullable
+    @JsonProperty(TYPE)
+    public abstract ProgramSectionRenderingType type();
 
-        @Override
-        public String name() {
-            return "ProgramSection";
-        }
+    @JsonCreator
+    public static ProgramSectionDeviceRendering create(
+            @JsonProperty(TYPE) ProgramSectionRenderingType type) {
 
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableWithStyleColumns {
-        public static final String DESCRIPTION = "description";
-        public static final String PROGRAM = "program";
-        public static final String SORT_ORDER = "sortOrder";
-        public static final String FORM_NAME = "formName";
-        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
-        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DESCRIPTION,
-                    PROGRAM,
-                    SORT_ORDER,
-                    FORM_NAME,
-                    DESKTOP_RENDER_TYPE,
-                    MOBILE_RENDER_TYPE
-            );
-        }
+        return new AutoValue_ProgramSectionDeviceRendering(type);
     }
 }

@@ -25,49 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramSectionSamples
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
+import org.hisp.dhis.android.core.program.internal.ProgramSectionStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
-
-public final class ProgramSectionTableInfo {
-
-    private ProgramSectionTableInfo() {
+@RunWith(D2JunitRunner::class)
+class ProgramSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection>(
+    create(TestDatabaseAdapterFactory.get()),
+    ProgramSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): ProgramSection {
+        return ProgramSectionSamples.programSection
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramSection";
-        }
-
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableWithStyleColumns {
-        public static final String DESCRIPTION = "description";
-        public static final String PROGRAM = "program";
-        public static final String SORT_ORDER = "sortOrder";
-        public static final String FORM_NAME = "formName";
-        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
-        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DESCRIPTION,
-                    PROGRAM,
-                    SORT_ORDER,
-                    FORM_NAME,
-                    DESKTOP_RENDER_TYPE,
-                    MOBILE_RENDER_TYPE
-            );
-        }
+    override fun buildObjectToUpdate(): ProgramSection {
+        return ProgramSectionSamples.programSection.toBuilder()
+            .sortOrder(2)
+            .build()
     }
 }

@@ -25,34 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.program.*
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramStageSectionSamples;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramStageSectionStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection> {
-
-    public ProgramStageSectionStoreIntegrationShould() {
-        super(ProgramStageSectionStore.create(TestDatabaseAdapterFactory.get()), ProgramStageSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+internal class ProgramSectionRenderingColumnAdapter : ColumnTypeAdapter<ProgramSectionRendering> {
+    override fun fromCursor(cursor: Cursor, columnName: String): ProgramSectionRendering {
+        return ProgramSectionRendering.create(
+            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE),
+            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
+        )
     }
 
-    @Override
-    protected ProgramStageSection buildObject() {
-        return ProgramStageSectionSamples.getProgramStageSection();
+    override fun toContentValues(values: ContentValues, columnName: String, value: ProgramSectionRendering) {
+        value.desktop()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, it.name) }
+        value.mobile()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, it.name) }
     }
 
-    @Override
-    protected ProgramStageSection buildObjectToUpdate() {
-        return ProgramStageSectionSamples.getProgramStageSection().toBuilder()
-                .sortOrder(2)
-                .build();
+    private fun getFromCursor(cursor: Cursor, column: String): ProgramSectionDeviceRendering? {
+        val index = cursor.getColumnIndex(column)
+        val renderingType = cursor.getString(index)
+        return renderingType?.let {
+            ProgramSectionDeviceRendering.create(ProgramSectionRenderingType.valueOf(it))
+        }
     }
 }

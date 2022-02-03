@@ -25,23 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+package org.hisp.dhis.android.core.program;
 
-final class ProgramStageSectionRenderingHelper {
+import androidx.annotation.Nullable;
 
-    private ProgramStageSectionRenderingHelper() {}
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    static ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering sectionRendering) {
-        return sectionRendering == null || sectionRendering.desktop() == null ? null
-                : sectionRendering.desktop().type();
+@AutoValue
+public abstract class ProgramSectionRendering {
+    private static final String DESKTOP = "DESKTOP";
+    private static final String MOBILE = "MOBILE";
+
+    @Nullable
+    @JsonProperty(DESKTOP)
+    public abstract ProgramSectionDeviceRendering desktop();
+
+    @Nullable
+    @JsonProperty(MOBILE)
+    public abstract ProgramSectionDeviceRendering mobile();
+
+    @JsonCreator
+    public static ProgramSectionRendering create(
+            @JsonProperty(DESKTOP) ProgramSectionDeviceRendering desktop,
+            @JsonProperty(MOBILE) ProgramSectionDeviceRendering mobile) {
+
+        return new AutoValue_ProgramSectionRendering(desktop, mobile);
     }
-
-    static ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering sectionRendering) {
-        return sectionRendering == null || sectionRendering.mobile() == null ? null
-                : sectionRendering.mobile().type();
-    }
-
 }

@@ -62,6 +62,6 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
                 .withLegends()
                 .one()
                 .blockingGet();
-        assertThat(legendSet.legends().size()).isEqualTo(2);
+        assertThat(legendSet.legends().size()).isEqualTo(3);
     }
 }

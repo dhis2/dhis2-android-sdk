@@ -157,7 +157,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
     @Test
     public void persist_legends_when_call() {
         IdentifiableObjectStore<Legend> store = LegendStore.create(databaseAdapter);
-        assertThat(store.count()).isEqualTo(2);
+        assertThat(store.count()).isEqualTo(3);
         assertThat(store.selectByUid("BzQkRWHS7lu")).isEqualTo(LegendSamples.get45To60());
     }
 

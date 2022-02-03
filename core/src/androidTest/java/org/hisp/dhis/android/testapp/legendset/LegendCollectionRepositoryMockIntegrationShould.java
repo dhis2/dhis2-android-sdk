@@ -46,7 +46,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
     public void find_all() {
         List<Legend> legends = d2.legendSetModule().legends()
                 .blockingGet();
-        assertThat(legends.size()).isEqualTo(6);
+        assertThat(legends.size()).isEqualTo(7);
     }
 
     @Test
@@ -87,6 +87,6 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Legend> legends = d2.legendSetModule().legends()
                 .byLegendSet().eq("TiOkbpGEud4")
                 .blockingGet();
-        assertThat(legends.size()).isEqualTo(2);
+        assertThat(legends.size()).isEqualTo(3);
     }
 }

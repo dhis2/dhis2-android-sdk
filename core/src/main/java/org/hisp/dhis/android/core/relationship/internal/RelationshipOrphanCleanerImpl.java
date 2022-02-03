@@ -63,7 +63,7 @@ abstract class RelationshipOrphanCleanerImpl<O extends ObjectWithUidInterface, R
         }
 
         List<Relationship> existingRelationships =
-                relationshipRepository.getByItem(getItem(instance.uid()), true);
+                relationshipRepository.getByItem(getItem(instance.uid()), true, false);
 
         int count = 0;
         for (Relationship existingRelationship : existingRelationships) {

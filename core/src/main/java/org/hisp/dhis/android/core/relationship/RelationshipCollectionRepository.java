@@ -27,10 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
-
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
@@ -53,10 +49,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,15 +61,14 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-@SuppressWarnings("PMD.ExcessiveImports")
 public class RelationshipCollectionRepository
         extends BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
 
     private final RelationshipStore store;
     private final RelationshipHandler relationshipHandler;
-    private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
+    private final RelationshipManager relationshipManager;
     private final DataStatePropagator dataStatePropagator;
 
     @Inject
@@ -82,16 +76,16 @@ public class RelationshipCollectionRepository
                                      final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                      final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,
-                                     final RelationshipItemStore relationshipItemStore,
                                      final RelationshipItemElementStoreSelector storeSelector,
+                                     final RelationshipManager relationshipManager,
                                      final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipCollectionRepository(store, childrenAppenders, s,
-                        relationshipHandler, relationshipItemStore, storeSelector, dataStatePropagator)));
+                        relationshipHandler, storeSelector, relationshipManager, dataStatePropagator)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
-        this.relationshipItemStore = relationshipItemStore;
         this.storeSelector = storeSelector;
+        this.relationshipManager = relationshipManager;
         this.dataStatePropagator = dataStatePropagator;
     }
 
@@ -159,52 +153,37 @@ public class RelationshipCollectionRepository
         return state != State.RELATIONSHIP;
     }
 
+    /**
+     * Returns the relationship accessible by the searchItem, it means the searchItem is the owner or the relationship
+     * is bidirectional. It does not include deleted relationships.
+     * @param searchItem Relationship item
+     * @return List of relationships
+     */
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
-        return getByItem(searchItem, false);
+        return relationshipManager.getByItem(searchItem);
     }
 
+    /**
+     * Returns the relationship accessible by the searchItem, it means the searchItem is the owner or the relationship
+     * is bidirectional.
+     * @param searchItem Relationship item
+     * @param includeDeleted Whether to include deleted relationships or not
+     * @return List of relationships
+     */
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted) {
+        return relationshipManager.getByItem(searchItem, includeDeleted);
+    }
 
-        List<Relationship> relationships = new ArrayList<>();
-
-        List<RelationshipItem> relationshipItems = this.relationshipItemStore.getByItem(searchItem);
-
-        for (RelationshipItem iterationItem : relationshipItems) {
-            Relationship relationship = this.store.selectByUid(iterationItem.relationship().uid());
-
-            if (relationship == null) {
-                continue;
-            }
-
-            if (!includeDeleted && isDeleted(relationship)) {
-                continue;
-            }
-
-            RelationshipConstraintType relatedType = iterationItem.relationshipItemType() == FROM ? TO : FROM;
-
-            RelationshipItem relatedItem = this.relationshipItemStore
-                    .getForRelationshipUidAndConstraintType(relationship.uid(), relatedType);
-
-            if (relatedItem == null) {
-                continue;
-            }
-
-            RelationshipItem from, to;
-            if (iterationItem.relationshipItemType() == FROM) {
-                from = iterationItem;
-                to = relatedItem;
-            } else {
-                from = relatedItem;
-                to = iterationItem;
-            }
-
-            relationships.add(relationship.toBuilder()
-                    .from(from)
-                    .to(to)
-                    .build());
-        }
-
-        return relationships;
+    /**
+     * Returns the relationship linked to the searchItem.
+     * @param searchItem Relationship item
+     * @param includeDeleted Whether to include deleted relationships or not
+     * @param onlyOwned Whether to include only owned relationships (any if bidirectional) or all linked relationships
+     * @return List of relationships
+     */
+    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted,
+                                        Boolean onlyOwned) {
+        return relationshipManager.getByItem(searchItem, includeDeleted, onlyOwned);
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byUid() {

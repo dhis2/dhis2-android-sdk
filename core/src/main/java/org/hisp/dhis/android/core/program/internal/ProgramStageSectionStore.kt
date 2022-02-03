@@ -38,7 +38,9 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
 
+@Suppress("MagicNumber")
 internal object ProgramStageSectionStore {
+
     private val BINDER: StatementBinder<ProgramStageSection> =
         object : IdentifiableStatementBinder<ProgramStageSection>() {
             override fun bindToStatement(o: ProgramStageSection, w: StatementWrapper) {

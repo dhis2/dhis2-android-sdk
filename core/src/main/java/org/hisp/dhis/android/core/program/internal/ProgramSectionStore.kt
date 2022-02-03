@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
 
+@Suppress("MagicNumber")
 internal object ProgramSectionStore {
+
     private val BINDER: StatementBinder<ProgramSection> =
         object : IdentifiableWithStyleStatementBinder<ProgramSection>() {
             override fun bindToStatement(o: ProgramSection, w: StatementWrapper) {
@@ -52,6 +54,7 @@ internal object ProgramSectionStore {
                 w.bind(14, o.renderType()?.mobile()?.type())
             }
         }
+
     val CHILD_PROJECTION = SingleParentChildProjection(
         ProgramSectionTableInfo.TABLE_INFO, ProgramSectionTableInfo.Columns.PROGRAM
     )

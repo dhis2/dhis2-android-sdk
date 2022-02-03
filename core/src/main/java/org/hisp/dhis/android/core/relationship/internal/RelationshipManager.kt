@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 @Reusable
 internal class RelationshipManager @Inject constructor(
@@ -45,7 +45,7 @@ internal class RelationshipManager @Inject constructor(
     fun getByItem(
         searchItem: RelationshipItem,
         includeDeleted: Boolean = false,
-        onlyOwned: Boolean = false
+        onlyAccessible: Boolean = false
     ): List<Relationship> {
         val relationships = relationshipItemStore.getByItem(searchItem)
             .mapNotNull { item ->
@@ -79,7 +79,7 @@ internal class RelationshipManager @Inject constructor(
                 }
             }
 
-        return if (onlyOwned) {
+        return if (onlyAccessible) {
             relationshipVersionManager.getOwnedRelationships(relationships, searchItem.elementUid())
         } else {
             relationships

@@ -178,12 +178,13 @@ public class RelationshipCollectionRepository
      * Returns the relationship linked to the searchItem.
      * @param searchItem Relationship item
      * @param includeDeleted Whether to include deleted relationships or not
-     * @param onlyOwned Whether to include only owned relationships (any if bidirectional) or all linked relationships
+     * @param onlyAccessible Whether to include only accessible relationships (owned relationships or any bidirectional
+     *                       relationship) or all linked relationships
      * @return List of relationships
      */
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted,
-                                        Boolean onlyOwned) {
-        return relationshipManager.getByItem(searchItem, includeDeleted, onlyOwned);
+                                        Boolean onlyAccessible) {
+        return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible);
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byUid() {

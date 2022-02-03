@@ -25,49 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.io.File
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
 
 @Module
-public final class FileResourceEntityDIModule {
+internal class FileResourceEntityDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableDataObjectStore<FileResource> store(DatabaseAdapter databaseAdapter) {
-        return FileResourceStoreImpl.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStore<FileResource> {
+        return create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<FileResource> handler(IdentifiableDataObjectStore<FileResource> store) {
-        return new IdentifiableWithoutDeleteInterfaceHandlerImpl<>(store);
+    fun handler(store: IdentifiableDataObjectStore<FileResource>): HandlerWithTransformer<FileResource> {
+        return IdentifiableWithoutDeleteInterfaceHandlerImpl(store)
     }
 
     @Provides
     @Reusable
-    Transformer<File, FileResource> transformer() {
-        return new FileResourceProjectionTransformer();
+    fun transformer(): Transformer<File, FileResource> {
+        return FileResourceProjectionTransformer()
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<FileResource>> childrenAppenders() {
-        return Collections.emptyMap();
+    fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
+        return emptyMap()
     }
 }

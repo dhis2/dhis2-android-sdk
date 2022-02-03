@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.visualization.LegendStrategy
 
-@RunWith(D2JunitRunner.class)
-public class TrackerJobObjectStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject> {
-
-    public TrackerJobObjectStoreIntegrationShould() {
-        super(TrackerJobObjectStore.create(TestDatabaseAdapterFactory.get()), TrackerJobObjectTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected TrackerJobObject buildObject() {
-        return TrackerJobObjectSamples.get1();
-    }
-
-    @Override
-    protected TrackerJobObject buildObjectToUpdate() {
-        return TrackerJobObjectSamples.get1()
-                .toBuilder()
-                .jobUid("anotherJobId")
-                .build();
+internal class LegendStrategyColumnAdapter : EnumColumnAdapter<LegendStrategy>() {
+    override fun getEnumClass(): Class<LegendStrategy> {
+        return LegendStrategy::class.java
     }
 }

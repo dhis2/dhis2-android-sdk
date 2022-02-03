@@ -25,53 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
-import io.reactivex.Single
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.fileresource.FileResource
 
 @Reusable
-internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService
+class FileResourceCall @Inject internal constructor(
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val fileResourceModuleDownloader: FileResourceModuleDownloader
 ) {
 
-    fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
-        return trackedEntityInstanceService.getTrackedEntityInstances(
-            getUidStr(query),
-            query.orgUnit(),
-            query.commonParams().ouMode.name,
-            query.commonParams().program,
-            getProgramStatus(query),
-            getProgramStartDate(query),
-            TrackedEntityInstanceFields.allFields,
-            true,
-            query.page(),
-            query.pageSize(),
-            query.lastUpdatedStr(),
-            true,
+    fun download(): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(1)
+        return rxCallExecutor.wrapObservableTransactionally(
+            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+                fileResourceModuleDownloader.downloadMetadata().call()
+                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
+                emitter.onComplete()
+            },
             true
         )
     }
 
-    private fun getUidStr(query: TrackerQuery): String? {
-        return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
-    }
-
-    private fun getProgramStatus(query: TrackerQuery): String? {
-        return when {
-            query.commonParams().program != null -> query.programStatus()?.toString()
-            else -> null
-        }
-    }
-
-    private fun getProgramStartDate(query: TrackerQuery): String? {
-        return when {
-            query.commonParams().program != null -> query.commonParams().startDate
-            else -> null
-        }
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 }

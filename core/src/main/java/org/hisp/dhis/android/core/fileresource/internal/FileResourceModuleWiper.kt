@@ -25,43 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable
-public final class FileResourceModuleImpl implements FileResourceModule {
+internal class FileResourceModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
 
-    private final FileResourceCollectionRepository fileResources;
-    private final FileResourceCall fileResourceCall;
-
-    @Inject
-    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
-                           FileResourceCall fileResourceCall) {
-        this.fileResources = fileResources;
-        this.fileResourceCall = fileResourceCall;
+    override fun wipeMetadata() {
+        // No metadata to wipe
     }
 
-    @Override
-    public Observable<D2Progress> download() {
-        return fileResourceCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        fileResourceCall.blockingDownload();
-    }
-
-    @Override
-    public FileResourceCollectionRepository fileResources() {
-        return fileResources;
+    override fun wipeData() {
+        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO)
     }
 }

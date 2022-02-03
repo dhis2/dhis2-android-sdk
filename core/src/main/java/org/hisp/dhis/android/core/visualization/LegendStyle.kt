@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class FileResourceModuleWiper implements ModuleWiper {
-    private final TableWiper tableWiper;
-
-    @Inject
-    FileResourceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO);
-    }
+enum class LegendStyle {
+    FILL,
+    TEXT
 }

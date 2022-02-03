@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
@@ -56,7 +57,8 @@ internal class EnrollmentImportHandler @Inject constructor(
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEnrollmentHandler: JobReportEnrollmentHandler,
     private val dataStatePropagator: DataStatePropagator,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceHelper: FileResourceHelper
 ) {
 
     fun handleEnrollmentImportSummary(
@@ -181,9 +183,8 @@ internal class EnrollmentImportHandler @Inject constructor(
             val dataValues = EnrollmentInternalAccessor.accessEvents(enrollment)
                 .filterNotNull()
                 .flatMap { it.trackedEntityDataValues() ?: emptyList() }
-                .mapNotNull { it.value() }
 
-            fileResources.filter { dataValues.contains(it) }.forEach {
+            fileResources.filter { fileResourceHelper.isPresentInDataValues(it, dataValues) }.forEach {
                 fileResourceStore.setSyncStateIfUploading(it, state)
             }
         }

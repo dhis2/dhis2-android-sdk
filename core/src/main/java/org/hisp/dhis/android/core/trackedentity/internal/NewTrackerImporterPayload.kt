@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
@@ -36,8 +37,12 @@ internal data class NewTrackerImporterPayload(
     val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> = mutableListOf(),
     val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
     val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
-    val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf()
+    val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
+
+    @JsonIgnore
+    val fileResourcesMap: Map<String, List<String>> = mutableMapOf()
 ) {
+    @JsonIgnore
     fun isEmpty(): Boolean {
         return trackedEntities.isEmpty() && enrollments.isEmpty() && events.isEmpty() && relationships.isEmpty()
     }

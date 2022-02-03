@@ -25,53 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
-import io.reactivex.Single
+import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
 
 @Reusable
-internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService
-) {
+internal class FileResourceModuleImpl @Inject internal constructor(
+    private val fileResources: FileResourceCollectionRepository,
+    private val fileResourceCall: FileResourceCall
+) : FileResourceModule {
 
-    fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
-        return trackedEntityInstanceService.getTrackedEntityInstances(
-            getUidStr(query),
-            query.orgUnit(),
-            query.commonParams().ouMode.name,
-            query.commonParams().program,
-            getProgramStatus(query),
-            getProgramStartDate(query),
-            TrackedEntityInstanceFields.allFields,
-            true,
-            query.page(),
-            query.pageSize(),
-            query.lastUpdatedStr(),
-            true,
-            true
-        )
+    override fun download(): Observable<D2Progress> {
+        return fileResourceCall.download()
     }
 
-    private fun getUidStr(query: TrackerQuery): String? {
-        return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
+    override fun blockingDownload() {
+        fileResourceCall.blockingDownload()
     }
 
-    private fun getProgramStatus(query: TrackerQuery): String? {
-        return when {
-            query.commonParams().program != null -> query.programStatus()?.toString()
-            else -> null
-        }
-    }
-
-    private fun getProgramStartDate(query: TrackerQuery): String? {
-        return when {
-            query.commonParams().program != null -> query.commonParams().startDate
-            else -> null
-        }
+    override fun fileResources(): FileResourceCollectionRepository {
+        return fileResources
     }
 }

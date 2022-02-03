@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,71 +26,64 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.visualization;
 
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
-import java.util.Date;
-import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
-public abstract class TrackerJobObject extends BaseObject {
+@JsonDeserialize(builder = AutoValue_VisualizationLegend.Builder.class)
+public abstract class VisualizationLegend {
+
+    @Nullable
+    @JsonProperty()
+    public abstract ObjectWithUid set();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String showKey();
+
+    @Nullable
+    @JsonProperty()
+    public abstract LegendStrategy strategy();
+
+    @Nullable
+    @JsonProperty()
+    public abstract LegendStyle style();
 
     @NonNull
-    @ColumnAdapter(TrackerImporterObjectTypeColumnAdapter.class)
-    public abstract TrackerImporterObjectType trackerType();
-
-    @NonNull
-    public abstract String objectUid();
-
-    @NonNull
-    public abstract String jobUid();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
-
-    @NonNull
-    @ColumnAdapter(StringArrayColumnAdapter.class)
-    public abstract List<String> fileResources();
-
-    @NonNull
-    public static TrackerJobObject create(Cursor cursor) {
-        return AutoValue_TrackerJobObject.createFromCursor(cursor);
+    public static VisualizationLegend create(Cursor cursor) {
+        return AutoValue_VisualizationLegend.createFromCursor(cursor);
     }
+
+    public abstract VisualizationLegend.Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackerJobObject.Builder();
+        return new AutoValue_VisualizationLegend.Builder();
     }
-
-    abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder trackerType(TrackerImporterObjectType trackerType);
+    public abstract static class Builder  {
 
-        public abstract Builder objectUid(String objectUid);
+        public abstract Builder showKey(String showKey);
 
-        public abstract Builder jobUid(String jobUid);
+        public abstract Builder style(LegendStyle showKey);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder strategy(LegendStrategy showKey);
 
-        public abstract Builder fileResources(List<String> fileResources);
+        public abstract Builder set(ObjectWithUid set);
 
-        public abstract TrackerJobObject build();
+        public abstract VisualizationLegend build();
     }
 }

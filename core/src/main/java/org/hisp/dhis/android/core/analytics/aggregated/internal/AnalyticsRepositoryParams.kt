@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 
 internal data class AnalyticsRepositoryParams(
     val dimensions: List<DimensionItem>,
     val filters: List<DimensionItem>,
-    val legendStrategy: LegendStrategy = LegendStrategy.ByDataItem
+    val analyticsLegendStrategy: AnalyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
 )

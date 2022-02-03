@@ -31,9 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import junit.framework.Assert.assertTrue
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -123,37 +121,37 @@ class EventLineListRepositoryShould {
     @Test
     fun `Call service with fixed legend strategy`() {
         repository
-            .withLegendStrategy(LegendStrategy.Fixed("uid1"))
+            .withLegendStrategy(AnalyticsLegendStrategy.Fixed("uid1"))
             .blockingEvaluate()
 
         verify(eventLineListService).evaluate(paramsCaptor.capture())
-        val legendStrategy = paramsCaptor.firstValue.legendStrategy
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
 
-        assertThat(legendStrategy).isInstanceOf(LegendStrategy.Fixed::class.java)
-        assertThat((legendStrategy as LegendStrategy.Fixed).legendSetUid).isEqualTo("uid1")
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.Fixed::class.java)
+        assertThat((legendStrategy as AnalyticsLegendStrategy.Fixed).legendSetUid).isEqualTo("uid1")
     }
 
     @Test
     fun `Call service with none legend strategy`() {
         repository
-            .withLegendStrategy(LegendStrategy.None)
+            .withLegendStrategy(AnalyticsLegendStrategy.None)
             .blockingEvaluate()
 
         verify(eventLineListService).evaluate(paramsCaptor.capture())
-        val legendStrategy = paramsCaptor.firstValue.legendStrategy
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
 
-        assertThat(legendStrategy).isInstanceOf(LegendStrategy.None::class.java)
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.None::class.java)
     }
 
     @Test
     fun `Call service with byDataItem legend strategy`() {
         repository
-            .withLegendStrategy(LegendStrategy.ByDataItem)
+            .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
             .blockingEvaluate()
 
         verify(eventLineListService).evaluate(paramsCaptor.capture())
-        val legendStrategy = paramsCaptor.firstValue.legendStrategy
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
 
-        assertThat(legendStrategy).isInstanceOf(LegendStrategy.ByDataItem::class.java)
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.ByDataItem::class.java)
     }
 }

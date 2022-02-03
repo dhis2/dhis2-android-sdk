@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
@@ -71,7 +71,7 @@ interface EventLineListRepository : BaseRepository {
     /**
      * Assign the strategy to apply with legend.
      */
-    fun withLegendStrategy(legendStrategy: LegendStrategy): EventLineListRepository
+    fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): EventLineListRepository
 
     /**
      * Evaluate the given parameters and get a list of events in the format of [LineListResponse].

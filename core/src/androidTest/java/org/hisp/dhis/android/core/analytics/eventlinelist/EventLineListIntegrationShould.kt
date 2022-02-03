@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryOptionCombo
@@ -449,7 +449,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            legendStrategy = LegendStrategy.None
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -472,7 +472,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            legendStrategy = LegendStrategy.ByDataItem
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -499,7 +499,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            legendStrategy = LegendStrategy.Fixed(legendSet2.uid())
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -522,7 +522,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            legendStrategy = LegendStrategy.None
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -541,7 +541,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            legendStrategy = LegendStrategy.ByDataItem
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -569,7 +569,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            legendStrategy = LegendStrategy.Fixed(legendSet2.uid())
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
         )
 
         val result = eventLineListService.evaluate(eventListParams)

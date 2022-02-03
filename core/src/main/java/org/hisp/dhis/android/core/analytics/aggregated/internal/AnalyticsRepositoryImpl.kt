@@ -31,11 +31,10 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 import org.hisp.dhis.android.core.arch.helpers.Result
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
@@ -51,8 +50,8 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
         return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
     }
 
-    override fun withLegendStrategy(legendStrategy: LegendStrategy): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(legendStrategy = legendStrategy) }
+    override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(analyticsLegendStrategy = analyticsLegendStrategy) }
     }
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {

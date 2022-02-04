@@ -46,7 +46,6 @@ internal class DynamicServerURLInterceptor : Interceptor {
             return request.newBuilder().url(newUrl).build()
         }
 
-        @JvmStatic
         fun transformUrl(url: String?): String {
             return ServerURLWrapper.getServerUrl() + "/api/" + ServerURLWrapper.extractAfterAPI(url)
         }

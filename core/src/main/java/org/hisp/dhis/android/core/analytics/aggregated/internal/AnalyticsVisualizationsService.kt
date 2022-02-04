@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.LegendStrategy
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.visualization.LegendStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 
@@ -108,10 +109,16 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             }
         }
 
-        //TODO: Read strategy from visualizations when this It's implemented
-        // https://jira.dhis2.org/browse/ANDROSDK-1472
-        // https://github.com/dhis2/dhis2-android-sdk/pull/1706
-        analyticsRepository = analyticsRepository.withLegendStrategy(LegendStrategy.ByDataItem)
+        val visualizationLegendStrategy = visualization.legend()?.strategy()
+        val legendSetUId = visualization.legend()?.set()?.uid()
+
+        val legendStrategy = when (visualizationLegendStrategy) {
+            LegendStrategy.FIXED -> if (legendSetUId != null) AnalyticsLegendStrategy.Fixed(legendSetUId)
+            else AnalyticsLegendStrategy.None
+            LegendStrategy.BY_DATA_ITEM, null -> AnalyticsLegendStrategy.ByDataItem
+        }
+
+        analyticsRepository = analyticsRepository.withLegendStrategy(legendStrategy)
 
         queryItems.forEach { analyticsRepository = analyticsRepository.withDimension(it) }
         filterItems.forEach { analyticsRepository = analyticsRepository.withFilter(it) }

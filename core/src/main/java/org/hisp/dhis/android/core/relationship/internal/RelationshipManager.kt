@@ -41,11 +41,10 @@ internal class RelationshipManager @Inject constructor(
     private val relationshipVersionManager: RelationshipDHISVersionManager
 ) {
 
-    @JvmOverloads
     fun getByItem(
         searchItem: RelationshipItem,
-        includeDeleted: Boolean = false,
-        onlyAccessible: Boolean = false
+        includeDeleted: Boolean,
+        onlyAccessible: Boolean
     ): List<Relationship> {
         val relationships = relationshipItemStore.getByItem(searchItem)
             .mapNotNull { item ->

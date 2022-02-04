@@ -42,12 +42,20 @@ internal class DynamicServerURLInterceptor : Interceptor {
 
     companion object {
         fun transformRequest(request: Request): Request {
-            val newUrl = HttpUrl.parse(transformUrl(request.url().toString()))
-            return request.newBuilder().url(newUrl).build()
+            val transformedUrl = transformUrl(request.url().toString())?.let { HttpUrl.parse(it) }
+            return transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
         }
 
-        fun transformUrl(url: String?): String {
-            return ServerURLWrapper.getServerUrl() + "/api/" + ServerURLWrapper.extractAfterAPI(url)
+        fun transformUrl(url: String?): String? {
+            return url?.let {
+                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
+
+                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
+                } else {
+                    url
+                }
+            }
         }
     }
 }

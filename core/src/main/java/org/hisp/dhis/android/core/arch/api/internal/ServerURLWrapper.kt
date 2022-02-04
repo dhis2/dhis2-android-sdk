@@ -25,29 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+internal object ServerURLWrapper {
 
-public final class ServerURLWrapper {
+    var serverUrl: String? = null
+        private set
 
-    private static String baseUrlUpToAPI;
-
-    public static void setServerUrl(String newHost) {
-        baseUrlUpToAPI = extractBeforeAPI(newHost);
-    }
-    
-    public static String getServerUrl() {
-        return baseUrlUpToAPI;
+    @JvmStatic
+    fun setServerUrl(newHost: String) {
+        serverUrl = extractBeforeAPI(newHost)
     }
 
-    private static String extractBeforeAPI(String url) {
-        return url.split("/api/")[0];
+    private fun extractBeforeAPI(url: String): String {
+        return url.split("/api/").first()
     }
 
-    static String extractAfterAPI(String url) {
-        return url.split("/api/")[1];
-    }
-
-    private ServerURLWrapper() {
+    fun extractAfterAPI(url: String): String? {
+        return url.split("/api/").getOrNull(1)
     }
 }

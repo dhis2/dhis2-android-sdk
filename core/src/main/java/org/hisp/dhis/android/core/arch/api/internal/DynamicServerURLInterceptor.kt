@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.api.internal
 
+import java.io.IOException
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import java.io.IOException
 
 internal class DynamicServerURLInterceptor : Interceptor {
 

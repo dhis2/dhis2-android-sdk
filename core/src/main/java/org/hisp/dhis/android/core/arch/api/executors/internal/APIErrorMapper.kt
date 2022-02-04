@@ -29,14 +29,6 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import android.util.Log
 import dagger.Reusable
-import okhttp3.Request
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
-import retrofit2.Call
-import retrofit2.HttpException
-import retrofit2.Response
 import java.io.IOException
 import java.lang.Exception
 import java.lang.RuntimeException
@@ -45,12 +37,20 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.net.ssl.SSLException
 import kotlin.jvm.JvmOverloads
+import okhttp3.Request
+import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import retrofit2.Call
+import retrofit2.HttpException
+import retrofit2.Response
 
 @Reusable
 internal class APIErrorMapper @Inject constructor() {
 
     fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
-        return when(throwable) {
+        return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)
             is HttpException -> httpException(errorBuilder, throwable)

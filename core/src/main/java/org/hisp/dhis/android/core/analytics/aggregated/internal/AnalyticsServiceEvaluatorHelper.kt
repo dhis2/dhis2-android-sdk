@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
@@ -48,16 +49,23 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
 ) {
     fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        legendStrategy: AnalyticsLegendStrategy,
     ): DimensionalValue {
         val evaluator = getEvaluator(evaluationItem)
 
         val value = evaluator.evaluate(evaluationItem, metadata)
 
+        val legend = when (legendStrategy) {
+            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(legendStrategy.legendSetUid, value)
+            is AnalyticsLegendStrategy.ByDataItem -> getLegendFromDataDimension(evaluationItem, value)
+            is AnalyticsLegendStrategy.None -> null
+        }
+
         return DimensionalValue(
             dimensions = evaluationItem.dimensionItems.map { (it as DimensionItem).id },
             value = value,
-            legend = getLegendFromDataDimension(evaluationItem, value)
+            legend = legend
         )
     }
 

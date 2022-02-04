@@ -160,7 +160,7 @@ public class RelationshipCollectionRepository
      * @return List of relationships
      */
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
-        return relationshipManager.getByItem(searchItem);
+        return relationshipManager.getByItem(searchItem, false, true);
     }
 
     /**
@@ -171,7 +171,7 @@ public class RelationshipCollectionRepository
      * @return List of relationships
      */
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted) {
-        return relationshipManager.getByItem(searchItem, includeDeleted);
+        return relationshipManager.getByItem(searchItem, includeDeleted, true);
     }
 
     /**

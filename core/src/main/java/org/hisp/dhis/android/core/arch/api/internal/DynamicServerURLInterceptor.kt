@@ -25,26 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-import java.io.IOException;
+internal class DynamicServerURLInterceptor : Interceptor {
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class DynamicServerURLInterceptor implements Interceptor {
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        return chain.proceed(transformRequest(chain.request()));
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        return chain.proceed(transformRequest(chain.request()))
     }
 
-    static Request transformRequest(Request request) {
-        HttpUrl newUrl = HttpUrl.parse(ServerURLWrapper.getServerUrl() + "/api/"
-                + ServerURLWrapper.extractAfterAPI(request.url().toString()));
-        return request.newBuilder().url(newUrl).build();
+    companion object {
+        fun transformRequest(request: Request): Request {
+            val newUrl = HttpUrl.parse(transformUrl(request.url().toString()))
+            return request.newBuilder().url(newUrl).build()
+        }
+
+        @JvmStatic
+        fun transformUrl(url: String?): String {
+            return ServerURLWrapper.getServerUrl() + "/api/" + ServerURLWrapper.extractAfterAPI(url)
+        }
     }
 }

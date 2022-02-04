@@ -111,19 +111,11 @@ internal class APIErrorMapper @Inject constructor() {
             .build()
     }
 
-    fun getCollectionErrorBuilder(call: Call<*>): D2Error.Builder {
-        return getBaseErrorBuilder(call)
-    }
-
-    fun getObjectErrorBuilder(call: Call<*>): D2Error.Builder {
-        return getBaseErrorBuilder(call)
-    }
-
     val rxObjectErrorBuilder: D2Error.Builder
         get() = D2Error.builder()
             .errorComponent(D2ErrorComponent.Server)
 
-    private fun getBaseErrorBuilder(call: Call<*>): D2Error.Builder {
+    fun getBaseErrorBuilder(call: Call<*>): D2Error.Builder {
         return D2Error.builder()
             .url(getUrl(call.request()))
             .errorComponent(D2ErrorComponent.Server)

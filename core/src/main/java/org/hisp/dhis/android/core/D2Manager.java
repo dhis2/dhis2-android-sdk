@@ -110,10 +110,13 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(context);
             }
 
-            Credentials credentials = d2DIComponent.credentialsSecureStore().get();
-
             MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager =
                     d2DIComponent.multiUserDatabaseManagerForD2Manager();
+
+            multiUserDatabaseManager.applyMigration();
+
+            Credentials credentials = d2DIComponent.credentialsSecureStore().get();
+
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
             } else {

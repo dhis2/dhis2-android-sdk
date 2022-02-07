@@ -25,60 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import dagger.Reusable
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseUserConfiguration.Builder.class)
-public abstract class DatabaseUserConfiguration {
-
-    @JsonProperty()
-    @NonNull
-    public abstract String username();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String serverUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseName();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseCreationDate();
-
-    @JsonProperty()
-    @NonNull
-    public abstract boolean encrypted();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseUserConfiguration.Builder();
+@Reusable
+internal class DatabaseNameGenerator @Inject constructor() {
+    fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
+        val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
+        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db"
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder username(String username);
-
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Builder databaseName(String databaseName);
-
-        public abstract Builder encrypted(boolean encrypted);
-
-        public abstract Builder databaseCreationDate(String databaseCreationDate);
-
-        public abstract DatabaseUserConfiguration build();
+    private fun processServerUrl(serverUrl: String): String {
+        return serverUrl
+            .removePrefix("https://")
+            .removePrefix("http://")
+            .removeSuffix("/")
+            .removeSuffix("/api")
+            .replace("[^a-zA-Z0-9]".toRegex(), "-")
+            .replace("-+".toRegex(), "-")
+            .removePrefix("-")
+            .removeSuffix("-")
     }
 }

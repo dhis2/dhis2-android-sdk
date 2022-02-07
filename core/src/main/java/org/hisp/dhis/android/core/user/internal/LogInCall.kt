@@ -80,7 +80,9 @@ internal class LogInCall @Inject internal constructor(
         exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
 
-        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
+
+        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
@@ -88,7 +90,7 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
 
-        val credentials = Credentials(username, password, null)
+        val credentials = Credentials(username, trimmedServerUrl!!, password, null)
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
@@ -161,7 +163,9 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
-        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
+
+        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
@@ -171,15 +175,15 @@ internal class LogInCall @Inject internal constructor(
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, openIDConnectState)
+            val credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
             loginOnline(parsedServerUrl, user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error)
         }
     }
 
-    private fun getOpenIdConnectCredentials(user: User, openIDConnectState: AuthState): Credentials {
+    private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
         val username = UserInternalAccessor.accessUserCredentials(user).username()!!
-        return Credentials(username, null, openIDConnectState)
+        return Credentials(username, serverUrl, null, openIDConnectState)
     }
 }

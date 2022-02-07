@@ -71,7 +71,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private final String USERNAME = "username";
     private final String SERVER_URL = "https://dhis2.org";
 
-    private final Credentials credentials = new Credentials(USERNAME, "password", null);
+    private final Credentials credentials = new Credentials(USERNAME, SERVER_URL, "password", null);
 
     private final String UNENCRYPTED_DB_NAME = "un.db";
     private final String ENCRYPTED_DB_NAME = "un.db";
@@ -81,6 +81,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseUserConfiguration userConfigurationUnencrypted = DatabaseUserConfiguration.builder()
             .databaseName(UNENCRYPTED_DB_NAME)
             .username(USERNAME)
+            .serverUrl(SERVER_URL)
             .encrypted(false)
             .databaseCreationDate(DATE)
             .build();
@@ -88,6 +89,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseUserConfiguration userConfigurationEncrypted = DatabaseUserConfiguration.builder()
             .databaseName(ENCRYPTED_DB_NAME)
             .username(USERNAME)
+            .serverUrl(SERVER_URL)
             .encrypted(false)
             .databaseCreationDate(DATE)
             .build();
@@ -109,7 +111,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void create_new_db_when_no_previous_configuration_when_calling_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
         boolean encrypt = false;
         when(configurationHelper.getUserConfiguration(null, SERVER_URL, USERNAME)).thenReturn(null);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationUnencrypted);
+        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME, SERVER_URL)).thenReturn(userConfigurationUnencrypted);
         when(configurationHelper.setConfiguration(null, SERVER_URL, USERNAME, encrypt)).thenReturn(databasesConfiguration);
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
@@ -124,7 +126,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         when(databaseConfigurationSecureStore.get()).thenReturn(databasesConfiguration);
         when(configurationHelper.getUserConfiguration(databasesConfiguration, SERVER_URL, USERNAME)).thenReturn(userConfigurationUnencrypted);
         when(configurationHelper.setConfiguration(databasesConfiguration, SERVER_URL, USERNAME, encrypt)).thenReturn(databasesConfiguration);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationEncrypted);
+        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME, SERVER_URL)).thenReturn(userConfigurationEncrypted);
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
@@ -151,7 +153,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         when(databaseConfigurationSecureStore.get()).thenReturn(databasesConfiguration);
         when(configurationHelper.getUserConfiguration(databasesConfiguration, SERVER_URL, USERNAME)).thenReturn(userConfigurationUnencrypted);
         when(configurationHelper.setConfiguration(databasesConfiguration, SERVER_URL, USERNAME, false)).thenReturn(databasesConfiguration);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationUnencrypted);
+        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME, SERVER_URL)).thenReturn(userConfigurationUnencrypted);
 
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 

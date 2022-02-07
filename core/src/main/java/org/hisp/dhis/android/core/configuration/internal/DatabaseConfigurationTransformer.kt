@@ -25,46 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import dagger.Reusable
+import java.util.*
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
-
-import java.util.Date;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ConfigurationPackageDIModule {
-
-    @Provides
-    @Reusable
-    ObjectKeyValueStore<DatabasesConfiguration> configurationSecureStore(InsecureStore secureStore) {
-        return DatabaseConfigurationInsecureStore.get(secureStore);
-    }
-
-    @Provides
-    @Reusable
-    DateProvider dateProvider() {
-        return () -> BaseIdentifiableObject.dateToDateStr(new Date());
-    }
-
-    @Provides
-    @Reusable
-    DatabaseEncryptionPasswordManager passwordManager(SecureStore secureStore) {
-        return DatabaseEncryptionPasswordManager.create(secureStore);
-    }
-
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
+@Reusable
+internal object DatabaseConfigurationTransformer {
+    fun transform(serverUrl: String?, databaseName: String?, username: String?): DatabasesConfiguration {
+        return DatabasesConfiguration.builder()
+            .users(
+                listOf(
+                    DatabaseUserConfiguration.builder()
+                        .username(username)
+                        .serverUrl(serverUrl)
+                        .databaseName(databaseName)
+                        .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(Date()))
+                        .encrypted(false)
+                        .build()
+                )
+            )
+            .build()
     }
 }

@@ -389,7 +389,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        verify(credentialsSecureStore).set(new Credentials(USERNAME, PASSWORD, null));
+        verify(credentialsSecureStore).set(new Credentials(USERNAME, serverUrl, PASSWORD, null));
         verify(userIdStore).set("test_uid");
     }
 }

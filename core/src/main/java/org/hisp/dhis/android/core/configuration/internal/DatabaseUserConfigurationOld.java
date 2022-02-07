@@ -28,36 +28,51 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import androidx.annotation.NonNull;
 
-import java.util.Collections;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseUserConfigurationOld.Builder.class)
+public abstract class DatabaseUserConfigurationOld {
 
-import dagger.Reusable;
+    @JsonProperty()
+    @NonNull
+    public abstract String username();
 
-@Reusable
-final class DatabaseConfigurationTransformer {
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseName();
 
-    @Inject
-    DatabaseConfigurationTransformer() {
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseCreationDate();
+
+    @JsonProperty()
+    @NonNull
+    public abstract boolean encrypted();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DatabaseUserConfigurationOld.Builder();
     }
 
-    public DatabasesConfiguration transform(String serverUrl, String databaseName, String username) {
-        return DatabasesConfiguration.builder()
-                .loggedServerUrl(serverUrl)
-                .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
-                        .serverUrl(serverUrl)
-                        .users(Collections.singletonList(
-                                DatabaseUserConfiguration.builder()
-                                        .username(username)
-                                        .databaseName(databaseName)
-                                        .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(new Date()))
-                                        .encrypted(false)
-                                        .build()
-                        ))
-                        .build()))
-                .build();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder username(String username);
+
+        public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder encrypted(boolean encrypted);
+
+        public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract DatabaseUserConfigurationOld build();
     }
 }

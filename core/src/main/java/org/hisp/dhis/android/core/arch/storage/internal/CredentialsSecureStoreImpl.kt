@@ -40,6 +40,7 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
     override fun set(credentials: Credentials) {
         this.credentials = credentials
         secureStore.setData(USERNAME_KEY, credentials.username)
+        secureStore.setData(SERVER_URL_KEY, credentials.serverUrl)
         secureStore.setData(PASSWORD_KEY, credentials.password)
         secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
     }
@@ -47,12 +48,13 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
     override fun get(): Credentials? {
         if (credentials == null) {
             val username = secureStore.getData(USERNAME_KEY)
+            val serverUrl = secureStore.getData(SERVER_URL_KEY)
 
-            if (username != null) {
+            if (username != null && serverUrl != null) {
                 val password = secureStore.getData(PASSWORD_KEY)
                 val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
                 val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
-                credentials = Credentials(username, password, openIDConnectState)
+                credentials = Credentials(username, serverUrl, password, openIDConnectState)
             }
         }
         return credentials
@@ -61,12 +63,14 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
     override fun remove() {
         credentials = null
         secureStore.removeData(USERNAME_KEY)
+        secureStore.removeData(SERVER_URL_KEY)
         secureStore.removeData(PASSWORD_KEY)
         secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
     }
 
     companion object {
         private const val USERNAME_KEY = "username"
+        private const val SERVER_URL_KEY = "serverUrl"
         private const val PASSWORD_KEY = "password"
         private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
     }

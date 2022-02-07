@@ -25,26 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+internal object ServerURLWrapper {
 
-import java.io.IOException;
+    var serverUrl: String? = null
+        private set
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class DynamicServerURLInterceptor implements Interceptor {
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        return chain.proceed(transformRequest(chain.request()));
+    @JvmStatic
+    fun setServerUrl(newHost: String) {
+        serverUrl = extractBeforeAPI(newHost)
     }
 
-    static Request transformRequest(Request request) {
-        HttpUrl newUrl = HttpUrl.parse(ServerURLWrapper.getServerUrl() + "/api/"
-                + ServerURLWrapper.extractAfterAPI(request.url().toString()));
-        return request.newBuilder().url(newUrl).build();
+    private fun extractBeforeAPI(url: String): String {
+        return url.split("/api/").first()
+    }
+
+    fun extractAfterAPI(url: String): String? {
+        return url.split("/api/").getOrNull(1)
     }
 }

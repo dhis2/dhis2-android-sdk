@@ -25,29 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import java.io.IOException
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
 
-public final class ServerURLWrapper {
+internal class DynamicServerURLInterceptor : Interceptor {
 
-    private static String baseUrlUpToAPI;
-
-    public static void setServerUrl(String newHost) {
-        baseUrlUpToAPI = extractBeforeAPI(newHost);
-    }
-    
-    public static String getServerUrl() {
-        return baseUrlUpToAPI;
-    }
-
-    private static String extractBeforeAPI(String url) {
-        return url.split("/api/")[0];
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        return chain.proceed(transformRequest(chain.request()))
     }
 
-    static String extractAfterAPI(String url) {
-        return url.split("/api/")[1];
-    }
+    companion object {
+        fun transformRequest(request: Request): Request {
+            val transformedUrl = transformUrl(request.url().toString())?.let { HttpUrl.parse(it) }
+            return transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
+        }
 
-    private ServerURLWrapper() {
+        fun transformUrl(url: String?): String? {
+            return url?.let {
+                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
+
+                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
+                } else {
+                    url
+                }
+            }
+        }
     }
 }

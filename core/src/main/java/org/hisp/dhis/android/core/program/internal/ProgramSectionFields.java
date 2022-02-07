@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionRendering;
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
+import org.hisp.dhis.android.core.program.SectionRendering;
 
 public final class ProgramSectionFields {
 
@@ -58,7 +58,7 @@ public final class ProgramSectionFields {
                     fh.<String>field(Columns.SORT_ORDER),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<String>field(Columns.FORM_NAME),
-                    fh.<ProgramSectionRendering>nestedField(RENDER_TYPE)
+                    fh.<SectionRendering>nestedField(RENDER_TYPE)
             ).build();
 
     private ProgramSectionFields() {

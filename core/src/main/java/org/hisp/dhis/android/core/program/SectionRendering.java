@@ -28,30 +28,30 @@
 
 package org.hisp.dhis.android.core.program;
 
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import androidx.annotation.Nullable;
+
 @AutoValue
-public abstract class ProgramSectionRendering {
+public abstract class SectionRendering {
     private static final String DESKTOP = "DESKTOP";
     private static final String MOBILE = "MOBILE";
 
     @Nullable
     @JsonProperty(DESKTOP)
-    public abstract ProgramSectionDeviceRendering desktop();
+    public abstract SectionDeviceRendering desktop();
 
     @Nullable
     @JsonProperty(MOBILE)
-    public abstract ProgramSectionDeviceRendering mobile();
+    public abstract SectionDeviceRendering mobile();
 
     @JsonCreator
-    public static ProgramSectionRendering create(
-            @JsonProperty(DESKTOP) ProgramSectionDeviceRendering desktop,
-            @JsonProperty(MOBILE) ProgramSectionDeviceRendering mobile) {
+    public static SectionRendering create(
+            @JsonProperty(DESKTOP) SectionDeviceRendering desktop,
+            @JsonProperty(MOBILE) SectionDeviceRendering mobile) {
 
-        return new AutoValue_ProgramSectionRendering(desktop, mobile);
+        return new AutoValue_SectionRendering(desktop, mobile);
     }
 }

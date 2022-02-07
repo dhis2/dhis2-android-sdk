@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramStageSectionRenderingColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListAdapter;
@@ -70,8 +70,8 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramStageSectionRenderingColumnAdapter.class)
-    public abstract ProgramStageSectionRendering renderType();
+    @ColumnAdapter(SectionRenderingColumnAdapter.class)
+    public abstract SectionRendering renderType();
 
     @Nullable
     @JsonIgnore()
@@ -99,7 +99,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
 
         public abstract Builder dataElements(List<DataElement> dataElements);
 
-        public abstract Builder renderType(ProgramStageSectionRendering renderType);
+        public abstract Builder renderType(SectionRendering renderType);
 
         public abstract Builder programStage(ObjectWithUid programStage);
 

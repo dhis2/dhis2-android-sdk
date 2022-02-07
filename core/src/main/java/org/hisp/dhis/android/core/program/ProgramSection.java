@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramSectionRenderingColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -82,8 +82,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ProgramSectionRenderingColumnAdapter.class)
-    public abstract ProgramSectionRendering renderType();
+    @ColumnAdapter(SectionRenderingColumnAdapter.class)
+    public abstract SectionRendering renderType();
 
     public static Builder builder() {
         return new AutoValue_ProgramSection.Builder();
@@ -114,7 +114,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
         public abstract Builder formName(String formName);
 
-        public abstract Builder renderType(ProgramSectionRendering renderType);
+        public abstract Builder renderType(SectionRendering renderType);
 
         abstract ProgramSection autoBuild();
 

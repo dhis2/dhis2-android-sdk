@@ -117,7 +117,23 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
         List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item);
-        assertThat(relationships.size()).isEqualTo(4);
+        assertThat(relationships.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void get_by_item_including_deleted() {
+        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
+        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item, true);
+        assertThat(relationships.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void get_by_item_including_all_linked() {
+        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
+        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item, false, false);
+        assertThat(relationships.size()).isEqualTo(2);
     }
 
     @Test

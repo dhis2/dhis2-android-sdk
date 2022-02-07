@@ -29,7 +29,10 @@ package org.hisp.dhis.android.core.data.program
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.SectionDeviceRendering
+import org.hisp.dhis.android.core.program.SectionRendering
+import org.hisp.dhis.android.core.program.SectionRenderingType
 
 object ProgramSectionSamples {
 
@@ -43,12 +46,12 @@ object ProgramSectionSamples {
                 sortOrder(3)
                 formName("form_name")
                 renderType(
-                    ProgramSectionRendering.create(
-                        ProgramSectionDeviceRendering.create(
-                            ProgramSectionRenderingType.SEQUENTIAL
+                    SectionRendering.create(
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.SEQUENTIAL
                         ),
-                        ProgramSectionDeviceRendering.create(
-                            ProgramSectionRenderingType.LISTING
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.LISTING
                         )
                     )
                 )

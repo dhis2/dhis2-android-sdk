@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-public enum ProgramSectionRenderingType {
+public enum SectionRenderingType {
     LISTING,
     SEQUENTIAL,
     MATRIX

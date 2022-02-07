@@ -48,6 +48,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val userModule: UserModule,
     private val credentialsStore: ObjectKeyValueStore<Credentials>,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
@@ -95,7 +96,8 @@ internal class DatabaseImportExportImpl @Inject constructor(
             val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
             val serverUrl = ServerUrlParser.parse(contextPath).toString()
 
-            val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
+            // TODO What to do if username is null?
+            val databaseName = nameGenerator.getDatabaseName(serverUrl, username!!, false)
 
             if (!context.databaseList().contains(databaseName)) {
                 val destDatabase = context.getDatabasePath(databaseName)
@@ -124,12 +126,12 @@ internal class DatabaseImportExportImpl @Inject constructor(
                 .build()
         }
 
-        val username = credentialsStore.get().username
+        val credentials = credentialsStore.get()
         val databasesConfiguration = databaseConfigurationSecureStore.get()
-        val serverUrl = databasesConfiguration.loggedServerUrl()
-        val serverConfiguration = databasesConfiguration.servers()
-            .find { it.serverUrl() == serverUrl }
-        val userConfiguration = serverConfiguration!!.users().find { it.username() == username }!!
+        val userConfiguration = databaseConfigurationHelper.getLoggedUserConfiguration(
+            databasesConfiguration,
+            credentials.serverUrl, credentials.username
+        )
 
         if (userConfiguration.encrypted()) {
             throw d2ErrorBuilder

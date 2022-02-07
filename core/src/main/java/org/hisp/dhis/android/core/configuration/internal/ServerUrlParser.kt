@@ -25,48 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import okhttp3.HttpUrl
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class DatabaseNameGenerator {
-
-    @Inject
-    DatabaseNameGenerator() {
-    }
-
-    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
-    }
-
-    private String processServerUrl(String serverUrl) {
-        String noHttps = removePrefix(serverUrl, "https://");
-        String noHttp = removePrefix(noHttps, "http://");
-        String noSlashSufix = removeSuffix(noHttp, "/");
-        String noAPISufix = removeSuffix(noSlashSufix, "/api");
-
-        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
-        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
-        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
-        return removeSuffix(withNoMinusAtTheBeginning, "-");
-    }
-
-    private String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
+internal object ServerUrlParser {
+    @JvmStatic
+    @Throws(D2Error::class)
+    fun parse(url: String?): HttpUrl {
+        if (url == null) {
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.SERVER_URL_NULL)
+                .errorDescription("Server URL is null")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
         }
-        return s;
+        val urlWithSlashAndAPI = appendSlashAndAPI(url)
+        val httpUrl = HttpUrl.parse(appendSlashAndAPI(urlWithSlashAndAPI))
+
+        return httpUrl
+            ?: throw D2Error.builder()
+                .errorCode(D2ErrorCode.SERVER_URL_MALFORMED)
+                .errorDescription("Server URL is malformed")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
     }
 
-    private String removeSuffix(String s, String prefix) {
-        if (s.endsWith(prefix)) {
-            return s.substring(0, s.length() - prefix.length());
-        }
-        return s;
+    @JvmStatic
+    fun trimAndRemoveTrailingSlash(url: String?): String? {
+        return url?.trim()?.trimEnd('/')
+    }
+
+    private fun appendSlashAndAPI(url: String): String {
+        val trimmedUrl = url.trim().replace(" ", "")
+        val withSlash = if (trimmedUrl.endsWith("/")) trimmedUrl else "$trimmedUrl/"
+
+        return if (withSlash.endsWith("api/")) withSlash else withSlash + "api/"
     }
 }

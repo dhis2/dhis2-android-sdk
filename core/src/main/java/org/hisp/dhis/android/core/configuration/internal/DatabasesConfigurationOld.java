@@ -28,45 +28,41 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import androidx.annotation.NonNull;
 
-import java.io.IOException;
-import java.text.ParseException;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.List;
 
-public class DatabasesConfigurationShould extends BaseObjectShould implements ObjectShould {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabasesConfigurationOld.Builder.class)
+public abstract class DatabasesConfigurationOld {
 
-    public DatabasesConfigurationShould() {
-        super("configuration/databases_configuration.json");
+    @JsonProperty()
+    @NonNull
+    public abstract String loggedServerUrl();
+
+    @JsonProperty()
+    @NonNull
+    public abstract List<DatabaseServerConfigurationOld> servers();
+
+    public static Builder builder() {
+        return new AutoValue_DatabasesConfigurationOld.Builder();
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        DatabasesConfiguration configuration = deserialize(DatabasesConfiguration.class);
+    public abstract Builder toBuilder();
 
-        assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org");
-        assertThat(configuration.servers().size()).isEqualTo(1);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-        DatabaseServerConfiguration server = configuration.servers().get(0);
-        assertThat(server.serverUrl()).isEqualTo("https://dhis2.org");
-        assertThat(server.users().size()).isEqualTo(1);
+        public abstract Builder loggedServerUrl(String loggedServerUrl);
 
-        DatabaseUserConfiguration user = server.users().get(0);
-        assertThat(user.username()).isEqualTo("user");
-        assertThat(user.databaseName()).isEqualTo("dbname.db");
-        assertThat(user.encrypted()).isTrue();
-    }
+        public abstract Builder servers(List<DatabaseServerConfigurationOld> servers);
 
-    @Test
-    public void equal_when_deserialize_serialize_deserialize() throws IOException {
-        DatabasesConfiguration configuration = deserialize(DatabasesConfiguration.class);
-
-        String serialized = serialize(configuration);
-        DatabasesConfiguration deserialized = deserialize(serialized, DatabasesConfiguration.class);
-        assertThat(deserialized).isEqualTo(configuration);
+        public abstract DatabasesConfigurationOld build();
     }
 }

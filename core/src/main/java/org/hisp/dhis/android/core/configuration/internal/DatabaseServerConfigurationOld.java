@@ -28,17 +28,40 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import androidx.annotation.NonNull;
 
-public final class DatabaseConfigurationInsecureStore {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    public static ObjectKeyValueStore<DatabasesConfiguration> get(InsecureStore insecureStore) {
-        return new JsonKeyValueStoreImpl<>(insecureStore, "DB_CONFIGS", DatabasesConfiguration.class);
+import java.util.List;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseServerConfigurationOld.Builder.class)
+public abstract class DatabaseServerConfigurationOld {
+
+    @JsonProperty()
+    @NonNull
+    public abstract String serverUrl();
+
+    @JsonProperty()
+    @NonNull
+    public abstract List<DatabaseUserConfigurationOld> users();
+
+    public static Builder builder() {
+        return new AutoValue_DatabaseServerConfigurationOld.Builder();
     }
 
-    private DatabaseConfigurationInsecureStore() {
+    public abstract Builder toBuilder();
 
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder serverUrl(String serverUrl);
+
+        public abstract Builder users(List<DatabaseUserConfigurationOld> users);
+
+        public abstract DatabaseServerConfigurationOld build();
     }
 }

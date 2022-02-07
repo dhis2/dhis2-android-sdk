@@ -25,60 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import androidx.annotation.NonNull;
+class DatabasesConfigurationShould :
+    BaseObjectShould("configuration/databases_configuration.json"),
+    ObjectShould {
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+    @Test
+    override fun map_from_json_string() {
+        val configuration = deserialize(DatabasesConfiguration::class.java)
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseUserConfiguration.Builder.class)
-public abstract class DatabaseUserConfiguration {
+        assertThat(configuration.users().size).isEqualTo(2)
 
-    @JsonProperty()
-    @NonNull
-    public abstract String username();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String serverUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseName();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseCreationDate();
-
-    @JsonProperty()
-    @NonNull
-    public abstract boolean encrypted();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseUserConfiguration.Builder();
+        val user1 = configuration.users()[0]
+        assertThat(user1.username()).isEqualTo("user1")
+        assertThat(user1.serverUrl()).isEqualTo("server1")
+        assertThat(user1.databaseName()).isEqualTo("dbname1.db")
+        assertThat(user1.encrypted()).isTrue()
+        assertThat(user1.databaseCreationDate()).isEqualTo("2014-06-06T20:44:21.375")
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    @Test
+    fun equal_when_deserialize_serialize_deserialize() {
+        val configuration = deserialize(DatabasesConfiguration::class.java)
 
-        public abstract Builder username(String username);
+        val serialized = serialize(configuration)
+        val deserialized = deserialize(serialized, DatabasesConfiguration::class.java)
 
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Builder databaseName(String databaseName);
-
-        public abstract Builder encrypted(boolean encrypted);
-
-        public abstract Builder databaseCreationDate(String databaseCreationDate);
-
-        public abstract DatabaseUserConfiguration build();
+        assertThat(deserialized).isEqualTo(configuration)
     }
 }

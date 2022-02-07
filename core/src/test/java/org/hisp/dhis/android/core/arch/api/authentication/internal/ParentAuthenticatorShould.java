@@ -96,7 +96,7 @@ public class ParentAuthenticatorShould {
 
     @Test
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
-        Credentials credentials = new Credentials("test_user", "test_password", null);
+        Credentials credentials = new Credentials("test_user", "test_server", "test_password", null);
 
         when(credentialsSecureStore.get()).thenReturn(credentials);
         when(userIdStore.get()).thenReturn("user-id");

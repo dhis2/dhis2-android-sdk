@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,10 +59,13 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
     @Mock
     private DatabaseConfigurationMigration migration;
 
+    @Mock
+    private ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationStore;
+
     private final String USERNAME = "username";
     private final String SERVER_URL = "https://dhis2.org";
 
-    private final Credentials credentials = new Credentials(USERNAME, "password", null);
+    private final Credentials credentials = new Credentials(USERNAME, SERVER_URL, "password", null);
 
     private final String UNENCRYPTED_DB_NAME = "un.db";
 
@@ -70,6 +74,7 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
     private DatabaseUserConfiguration userConfigurationUnencrypted = DatabaseUserConfiguration.builder()
             .databaseName(UNENCRYPTED_DB_NAME)
             .username(USERNAME)
+            .serverUrl(SERVER_URL)
             .encrypted(false)
             .databaseCreationDate(DATE)
             .build();
@@ -84,13 +89,9 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManagerForD2Manager(databaseAdapter, configurationHelper,
-                migration, databaseAdapterFactory);
-    }
+                migration, databaseAdapterFactory, databaseConfigurationStore);
 
-    @Test
-    public void call_migration_when_calling_loadIfLogged() {
-        manager.loadIfLogged(credentials);
-        verify(migration).apply();
+        when(databaseConfigurationStore.get()).thenReturn(databasesConfiguration);
     }
 
     @Test
@@ -101,9 +102,7 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
 
     @Test
     public void load_db_if_logged_when_calling_loadIfLogged() {
-        when(migration.apply()).thenReturn(databasesConfiguration);
-        when(databasesConfiguration.loggedServerUrl()).thenReturn(SERVER_URL);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationUnencrypted);
+        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME, SERVER_URL)).thenReturn(userConfigurationUnencrypted);
 
         manager.loadIfLogged(credentials);
 

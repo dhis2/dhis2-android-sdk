@@ -43,11 +43,7 @@ public abstract class DatabasesConfiguration {
 
     @JsonProperty()
     @NonNull
-    public abstract String loggedServerUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract List<DatabaseServerConfiguration> servers();
+    public abstract List<DatabaseUserConfiguration> users();
 
     public static Builder builder() {
         return new AutoValue_DatabasesConfiguration.Builder();
@@ -59,9 +55,7 @@ public abstract class DatabasesConfiguration {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder loggedServerUrl(String loggedServerUrl);
-
-        public abstract Builder servers(List<DatabaseServerConfiguration> servers);
+        public abstract Builder users(List<DatabaseUserConfiguration> users);
 
         public abstract DatabasesConfiguration build();
     }

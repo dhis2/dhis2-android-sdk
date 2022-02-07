@@ -58,7 +58,6 @@ import static org.hisp.dhis.android.core.configuration.internal.DatabaseConfigur
 public class DatabaseConfigurationMigrationIntegrationShould {
 
     private final Context context = InstrumentationRegistry.getInstrumentation().getContext();
-    private final DatabaseConfigurationTransformer transformer = new DatabaseConfigurationTransformer();
     private final DatabaseNameGenerator nameGenerator = new DatabaseNameGenerator();
     private final DatabaseRenamer renamer = new DatabaseRenamer(context);
     private final DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
@@ -82,9 +81,9 @@ public class DatabaseConfigurationMigrationIntegrationShould {
     @Before
     public void setUp() throws IOException {
         InsecureStore insecureStore = new InMemoryUnsecureStore();
-        newConfigurationStore = DatabaseConfigurationInsecureStore.get(insecureStore);
+        newConfigurationStore = DatabaseConfigurationInsecureStore.INSTANCE.get(insecureStore);
         migration = new DatabaseConfigurationMigration(context, newConfigurationStore,
-                transformer, nameGenerator, renamer, databaseAdapterFactory);
+                nameGenerator, renamer, databaseAdapterFactory);
     }
 
     @Test

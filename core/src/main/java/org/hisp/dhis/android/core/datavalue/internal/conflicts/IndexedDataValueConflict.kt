@@ -25,23 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-final class ProgramStageSectionRenderingHelper {
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-    private ProgramStageSectionRenderingHelper() {}
+internal class IndexedDataValueConflict : DataValueImportConflictItem {
 
-    static ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering sectionRendering) {
-        return sectionRendering == null || sectionRendering.desktop() == null ? null
-                : sectionRendering.desktop().type();
+    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+        return conflict.indexes()?.map {
+            getConflictBuilder(
+                dataValue = dataValues[it],
+                conflict = conflict,
+                displayDescription = conflict.value() // TODO Add interpreters for translations
+            ).build()
+        }.orEmpty()
     }
-
-    static ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering sectionRendering) {
-        return sectionRendering == null || sectionRendering.mobile() == null ? null
-                : sectionRendering.mobile().type();
-    }
-
 }

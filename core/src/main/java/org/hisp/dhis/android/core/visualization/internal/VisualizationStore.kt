@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableSt
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
@@ -80,6 +81,10 @@ internal object VisualizationStore {
             w.bind(39, o.userOrganisationUnitGrandChildren())
             w.bind(40, ObjectWithUidListColumnAdapter.serialize(o.organisationUnits()))
             w.bind(41, ObjectWithUidListColumnAdapter.serialize(o.periods()))
+            w.bind(42, o.legend()?.showKey())
+            w.bind(43, o.legend()?.style())
+            w.bind(44, UidsHelper.getUidOrNull(o.legend()?.set()))
+            w.bind(45, o.legend()?.strategy())
         }
     }
 

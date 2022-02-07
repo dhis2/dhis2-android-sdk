@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program;
+package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramSection;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramSectionSamples {
-
-    public static ProgramSection getProgramSection() {
-        ProgramSection.Builder builder = ProgramSection.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .id(1L)
-                .description("description")
-                .program(ObjectWithUid.create("program_uid"))
-                .sortOrder(3)
-                .formName("form_name")
-                .build();
-    }
+enum class LegendStyle {
+    FILL,
+    TEXT
 }

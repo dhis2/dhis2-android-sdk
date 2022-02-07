@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal open class InvalidDataElementTypeConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex(".*, must match data element type: (\\w{11})")

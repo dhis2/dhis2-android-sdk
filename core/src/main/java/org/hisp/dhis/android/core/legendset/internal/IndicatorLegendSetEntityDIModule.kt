@@ -26,10 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.legendset.internal
 
-public enum ProgramStageSectionRenderingType {
-    LISTING,
-    SEQUENTIAL,
-    MATRIX
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.LegendSet
+
+@Module
+internal class IndicatorLegendSetEntityDIModule {
+
+    @Provides
+    @Reusable
+    internal fun store(databaseAdapter: DatabaseAdapter): LinkStore<IndicatorLegendSetLink> {
+        return IndicatorLegendSetLinkStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    internal fun handler(
+        store: LinkStore<IndicatorLegendSetLink>
+    ): LinkHandler<LegendSet?, IndicatorLegendSetLink> {
+        return LinkHandlerImpl(store)
+    }
 }

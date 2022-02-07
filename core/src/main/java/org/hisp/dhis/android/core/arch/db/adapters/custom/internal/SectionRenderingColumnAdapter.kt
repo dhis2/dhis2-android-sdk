@@ -25,41 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.legendset;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.program.SectionDeviceRendering
+import org.hisp.dhis.android.core.program.SectionRendering
+import org.hisp.dhis.android.core.program.SectionRenderingType
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples;
-import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore;
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataElementLegendSetLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataElementLegendSetLink> {
-
-    public DataElementLegendSetLinkStoreIntegrationShould() {
-        super(DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
-                DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+internal class SectionRenderingColumnAdapter : ColumnTypeAdapter<SectionRendering> {
+    override fun fromCursor(cursor: Cursor, columnName: String): SectionRendering {
+        return SectionRendering.create(
+            getFromCursor(cursor, DESKTOP_RENDER_TYPE),
+            getFromCursor(cursor, MOBILE_RENDER_TYPE)
+        )
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement();
+    override fun toContentValues(values: ContentValues, columnName: String, value: SectionRendering) {
+        value.desktop()?.type()?.let { values.put(DESKTOP_RENDER_TYPE, it.name) }
+        value.mobile()?.type()?.let { values.put(MOBILE_RENDER_TYPE, it.name) }
     }
 
-    @Override
-    protected DataElementLegendSetLink buildObject() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink();
+    private fun getFromCursor(cursor: Cursor, column: String): SectionDeviceRendering? {
+        val index = cursor.getColumnIndex(column)
+        val renderingType = cursor.getString(index)
+        return renderingType?.let {
+            SectionDeviceRendering.create(SectionRenderingType.valueOf(it))
+        }
     }
 
-    @Override
-    protected DataElementLegendSetLink buildObjectWithOtherMasterUid() {
-        return buildObject().toBuilder()
-                .dataElement("new_data_element")
-                .build();
+    companion object {
+        const val DESKTOP_RENDER_TYPE = "desktopRenderType"
+        const val MOBILE_RENDER_TYPE = "mobileRenderType"
     }
 }

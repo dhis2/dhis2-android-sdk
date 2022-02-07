@@ -25,27 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.hisp.dhis.android.core.program.SectionDeviceRendering
+import org.hisp.dhis.android.core.program.SectionRendering
+import org.hisp.dhis.android.core.program.SectionRenderingType
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+object ProgramStageSectionSamples {
 
-import androidx.annotation.Nullable;
-
-@AutoValue
-public abstract class ProgramStageSectionDeviceRendering {
-    private static final String TYPE = "type";
-
-    @Nullable
-    @JsonProperty(TYPE)
-    public abstract ProgramStageSectionRenderingType type();
-
-    @JsonCreator
-    public static ProgramStageSectionDeviceRendering create(
-            @JsonProperty(TYPE) ProgramStageSectionRenderingType type) {
-
-        return new AutoValue_ProgramStageSectionDeviceRendering(type);
-    }
+    val programStageSection: ProgramStageSection
+        get() {
+            return ProgramStageSection.builder().apply {
+                fillIdentifiableProperties(this)
+                id(1L)
+                sortOrder(1)
+                renderType(
+                    SectionRendering.create(
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.SEQUENTIAL
+                        ),
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.LISTING
+                        )
+                    )
+                )
+                programStage(ObjectWithUid.create("program_stage_uid"))
+            }.build()
+        }
 }

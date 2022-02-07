@@ -80,6 +80,14 @@ public final class ProgramSectionCollectionRepository
         return cf.string(Columns.ICON);
     }
 
+    public StringFilterConnector<ProgramSectionCollectionRepository> byDesktopRenderType() {
+        return cf.string(ProgramSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byMobileRenderType() {
+        return cf.string(ProgramSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
+    }
+
     public ProgramSectionCollectionRepository withAttributes() {
         return cf.withChild(ProgramSectionFields.ATTRIBUTES);
     }

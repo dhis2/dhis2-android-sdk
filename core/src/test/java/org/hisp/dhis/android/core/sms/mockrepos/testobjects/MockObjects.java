@@ -218,7 +218,7 @@ public class MockObjects {
                 .build();
     }
 
-    private static ArrayList<DataValue> getDataValues() {
+    public static ArrayList<DataValue> getDataValues() {
         ArrayList<DataValue> list = new ArrayList<>();
         for (String[] val : getValues()) {
             list.add(getDataValue(val[0], val[1]));

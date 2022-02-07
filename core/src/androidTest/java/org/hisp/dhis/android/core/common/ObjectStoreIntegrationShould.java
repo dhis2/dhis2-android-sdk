@@ -66,7 +66,7 @@ public class ObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabas
         optionSetCursorAssert(cursor, optionSet);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void throw_exception_for_null_when_inserting() {
         OptionSet optionSet = null;
         store.insert(optionSet);

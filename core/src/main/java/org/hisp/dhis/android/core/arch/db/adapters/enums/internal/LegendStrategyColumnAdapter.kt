@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+import org.hisp.dhis.android.core.visualization.LegendStrategy
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramStageSectionSamples {
-
-    public static ProgramStageSection getProgramStageSection() {
-        ProgramStageSection.Builder builder = ProgramStageSection.builder();
-
-
-        fillIdentifiableProperties(builder);
-        builder
-                .id(1L)
-                .sortOrder(1)
-                .renderType(ProgramStageSectionRendering.create(
-                        ProgramStageSectionDeviceRendering.create(
-                                ProgramStageSectionRenderingType.SEQUENTIAL),
-                        ProgramStageSectionDeviceRendering.create(
-                                ProgramStageSectionRenderingType.LISTING)))
-                .programStage(ObjectWithUid.create("program_stage_uid"));
-        return builder.build();
+internal class LegendStrategyColumnAdapter : EnumColumnAdapter<LegendStrategy>() {
+    override fun getEnumClass(): Class<LegendStrategy> {
+        return LegendStrategy::class.java
     }
 }

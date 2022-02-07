@@ -26,32 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.indicator
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
 
-import androidx.annotation.Nullable;
+class IndicatorLegendSetLinkTableInfo {
 
-@AutoValue
-public abstract class ProgramStageSectionRendering {
-    private static final String DESKTOP = "DESKTOP";
-    private static final String MOBILE = "MOBILE";
+    companion object {
+        val TABLE_INFO: TableInfo = object : TableInfo() {
+            override fun name(): String {
+                return "IndicatorLegendSetLink"
+            }
 
-    @Nullable
-    @JsonProperty(DESKTOP)
-    public abstract ProgramStageSectionDeviceRendering desktop();
+            override fun columns(): Columns {
+                return Columns()
+            }
+        }
 
-    @Nullable
-    @JsonProperty(MOBILE)
-    public abstract ProgramStageSectionDeviceRendering mobile();
+        val CHILD_PROJECTION = LinkTableChildProjection(
+            LegendSetTableInfo.TABLE_INFO,
+            Columns.INDICATOR,
+            Columns.LEGEND_SET
+        )
+    }
 
-    @JsonCreator
-    public static ProgramStageSectionRendering create(
-            @JsonProperty(DESKTOP) ProgramStageSectionDeviceRendering desktop,
-            @JsonProperty(MOBILE) ProgramStageSectionDeviceRendering mobile) {
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                INDICATOR, LEGEND_SET
+            )
+        }
 
-        return new AutoValue_ProgramStageSectionRendering(desktop, mobile);
+        override fun whereUpdate(): Array<String> {
+            return arrayOf(INDICATOR, LEGEND_SET)
+        }
+
+        companion object {
+            const val LEGEND_SET = "legendSet"
+            const val INDICATOR = "indicator"
+        }
     }
 }

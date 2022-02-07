@@ -26,34 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.legendset
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramSectionSamples;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.IndicatorLegendSetLinkSamples
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class ProgramSectionStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection> {
-
-    public ProgramSectionStoreIntegrationShould() {
-        super(ProgramSectionStore.create(TestDatabaseAdapterFactory.get()),
-                ProgramSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class IndicatorLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<IndicatorLegendSetLink>(
+        IndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        IndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!
     }
 
-    @Override
-    protected ProgramSection buildObject() {
-        return ProgramSectionSamples.getProgramSection();
+    override fun buildObject(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink()
     }
 
-    @Override
-    protected ProgramSection buildObjectToUpdate() {
-        return ProgramSectionSamples.getProgramSection().toBuilder()
-                .sortOrder(2)
-                .build();
+    override fun buildObjectWithOtherMasterUid(): IndicatorLegendSetLink {
+        return buildObject().toBuilder()
+            .indicator("new_indicator")
+            .build()
     }
 }

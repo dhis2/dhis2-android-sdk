@@ -30,26 +30,33 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.SectionDeviceRendering
+import org.hisp.dhis.android.core.program.SectionRendering
+import org.hisp.dhis.android.core.program.SectionRenderingType
 
-internal class ProgramSectionRenderingColumnAdapter : ColumnTypeAdapter<ProgramSectionRendering> {
-    override fun fromCursor(cursor: Cursor, columnName: String): ProgramSectionRendering {
-        return ProgramSectionRendering.create(
-            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE),
-            getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
+internal class SectionRenderingColumnAdapter : ColumnTypeAdapter<SectionRendering> {
+    override fun fromCursor(cursor: Cursor, columnName: String): SectionRendering {
+        return SectionRendering.create(
+            getFromCursor(cursor, DESKTOP_RENDER_TYPE),
+            getFromCursor(cursor, MOBILE_RENDER_TYPE)
         )
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: ProgramSectionRendering) {
-        value.desktop()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, it.name) }
-        value.mobile()?.type()?.let { values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, it.name) }
+    override fun toContentValues(values: ContentValues, columnName: String, value: SectionRendering) {
+        value.desktop()?.type()?.let { values.put(DESKTOP_RENDER_TYPE, it.name) }
+        value.mobile()?.type()?.let { values.put(MOBILE_RENDER_TYPE, it.name) }
     }
 
-    private fun getFromCursor(cursor: Cursor, column: String): ProgramSectionDeviceRendering? {
+    private fun getFromCursor(cursor: Cursor, column: String): SectionDeviceRendering? {
         val index = cursor.getColumnIndex(column)
         val renderingType = cursor.getString(index)
         return renderingType?.let {
-            ProgramSectionDeviceRendering.create(ProgramSectionRenderingType.valueOf(it))
+            SectionDeviceRendering.create(SectionRenderingType.valueOf(it))
         }
+    }
+
+    companion object {
+        const val DESKTOP_RENDER_TYPE = "desktopRenderType"
+        const val MOBILE_RENDER_TYPE = "mobileRenderType"
     }
 }

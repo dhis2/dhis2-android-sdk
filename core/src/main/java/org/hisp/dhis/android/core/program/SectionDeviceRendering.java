@@ -35,23 +35,17 @@ import com.google.auto.value.AutoValue;
 import androidx.annotation.Nullable;
 
 @AutoValue
-public abstract class ProgramStageSectionRendering {
-    private static final String DESKTOP = "DESKTOP";
-    private static final String MOBILE = "MOBILE";
+public abstract class SectionDeviceRendering {
+    private static final String TYPE = "type";
 
     @Nullable
-    @JsonProperty(DESKTOP)
-    public abstract ProgramStageSectionDeviceRendering desktop();
-
-    @Nullable
-    @JsonProperty(MOBILE)
-    public abstract ProgramStageSectionDeviceRendering mobile();
+    @JsonProperty(TYPE)
+    public abstract SectionRenderingType type();
 
     @JsonCreator
-    public static ProgramStageSectionRendering create(
-            @JsonProperty(DESKTOP) ProgramStageSectionDeviceRendering desktop,
-            @JsonProperty(MOBILE) ProgramStageSectionDeviceRendering mobile) {
+    public static SectionDeviceRendering create(
+            @JsonProperty(TYPE) SectionRenderingType type) {
 
-        return new AutoValue_ProgramStageSectionRendering(desktop, mobile);
+        return new AutoValue_SectionDeviceRendering(type);
     }
 }

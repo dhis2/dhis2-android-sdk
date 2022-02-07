@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.data.program
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType
+import org.hisp.dhis.android.core.program.SectionDeviceRendering
+import org.hisp.dhis.android.core.program.SectionRendering
+import org.hisp.dhis.android.core.program.SectionRenderingType
 
 object ProgramStageSectionSamples {
 
@@ -43,12 +43,12 @@ object ProgramStageSectionSamples {
                 id(1L)
                 sortOrder(1)
                 renderType(
-                    ProgramStageSectionRendering.create(
-                        ProgramStageSectionDeviceRendering.create(
-                            ProgramStageSectionRenderingType.SEQUENTIAL
+                    SectionRendering.create(
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.SEQUENTIAL
                         ),
-                        ProgramStageSectionDeviceRendering.create(
-                            ProgramStageSectionRenderingType.LISTING
+                        SectionDeviceRendering.create(
+                            SectionRenderingType.LISTING
                         )
                     )
                 )

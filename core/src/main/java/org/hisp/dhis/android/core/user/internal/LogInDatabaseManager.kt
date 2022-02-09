@@ -40,25 +40,25 @@ internal class LogInDatabaseManager @Inject internal constructor(
     private val generalSettingCall: GeneralSettingCall
 ) {
 
-    fun loadDatabaseOnline(serverUrl: HttpUrl, username: String): Completable {
+    fun loadDatabaseOnline(serverUrl: String, username: String): Completable {
         return generalSettingCall.isDatabaseEncrypted()
             .doOnSuccess { encrypt: Boolean ->
                 multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl.toString(), username, encrypt
+                    serverUrl, username, encrypt
                 )
             }
             .doOnError {
                 multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl.toString(), username, false
+                    serverUrl, username, false
                 )
             }
             .ignoreElement()
             .onErrorComplete()
     }
 
-    fun loadExistingKeepingEncryption(serverUrl: HttpUrl, username: String): Boolean {
+    fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return multiUserDatabaseManager.loadExistingKeepingEncryption(
-            serverUrl.toString(),
+            serverUrl,
             username
         )
     }

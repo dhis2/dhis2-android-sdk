@@ -31,7 +31,6 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import net.openid.appauth.AuthState
-import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -94,10 +93,10 @@ internal class LogInCall @Inject internal constructor(
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            loginOnline(parsedServerUrl, user, credentials)
+            loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
-                tryLoginOffline(parsedServerUrl, credentials, d2Error)
+                tryLoginOffline(credentials, d2Error)
             } else {
                 throw handleOnlineException(d2Error)
             }
@@ -118,10 +117,10 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun loginOnline(serverUrl: HttpUrl, user: User, credentials: Credentials): User {
+    private fun loginOnline(user: User, credentials: Credentials): User {
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
-        databaseManager.loadDatabaseOnline(serverUrl, credentials.username).blockingAwait()
+        databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
             val authenticatedUser = AuthenticatedUser.builder()
@@ -146,8 +145,9 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private fun tryLoginOffline(serverUrl: HttpUrl, credentials: Credentials, originalError: D2Error): User {
-        val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, credentials.username)
+    private fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
+        val existingDatabase =
+            databaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
         if (!existingDatabase) {
             throw originalError
         }
@@ -176,7 +176,7 @@ internal class LogInCall @Inject internal constructor(
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
             val credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
-            loginOnline(parsedServerUrl, user, credentials)
+            loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error)
         }

@@ -23,24 +23,7 @@
           },
           "to": {
             "trackedEntityInstance": {
-              "trackedEntityInstance": "nWrB0TfWlvh"
-            }
-          }
-        },
-        {
-          "lastUpdated": "2018-02-07T08:06:28.369",
-          "created": "2018-02-07T08:06:28.369",
-          "relationshipName": "Prescription to Person",
-          "relationshipType": "o51cUNONthg",
-          "relationship": "AJOytZW7OaB",
-          "from": {
-            "trackedEntityInstance": {
-              "trackedEntityInstance": "nWrB0TfWlvh"
-            }
-          },
-          "to": {
-            "trackedEntityInstance": {
-              "trackedEntityInstance": "nWrB0TfWlvh"
+              "trackedEntityInstance": "nWrB0TfWlvD"
             }
           }
         }
@@ -171,7 +154,25 @@
           9.0
         ]
       },
-      "relationships": [],
+      "relationships": [
+        {
+          "lastUpdated": "2018-02-07T08:06:28.369",
+          "created": "2018-02-07T08:06:28.369",
+          "relationshipName": "Prescription to Person",
+          "relationshipType": "o51cUNONthg",
+          "relationship": "AJOytZW7OaB",
+          "from": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvD"
+            }
+          },
+          "to": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvh"
+            }
+          }
+        }
+      ],
       "attributes": [
         {
           "lastUpdated": "2018-01-10T13:40:28.000",

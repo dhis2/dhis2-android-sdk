@@ -155,7 +155,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     // Legacy code for <= 2.29
     private fun setRelationshipsState(trackedEntityInstanceUid: String?, state: State) {
         val dbRelationships =
-            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
+            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true, false)
         val ownedRelationships = relationshipDHISVersionManager
             .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid)
         for (relationship in ownedRelationships) {

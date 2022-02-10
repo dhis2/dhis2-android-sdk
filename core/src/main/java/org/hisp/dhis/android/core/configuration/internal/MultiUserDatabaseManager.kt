@@ -167,10 +167,6 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     }
 
     companion object {
-        private var maxServerUserPairs = 1
-
-        fun setMaxServerUserPairs(pairs: Int) {
-            maxServerUserPairs = pairs
-        }
+        var maxServerUserPairs = 1
     }
 }

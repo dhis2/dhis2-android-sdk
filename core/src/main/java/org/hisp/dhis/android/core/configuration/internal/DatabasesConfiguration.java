@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Collections;
 import java.util.List;
 
 @AutoValue
@@ -46,7 +47,8 @@ public abstract class DatabasesConfiguration {
     public abstract List<DatabaseUserConfiguration> users();
 
     public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder();
+        return new AutoValue_DatabasesConfiguration.Builder()
+                .users(Collections.emptyList());
     }
 
     public abstract Builder toBuilder();

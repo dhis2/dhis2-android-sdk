@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.user.AccountManager;
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository;
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository;
 import org.hisp.dhis.android.core.user.User;
@@ -58,6 +59,8 @@ public final class UserModuleImpl implements UserModule {
     private final UserCredentialsObjectRepository userCredentials;
     private final UserObjectRepository user;
 
+    private final AccountManager accountManager;
+
     private final OpenIDConnectHandler openIDConnectHandler;
 
     @Inject
@@ -69,6 +72,7 @@ public final class UserModuleImpl implements UserModule {
                    AuthorityCollectionRepository authorities,
                    UserCredentialsObjectRepository userCredentials,
                    UserObjectRepository user,
+                   AccountManagerImpl accountManager,
                    OpenIDConnectHandlerImpl openIdHandlerImpl) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallFactory = logoutCallCallFactory;
@@ -78,6 +82,7 @@ public final class UserModuleImpl implements UserModule {
         this.authorities = authorities;
         this.userCredentials = userCredentials;
         this.user = user;
+        this.accountManager = accountManager;
         this.openIDConnectHandler = openIdHandlerImpl;
     }
 
@@ -140,6 +145,11 @@ public final class UserModuleImpl implements UserModule {
     @NonNull
     public boolean blockingIsLogged() {
         return isLogged().blockingGet();
+    }
+
+    @Override
+    public AccountManager accountManager() {
+        return accountManager;
     }
 
     @Override

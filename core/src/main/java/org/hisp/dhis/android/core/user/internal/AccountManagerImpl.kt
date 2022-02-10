@@ -25,28 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler;
+package org.hisp.dhis.android.core.user.internal
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.user.AccountManager
 
-public interface UserModule {
-    AuthenticatedUserObjectRepository authenticatedUser();
-    UserRoleCollectionRepository userRoles();
-    AuthorityCollectionRepository authorities();
-    UserCredentialsObjectRepository userCredentials();
-    UserObjectRepository user();
+@Reusable
+internal class AccountManagerImpl @Inject constructor(
+    private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+) : AccountManager {
+    override fun get(): Single<DatabasesConfiguration> {
+        return Single.fromCallable { blockingGet() }
+    }
 
-    AccountManager accountManager();
-    
-    Single<User> logIn(String username, String password, String serverUrl);
-    User blockingLogIn(String username, String password, String serverUrl);
-    Completable logOut();
-    void blockingLogOut();
-    Single<Boolean> isLogged();
-    boolean blockingIsLogged();
+    override fun blockingGet(): DatabasesConfiguration {
+        return databasesConfigurationStore.get() ?: DatabasesConfiguration.builder().build()
+    }
 
-    OpenIDConnectHandler openIdHandler();
+    override fun setMaxAccounts(maxAccounts: Int) {
+        MultiUserDatabaseManager.maxServerUserPairs = maxAccounts
+    }
+
+    override fun getMaxAccounts(): Int {
+        return MultiUserDatabaseManager.maxServerUserPairs
+    }
 }

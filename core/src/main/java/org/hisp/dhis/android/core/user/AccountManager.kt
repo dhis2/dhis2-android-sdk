@@ -25,28 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler;
+package org.hisp.dhis.android.core.user
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 
-public interface UserModule {
-    AuthenticatedUserObjectRepository authenticatedUser();
-    UserRoleCollectionRepository userRoles();
-    AuthorityCollectionRepository authorities();
-    UserCredentialsObjectRepository userCredentials();
-    UserObjectRepository user();
-
-    AccountManager accountManager();
-    
-    Single<User> logIn(String username, String password, String serverUrl);
-    User blockingLogIn(String username, String password, String serverUrl);
-    Completable logOut();
-    void blockingLogOut();
-    Single<Boolean> isLogged();
-    boolean blockingIsLogged();
-
-    OpenIDConnectHandler openIdHandler();
+interface AccountManager {
+    fun get(): Single<DatabasesConfiguration>
+    fun blockingGet(): DatabasesConfiguration
+    fun setMaxAccounts(maxAccounts: Int)
+    fun getMaxAccounts(): Int
 }

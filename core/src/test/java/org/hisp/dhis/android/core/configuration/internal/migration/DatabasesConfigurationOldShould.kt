@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
+class DatabasesConfigurationOldShould :
+    BaseObjectShould("configuration/databases_configuration_old.json"),
+    ObjectShould {
 
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+    @Test
+    override fun map_from_json_string() {
+        val configuration = deserialize(DatabasesConfigurationOld::class.java)
 
-import io.reactivex.Single;
+        assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org")
+        assertThat(configuration.servers().size).isEqualTo(1)
 
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
+        val server = configuration.servers()[0]
+        assertThat(server.serverUrl()).isEqualTo("https://dhis2.org")
+        assertThat(server.users().size).isEqualTo(1)
 
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
+        val user = server.users()[0]
+        assertThat(user.username()).isEqualTo("user")
+        assertThat(user.databaseName()).isEqualTo("dbname.db")
+        assertThat(user.encrypted()).isTrue()
     }
 
     @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
-    }
-
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+    fun equal_when_deserialize_serialize_deserialize() {
+        val configuration = deserialize(
+            DatabasesConfigurationOld::class.java
+        )
+        val serialized = serialize(configuration)
+        val deserialized = deserialize(serialized, DatabasesConfigurationOld::class.java)
+        assertThat(deserialized).isEqualTo(configuration)
     }
 }

@@ -54,9 +54,12 @@ internal object ServerUrlParser {
                 .build()
     }
 
-    @JvmStatic
     fun trimAndRemoveTrailingSlash(url: String?): String? {
         return url?.trim()?.trimEnd('/')
+    }
+
+    fun removeTrailingApi(url: String): String {
+        return url.trimEnd('/').removeSuffix("/api")
     }
 
     private fun appendSlashAndAPI(url: String): String {

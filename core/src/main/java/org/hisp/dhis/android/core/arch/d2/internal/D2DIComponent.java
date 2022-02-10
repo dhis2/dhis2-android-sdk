@@ -41,10 +41,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
@@ -164,7 +163,7 @@ public interface D2DIComponent {
     DatabaseAdapter databaseAdapter();
     UserIdInMemoryStore userIdInMemoryStore();
     MultiUserDatabaseManagerForD2Manager multiUserDatabaseManagerForD2Manager();
-    ObjectKeyValueStore<Credentials> credentialsSecureStore();
+    CredentialsSecureStore credentialsSecureStore();
 
     @VisibleForTesting
     Retrofit retrofit();

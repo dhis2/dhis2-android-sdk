@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -56,7 +56,7 @@ internal class LogInCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,
     private val userService: UserService,
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val userHandler: Handler<User>,
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,

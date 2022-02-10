@@ -25,44 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.configuration.internal;
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 
-import androidx.annotation.NonNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesConfigurationOld.Builder.class)
-public abstract class DatabasesConfigurationOld {
-
-    @JsonProperty()
-    @NonNull
-    public abstract String loggedServerUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract List<DatabaseServerConfigurationOld> servers();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfigurationOld.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder loggedServerUrl(String loggedServerUrl);
-
-        public abstract Builder servers(List<DatabaseServerConfigurationOld> servers);
-
-        public abstract DatabasesConfigurationOld build();
+internal object NotClosedObjectsDetector {
+    fun enableNotClosedObjectsDetection() {
+        StrictMode.setVmPolicy(
+            VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build()
+        )
     }
 }

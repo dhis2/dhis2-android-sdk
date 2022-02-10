@@ -33,7 +33,7 @@ import java.io.File
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.*
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -50,7 +50,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val userModule: UserModule,
-    private val credentialsStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val databaseRenamer: DatabaseRenamer,
     private val databaseAdapter: DatabaseAdapter

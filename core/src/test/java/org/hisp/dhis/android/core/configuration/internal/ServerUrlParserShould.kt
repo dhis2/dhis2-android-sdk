@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 import com.google.common.truth.Truth.assertThat
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.parse
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.removeTrailingApi
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.trimAndRemoveTrailingSlash
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.junit.Test
@@ -80,5 +81,12 @@ class ServerUrlParserShould {
         val expectedUrl = "http://dhis2.org/demo"
         assertThat(trimAndRemoveTrailingSlash("http://dhis2.org/demo/")).isEqualTo(expectedUrl)
         assertThat(trimAndRemoveTrailingSlash("http://dhis2.org/demo//")).isEqualTo(expectedUrl)
+    }
+
+    @Test
+    fun remove_trailing_api() {
+        val expectedUrl = "http://dhis2.org/demo"
+        assertThat(removeTrailingApi("http://dhis2.org/demo/api")).isEqualTo(expectedUrl)
+        assertThat(removeTrailingApi("http://dhis2.org/demo/api/")).isEqualTo(expectedUrl)
     }
 }

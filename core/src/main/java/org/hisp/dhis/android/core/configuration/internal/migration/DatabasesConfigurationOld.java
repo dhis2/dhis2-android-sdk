@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,51 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.configuration.internal.migration;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
+import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import io.reactivex.Single;
+import java.util.List;
 
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabasesConfigurationOld.Builder.class)
+public abstract class DatabasesConfigurationOld {
 
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    @JsonProperty()
+    @NonNull
+    public abstract String loggedServerUrl();
 
-    @Mock
-    private Credentials credentials;
+    @JsonProperty()
+    @NonNull
+    public abstract List<DatabaseServerConfigurationOld> servers();
 
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
+    public static Builder builder() {
+        return new AutoValue_DatabasesConfigurationOld.Builder();
     }
 
-    @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
-    }
+    public abstract Builder toBuilder();
 
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder loggedServerUrl(String loggedServerUrl);
+
+        public abstract Builder servers(List<DatabaseServerConfigurationOld> servers);
+
+        public abstract DatabasesConfigurationOld build();
     }
 }

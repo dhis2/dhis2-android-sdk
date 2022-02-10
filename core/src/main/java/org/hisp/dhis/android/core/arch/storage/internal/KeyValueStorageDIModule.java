@@ -58,7 +58,7 @@ public class KeyValueStorageDIModule {
 
     @Provides
     @Singleton
-    ObjectKeyValueStore<Credentials> credentialsSecureStore(CredentialsSecureStoreImpl impl) {
+    CredentialsSecureStore credentialsSecureStore(CredentialsSecureStoreImpl impl) {
         return impl;
     }
 

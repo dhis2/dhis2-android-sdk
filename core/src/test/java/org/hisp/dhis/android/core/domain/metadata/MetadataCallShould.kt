@@ -33,8 +33,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -78,7 +77,7 @@ class MetadataCallShould : BaseCallShould() {
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials> = mock()
+    private val credentialsSecureStore: CredentialsSecureStore = mock()
 
     // object to test
     private var metadataCall: MetadataCall? = null

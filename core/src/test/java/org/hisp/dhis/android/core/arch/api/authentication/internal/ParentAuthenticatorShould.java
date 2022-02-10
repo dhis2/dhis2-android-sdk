@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
+import static okhttp3.Credentials.basic;
+
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler;
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
@@ -50,16 +54,12 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-import static com.google.common.truth.Truth.assertThat;
-import static okhttp3.Credentials.basic;
-import static org.mockito.Mockito.when;
-
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
 @RunWith(JUnit4.class)
 public class ParentAuthenticatorShould {
 
     @Mock
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
     private UserIdInMemoryStore userIdStore;

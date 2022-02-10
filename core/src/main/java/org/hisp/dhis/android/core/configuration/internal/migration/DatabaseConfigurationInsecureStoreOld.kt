@@ -25,41 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-class DatabasesConfigurationOldShould :
-    BaseObjectShould("configuration/databases_configuration_old.json"),
-    ObjectShould {
-
-    @Test
-    override fun map_from_json_string() {
-        val configuration = deserialize(DatabasesConfigurationOld::class.java)
-
-        assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org")
-        assertThat(configuration.servers().size).isEqualTo(1)
-
-        val server = configuration.servers()[0]
-        assertThat(server.serverUrl()).isEqualTo("https://dhis2.org")
-        assertThat(server.users().size).isEqualTo(1)
-
-        val user = server.users()[0]
-        assertThat(user.username()).isEqualTo("user")
-        assertThat(user.databaseName()).isEqualTo("dbname.db")
-        assertThat(user.encrypted()).isTrue()
-    }
-
-    @Test
-    fun equal_when_deserialize_serialize_deserialize() {
-        val configuration = deserialize(
-            DatabasesConfigurationOld::class.java
-        )
-        val serialized = serialize(configuration)
-        val deserialized = deserialize(serialized, DatabasesConfigurationOld::class.java)
-        assertThat(deserialized).isEqualTo(configuration)
+internal object DatabaseConfigurationInsecureStoreOld {
+    operator fun get(insecureStore: InsecureStore): ObjectKeyValueStore<DatabasesConfigurationOld> {
+        return JsonKeyValueStoreImpl(insecureStore, "DB_CONFIGS", DatabasesConfigurationOld::class.java)
     }
 }

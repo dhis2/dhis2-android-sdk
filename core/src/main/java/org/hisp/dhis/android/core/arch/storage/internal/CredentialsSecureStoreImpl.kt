@@ -27,13 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Singleton
 import net.openid.appauth.AuthState
 
 @Singleton
-class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
-    ObjectKeyValueStore<Credentials> {
+internal class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
+    CredentialsSecureStore {
 
     private var credentials: Credentials? = null
 
@@ -45,8 +46,20 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
         secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
     }
 
+    override fun setServerUrl(serverUrl: String) {
+        secureStore.setData(SERVER_URL_KEY, serverUrl)
+    }
+
     override fun get(): Credentials? {
         if (credentials == null) {
+            credentials = tryGet()
+        }
+        return credentials
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun tryGet(): Credentials? {
+        try {
             val username = secureStore.getData(USERNAME_KEY)
             val serverUrl = secureStore.getData(SERVER_URL_KEY)
 
@@ -54,10 +67,12 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
                 val password = secureStore.getData(PASSWORD_KEY)
                 val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
                 val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
-                credentials = Credentials(username, serverUrl, password, openIDConnectState)
+                return Credentials(username, serverUrl, password, openIDConnectState)
             }
+        } catch (e: RuntimeException) {
+            remove()
         }
-        return credentials
+        return null
     }
 
     override fun remove() {
@@ -70,7 +85,7 @@ class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: Ch
 
     companion object {
         private const val USERNAME_KEY = "username"
-        private const val SERVER_URL_KEY = "serverUrl"
+        internal const val SERVER_URL_KEY = "serverUrl"
         private const val PASSWORD_KEY = "password"
         private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
     }

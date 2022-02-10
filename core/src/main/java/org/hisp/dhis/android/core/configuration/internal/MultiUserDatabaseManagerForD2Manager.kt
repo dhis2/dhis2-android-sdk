@@ -43,10 +43,10 @@ internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
     private val configurationHelper: DatabaseConfigurationHelper,
     private val migration: DatabaseConfigurationMigration,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val newConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
 ) {
     fun loadIfLogged(credentials: Credentials?) {
-        val databaseConfiguration = newConfigurationStore.get()
+        val databaseConfiguration = databaseConfigurationStore.get()
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(credentials.serverUrl)
             val userConfiguration = configurationHelper.getLoggedUserConfiguration(

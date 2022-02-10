@@ -32,20 +32,28 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
     private val context: Context,
-    private val newConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val credentialsStore: CredentialsSecureStore,
+    private val insecureStore: InsecureStore,
     private val nameGenerator: DatabaseNameGenerator,
     private val renamer: DatabaseRenamer,
     private val databaseAdapterFactory: DatabaseAdapterFactory
 ) {
-    fun apply(): DatabasesConfiguration? {
+    @Suppress("TooGenericExceptionCaught")
+    fun apply() {
         val oldDatabaseExist = context.databaseList().contains(OLD_DBNAME)
-        return if (oldDatabaseExist) {
+
+        if (oldDatabaseExist) {
+            // This is the initial database in the SDK, named like OLD_DBNAME.
             val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
             databaseAdapterFactory.createOrOpenDatabase(
                 databaseAdapter,
@@ -55,18 +63,48 @@ internal class DatabaseConfigurationMigration @Inject constructor(
             val username = getUsername(databaseAdapter)
             val serverUrl = getServerUrl(databaseAdapter)
             databaseAdapter.close()
+            credentialsStore.remove()
+
             if (username == null || serverUrl == null) {
                 context.deleteDatabase(OLD_DBNAME)
-                null
             } else {
                 val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
                 renamer.renameDatabase(OLD_DBNAME, databaseName)
                 val newConfiguration = DatabaseConfigurationTransformer.transform(serverUrl, databaseName, username)
-                newConfigurationStore.set(newConfiguration)
-                newConfiguration
+                databaseConfigurationStore.set(newConfiguration)
             }
         } else {
-            newConfigurationStore.get()
+            try {
+                try {
+                    databaseConfigurationStore.get()
+                } catch (e: RuntimeException) {
+                    val configuration = tryOldDatabaseConfiguration()
+                    databaseConfigurationStore.set(configuration)
+                }
+            } catch (e: RuntimeException) {
+                databaseConfigurationStore.remove()
+            }
+        }
+    }
+
+    private fun tryOldDatabaseConfiguration(): DatabasesConfiguration? {
+        val oldDatabaseConfigurationStore = DatabaseConfigurationInsecureStoreOld.get(insecureStore)
+
+        return oldDatabaseConfigurationStore.get()?.let { config ->
+            credentialsStore.setServerUrl(ServerUrlParser.removeTrailingApi(config.loggedServerUrl()))
+
+            val users = config.servers().flatMap { serverConf ->
+                serverConf.users().map { userConf ->
+                    DatabaseUserConfiguration.builder()
+                        .username(userConf.username())
+                        .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl()))
+                        .databaseName(userConf.databaseName())
+                        .databaseCreationDate(userConf.databaseCreationDate())
+                        .encrypted(userConf.encrypted())
+                        .build()
+                }
+            }
+            DatabasesConfiguration.builder().users(users).build()
         }
     }
 

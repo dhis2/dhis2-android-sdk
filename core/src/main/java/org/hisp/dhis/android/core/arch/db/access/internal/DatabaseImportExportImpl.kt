@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
 import dagger.Reusable
-import java.io.File
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -42,13 +40,14 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
+import java.io.File
+import javax.inject.Inject
 
 @Reusable
 internal class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
@@ -128,7 +127,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
 
         val credentials = credentialsStore.get()
         val databasesConfiguration = databaseConfigurationSecureStore.get()
-        val userConfiguration = databaseConfigurationHelper.getLoggedUserConfiguration(
+        val userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
             databasesConfiguration,
             credentials.serverUrl, credentials.username
         )

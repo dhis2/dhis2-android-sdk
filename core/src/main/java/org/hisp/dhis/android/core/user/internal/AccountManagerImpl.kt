@@ -32,6 +32,7 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.user.AccountManager
@@ -40,12 +41,12 @@ import org.hisp.dhis.android.core.user.AccountManager
 internal class AccountManagerImpl @Inject constructor(
     private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
 ) : AccountManager {
-    override fun get(): Single<DatabasesConfiguration> {
-        return Single.fromCallable { blockingGet() }
+    override fun getAccounts(): Single<List<DatabaseUserConfiguration>> {
+        return Single.fromCallable { blockingGetAccounts() }
     }
 
-    override fun blockingGet(): DatabasesConfiguration {
-        return databasesConfigurationStore.get() ?: DatabasesConfiguration.builder().build()
+    override fun blockingGetAccounts(): List<DatabaseUserConfiguration> {
+        return databasesConfigurationStore.get()?.users() ?: emptyList()
     }
 
     override fun setMaxAccounts(maxAccounts: Int) {

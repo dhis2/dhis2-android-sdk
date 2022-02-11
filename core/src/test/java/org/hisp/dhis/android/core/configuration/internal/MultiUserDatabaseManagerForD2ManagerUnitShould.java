@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
@@ -39,19 +43,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 
 @RunWith(JUnit4.class)
 public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShould {
 
     @Mock
     private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private DatabaseConfigurationHelper configurationHelper;
 
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
@@ -88,7 +85,7 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        manager = new MultiUserDatabaseManagerForD2Manager(databaseAdapter, configurationHelper,
+        manager = new MultiUserDatabaseManagerForD2Manager(databaseAdapter,
                 migration, databaseAdapterFactory, databaseConfigurationStore);
 
         when(databaseConfigurationStore.get()).thenReturn(databasesConfiguration);
@@ -102,8 +99,6 @@ public class MultiUserDatabaseManagerForD2ManagerUnitShould extends BaseCallShou
 
     @Test
     public void load_db_if_logged_when_calling_loadIfLogged() {
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME, SERVER_URL)).thenReturn(userConfigurationUnencrypted);
-
         manager.loadIfLogged(credentials);
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);

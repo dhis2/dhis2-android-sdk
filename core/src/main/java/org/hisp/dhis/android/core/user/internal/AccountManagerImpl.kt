@@ -29,31 +29,27 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.user.AccountManager
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(
-    private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+    private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager
 ) : AccountManager {
-    override fun getAccounts(): Single<List<DatabaseUserConfiguration>> {
-        return Single.fromCallable { blockingGetAccounts() }
-    }
-
-    override fun blockingGetAccounts(): List<DatabaseUserConfiguration> {
-        return databasesConfigurationStore.get()?.users() ?: emptyList()
+    override fun getAccounts(): List<DatabaseAccount> {
+        return databasesConfigurationStore.get()?.accounts() ?: emptyList()
     }
 
     override fun setMaxAccounts(maxAccounts: Int) {
-        MultiUserDatabaseManager.maxServerUserPairs = maxAccounts
+        multiUserDatabaseManager.setMaxAccounts(maxAccounts)
     }
 
     override fun getMaxAccounts(): Int {
-        return MultiUserDatabaseManager.maxServerUserPairs
+        return databasesConfigurationStore.get()?.maxAccounts() ?: MultiUserDatabaseManager.DefaultMaxAccounts
     }
 }

@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.user
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 
 interface AccountManager {
-    fun getAccounts(): Single<List<DatabaseUserConfiguration>>
-    fun blockingGetAccounts(): List<DatabaseUserConfiguration>
+    fun getAccounts(): List<DatabaseAccount>
     fun setMaxAccounts(maxAccounts: Int)
     fun getMaxAccounts(): Int
 }

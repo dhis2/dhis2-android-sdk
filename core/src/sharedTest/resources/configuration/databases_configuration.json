@@ -1,5 +1,6 @@
 {
-  "users": [
+  "maxAccounts": 3,
+  "accounts": [
     {
       "username": "user1",
       "serverUrl": "server1",

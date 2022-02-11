@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.util.Log
 import dagger.Reusable
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
@@ -67,7 +68,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
-            { obj: DatabaseUserConfiguration -> obj.encrypted() },
+            { obj: DatabaseAccount -> obj.encrypted() },
             true
         )
 
@@ -80,15 +81,17 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         val configuration = databaseConfigurationSecureStore.get()
 
         configuration?.let {
-            val exceedingAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, maxServerUserPairs - 1)
-            val updatedConfigurations =
-                DatabaseConfigurationHelper.removeUserConfigurations(configuration, exceedingAccounts)
+            val exceedingAccounts = DatabaseConfigurationHelper
+                .getOldestAccounts(configuration.accounts(), configuration.maxAccounts() - 1)
 
-            databaseConfigurationSecureStore.set(updatedConfigurations)
+            val updatedConfiguration =
+                DatabaseConfigurationHelper.removeAccount(configuration, exceedingAccounts)
+
+            databaseConfigurationSecureStore.set(updatedConfiguration)
             exceedingAccounts.forEach { databaseAdapterFactory.deleteDatabase(it) }
         }
 
-        val userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt)
+        val userConfiguration = addNewAccountInternal(serverUrl, username, encrypt)
         localDbRepository.blockingClear()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
     }
@@ -106,68 +109,80 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         return loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
-            { obj: DatabaseUserConfiguration -> obj.encrypted() },
+            { obj: DatabaseAccount -> obj.encrypted() },
             true
         )
+    }
+
+    fun setMaxAccounts(maxAccounts: Int) {
+        if (maxAccounts <= 0) {
+            throw IllegalArgumentException("MaxAccounts must be greater than 0")
+        } else {
+            val configuration = databaseConfigurationSecureStore.get()
+            val updatedConfiguration = (configuration.toBuilder() ?: DatabasesConfiguration.builder())
+                .maxAccounts(maxAccounts)
+                .build()
+            databaseConfigurationSecureStore.set(updatedConfiguration)
+        }
     }
 
     private fun loadExistingChangingEncryptionIfRequired(
         serverUrl: String,
         username: String,
-        encryptionExtractor: (config: DatabaseUserConfiguration) -> Boolean,
+        encryptionExtractor: (config: DatabaseAccount) -> Boolean,
         alsoOpenWhenEncryptionDoesntChange: Boolean
     ): Boolean {
-        val existingUserConfiguration = getUserConfiguration(serverUrl, username) ?: return false
-        val encrypt = encryptionExtractor(existingUserConfiguration)
-        changeEncryptionIfRequired(serverUrl, existingUserConfiguration, encrypt)
-        if (encrypt != existingUserConfiguration.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
-            val updatedUserConfiguration = addNewConfigurationInternal(
+        val existingAccount = getAccount(serverUrl, username) ?: return false
+        val encrypt = encryptionExtractor(existingAccount)
+        changeEncryptionIfRequired(serverUrl, existingAccount, encrypt)
+        if (encrypt != existingAccount.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
+            val updatedAccount = addNewAccountInternal(
                 serverUrl,
                 username,
                 encrypt
             )
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration)
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedAccount)
         }
         return true
     }
 
     private fun changeEncryptionIfRequired(
         serverUrl: String,
-        existingUserConfiguration: DatabaseUserConfiguration,
+        existingAccount: DatabaseAccount,
         encrypt: Boolean
     ) {
-        if (encrypt != existingUserConfiguration.encrypted()) {
+        if (encrypt != existingAccount.encrypted()) {
             Log.w(
                 MultiUserDatabaseManager::class.java.name,
-                "Encryption value changed for " + existingUserConfiguration.username() + ": " + encrypt
+                "Encryption value changed for " + existingAccount.username() + ": " + encrypt
             )
-            if (encrypt && !existingUserConfiguration.encrypted()) {
-                databaseExport.encrypt(serverUrl, existingUserConfiguration)
-            } else if (!encrypt && existingUserConfiguration.encrypted()) {
-                databaseExport.decrypt(serverUrl, existingUserConfiguration)
+            if (encrypt && !existingAccount.encrypted()) {
+                databaseExport.encrypt(serverUrl, existingAccount)
+            } else if (!encrypt && existingAccount.encrypted()) {
+                databaseExport.decrypt(serverUrl, existingAccount)
             }
-            databaseAdapterFactory.deleteDatabase(existingUserConfiguration)
+            databaseAdapterFactory.deleteDatabase(existingAccount)
         }
     }
 
-    private fun getUserConfiguration(serverUrl: String, username: String): DatabaseUserConfiguration? {
+    private fun getAccount(serverUrl: String, username: String): DatabaseAccount? {
         val configuration = databaseConfigurationSecureStore.get()
-        return DatabaseConfigurationHelper.getUserConfiguration(configuration, serverUrl, username)
+        return DatabaseConfigurationHelper.getAccount(configuration, serverUrl, username)
     }
 
-    private fun addNewConfigurationInternal(
+    private fun addNewAccountInternal(
         serverUrl: String,
         username: String,
         encrypt: Boolean
-    ): DatabaseUserConfiguration {
-        val updatedConfiguration = configurationHelper.setConfiguration(
+    ): DatabaseAccount {
+        val updatedAccount = configurationHelper.addAccount(
             databaseConfigurationSecureStore.get(), serverUrl, username, encrypt
         )
-        databaseConfigurationSecureStore.set(updatedConfiguration)
-        return DatabaseConfigurationHelper.getLoggedUserConfiguration(updatedConfiguration, username, serverUrl)
+        databaseConfigurationSecureStore.set(updatedAccount)
+        return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)
     }
 
     companion object {
-        var maxServerUserPairs = 1
+        const val DefaultMaxAccounts = 1
     }
 }

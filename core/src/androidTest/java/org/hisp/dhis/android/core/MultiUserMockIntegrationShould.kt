@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager.Companion.setMaxServerUserPairs
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -94,13 +93,13 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         @JvmStatic
         fun setUpTestClass() {
             setUpClass()
-            setMaxServerUserPairs(5)
+            d2.userModule().accountManager().setMaxAccounts(5)
         }
 
         @AfterClass
         @JvmStatic
         fun tearDownTestClass() {
-            setMaxServerUserPairs(1)
+            d2.userModule().accountManager().setMaxAccounts(1)
         }
     }
 }

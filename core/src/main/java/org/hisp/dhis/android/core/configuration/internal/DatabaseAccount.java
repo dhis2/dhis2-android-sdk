@@ -36,8 +36,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseUserConfiguration.Builder.class)
-public abstract class DatabaseUserConfiguration {
+@JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder.class)
+public abstract class DatabaseAccount {
 
     @JsonProperty()
     @NonNull
@@ -62,7 +62,7 @@ public abstract class DatabaseUserConfiguration {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_DatabaseUserConfiguration.Builder();
+        return new AutoValue_DatabaseAccount.Builder();
     }
 
     @AutoValue.Builder
@@ -79,6 +79,6 @@ public abstract class DatabaseUserConfiguration {
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
 
-        public abstract DatabaseUserConfiguration build();
+        public abstract DatabaseAccount build();
     }
 }

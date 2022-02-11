@@ -27,27 +27,14 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import android.util.Log
 import dagger.Reusable
-import java.text.ParseException
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
 @Reusable
 internal class DatabaseConfigurationHelper @Inject constructor(
     private val databaseNameGenerator: DatabaseNameGenerator,
     private val dateProvider: DateProvider
 ) {
-
-    fun getUserConfiguration(
-        configuration: DatabasesConfiguration?,
-        serverUrl: String,
-        username: String
-    ): DatabaseUserConfiguration? {
-        return configuration?.users()?.find {
-            equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
-        }
-    }
 
     fun changeEncryption(serverUrl: String?, userConfiguration: DatabaseUserConfiguration): DatabaseUserConfiguration {
         return userConfiguration.toBuilder()
@@ -59,36 +46,6 @@ internal class DatabaseConfigurationHelper @Inject constructor(
                 )
             )
             .build()
-    }
-
-    fun removeServerUserConfiguration(
-        configuration: DatabasesConfiguration,
-        userToRemove: DatabaseUserConfiguration
-    ): DatabasesConfiguration {
-        val users = configuration.users().filterNot {
-            it.databaseName() == userToRemove.databaseName()
-        }
-
-        return configuration.toBuilder().users(users).build()
-    }
-
-    @Suppress("TooGenericExceptionThrown")
-    fun getLoggedUserConfiguration(
-        configuration: DatabasesConfiguration,
-        username: String,
-        serverUrl: String
-    ): DatabaseUserConfiguration {
-        val userConfiguration = getUserConfiguration(configuration, serverUrl, username)
-        return userConfiguration
-            ?: throw RuntimeException("Malformed configuration: user configuration not found for logged server")
-    }
-
-    private fun removeProtocol(s: String): String {
-        return s.replace("https://", "").replace("http://", "")
-    }
-
-    private fun equalsIgnoreProtocol(s1: String, s2: String): Boolean {
-        return removeProtocol(s1) == removeProtocol(s2)
     }
 
     fun setConfiguration(
@@ -114,17 +71,56 @@ internal class DatabaseConfigurationHelper @Inject constructor(
             .build()
     }
 
-    fun countServerUserPairs(configuration: DatabasesConfiguration?): Int {
-        return configuration?.users()?.size ?: 0
-    }
+    companion object {
+        fun getUserConfiguration(
+            configuration: DatabasesConfiguration?,
+            serverUrl: String,
+            username: String
+        ): DatabaseUserConfiguration? {
+            return configuration?.users()?.find {
+                equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
+            }
+        }
 
-    @Suppress("TooGenericExceptionThrown")
-    fun getOldestServerUser(configuration: DatabasesConfiguration?): DatabaseUserConfiguration? {
-        return try {
-            configuration?.users()?.minByOrNull { DateUtils.DATE_FORMAT.parse(it.databaseCreationDate()) }
-        } catch (e: ParseException) {
-            Log.e("DbConfigHelper", "Error parsing databaseCreationDate")
-            throw RuntimeException(e)
+        fun removeUserConfigurations(
+            configuration: DatabasesConfiguration,
+            userToRemove: List<DatabaseUserConfiguration>
+        ): DatabasesConfiguration {
+            val users = configuration.users().filterNot { user ->
+                userToRemove.any { it.databaseName() == user.databaseName() }
+            }
+
+            return configuration.toBuilder().users(users).build()
+        }
+
+        @Suppress("TooGenericExceptionThrown")
+        fun getLoggedUserConfiguration(
+            configuration: DatabasesConfiguration,
+            username: String,
+            serverUrl: String
+        ): DatabaseUserConfiguration {
+            val userConfiguration = getUserConfiguration(configuration, serverUrl, username)
+            return userConfiguration
+                ?: throw RuntimeException("Malformed configuration: user configuration not found for logged server")
+        }
+
+        fun getOldestAccounts(configuration: DatabasesConfiguration, keepAccounts: Int): List<DatabaseUserConfiguration> {
+            val listSize = configuration.users().size
+            return if (listSize > keepAccounts) {
+                configuration.users()
+                    .sortedByDescending { it.databaseCreationDate() }
+                    .subList(keepAccounts, listSize)
+            } else {
+                emptyList()
+            }
+        }
+
+        private fun equalsIgnoreProtocol(s1: String, s2: String): Boolean {
+            return removeProtocol(s1) == removeProtocol(s2)
+        }
+
+        private fun removeProtocol(s: String): String {
+            return s.replace("https://", "").replace("http://", "")
         }
     }
 }

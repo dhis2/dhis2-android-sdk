@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user
+package org.hisp.dhis.android.core.configuration.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-
-interface AccountManager {
-    fun getAccounts(): Single<List<DatabaseUserConfiguration>>
-    fun blockingGetAccounts(): List<DatabaseUserConfiguration>
-    fun setMaxAccounts(maxAccounts: Int)
-    fun getMaxAccounts(): Int
+object DatabasesConfigurationUtil {
+    fun buildUserConfiguration(
+        username: String,
+        creationDate: String,
+        serverUrl: String = "server"
+    ): DatabaseUserConfiguration {
+        return DatabaseUserConfiguration.builder()
+            .username(username)
+            .serverUrl(serverUrl)
+            .databaseName("database$username")
+            .encrypted(false)
+            .databaseCreationDate(creationDate)
+            .build()
+    }
 }

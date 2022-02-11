@@ -78,15 +78,16 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
 
     fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
         val configuration = databaseConfigurationSecureStore.get()
-        val pairsCount = configurationHelper.countServerUserPairs(configuration)
-        if (pairsCount == maxServerUserPairs) {
-            configurationHelper.getOldestServerUser(configuration)?.let { oldestConfig ->
-                val updatedConfigurations =
-                    configurationHelper.removeServerUserConfiguration(configuration, oldestConfig)
-                databaseConfigurationSecureStore.set(updatedConfigurations)
-                databaseAdapterFactory.deleteDatabase(oldestConfig)
-            }
+
+        configuration?.let {
+            val exceedingAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, maxServerUserPairs - 1)
+            val updatedConfigurations =
+                DatabaseConfigurationHelper.removeUserConfigurations(configuration, exceedingAccounts)
+
+            databaseConfigurationSecureStore.set(updatedConfigurations)
+            exceedingAccounts.forEach { databaseAdapterFactory.deleteDatabase(it) }
         }
+
         val userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt)
         localDbRepository.blockingClear()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
@@ -151,7 +152,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
 
     private fun getUserConfiguration(serverUrl: String, username: String): DatabaseUserConfiguration? {
         val configuration = databaseConfigurationSecureStore.get()
-        return configurationHelper.getUserConfiguration(configuration, serverUrl, username)
+        return DatabaseConfigurationHelper.getUserConfiguration(configuration, serverUrl, username)
     }
 
     private fun addNewConfigurationInternal(
@@ -163,7 +164,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             databaseConfigurationSecureStore.get(), serverUrl, username, encrypt
         )
         databaseConfigurationSecureStore.set(updatedConfiguration)
-        return configurationHelper.getLoggedUserConfiguration(updatedConfiguration, username, serverUrl)
+        return DatabaseConfigurationHelper.getLoggedUserConfiguration(updatedConfiguration, username, serverUrl)
     }
 
     companion object {

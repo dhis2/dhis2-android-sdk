@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Test
 
 class DatabasesConfigurationHelperShould {
@@ -89,34 +90,35 @@ class DatabasesConfigurationHelperShould {
 
     @Test
     fun get_logged_configuration_when_one_server_user() {
-        assertThat(helper.getLoggedUserConfiguration(singleServerSingleUserConfig, username1, url1))
-            .isSameInstanceAs(userConfig11)
+        assertThat(
+            DatabaseConfigurationHelper.getLoggedUserConfiguration(singleServerSingleUserConfig, username1, url1)
+        ).isSameInstanceAs(userConfig11)
     }
 
     @Test
     fun get_logged_configuration_when_one_server_and_2_users() {
-        assertThat(helper.getLoggedUserConfiguration(singleServer2UserConfig, username1, url1))
+        assertThat(DatabaseConfigurationHelper.getLoggedUserConfiguration(singleServer2UserConfig, username1, url1))
             .isSameInstanceAs(userConfig11)
-        assertThat(helper.getLoggedUserConfiguration(singleServer2UserConfig, username2, url1))
+        assertThat(DatabaseConfigurationHelper.getLoggedUserConfiguration(singleServer2UserConfig, username2, url1))
             .isSameInstanceAs(userConfig12)
     }
 
     @Test
     fun get_logged_configuration_when_2_servers_with_one_user_on_each_1() {
-        assertThat(helper.getLoggedUserConfiguration(twoServerOneUserEach, username1, url1))
+        assertThat(DatabaseConfigurationHelper.getLoggedUserConfiguration(twoServerOneUserEach, username1, url1))
             .isSameInstanceAs(userConfig11)
     }
 
     @Test(expected = RuntimeException::class)
     fun get_logged_configuration_when_2_servers_with_one_user_on_each_2() {
-        helper.getLoggedUserConfiguration(twoServerOneUserEach, username2, url1)
+        DatabaseConfigurationHelper.getLoggedUserConfiguration(twoServerOneUserEach, username2, url1)
     }
 
     @Test
     fun get_logged_configuration_when_2_servers_with_two_users_in_first() {
-        assertThat(helper.getLoggedUserConfiguration(twoServerTwoUsersFirst, username1, url1))
+        assertThat(DatabaseConfigurationHelper.getLoggedUserConfiguration(twoServerTwoUsersFirst, username1, url1))
             .isSameInstanceAs(userConfig11)
-        assertThat(helper.getLoggedUserConfiguration(twoServerTwoUsersFirst, username2, url1))
+        assertThat(DatabaseConfigurationHelper.getLoggedUserConfiguration(twoServerTwoUsersFirst, username2, url1))
             .isSameInstanceAs(userConfig12)
     }
 
@@ -135,7 +137,9 @@ class DatabasesConfigurationHelperShould {
     @Test
     fun add_new_configuration_to_single_server_single_user_in_other_server() {
         val config = helper.setConfiguration(singleServerSingleUserConfig, url2, username2, false)
-        assertThat(helper.getLoggedUserConfiguration(config, username2, url2)).isEqualTo(userConfig22)
+        assertThat(DatabaseConfigurationHelper
+            .getLoggedUserConfiguration(config, username2, url2)
+        ).isEqualTo(userConfig22)
     }
 
     @Test
@@ -151,7 +155,22 @@ class DatabasesConfigurationHelperShould {
             )
             .build()
 
-        assertThat(helper.getOldestServerUser(configuration)!!.username()).isEqualTo("user3")
+        val keepFiveAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, 5)
+        assertThat(keepFiveAccounts).isEmpty()
+
+        val keepFourAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, 4)
+        assertThat(keepFourAccounts).isEmpty()
+
+        val keepThreeAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, 3)
+        assertThat(keepThreeAccounts.size).isEqualTo(1)
+        assertThat(keepThreeAccounts.first().username()).isEqualTo("user3")
+
+        val keepOneAccount = DatabaseConfigurationHelper.getOldestAccounts(configuration, 1)
+        assertThat(keepOneAccount.size).isEqualTo(3)
+        assertThat(keepOneAccount.map { it.username() }).containsExactlyElementsIn(listOf("user1", "user3", "user4"))
+
+        val keepZeroAccounts = DatabaseConfigurationHelper.getOldestAccounts(configuration, 0)
+        assertThat(keepZeroAccounts.size).isEqualTo(4)
     }
 
     @Test
@@ -159,17 +178,7 @@ class DatabasesConfigurationHelperShould {
         val configuration = DatabasesConfiguration.builder()
             .users(emptyList())
             .build()
-        assertThat(helper.getOldestServerUser(configuration)).isNull()
-    }
-
-    private fun buildUserConfiguration(username: String, creationDate: String): DatabaseUserConfiguration {
-        return DatabaseUserConfiguration.builder()
-            .username(username)
-            .serverUrl("server")
-            .databaseName("database$username")
-            .encrypted(false)
-            .databaseCreationDate(creationDate)
-            .build()
+        assertThat(DatabaseConfigurationHelper.getOldestAccounts(configuration, 1)).isNull()
     }
 
     companion object {

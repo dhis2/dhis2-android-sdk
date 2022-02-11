@@ -33,8 +33,8 @@ object DatabasesConfigurationUtil {
         username: String,
         creationDate: String,
         serverUrl: String = "server"
-    ): DatabaseUserConfiguration {
-        return DatabaseUserConfiguration.builder()
+    ): DatabaseAccount {
+        return DatabaseAccount.builder()
             .username(username)
             .serverUrl(serverUrl)
             .databaseName("database$username")

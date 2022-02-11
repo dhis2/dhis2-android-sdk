@@ -95,7 +95,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
 
             val users = config.servers().flatMap { serverConf ->
                 serverConf.users().map { userConf ->
-                    DatabaseUserConfiguration.builder()
+                    DatabaseAccount.builder()
                         .username(userConf.username())
                         .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl()))
                         .databaseName(userConf.databaseName())
@@ -104,7 +104,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
                         .build()
                 }
             }
-            DatabasesConfiguration.builder().users(users).build()
+            DatabasesConfiguration.builder().accounts(users).build()
         }
     }
 

@@ -36,25 +36,25 @@ internal class DatabaseConfigurationHelper @Inject constructor(
     private val dateProvider: DateProvider
 ) {
 
-    fun changeEncryption(serverUrl: String?, userConfiguration: DatabaseUserConfiguration): DatabaseUserConfiguration {
-        return userConfiguration.toBuilder()
-            .encrypted(!userConfiguration.encrypted())
+    fun changeEncryption(serverUrl: String?, account: DatabaseAccount): DatabaseAccount {
+        return account.toBuilder()
+            .encrypted(!account.encrypted())
             .databaseName(
                 databaseNameGenerator.getDatabaseName(
-                    serverUrl!!, userConfiguration.username(),
-                    !userConfiguration.encrypted()
+                    serverUrl!!, account.username(),
+                    !account.encrypted()
                 )
             )
             .build()
     }
 
-    fun setConfiguration(
+    fun addAccount(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,
         encrypt: Boolean
     ): DatabasesConfiguration {
-        val newUserConf = DatabaseUserConfiguration.builder()
+        val newAccount = DatabaseAccount.builder()
             .username(username)
             .serverUrl(serverUrl)
             .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt))
@@ -62,52 +62,52 @@ internal class DatabaseConfigurationHelper @Inject constructor(
             .databaseCreationDate(dateProvider.dateStr)
             .build()
 
-        val otherUsers = configuration?.users()?.filterNot {
+        val otherAccounts = configuration?.accounts()?.filterNot {
             equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
         } ?: emptyList()
 
-        return DatabasesConfiguration.builder()
-            .users(otherUsers + newUserConf)
+        return (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
+            .accounts(otherAccounts + newAccount)
             .build()
     }
 
     companion object {
-        fun getUserConfiguration(
+        fun getAccount(
             configuration: DatabasesConfiguration?,
             serverUrl: String,
             username: String
-        ): DatabaseUserConfiguration? {
-            return configuration?.users()?.find {
+        ): DatabaseAccount? {
+            return configuration?.accounts()?.find {
                 equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
             }
         }
 
-        fun removeUserConfigurations(
+        fun removeAccount(
             configuration: DatabasesConfiguration,
-            userToRemove: List<DatabaseUserConfiguration>
+            userToRemove: List<DatabaseAccount>
         ): DatabasesConfiguration {
-            val users = configuration.users().filterNot { user ->
+            val users = configuration.accounts().filterNot { user ->
                 userToRemove.any { it.databaseName() == user.databaseName() }
             }
 
-            return configuration.toBuilder().users(users).build()
+            return configuration.toBuilder().accounts(users).build()
         }
 
         @Suppress("TooGenericExceptionThrown")
-        fun getLoggedUserConfiguration(
+        fun getLoggedAccount(
             configuration: DatabasesConfiguration,
             username: String,
             serverUrl: String
-        ): DatabaseUserConfiguration {
-            val userConfiguration = getUserConfiguration(configuration, serverUrl, username)
-            return userConfiguration
+        ): DatabaseAccount {
+            val account = getAccount(configuration, serverUrl, username)
+            return account
                 ?: throw RuntimeException("Malformed configuration: user configuration not found for logged server")
         }
 
-        fun getOldestAccounts(configuration: DatabasesConfiguration, keepAccounts: Int): List<DatabaseUserConfiguration> {
-            val listSize = configuration.users().size
+        fun getOldestAccounts(accounts: List<DatabaseAccount>, keepAccounts: Int): List<DatabaseAccount> {
+            val listSize = accounts.size
             return if (listSize > keepAccounts) {
-                configuration.users()
+                accounts
                     .sortedByDescending { it.databaseCreationDate() }
                     .subList(keepAccounts, listSize)
             } else {

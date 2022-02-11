@@ -35,9 +35,9 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 internal object DatabaseConfigurationTransformer {
     fun transform(serverUrl: String?, databaseName: String?, username: String?): DatabasesConfiguration {
         return DatabasesConfiguration.builder()
-            .users(
+            .accounts(
                 listOf(
-                    DatabaseUserConfiguration.builder()
+                    DatabaseAccount.builder()
                         .username(username)
                         .serverUrl(serverUrl)
                         .databaseName(databaseName)

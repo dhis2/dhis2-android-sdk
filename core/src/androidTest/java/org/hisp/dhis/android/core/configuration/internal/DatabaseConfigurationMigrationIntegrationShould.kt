@@ -152,8 +152,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         val migrated = databasesConfigurationStore.get()
 
-        assertThat(migrated.users().size).isEqualTo(1)
-        migrated.users().first().let {
+        assertThat(migrated.accounts().size).isEqualTo(1)
+        migrated.accounts().first().let {
             assertThat(it.username()).isEqualTo(username)
             assertThat(it.serverUrl()).isEqualTo(serverUrl)
             assertThat(it.databaseName()).isEqualTo(newName)

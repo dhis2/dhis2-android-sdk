@@ -54,7 +54,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     private val unencryptedDbName = "un.db"
     private val encryptedDbName = "en.db"
 
-    private val userConfigurationUnencrypted = DatabaseUserConfiguration.builder()
+    private val userConfigurationUnencrypted = DatabaseAccount.builder()
         .databaseName(unencryptedDbName)
         .username(username)
         .serverUrl(serverUrl)
@@ -62,7 +62,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .databaseCreationDate(DATE)
         .build()
 
-    private val userConfigurationEncrypted = DatabaseUserConfiguration.builder()
+    private val userConfigurationEncrypted = DatabaseAccount.builder()
         .databaseName(encryptedDbName)
         .username(username)
         .serverUrl(serverUrl)
@@ -71,11 +71,11 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .build()
 
     private val unencryptedConfiguration = DatabasesConfiguration.builder()
-        .users(listOf(userConfigurationUnencrypted))
+        .accounts(listOf(userConfigurationUnencrypted))
         .build()
 
     private val encryptedConfiguration = DatabasesConfiguration.builder()
-        .users(listOf(userConfigurationEncrypted))
+        .accounts(listOf(userConfigurationEncrypted))
         .build()
 
     private lateinit var manager: MultiUserDatabaseManager
@@ -91,9 +91,9 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     }
 
     @Test
-    fun create_new_db_when_no_previous_configuration_when_calling_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
+    fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
         val encrypt = false
-        whenever(configurationHelper.setConfiguration(null, serverUrl, username, encrypt))
+        whenever(configurationHelper.addAccount(null, serverUrl, username, encrypt))
             .doReturn(unencryptedConfiguration)
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
@@ -103,10 +103,10 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     }
 
     @Test
-    fun copy_database_when_changing_encryption_when_calling_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
+    fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
         val encrypt = true
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.setConfiguration(unencryptedConfiguration, serverUrl, username, encrypt))
+        whenever(configurationHelper.addAccount(unencryptedConfiguration, serverUrl, username, encrypt))
             .doReturn(encryptedConfiguration)
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
@@ -127,7 +127,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     @Test
     fun open_database_when_existing_when_calling_loadExistingKeepingEncryption() {
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.setConfiguration(unencryptedConfiguration, serverUrl, username, false))
+        whenever(configurationHelper.addAccount(unencryptedConfiguration, serverUrl, username, false))
             .doReturn(unencryptedConfiguration)
 
         manager.loadExistingKeepingEncryption(serverUrl, username)
@@ -136,12 +136,11 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         verifyNoMoreInteractions(localDbRepository)
     }
 
-
     @Test
     fun remove_exceeding_configuration_on_creating_new_one() {
-        val initialMaxAccounts = MultiUserDatabaseManager.maxServerUserPairs
         val configuration = DatabasesConfiguration.builder()
-            .users(
+            .maxAccounts(1)
+            .accounts(
                 listOf(
                     buildUserConfiguration("user1", "2021-06-01T00:01:04.000"),
                     buildUserConfiguration("user2", "2021-09-02T00:01:04.000"),
@@ -156,18 +155,15 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         val newUsername = "new_username"
         val newServerUrl = "new_server_url"
         val newConfiguration = buildUserConfiguration(newUsername, "2021-06-01T00:01:04.000", newServerUrl)
-        whenever(configurationHelper.setConfiguration(configuration, newServerUrl, newUsername, false))
-            .doReturn(DatabasesConfiguration.builder().users(listOf(newConfiguration)).build())
+        whenever(configurationHelper.addAccount(configuration, newServerUrl, newUsername, false))
+            .doReturn(DatabasesConfiguration.builder().accounts(listOf(newConfiguration)).build())
 
-        MultiUserDatabaseManager.maxServerUserPairs = 1
         manager.createNew(newServerUrl, newUsername, false)
 
         verify(databaseConfigurationSecureStore, times(2)).set(any())
         verify(databaseAdapterFactory, times(4)).deleteDatabase(any())
         verify(localDbRepository, times(1)).blockingClear()
         verify(databaseAdapterFactory, times(1)).createOrOpenDatabase(any(), any())
-
-        MultiUserDatabaseManager.maxServerUserPairs = initialMaxAccounts
     }
 
     companion object {

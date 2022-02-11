@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
@@ -48,15 +48,15 @@ internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
         val databaseConfiguration = databaseConfigurationStore.get()
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(credentials.serverUrl)
-            val userConfiguration = DatabaseConfigurationHelper.getLoggedUserConfiguration(
+            val account = DatabaseConfigurationHelper.getLoggedAccount(
                 databaseConfiguration, credentials.username, credentials.serverUrl
             )
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
         }
     }
 
     fun loadDbForTesting(name: String?, encrypt: Boolean, username: String?) {
-        val config = DatabaseUserConfiguration.builder()
+        val config = DatabaseAccount.builder()
             .databaseName(name)
             .encrypted(encrypt)
             .username(username)

@@ -44,11 +44,16 @@ public abstract class DatabasesConfiguration {
 
     @JsonProperty()
     @NonNull
-    public abstract List<DatabaseUserConfiguration> users();
+    public abstract Integer maxAccounts();
+
+    @JsonProperty()
+    @NonNull
+    public abstract List<DatabaseAccount> accounts();
 
     public static Builder builder() {
         return new AutoValue_DatabasesConfiguration.Builder()
-                .users(Collections.emptyList());
+                .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+                .accounts(Collections.emptyList());
     }
 
     public abstract Builder toBuilder();
@@ -57,7 +62,9 @@ public abstract class DatabasesConfiguration {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder users(List<DatabaseUserConfiguration> users);
+        public abstract Builder maxAccounts(Integer maxAccounts);
+
+        public abstract Builder accounts(List<DatabaseAccount> accounts);
 
         public abstract DatabasesConfiguration build();
     }

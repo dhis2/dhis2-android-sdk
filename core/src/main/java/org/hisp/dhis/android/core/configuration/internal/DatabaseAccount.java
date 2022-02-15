@@ -28,43 +28,57 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.constant.ConstantModule;
-import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
+import androidx.annotation.NonNull;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder.class)
+public abstract class DatabaseAccount {
 
-@Module
-public final class ConfigurationPackageDIModule {
+    @JsonProperty()
+    @NonNull
+    public abstract String username();
 
-    @Provides
-    @Reusable
-    ObjectKeyValueStore<DatabasesConfiguration> configurationSecureStore(InsecureStore secureStore) {
-        return DatabaseConfigurationInsecureStore.get(secureStore);
+    @JsonProperty()
+    @NonNull
+    public abstract String serverUrl();
+
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseName();
+
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseCreationDate();
+
+    @JsonProperty()
+    @NonNull
+    public abstract boolean encrypted();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DatabaseAccount.Builder();
     }
 
-    @Provides
-    @Reusable
-    DateProvider dateProvider() {
-        return () -> BaseIdentifiableObject.dateToDateStr(new Date());
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-    @Provides
-    @Reusable
-    DatabaseEncryptionPasswordManager passwordManager(SecureStore secureStore) {
-        return DatabaseEncryptionPasswordManager.create(secureStore);
-    }
+        public abstract Builder username(String username);
 
-    @Provides
-    @Reusable
-    ConstantModule module(ConstantModuleImpl impl) {
-        return impl;
+        public abstract Builder serverUrl(String serverUrl);
+
+        public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder encrypted(boolean encrypted);
+
+        public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract DatabaseAccount build();
     }
 }

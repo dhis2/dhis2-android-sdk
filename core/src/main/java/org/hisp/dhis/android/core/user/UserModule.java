@@ -38,6 +38,8 @@ public interface UserModule {
     AuthorityCollectionRepository authorities();
     UserCredentialsObjectRepository userCredentials();
     UserObjectRepository user();
+
+    AccountManager accountManager();
     
     Single<User> logIn(String username, String password, String serverUrl);
     User blockingLogIn(String username, String password, String serverUrl);

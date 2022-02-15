@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.configuration.internal.migration;
 
-import android.os.StrictMode;
+import androidx.annotation.NonNull;
 
-final class NotClosedObjectsDetector {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    static void enableNotClosedObjectsDetection() {
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseUserConfigurationOld.Builder.class)
+public abstract class DatabaseUserConfigurationOld {
+
+    @JsonProperty()
+    @NonNull
+    public abstract String username();
+
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseName();
+
+    @JsonProperty()
+    @NonNull
+    public abstract String databaseCreationDate();
+
+    @JsonProperty()
+    @NonNull
+    public abstract boolean encrypted();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DatabaseUserConfigurationOld.Builder();
     }
 
-    private NotClosedObjectsDetector() {
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder username(String username);
+
+        public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder encrypted(boolean encrypted);
+
+        public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract DatabaseUserConfigurationOld build();
     }
 }

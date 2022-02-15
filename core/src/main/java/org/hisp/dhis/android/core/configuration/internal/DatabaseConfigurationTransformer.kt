@@ -25,39 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-
-import java.util.Collections;
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import java.util.*
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
 @Reusable
-final class DatabaseConfigurationTransformer {
-
-    @Inject
-    DatabaseConfigurationTransformer() {
-    }
-
-    public DatabasesConfiguration transform(String serverUrl, String databaseName, String username) {
+internal object DatabaseConfigurationTransformer {
+    fun transform(serverUrl: String?, databaseName: String?, username: String?): DatabasesConfiguration {
         return DatabasesConfiguration.builder()
-                .loggedServerUrl(serverUrl)
-                .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
                         .serverUrl(serverUrl)
-                        .users(Collections.singletonList(
-                                DatabaseUserConfiguration.builder()
-                                        .username(username)
-                                        .databaseName(databaseName)
-                                        .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(new Date()))
-                                        .encrypted(false)
-                                        .build()
-                        ))
-                        .build()))
-                .build();
+                        .databaseName(databaseName)
+                        .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(Date()))
+                        .encrypted(false)
+                        .build()
+                )
+            )
+            .build()
     }
 }

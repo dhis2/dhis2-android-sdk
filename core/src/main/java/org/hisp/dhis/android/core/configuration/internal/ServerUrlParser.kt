@@ -25,52 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import okhttp3.HttpUrl
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
+internal object ServerUrlParser {
+    @JvmStatic
+    @Throws(D2Error::class)
+    fun parse(url: String?): HttpUrl {
+        if (url == null) {
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.SERVER_URL_NULL)
+                .errorDescription("Server URL is null")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
+        }
+        val urlWithSlashAndAPI = appendSlashAndAPI(url)
+        val httpUrl = HttpUrl.parse(appendSlashAndAPI(urlWithSlashAndAPI))
 
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import io.reactivex.Single;
-
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
-
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
+        return httpUrl
+            ?: throw D2Error.builder()
+                .errorCode(D2ErrorCode.SERVER_URL_MALFORMED)
+                .errorDescription("Server URL is malformed")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
     }
 
-    @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
+    fun trimAndRemoveTrailingSlash(url: String?): String? {
+        return url?.trim()?.trimEnd('/')
     }
 
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+    fun removeTrailingApi(url: String): String {
+        return url.trimEnd('/').removeSuffix("/api")
+    }
+
+    private fun appendSlashAndAPI(url: String): String {
+        val trimmedUrl = url.trim().replace(" ", "")
+        val withSlash = if (trimmedUrl.endsWith("/")) trimmedUrl else "$trimmedUrl/"
+
+        return if (withSlash.endsWith("api/")) withSlash else withSlash + "api/"
     }
 }

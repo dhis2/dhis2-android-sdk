@@ -25,52 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import io.reactivex.Single;
-
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
-
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
-    }
-
-    @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
-    }
-
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+internal object DatabaseConfigurationInsecureStore {
+    operator fun get(insecureStore: InsecureStore): ObjectKeyValueStore<DatabasesConfiguration> {
+        return JsonKeyValueStoreImpl(insecureStore, "DB_CONFIGS", DatabasesConfiguration::class.java)
     }
 }

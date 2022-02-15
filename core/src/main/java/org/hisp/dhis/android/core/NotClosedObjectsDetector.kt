@@ -25,48 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.configuration.internal;
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class DatabaseNameGenerator {
-
-    @Inject
-    DatabaseNameGenerator() {
-    }
-
-    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
-    }
-
-    private String processServerUrl(String serverUrl) {
-        String noHttps = removePrefix(serverUrl, "https://");
-        String noHttp = removePrefix(noHttps, "http://");
-        String noSlashSufix = removeSuffix(noHttp, "/");
-        String noAPISufix = removeSuffix(noSlashSufix, "/api");
-
-        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
-        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
-        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
-        return removeSuffix(withNoMinusAtTheBeginning, "-");
-    }
-
-    private String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
-        }
-        return s;
-    }
-
-    private String removeSuffix(String s, String prefix) {
-        if (s.endsWith(prefix)) {
-            return s.substring(0, s.length() - prefix.length());
-        }
-        return s;
+internal object NotClosedObjectsDetector {
+    fun enableNotClosedObjectsDetection() {
+        StrictMode.setVmPolicy(
+            VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build()
+        )
     }
 }

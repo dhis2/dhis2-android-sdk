@@ -25,52 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import dagger.Reusable
+import javax.inject.Inject
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import io.reactivex.Single;
-
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
-
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
+@Reusable
+internal class DatabaseNameGenerator @Inject constructor() {
+    fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
+        val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
+        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db"
     }
 
-    @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
-    }
-
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+    private fun processServerUrl(serverUrl: String): String {
+        return serverUrl
+            .removePrefix("https://")
+            .removePrefix("http://")
+            .removeSuffix("/")
+            .removeSuffix("/api")
+            .replace("[^a-zA-Z0-9]".toRegex(), "-")
+            .replace("-+".toRegex(), "-")
+            .removePrefix("-")
+            .removeSuffix("-")
     }
 }

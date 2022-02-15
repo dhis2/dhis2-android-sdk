@@ -25,9 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-interface DateProvider {
-   String getDateStr();
+class DatabasesConfigurationShould :
+    BaseObjectShould("configuration/databases_configuration.json"),
+    ObjectShould {
+
+    @Test
+    override fun map_from_json_string() {
+        val configuration = deserialize(DatabasesConfiguration::class.java)
+
+        assertThat(configuration.maxAccounts()).isEqualTo(3)
+        assertThat(configuration.accounts().size).isEqualTo(2)
+
+        val user1 = configuration.accounts()[0]
+        assertThat(user1.username()).isEqualTo("user1")
+        assertThat(user1.serverUrl()).isEqualTo("server1")
+        assertThat(user1.databaseName()).isEqualTo("dbname1.db")
+        assertThat(user1.encrypted()).isTrue()
+        assertThat(user1.databaseCreationDate()).isEqualTo("2014-06-06T20:44:21.375")
+    }
+
+    @Test
+    fun equal_when_deserialize_serialize_deserialize() {
+        val configuration = deserialize(DatabasesConfiguration::class.java)
+
+        val serialized = serialize(configuration)
+        val deserialized = deserialize(serialized, DatabasesConfiguration::class.java)
+
+        assertThat(deserialized).isEqualTo(configuration)
+    }
 }

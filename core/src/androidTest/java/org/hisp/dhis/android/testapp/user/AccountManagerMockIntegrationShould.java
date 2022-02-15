@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,51 +26,50 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.testapp.user;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import io.reactivex.Single;
+import java.util.List;
 
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
+@RunWith(D2JunitRunner.class)
+public class AccountManagerMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestEmptyEnqueable.setUpClass();
     }
 
     @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
+    public void find_accounts_after_login() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
+
+        dhis2MockServer.enqueueLoginResponses();
+        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.getBaseEndpoint());
+
+        List<DatabaseAccount> accountList = d2.userModule().accountManager().getAccounts();
+
+        assertThat(accountList.size()).isEqualTo(1);
+        assertThat(accountList.get(0).username()).isEqualTo("u1");
     }
 
     @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+    public void can_change_max_accounts() {
+        d2.userModule().accountManager().setMaxAccounts(5);
+        assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(5);
+
+        int defaultMaxAccounts = MultiUserDatabaseManager.DefaultMaxAccounts;
+        d2.userModule().accountManager().setMaxAccounts(defaultMaxAccounts);
+        assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(defaultMaxAccounts);
     }
 }

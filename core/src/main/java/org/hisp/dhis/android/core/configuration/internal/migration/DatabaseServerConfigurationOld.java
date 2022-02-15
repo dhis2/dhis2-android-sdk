@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.configuration.internal.migration;
 
 import androidx.annotation.NonNull;
 
@@ -35,44 +35,33 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.List;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseUserConfiguration.Builder.class)
-public abstract class DatabaseUserConfiguration {
+@JsonDeserialize(builder = AutoValue_DatabaseServerConfigurationOld.Builder.class)
+public abstract class DatabaseServerConfigurationOld {
 
     @JsonProperty()
     @NonNull
-    public abstract String username();
+    public abstract String serverUrl();
 
     @JsonProperty()
     @NonNull
-    public abstract String databaseName();
-
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseCreationDate();
-
-    @JsonProperty()
-    @NonNull
-    public abstract boolean encrypted();
-
-    public abstract Builder toBuilder();
+    public abstract List<DatabaseUserConfigurationOld> users();
 
     public static Builder builder() {
-        return new AutoValue_DatabaseUserConfiguration.Builder();
+        return new AutoValue_DatabaseServerConfigurationOld.Builder();
     }
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
+        public abstract Builder serverUrl(String serverUrl);
 
-        public abstract Builder username(String username);
+        public abstract Builder users(List<DatabaseUserConfigurationOld> users);
 
-        public abstract Builder databaseName(String databaseName);
-
-        public abstract Builder encrypted(boolean encrypted);
-
-        public abstract Builder databaseCreationDate(String databaseCreationDate);
-
-        public abstract DatabaseUserConfiguration build();
+        public abstract DatabaseServerConfigurationOld build();
     }
 }

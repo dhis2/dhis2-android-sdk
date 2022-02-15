@@ -25,38 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.configuration.internal
 
-import io.reactivex.Completable
+import dagger.Reusable
+import java.util.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-class LogOutCall @Inject internal constructor(
+@Reusable
+internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
+    private val migration: DatabaseConfigurationMigration,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val credentialsSecureStore: CredentialsSecureStore,
-    private val userIdStore: UserIdInMemoryStore
+    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
 ) {
-
-    fun logOut(): Completable {
-        return Completable.fromCallable {
-            if (credentialsSecureStore.get() == null) {
-                throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
-                    .errorDescription("There is not any authenticated user")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build()
-            }
-
-            databaseAdapterFactory.removeDatabaseAdapter(databaseAdapter)
-            credentialsSecureStore.remove()
-            userIdStore.remove()
+    fun loadIfLogged(credentials: Credentials?) {
+        val databaseConfiguration = databaseConfigurationStore.get()
+        if (databaseConfiguration != null && credentials != null) {
+            ServerURLWrapper.setServerUrl(credentials.serverUrl)
+            val account = DatabaseConfigurationHelper.getLoggedAccount(
+                databaseConfiguration, credentials.username, credentials.serverUrl
+            )
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
         }
+    }
+
+    fun loadDbForTesting(name: String?, encrypt: Boolean, username: String?) {
+        val config = DatabaseAccount.builder()
+            .databaseName(name)
+            .encrypted(encrypt)
+            .username(username)
+            .databaseCreationDate(DateUtils.DATE_FORMAT.format(Date()))
+            .build()
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, config)
+    }
+
+    fun applyMigration() {
+        migration.apply()
     }
 }

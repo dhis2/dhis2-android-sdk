@@ -45,6 +45,9 @@ public abstract class IndicatorLegendSetLink implements CoreObject {
     @Nullable
     public abstract String legendSet();
 
+    @Nullable
+    public abstract Integer sortOrder();
+
     public static IndicatorLegendSetLink create(Cursor cursor) {
         return AutoValue_IndicatorLegendSetLink.createFromCursor(cursor);
     }
@@ -62,6 +65,8 @@ public abstract class IndicatorLegendSetLink implements CoreObject {
         public abstract Builder indicator(String indicator);
 
         public abstract Builder legendSet(String legendSet);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract IndicatorLegendSetLink build();
     }

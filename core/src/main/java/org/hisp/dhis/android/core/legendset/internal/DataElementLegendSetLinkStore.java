@@ -40,6 +40,7 @@ public final class DataElementLegendSetLinkStore {
     private static final StatementBinder<DataElementLegendSetLink> BINDER = (o, w) -> {
         w.bind(1, o.dataElement());
         w.bind(2, o.legendSet());
+        w.bind(3, o.sortOrder());
     };
 
     private DataElementLegendSetLinkStore() {}

@@ -33,8 +33,8 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.LegendSet
 
@@ -51,7 +51,7 @@ internal class IndicatorLegendSetEntityDIModule {
     @Reusable
     internal fun handler(
         store: LinkStore<IndicatorLegendSetLink>
-    ): LinkHandler<LegendSet?, IndicatorLegendSetLink> {
-        return LinkHandlerImpl(store)
+    ): OrderedLinkHandler<LegendSet?, IndicatorLegendSetLink> {
+        return OrderedLinkHandlerImpl(store)
     }
 }

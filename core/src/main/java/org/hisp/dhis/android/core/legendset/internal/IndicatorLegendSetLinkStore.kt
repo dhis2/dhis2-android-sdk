@@ -43,6 +43,7 @@ internal class IndicatorLegendSetLinkStore private constructor() {
         private val BINDER = StatementBinder { o: IndicatorLegendSetLink, w: StatementWrapper ->
             w.bind(1, o.indicator())
             w.bind(2, o.legendSet())
+            w.bind(3, o.sortOrder())
         }
 
         fun create(databaseAdapter: DatabaseAdapter?): LinkStore<IndicatorLegendSetLink> {

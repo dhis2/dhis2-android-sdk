@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
@@ -51,7 +52,7 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
     private final LinkHandler<Attribute, DataElementAttributeValueLink>
             dataElementAttributeLinkHandler;
     private final Handler<LegendSet> legendSetHandler;
-    private final LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+    private final OrderedLinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
 
     @Inject
     DataElementHandler(
@@ -59,7 +60,7 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
             Handler<Attribute> attributeHandler,
             LinkHandler<Attribute, DataElementAttributeValueLink> dataElementAttributeLinkHandler,
             Handler<LegendSet> legendSetHandler,
-            LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler
+            OrderedLinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler
     ) {
         super(programStageDataElementStore);
         this.attributeHandler = attributeHandler;
@@ -87,8 +88,11 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
             legendSetHandler.handleMany(dataElement.legendSets());
 
             dataElementLegendSetLinkHandler.handleMany(dataElement.uid(), dataElement.legendSets(),
-                    legendSet -> DataElementLegendSetLink.builder()
-                            .dataElement(dataElement.uid()).legendSet(legendSet.uid()).build());
+                    (legendSet, sortOrder) -> DataElementLegendSetLink.builder()
+                            .dataElement(dataElement.uid())
+                            .legendSet(legendSet.uid())
+                            .sortOrder(sortOrder)
+                            .build());
         }
     }
 }

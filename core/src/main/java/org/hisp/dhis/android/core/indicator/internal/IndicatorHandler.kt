@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.LegendSet
@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 internal class IndicatorHandler @Inject constructor(
     indicatorStore: IdentifiableObjectStore<Indicator>,
     private val legendSetHandler: Handler<LegendSet>,
-    private val indicatorLegendSetLinkHandler: LinkHandler<LegendSet, IndicatorLegendSetLink>
+    private val indicatorLegendSetLinkHandler: OrderedLinkHandler<LegendSet, IndicatorLegendSetLink>
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
     override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
@@ -52,10 +52,11 @@ internal class IndicatorHandler @Inject constructor(
         if (indicator.legendSets() != null) {
             legendSetHandler.handleMany(indicator.legendSets())
 
-            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet ->
+            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet, sortOrder ->
                 IndicatorLegendSetLink.builder()
                     .indicator(indicator.uid())
                     .legendSet(legendSet.uid())
+                    .sortOrder(sortOrder)
                     .build()
             }
         }

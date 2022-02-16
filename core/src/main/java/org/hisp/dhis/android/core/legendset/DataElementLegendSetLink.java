@@ -32,7 +32,6 @@ import android.database.Cursor;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 

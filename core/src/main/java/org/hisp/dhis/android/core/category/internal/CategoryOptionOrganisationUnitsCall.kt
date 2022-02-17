@@ -56,7 +56,7 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
             apiDownloader.downloadPartitionedMap(
                 uids,
                 UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-                { map: Map<String, List<String>> -> map.forEach { handleEntry(it) } },
+                { map: Map<String, List<String?>> -> map.forEach { handleEntry(it) } },
                 { partitionUids: Set<String> ->
                     service.getCategoryOptionOrgUnits(
                         CollectionsHelper.commaAndSpaceSeparatedCollectionValues(partitionUids)
@@ -67,10 +67,10 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
         }
     }
 
-    private fun handleEntry(entry: Map.Entry<String, List<String>>) {
+    private fun handleEntry(entry: Map.Entry<String, List<String?>>) {
         handler.handleMany(
             entry.key,
-            entry.value.map { ObjectWithUid.create(it) }
+            entry.value.filterNotNull().map { ObjectWithUid.create(it) }
         ) { o ->
             CategoryOptionOrganisationUnitLink.builder()
                 .organisationUnit(o.uid())

@@ -13,12 +13,25 @@ A typical workflow would be like this:
 
 ## Login/Logout { #android_sdk_login_logout }
 
-Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
+Before interacting with the server it is required to login into the DHIS 2 instance.
 
 ```java
 d2.userModule().logIn(username, password, serverUrl)
 
 d2.userModule().logOut()
+```
+
+As of version 1.6.0, the SDK supports the storage of information for multiple accounts, which means keeping a separate database for each pair user-server. Despite of that, only one account can active (or logged in) simultaneously. That means that only one user can be authenticated in only one server at the same time. 
+
+The number of maximum allowed accounts can be configured by the app (it defaults to one). A new account is automatically created after a successful login for a new pair user-server. If the number of accounts exceeds the maximum configured, the oldest account and its related database are automatically removed.
+
+```java
+// Get the account list
+d2.userModule().accountManager().getAccounts();
+
+// Get/set the maximum number of accounts
+d2.userModule().accountManager().getMaxAccounts();
+d2.userModule().accountManager().setMaxAccounts();
 ```
 
 After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:

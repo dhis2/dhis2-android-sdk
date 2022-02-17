@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
@@ -55,6 +56,8 @@ public final class ProgramSectionTableInfo {
         public static final String PROGRAM = "program";
         public static final String SORT_ORDER = "sortOrder";
         public static final String FORM_NAME = "formName";
+        public static final String DESKTOP_RENDER_TYPE = SectionRenderingColumnAdapter.DESKTOP_RENDER_TYPE;
+        public static final String MOBILE_RENDER_TYPE = SectionRenderingColumnAdapter.MOBILE_RENDER_TYPE;
 
         @Override
         public String[] all() {
@@ -62,7 +65,9 @@ public final class ProgramSectionTableInfo {
                     DESCRIPTION,
                     PROGRAM,
                     SORT_ORDER,
-                    FORM_NAME
+                    FORM_NAME,
+                    DESKTOP_RENDER_TYPE,
+                    MOBILE_RENDER_TYPE
             );
         }
     }

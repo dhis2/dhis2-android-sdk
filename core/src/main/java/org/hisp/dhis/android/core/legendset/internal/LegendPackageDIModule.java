@@ -36,7 +36,8 @@ import dagger.Reusable;
 
 @Module(includes = {
         LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class
+        LegendSetEntityDIModule.class,
+        IndicatorLegendSetEntityDIModule.class
 })
 public final class LegendPackageDIModule {
 

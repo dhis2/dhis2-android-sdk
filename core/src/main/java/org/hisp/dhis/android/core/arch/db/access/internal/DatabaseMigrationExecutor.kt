@@ -52,7 +52,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
             migrations.forEach { executeMigration(it) }
             transaction.setSuccessful()
         } catch (e: IOException) {
-            Log.e("Database Error:", e.message)
+            Log.e("Database Error:", e.message ?: "")
         } finally {
             transaction.end()
         }

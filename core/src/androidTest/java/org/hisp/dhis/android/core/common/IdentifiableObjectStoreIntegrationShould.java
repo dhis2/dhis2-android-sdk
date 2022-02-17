@@ -73,7 +73,7 @@ public class IdentifiableObjectStoreIntegrationShould extends BaseIntegrationTes
         optionSetCursorAssert(cursor, optionSet);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void throw_exception_for_null_when_inserting() {
         OptionSet optionSet = null;
         store.insert(optionSet);
@@ -103,7 +103,7 @@ public class IdentifiableObjectStoreIntegrationShould extends BaseIntegrationTes
         store.delete("new-id");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void throw_exception_deleting_with_null_uid() {
         store.delete(null);
     }

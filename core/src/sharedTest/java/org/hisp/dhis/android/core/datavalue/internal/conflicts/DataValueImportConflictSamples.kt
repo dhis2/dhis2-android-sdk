@@ -46,4 +46,12 @@ object DataValueImportConflictSamples {
         "202111",
         "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6"
     )
+
+    fun indexedImportConflict(): ImportConflict = ImportConflict.create(
+        "UOlfIjgN8X6",
+        "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
+        "E7619",
+        "value",
+        listOf(1, 3)
+    )
 }

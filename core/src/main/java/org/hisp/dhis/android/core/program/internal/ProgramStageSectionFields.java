@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
+import org.hisp.dhis.android.core.program.SectionRendering;
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo.Columns;
 
 public final class ProgramStageSectionFields {
@@ -48,7 +48,7 @@ public final class ProgramStageSectionFields {
                     fh.<Integer>field(Columns.SORT_ORDER),
                     fh.nestedFieldWithUid(PROGRAM_INDICATORS),
                     fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.<ProgramStageSectionRendering>nestedField(RENDER_TYPE)
+                    fh.<SectionRendering>nestedField(RENDER_TYPE)
             ).build();
 
     private ProgramStageSectionFields() {

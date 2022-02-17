@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
+import org.hisp.dhis.android.core.program.SectionRendering;
 
 public final class ProgramSectionFields {
 
@@ -43,6 +44,7 @@ public final class ProgramSectionFields {
     public static final String ATTRIBUTES = "programTrackedEntityAttribute";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
     private static final String STYLE = "style";
+    private static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramSection> fh = new FieldsHelper<>();
 
@@ -55,7 +57,8 @@ public final class ProgramSectionFields {
                     fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
                     fh.<String>field(Columns.SORT_ORDER),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<String>field(Columns.FORM_NAME)
+                    fh.<String>field(Columns.FORM_NAME),
+                    fh.<SectionRendering>nestedField(RENDER_TYPE)
             ).build();
 
     private ProgramSectionFields() {

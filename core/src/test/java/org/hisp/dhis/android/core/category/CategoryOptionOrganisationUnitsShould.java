@@ -49,6 +49,6 @@ public class CategoryOptionOrganisationUnitsShould extends BaseObjectShould impl
         CategoryOptionOrganisationUnits links =
                 objectMapper.readValue(jsonStream, CategoryOptionOrganisationUnits.class);
 
-        assertThat(links.size()).isEqualTo(2);
+        assertThat(links.size()).isEqualTo(3);
     }
 }

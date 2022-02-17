@@ -51,7 +51,7 @@ public abstract class VisualizationLegend {
 
     @Nullable
     @JsonProperty()
-    public abstract String showKey();
+    public abstract Boolean showKey();
 
     @Nullable
     @JsonProperty()
@@ -76,7 +76,7 @@ public abstract class VisualizationLegend {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder  {
 
-        public abstract Builder showKey(String showKey);
+        public abstract Builder showKey(Boolean showKey);
 
         public abstract Builder style(LegendStyle showKey);
 

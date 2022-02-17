@@ -46,7 +46,7 @@ internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<Visualizat
         val legendStyleColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_STYLE)
         val legendSetIdColumnIndex = cursor.getColumnIndex(VisualizationTableInfo.Columns.LEGEND_SET_ID)
 
-        val legendShowKey = cursor.getString(legendShowKeyColumnIndex)
+        val legendShowKey = cursor.getInt(legendShowKeyColumnIndex) == 1
         val legendStrategy = cursor.getString(legendStrategyColumnIndex)
         val legendStyle = cursor.getString(legendStyleColumnIndex)
         val legendSetId = cursor.getString(legendSetIdColumnIndex)

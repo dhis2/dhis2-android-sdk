@@ -37,16 +37,19 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
 
 @Reusable
-internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
+internal class TrackerImporterPostCall @Inject internal constructor(
     private val payloadGenerator: NewTrackerImporterTrackedEntityPostPayloadGenerator,
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
     private val service: TrackerImporterService,
+    private val fileResourcesPostCall: TrackerImporterFileResourcesPostCall,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
     private val jobObjectHandler: Handler<TrackerJobObject>
@@ -55,13 +58,35 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.defer {
-            val payloadWrapper = payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
-
-            Observable.concat(
-                doPostCall(payloadWrapper.deleted, IMPORT_STRATEGY_DELETE),
-                doPostCall(payloadWrapper.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
-            )
+            postPayloadWrapper {
+                payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances)
+            }
         }
+    }
+
+    fun uploadEvents(
+        filteredEvents: List<Event>
+    ): Observable<D2Progress> {
+        return Observable.defer {
+            postPayloadWrapper {
+                payloadGenerator.getEventPayload(filteredEvents)
+            }
+        }
+    }
+
+    private fun postPayloadWrapper(
+        getPayloadWrapper: () -> NewTrackerImporterPayloadWrapper
+    ): Observable<D2Progress> {
+        return Observable.concat(
+            fileResourcesPostCall.uploadFileResources(),
+            Observable.defer {
+                val payload = getPayloadWrapper()
+                Observable.concat(
+                    doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE),
+                    doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+                )
+            }
+        )
     }
 
     private fun doPostCall(

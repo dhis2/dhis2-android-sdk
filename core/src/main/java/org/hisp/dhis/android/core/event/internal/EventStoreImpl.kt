@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.common.State.Companion.uploadableStates
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -58,7 +58,7 @@ internal class EventStoreImpl private constructor(
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStates().toList())
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStatesIncludingError().toList())
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
 
@@ -67,7 +67,7 @@ internal class EventStoreImpl private constructor(
 
     override fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStates().toList()))
+            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList()))
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
             " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"

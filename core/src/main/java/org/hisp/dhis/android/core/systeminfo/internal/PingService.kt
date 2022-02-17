@@ -25,35 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import io.reactivex.Completable
+import retrofit2.http.GET
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+internal interface PingService {
 
-@RunWith(D2JunitRunner.class)
-public class FileResourceStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<FileResource> {
-
-    public FileResourceStoreIntegrationShould() {
-        super(FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
-                FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected FileResource buildObject() {
-        return FileResourceSamples.get();
-    }
-
-    @Override
-    protected FileResource buildObjectToUpdate() {
-        return FileResourceSamples.get().toBuilder()
-                .name("new_name")
-                .build();
-    }
+    @GET("system/ping")
+    fun getPing(): Completable
 }

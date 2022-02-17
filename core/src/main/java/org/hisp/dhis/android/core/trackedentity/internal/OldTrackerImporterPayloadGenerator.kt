@@ -201,7 +201,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludeInPayload = payload.trackedEntityInstances.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val dbTei = trackedEntityInstanceStore.selectByUid(uid)
-            State.uploadableStates().contains(dbTei?.aggregatedSyncState())
+            State.uploadableStatesIncludingError().contains(dbTei?.aggregatedSyncState())
         }
 
         return !isIncludeInPayload && isPendingToSync
@@ -214,7 +214,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludeInPayload = enrollments.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val enrollment = enrollmentStore.selectByUid(uid)
-            State.uploadableStates().contains(enrollment?.aggregatedSyncState())
+            State.uploadableStatesIncludingError().contains(enrollment?.aggregatedSyncState())
         }
 
         return !isIncludeInPayload && isPendingToSync
@@ -230,7 +230,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val event = eventStore.selectByUid(uid)
-            State.uploadableStates().contains(event?.aggregatedSyncState())
+            State.uploadableStatesIncludingError().contains(event?.aggregatedSyncState())
         }
 
         return !isIncludedInPayload && isPendingToSync

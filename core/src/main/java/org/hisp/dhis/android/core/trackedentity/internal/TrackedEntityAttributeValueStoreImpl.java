@@ -103,7 +103,8 @@ public final class TrackedEntityAttributeValueStoreImpl
 
     private String teiInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.uploadableStatesIncludingError())));
         return "(" + TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE +
                 "." +
                 DataColumns.AGGREGATED_SYNC_STATE +

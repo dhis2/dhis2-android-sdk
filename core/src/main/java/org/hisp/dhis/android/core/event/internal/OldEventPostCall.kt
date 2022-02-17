@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterFileResourcesPostCall
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 
@@ -48,7 +49,8 @@ internal class OldEventPostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val eventImportHandler: EventImportHandler,
     private val trackerPostStateManager: TrackerPostStateManager,
-    private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
+    private val oldTrackerImporterPostCall: OldTrackerImporterPostCall,
+    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall
 ) {
 
     fun uploadEvents(events: List<Event>): Observable<D2Progress> {
@@ -64,16 +66,19 @@ internal class OldEventPostCall @Inject internal constructor(
         events: List<Event>
     ): Observable<D2Progress> {
         return Observable.defer {
-            val eventPayload = EventPayload()
-            val eventsToPost = payloadGenerator.getEvents(events)
+            val validEvents = payloadGenerator.getEvents(events).run {
+                fileResourcePostCall.uploadEventsFileResources(this).blockingGet()
+            }
+
             trackerPostStateManager.setPayloadStates(
-                events = eventsToPost,
+                events = validEvents.first,
                 forcedState = State.UPLOADING
             )
 
             val progressManager = D2ProgressManager(1)
 
-            eventPayload.events = eventsToPost
+            val eventPayload = EventPayload()
+            eventPayload.events = validEvents.first
             val strategy = "CREATE_AND_UPDATE"
             try {
                 val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
@@ -82,19 +87,27 @@ internal class OldEventPostCall @Inject internal constructor(
                     listOf(409),
                     EventWebResponse::class.java
                 )
-                handleWebResponse(webResponse, eventsToPost)
+                handleWebResponse(webResponse, validEvents.first, validEvents.second)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
-                trackerPostStateManager.restorePayloadStates(events = eventsToPost)
+                trackerPostStateManager.restorePayloadStates(
+                    events = validEvents.first,
+                    fileResources = validEvents.second
+                )
                 Observable.error<D2Progress>(e)
             }
         }
     }
 
-    private fun handleWebResponse(webResponse: EventWebResponse?, events: List<Event>) {
+    private fun handleWebResponse(
+        webResponse: EventWebResponse?,
+        events: List<Event>,
+        fileResources: List<String>
+    ) {
         eventImportHandler.handleEventImportSummaries(
             webResponse?.response()?.importSummaries(),
-            events
+            events,
+            fileResources
         )
     }
 }

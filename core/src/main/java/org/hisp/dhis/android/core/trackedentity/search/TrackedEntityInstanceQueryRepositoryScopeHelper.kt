@@ -93,9 +93,7 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
                 builder.programDate(newFilter)
             }
         }
-        filter.followUp()?.let {
-            // TODO
-        }
+        filter.followUp()?.let { builder.followUp(it) }
         filter.eventFilters()?.let { eventFilters ->
             val filters = eventFilters.map { eventFilter ->
                 val eventBuilder = TrackedEntityInstanceQueryEventFilter.builder()

@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.common.State
 
-internal interface StoreWithState {
+internal interface StoreWithState<O> {
     fun setSyncState(uid: String, state: State): Int
     fun setSyncState(uids: List<String>, state: State): Int
+    fun setSyncStateIfUploading(uid: String, state: State): Int
     fun getSyncState(uid: String): State?
     fun exists(uid: String): Boolean
+    fun getUploadableSyncStatesIncludingError(): List<O>
 }

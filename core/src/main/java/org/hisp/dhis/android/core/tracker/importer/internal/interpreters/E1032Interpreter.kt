@@ -26,37 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
-import com.jraska.livedata.TestObserver;
+import org.hisp.dhis.android.R
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
-    @Rule
-    public TestRule rule = new InstantTaskExecutorRule();
-
-    @Test
-    public void get_offline_initial_objects() throws InterruptedException {
-        LiveData<PagedList<TrackedEntityInstance>> liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
-                .offlineOnly().getPaged(2);
-
-        TestObserver.test(liveData)
-                .awaitValue()
-                .assertHasValue()
-                .assertValue(pagedList -> pagedList.size() == 2);
+internal class E1032Interpreter internal constructor(
+    private val interpreterHelper: InterpreterHelper,
+    override val regex: Regex
+) : ErrorCodeInterpreter {
+    override val unformattedDescription = R.string.E1032
+    override fun companions(error: JobValidationError): List<String> {
+        return listOf(
+            interpreterHelper.programStageDisplayName(interpreterHelper.programStageUid(error.uid)),
+            error.uid
+        )
     }
 }

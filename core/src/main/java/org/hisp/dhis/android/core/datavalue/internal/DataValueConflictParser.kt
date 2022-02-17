@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementType37Conflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
@@ -49,6 +50,7 @@ internal class DataValueConflictParser @Inject constructor(
 
     private val conflicts = listOf(
         InvalidDataElementTypeConflict(dataElementStore),
+        InvalidDataElementType37Conflict(dataElementStore),
         PastExpiryDateConflict(dataValueStore, dataSetStore),
         PeriodAfterLatestOpenFutureConflict(dataElementStore)
     )

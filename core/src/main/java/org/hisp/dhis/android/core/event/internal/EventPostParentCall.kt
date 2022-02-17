@@ -33,19 +33,20 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
 
 @Reusable
 internal class EventPostParentCall @Inject internal constructor(
     private val oldCall: OldEventPostCall,
-    private val trackerImporterCall: EventTrackerImporterPostCall,
-    private val trackerParentCallHelperHelper: TrackerPostParentCallHelper
+    private val trackerImporterCall: TrackerImporterPostCall,
+    private val trackerParentCallHelper: TrackerPostParentCallHelper
 ) {
 
     fun uploadEvents(events: List<Event>): Observable<D2Progress> {
         return if (events.isEmpty()) {
             Observable.empty<D2Progress>()
         } else {
-            if (trackerParentCallHelperHelper.useNewTrackerImporter()) {
+            if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadEvents(events)
             } else {
                 oldCall.uploadEvents(events)

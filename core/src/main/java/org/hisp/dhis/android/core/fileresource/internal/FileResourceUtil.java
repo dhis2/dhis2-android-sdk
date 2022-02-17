@@ -33,9 +33,6 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,18 +50,14 @@ public final class FileResourceUtil {
     private FileResourceUtil() {
     }
 
-    static File getFile(Context context, FileResource fileResource) throws D2Error {
+    static File getFile(Context context, FileResource fileResource) {
         File file = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context),
                 generateFileName(MediaType.get(fileResource.contentType()), fileResource.uid()));
 
         if (file.exists()) {
             return file;
         } else {
-            throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.FILE_NOT_FOUND)
-                    .errorDescription("File not found for this file resource uid")
-                    .build();
+            return null;
         }
     }
 

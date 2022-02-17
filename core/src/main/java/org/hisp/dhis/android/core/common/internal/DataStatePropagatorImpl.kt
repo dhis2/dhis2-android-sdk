@@ -298,7 +298,9 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 if (bidirectional) {
                     true
                 } else {
-                    relationship.from()?.elementUid() == relationshipItem.elementUid()
+                    val fromItem = relationshipItemStore
+                        .getForRelationshipUidAndConstraintType(relationship.uid()!!, RelationshipConstraintType.FROM)
+                    fromItem?.elementUid() == relationshipItem.elementUid()
                 }
             } ?: false
         }
@@ -330,9 +332,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 
         val trackedEntitiesFromEnrollments = enrollments.mapNotNull { it.trackedEntityInstance() }
 
-        val relationshipItems = relationshipUids.mapNotNull {
-            relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
-        }
+        val relationshipItems = relationshipUids.flatMap { relationshipItemStore.getForRelationshipUid(it) }
 
         return DataStateUidHolder(
             events = eventUids +

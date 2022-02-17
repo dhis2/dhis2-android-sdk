@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatche
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
@@ -60,20 +61,43 @@ class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
 
     @Override
     public D2ErrorCode catchError(Response<?> response) {
+
+        String errorBodyStr = null;
+        if (response.errorBody() != null) {
+            try {
+                errorBodyStr = response.errorBody().string();
+            } catch (IOException e) {
+                return D2ErrorCode.NO_DHIS2_SERVER;
+            }
+        }
+
         try {
-            String errorBodyStr = response.errorBody().string();
             HttpMessageResponse errorResponse = objectMapper.readValue(errorBodyStr, HttpMessageResponse.class);
             boolean isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED;
             if (isUnauthorized && errorResponse.message().contains("Account locked")) {
                 return D2ErrorCode.USER_ACCOUNT_LOCKED;
             } else if (isUnauthorized) {
                 return D2ErrorCode.BAD_CREDENTIALS;
+            } else if (hasInvalidCharacters(response.code(), errorBodyStr)) {
+                return D2ErrorCode.INVALID_CHARACTERS;
             } else {
                 return D2ErrorCode.NO_DHIS2_SERVER;
             }
         } catch (Exception e) {
+            if (hasInvalidCharacters(response.code(), errorBodyStr)) {
+                return D2ErrorCode.INVALID_CHARACTERS;
+            }
             Log.e(UserAuthenticateCallErrorCatcher.class.getSimpleName(), e.getClass().getSimpleName(), e);
             return D2ErrorCode.NO_DHIS2_SERVER;
+        }
+    }
+
+    private boolean hasInvalidCharacters(int code, String errorBodyStr) {
+        try {
+            boolean isBadRequest = code == HttpURLConnection.HTTP_BAD_REQUEST;
+            return isBadRequest && errorBodyStr.contains("Invalid character");
+        } catch (Exception e) {
+            return false;
         }
     }
 }

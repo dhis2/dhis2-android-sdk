@@ -32,4 +32,4 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface IdentifiableDataObjectStore<O> :
     IdentifiableObjectStore<O>,
-    StoreWithState where O : ObjectWithUidInterface, O : DataObject
+    StoreWithState<O> where O : ObjectWithUidInterface, O : DataObject

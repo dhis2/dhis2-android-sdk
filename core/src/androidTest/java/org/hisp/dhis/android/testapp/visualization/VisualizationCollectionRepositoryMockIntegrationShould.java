@@ -87,6 +87,24 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
+    public void find_by_display_title() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+                .byDisplayTitle().eq("Sample title")
+                .blockingGet();
+        assertThat(visualizations.size()).isEqualTo(1);
+        assertThat(visualizations.get(0).uid()).isEqualTo("PYBH8ZaAQnC");
+    }
+
+    @Test
+    public void find_by_display_subtitle() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+                .byDisplaySubtitle().eq("Sample subtitle")
+                .blockingGet();
+        assertThat(visualizations.size()).isEqualTo(1);
+        assertThat(visualizations.get(0).uid()).isEqualTo("PYBH8ZaAQnC");
+    }
+
+    @Test
     public void find_by_visualization_type() {
         List<Visualization> visualizations = d2.visualizationModule().visualizations()
                 .byType().eq(VisualizationType.COLUMN)

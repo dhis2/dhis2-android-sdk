@@ -32,4 +32,4 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface IdentifiableDeletableDataObjectStore<O> :
     IdentifiableDataObjectStore<O>,
-    DeletableStoreWithState where O : ObjectWithUidInterface, O : DeletableDataObject
+    DeletableStoreWithState<O> where O : ObjectWithUidInterface, O : DeletableDataObject

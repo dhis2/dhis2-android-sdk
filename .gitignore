@@ -13,6 +13,7 @@ out
 !.idea
 .idea/*
 !.idea/copyright
+!.idea/gradle.xml
 !.idea/scopes
 .idea/scopes/*
 !.idea/scopes/copyright.xml

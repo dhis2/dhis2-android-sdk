@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -64,12 +63,10 @@ import io.reactivex.Single;
 import static org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Columns;
 
 @Reusable
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class FileResourceCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>
-        implements ReadWriteWithUploadWithUidCollectionRepository<FileResource, File> {
+        implements ReadWriteWithUidCollectionRepository<FileResource, File> {
 
-    private final FileResourcePostCall postCall;
     private final IdentifiableDataObjectStore<FileResource> store;
     private final Context context;
 
@@ -77,26 +74,31 @@ public final class FileResourceCollectionRepository
     FileResourceCollectionRepository(final IdentifiableDataObjectStore<FileResource> store,
                                      final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
                                      final RepositoryScope scope,
-                                     final FileResourcePostCall postCall,
                                      final Transformer<File, FileResource> transformer,
                                      final DataStatePropagator dataStatePropagator,
                                      final Context context) {
         super(store, childrenAppenders, scope, transformer,
                 new FilterConnectorFactory<>(scope, s -> new FileResourceCollectionRepository(
-                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator, context)));
+                        store, childrenAppenders, s, transformer, dataStatePropagator, context)));
         this.store = store;
-        this.postCall = postCall;
         this.context = context;
     }
 
-    @Override
+    /**
+     * @deprecated FileResources are automatically uploaded when the parent object is uploaded. There is no need to
+     * manually upload the fileResources. Actually, it is risky to upload the fileResources independently: if the
+     * parent objects are not uploaded within two hours, the server will remove the orphan fileResources.
+     * @return Progress
+     */
+    @Deprecated
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
-                .blockingGetWithoutChildren())
-                .flatMap(postCall::uploadFileResources);
+        return Observable.empty();
     }
 
-    @Override
+    /**
+     * @deprecated Check {@link #upload()}.
+     */
+    @Deprecated
     public void blockingUpload() {
         upload().blockingSubscribe();
     }

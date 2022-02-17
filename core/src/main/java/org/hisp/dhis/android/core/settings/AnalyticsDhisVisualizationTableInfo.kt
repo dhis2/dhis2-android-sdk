@@ -55,6 +55,7 @@ object AnalyticsDhisVisualizationTableInfo {
                 SCOPE,
                 GROUP_UID,
                 GROUP_NAME,
+                NAME,
                 TIME_STAMP
             )
         }
@@ -65,6 +66,7 @@ object AnalyticsDhisVisualizationTableInfo {
             const val SCOPE = "scope"
             const val GROUP_UID = "groupUid"
             const val GROUP_NAME = "groupName"
+            const val NAME = "name"
             const val TIME_STAMP = "timestamp"
         }
     }

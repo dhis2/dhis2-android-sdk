@@ -58,6 +58,13 @@ internal interface APIDownloader {
         transform: ((P) -> P)?
     ): Single<List<P>>
 
+    fun <K, V> downloadPartitionedMap(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: (Map<K, V>) -> Any,
+        pageDownloader: (Set<String>) -> Single<out Map<K, V>>
+    ): Single<Map<K, V>>
+
     fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,

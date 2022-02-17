@@ -41,7 +41,7 @@ public class SystemInfoSamples {
                 .id(1L)
                 .serverDate(getDate("2017-11-29T11:27:46.935"))
                 .dateFormat("yyyy-mm-dd")
-                .version("2.35")
+                .version("2.37")
                 .contextPath("https://play.dhis2.org/android-current")
                 .systemName("DHIS 2 Demo - Sierra Leone")
                 .build();

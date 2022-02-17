@@ -25,29 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
-import retrofit2.http.GET
-import retrofit2.http.Query
+package org.hisp.dhis.android.core.category;
 
-internal interface CategoryOptionService {
+import static com.google.common.truth.Truth.assertThat;
 
-    @GET("categoryOptions")
-    fun getCategoryOptions(
-        @Query("fields") @Which fields: Fields<CategoryOption>,
-        @Query("filter") categoryUidsFilterString: String,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<CategoryOption>>
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-    @GET("categoryOptions/orgUnits")
-    fun getCategoryOptionOrgUnits(
-        @Query("categoryOptions") categoryOptions: String
-    ): Single<CategoryOptionOrganisationUnits>
+import java.io.IOException;
+import java.text.ParseException;
+
+public class CategoryOptionOrganisationUnitsShould extends BaseObjectShould implements ObjectShould {
+
+    public CategoryOptionOrganisationUnitsShould() {
+        super("category/category_option_orgunits.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        CategoryOptionOrganisationUnits links =
+                objectMapper.readValue(jsonStream, CategoryOptionOrganisationUnits.class);
+
+        assertThat(links.size()).isEqualTo(3);
+    }
 }

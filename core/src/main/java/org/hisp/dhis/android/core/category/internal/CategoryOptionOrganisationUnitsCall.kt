@@ -29,43 +29,53 @@ package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
-import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
 
 @Reusable
-internal class CategoryOptionCall @Inject constructor(
-    private val handler: Handler<CategoryOption>,
+internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
+    private val handler: LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>,
     private val service: CategoryOptionService,
+    private val dhisVersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader
-) : UidsCall<CategoryOption> {
+) {
 
     companion object {
-        private const val QUERY_WITHOUT_UIDS_LENGTH = (
-            "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
-                "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
-                "&filter=categories.id:in:[]&filter=access.data.read:eq:true&paging=false"
-            ).length
+        private const val QUERY_WITHOUT_UIDS_LENGTH = ("categoryOptions/orgUnits?categoryOptions=").length
     }
 
-    override fun download(uids: Set<String>): Single<List<CategoryOption>> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        return apiDownloader.downloadPartitioned(
-            uids,
-            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getCategoryOptions(
-                CategoryOptionFields.allFields,
-                "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
-                accessDataReadFilter,
-                paging = false
-            )
+    fun download(uids: Set<String>): Single<Map<String, List<String>>> {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+            apiDownloader.downloadPartitionedMap(
+                uids,
+                UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
+                { map: Map<String, List<String>> -> map.forEach { handleEntry(it) } },
+                { partitionUids: Set<String> ->
+                    service.getCategoryOptionOrgUnits(
+                        CollectionsHelper.commaAndSpaceSeparatedCollectionValues(partitionUids)
+                    )
+                })
+        } else {
+            Single.just(emptyMap())
+        }
+    }
+
+    private fun handleEntry(entry: Map.Entry<String, List<String>>) {
+        handler.handleMany(
+            entry.key,
+            entry.value.map { ObjectWithUid.create(it) }
+        ) { o ->
+            CategoryOptionOrganisationUnitLink.builder()
+                .organisationUnit(o.uid())
+                .categoryOption(entry.key)
+                .build()
         }
     }
 }

@@ -29,15 +29,14 @@ package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
@@ -58,10 +57,9 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
                 UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
                 { map: Map<String, List<String?>> -> map.forEach { handleEntry(it) } },
                 { partitionUids: Set<String> ->
-                    service.getCategoryOptionOrgUnits(
-                        CollectionsHelper.commaAndSpaceSeparatedCollectionValues(partitionUids)
-                    )
-                })
+                    service.getCategoryOptionOrgUnits(partitionUids.joinToString(","))
+                }
+            )
         } else {
             Single.just(emptyMap())
         }

@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOption
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryOptionHandler @Inject constructor(

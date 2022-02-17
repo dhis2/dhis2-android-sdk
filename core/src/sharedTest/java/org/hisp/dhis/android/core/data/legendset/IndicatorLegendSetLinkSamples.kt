@@ -36,6 +36,7 @@ object IndicatorLegendSetLinkSamples {
             .id(1L)
             .indicator("indicator")
             .legendSet("legendSet")
+            .sortOrder(1)
             .build()
     }
 }

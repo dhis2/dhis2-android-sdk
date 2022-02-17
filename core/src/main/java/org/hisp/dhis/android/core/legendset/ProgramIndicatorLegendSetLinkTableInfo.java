@@ -60,12 +60,14 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
 
         public static final String PROGRAM_INDICATOR = "programIndicator";
         public static final String LEGEND_SET = "legendSet";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR,
-                    LEGEND_SET
+                    LEGEND_SET,
+                    SORT_ORDER
             );
         }
 
@@ -73,7 +75,8 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR,
-                    LEGEND_SET
+                    LEGEND_SET,
+                    SORT_ORDER
             );
         }
     }

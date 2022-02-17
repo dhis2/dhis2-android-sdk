@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataelement.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
@@ -68,7 +69,7 @@ public class DataElementHandlerShould {
     private Handler<Attribute> attributeHandler;
 
     @Mock
-    private LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+    private OrderedLinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
 
     @Mock
     private Handler<LegendSet> legendSetHandler;

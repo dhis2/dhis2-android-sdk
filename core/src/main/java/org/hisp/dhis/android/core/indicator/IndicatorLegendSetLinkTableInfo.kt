@@ -58,17 +58,18 @@ class IndicatorLegendSetLinkTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                INDICATOR, LEGEND_SET
+                INDICATOR, LEGEND_SET, SORT_ORDER
             )
         }
 
         override fun whereUpdate(): Array<String> {
-            return arrayOf(INDICATOR, LEGEND_SET)
+            return arrayOf(INDICATOR, LEGEND_SET, SORT_ORDER)
         }
 
         companion object {
             const val LEGEND_SET = "legendSet"
             const val INDICATOR = "indicator"
+            const val SORT_ORDER = "sortOrder"
         }
     }
 }

@@ -32,7 +32,6 @@ import io.reactivex.functions.Consumer
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 
@@ -50,7 +49,6 @@ internal interface APIDownloader {
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<P>>
     ): Single<List<P>>
-
 
     fun <P> downloadPartitioned(
         uids: Set<String>,

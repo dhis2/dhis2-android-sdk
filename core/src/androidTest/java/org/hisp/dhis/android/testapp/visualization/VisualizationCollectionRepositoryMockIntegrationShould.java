@@ -119,7 +119,7 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
     public void filter_by_legend_show_key() {
         List<Visualization> visualizations = d2.visualizationModule().visualizations()
             .byLegendShowKey()
-            .eq("false")
+             .isFalse()
             .blockingGet();
 
         assertThat(visualizations.size()).isEqualTo(2);

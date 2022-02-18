@@ -25,32 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.visualization
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationAPI36
-import retrofit2.http.GET
-import retrofit2.http.Query
+import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-internal interface VisualizationService {
+class VisualizationAPI36Should : BaseObjectShould("visualization/visualization_api_36.json"), ObjectShould {
 
-    @GET("visualizations")
-    fun getVisualizations(
-        @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") @Where uids: Filter<Visualization, String>,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<Visualization>>
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
 
-    @GET("visualizations")
-    fun getVisualizations36(
-        @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") @Where uids: Filter<Visualization, String>,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<VisualizationAPI36>>
+        assertThat(visualizationAPI36.id).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualizationAPI36.type).isEqualTo(VisualizationType.PIVOT_TABLE)
+
+        assertThat(visualizationAPI36.legendDisplayStrategy).isEquivalentAccordingToCompareTo(LegendStrategy.FIXED)
+        assertThat(visualizationAPI36.legendDisplayStyle).isEquivalentAccordingToCompareTo(LegendStyle.FILL)
+    }
+
+    @Test
+    fun convert_to_visualization() {
+        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
+
+        val visualizationStream = this.javaClass.classLoader.getResourceAsStream("visualization/visualization.json")
+        val visualization = objectMapper.readValue(visualizationStream, Visualization::class.java)
+
+        assertThat(visualizationAPI36.toVisualization()).isEqualTo(visualization)
+    }
 }

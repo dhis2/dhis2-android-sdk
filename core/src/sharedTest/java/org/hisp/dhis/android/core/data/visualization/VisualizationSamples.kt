@@ -71,7 +71,7 @@ internal object VisualizationSamples {
         .legend(
             VisualizationLegend.builder()
                 .set(ObjectWithUid.create("Yf6UHoPkd57"))
-                .showKey("false")
+                .showKey(false)
                 .strategy(LegendStrategy.FIXED)
                 .style(LegendStyle.FILL)
                 .build()

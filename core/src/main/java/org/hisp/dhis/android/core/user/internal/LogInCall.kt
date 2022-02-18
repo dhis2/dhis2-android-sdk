@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.core.wipe.internal.WipeModule
 
 @Reusable
 @Suppress("LongParameterList")
@@ -62,7 +61,6 @@ internal class LogInCall @Inject internal constructor(
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val userStore: IdentifiableObjectStore<User>,
-    private val wipeModule: WipeModule,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions
@@ -104,10 +102,7 @@ internal class LogInCall @Inject internal constructor(
     }
 
     private fun handleOnlineException(d2Error: D2Error): D2Error {
-        return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-            wipeModule.wipeEverything()
-            d2Error
-        } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+        return if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
             d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
         ) {
             exceptions.noDHIS2Server()

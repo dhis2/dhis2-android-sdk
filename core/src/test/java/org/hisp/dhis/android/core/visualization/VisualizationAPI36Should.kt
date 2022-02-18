@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class VisualizationAPI36Should : BaseObjectShould("visualization/visualization_api_36.json"), ObjectShould {
 

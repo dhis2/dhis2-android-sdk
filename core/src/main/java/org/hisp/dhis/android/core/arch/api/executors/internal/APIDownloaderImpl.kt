@@ -31,7 +31,6 @@ import androidx.annotation.VisibleForTesting
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -45,65 +44,56 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 @VisibleForTesting
 internal class APIDownloaderImpl @Inject constructor(private val resourceHandler: ResourceHandler) : APIDownloader {
 
-    override fun <P> downloadPartitionedWithCustomHandling(
-        uids: Set<String>,
-        pageSize: Int,
-        customHandling: Consumer<List<P>>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>
-    ): Single<List<P>> {
-        return downloadPartitionedWithCustomHandling(uids, pageSize, customHandling, pageDownloader, null)
-    }
-
-    private fun <P> downloadPartitionedWithCustomHandling(
-        uids: Set<String>,
-        pageSize: Int,
-        customHandling: Consumer<List<P>>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-        transform: ((P) -> P)?
-    ): Single<List<P>> {
-        val partitions = CollectionsHelper.setPartition(uids, pageSize)
-        return Observable.fromIterable(partitions)
-            .flatMapSingle(pageDownloader)
-            .map { obj: Payload<P> -> obj.items() }
-            .reduce(
-                listOf(),
-                { items: List<P>, items2: List<P> ->
-                    items + items2
-                }
-            )
-            .map { items: List<P> ->
-                if (transform == null) {
-                    items
-                } else {
-                    items.map { transform(it) }
-                }
-            }
-            .doOnSuccess(customHandling)
-    }
-
     override fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<P>>
-    ): Single<List<P>> {
-        return downloadPartitioned(uids, pageSize, handler, pageDownloader, null)
-    }
-
-    override fun <P> downloadPartitioned(
-        uids: Set<String>,
-        pageSize: Int,
-        handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-        transform: ((P) -> P)?
     ): Single<List<P>> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
-            Consumer { oCollection: List<P> -> handler.handleMany(oCollection) },
+            handler,
+            pageDownloader
+        ) { it }
+    }
+
+    override fun <P, O> downloadPartitioned(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
+    ): Single<List<P>> {
+        return downloadPartitionedWithCustomHandling(
+            uids,
+            pageSize,
+            handler,
             pageDownloader,
             transform
         )
+    }
+
+    private fun <P, O> downloadPartitionedWithCustomHandling(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
+    ): Single<List<P>> {
+        val partitions = CollectionsHelper.setPartition(uids, pageSize)
+        return Observable.fromIterable(partitions)
+            .flatMapSingle(pageDownloader)
+            .map { obj: Payload<O> -> obj.items() }
+            .reduce(emptyList()) { items: List<O>, items2: List<O> ->
+                items + items2
+            }
+            .map { items: List<O> ->
+                items.map { transform(it) }
+            }
+            .doOnSuccess { oCollection: List<P> ->
+                handler.handleMany(oCollection)
+            }
     }
 
     override fun <K, V> downloadPartitionedMap(

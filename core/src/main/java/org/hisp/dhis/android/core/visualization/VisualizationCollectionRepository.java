@@ -81,8 +81,8 @@ public final class VisualizationCollectionRepository
         return cf.string(Columns.SUBTITLE);
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byLegendShowKey() {
-        return cf.string(Columns.LEGEND_SHOW_KEY);
+    public BooleanFilterConnector<VisualizationCollectionRepository> byLegendShowKey() {
+        return cf.bool(Columns.LEGEND_SHOW_KEY);
     }
 
     public StringFilterConnector<VisualizationCollectionRepository> byLegendStrategy() {

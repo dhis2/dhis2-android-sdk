@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.visualization
 
+import java.util.*
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
-import java.util.*
 
 internal data class VisualizationAPI36(
     val id: String,
@@ -127,11 +127,13 @@ internal data class VisualizationAPI36(
             .userOrganisationUnitGrandChildren(userOrganisationUnitGrandChildren)
             .organisationUnits(organisationUnits)
             .periods(periods)
-            .legend(VisualizationLegend.builder()
-                .set(legendSet)
-                .style(legendDisplayStyle)
-                .strategy(legendDisplayStrategy)
-                .showKey(false)
-                .build())
+            .legend(
+                VisualizationLegend.builder()
+                    .set(legendSet)
+                    .style(legendDisplayStyle)
+                    .strategy(legendDisplayStrategy)
+                    .showKey(false)
+                    .build()
+            )
             .build()
 }

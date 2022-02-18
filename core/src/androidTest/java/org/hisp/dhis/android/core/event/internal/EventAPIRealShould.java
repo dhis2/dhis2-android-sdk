@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -80,7 +81,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         super.setUp();
 
         d2 = D2Factory.forNewDatabase();
-        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
+        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         eventService = d2.retrofit().create(EventService.class);
     }

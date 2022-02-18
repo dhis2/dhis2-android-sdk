@@ -42,6 +42,7 @@ class CategoryModuleDownloader @Inject internal constructor(
     private val categoryCall: UidsCall<Category>,
     private val categoryComboCall: UidsCall<CategoryCombo>,
     private val categoryOptionCall: UidsCall<CategoryOption>,
+    private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor
 ) : UntypedModuleDownloader {
@@ -52,9 +53,11 @@ class CategoryModuleDownloader @Inject internal constructor(
             .flatMapCompletable { comboUids ->
                 val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
                 categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids).doOnSuccess { categoryOptions ->
-                        categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
-                    }
+                    categoryOptionCall.download(categoryUids)
+                        .flatMap { categoryOptions ->
+                            categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
+                            categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
+                        }
                 }.ignoreElement()
             }
     }

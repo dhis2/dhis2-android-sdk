@@ -56,11 +56,9 @@ internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<Visualizat
         }
 
         return if (isLegendInfoPresent) {
-            val set = legendSetId?.let {
-                ObjectWithUid.create(it)
-            }
-            val style = LegendStyle.valueOf(legendStyle)
-            val strategy = LegendStrategy.valueOf(legendStrategy)
+            val set = legendSetId?.let { ObjectWithUid.create(it) }
+            val style = legendStyle?.let { LegendStyle.valueOf(it) }
+            val strategy = legendStrategy?.let { LegendStrategy.valueOf(it) }
             VisualizationLegend.builder()
                 .style(style)
                 .showKey(legendShowKey)
@@ -75,8 +73,8 @@ internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<Visualizat
     override fun toContentValues(values: ContentValues, columnName: String?, value: VisualizationLegend?) {
         value?.let {
             values.put(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY, it.showKey())
-            values.put(VisualizationTableInfo.Columns.LEGEND_STRATEGY, it.strategy().toString())
-            values.put(VisualizationTableInfo.Columns.LEGEND_STYLE, it.style().toString())
+            values.put(VisualizationTableInfo.Columns.LEGEND_STRATEGY, it.strategy()?.toString())
+            values.put(VisualizationTableInfo.Columns.LEGEND_STYLE, it.style()?.toString())
             values.put(VisualizationTableInfo.Columns.LEGEND_SET_ID, UidsHelper.getUidOrNull(it.set()))
         }
     }

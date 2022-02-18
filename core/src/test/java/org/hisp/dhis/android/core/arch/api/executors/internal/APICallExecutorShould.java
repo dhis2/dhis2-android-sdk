@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.observers.TestObserver;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -74,6 +76,9 @@ public class APICallExecutorShould {
     @Mock
     private IOException ioException;
 
+    @Mock
+    private UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
+
     private Response conflictResponse;
 
     private APICallExecutor apiCallExecutor;
@@ -93,7 +98,7 @@ public class APICallExecutorShould {
         conflictResponse = Response.error(409, ResponseBody.create(MediaType.get("application/text"),
                 "error_response"));
 
-        apiCallExecutor = new APICallExecutorImpl(errorStore);
+        apiCallExecutor = new APICallExecutorImpl(errorStore, userAccountDisabledErrorCatcher);
     }
 
     @Test
@@ -184,5 +189,22 @@ public class APICallExecutorShould {
         verify(errorStore).isReady();
         verify(errorStore).insert(any(D2Error.class));
         verifyNoMoreInteractions(errorStore);
+    }
+
+    @Test
+    public void call_error_catcher_when_account_disabled() throws IOException {
+        Response disabledResponse = Response.error(401, ResponseBody.create(MediaType.get("application/text"),
+                "Account disabled"));
+
+        when(objectAPICall.execute()).thenReturn(disabledResponse);
+        when(userAccountDisabledErrorCatcher.isUserAccountLocked(any())).thenReturn(true);
+
+        try {
+            apiCallExecutor.executeObjectCall(objectAPICall);
+        } catch (D2Error d2Error) {
+            //Empty block
+        }
+
+        verify(userAccountDisabledErrorCatcher).catchError(any());
     }
 }

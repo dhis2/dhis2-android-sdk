@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -75,6 +76,9 @@ public abstract class BaseCallShould {
 
     @Mock
     protected D2Error d2Error;
+
+    @Mock
+    protected UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
 
     protected Response errorResponse;
 

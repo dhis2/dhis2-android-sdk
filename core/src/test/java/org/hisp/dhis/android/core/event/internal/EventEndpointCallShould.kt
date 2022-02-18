@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -38,10 +37,12 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
+import java.util.concurrent.Callable
 
 class EventEndpointCallShould {
 
@@ -50,6 +51,7 @@ class EventEndpointCallShould {
     private val startDateStr = "2021-01-01"
 
     private val databaseAdapter: DatabaseAdapter = mock()
+    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher = mock()
 
     @Test
     fun realize_request_with_page_filters_when_included_in_query() {
@@ -113,7 +115,7 @@ class EventEndpointCallShould {
     private fun givenACallForQuery(eventQuery: EventQuery): Callable<List<Event>> {
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter)
+            APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
         ).getCall(eventQuery)
     }
 

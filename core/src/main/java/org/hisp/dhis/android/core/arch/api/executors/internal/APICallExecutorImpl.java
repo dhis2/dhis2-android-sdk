@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,27 +52,19 @@ import retrofit2.Response;
 public final class APICallExecutorImpl implements APICallExecutor {
 
     private final ObjectStore<D2Error> errorStore;
+    private final UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
     private final APIErrorMapper errorMapper = new APIErrorMapper();
 
     @Inject
-    public APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
+    public APICallExecutorImpl(ObjectStore<D2Error> errorStore,
+                               UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher) {
         this.errorStore = errorStore;
+        this.userAccountDisabledErrorCatcher = userAccountDisabledErrorCatcher;
     }
 
     @Override
     public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
-        try {
-            Response<Payload<P>> response = call.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body().items();
-            } else {
-                throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response));
-            }
-        } catch (D2Error d2Error) {
-            throw d2Error;
-        } catch (Throwable t) {
-            throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder(call)));
-        }
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null, false).items();
     }
 
     @Override
@@ -105,6 +98,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
                 return processSuccessfulResponse(errorBuilder(call), response, emptyBodyExpected);
+            } else if (userAccountDisabledErrorCatcher.isUserAccountLocked(response)) {
+                this.catchAndThrow(userAccountDisabledErrorCatcher, errorBuilder(call), response);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher != null) {
@@ -155,7 +150,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
         return errorMapper.getBaseErrorBuilder(call);
     }
 
-    public static APICallExecutor create(DatabaseAdapter databaseAdapter) {
-        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
+    public static APICallExecutor create(DatabaseAdapter databaseAdapter,
+                                         UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher) {
+        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter), userAccountDisabledErrorCatcher);
     }
 }

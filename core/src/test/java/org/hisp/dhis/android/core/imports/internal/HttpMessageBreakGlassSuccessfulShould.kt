@@ -25,32 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class HttpMessageBreakGlassSuccessfulShould : BaseObjectShould("trackedentity/glass/break_glass_successful.json"),
+    ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class HttpMessageResponseShould extends BaseObjectShould implements ObjectShould {
-
-    public HttpMessageResponseShould() {
-        super("trackedentity/glass/break_glass_successful.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        HttpMessageResponse response = objectMapper.readValue(jsonStream, HttpMessageResponse.class);
+    override fun map_from_json_string() {
+        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
 
-        assertThat(response.httpStatus()).isEqualTo("OK");
-        assertThat(response.httpStatusCode()).isEqualTo(200);
-        assertThat(response.status()).isEqualTo("OK");
-        assertThat(response.message()).isEqualTo("Temporary Ownership granted");
+        assertThat(response.httpStatus()).isEqualTo("OK")
+        assertThat(response.httpStatusCode()).isEqualTo(200)
+        assertThat(response.status()).isEqualTo("OK")
+        assertThat(response.message()).isEqualTo("Temporary Ownership granted")
     }
 }

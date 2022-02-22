@@ -25,35 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
-import kotlin.Throws
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.Response
-import java.io.IOException
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
-    override fun mustBeStored(): Boolean {
-        return false
-    }
+class HttpMessageClosedProgramShould : BaseObjectShould("trackedentity/glass/closed_program_failure.json"),
+    ObjectShould {
 
-    @Throws(IOException::class)
-    override fun catchError(response: Response<*>): D2ErrorCode? {
-        val parsed = objectMapper().readValue(
-            response.errorBody()!!.string(),
-            HttpMessageResponse::class.java
-        )
-        return if (parsed.httpStatusCode() == 401) {
-            when(parsed.message()) {
-                "OWNERSHIP_ACCESS_DENIED" -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
-                "PROGRAM_ACCESS_CLOSED" -> D2ErrorCode.PROGRAM_ACCESS_CLOSED
-                else -> null
-            }
-        } else {
-            null
-        }
+    @Test
+    override fun map_from_json_string() {
+        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
+
+        assertThat(response.httpStatus()).isEqualTo("Unauthorized")
+        assertThat(response.httpStatusCode()).isEqualTo(401)
+        assertThat(response.status()).isEqualTo("ERROR")
+        assertThat(response.message()).isEqualTo("PROGRAM_ACCESS_CLOSED")
     }
 }

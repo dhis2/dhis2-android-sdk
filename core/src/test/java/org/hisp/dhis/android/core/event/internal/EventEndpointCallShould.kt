@@ -126,6 +126,7 @@ class EventEndpointCallShould {
             .orgUnit(orgUnit)
             .commonParams(
                 TrackerQueryCommonParams(
+                    listOf(),
                     listOfNotNull(program),
                     program,
                     startDate,

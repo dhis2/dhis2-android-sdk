@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import javax.inject.Inject
 
-public interface TrackedEntityModule {
+internal class OwnershipManagerImpl @Inject constructor(
+    private val apiCallExecutor: APICallExecutor,
+    private val ownershipService: OwnershipService
+) : OwnershipManager {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
+        return Completable.fromCallable { blockingBreakGlass(trackedEntityInstance, program, reason) }
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
+        val breakGlassResponse: HttpMessageResponse = apiCallExecutor.executeObjectCall(
+            ownershipService.breakGlass(trackedEntityInstance, program, reason)
+        )
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+        if (breakGlassResponse.httpStatusCode() == 200) {
+            // TODO Save record
+        } else {
+            throw RuntimeException("")
+        }
+    }
 }

@@ -25,30 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import retrofit2.Call
+import retrofit2.http.POST
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+internal interface OwnershipService {
 
-public interface TrackedEntityModule {
+    @POST("tracker/ownership/override")
+    fun breakGlass(
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
+        @Query(PROGRAM) program: String,
+        @Query(REASON) reason: String
+    ): Call<HttpMessageResponse>
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+    companion object {
+        const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
+        const val PROGRAM = "program"
+        const val REASON = "reason"
+    }
 }

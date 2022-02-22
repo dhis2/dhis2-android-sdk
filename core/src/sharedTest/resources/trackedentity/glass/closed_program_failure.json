@@ -2,5 +2,5 @@
   "httpStatus": "Unauthorized",
   "httpStatusCode": 401,
   "status": "ERROR",
-  "message": "OWNERSHIP_ACCESS_DENIED"
+  "message": "PROGRAM_ACCESS_CLOSED"
 }

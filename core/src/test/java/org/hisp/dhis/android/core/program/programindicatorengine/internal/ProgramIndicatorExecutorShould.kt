@@ -396,12 +396,12 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
-    fun evaluate_invalid_filter() {
+    fun evaluate_truthy_filter() {
         setExpression("4")
         setFilter("1")
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
-        assertThat(result).isNull()
+        assertThat(result).isEqualTo("4")
     }
 
     @Test

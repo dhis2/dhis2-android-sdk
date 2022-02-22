@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -95,6 +96,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     private APICallExecutor executor;
 
     private TrackedEntityInstanceService trackedEntityInstanceService;
+    private OwnershipService ownershipService;
 
     private UidGenerator uidGenerator = new UidGeneratorImpl();
 
@@ -107,6 +109,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
         executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
+        ownershipService = d2.retrofit().create(OwnershipService.class);
 
         try {
             login();
@@ -217,7 +220,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
         }
 
         HttpMessageResponse glassResponse =
-                executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program, "Sync"));
+                executor.executeObjectCall(ownershipService.breakGlass(tei.uid(), program, "Sync"));
 
         TEIWebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),

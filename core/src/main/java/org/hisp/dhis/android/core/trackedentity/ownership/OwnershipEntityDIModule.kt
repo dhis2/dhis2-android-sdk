@@ -25,30 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+@Module
+internal class OwnershipEntityDIModule {
 
-public interface TrackedEntityModule {
+    @Provides
+    @Reusable
+    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
+        return impl
+    }
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): OwnershipService {
+        return retrofit.create(OwnershipService::class.java)
+    }
 }

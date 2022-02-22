@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -61,15 +60,6 @@ internal interface TrackedEntityInstanceService {
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Call<Payload<TrackedEntityInstance>>
-
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
-    fun getTrackedEntityInstanceByProgram(
-        @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
-        @Query(PROGRAM) program: String,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Call<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     fun getSingleTrackedEntityInstance(
@@ -123,13 +113,6 @@ internal interface TrackedEntityInstanceService {
         @Query(PAGE_SIZE) pageSize: Int
     ): Call<SearchGrid>
 
-    @POST("tracker/ownership/override")
-    fun breakGlass(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String
-    ): Call<HttpMessageResponse>
-
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"
         const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
@@ -154,7 +137,6 @@ internal interface TrackedEntityInstanceService {
         const val FILTER = "filter"
         const val STRATEGY = "strategy"
         const val LAST_UPDATED_START_DATE = "lastUpdatedStartDate"
-        const val REASON = "reason"
         const val INCLUDE_DELETED = "includeDeleted"
         const val ASSIGNED_USER_MODE = "assignedUserMode"
         const val ORDER = "order"

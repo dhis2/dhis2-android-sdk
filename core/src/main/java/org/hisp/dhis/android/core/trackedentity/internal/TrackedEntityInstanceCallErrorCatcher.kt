@@ -25,17 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import kotlin.Throws
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import retrofit2.Response
+import java.io.IOException
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
+    override fun mustBeStored(): Boolean {
+        return false
+    }
 
-import java.io.IOException;
-
-import retrofit2.Response;
-
-public interface APICallErrorCatcher {
-    Boolean mustBeStored();
-
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+    @Throws(IOException::class)
+    override fun catchError(response: Response<*>): D2ErrorCode? {
+        val parsed = objectMapper().readValue(
+            response.errorBody()!!.string(),
+            HttpMessageResponse::class.java
+        )
+        return if (parsed.httpStatusCode() == 401 && parsed.message() == "OWNERSHIP_ACCESS_DENIED") {
+            D2ErrorCode.OWNERSHIP_ACCESS_DENIED
+        } else {
+            null
+        }
+    }
 }

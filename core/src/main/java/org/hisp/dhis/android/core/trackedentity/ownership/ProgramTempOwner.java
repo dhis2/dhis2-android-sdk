@@ -25,33 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import retrofit2.Retrofit
+package org.hisp.dhis.android.core.trackedentity.ownership;
 
-@Module
-internal class OwnershipEntityDIModule {
+import android.database.Cursor;
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+
+import java.util.Date;
+
+@AutoValue
+public abstract class ProgramTempOwner implements CoreObject {
+
+    public abstract String program();
+
+    public abstract String trackedEntityInstance();
+
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date validUntil();
+
+    public abstract String reason();
+
+    public static Builder builder() {
+        return new $$AutoValue_ProgramTempOwner.Builder();
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
+    public static ProgramTempOwner create(Cursor cursor) {
+        return $AutoValue_ProgramTempOwner.createFromCursor(cursor);
     }
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder program(String event);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder validUntil(Date validUntil);
+
+        public abstract Builder reason(String reason);
+
+        public abstract ProgramTempOwner build();
     }
 }

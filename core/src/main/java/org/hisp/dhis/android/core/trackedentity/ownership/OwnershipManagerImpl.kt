@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import javax.inject.Inject
 
 internal class OwnershipManagerImpl @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
@@ -47,9 +47,11 @@ internal class OwnershipManagerImpl @Inject constructor(
             ownershipService.breakGlass(trackedEntityInstance, program, reason)
         )
 
+        @Suppress("MagicNumber")
         if (breakGlassResponse.httpStatusCode() == 200) {
             // TODO Save record
         } else {
+            @Suppress("TooGenericExceptionThrown")
             throw RuntimeException("")
         }
     }

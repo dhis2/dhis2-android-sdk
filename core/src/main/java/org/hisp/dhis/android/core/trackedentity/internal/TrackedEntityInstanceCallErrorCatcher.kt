@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
-import kotlin.Throws
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.Response
 import java.io.IOException
+import kotlin.Throws
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import retrofit2.Response
 
 internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
@@ -46,8 +46,10 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
             response.errorBody()!!.string(),
             HttpMessageResponse::class.java
         )
+
+        @Suppress("MagicNumber")
         return if (parsed.httpStatusCode() == 401) {
-            when(parsed.message()) {
+            when (parsed.message()) {
                 "OWNERSHIP_ACCESS_DENIED" -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
                 "PROGRAM_ACCESS_CLOSED" -> D2ErrorCode.PROGRAM_ACCESS_CLOSED
                 else -> null

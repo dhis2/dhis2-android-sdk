@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import javax.inject.Inject
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -112,9 +112,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         iterationCount: Int
     ): Boolean {
         return params.limitByProgram() != true &&
-                iterables.teisCount < bundle.commonParams().limit &&
-                iterables.orgUnitsBundleToDownload.isNotEmpty() &&
-                iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+            iterables.teisCount < bundle.commonParams().limit &&
+            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     private fun iterateBundle(
@@ -257,9 +257,11 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         return TEIsWithPagingResult(downloadedTEIsForCombination, true, null, emptyProgram)
     }
 
-    private fun queryByUids(bundle: TrackerQueryBundle,
-                            overwrite: Boolean,
-                            relatives: RelationshipItemRelatives): TEIsWithPagingResult {
+    private fun queryByUids(
+        bundle: TrackerQueryBundle,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives
+    ): TEIsWithPagingResult {
         val result = TEIsWithPagingResult(0, true, null, false)
         val teiQuery = TrackerQuery.builder()
             .commonParams(bundle.commonParams())

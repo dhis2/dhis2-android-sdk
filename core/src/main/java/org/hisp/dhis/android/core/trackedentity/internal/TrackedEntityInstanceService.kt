@@ -29,14 +29,15 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
 import retrofit2.Call
 import retrofit2.http.*
 
+@Suppress("LongParameterList")
 internal interface TrackedEntityInstanceService {
     @POST(TRACKED_ENTITY_INSTANCES)
     fun postTrackedEntityInstances(

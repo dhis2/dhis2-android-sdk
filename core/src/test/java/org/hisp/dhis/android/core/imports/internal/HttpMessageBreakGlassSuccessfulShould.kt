@@ -25,34 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+class HttpMessageBreakGlassSuccessfulShould :
+    BaseObjectShould("trackedentity/glass/break_glass_successful.json"),
+    ObjectShould {
 
-import java.io.IOException;
+    @Test
+    override fun map_from_json_string() {
+        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
 
-import retrofit2.Response;
-
-final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
-
-    @Override
-    public Boolean mustBeStored() {
-        return false;
-    }
-
-    @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
-        HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
-                HttpMessageResponse.class);
-
-        if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
-            return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
-        } else {
-            return null;
-        }
+        assertThat(response.httpStatus()).isEqualTo("OK")
+        assertThat(response.httpStatusCode()).isEqualTo(200)
+        assertThat(response.status()).isEqualTo("OK")
+        assertThat(response.message()).isEqualTo("Temporary Ownership granted")
     }
 }

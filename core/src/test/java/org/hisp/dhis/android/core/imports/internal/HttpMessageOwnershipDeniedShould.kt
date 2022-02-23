@@ -25,17 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+class HttpMessageOwnershipDeniedShould :
+    BaseObjectShould("trackedentity/glass/glass_protected_tei_failure.json"),
+    ObjectShould {
 
-import java.io.IOException;
+    @Test
+    override fun map_from_json_string() {
+        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
 
-import retrofit2.Response;
-
-public interface APICallErrorCatcher {
-    Boolean mustBeStored();
-
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+        assertThat(response.httpStatus()).isEqualTo("Unauthorized")
+        assertThat(response.httpStatusCode()).isEqualTo(401)
+        assertThat(response.status()).isEqualTo("ERROR")
+        assertThat(response.message()).isEqualTo("OWNERSHIP_ACCESS_DENIED")
+    }
 }

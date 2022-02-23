@@ -25,32 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.executors.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import java.io.IOException
+import kotlin.Throws
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import retrofit2.Response
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+internal interface APICallErrorCatcher {
+    fun mustBeStored(): Boolean?
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class HttpMessageResponseShould extends BaseObjectShould implements ObjectShould {
-
-    public HttpMessageResponseShould() {
-        super("trackedentity/glass/break_glass_successful.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        HttpMessageResponse response = objectMapper.readValue(jsonStream, HttpMessageResponse.class);
-
-        assertThat(response.httpStatus()).isEqualTo("OK");
-        assertThat(response.httpStatusCode()).isEqualTo(200);
-        assertThat(response.status()).isEqualTo("OK");
-        assertThat(response.message()).isEqualTo("Temporary Ownership granted");
-    }
+    @Throws(IOException::class)
+    fun catchError(response: Response<*>): D2ErrorCode?
 }

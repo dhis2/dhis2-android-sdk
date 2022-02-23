@@ -259,6 +259,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         )
 
         return TrackerQueryCommonParams(
+            params.uids(),
             programs,
             programUid,
             getStartDate(programSettings, programUid, periodExtractor),

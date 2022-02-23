@@ -25,18 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.trackedentity.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import java.io.IOException
+import kotlin.Throws
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import retrofit2.Response
 
-internal object TrackerQueryCommonParamsSamples {
+internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
+    override fun mustBeStored(): Boolean {
+        return false
+    }
 
-    @JvmStatic
-    fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
-            listOf(), listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
+    @Throws(IOException::class)
+    override fun catchError(response: Response<*>): D2ErrorCode? {
+        val parsed = objectMapper().readValue(
+            response.errorBody()!!.string(),
+            HttpMessageResponse::class.java
         )
+
+        @Suppress("MagicNumber")
+        return if (parsed.httpStatusCode() == 401) {
+            when (parsed.message()) {
+                "OWNERSHIP_ACCESS_DENIED" -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
+                "PROGRAM_ACCESS_CLOSED" -> D2ErrorCode.PROGRAM_ACCESS_CLOSED
+                else -> null
+            }
+        } else {
+            null
+        }
     }
 }

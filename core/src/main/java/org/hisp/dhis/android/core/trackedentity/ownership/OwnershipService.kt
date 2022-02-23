@@ -25,18 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.trackedentity.internal
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import retrofit2.Call
+import retrofit2.http.POST
+import retrofit2.http.Query
 
-internal object TrackerQueryCommonParamsSamples {
+internal interface OwnershipService {
 
-    @JvmStatic
-    fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
-            listOf(), listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
-        )
+    @POST("tracker/ownership/override")
+    fun breakGlass(
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
+        @Query(PROGRAM) program: String,
+        @Query(REASON) reason: String
+    ): Call<HttpMessageResponse>
+
+    companion object {
+        const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
+        const val PROGRAM = "program"
+        const val REASON = "reason"
     }
 }

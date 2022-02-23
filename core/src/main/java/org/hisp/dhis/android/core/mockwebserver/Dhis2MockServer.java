@@ -137,14 +137,19 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(int code) {
-        enqueueMockResponse(code, "{}");
+        enqueueMockResponseText(code, "{}");
     }
 
-    public void enqueueMockResponse(int code, String response) {
+    public void enqueueMockResponseText(int code, String response) {
         MockResponse mockResponse = new MockResponse();
         mockResponse.setResponseCode(code);
         mockResponse.setBody(response);
         server.enqueue(mockResponse);
+    }
+
+    public void enqueueMockResponse(int code, String fileName) {
+        MockResponse response = createMockResponse(fileName, code);
+        server.enqueue(response);
     }
 
     public void enqueueMockResponse(String fileName) {
@@ -316,12 +321,16 @@ public class Dhis2MockServer {
         enqueueMockResponse(INDICATOR_TYPES_JSON);
     }
 
-    @NonNull
     private MockResponse createMockResponse(String fileName) {
+        return createMockResponse(fileName, OK_CODE);
+    }
+
+    @NonNull
+    private MockResponse createMockResponse(String fileName, int code) {
         try {
             String body = fileReader.getStringFromFile(fileName);
             MockResponse response = new MockResponse();
-            response.setResponseCode(OK_CODE);
+            response.setResponseCode(code);
             response.setBody(body);
             return response;
         } catch (IOException e) {

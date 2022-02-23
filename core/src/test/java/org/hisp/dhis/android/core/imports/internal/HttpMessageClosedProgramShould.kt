@@ -25,18 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.trackedentity.internal
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-internal object TrackerQueryCommonParamsSamples {
+class HttpMessageClosedProgramShould :
+    BaseObjectShould("trackedentity/glass/closed_program_failure.json"),
+    ObjectShould {
 
-    @JvmStatic
-    fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
-            listOf(), listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
-        )
+    @Test
+    override fun map_from_json_string() {
+        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
+
+        assertThat(response.httpStatus()).isEqualTo("Unauthorized")
+        assertThat(response.httpStatusCode()).isEqualTo(401)
+        assertThat(response.status()).isEqualTo("ERROR")
+        assertThat(response.message()).isEqualTo("PROGRAM_ACCESS_CLOSED")
     }
 }

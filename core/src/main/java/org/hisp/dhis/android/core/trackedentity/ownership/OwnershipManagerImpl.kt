@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.trackedentity.internal
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-internal object TrackerQueryCommonParamsSamples {
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
-    @JvmStatic
-    fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
-            listOf(), listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
+internal class OwnershipManagerImpl @Inject constructor(
+    private val apiCallExecutor: APICallExecutor,
+    private val ownershipService: OwnershipService
+) : OwnershipManager {
+
+    override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
+        return Completable.fromCallable { blockingBreakGlass(trackedEntityInstance, program, reason) }
+    }
+
+    override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
+        val breakGlassResponse: HttpMessageResponse = apiCallExecutor.executeObjectCall(
+            ownershipService.breakGlass(trackedEntityInstance, program, reason)
         )
+
+        @Suppress("MagicNumber")
+        if (breakGlassResponse.httpStatusCode() == 200) {
+            // TODO Save record
+        } else {
+            @Suppress("TooGenericExceptionThrown")
+            throw RuntimeException("")
+        }
     }
 }

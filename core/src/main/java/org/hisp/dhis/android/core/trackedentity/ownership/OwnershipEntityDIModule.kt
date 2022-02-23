@@ -25,18 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.trackedentity.internal
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import retrofit2.Retrofit
 
-internal object TrackerQueryCommonParamsSamples {
+@Module
+internal class OwnershipEntityDIModule {
 
-    @JvmStatic
-    fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
-            listOf(), listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
-        )
+    @Provides
+    @Reusable
+    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): OwnershipService {
+        return retrofit.create(OwnershipService::class.java)
     }
 }

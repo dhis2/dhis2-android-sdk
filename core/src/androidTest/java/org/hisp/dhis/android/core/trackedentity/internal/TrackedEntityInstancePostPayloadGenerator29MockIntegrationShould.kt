@@ -149,7 +149,7 @@ class TrackedEntityInstancePostPayloadGenerator29MockIntegrationShould : BasePay
     fun restore_payload_states_when_error_500() {
         storeTrackerData()
 
-        dhis2MockServer.enqueueMockResponse(500, "Internal Server Error")
+        dhis2MockServer.enqueueMockResponseText(500, "Internal Server Error")
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
         val instance = teiStore.selectFirst()

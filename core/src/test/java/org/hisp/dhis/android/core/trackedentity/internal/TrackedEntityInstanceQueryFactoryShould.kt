@@ -45,7 +45,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryFactoryShould {
@@ -157,7 +156,5 @@ class TrackedEntityInstanceQueryFactoryShould {
         val params = ProgramDataDownloadParams.builder().uids(listOf("tei_uid")).build()
 
         val queries = queryFactory.getQueries(params)
-
-
     }
 }

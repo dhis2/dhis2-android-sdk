@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class HttpMessageBreakGlassSuccessfulShould : BaseObjectShould("trackedentity/glass/break_glass_successful.json"),
+class HttpMessageBreakGlassSuccessfulShould :
+    BaseObjectShould("trackedentity/glass/break_glass_successful.json"),
     ObjectShould {
 
     @Test

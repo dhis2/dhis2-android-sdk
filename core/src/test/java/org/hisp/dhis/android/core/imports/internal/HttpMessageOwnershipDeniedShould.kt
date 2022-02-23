@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class HttpMessageOwnershipDeniedShould : BaseObjectShould("trackedentity/glass/glass_protected_tei_failure.json"),
+class HttpMessageOwnershipDeniedShould :
+    BaseObjectShould("trackedentity/glass/glass_protected_tei_failure.json"),
     ObjectShould {
 
     @Test

@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class HttpMessageClosedProgramShould : BaseObjectShould("trackedentity/glass/closed_program_failure.json"),
+class HttpMessageClosedProgramShould :
+    BaseObjectShould("trackedentity/glass/closed_program_failure.json"),
     ObjectShould {
 
     @Test

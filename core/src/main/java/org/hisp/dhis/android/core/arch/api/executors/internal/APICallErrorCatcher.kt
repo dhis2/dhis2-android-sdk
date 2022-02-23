@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import java.io.IOException
 import kotlin.Throws
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
-import java.io.IOException
 
 internal interface APICallErrorCatcher {
     fun mustBeStored(): Boolean?

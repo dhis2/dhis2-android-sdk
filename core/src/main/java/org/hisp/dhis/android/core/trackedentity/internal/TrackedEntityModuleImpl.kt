@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class TrackedEntityModuleImpl @Inject constructor(
     private val trackedEntityTypes: TrackedEntityTypeCollectionRepository,
     private val trackedEntityInstances: TrackedEntityInstanceCollectionRepository,

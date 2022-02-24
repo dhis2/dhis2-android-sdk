@@ -29,13 +29,19 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
+import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 internal class OwnershipManagerImpl @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
-    private val ownershipService: OwnershipService
+    private val ownershipService: OwnershipService,
+    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
@@ -49,10 +55,34 @@ internal class OwnershipManagerImpl @Inject constructor(
 
         @Suppress("MagicNumber")
         if (breakGlassResponse.httpStatusCode() == 200) {
-            // TODO Save record
+            programTempOwnerStore.insert(
+                ProgramTempOwner.builder()
+                    .program(program)
+                    .trackedEntityInstance(trackedEntityInstance)
+                    .reason(reason)
+                    .created(Date())
+                    .validUntil(getValidUntil())
+                    .build()
+            )
         } else {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException("")
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorComponent(D2ErrorComponent.Server)
+                .errorDescription(breakGlassResponse.message())
+                .httpErrorCode(breakGlassResponse.httpStatusCode())
+                .build()
         }
+    }
+
+    private fun getValidUntil(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+        calendar.add(Calendar.HOUR_OF_DAY, validInHours)
+        return calendar.time
+    }
+
+    companion object {
+        const val validInHours = 2
     }
 }

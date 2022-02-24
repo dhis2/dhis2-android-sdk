@@ -27,31 +27,49 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-@Module
-internal class OwnershipEntityDIModule {
+internal object ProgramTempOwnerTableInfo {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "ProgramTempOwner"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM,
+                TRACKED_ENTITY_INSTANCE,
+                CREATED,
+                VALID_UNTIL,
+                REASON
+            )
+        }
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM,
+                TRACKED_ENTITY_INSTANCE,
+                CREATED
+            )
+        }
+
+        companion object {
+            const val PROGRAM = "program"
+            const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+            const val CREATED = "created"
+            const val VALID_UNTIL = "validUntil"
+            const val REASON = "reason"
+        }
     }
 }

@@ -25,33 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.data.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import retrofit2.Retrofit
+import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 
-@Module
-internal class OwnershipEntityDIModule {
+object ProgramTempOwnerSamples {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
+    val programTempOwner: ProgramTempOwner
+        get() = ProgramTempOwner.builder()
+            .id(1L)
+            .program("lxAQ7Zs9VYR")
+            .trackedEntityInstance("nWrB0TfWlvh")
+            .created(DateUtils.DATE_FORMAT.parse("2022-01-29T11:27:46.935"))
+            .validUntil(Date())
+            .reason("Reason")
+            .build()
 }

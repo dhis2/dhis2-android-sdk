@@ -99,7 +99,7 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
         }
 
         dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json")
-        d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, "program_uid", "Reason")
+        d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, "lxAQ7Zs9VYR", "Reason")
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json")

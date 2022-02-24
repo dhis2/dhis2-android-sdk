@@ -27,31 +27,26 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Module
-internal class OwnershipEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+@RunWith(D2JunitRunner::class)
+class ProgramTempOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<ProgramTempOwner>(
+    create(TestDatabaseAdapterFactory.get()),
+    ProgramTempOwnerTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): ProgramTempOwner {
+        return ProgramTempOwnerSamples.programTempOwner
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
+    override fun buildObjectToUpdate(): ProgramTempOwner {
+        return ProgramTempOwnerSamples.programTempOwner.toBuilder()
+            .reason("Other reason")
+            .build()
     }
 }

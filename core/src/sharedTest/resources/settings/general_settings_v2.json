@@ -5,5 +5,6 @@
   "smsGateway": "+84566464",
   "reservedValues": 40,
   "smsResultSender": "+9456498778",
-  "allowScreenCapture": true
+  "allowScreenCapture": true,
+  "messageOfTheDay": "Message of the day"
 }

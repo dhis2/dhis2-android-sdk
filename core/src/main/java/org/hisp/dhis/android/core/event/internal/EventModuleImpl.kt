@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.event.EventCollectionRepository
-import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.event.EventDownloader
-import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.event.EventService
-import javax.inject.Inject
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
 
 @Reusable
 internal class EventModuleImpl @Inject internal constructor(

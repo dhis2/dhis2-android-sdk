@@ -29,12 +29,15 @@ package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.EnrollmentAccess
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -45,6 +48,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 
 @Reusable
 internal class EnrollmentServiceImpl @Inject constructor(
@@ -55,7 +59,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
     private val eventCollectionRepository: EventCollectionRepository,
     private val programStagesCollectionRepository: ProgramStageCollectionRepository,
     private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>
-): EnrollmentService {
+) : EnrollmentService {
 
     override fun blockingIsOpen(enrollmentUid: String): Boolean {
         val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet() ?: return true
@@ -76,7 +80,9 @@ internal class EnrollmentServiceImpl @Inject constructor(
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
+                if (isTeiInCaptureScope(trackedEntityInstanceUid) ||
+                    hasTempOwnership(trackedEntityInstanceUid, programUid)
+                ) dataAccess
                 else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
             AccessLevel.CLOSED ->
                 if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
@@ -124,5 +130,16 @@ internal class EnrollmentServiceImpl @Inject constructor(
 
     override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
         return Single.fromCallable { blockingGetAllowEventCreation(enrollmentUid, stagesToHide) }
+    }
+
+    private fun hasTempOwnership(tei: String, program: String): Boolean {
+        val columns = ProgramTempOwnerTableInfo.Columns
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(columns.TRACKED_ENTITY_INSTANCE, tei)
+            .appendKeyStringValue(columns.PROGRAM, program)
+            .appendKeyGreaterOrEqStringValue(columns.VALID_UNTIL, DateUtils.DATE_FORMAT.format(Date()))
+            .build()
+
+        return programTempOwnerStore.selectOneWhere(whereClause) != null
     }
 }

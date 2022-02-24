@@ -34,6 +34,9 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 internal class OwnershipManagerImpl @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
@@ -63,7 +66,12 @@ internal class OwnershipManagerImpl @Inject constructor(
             )
         } else {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException("")
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorComponent(D2ErrorComponent.Server)
+                .errorDescription(breakGlassResponse.message())
+                .httpErrorCode(breakGlassResponse.httpStatusCode())
+                .build()
         }
     }
 

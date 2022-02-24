@@ -27,10 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,8 +72,14 @@ class OwnershipManagerShould {
     @Test
     fun do_not_persist_program_temp_owner_record_if_error() {
         whenever(httpResponse.httpStatusCode()).doReturn(401)
+        whenever(httpResponse.message()).doReturn("Error in break the glass")
 
-        ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")
+        try {
+            ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")
+            fail("Should throw an error")
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(D2Error::class.java)
+        }
 
         verifyNoMoreInteractions(programTempOwnerStore)
     }

@@ -31,9 +31,11 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -45,6 +47,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -72,15 +75,9 @@ class EnrollmentServiceShould {
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageCollectionRepository: ProgramStageCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
 
-    private val enrollmentService = EnrollmentService(
-        enrollmentRepository,
-        trackedEntityInstanceRepository,
-        programRepository,
-        organisationUnitRepository,
-        eventCollectionRepository,
-        programStageCollectionRepository
-    )
+    private lateinit var enrollmentService: EnrollmentService
 
     @Before
     fun setUp() {
@@ -93,6 +90,16 @@ class EnrollmentServiceShould {
 
         whenever(enrollment.uid()) doReturn enrollmentUid
         whenever(trackedEntityInstance.organisationUnit()) doReturn organisationUnitId
+
+        enrollmentService = EnrollmentServiceImpl(
+            enrollmentRepository,
+            trackedEntityInstanceRepository,
+            programRepository,
+            organisationUnitRepository,
+            eventCollectionRepository,
+            programStageCollectionRepository,
+            programTempOwnerStore
+        )
     }
 
     @Test

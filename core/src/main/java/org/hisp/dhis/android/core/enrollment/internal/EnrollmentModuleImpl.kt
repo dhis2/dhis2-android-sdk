@@ -25,40 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment
+package org.hisp.dhis.android.core.enrollment.internal
 
-import io.reactivex.Single
+import dagger.Reusable
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import javax.inject.Inject
 
-interface EnrollmentService {
+@Reusable
+internal class EnrollmentModuleImpl @Inject constructor(
+    private val enrollments: EnrollmentCollectionRepository,
+    private val enrollmentService: EnrollmentServiceImpl
+) : EnrollmentModule {
 
-    /**
-     * Blocking version of [isOpen].
-     *
-     * @see isOpen
-     */
-    fun blockingIsOpen(enrollmentUid: String): Boolean
+    override fun enrollments(): EnrollmentCollectionRepository {
+        return enrollments
+    }
 
-    /**
-     * Checks if the enrollment status is ACTIVE.
-     */
-    fun isOpen(enrollmentUid: String): Single<Boolean>
-
-    /**
-     * Blocking version of [getEnrollmentAccess].
-     *
-     * @see getEnrollmentAccess
-     */
-    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
-
-    /**
-     * Evaluates the access level of the user to this program and trackedEntityInstance.
-     *
-     * It checks the data access level to the program, the program access level (OPEN, PROTECTED,...)
-     * and the enrollment orgunit scope (SEARCH or CAPTURE).
-     */
-    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
-
-    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
-
-    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+    override fun enrollmentService(): EnrollmentService {
+        return enrollmentService
+    }
 }

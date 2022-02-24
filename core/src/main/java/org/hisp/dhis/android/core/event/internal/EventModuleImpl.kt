@@ -25,37 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
-
-import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-import org.hisp.dhis.android.core.enrollment.EnrollmentService;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
+import org.hisp.dhis.android.core.event.EventDownloader
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+import org.hisp.dhis.android.core.event.EventModule
+import org.hisp.dhis.android.core.event.EventService
+import javax.inject.Inject
 
 @Reusable
-public final class EnrollmentModuleImpl implements EnrollmentModule {
-
-    private final EnrollmentCollectionRepository enrollments;
-    private final EnrollmentService enrollmentService;
-
-    @Inject
-    EnrollmentModuleImpl(EnrollmentCollectionRepository enrollments,
-                         EnrollmentService enrollmentService) {
-        this.enrollments = enrollments;
-        this.enrollmentService = enrollmentService;
+internal class EventModuleImpl @Inject internal constructor(
+    private val events: EventCollectionRepository,
+    private val eventFilters: EventFilterCollectionRepository,
+    private val eventDownloader: EventDownloader,
+    private val eventService: EventServiceImpl,
+    private val eventQuery: EventQueryCollectionRepository
+) : EventModule {
+    override fun events(): EventCollectionRepository {
+        return events
     }
 
-    @Override
-    public EnrollmentCollectionRepository enrollments() {
-        return enrollments;
+    override fun eventFilters(): EventFilterCollectionRepository {
+        return eventFilters
     }
 
-    @Override
-    public EnrollmentService enrollmentService() {
-        return enrollmentService;
+    override fun eventDownloader(): EventDownloader {
+        return eventDownloader
+    }
+
+    override fun eventService(): EventService {
+        return eventService
+    }
+
+    override fun eventQuery(): EventQueryCollectionRepository {
+        return eventQuery
     }
 }

@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -63,7 +64,8 @@ internal class LogInCall @Inject internal constructor(
     private val userStore: IdentifiableObjectStore<User>,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
-    private val exceptions: LogInExceptions
+    private val exceptions: LogInExceptions,
+    private val databaseDeletionHelper: DatabaseDeletionHelper
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -96,13 +98,20 @@ internal class LogInCall @Inject internal constructor(
             if (d2Error.isOffline) {
                 tryLoginOffline(credentials, d2Error)
             } else {
-                throw handleOnlineException(d2Error)
+                throw handleOnlineException(d2Error, credentials)
             }
         }
     }
 
-    private fun handleOnlineException(d2Error: D2Error): D2Error {
-        return if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+    private fun handleOnlineException(d2Error: D2Error, credentials: Credentials?): D2Error {
+        return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+            try {
+                databaseDeletionHelper.deleteDatabase(credentials!!.serverUrl, credentials.username)
+                d2Error
+            } catch (e: Exception) {
+                d2Error
+            }
+        } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
             d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
         ) {
             exceptions.noDHIS2Server()
@@ -168,12 +177,13 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
 
+        var credentials: Credentials? = null
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
+            credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
-            throw handleOnlineException(d2Error)
+            throw handleOnlineException(d2Error, credentials)
         }
     }
 

@@ -36,8 +36,9 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
-import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.internal.EventDateUtils
+import org.hisp.dhis.android.core.event.internal.EventServiceImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
@@ -68,13 +69,13 @@ class EventServiceShould {
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val enrollmentService: EnrollmentService = mock()
+    private val enrollmentService: EnrollmentServiceImpl = mock()
     private val organisationUnitService: OrganisationUnitService = mock()
     private val categoryOptionComboService: CategoryOptionComboService =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val eventDateUtils: EventDateUtils = mock()
 
-    private val eventService: EventService = EventService(
+    private val eventService: EventService = EventServiceImpl(
         enrollmentRepository, eventRepository, programRepository, programStageRepository,
         enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
     )

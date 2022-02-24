@@ -25,37 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
-
-import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-import org.hisp.dhis.android.core.enrollment.EnrollmentService;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
 
 @Reusable
-public final class EnrollmentModuleImpl implements EnrollmentModule {
+internal class EnrollmentModuleImpl @Inject constructor(
+    private val enrollments: EnrollmentCollectionRepository,
+    private val enrollmentService: EnrollmentServiceImpl
+) : EnrollmentModule {
 
-    private final EnrollmentCollectionRepository enrollments;
-    private final EnrollmentService enrollmentService;
-
-    @Inject
-    EnrollmentModuleImpl(EnrollmentCollectionRepository enrollments,
-                         EnrollmentService enrollmentService) {
-        this.enrollments = enrollments;
-        this.enrollmentService = enrollmentService;
+    override fun enrollments(): EnrollmentCollectionRepository {
+        return enrollments
     }
 
-    @Override
-    public EnrollmentCollectionRepository enrollments() {
-        return enrollments;
-    }
-
-    @Override
-    public EnrollmentService enrollmentService() {
-        return enrollmentService;
+    override fun enrollmentService(): EnrollmentService {
+        return enrollmentService
     }
 }

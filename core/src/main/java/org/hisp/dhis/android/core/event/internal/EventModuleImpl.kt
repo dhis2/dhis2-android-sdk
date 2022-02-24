@@ -25,40 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment
+package org.hisp.dhis.android.core.event.internal
 
-import io.reactivex.Single
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.event.EventDownloader
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
+import org.hisp.dhis.android.core.event.EventModule
+import org.hisp.dhis.android.core.event.EventService
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
 
-interface EnrollmentService {
+@Reusable
+internal class EventModuleImpl @Inject internal constructor(
+    private val events: EventCollectionRepository,
+    private val eventFilters: EventFilterCollectionRepository,
+    private val eventDownloader: EventDownloader,
+    private val eventService: EventServiceImpl,
+    private val eventQuery: EventQueryCollectionRepository
+) : EventModule {
+    override fun events(): EventCollectionRepository {
+        return events
+    }
 
-    /**
-     * Blocking version of [isOpen].
-     *
-     * @see isOpen
-     */
-    fun blockingIsOpen(enrollmentUid: String): Boolean
+    override fun eventFilters(): EventFilterCollectionRepository {
+        return eventFilters
+    }
 
-    /**
-     * Checks if the enrollment status is ACTIVE.
-     */
-    fun isOpen(enrollmentUid: String): Single<Boolean>
+    override fun eventDownloader(): EventDownloader {
+        return eventDownloader
+    }
 
-    /**
-     * Blocking version of [getEnrollmentAccess].
-     *
-     * @see getEnrollmentAccess
-     */
-    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
+    override fun eventService(): EventService {
+        return eventService
+    }
 
-    /**
-     * Evaluates the access level of the user to this program and trackedEntityInstance.
-     *
-     * It checks the data access level to the program, the program access level (OPEN, PROTECTED,...)
-     * and the enrollment orgunit scope (SEARCH or CAPTURE).
-     */
-    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
-
-    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
-
-    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+    override fun eventQuery(): EventQueryCollectionRepository {
+        return eventQuery
+    }
 }

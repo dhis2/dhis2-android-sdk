@@ -86,6 +86,7 @@ internal class RxAPICallExecutorImpl @Inject constructor(
     }
 
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {
+        // TODO Delete db if user is disabled
         val d2Error =
             if (throwable is D2Error) throwable
             else errorMapper.mapRetrofitException(throwable, errorMapper.rxObjectErrorBuilder)

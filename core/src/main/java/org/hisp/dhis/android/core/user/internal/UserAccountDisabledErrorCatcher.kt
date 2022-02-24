@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.user.internal
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import retrofit2.Response
 import java.net.HttpURLConnection
 import javax.inject.Inject
@@ -40,23 +40,27 @@ import javax.inject.Inject
 @Reusable
 internal class UserAccountDisabledErrorCatcher @Inject constructor(
     private val objectMapper: ObjectMapper,
-    private val wipeModule: WipeModule,
+    private val databaseDeletionHelper: DatabaseDeletionHelper
 ) : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean {
         return true
     }
 
-    override fun catchError(response: Response<*>?): D2ErrorCode {
-        wipeModule.wipeData()
-        return D2ErrorCode.USER_ACCOUNT_DISABLED
+    override fun catchError(response: Response<*>): D2ErrorCode? {
+        return try {
+            databaseDeletionHelper.deleteActiveDatabase()
+            D2ErrorCode.USER_ACCOUNT_DISABLED
+        } catch (e: Throwable) {
+            D2ErrorCode.USER_ACCOUNT_DISABLED
+        }
     }
 
     fun isUserAccountLocked(response: Response<*>): Boolean {
         return try {
             val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-            isUnauthorized && objectMapper.readValue(response.errorBody()!!.string(), HttpMessageResponse::class.java)
-                .message().contains("Account disabled")
+            val errorBody = objectMapper.readValue(response.errorBody()!!.string(), HttpMessageResponse::class.java)
+            isUnauthorized && errorBody.message().contains("Account disabled")
         } catch (e: Exception) {
             false
         }

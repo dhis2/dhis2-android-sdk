@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.wipe
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
+import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.Test
@@ -104,5 +106,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
                 .value("value2")
                 .build()
         )
+        ProgramTempOwnerStore.create(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import io.reactivex.Completable
-import java.util.*
-import javax.inject.Inject
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import retrofit2.Call
 
-internal class OwnershipManagerImpl @Inject constructor(
-    private val apiCallExecutor: APICallExecutor,
-    private val ownershipService: OwnershipService,
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>
-) : OwnershipManager {
+@RunWith(JUnit4::class)
+class OwnershipManagerShould {
 
-    override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return Completable.fromCallable { blockingBreakGlass(trackedEntityInstance, program, reason) }
+    private val apiCallExecutor: APICallExecutor = mock()
+    private val ownershipService: OwnershipService = mock()
+    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
+
+    private val httpResponse: HttpMessageResponse = mock()
+    private val call: Call<HttpMessageResponse> = mock()
+
+    private lateinit var ownershipManager: OwnershipManager
+
+    @Before
+    fun setUp() {
+        whenever(ownershipService.breakGlass(any(), any(), any())).doReturn(call)
+        whenever(apiCallExecutor.executeObjectCall(any<Call<HttpMessageResponse>>())).doReturn(httpResponse)
+
+        ownershipManager = OwnershipManagerImpl(apiCallExecutor, ownershipService, programTempOwnerStore)
     }
 
-    override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        val breakGlassResponse: HttpMessageResponse = apiCallExecutor.executeObjectCall(
-            ownershipService.breakGlass(trackedEntityInstance, program, reason)
-        )
+    @Test
+    fun persist_program_temp_owner_record_if_success() {
+        whenever(httpResponse.httpStatusCode()).doReturn(200)
 
-        @Suppress("MagicNumber")
-        if (breakGlassResponse.httpStatusCode() == 200) {
-            programTempOwnerStore.insert(
-                ProgramTempOwner.builder()
-                    .program(program)
-                    .trackedEntityInstance(trackedEntityInstance)
-                    .reason(reason)
-                    .created(Date())
-                    .validUntil(getValidUntil())
-                    .build()
-            )
-        } else {
-            @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException("")
-        }
+        ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")
+
+        verify(programTempOwnerStore, times(1)).insert(any<ProgramTempOwner>())
     }
 
-    private fun getValidUntil(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        calendar.add(Calendar.HOUR_OF_DAY, validInHours)
-        return calendar.time
-    }
+    @Test
+    fun do_not_persist_program_temp_owner_record_if_error() {
+        whenever(httpResponse.httpStatusCode()).doReturn(401)
 
-    companion object {
-        const val validInHours = 2
+        ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")
+
+        verifyNoMoreInteractions(programTempOwnerStore)
     }
 }

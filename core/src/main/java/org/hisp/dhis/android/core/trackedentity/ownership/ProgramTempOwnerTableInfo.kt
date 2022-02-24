@@ -59,7 +59,8 @@ internal object ProgramTempOwnerTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 PROGRAM,
-                TRACKED_ENTITY_INSTANCE
+                TRACKED_ENTITY_INSTANCE,
+                CREATED
             )
         }
 

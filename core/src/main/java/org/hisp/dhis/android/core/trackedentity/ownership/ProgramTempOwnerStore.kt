@@ -48,12 +48,14 @@ internal object ProgramTempOwnerStore {
         WhereStatementBinder<ProgramTempOwner> { o: ProgramTempOwner, w: StatementWrapper ->
             w.bind(6, o.program())
             w.bind(7, o.trackedEntityInstance())
+            w.bind(8, o.created())
         }
 
     private val WHERE_DELETE_BINDER =
         WhereStatementBinder<ProgramTempOwner> { o: ProgramTempOwner, w: StatementWrapper ->
             w.bind(1, o.program())
             w.bind(2, o.trackedEntityInstance())
+            w.bind(3, o.created())
         }
 
     @JvmStatic

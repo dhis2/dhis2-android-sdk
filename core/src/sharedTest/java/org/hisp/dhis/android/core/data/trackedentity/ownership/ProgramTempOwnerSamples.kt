@@ -27,17 +27,18 @@
  */
 package org.hisp.dhis.android.core.data.trackedentity.ownership
 
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 
 object ProgramTempOwnerSamples {
 
     val programTempOwner: ProgramTempOwner
         get() = ProgramTempOwner.builder()
             .id(1L)
-            .program("program_uid")
-            .trackedEntityInstance("tei_uid")
-            .created(Date())
+            .program("lxAQ7Zs9VYR")
+            .trackedEntityInstance("nWrB0TfWlvh")
+            .created(DateUtils.DATE_FORMAT.parse("2022-01-29T11:27:46.935"))
             .validUntil(Date())
             .reason("Reason")
             .build()

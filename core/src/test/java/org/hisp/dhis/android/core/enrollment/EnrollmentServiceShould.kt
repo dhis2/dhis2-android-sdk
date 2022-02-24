@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -64,6 +65,7 @@ class EnrollmentServiceShould {
     private val enrollment: Enrollment = mock()
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val program: Program = mock()
+    private val programTempOwner: ProgramTempOwner = mock()
 
     private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository =
@@ -169,9 +171,26 @@ class EnrollmentServiceShould {
                 .uid(organisationUnitId)
                 .blockingExists()
         ) doReturn false
+        whenever(programTempOwnerStore.selectOneWhere(any())) doReturn null
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
+    }
+
+    @Test
+    fun `GetEnrollmentAccess should return data access if protected program has broken glass`() {
+        whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
+        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+        whenever(
+            organisationUnitRepository
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .uid(organisationUnitId)
+                .blockingExists()
+        ) doReturn false
+        whenever(programTempOwnerStore.selectOneWhere(any())) doReturn programTempOwner
+
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.WRITE_ACCESS)
     }
 
     @Test

@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
-import org.hisp.dhis.android.core.enrollment.EnrollmentService
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.*
@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList", "TooManyFunctions")
@@ -52,7 +51,7 @@ internal class EventServiceImpl @Inject constructor(
     private val organisationUnitService: OrganisationUnitService,
     private val categoryOptionComboService: CategoryOptionComboService,
     private val eventDateUtils: EventDateUtils
-): EventService {
+) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false

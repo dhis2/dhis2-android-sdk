@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event
 
 import io.reactivex.Single
 
+@Suppress("TooManyFunctions")
 interface EventService {
 
     /**

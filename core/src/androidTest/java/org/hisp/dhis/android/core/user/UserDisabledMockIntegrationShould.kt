@@ -21,7 +21,7 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
     @Test
     fun delete_database_when_user_disabled() {
         // Enqueue user disabled response
-        dhis2MockServer.enqueueMockResponse(401,"user/user_disabled.json")
+        dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
         addDummyData()
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
 

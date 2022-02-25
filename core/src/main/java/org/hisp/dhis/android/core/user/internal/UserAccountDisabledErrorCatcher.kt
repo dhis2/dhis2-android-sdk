@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Reusable
+import java.net.HttpURLConnection
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
-import java.net.HttpURLConnection
-import javax.inject.Inject
 
 @Reusable
 internal class UserAccountDisabledErrorCatcher @Inject constructor(

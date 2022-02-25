@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -42,7 +43,6 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
-import java.util.concurrent.Callable
 
 class EventEndpointCallShould {
 

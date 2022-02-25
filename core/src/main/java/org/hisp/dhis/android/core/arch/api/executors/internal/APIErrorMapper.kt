@@ -29,6 +29,11 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import android.util.Log
 import dagger.Reusable
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.inject.Inject
+import javax.net.ssl.SSLException
 import okhttp3.Request
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -37,11 +42,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Response
-import java.io.IOException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import javax.inject.Inject
-import javax.net.ssl.SSLException
 
 @Reusable
 @Suppress("TooManyFunctions")

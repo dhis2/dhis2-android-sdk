@@ -32,9 +32,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,15 +45,15 @@ import retrofit2.Response
 class UserAccountDisabledErrorCatcherShould {
     private lateinit var catcher: UserAccountDisabledErrorCatcher
     private lateinit var response: Response<Any>
-    private var wipeModule: WipeModule = mock()
+    private var databaseDeletionHelper: DatabaseDeletionHelper = mock()
 
     @Before
     fun setUp() {
-        catcher = UserAccountDisabledErrorCatcher(objectMapper(), wipeModule)
+        catcher = UserAccountDisabledErrorCatcher(objectMapper(), databaseDeletionHelper)
 
-        val responseError =
-            "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\",\"message\": \"Account disabled\"}"
-        response = Response.error<Any>(401, ResponseBody.create(null, responseError))
+        val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
+                "\"message\": \"Account disabled\"}"
+        response = Response.error(401, ResponseBody.create(null, responseError))
     }
 
     @Test
@@ -62,8 +62,8 @@ class UserAccountDisabledErrorCatcherShould {
     }
 
     @Test
-    fun wipeData() {
+    fun delete_database() {
         catcher.catchError(response)
-        verify(wipeModule, times(1)).wipeData()
+        verify(databaseDeletionHelper, times(1)).deleteActiveDatabase()
     }
 }

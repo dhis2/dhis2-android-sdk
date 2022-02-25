@@ -27,6 +27,12 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -34,7 +40,6 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,12 +53,6 @@ import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public abstract class BaseCallShould {
 
@@ -76,9 +75,6 @@ public abstract class BaseCallShould {
 
     @Mock
     protected D2Error d2Error;
-
-    @Mock
-    protected UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
 
     protected Response errorResponse;
 

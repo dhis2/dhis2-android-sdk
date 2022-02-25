@@ -34,6 +34,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
@@ -171,7 +172,8 @@ class EnrollmentServiceShould {
                 .uid(organisationUnitId)
                 .blockingExists()
         ) doReturn false
-        whenever(programTempOwnerStore.selectOneWhere(any())) doReturn null
+        whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
+        whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("1999-01-01T00:00:00.000")
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
@@ -187,7 +189,8 @@ class EnrollmentServiceShould {
                 .uid(organisationUnitId)
                 .blockingExists()
         ) doReturn false
-        whenever(programTempOwnerStore.selectOneWhere(any())) doReturn programTempOwner
+        whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
+        whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("2999-01-01T00:00:00.000")
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.WRITE_ACCESS)

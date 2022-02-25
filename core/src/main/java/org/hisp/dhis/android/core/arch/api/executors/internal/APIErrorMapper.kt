@@ -150,7 +150,7 @@ internal class APIErrorMapper @Inject constructor() {
                 getIfNotEmpty(response.message())
                     ?: getIfNotEmpty(response.errorBody()!!.string())
                     ?: getIfNotEmpty(response.errorBody().toString())
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 null
             }
 

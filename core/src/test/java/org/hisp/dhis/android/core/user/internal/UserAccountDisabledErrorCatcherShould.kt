@@ -52,7 +52,7 @@ class UserAccountDisabledErrorCatcherShould {
         catcher = UserAccountDisabledErrorCatcher(objectMapper(), databaseDeletionHelper)
 
         val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
-                "\"message\": \"Account disabled\"}"
+            "\"message\": \"Account disabled\"}"
         response = Response.error(401, ResponseBody.create(null, responseError))
     }
 

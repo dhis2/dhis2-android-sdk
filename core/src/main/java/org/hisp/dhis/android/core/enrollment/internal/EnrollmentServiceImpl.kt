@@ -80,9 +80,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid) ||
-                    hasTempOwnership(trackedEntityInstanceUid, programUid)
-                ) dataAccess
+                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) dataAccess
                 else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
             AccessLevel.CLOSED ->
                 if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
@@ -133,13 +131,20 @@ internal class EnrollmentServiceImpl @Inject constructor(
     }
 
     private fun hasTempOwnership(tei: String, program: String): Boolean {
+        val nowStr = DateUtils.DATE_FORMAT.format(Date())
         val columns = ProgramTempOwnerTableInfo.Columns
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(columns.TRACKED_ENTITY_INSTANCE, tei)
             .appendKeyStringValue(columns.PROGRAM, program)
-            .appendKeyGreaterOrEqStringValue(columns.VALID_UNTIL, DateUtils.DATE_FORMAT.format(Date()))
             .build()
 
-        return programTempOwnerStore.selectOneWhere(whereClause) != null
+        val ownerships = programTempOwnerStore.selectWhere(whereClause)
+
+        /* If there is no records about ownership, it will be probably caused by an existing break-the-glass in the
+         * server. The app is not forced to ask for ownership and there is no record in the SDK.
+         */
+
+        return ownerships.isEmpty() ||
+            ownerships.any { DateUtils.DATE_FORMAT.format(it.validUntil()) > nowStr }
     }
 }

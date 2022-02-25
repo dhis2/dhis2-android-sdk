@@ -25,18 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.CompletionSpinner
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.ProgramConfigurationSettingSamples
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-internal class CompletionSpinnerHandler(store: ObjectWithoutUidStore<CompletionSpinner>) :
-    ObjectWithoutUidHandlerImpl<CompletionSpinner>(store) {
-
-    override fun beforeCollectionHandled(oCollection: Collection<CompletionSpinner>): Collection<CompletionSpinner> {
-        store.delete()
-        return oCollection
+@RunWith(D2JunitRunner::class)
+class ProgramConfigurationSettingStoreIntegrationShould :
+    ObjectStoreAbstractIntegrationShould<ProgramConfigurationSetting>(
+        ProgramConfigurationSettingStore.create(TestDatabaseAdapterFactory.get()),
+        ProgramConfigurationSettingTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
+    override fun buildObject(): ProgramConfigurationSetting {
+        return ProgramConfigurationSettingSamples.get()
     }
 }

@@ -25,50 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.settings.SettingModule
-import retrofit2.Retrofit
+package org.hisp.dhis.android.core.data.settings;
 
-@Module(
-    includes = [
-        AnalyticsSettingEntityDIModule::class,
-        GeneralSettingEntityDIModule::class,
-        DataSetSettingEntityDIModule::class,
-        ProgramSettingEntityDIModule::class,
-        UserSettingsEntityDIModule::class,
-        SynchronizationSettingEntityDIModule::class,
-        FilterSettingEntityDIModule::class,
-        SystemSettingEntityDIModule::class,
-        ProgramConfigurationSettingEntityDIModule::class
-    ]
-)
-internal class SettingPackageDIModule {
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting;
 
-    @Provides
-    @Reusable
-    fun settingService(retrofit: Retrofit): SettingService {
-        return retrofit.create(SettingService::class.java)
-    }
+public class ProgramConfigurationSettingSamples {
 
-    @Provides
-    @Reusable
-    fun settingAppService(settingService: SettingService): SettingAppService {
-        return SettingAppService(settingService)
-    }
-
-    @Provides
-    @Reusable
-    fun module(impl: SettingModuleImpl): SettingModule {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun versionManager(impl: SettingsAppInfoManagerImpl): SettingsAppInfoManager {
-        return impl
+    public static ProgramConfigurationSetting get() {
+        return ProgramConfigurationSetting.builder()
+                .id(1L)
+                .uid("aBcDeFg")
+                .completionSpinner(true)
+                .optionalSearch(true)
+                .build();
     }
 }

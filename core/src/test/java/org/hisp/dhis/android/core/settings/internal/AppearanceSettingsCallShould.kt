@@ -28,20 +28,14 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,7 +45,7 @@ import org.junit.runners.JUnit4
 class AppearanceSettingsCallShould {
 
     private val filterSettingHandler: Handler<FilterSetting> = mock()
-    private val completionSpinnerHandler: Handler<CompletionSpinner> = mock()
+    private val programConfigurationHandler: Handler<ProgramConfigurationSetting> = mock()
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
@@ -67,7 +61,7 @@ class AppearanceSettingsCallShould {
 
         appearanceSettingsCall = AppearanceSettingCall(
             filterSettingHandler,
-            completionSpinnerHandler,
+            programConfigurationHandler,
             service,
             apiCallExecutor,
             appVersionManager
@@ -103,7 +97,7 @@ class AppearanceSettingsCallShould {
 
         verify(filterSettingHandler).handleMany(emptyList())
         verifyNoMoreInteractions(filterSettingHandler)
-        verify(completionSpinnerHandler).handleMany(emptyList())
-        verifyNoMoreInteractions(completionSpinnerHandler)
+        verify(programConfigurationHandler).handleMany(emptyList())
+        verifyNoMoreInteractions(programConfigurationHandler)
     }
 }

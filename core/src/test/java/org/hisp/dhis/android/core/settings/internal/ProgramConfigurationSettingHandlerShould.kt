@@ -37,38 +37,37 @@ import com.nhaarman.mockitokotlin2.whenever
 import java.lang.Exception
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.settings.CompletionSpinner
+import org.hisp.dhis.android.core.data.settings.ProgramConfigurationSettingSamples
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.junit.Before
 import org.junit.Test
 
-class CompletionSettingHandlerShould {
-    private val completionSettingStore: ObjectWithoutUidStore<CompletionSpinner> = mock()
+class ProgramConfigurationSettingHandlerShould {
+    private val programConfigurationSettingStore: ObjectWithoutUidStore<ProgramConfigurationSetting> = mock()
 
-    private val completionSpinner = CompletionSpinner.builder()
-        .visible(true)
-        .build()
-    private lateinit var completionSpinnerHandler: CompletionSpinnerHandler
-    private lateinit var completionSpinnerList: List<CompletionSpinner>
+    private val programConfigurationSetting = ProgramConfigurationSettingSamples.get()
+    private lateinit var programConfigurationSettingHandler: ProgramConfigurationSettingHandler
+    private lateinit var programConfigurationSettingList: List<ProgramConfigurationSetting>
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        completionSpinnerList = listOf(completionSpinner)
-        whenever(completionSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
-        completionSpinnerHandler = CompletionSpinnerHandler(completionSettingStore)
+        programConfigurationSettingList = listOf(programConfigurationSetting)
+        whenever(programConfigurationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        programConfigurationSettingHandler = ProgramConfigurationSettingHandler(programConfigurationSettingStore)
     }
 
     @Test
     fun clean_database_before_insert_collection() {
-        completionSpinnerHandler.handleMany(completionSpinnerList)
-        verify(completionSettingStore).delete()
-        verify(completionSettingStore).updateOrInsertWhere(completionSpinner)
+        programConfigurationSettingHandler.handleMany(programConfigurationSettingList)
+        verify(programConfigurationSettingStore).delete()
+        verify(programConfigurationSettingStore).updateOrInsertWhere(programConfigurationSetting)
     }
 
     @Test
     fun clean_database_if_empty_collection() {
-        completionSpinnerHandler.handleMany(emptyList())
-        verify(completionSettingStore).delete()
-        verify(completionSettingStore, never()).updateOrInsertWhere(completionSpinner)
+        programConfigurationSettingHandler.handleMany(emptyList())
+        verify(programConfigurationSettingStore).delete()
+        verify(programConfigurationSettingStore, never()).updateOrInsertWhere(programConfigurationSetting)
     }
 }

@@ -26,25 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
-public class GeneralSettingsSamples {
+internal class ProgramConfigurationSettingHandler(store: ObjectWithoutUidStore<ProgramConfigurationSetting>) :
+    ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
 
-    public static GeneralSettings getGeneralSettings() {
-        return GeneralSettings.builder()
-                .id(1L)
-                .encryptDB(true)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .reservedValues(100)
-                .smsGateway("+34678456123")
-                .smsResultSender("+34654321456")
-                .matomoID(123)
-                .matomoURL("https://www.matomo.org")
-                .allowScreenCapture(true)
-                .messageOfTheDay("Message of the day")
-                .build();
+    override fun beforeCollectionHandled(
+        oCollection: Collection<ProgramConfigurationSetting>
+    ): Collection<ProgramConfigurationSetting> {
+        store.delete()
+        return oCollection
     }
 }

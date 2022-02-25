@@ -1,0 +1,145 @@
+{
+  "filterSorting": {
+    "home": {
+      "date": {
+        "sort": "true",
+        "filter": "true"
+      },
+      "syncStatus": {
+        "sort": "true",
+        "filter": "true"
+      },
+      "assignedToMe": {
+        "sort": "true",
+        "filter": "true"
+      },
+      "organisationUnit": {
+        "sort": "true",
+        "filter": "true"
+      }
+    },
+    "dataSetSettings": {
+      "globalSettings": {
+        "period": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "syncStatus": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "organisationUnit": {
+          "sort": "true",
+          "filter": "true"
+        }
+      },
+      "specificSettings": {
+        "lyLU2wR22tC": {
+          "period": {
+            "sort": "true",
+            "filter": "true"
+          },
+          "syncStatus": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "categoryCombo": {
+            "sort": "true",
+            "filter": "true"
+          },
+          "organisationUnit": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "newFilter1": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "newFilter2": {
+            "sort": "false",
+            "filter": "false"
+          }
+        }
+      }
+    },
+    "programSettings": {
+      "globalSettings": {
+        "eventDate": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "syncStatus": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "eventStatus": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "assignedToMe": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "enrollmentDate": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "enrollmentStatus": {
+          "sort": "true",
+          "filter": "true"
+        },
+        "organisationUnit": {
+          "sort": "true",
+          "filter": "true"
+        }
+      },
+      "specificSettings": {
+        "IpHINAT79UW": {
+          "eventDate": {
+            "sort": "true",
+            "filter": "true"
+          },
+          "syncStatus": {
+            "sort": "true",
+            "filter": "true"
+          },
+          "eventStatus": {
+            "sort": "true",
+            "filter": "true"
+          },
+          "assignedToMe": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "enrollmentDate": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "enrollmentStatus": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "organisationUnit": {
+            "sort": "false",
+            "filter": "false"
+          }
+        }
+      }
+    }
+  },
+  "programConfiguration": {
+    "globalSettings": {
+      "completionSpinner": "true"
+    },
+    "specificSettings": {
+      "IpHINAT79UW": {
+        "completionSpinner": "true",
+        "optionalSearch": "true"
+      },
+      "IpHINAT79UQ": {
+        "completionSpinner": "true",
+        "optionalSearch": "true"
+      }
+    }
+  }
+}

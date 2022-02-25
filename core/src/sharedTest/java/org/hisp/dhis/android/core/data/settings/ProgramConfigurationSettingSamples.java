@@ -28,23 +28,16 @@
 
 package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting;
 
-public class GeneralSettingsSamples {
+public class ProgramConfigurationSettingSamples {
 
-    public static GeneralSettings getGeneralSettings() {
-        return GeneralSettings.builder()
+    public static ProgramConfigurationSetting get() {
+        return ProgramConfigurationSetting.builder()
                 .id(1L)
-                .encryptDB(true)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .reservedValues(100)
-                .smsGateway("+34678456123")
-                .smsResultSender("+34654321456")
-                .matomoID(123)
-                .matomoURL("https://www.matomo.org")
-                .allowScreenCapture(true)
-                .messageOfTheDay("Message of the day")
+                .uid("aBcDeFg")
+                .completionSpinner(true)
+                .optionalSearch(true)
                 .build();
     }
 }

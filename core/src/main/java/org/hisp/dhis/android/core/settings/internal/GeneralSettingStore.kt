@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.settings.GeneralSettings
 
 @Suppress("MagicNumber")
 internal object GeneralSettingStore {
-    private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
+    private val BINDER = StatementBinder<GeneralSettings> { o: GeneralSettings, w: StatementWrapper ->
         w.bind(1, o.encryptDB())
         w.bind(2, o.lastUpdated())
         w.bind(3, o.reservedValues())
@@ -48,13 +48,14 @@ internal object GeneralSettingStore {
         w.bind(6, o.matomoID())
         w.bind(7, o.matomoURL())
         w.bind(8, o.allowScreenCapture())
+        w.bind(9, o.messageOfTheDay())
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {
         _: GeneralSettings, _: StatementWrapper ->
     }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
+    private val WHERE_DELETE_BINDER = WhereStatementBinder<GeneralSettings> {
         _: GeneralSettings, _: StatementWrapper ->
     }
 
@@ -62,6 +63,6 @@ internal object GeneralSettingStore {
         return objectWithoutUidStore(
             databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
             WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor? -> GeneralSettings.create(cursor) }
+        ) { cursor: Cursor -> GeneralSettings.create(cursor) }
     }
 }

@@ -26,25 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
+import androidx.annotation.Nullable;
 
-public class GeneralSettingsSamples {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    public static GeneralSettings getGeneralSettings() {
-        return GeneralSettings.builder()
-                .id(1L)
-                .encryptDB(true)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .reservedValues(100)
-                .smsGateway("+34678456123")
-                .smsResultSender("+34654321456")
-                .matomoID(123)
-                .matomoURL("https://www.matomo.org")
-                .allowScreenCapture(true)
-                .messageOfTheDay("Message of the day")
-                .build();
+import java.util.Map;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramConfigurationSettings.Builder.class)
+public abstract class ProgramConfigurationSettings {
+
+    @Nullable
+    @JsonProperty
+    public abstract ProgramConfigurationSetting globalSettings();
+
+    @Nullable
+    @JsonProperty
+    public abstract Map<String, ProgramConfigurationSetting> specificSettings();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramConfigurationSettings.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder globalSettings(ProgramConfigurationSetting globalSettings);
+
+        public abstract Builder specificSettings(Map<String, ProgramConfigurationSetting> specificSettings);
+
+        public abstract ProgramConfigurationSettings build();
     }
 }

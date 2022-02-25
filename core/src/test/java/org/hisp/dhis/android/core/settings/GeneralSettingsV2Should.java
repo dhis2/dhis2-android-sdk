@@ -60,5 +60,6 @@ public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectS
         assertThat(generalSettings.matomoID()).isEqualTo(123);
         assertThat(generalSettings.matomoURL()).isEqualTo("https://www.matomo.org");
         assertThat(generalSettings.allowScreenCapture()).isTrue();
+        assertThat(generalSettings.messageOfTheDay()).isEqualTo("Message of the day");
     }
 }

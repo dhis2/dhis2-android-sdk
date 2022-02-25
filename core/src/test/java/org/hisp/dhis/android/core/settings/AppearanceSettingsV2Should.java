@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
@@ -36,12 +38,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
 
-import static com.google.common.truth.Truth.assertThat;
+public class AppearanceSettingsV2Should extends BaseObjectShould implements ObjectShould {
 
-public class AppearanceSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public AppearanceSettingsShould() {
-        super("settings/appearance_settings.json");
+    public AppearanceSettingsV2Should() {
+        super("settings/appearance_settings_v2.json");
     }
 
     @Override
@@ -79,6 +79,16 @@ public class AppearanceSettingsShould extends BaseObjectShould implements Object
         assertThat(programEventDateFilter.sort()).isEqualTo(true);
         assertThat(programEventDateFilter.filter()).isEqualTo(true);
 
+        ProgramConfigurationSettings programConfiguration = appearanceSettings.programConfiguration();
+        assertThat(programConfiguration.globalSettings().uid()).isNull();
+
+        Map<String, ProgramConfigurationSetting> speficicProgramConfiguration = programConfiguration.specificSettings();
+        ProgramConfigurationSetting specificProgramConfiguration = speficicProgramConfiguration.get("IpHINAT79UW");
+        assertThat(specificProgramConfiguration.uid()).isNull();
+        assertThat(specificProgramConfiguration.completionSpinner()).isEqualTo(true);
+        assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true);
+
+        // Compatibility backwards
         CompletionSpinnerSetting completionSpinnerSetting = appearanceSettings.completionSpinner();
         assertThat(completionSpinnerSetting.globalSettings().uid()).isNull();
 

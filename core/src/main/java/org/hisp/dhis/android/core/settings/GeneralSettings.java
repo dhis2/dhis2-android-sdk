@@ -107,6 +107,9 @@ public abstract class GeneralSettings implements CoreObject {
     @Nullable
     public abstract Boolean allowScreenCapture();
 
+    @Nullable
+    public abstract String messageOfTheDay();
+
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
@@ -145,6 +148,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder matomoURL(String matomoURL);
 
         public abstract Builder allowScreenCapture(Boolean allowScreenCapture);
+
+        public abstract Builder messageOfTheDay(String messageOfTheDay);
 
         public abstract GeneralSettings build();
     }

@@ -35,54 +35,33 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Map;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AppearanceSettings.Builder.class)
-public abstract class AppearanceSettings {
+@JsonDeserialize(builder = AutoValue_ProgramConfigurationSettings.Builder.class)
+public abstract class ProgramConfigurationSettings {
 
     @Nullable
     @JsonProperty
-    public abstract FilterSorting filterSorting();
+    public abstract ProgramConfigurationSetting globalSettings();
 
     @Nullable
     @JsonProperty
-    public abstract ProgramConfigurationSettings programConfiguration();
+    public abstract Map<String, ProgramConfigurationSetting> specificSettings();
 
-    @Deprecated
-    @Nullable
-    @JsonProperty
-    public abstract CompletionSpinnerSetting completionSpinner();
+    public abstract Builder toBuilder();
 
-    public abstract AppearanceSettings.Builder toBuilder();
-
-    public static AppearanceSettings.Builder builder() {
-        return new AutoValue_AppearanceSettings.Builder();
+    public static Builder builder() {
+        return new AutoValue_ProgramConfigurationSettings.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
+        public abstract Builder globalSettings(ProgramConfigurationSetting globalSettings);
 
-        public abstract Builder filterSorting(FilterSorting filterSorting);
+        public abstract Builder specificSettings(Map<String, ProgramConfigurationSetting> specificSettings);
 
-        public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
-
-        @Deprecated
-        public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
-
-        // Auxiliary fields
-        abstract ProgramConfigurationSettings programConfiguration();
-        abstract CompletionSpinnerSetting completionSpinner();
-
-        abstract AppearanceSettings autoBuild();
-
-        @SuppressWarnings("PMD.ConfusingTernary")
-        public AppearanceSettings build() {
-            if (programConfiguration() != null) {
-                completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfiguration()));
-            } else if (completionSpinner() != null) {
-                programConfiguration(AppearanceSettingsHelper.completionSpinnerToProgram(completionSpinner()));
-            }
-            return autoBuild();
-        }
+        public abstract ProgramConfigurationSettings build();
     }
 }

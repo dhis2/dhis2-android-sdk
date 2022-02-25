@@ -27,31 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
-import org.hisp.dhis.android.core.settings.AnalyticsSettings
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiData
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
-import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.ChartType
-import org.hisp.dhis.android.core.settings.CompletionSpinner
-import org.hisp.dhis.android.core.settings.DataSetFilter
-import org.hisp.dhis.android.core.settings.DataSetFilters
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
-import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.core.settings.HomeFilter
-import org.hisp.dhis.android.core.settings.ProgramFilter
-import org.hisp.dhis.android.core.settings.ProgramFilters
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.hisp.dhis.android.core.settings.WHONutritionComponent
+import org.hisp.dhis.android.core.settings.*
 
 @Suppress("TooManyFunctions")
 internal object SettingsAppHelper {
@@ -127,9 +103,11 @@ internal object SettingsAppHelper {
         return listOf(globalFilters, specificFilters).flatten()
     }
 
-    fun getCompletionSpinnerList(appearanceSettings: AppearanceSettings): List<CompletionSpinner> {
-        val list = mutableListOf<CompletionSpinner>()
-        appearanceSettings.completionSpinner()?.let { settings ->
+    fun getProgramConfigurationSettingList(
+        appearanceSettings: AppearanceSettings
+    ): List<ProgramConfigurationSetting> {
+        val list = mutableListOf<ProgramConfigurationSetting>()
+        appearanceSettings.programConfiguration()?.let { settings ->
             settings.globalSettings()?.let {
                 list.add(it)
             }

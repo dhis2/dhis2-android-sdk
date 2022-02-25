@@ -26,28 +26,54 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings;
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.CompletionSpinner
+import android.database.Cursor;
 
-@Module
-internal class CompletionSpinnerEntityDIModule {
+import androidx.annotation.Nullable;
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<CompletionSpinner> {
-        return CompletionSpinnerStore.create(databaseAdapter)
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramConfigurationSetting.Builder.class)
+public abstract class ProgramConfigurationSetting implements CoreObject, ObjectWithUidInterface {
+
+    @Nullable
+    public abstract String uid();
+
+    @Nullable
+    public abstract Boolean completionSpinner();
+
+    @Nullable
+    public abstract  Boolean optionalSearch();
+
+    public static ProgramConfigurationSetting create(Cursor cursor) {
+        return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
     }
 
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<CompletionSpinner>): Handler<CompletionSpinner> {
-        return CompletionSpinnerHandler(store)
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramConfigurationSetting.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder completionSpinner(Boolean completionSpinner);
+
+        public abstract Builder optionalSearch(Boolean optionalSearch);
+
+        public abstract ProgramConfigurationSetting build();
     }
 }

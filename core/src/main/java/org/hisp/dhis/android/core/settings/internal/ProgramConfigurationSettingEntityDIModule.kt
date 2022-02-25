@@ -26,17 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.CompletionSpinner;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
-public class CompletionSpinnerSamples {
+@Module
+internal class ProgramConfigurationSettingEntityDIModule {
 
-    public static CompletionSpinner getCompletionSpinner() {
-        return CompletionSpinner.builder()
-                .id(1L)
-                .uid("aBcDeFg")
-                .visible(true)
-                .build();
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramConfigurationSetting> {
+        return ProgramConfigurationSettingStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<ProgramConfigurationSetting>): Handler<ProgramConfigurationSetting> {
+        return ProgramConfigurationSettingHandler(store)
     }
 }

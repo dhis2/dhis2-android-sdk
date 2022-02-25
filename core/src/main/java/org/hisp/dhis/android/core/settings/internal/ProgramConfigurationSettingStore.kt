@@ -35,29 +35,33 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.settings.CompletionSpinner
-import org.hisp.dhis.android.core.settings.CompletionSpinnerTableInfo
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
 
 @Suppress("MagicNumber")
-internal object CompletionSpinnerStore {
+internal object ProgramConfigurationSettingStore {
 
-    private val BINDER = StatementBinder { o: CompletionSpinner, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.visible())
-    }
+    private val BINDER =
+        StatementBinder<ProgramConfigurationSetting> { o: ProgramConfigurationSetting, w: StatementWrapper ->
+            w.bind(1, o.uid())
+            w.bind(2, o.completionSpinner())
+            w.bind(3, o.optionalSearch())
+        }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: CompletionSpinner, _: StatementWrapper ->
-    }
+    private val WHERE_UPDATE_BINDER =
+        WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
+        }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: CompletionSpinner, _: StatementWrapper ->
-    }
+    private val WHERE_DELETE_BINDER =
+        WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
+        }
 
-    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<CompletionSpinner> {
+    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<ProgramConfigurationSetting> {
         return StoreFactory.objectWithoutUidStore(
-            databaseAdapter!!, CompletionSpinnerTableInfo.TABLE_INFO,
+            databaseAdapter!!, ProgramConfigurationSettingTableInfo.TABLE_INFO,
             BINDER,
             WHERE_UPDATE_BINDER,
             WHERE_DELETE_BINDER
-        ) { cursor: Cursor? -> CompletionSpinner.create(cursor) }
+        ) { cursor: Cursor -> ProgramConfigurationSetting.create(cursor) }
     }
 }

@@ -33,6 +33,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterCon
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 
+sealed class LegendStrategy {
+    object None : LegendStrategy()
+    object ByDataItem : LegendStrategy()
+    data class Fixed(val legendSetUid: String) : LegendStrategy()
+}
+
 interface EventLineListRepository : BaseRepository {
 
     /**
@@ -66,6 +72,11 @@ interface EventLineListRepository : BaseRepository {
      * program indicators but appends a new one to the response.
      */
     fun withProgramIndicator(programIndicatorUid: String): EventLineListRepository
+
+    /**
+     * Assign the strategy to apply with legend.
+     */
+    fun withLegendStrategy(legendStrategy: LegendStrategy): EventLineListRepository
 
     /**
      * Evaluate the given parameters and get a list of events in the format of [LineListResponse].

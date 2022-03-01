@@ -29,17 +29,27 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountManager
+import kotlin.jvm.Throws
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(
     private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val logOutCall: LogOutCall
 ) : AccountManager {
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts() ?: emptyList()
@@ -51,5 +61,29 @@ internal class AccountManagerImpl @Inject constructor(
 
     override fun getMaxAccounts(): Int {
         return databasesConfigurationStore.get()?.maxAccounts() ?: MultiUserDatabaseManager.DefaultMaxAccounts
+    }
+
+    @Throws(D2Error::class)
+    override fun deleteCurrentAccount() {
+        val credentials = credentialsSecureStore.get()
+
+        if (credentials == null) {
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+                .errorDescription("There is not any authenticated user")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
+        } else {
+            logOutCall.logOut().blockingAwait()
+            val configuration = databasesConfigurationStore.get()
+            val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
+                configuration,
+                credentials.username,
+                credentials.serverUrl
+            )
+            val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
+            databasesConfigurationStore.set(updatedConfiguration)
+            databaseAdapterFactory.deleteDatabase(loggedAccount)
+        }
     }
 }

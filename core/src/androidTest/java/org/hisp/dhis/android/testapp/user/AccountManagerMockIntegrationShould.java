@@ -30,8 +30,12 @@ package org.hisp.dhis.android.testapp.user;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.fail;
+
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.BeforeClass;
@@ -71,5 +75,48 @@ public class AccountManagerMockIntegrationShould extends BaseMockIntegrationTest
         int defaultMaxAccounts = MultiUserDatabaseManager.DefaultMaxAccounts;
         d2.userModule().accountManager().setMaxAccounts(defaultMaxAccounts);
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(defaultMaxAccounts);
+    }
+
+    @Test
+    public void can_delete_current_logged_account() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
+
+        dhis2MockServer.enqueueLoginResponses();
+        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.getBaseEndpoint());
+
+        try {
+            d2.userModule().accountManager().deleteCurrentAccount();
+
+            List<DatabaseAccount> accountList = d2.userModule().accountManager().getAccounts();
+            assertThat(accountList.size()).isEqualTo(0);
+        } catch (D2Error e) {
+            fail("Should not throw a D2Error");
+        }
+    }
+
+    @Test
+    public void cannot_delete_not_logged_account() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
+
+        dhis2MockServer.enqueueLoginResponses();
+        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.getBaseEndpoint());
+
+        d2.userModule().blockingLogOut();
+
+        try {
+            d2.userModule().accountManager().deleteCurrentAccount();
+            fail("Should throw a D2Error");
+        } catch (D2Error e) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
+
+            List<DatabaseAccount> accountList = d2.userModule().accountManager().getAccounts();
+            assertThat(accountList.size()).isEqualTo(1);
+        } catch (Exception e) {
+            fail("Should throw a D2Error");
+        }
     }
 }

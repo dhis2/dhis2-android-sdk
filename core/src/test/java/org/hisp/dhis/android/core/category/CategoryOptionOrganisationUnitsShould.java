@@ -26,42 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
+import static com.google.common.truth.Truth.assertThat;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import dagger.Reusable;
-import io.reactivex.Observable;
+import java.io.IOException;
+import java.text.ParseException;
 
-@Reusable
-public final class FileResourceModuleImpl implements FileResourceModule {
+public class CategoryOptionOrganisationUnitsShould extends BaseObjectShould implements ObjectShould {
 
-    private final FileResourceCollectionRepository fileResources;
-    private final FileResourceCall fileResourceCall;
-
-    @Inject
-    FileResourceModuleImpl(FileResourceCollectionRepository fileResources,
-                           FileResourceCall fileResourceCall) {
-        this.fileResources = fileResources;
-        this.fileResourceCall = fileResourceCall;
+    public CategoryOptionOrganisationUnitsShould() {
+        super("category/category_option_orgunits.json");
     }
 
     @Override
-    public Observable<D2Progress> download() {
-        return fileResourceCall.download();
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        CategoryOptionOrganisationUnits links =
+                objectMapper.readValue(jsonStream, CategoryOptionOrganisationUnits.class);
 
-    @Override
-    public void blockingDownload() {
-        fileResourceCall.blockingDownload();
-    }
-
-    @Override
-    public FileResourceCollectionRepository fileResources() {
-        return fileResources;
+        assertThat(links.size()).isEqualTo(3);
     }
 }

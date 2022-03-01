@@ -25,23 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.data.tracker.importer.internal;
+import java.io.IOException
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
 
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
+internal class DynamicServerURLInterceptor : Interceptor {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-import static org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT;
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        return chain.proceed(transformRequest(chain.request()))
+    }
 
-public class TrackerJobObjectSamples {
+    companion object {
+        fun transformRequest(request: Request): Request {
+            val transformedUrl = transformUrl(request.url().toString())?.let { HttpUrl.parse(it) }
+            return transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
+        }
 
-    public static TrackerJobObject get1() {
-        return TrackerJobObject.builder()
-                .id(1L)
-                .trackerType(EVENT)
-                .objectUid("oUid")
-                .jobUid("jUid")
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+        fun transformUrl(url: String?): String? {
+            return url?.let {
+                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
+
+                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
+                } else {
+                    url
+                }
+            }
+        }
     }
 }

@@ -155,7 +155,7 @@ internal class TrackedEntityInstancePostPayloadGenerator29 @Inject internal cons
         val enrollmentsRecreated = getEnrollments(extraData, trackedEntityInstance.uid())
         val attributeValues = extraData.attributeValueMap[trackedEntityInstance.uid()]
         val dbRelationships =
-            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true)
+            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true, false)
         val ownedRelationships =
             relationshipDHISVersionManager.getOwnedRelationships(dbRelationships, trackedEntityInstance.uid())
         val versionAwareRelationships =

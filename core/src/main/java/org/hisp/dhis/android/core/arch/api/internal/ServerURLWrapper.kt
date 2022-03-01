@@ -25,33 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+internal object ServerURLWrapper {
 
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+    var serverUrl: String? = null
+        private set
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class FileResourceModuleWiper implements ModuleWiper {
-    private final TableWiper tableWiper;
-
-    @Inject
-    FileResourceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @JvmStatic
+    fun setServerUrl(newHost: String) {
+        serverUrl = extractBeforeAPI(newHost)
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
+    private fun extractBeforeAPI(url: String): String {
+        return url.split("/api/").first()
     }
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO);
+    fun extractAfterAPI(url: String): String? {
+        return url.split("/api/").getOrNull(1)
     }
 }

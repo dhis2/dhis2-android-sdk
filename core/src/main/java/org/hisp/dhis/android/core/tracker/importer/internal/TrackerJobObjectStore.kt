@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -42,11 +43,12 @@ internal object TrackerJobObjectStore {
         w.bind(2, o.objectUid())
         w.bind(3, o.jobUid())
         w.bind(4, o.lastUpdated())
+        w.bind(5, StringArrayColumnAdapter.serialize(o.fileResources()))
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(5, o.trackerType())
-        w.bind(6, o.objectUid())
+        w.bind(6, o.trackerType())
+        w.bind(7, o.objectUid())
     }
 
     private val DELETE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->

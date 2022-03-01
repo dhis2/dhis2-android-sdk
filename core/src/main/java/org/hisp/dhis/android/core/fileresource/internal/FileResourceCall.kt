@@ -25,29 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
-import retrofit2.http.GET
-import retrofit2.http.Query
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.fileresource.FileResource
 
-internal interface CategoryOptionService {
+@Reusable
+class FileResourceCall @Inject internal constructor(
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val fileResourceModuleDownloader: FileResourceModuleDownloader
+) {
 
-    @GET("categoryOptions")
-    fun getCategoryOptions(
-        @Query("fields") @Which fields: Fields<CategoryOption>,
-        @Query("filter") categoryUidsFilterString: String,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<CategoryOption>>
+    fun download(): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(1)
+        return rxCallExecutor.wrapObservableTransactionally(
+            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+                fileResourceModuleDownloader.downloadMetadata().call()
+                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
+                emitter.onComplete()
+            },
+            true
+        )
+    }
 
-    @GET("categoryOptions/orgUnits")
-    fun getCategoryOptionOrgUnits(
-        @Query("categoryOptions") categoryOptions: String
-    ): Single<CategoryOptionOrganisationUnits>
+    fun blockingDownload() {
+        download().blockingSubscribe()
+    }
 }

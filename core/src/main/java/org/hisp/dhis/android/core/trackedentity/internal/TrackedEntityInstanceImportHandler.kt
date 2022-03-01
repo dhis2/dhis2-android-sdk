@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
@@ -63,7 +64,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceHelper: FileResourceHelper
 ) {
 
     private val alreadyDeletedInServerRegex =
@@ -153,7 +155,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     // Legacy code for <= 2.29
     private fun setRelationshipsState(trackedEntityInstanceUid: String?, state: State) {
         val dbRelationships =
-            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
+            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true, false)
         val ownedRelationships = relationshipDHISVersionManager
             .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid)
         for (relationship in ownedRelationships) {
@@ -188,9 +190,9 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         state: State
     ) {
         instance?.let {
-            val attributeValues = instance.trackedEntityAttributeValues()?.mapNotNull { it.value() }
+            val attributeValues = instance.trackedEntityAttributeValues()
 
-            fileResources.filter { attributeValues?.contains(it) ?: false }.forEach {
+            fileResources.filter { fileResourceHelper.isPresentInAttributeValues(it, attributeValues) }.forEach {
                 fileResourceStore.setSyncStateIfUploading(it, state)
             }
         }
@@ -206,9 +208,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                 ?.flatMap { EnrollmentInternalAccessor.accessEvents(it) }
                 ?.filterNotNull()
                 ?.flatMap { it.trackedEntityDataValues() ?: emptyList() }
-                ?.mapNotNull { it.value() }
 
-            fileResources.filter { dataValues?.contains(it) ?: false }.forEach {
+            fileResources.filter { fileResourceHelper.isPresentInDataValues(it, dataValues) }.forEach {
                 fileResourceStore.setSyncStateIfUploading(it, state)
             }
         }

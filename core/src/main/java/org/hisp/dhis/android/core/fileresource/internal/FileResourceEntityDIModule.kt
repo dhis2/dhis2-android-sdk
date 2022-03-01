@@ -25,26 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.io.File
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
 
-import java.io.IOException;
+@Module
+internal class FileResourceEntityDIModule {
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class DynamicServerURLInterceptor implements Interceptor {
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        return chain.proceed(transformRequest(chain.request()));
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStore<FileResource> {
+        return create(databaseAdapter)
     }
 
-    static Request transformRequest(Request request) {
-        HttpUrl newUrl = HttpUrl.parse(ServerURLWrapper.getServerUrl() + "/api/"
-                + ServerURLWrapper.extractAfterAPI(request.url().toString()));
-        return request.newBuilder().url(newUrl).build();
+    @Provides
+    @Reusable
+    fun handler(store: IdentifiableDataObjectStore<FileResource>): HandlerWithTransformer<FileResource> {
+        return IdentifiableWithoutDeleteInterfaceHandlerImpl(store)
+    }
+
+    @Provides
+    @Reusable
+    fun transformer(): Transformer<File, FileResource> {
+        return FileResourceProjectionTransformer()
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
+        return emptyMap()
     }
 }

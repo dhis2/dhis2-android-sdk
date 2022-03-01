@@ -112,6 +112,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           DataSetsStore dataSetsStore,
                           TrackedEntityInstanceStore trackedEntityInstanceStore,
                           DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
+                          MetadataIdsStore metadataIdsStore,
                           DataStatePropagator dataStatePropagator) {
         this.context = ctx;
         this.userRepository = userRepository;
@@ -127,7 +128,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
         this.dataStatePropagator = dataStatePropagator;
-        metadataIdsStore = new MetadataIdsStore(context);
+        this.metadataIdsStore = metadataIdsStore;
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
 

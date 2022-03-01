@@ -28,10 +28,17 @@
 
 package org.hisp.dhis.android.core.user
 
+import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface AccountManager {
     fun getAccounts(): List<DatabaseAccount>
+
     fun setMaxAccounts(maxAccounts: Int)
+
     fun getMaxAccounts(): Int
+
+    @Throws(D2Error::class)
+    fun deleteCurrentAccount()
 }

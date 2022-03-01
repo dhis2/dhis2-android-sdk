@@ -29,9 +29,10 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
+import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountManager
-import kotlin.jvm.Throws
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(

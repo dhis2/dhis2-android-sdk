@@ -30,9 +30,15 @@ package org.hisp.dhis.android.core.sms.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.data.internal.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.LocalDbRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataId;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStore;
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService;
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl;
@@ -68,6 +74,18 @@ public class SmsDIModule {
     @Provides
     WebApiRepository webApiRepository(ApiService apiService, DHISVersionManager dhisVersionManager) {
         return new WebApiRepositoryImpl(apiService, dhisVersionManager);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<SMSMetadataId> smsMetadataIdStore(DatabaseAdapter databaseAdapter) {
+        return SMSMetadataIdStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SMSConfigStore smsConfigStore(DatabaseAdapter databaseAdapter) {
+        return SMSConfigStoreImpl.create(databaseAdapter);
     }
 
     @Provides

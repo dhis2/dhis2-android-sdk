@@ -71,14 +71,14 @@ internal class OldEventPostCall @Inject internal constructor(
             }
 
             trackerPostStateManager.setPayloadStates(
-                events = validEvents.first,
+                events = validEvents.items,
                 forcedState = State.UPLOADING
             )
 
             val progressManager = D2ProgressManager(1)
 
             val eventPayload = EventPayload()
-            eventPayload.events = validEvents.first
+            eventPayload.events = validEvents.items
             val strategy = "CREATE_AND_UPDATE"
             try {
                 val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
@@ -87,12 +87,12 @@ internal class OldEventPostCall @Inject internal constructor(
                     listOf(409),
                     EventWebResponse::class.java
                 )
-                handleWebResponse(webResponse, validEvents.first, validEvents.second)
+                handleWebResponse(webResponse, validEvents.items, validEvents.fileResources)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
                 trackerPostStateManager.restorePayloadStates(
-                    events = validEvents.first,
-                    fileResources = validEvents.second
+                    events = validEvents.items,
+                    fileResources = validEvents.fileResources
                 )
                 Observable.error<D2Progress>(e)
             }

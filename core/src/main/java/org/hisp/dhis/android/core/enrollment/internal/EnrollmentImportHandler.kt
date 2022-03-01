@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
+import org.hisp.dhis.android.core.imports.internal.EnrollmentWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
@@ -66,7 +67,8 @@ internal class EnrollmentImportHandler @Inject constructor(
         enrollments: List<Enrollment>,
         teiState: State,
         fileResources: List<String>
-    ) {
+    ): EnrollmentWebResponseHandlerSummary {
+        val summary = EnrollmentWebResponseHandlerSummary()
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
@@ -96,13 +98,16 @@ internal class EnrollmentImportHandler @Inject constructor(
             }
         }
 
-        processIgnoredEnrollments(enrollmentImportSummaries, enrollments, teiState, fileResources)
+        val ignored = processIgnoredEnrollments(enrollmentImportSummaries, enrollments, teiState, fileResources)
+        summary.ignoredEnrollments.addAll(ignored)
 
         val teiUids = enrollments.mapNotNull { it.trackedEntityInstance() }.distinct()
 
         teiUids.forEach {
             dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
         }
+
+        return summary
     }
 
     private fun handleEventImportSummaries(
@@ -151,10 +156,10 @@ internal class EnrollmentImportHandler @Inject constructor(
         enrollments: List<Enrollment>,
         teiState: State,
         fileResources: List<String>
-    ) {
+    ): List<Enrollment> {
         val processedEnrollments = getReferences(enrollmentImportSummaries)
 
-        enrollments.filterNot { processedEnrollments.contains(it.uid()) }.forEach { enrollment ->
+        return enrollments.filterNot { processedEnrollments.contains(it.uid()) }.mapNotNull { enrollment ->
             // Tracker importer does not notify about enrollments already deleted in the server.
             // This is a workaround to accept as SUCCESS a missing enrollment only if it was deleted in the device.
             val state =
@@ -164,6 +169,9 @@ internal class EnrollmentImportHandler @Inject constructor(
             trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
             enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
             resetNestedDataStates(enrollment, fileResources)
+
+            if (state == State.SYNCED) null
+            else enrollment
         }
     }
 

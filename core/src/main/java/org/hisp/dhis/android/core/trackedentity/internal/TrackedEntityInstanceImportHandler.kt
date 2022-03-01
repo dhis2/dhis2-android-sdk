@@ -41,7 +41,9 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
+import org.hisp.dhis.android.core.imports.internal.*
+import org.hisp.dhis.android.core.imports.internal.EnrollmentWebResponseHandlerSummary
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -75,7 +77,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         teiImportSummaries: List<TEIImportSummary?>?,
         instances: List<TrackedEntityInstance>,
         fileResources: List<String>
-    ) {
+    ): TEIWebResponseHandlerSummary {
+        val summary = TEIWebResponseHandlerSummary()
         val processedTeis = mutableListOf<String>()
 
         teiImportSummaries?.filterNotNull()?.forEach { teiImportSummary ->
@@ -99,7 +102,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
-                    handleEnrollmentImportSummaries(teiImportSummary, instances, state, fileResources)
+                    val enSummary = handleEnrollmentImportSummaries(teiImportSummary, instances, state, fileResources)
+                    summary.ignoredEnrollments.addAll(enSummary.ignoredEnrollments)
                     dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
                 }
 
@@ -111,7 +115,11 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             }
         }
 
-        processIgnoredTEIs(processedTeis, instances, fileResources)
+        val ignoredTeis = processIgnoredTEIs(processedTeis, instances, fileResources)
+
+        summary.ignoredTeis.addAll(ignoredTeis)
+
+        return summary
     }
 
     private fun handleEnrollmentImportSummaries(
@@ -119,8 +127,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         instances: List<TrackedEntityInstance>,
         teiState: State,
         fileResources: List<String>
-    ) {
-        teiImportSummary.enrollments()?.importSummaries().let { importSummaries ->
+    ): EnrollmentWebResponseHandlerSummary {
+        return teiImportSummary.enrollments()?.importSummaries()?.let { importSummaries ->
             val teiUid = teiImportSummary.reference()
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
@@ -128,7 +136,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                 teiState,
                 fileResources
             )
-        }
+        } ?: EnrollmentWebResponseHandlerSummary()
     }
 
     private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
@@ -167,8 +175,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         processedTEIs: List<String>,
         instances: List<TrackedEntityInstance>,
         fileResources: List<String>
-    ) {
-        instances.filterNot { processedTEIs.contains(it.uid()) }.forEach { instance ->
+    ): List<TrackedEntityInstance> {
+        return instances.filterNot { processedTEIs.contains(it.uid()) }.onEach { instance ->
             trackerImportConflictStore.deleteTrackedEntityConflicts(instance.uid())
             trackedEntityInstanceStore.setSyncStateOrDelete(instance.uid(), State.TO_UPDATE)
             resetNestedDataStates(instance, fileResources)

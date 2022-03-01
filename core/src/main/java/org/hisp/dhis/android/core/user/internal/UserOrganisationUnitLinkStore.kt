@@ -25,27 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal
+package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import java.lang.RuntimeException
+import kotlin.Throws
 
-@Reusable
-internal class TEIWebResponseHandler @Inject constructor(
-    private val trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler
-) {
-
-    fun handleWebResponse(
-        webResponse: TEIWebResponse?,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
-    ): TEIWebResponseHandlerSummary {
-        return webResponse?.response()?.let { response ->
-            trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(), instances, fileResources
-            )
-        } ?: TEIWebResponseHandlerSummary()
-    }
+internal interface UserOrganisationUnitLinkStore : LinkStore<UserOrganisationUnitLink> {
+    @Throws(RuntimeException::class)
+    fun queryRootCaptureOrganisationUnitUids(): List<String>
+    fun queryOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String>
+    fun queryAssignedOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String>
+    fun isCaptureScope(organisationUnit: String): Boolean
 }

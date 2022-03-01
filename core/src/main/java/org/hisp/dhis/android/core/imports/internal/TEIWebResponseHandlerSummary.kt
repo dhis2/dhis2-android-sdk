@@ -25,31 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class UserOrganisationUnitLinkEntityDIModule {
-
-    @Provides
-    @Reusable
-    UserOrganisationUnitLinkStore store(DatabaseAdapter databaseAdapter) {
-        return UserOrganisationUnitLinkStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    LinkHandler<OrganisationUnit, UserOrganisationUnitLink> handler(UserOrganisationUnitLinkStore store) {
-        return new LinkHandlerImpl<>(store);
-    }
-}
+internal data class TEIWebResponseHandlerSummary(
+    val ignoredTeis: MutableList<TrackedEntityInstance> = mutableListOf(),
+    val ignoredEnrollments: MutableList<Enrollment> = mutableListOf()
+)

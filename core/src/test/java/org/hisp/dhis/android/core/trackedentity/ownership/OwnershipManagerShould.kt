@@ -50,7 +50,7 @@ class OwnershipManagerShould {
     private val httpResponse: HttpMessageResponse = mock()
     private val call: Call<HttpMessageResponse> = mock()
 
-    private lateinit var ownershipManager: OwnershipManager
+    private lateinit var ownershipManager: OwnershipManagerImpl
 
     @Before
     fun setUp() {
@@ -81,6 +81,14 @@ class OwnershipManagerShould {
             assertThat(e).isInstanceOf(D2Error::class.java)
         }
 
+        verifyNoMoreInteractions(programTempOwnerStore)
+    }
+
+    @Test
+    fun do_not_persist_program_temp_owner_on_fake_break_glass() {
+        ownershipManager.fakeBreakGlass("tei_uid", "program_uid")
+
+        verify(programTempOwnerStore).selectWhere(any(), any(), any())
         verifyNoMoreInteractions(programTempOwnerStore)
     }
 }

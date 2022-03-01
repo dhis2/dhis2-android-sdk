@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import java.util.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
@@ -165,6 +166,22 @@ class TrackedEntityInstanceImportHandlerShould {
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("missing_tei_uid", State.TO_UPDATE)
+    }
+
+    @Test
+    fun return_tracked_entity_instances_not_present_in_the_response() {
+        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
+        whenever(importSummary.reference()).doReturn(sampleTeiUid)
+
+        val instances = listOf(trackedEntityInstance)
+        whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
+
+        val response = trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+            listOf(importSummary), instances, emptyList()
+        )
+
+        assertThat(response.ignoredTeis.size).isEqualTo(1)
+        assertThat(response.ignoredTeis.first().uid()).isEqualTo("missing_tei_uid")
     }
 
     @Test

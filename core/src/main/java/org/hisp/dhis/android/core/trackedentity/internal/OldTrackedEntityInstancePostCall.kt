@@ -72,15 +72,15 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
             val teiPartitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(filteredTrackedEntityInstances)
                 .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
-                .filter { it.first.isNotEmpty() }
+                .filter { it.items.isNotEmpty() }
 
             val progressManager = D2ProgressManager(teiPartitions.size)
             for (partition in teiPartitions) {
                 stateManager.setPayloadStates(
-                    trackedEntityInstances = partition.first,
+                    trackedEntityInstances = partition.items,
                     forcedState = State.UPLOADING
                 )
-                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition.first)
+                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition.items)
                 try {
                     val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
@@ -91,12 +91,12 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                         listOf(409),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition, partition.second)
+                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition, partition.fileResources)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
                     stateManager.restorePayloadStates(
                         trackedEntityInstances = thisPartition,
-                        fileResources = partition.second
+                        fileResources = partition.fileResources
                     )
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)

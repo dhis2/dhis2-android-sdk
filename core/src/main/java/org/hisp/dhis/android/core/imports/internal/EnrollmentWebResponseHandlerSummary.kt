@@ -25,20 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
-
-import java.util.List;
-
-public interface UserOrganisationUnitLinkStore extends LinkStore<UserOrganisationUnitLink> {
-
-    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
-
-    List<String> queryOrganisationUnitUidsByScope(OrganisationUnit.Scope scope);
-
-    List<String> queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope scope);
-}
+internal data class EnrollmentWebResponseHandlerSummary(
+    val ignoredEnrollments: MutableList<Enrollment> = mutableListOf()
+)

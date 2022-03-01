@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import java.net.HttpURLConnection.HTTP_CONFLICT
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -43,9 +41,17 @@ import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.program.AccessLevel
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.net.HttpURLConnection.HTTP_CONFLICT
+import javax.inject.Inject
 
 @Reusable
 internal class OldTrackerImporterPostCall @Inject internal constructor(
@@ -57,7 +63,10 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val eventImportHandler: EventImportHandler,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
-    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall
+    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
+    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
+    private val programStore: ProgramStoreInterface,
+    private val ownershipManagerImpl: OwnershipManagerImpl
 ) {
 
     fun uploadTrackedEntityInstances(
@@ -98,29 +107,23 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             val teiPartitions = trackedEntityInstances
                 .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
                 .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
-                .filter { it.first.isNotEmpty() }
+                .filter { it.items.isNotEmpty() }
 
             for (partition in teiPartitions) {
                 try {
-                    trackerStateManager.setPayloadStates(
-                        trackedEntityInstances = partition.first,
-                        forcedState = State.UPLOADING
-                    )
-                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition.first)
-                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        trackedEntityInstanceService.postTrackedEntityInstances(
-                            trackedEntityInstancePayload, "SYNC"
-                        ),
-                        @Suppress("MagicNumber")
-                        listOf(HTTP_CONFLICT),
-                        TEIWebResponse::class.java
-                    )
-                    teiWebResponseHandler.handleWebResponse(webResponse, partition.first, partition.second)
+                    val summary = postPartition(partition.items, partition.fileResources)
+                    val glassErrors = getGlassProtectedErrors(summary, partition.items)
+
+                    if (glassErrors.isNotEmpty()) {
+                        fakeBreakGlass(glassErrors)
+                        postPartition(glassErrors, partition.fileResources)
+                    }
+
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
                     trackerStateManager.restorePayloadStates(
-                        trackedEntityInstances = partition.first,
-                        fileResources = partition.second
+                        trackedEntityInstances = partition.items,
+                        fileResources = partition.fileResources
                     )
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
@@ -139,6 +142,64 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         }
     }
 
+    private fun postPartition(
+        trackedEntityInstances: List<TrackedEntityInstance>,
+        fileResources: List<String>
+    ): TEIWebResponseHandlerSummary {
+        trackerStateManager.setPayloadStates(
+            trackedEntityInstances = trackedEntityInstances,
+            forcedState = State.UPLOADING
+        )
+        val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(trackedEntityInstances)
+        val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+            trackedEntityInstanceService.postTrackedEntityInstances(
+                trackedEntityInstancePayload, "SYNC"
+            ),
+            @Suppress("MagicNumber")
+            listOf(HTTP_CONFLICT),
+            TEIWebResponse::class.java
+        )
+        return teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances, fileResources)
+    }
+
+    private fun getGlassProtectedErrors(
+        summary: TEIWebResponseHandlerSummary,
+        instances: List<TrackedEntityInstance>
+    ): List<TrackedEntityInstance> {
+        return summary.ignoredEnrollments.filter { enrollment ->
+            isProtectedProgram(enrollment.program()) && isNotCaptureScope(enrollment.organisationUnit())
+        }.mapNotNull { enrollment ->
+            instances.mapNotNull { tei ->
+                val teiEnrollment =
+                    TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).find { it.uid() == enrollment.uid() }
+
+                if (teiEnrollment != null) {
+                    TrackedEntityInstanceInternalAccessor
+                        .insertEnrollments(tei.toBuilder(), listOf(teiEnrollment))
+                        .build()
+                } else {
+                    null
+                }
+            }.firstOrNull()
+        }
+    }
+
+    private fun isProtectedProgram(program: String?): Boolean {
+        return program?.let { programStore.selectByUid(it)?.accessLevel() == AccessLevel.PROTECTED } ?: false
+    }
+
+    private fun isNotCaptureScope(organisationUnit: String?): Boolean {
+        return organisationUnit?.let { !userOrganisationUnitLinkStore.isCaptureScope(it) } ?: false
+    }
+
+    private fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
+        instances.forEach { instance ->
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(instance).forEach { enrollment ->
+                ownershipManagerImpl.fakeBreakGlass(instance.uid(), enrollment.uid())
+            }
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun postEvents(
         events: List<Event>
@@ -152,7 +213,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                 val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
 
                 val payload = EventPayload()
-                payload.events = validEvents.first
+                payload.events = validEvents.items
 
                 trackerStateManager.setPayloadStates(
                     events = payload.events,
@@ -170,13 +231,13 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
                         events = payload.events,
-                        fileResources = validEvents.second
+                        fileResources = validEvents.fileResources
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
                     trackerStateManager.restorePayloadStates(
                         events = payload.events,
-                        fileResources = validEvents.second
+                        fileResources = validEvents.fileResources
                     )
                     Observable.error<D2Progress>(e)
                 }

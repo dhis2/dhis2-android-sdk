@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -142,5 +143,21 @@ class EnrollmentImportHandlerShould {
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("missing_enrollment_uid", State.TO_UPDATE)
+    }
+
+    @Test
+    fun return_enrollments_not_present_in_the_response() {
+        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
+        whenever(importSummary.reference()).thenReturn(enrollmentUid)
+
+        val enrollments = listOf(enrollment, missingEnrollment)
+        whenever(missingEnrollment.uid()).thenReturn("missing_enrollment_uid")
+
+        val response = enrollmentImportHandler.handleEnrollmentImportSummary(
+            listOf(importSummary), enrollments, teiState, emptyList()
+        )
+
+        assertThat(response.ignoredEnrollments.size).isEqualTo(1)
+        assertThat(response.ignoredEnrollments.first().uid()).isEqualTo("missing_enrollment_uid")
     }
 }

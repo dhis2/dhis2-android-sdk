@@ -35,6 +35,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -50,7 +51,8 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     private val queryFactory: TrackerQueryBundleFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
-    private val apiCallExecutor: RxAPICallExecutor,
+    private val rxApiCallExecutor: RxAPICallExecutor,
+    private val apiCallExecutor: APICallExecutor,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
 ) {
 
@@ -67,26 +69,34 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             val bundles: List<TrackerQueryBundle> = queryFactory.getQueries(params)
 
             for (bundle in bundles) {
-                iterables.teisCount = 0
-                iterables.bundleOrgUnitPrograms = mutableMapOf()
-                iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
-                bundle.orgUnits()
-                    .ifEmpty { listOf(null) }
-                    .forEach { orgUnit ->
-                        iterables.bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
-                            null -> listOf(TEIsByProgramCount(null, 0))
-                            else ->
-                                bundle.commonParams().programs
-                                    .map { TEIsByProgramCount(it, 0) }
-                        }.toMutableList()
-                    }
-                var iterationCount = 0
-                do {
-                    iterateBundle(bundle, params, iterables, relatives)
-                    iterationCount++
-                } while (iterationNotFinished(bundle, params, iterables, iterationCount))
+                if (bundle.commonParams().uids.isNotEmpty()) {
+                    val result = queryByUids(bundle, params.overwrite(), relatives)
 
-                if (params.uids().isEmpty()) {
+                    result.d2Error?.let {
+                        emitter.onError(it)
+                        return@create
+                    }
+                } else {
+                    iterables.teisCount = 0
+                    iterables.bundleOrgUnitPrograms = mutableMapOf()
+                    iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
+
+                    bundle.orgUnits()
+                        .ifEmpty { listOf(null) }
+                        .forEach { orgUnit ->
+                            iterables.bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
+                                null -> listOf(TEIsByProgramCount(null, 0))
+                                else ->
+                                    bundle.commonParams().programs
+                                        .map { TEIsByProgramCount(it, 0) }
+                            }.toMutableList()
+                        }
+                    var iterationCount = 0
+                    do {
+                        iterateBundle(bundle, params, iterables, relatives)
+                        iterationCount++
+                    } while (iterationNotFinished(bundle, params, iterables, iterationCount))
+
                     lastUpdatedManager.update(bundle)
                 }
             }
@@ -115,9 +125,8 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     ) {
         val limitPerCombo = getBundleLimit(bundle, params, iterables)
 
-        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
+        for ((orgUnitUid, orgunitPrograms) in iterables.bundleOrgUnitPrograms.entries) {
             iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-            val orgunitPrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]
 
             val pendingTeis = bundle.commonParams().limit - iterables.teisCount
             iterables.bundleLimit = min(limitPerCombo, pendingTeis)
@@ -201,15 +210,12 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         overwrite: Boolean,
         relatives: RelationshipItemRelatives
     ): TEIsWithPagingResult {
-        var result = TEIsWithPagingResult(0, successfulSync = true, emptyProgram = false)
-
-        try {
-            result = getTEIsWithPaging(trackerQueryBuilder, combinationLimit, downloadedTEIs, overwrite, relatives)
+        return try {
+            getTEIsWithPaging(trackerQueryBuilder, combinationLimit, downloadedTEIs, overwrite, relatives)
         } catch (ignored: D2Error) {
-            result.successfulSync = false
+            // TODO Build result
+            TEIsWithPagingResult(0, false, null, false)
         }
-
-        return result
     }
 
     @Throws(D2Error::class)
@@ -231,7 +237,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             teiQueryBuilder.pageSize(paging.pageSize())
             teiQueryBuilder.page(paging.page())
 
-            val pageTEIs = apiCallExecutor.wrapSingle(
+            val pageTEIs = rxApiCallExecutor.wrapSingle(
                 endpointCallFactory.getCall(teiQueryBuilder.build()), true
             ).blockingGet().items()
 
@@ -248,7 +254,40 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             }
         }
 
-        return TEIsWithPagingResult(downloadedTEIsForCombination, true, emptyProgram)
+        return TEIsWithPagingResult(downloadedTEIsForCombination, true, null, emptyProgram)
+    }
+
+    private fun queryByUids(
+        bundle: TrackerQueryBundle,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives
+    ): TEIsWithPagingResult {
+        val result = TEIsWithPagingResult(0, true, null, false)
+        val teiQuery = TrackerQuery.builder()
+            .commonParams(bundle.commonParams())
+            .programStatus(bundle.programStatus())
+            .orgUnit(null)
+            .build()
+
+        for (uid in bundle.commonParams().uids) {
+            try {
+                val tei = apiCallExecutor.executeObjectCallWithErrorCatcher(
+                    endpointCallFactory.getSingleCall(uid, teiQuery), TrackedEntityInstanceCallErrorCatcher()
+                )
+
+                if (tei != null) {
+                    val isFullUpdate = teiQuery.commonParams().program == null
+                    persistenceCallFactory.persistTEIs(listOf(tei), isFullUpdate, overwrite, relatives).blockingAwait()
+                    result.teiCount++
+                }
+            } catch (d2Error: D2Error) {
+                result.successfulSync = false
+                if (result.d2Error == null) {
+                    result.d2Error = d2Error
+                }
+            }
+        }
+        return result
     }
 
     private fun getTEIsToPersist(paging: Paging, pageTEIs: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
@@ -264,7 +303,12 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         }
     }
 
-    private class TEIsWithPagingResult(var teiCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)
+    private class TEIsWithPagingResult(
+        var teiCount: Int,
+        var successfulSync: Boolean,
+        var d2Error: D2Error?,
+        var emptyProgram: Boolean
+    )
 
     private class TEIsByProgramCount(val program: String?, var teiCount: Int)
 

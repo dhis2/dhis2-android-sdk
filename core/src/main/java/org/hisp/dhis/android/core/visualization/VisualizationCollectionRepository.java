@@ -81,6 +81,22 @@ public final class VisualizationCollectionRepository
         return cf.string(Columns.SUBTITLE);
     }
 
+    public BooleanFilterConnector<VisualizationCollectionRepository> byLegendShowKey() {
+        return cf.bool(Columns.LEGEND_SHOW_KEY);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> byLegendStrategy() {
+        return cf.string(Columns.LEGEND_STRATEGY);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> byLegendStyle() {
+        return cf.string(Columns.LEGEND_STYLE);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> byLegendUid() {
+        return cf.string(Columns.LEGEND_SET_ID);
+    }
+
     public StringFilterConnector<VisualizationCollectionRepository> byDisplaySubtitle() {
         return cf.string(Columns.DISPLAY_SUBTITLE);
     }

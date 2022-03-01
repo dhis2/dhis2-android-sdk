@@ -45,6 +45,11 @@ public abstract class AppearanceSettings {
 
     @Nullable
     @JsonProperty
+    public abstract ProgramConfigurationSettings programConfiguration();
+
+    @Deprecated
+    @Nullable
+    @JsonProperty
     public abstract CompletionSpinnerSetting completionSpinner();
 
     public abstract AppearanceSettings.Builder toBuilder();
@@ -59,8 +64,25 @@ public abstract class AppearanceSettings {
 
         public abstract Builder filterSorting(FilterSorting filterSorting);
 
+        public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
+
+        @Deprecated
         public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
 
-        public abstract AppearanceSettings build();
+        // Auxiliary fields
+        abstract ProgramConfigurationSettings programConfiguration();
+        abstract CompletionSpinnerSetting completionSpinner();
+
+        abstract AppearanceSettings autoBuild();
+
+        @SuppressWarnings("PMD.ConfusingTernary")
+        public AppearanceSettings build() {
+            if (programConfiguration() != null) {
+                completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfiguration()));
+            } else if (completionSpinner() != null) {
+                programConfiguration(AppearanceSettingsHelper.completionSpinnerToProgram(completionSpinner()));
+            }
+            return autoBuild();
+        }
     }
 }

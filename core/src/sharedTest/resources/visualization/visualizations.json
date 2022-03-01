@@ -31,6 +31,14 @@
       "skipRounding": false,
       "displayDensity": "NORMAL",
       "digitGroupSeparator": "COMMA",
+      "legend": {
+        "showKey": false,
+        "style": "FILL",
+        "strategy": "FIXED",
+        "set": {
+          "id": "Yf6UHoPkd57"
+        }
+      },
       "relativePeriods": {
         "thisYear": false,
         "last12Months": true
@@ -131,6 +139,14 @@
       "skipRounding": false,
       "displayDensity": "NORMAL",
       "digitGroupSeparator": "COMMA",
+      "legend": {
+        "showKey": false,
+        "style": "TEXT",
+        "strategy": "FIXED",
+        "set": {
+          "id": "Yf6UHoPkd56"
+        }
+      },
       "relativePeriods": {
       },
       "categoryDimensions": [

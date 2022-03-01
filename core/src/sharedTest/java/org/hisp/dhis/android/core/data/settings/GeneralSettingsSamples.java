@@ -44,6 +44,7 @@ public class GeneralSettingsSamples {
                 .matomoID(123)
                 .matomoURL("https://www.matomo.org")
                 .allowScreenCapture(true)
+                .messageOfTheDay("Message of the day")
                 .build();
     }
 }

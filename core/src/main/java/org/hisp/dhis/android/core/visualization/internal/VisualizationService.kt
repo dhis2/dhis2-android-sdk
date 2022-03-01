@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Where
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationAPI36
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -45,4 +46,11 @@ internal interface VisualizationService {
         @Query("filter") @Where uids: Filter<Visualization, String>,
         @Query("paging") paging: Boolean
     ): Single<Payload<Visualization>>
+
+    @GET("visualizations")
+    fun getVisualizations36(
+        @Query("fields") @Which fields: Fields<Visualization>,
+        @Query("filter") @Where uids: Filter<Visualization, String>,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<VisualizationAPI36>>
 }

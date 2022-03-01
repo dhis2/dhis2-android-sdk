@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -36,13 +35,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 
 internal interface APIDownloader {
-    fun <P> downloadPartitionedWithCustomHandling(
-        uids: Set<String>,
-        pageSize: Int,
-        customHandling: Consumer<List<P>>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>
-    ): Single<List<P>>
-
     fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
@@ -50,12 +42,12 @@ internal interface APIDownloader {
         pageDownloader: (Set<String>) -> Single<Payload<P>>
     ): Single<List<P>>
 
-    fun <P> downloadPartitioned(
+    fun <P, O> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-        transform: ((P) -> P)?
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
     ): Single<List<P>>
 
     fun <K, V> downloadPartitionedMap(

@@ -37,8 +37,7 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -83,7 +82,7 @@ class MetadataCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val generalSettingCall: GeneralSettingCall,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+    private val credentialsSecureStore: CredentialsSecureStore
 ) {
 
     companion object {

@@ -33,20 +33,6 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun post_dataValues_warning() {
-        // Given user sets one unsupported type of data value
-        dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_warning.json")
-        provideDataValues("30", "40L")
-
-        // When user sync data in order to upload the data values
-        d2.dataValueModule().dataValues().blockingUpload()
-
-        // Then one data set should marked as WARNING
-        val warnings = d2.dataValueModule().dataValues().bySyncState().eq(State.WARNING).blockingGet()
-        assertThat(warnings.size).isEqualTo(1)
-    }
-
-    @Test
     fun post_dataValues_undetermined_warning() {
         // Given user sets one undetermined data value
         dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_warning.json")

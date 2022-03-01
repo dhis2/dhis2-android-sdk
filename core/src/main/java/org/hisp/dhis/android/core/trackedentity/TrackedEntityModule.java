@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
 public interface TrackedEntityModule {
@@ -48,4 +49,6 @@ public interface TrackedEntityModule {
     TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
 
     TrackedEntityInstanceService trackedEntityInstanceService();
+
+    OwnershipManager ownershipManager();
 }

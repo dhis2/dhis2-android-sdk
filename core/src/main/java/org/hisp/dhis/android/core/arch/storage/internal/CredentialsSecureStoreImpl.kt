@@ -27,46 +27,65 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Singleton
 import net.openid.appauth.AuthState
 
 @Singleton
-class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
-    ObjectKeyValueStore<Credentials> {
+internal class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
+    CredentialsSecureStore {
 
     private var credentials: Credentials? = null
 
     override fun set(credentials: Credentials) {
         this.credentials = credentials
         secureStore.setData(USERNAME_KEY, credentials.username)
+        secureStore.setData(SERVER_URL_KEY, credentials.serverUrl)
         secureStore.setData(PASSWORD_KEY, credentials.password)
         secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
     }
 
+    override fun setServerUrl(serverUrl: String) {
+        secureStore.setData(SERVER_URL_KEY, serverUrl)
+    }
+
     override fun get(): Credentials? {
         if (credentials == null) {
-            val username = secureStore.getData(USERNAME_KEY)
+            credentials = tryGet()
+        }
+        return credentials
+    }
 
-            if (username != null) {
+    @Suppress("TooGenericExceptionCaught")
+    private fun tryGet(): Credentials? {
+        try {
+            val username = secureStore.getData(USERNAME_KEY)
+            val serverUrl = secureStore.getData(SERVER_URL_KEY)
+
+            if (username != null && serverUrl != null) {
                 val password = secureStore.getData(PASSWORD_KEY)
                 val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
                 val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
-                credentials = Credentials(username, password, openIDConnectState)
+                return Credentials(username, serverUrl, password, openIDConnectState)
             }
+        } catch (e: RuntimeException) {
+            remove()
         }
-        return credentials
+        return null
     }
 
     override fun remove() {
         credentials = null
         secureStore.removeData(USERNAME_KEY)
+        secureStore.removeData(SERVER_URL_KEY)
         secureStore.removeData(PASSWORD_KEY)
         secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
     }
 
     companion object {
         private const val USERNAME_KEY = "username"
+        internal const val SERVER_URL_KEY = "serverUrl"
         private const val PASSWORD_KEY = "password"
         private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
     }

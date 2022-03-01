@@ -32,12 +32,11 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 
 @Reusable
 internal class OpenIDConnectLogoutHandler @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+    private val credentialsSecureStore: CredentialsSecureStore
 ) {
 
     private val logOutSubject = PublishSubject.create<Unit>()

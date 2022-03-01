@@ -1,0 +1,6 @@
+{
+  "httpStatus": "Unauthorized",
+  "httpStatusCode": 401,
+  "status": "ERROR",
+  "message": "PROGRAM_ACCESS_CLOSED"
+}

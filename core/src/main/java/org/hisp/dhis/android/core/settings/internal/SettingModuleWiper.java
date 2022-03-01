@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo;
-import org.hisp.dhis.android.core.settings.CompletionSpinnerTableInfo;
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo;
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
 import org.hisp.dhis.android.core.settings.FilterSettingTableInfo;
 import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
@@ -65,7 +65,7 @@ public final class SettingModuleWiper implements ModuleWiper {
         tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(SynchronizationSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(FilterSettingTableInfo.TABLE_INFO);
-        tableWiper.wipeTable(CompletionSpinnerTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(ProgramConfigurationSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(AnalyticsTeiSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(AnalyticsTeiDataElementTableInfo.TABLE_INFO);
         tableWiper.wipeTable(AnalyticsTeiIndicatorTableInfo.TABLE_INFO);

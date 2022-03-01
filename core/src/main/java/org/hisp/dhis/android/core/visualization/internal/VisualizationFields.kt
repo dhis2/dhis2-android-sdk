@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,10 +34,33 @@ import org.hisp.dhis.android.core.visualization.*
 internal object VisualizationFields {
     internal const val CATEGORY_DIMENSIONS = "categoryDimensions"
     internal const val DATA_DIMENSION_ITEMS = "dataDimensionItems"
+    internal const val LEGEND = "legend"
+
+    private const val LEGEND_DISPLAY_STRATEGY = "legendDisplayStrategy"
+    private const val LEGEND_DISPLAY_STYLE = "legendDisplayStyle"
+    private const val LEGEND_SET = "legendSet"
+
     private val fh = FieldsHelper<Visualization>()
     val uid = fh.uid()
 
-    val allFields: Fields<Visualization> =
+    val allFields: Fields<Visualization>
+        get() =
+            commonFields()
+                .fields(
+                    fh.field<VisualizationLegend>(LEGEND)
+                )
+                .build()
+
+    val allFieldsAPI36: Fields<Visualization>
+        get() =
+            commonFields()
+                .fields(
+                    fh.field<String>(LEGEND_DISPLAY_STRATEGY),
+                    fh.field<String>(LEGEND_DISPLAY_STYLE),
+                    fh.nestedFieldWithUid(LEGEND_SET)
+                ).build()
+
+    private fun commonFields(): Fields.Builder<Visualization> =
         Fields.builder<Visualization>()
             .fields(fh.getIdentifiableFields())
             .fields(
@@ -75,5 +98,4 @@ internal object VisualizationFields {
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.ORGANISATION_UNITS),
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
             )
-            .build()
 }

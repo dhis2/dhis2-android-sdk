@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
 internal data class TrackerQueryCommonParams(
+    val uids: List<String>,
     val programs: List<String>,
     val program: String?,
     val startDate: String?,

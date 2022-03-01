@@ -32,8 +32,8 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,12 +85,12 @@ public class DatabaseAdapterFactory {
         createOrOpenDatabase(adapter, databaseName, encrypt, BaseDatabaseOpenHelper.VERSION);
     }
 
-    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration) {
         createOrOpenDatabase(adapter, userConfiguration.databaseName(), userConfiguration.encrypted(),
                 BaseDatabaseOpenHelper.VERSION);
     }
 
-    public void deleteDatabase(DatabaseUserConfiguration userConfiguration) {
+    public void deleteDatabase(DatabaseAccount userConfiguration) {
         context.deleteDatabase(userConfiguration.databaseName());
         if (userConfiguration.encrypted()) {
             encryptedOpenHelpers.remove(userConfiguration.databaseName());

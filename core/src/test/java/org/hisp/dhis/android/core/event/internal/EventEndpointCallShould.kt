@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.junit.AfterClass
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
@@ -51,11 +50,6 @@ class EventEndpointCallShould {
     private val startDateStr = "2021-01-01"
 
     private val databaseAdapter: DatabaseAdapter = mock()
-
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-    }
 
     @Test
     fun realize_request_with_page_filters_when_included_in_query() {
@@ -132,6 +126,7 @@ class EventEndpointCallShould {
             .orgUnit(orgUnit)
             .commonParams(
                 TrackerQueryCommonParams(
+                    listOf(),
                     listOfNotNull(program),
                     program,
                     startDate,

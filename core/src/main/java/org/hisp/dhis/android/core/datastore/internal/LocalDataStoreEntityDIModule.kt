@@ -46,7 +46,7 @@ internal class LocalDataStoreEntityDIModule {
 
     @Provides
     @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<KeyValuePair>> {
+    fun childrenAppenders(): Map<String, ChildrenAppender<KeyValuePair>> {
         return emptyMap()
     }
 }

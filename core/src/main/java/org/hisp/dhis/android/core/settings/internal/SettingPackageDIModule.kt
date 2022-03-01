@@ -43,7 +43,7 @@ import retrofit2.Retrofit
         SynchronizationSettingEntityDIModule::class,
         FilterSettingEntityDIModule::class,
         SystemSettingEntityDIModule::class,
-        CompletionSpinnerEntityDIModule::class
+        ProgramConfigurationSettingEntityDIModule::class
     ]
 )
 internal class SettingPackageDIModule {

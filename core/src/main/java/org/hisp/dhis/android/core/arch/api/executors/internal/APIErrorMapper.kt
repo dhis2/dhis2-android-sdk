@@ -47,6 +47,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 @Reusable
+@Suppress("TooManyFunctions")
 internal class APIErrorMapper @Inject constructor() {
 
     fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
@@ -142,25 +143,20 @@ internal class APIErrorMapper @Inject constructor() {
             .build()
     }
 
-    private fun nonEmptyMessage(message: String?): Boolean {
-        return message != null && message.isNotEmpty()
+    private fun getIfNotEmpty(message: String?): String? {
+        return if (message != null && message.isNotEmpty()) message else null
     }
 
     private fun getServerMessage(response: Response<*>): String {
-        if (nonEmptyMessage(response.message())) {
-            return response.message()
-        }
-        try {
-            val errorBodyString = response.errorBody()!!.string()
-            if (nonEmptyMessage(errorBodyString)) {
-                return errorBodyString
+        val message =
+            try {
+                getIfNotEmpty(response.message())
+                    ?: getIfNotEmpty(response.errorBody()!!.string())
+                    ?: getIfNotEmpty(response.errorBody().toString())
+            } catch (e: IOException) {
+                null
             }
-            if (nonEmptyMessage(response.errorBody().toString())) {
-                return response.errorBody().toString()
-            }
-        } catch (e: IOException) {
-            // IGNORE
-        }
-        return "No server message"
+
+        return message ?: "No server message"
     }
 }

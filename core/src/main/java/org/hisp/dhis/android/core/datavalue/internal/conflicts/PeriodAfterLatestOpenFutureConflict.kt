@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 @Suppress("MagicNumber")
 internal class PeriodAfterLatestOpenFutureConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex("Period: (\\d+) is after latest open future period: (\\d+) for data element: (\\w{11})")

@@ -29,9 +29,8 @@
 plugins {
     id "com.android.library"
     id "kotlin-android"
-    id "kotlin-android-extensions"
     id "kotlin-kapt"
-    //id "io.gitlab.arturbosch.detekt" version "1.18.0"
+    id "io.gitlab.arturbosch.detekt" version "1.18.0"
     id "org.jetbrains.dokka" version "1.4.30" apply false
 }
 
@@ -40,41 +39,41 @@ apply from: project.file("plugins/android-pmd.gradle")
 
 ext {
     configuration = [
-            buildToolsVersion: "29.0.3",
+            buildToolsVersion: "30.0.2",
             minSdkVersion    : 19,
-            targetSdkVersion : 29,
-            versionCode      : 253,
-            versionName      : "1.5.3"
+            targetSdkVersion : 30,
+            versionCode      : 260,
+            versionName      : "1.6.0-SNAPSHOT"
     ]
 
     libraries = [
             // android
-            annotation      : '1.1.0',
+            annotation      : '1.3.0',
             paging          : '2.1.2',
 
             // java
-            apacheCommons   : "3.3.7",
+            apacheCommons   : "3.8.1",
             jackson         : "2.11.2",
             autoValue       : "1.7.4",
             autoValueCursor : "2.0.1",
-            retrofit        : "2.6.4",
+            retrofit        : "2.9.0",
             okHttp          : "3.12.0",
-            dagger          : "2.28.3",
-            rxJava          : "2.2.9",
+            dagger          : "2.39.1",
+            rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.0",
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
-            expressionParser: "1.0.18",
+            expressionParser: "1.0.25",
 
             // test dependencies
-            coreTesting     : "1.1.1",
-            jUnit           : "4.13",
+            coreTesting     : "2.1.0",
+            jUnit           : "4.13.2",
             mockito         : "3.4.6",
             mockitoKotlin   : "2.2.0",
             truth           : "1.1.2",
-            testRunner      : "1.2.0",
+            testRunner      : "1.4.0",
             equalsVerifier  : "3.4.1",
             flipper         : "0.83.0",
             soloader        : "0.10.1",
@@ -82,10 +81,10 @@ ext {
             commonsLogging  : "1.2",
 
             // google
-            safetyNet       : "17.0.0",
+            safetyNet       : "18.0.1",
 
             // open id
-            appauth         : "0.7.1"
+            appauth         : "0.8.1"
     ]
 }
 
@@ -104,6 +103,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
     }
 
     compileOptions {
@@ -162,9 +164,6 @@ dependencies {
     // AndroidX
     api "androidx.annotation:annotation:${libraries.annotation}"
     api "androidx.paging:paging-runtime:${libraries.paging}"
-
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Auto Value
     api "com.google.auto.value:auto-value-annotations:${libraries.autoValue}"
@@ -226,8 +225,8 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
-    //androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    androidTestImplementation "androidx.arch.core:core-testing:${libraries.coreTesting}"
+    androidTestImplementation "com.jraska.livedata:testing-ktx:${libraries.liveDataTesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
@@ -242,6 +241,7 @@ dependencies {
     releaseImplementation "com.facebook.flipper:flipper-noop:${libraries.flipper}"
 
     implementation "net.openid:appauth:${libraries.appauth}"
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")
@@ -250,7 +250,11 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
-//detekt {
-//    config = files("config/detekt.yml")
-//    buildUponDefaultConfig = false
-//}
+detekt {
+    toolVersion = "1.18.0"
+    config = files("config/detekt.yml")
+    parallel = true
+    buildUponDefaultConfig = false
+}
+
+

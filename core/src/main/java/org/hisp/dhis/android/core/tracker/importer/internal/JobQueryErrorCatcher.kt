@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatche
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
 
-class JobQueryErrorCatcher : APICallErrorCatcher {
+internal class JobQueryErrorCatcher : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean = false
 

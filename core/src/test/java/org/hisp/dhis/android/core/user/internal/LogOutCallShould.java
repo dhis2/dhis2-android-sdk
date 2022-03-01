@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -44,16 +49,11 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.observers.TestObserver;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class LogOutCallShould {
 
     @Mock
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
     private UserIdInMemoryStore userIdStore;

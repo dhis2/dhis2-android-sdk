@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.user
 
+import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
-import kotlin.jvm.Throws
 
 interface AccountManager {
     fun getAccounts(): List<DatabaseAccount>

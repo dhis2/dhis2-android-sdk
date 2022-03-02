@@ -168,4 +168,10 @@ object D2Manager {
         testingDatabaseName = null
         testingUsername = null
     }
+
+    @JvmStatic
+    @VisibleForTesting
+    internal fun setD2(d2: D2) {
+        this.d2 = d2
+    }
 }

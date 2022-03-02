@@ -52,12 +52,12 @@ public class UnencryptedDatabaseAdapterShould {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        sqLiteDatabaseAdapter = new UnencryptedDatabaseAdapter(database);
+        sqLiteDatabaseAdapter = new UnencryptedDatabaseAdapter(database, "dbName");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_provide_null_db_open_helper() {
-        new UnencryptedDatabaseAdapter(null);
+        new UnencryptedDatabaseAdapter(null, "dbName");
     }
 
     @Test

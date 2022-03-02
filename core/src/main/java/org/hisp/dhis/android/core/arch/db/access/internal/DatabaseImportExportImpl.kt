@@ -79,7 +79,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
 
             val openHelper = UnencryptedDatabaseOpenHelper(context, TmpDatabase, BaseDatabaseOpenHelper.VERSION)
             val database = openHelper.readableDatabase
-            databaseAdapter = UnencryptedDatabaseAdapter(database)
+            databaseAdapter = UnencryptedDatabaseAdapter(database, openHelper.databaseName)
 
             if (database.version > BaseDatabaseOpenHelper.VERSION) {
                 throw d2ErrorBuilder

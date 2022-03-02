@@ -25,34 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import android.content.Context
+import org.hisp.dhis.android.core.D2Manager
+import java.io.File
 
-import android.content.Context;
+object FileResourceDirectoryHelper {
 
-import java.io.File;
-
-public final class FileResourceDirectoryHelper {
-
-    private FileResourceDirectoryHelper() {}
+    private const val FilesDir = "sdk_resources"
+    private const val CacheDir = "sdk_cache_resources"
 
     /**
-     * This method returns a {@link File} object whose path points to the Sdk resources directory where the Sdk will
+     * This method returns a [File] object whose path points to the Sdk resources directory where the Sdk will
      * save the files associated with the file resources.
      *
      * @param context The application context.
-     * @return A {@link File} object whose path points to the Sdk resources directory.
+     * @return A [File] object whose path points to the Sdk resources directory.
      */
-    public static File getFileResourceDirectory(Context context) {
-        File file = new File(context.getFilesDir(), "sdk_resources");
-        if (!file.exists() && file.mkdirs()) {
-            return file;
-        }
-        return file;
+    @JvmStatic
+    fun getFileResourceDirectory(context: Context): File {
+        val file = File(context.filesDir, "${FilesDir}/${getSubfolderName()}")
+        return if (!file.exists() && file.mkdirs()) {
+            file
+        } else file
     }
 
     /**
-     * This method returns a {@link File} object whose path points to the Sdk cache resources directory. This should be
+     * This method returns a [File] object whose path points to the Sdk cache resources directory. This should be
      * the place where volatile files are stored, such as camera photos or images to be resized. Since the directory
      * is contained in the cache directory, Android may auto-delete the files in the cache directory once the system
      * is about to run out of memory. Third party applications can also delete files from the cache directory.
@@ -61,13 +61,16 @@ public final class FileResourceDirectoryHelper {
      * cache will need to be tidied up from time to time proactively.
      *
      * @param context The application context.
-     * @return A {@link File} object whose path points to the Sdk cache resources directory.
+     * @return A [File] object whose path points to the Sdk cache resources directory.
      */
-    public static File getFileCacheResourceDirectory(Context context) {
-        File file = new File(context.getCacheDir(), "sdk_cache_resources");
-        if (!file.exists() && file.mkdirs()) {
-            return file;
-        }
-        return file;
+    fun getFileCacheResourceDirectory(context: Context): File {
+        val file = File(context.cacheDir, "${CacheDir}/${getSubfolderName()}")
+        return if (!file.exists() && file.mkdirs()) {
+            file
+        } else file
+    }
+
+    private fun getSubfolderName(): String {
+        return D2Manager.getD2().databaseAdapter().databaseName
     }
 }

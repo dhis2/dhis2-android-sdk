@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface LegendSetService {
+internal interface LegendSetService {
     @GET("legendSets")
     fun getLegendSets(
         @Query("fields") @Which fields: Fields<LegendSet>,

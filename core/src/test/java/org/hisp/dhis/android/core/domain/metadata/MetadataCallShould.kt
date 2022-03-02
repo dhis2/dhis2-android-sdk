@@ -106,6 +106,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
             Single.just(emptyList())
         )
+        whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
@@ -117,8 +118,7 @@ class MetadataCallShould : BaseCallShould() {
                 any(),
                 any()
             )
-        )
-            .then(AdditionalAnswers.returnsFirstArg<Any>())
+        ).then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
         metadataCall = MetadataCall(

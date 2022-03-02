@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryModule
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetCall
-import org.hisp.dhis.android.core.legendset.internal.LegendSetService
 import retrofit2.Retrofit
 
 @Module(
@@ -74,12 +71,6 @@ internal class CategoryPackageDIModule {
 
     @Provides
     @Reusable
-    fun legendSetService(retrofit: Retrofit): LegendSetService {
-        return retrofit.create(LegendSetService::class.java)
-    }
-
-    @Provides
-    @Reusable
     fun categoryCall(impl: CategoryCall): UidsCall<Category> {
         return impl
     }
@@ -93,12 +84,6 @@ internal class CategoryPackageDIModule {
     @Provides
     @Reusable
     fun categoryComboCall(impl: CategoryComboCall): UidsCall<CategoryCombo> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun legendSetCall(impl: LegendSetCall): UidsCall<LegendSet> {
         return impl
     }
 

@@ -50,8 +50,9 @@ class LegendSetUidsSeeker @Inject constructor(private val databaseAdapter: Datab
             .generateQuery(ProgramIndicatorLegendSetLinkTableInfo.Columns.LEGEND_SET, tableNames)
             .build()
 
+        val legendSetIdColumnName = VisualizationTableInfo.Columns.LEGEND_SET_ID
         val visualisationLegendSetQuery = MultipleTableQueryBuilder()
-            .generateQuery("legendSetId", listOf(VisualizationTableInfo.TABLE_INFO.name()))
+            .generateQuery(legendSetIdColumnName, listOf(VisualizationTableInfo.TABLE_INFO.name()))
             .build()
 
         val cursor = databaseAdapter.rawQuery(query)

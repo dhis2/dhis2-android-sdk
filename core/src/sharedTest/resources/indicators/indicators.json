@@ -21,29 +21,7 @@
       },
       "legendSets": [
         {
-          "code": "AGE40YINT2",
-          "created": "2017-06-02T11:40:33.452",
-          "lastUpdated": "2017-06-02T11:41:01.999",
-          "name": "Age 40y interval",
-          "id": "rtOkbpGEud4",
-          "displayName": "Age 40y interval",
-          "symbolizer": "color",
-          "legends": [
-            {
-              "id": "bzQkRWHS7lu",
-              "name": "0 - 40",
-              "startValue": 0,
-              "endValue": 40,
-              "color": "#G38026"
-            },
-            {
-              "id": "qEf6QhFVMab",
-              "name": "40 - 999",
-              "startValue": 40,
-              "endValue": 999,
-              "color": "#A6AE5E"
-            }
-          ]
+          "id": "rtOkbpGEud4"
         }
       ]
     }

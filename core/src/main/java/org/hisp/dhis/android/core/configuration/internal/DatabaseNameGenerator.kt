@@ -34,7 +34,7 @@ import javax.inject.Inject
 internal class DatabaseNameGenerator @Inject constructor() {
     fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
         val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db"
+        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + DbSuffix
     }
 
     private fun processServerUrl(serverUrl: String): String {
@@ -47,5 +47,9 @@ internal class DatabaseNameGenerator @Inject constructor() {
             .replace("-+".toRegex(), "-")
             .removePrefix("-")
             .removeSuffix("-")
+    }
+
+    companion object {
+        const val DbSuffix = ".db"
     }
 }

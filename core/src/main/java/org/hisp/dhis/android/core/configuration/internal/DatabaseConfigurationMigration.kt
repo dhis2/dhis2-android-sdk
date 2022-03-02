@@ -28,15 +28,18 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
+import android.os.FileUtils
 import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
+import javax.inject.Inject
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
@@ -50,6 +53,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
 ) {
     @Suppress("TooGenericExceptionCaught")
     fun apply() {
+        var existingVersionCode: Long? = null
         val oldDatabaseExist = context.databaseList().contains(OLD_DBNAME)
 
         if (oldDatabaseExist) {
@@ -76,7 +80,11 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         } else {
             try {
                 try {
-                    databaseConfigurationStore.get()
+                    val configuration = databaseConfigurationStore.get()
+                    if (configuration.versionCode() != BuildConfig.VERSION_CODE) {
+                        configuration.toBuilder().versionCode(BuildConfig.VERSION_CODE).build()
+                        databaseConfigurationStore.set(configuration)
+                    }
                 } catch (e: RuntimeException) {
                     val configuration = tryOldDatabaseConfiguration()
                     databaseConfigurationStore.set(configuration)
@@ -84,6 +92,10 @@ internal class DatabaseConfigurationMigration @Inject constructor(
             } catch (e: RuntimeException) {
                 databaseConfigurationStore.remove()
             }
+        }
+
+        if (existingVersionCode == null) {
+            migrateFileResources()
         }
     }
 
@@ -116,6 +128,25 @@ internal class DatabaseConfigurationMigration @Inject constructor(
     private fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
         val store = ConfigurationStore.create(databaseAdapter)
         return store.selectFirst()?.serverUrl()
+    }
+
+    private fun migrateFileResources() {
+        val configuration = databaseConfigurationStore.get()
+
+        configuration?.let {
+            if (configuration.accounts().size == 1) {
+                val existingAccount = configuration.accounts().first()
+                val existingDbName = existingAccount.databaseName()
+
+                val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+                val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, existingDbName)
+
+                rootResources.listFiles()?.forEach {
+                    it.copyTo(dstResources)
+                    it.delete()
+                }
+            }
+        }
     }
 
     companion object {

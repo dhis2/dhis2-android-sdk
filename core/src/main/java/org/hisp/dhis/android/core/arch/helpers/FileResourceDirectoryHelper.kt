@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
 import org.hisp.dhis.android.core.D2Manager
+import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import java.io.File
 
 object FileResourceDirectoryHelper {
@@ -45,7 +46,16 @@ object FileResourceDirectoryHelper {
      */
     @JvmStatic
     fun getFileResourceDirectory(context: Context): File {
-        val file = File(context.filesDir, "${FilesDir}/${getSubfolderName()}")
+        return getFileResourceDirectory(context, getSubfolderName())
+    }
+
+    internal fun getRootFileResourceDirectory(context: Context): File {
+        return getFileResourceDirectory(context, null)
+    }
+
+    internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
+        val childPath = subfolder?.let { "${FilesDir}/${it}" } ?: FilesDir
+        val file = File(context.filesDir, childPath)
         return if (!file.exists() && file.mkdirs()) {
             file
         } else file
@@ -70,7 +80,12 @@ object FileResourceDirectoryHelper {
         } else file
     }
 
+    internal fun getSubfolderName(databaseName: String): String {
+        return databaseName.removeSuffix(DatabaseNameGenerator.DbSuffix)
+    }
+
     private fun getSubfolderName(): String {
-        return D2Manager.getD2().databaseAdapter().databaseName
+        val dbName = D2Manager.getD2().databaseAdapter().databaseName
+        return getSubfolderName(dbName)
     }
 }

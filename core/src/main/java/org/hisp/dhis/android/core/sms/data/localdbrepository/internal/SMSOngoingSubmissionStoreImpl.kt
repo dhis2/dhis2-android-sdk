@@ -27,13 +27,39 @@
  */
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-internal enum class SMSConfigKey {
-    METADATA_SYNC_DATE,
-    GATEWAY,
-    WAITING_RESULT_TIMEOUT,
-    CONFIRMATION_SENDER,
-    METADATA_CONFIG,
-    MODULE_ENABLED,
-    WAIT_FOR_RESULT,
-    LAST_SUBMISSION_ID
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+
+@Suppress("MagicNumber")
+internal object SMSOngoingSubmissionStore {
+
+        private val BINDER: StatementBinder<SMSOngoingSubmission> = StatementBinder { o, w ->
+            w.bind(1, o.submissionId())
+            w.bind(2, o.type())
+        }
+
+        private val WHERE_UPDATE_BINDER =
+            WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
+                w.bind(3, o.submissionId())
+            }
+
+        private val WHERE_DELETE_BINDER =
+            WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
+                w.bind(1, o.submissionId())
+            }
+
+        @JvmStatic
+        fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSOngoingSubmission> {
+            return StoreFactory.objectWithoutUidStore(
+                databaseAdapter,
+                SMSOngoingSubmissionTableInfo.TABLE_INFO,
+                BINDER,
+                WHERE_UPDATE_BINDER,
+                WHERE_DELETE_BINDER
+            ) { cursor -> SMSOngoingSubmission.create(cursor) }
+        }
 }

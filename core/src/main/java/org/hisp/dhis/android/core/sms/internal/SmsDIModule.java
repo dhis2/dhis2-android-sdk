@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigS
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl;
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataId;
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStore;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmission;
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore;
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService;
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl;
@@ -86,6 +88,12 @@ public class SmsDIModule {
     @Reusable
     SMSConfigStore smsConfigStore(DatabaseAdapter databaseAdapter) {
         return SMSConfigStoreImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<SMSOngoingSubmission> smsOngoingSubmissionStore(DatabaseAdapter databaseAdapter) {
+        return SMSOngoingSubmissionStore.create(databaseAdapter);
     }
 
     @Provides

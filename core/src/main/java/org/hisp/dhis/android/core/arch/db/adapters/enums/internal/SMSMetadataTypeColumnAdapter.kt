@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
 import org.hisp.dhis.smscompression.SMSConsts
 
-class SMSMetadataTypeColumnAdapter : EnumColumnAdapter<SMSConsts.MetadataType>() {
+internal class SMSMetadataTypeColumnAdapter : EnumColumnAdapter<SMSConsts.MetadataType>() {
     override fun getEnumClass(): Class<SMSConsts.MetadataType> {
         return SMSConsts.MetadataType::class.java
     }

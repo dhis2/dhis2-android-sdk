@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.legendset.Legend;
@@ -39,6 +40,8 @@ public final class LegendSetFields {
     public final static String LEGENDS = "legends";
 
     private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+
+    public static final Field<LegendSet, String> uid = fh.uid();
 
     public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
             .fields(fh.getIdentifiableFields())

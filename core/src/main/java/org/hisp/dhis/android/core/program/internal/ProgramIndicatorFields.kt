@@ -58,6 +58,6 @@ object ProgramIndicatorFields {
             fh.field<AnalyticsType>(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE),
             fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
                 .with(AnalyticsPeriodBoundaryFields.allFields),
-            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.allFields)
+            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid)
         ).build()
 }

@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.legendset.LegendSet
 
 internal class IndicatorLegendSetChildrenAppender(
-    private val linkChildStore: LinkChildStore<Indicator, LegendSet>
+    private val linkChildStore: ObjectWithUidChildStore<Indicator>
 ) : ChildrenAppender<Indicator>() {
 
     override fun appendChildren(indicator: Indicator): Indicator {
@@ -50,13 +48,11 @@ internal class IndicatorLegendSetChildrenAppender(
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Indicator> {
             return IndicatorLegendSetChildrenAppender(
-                StoreFactory.linkChildStore(
+                StoreFactory.objectWithUidChildStore(
                     databaseAdapter,
                     IndicatorLegendSetLinkTableInfo.TABLE_INFO,
                     IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
-                ) { cursor: Cursor? ->
-                    LegendSet.create(cursor)
-                }
+                )
             )
         }
     }

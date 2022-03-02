@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 
 @Suppress("MagicNumber")
@@ -63,21 +64,21 @@ internal class SMSConfigStoreImpl private constructor(
         return selectOneWhere(whereClause)?.value()
     }
 
-    override fun set(key: SMSConfigKey, value: String) {
+    override fun set(key: SMSConfigKey, value: String): HandleAction {
         val keyValuePair = KeyValuePair.builder()
             .key(key.name)
             .value(value)
             .build()
 
-        return updateWhere(keyValuePair)
+        return updateOrInsertWhere(keyValuePair)
     }
 
-    override fun delete(key: SMSConfigKey): Boolean {
+    override fun delete(key: SMSConfigKey) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(SMSConfigTableInfo.Columns.KEY, key.name)
             .build()
 
-        return deleteWhere(whereClause)
+        return deleteWhereIfExists(whereClause)
     }
 
     companion object {

@@ -45,17 +45,19 @@ internal object SMSMetadataIdStore {
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder<SMSMetadataId> { o: SMSMetadataId, w: StatementWrapper ->
         w.bind(3, o.type())
+        w.bind(4, o.uid())
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder<SMSMetadataId> { o: SMSMetadataId, w: StatementWrapper ->
-        w.bind(1, o.uid())
+        w.bind(1, o.type())
+        w.bind(2, o.uid())
     }
 
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSMetadataId> {
         return objectWithoutUidStore(
             databaseAdapter,
-            SMSMetadataIdTableInfo .TABLE_INFO,
+            SMSMetadataIdTableInfo.TABLE_INFO,
             BINDER,
             WHERE_UPDATE_BINDER,
             WHERE_DELETE_BINDER

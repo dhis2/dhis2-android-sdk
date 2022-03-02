@@ -46,7 +46,6 @@ class SMSMetadataIdStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegra
     override fun buildObjectToUpdate(): SMSMetadataId {
         return SMSMetadataIdSample.get
             .toBuilder()
-            .uid("uid2")
             .build()
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Manager;
 import org.hisp.dhis.android.core.MockIntegrationTestObjects;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -45,6 +46,7 @@ public abstract class BaseMockIntegrationTest {
         MockIntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = MockIntegrationTestObjectsFactory.getObjects(content);
         objects = tuple.objects;
         d2 = objects.d2;
+        D2Manager.setD2$core_debug(d2);
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
         ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint());

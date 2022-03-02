@@ -42,12 +42,14 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 class EncryptedDatabaseAdapter implements DatabaseAdapter {
 
     private final SQLiteDatabase database;
+    private final String databaseName;
 
-    EncryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
+    EncryptedDatabaseAdapter(@NonNull SQLiteDatabase database, @NonNull String databaseName) {
         if (database == null) {
             throw new IllegalArgumentException("database == null");
         }
         this.database = database;
+        this.databaseName = databaseName;
     }
 
     @Override
@@ -139,5 +141,10 @@ class EncryptedDatabaseAdapter implements DatabaseAdapter {
     @Override
     public void close() {
         database.close();
+    }
+
+    @Override
+    public String getDatabaseName() {
+        return databaseName;
     }
 }

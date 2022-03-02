@@ -143,6 +143,11 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
+    public String getDatabaseName() {
+        return getAdapter().getDatabaseName();
+    }
+
+    @Override
     public boolean isReady() {
         return adapter != null;
     }

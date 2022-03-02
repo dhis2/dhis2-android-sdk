@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(D2JunitRunner::class)
 class DatabaseConfigurationMigrationIntegrationShould {
@@ -148,6 +150,9 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(oldDatabaseConfiguration)
 
+        val rootSdkResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        File(rootSdkResources, "sample.txt").createNewFile()
+
         migration.apply()
 
         val migrated = databasesConfigurationStore.get()
@@ -158,6 +163,13 @@ class DatabaseConfigurationMigrationIntegrationShould {
             assertThat(it.serverUrl()).isEqualTo(serverUrl)
             assertThat(it.databaseName()).isEqualTo(newName)
         }
+
+        assertThat(rootSdkResources.listFiles()?.filter { it.isFile }).isEmpty()
+        assertThat(rootSdkResources.listFiles()?.filter { it.isDirectory }?.size).isEqualTo(1)
+
+        val directoryFiles = rootSdkResources.listFiles()?.find { it.isDirectory }?.listFiles()
+        assertThat(directoryFiles?.size).isEqualTo(1)
+        assertThat(directoryFiles?.first()?.name).isEqualTo("sample.txt")
     }
 
     @Test

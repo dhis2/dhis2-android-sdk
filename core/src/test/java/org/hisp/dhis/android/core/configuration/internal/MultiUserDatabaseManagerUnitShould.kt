@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +46,6 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration> = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseExport: DatabaseExport = mock()
-    private val localDbRepository: LocalDbRepository = mock()
     private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
 
     private val username = "username"
@@ -88,7 +86,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         super.setUp()
         manager = MultiUserDatabaseManager(
             context, databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-            databaseAdapterFactory, databaseExport, localDbRepository
+            databaseAdapterFactory, databaseExport
         )
     }
 
@@ -101,7 +99,6 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted)
-        verify(localDbRepository).blockingClear()
     }
 
     @Test
@@ -116,14 +113,12 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted)
         verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
         verify(databaseAdapterFactory).deleteDatabase(userConfigurationUnencrypted)
-        verifyNoMoreInteractions(localDbRepository)
     }
 
     @Test
     fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() {
         manager.loadExistingKeepingEncryption(serverUrl, username)
         verifyNoMoreInteractions(databaseAdapterFactory)
-        verifyNoMoreInteractions(localDbRepository)
     }
 
     @Test
@@ -135,7 +130,6 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         manager.loadExistingKeepingEncryption(serverUrl, username)
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted)
-        verifyNoMoreInteractions(localDbRepository)
     }
 
     @Test
@@ -164,7 +158,6 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
         verify(databaseConfigurationSecureStore, times(2)).set(any())
         verify(databaseAdapterFactory, times(4)).deleteDatabase(any())
-        verify(localDbRepository, times(1)).blockingClear()
         verify(databaseAdapterFactory, times(1)).createOrOpenDatabase(any(), any())
     }
 

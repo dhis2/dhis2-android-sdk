@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
@@ -58,8 +59,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.smscompression.models.SMSMetadata
-import javax.inject.Inject
 
+@SuppressWarnings("LongParameterList", "TooManyFunctions")
 internal class LocalDbRepositoryImpl @Inject constructor(
     private val userRepository: AuthenticatedUserObjectRepository,
     private val trackedEntityModule: TrackedEntityModule,
@@ -96,7 +97,9 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     }
 
     override fun getWaitingResultTimeout(): Single<Int> {
-        return Single.fromCallable { smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: 120 }
+        return Single.fromCallable {
+            smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: DefaultWaitTimeout
+        }
     }
 
     override fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
@@ -166,11 +169,11 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     private fun getEventsForEnrollment(enrollmentUid: String): Single<List<Event>> {
         return eventModule.events()
             .byEnrollmentUid().eq(enrollmentUid)
-            .bySyncState().`in`(*uploadableStatesIncludingError())
+            .bySyncState().`in`(uploadableStatesIncludingError().toList())
             .withTrackedEntityDataValues()
             .get()
-            .flatMapObservable { source: List<Event?>? -> Observable.fromIterable(source) }
-            .flatMapSingle { event: Event? -> fileResourceCleaner.removeFileDataValues(event) }
+            .flatMapObservable { source: List<Event> -> Observable.fromIterable(source) }
+            .flatMapSingle { event: Event -> fileResourceCleaner.removeFileDataValues(event) }
             .toList()
     }
 
@@ -265,8 +268,10 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     }
 
     override fun getDataValueSet(
-        dataset: String, orgUnit: String,
-        period: String, attributeOptionComboUid: String
+        dataset: String,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String
     ): Single<SMSDataValueSet> {
         return dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
             .map { values: List<DataValue?>? ->
@@ -279,8 +284,10 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     }
 
     private fun isDataValueSetCompleted(
-        dataset: String, orgUnit: String,
-        period: String, attributeOptionComboUid: String
+        dataset: String,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String
     ): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dataset)
@@ -316,15 +323,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
         return Single.fromCallable { relationshipStore.selectByUid(relationshipUid) }
     }
 
-    // TODO Review if necessary
-    override fun clear(): Completable {
-        return Completable.fromCallable {
-            smsConfigStore.delete()
-            metadataIdsStore.clear()
-        }
-    }
-
-    override fun blockingClear() {
-        clear().blockingAwait()
+    companion object {
+        const val DefaultWaitTimeout = 120
     }
 }

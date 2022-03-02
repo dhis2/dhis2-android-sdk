@@ -37,29 +37,29 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 @Suppress("MagicNumber")
 internal object SMSOngoingSubmissionStore {
 
-        private val BINDER: StatementBinder<SMSOngoingSubmission> = StatementBinder { o, w ->
+    private val BINDER: StatementBinder<SMSOngoingSubmission> = StatementBinder { o, w ->
+        w.bind(1, o.submissionId())
+        w.bind(2, o.type())
+    }
+
+    private val WHERE_UPDATE_BINDER =
+        WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
+            w.bind(3, o.submissionId())
+        }
+
+    private val WHERE_DELETE_BINDER =
+        WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
             w.bind(1, o.submissionId())
-            w.bind(2, o.type())
         }
 
-        private val WHERE_UPDATE_BINDER =
-            WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
-                w.bind(3, o.submissionId())
-            }
-
-        private val WHERE_DELETE_BINDER =
-            WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
-                w.bind(1, o.submissionId())
-            }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSOngoingSubmission> {
-            return StoreFactory.objectWithoutUidStore(
-                databaseAdapter,
-                SMSOngoingSubmissionTableInfo.TABLE_INFO,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                WHERE_DELETE_BINDER
-            ) { cursor -> SMSOngoingSubmission.create(cursor) }
-        }
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSOngoingSubmission> {
+        return StoreFactory.objectWithoutUidStore(
+            databaseAdapter,
+            SMSOngoingSubmissionTableInfo.TABLE_INFO,
+            BINDER,
+            WHERE_UPDATE_BINDER,
+            WHERE_DELETE_BINDER
+        ) { cursor -> SMSOngoingSubmission.create(cursor) }
+    }
 }

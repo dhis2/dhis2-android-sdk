@@ -54,7 +54,8 @@ internal class SMSConfigStoreImpl private constructor(
     whereUpdateBinder,
     whereDeleteBinder,
     objectFactory
-), SMSConfigStore {
+),
+    SMSConfigStore {
 
     override fun get(key: SMSConfigKey): String? {
         val whereClause = WhereClauseBuilder()

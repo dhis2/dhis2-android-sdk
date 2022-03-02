@@ -28,11 +28,14 @@
 
 package org.hisp.dhis.android.core.legendset.internal;
 
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetModule;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module(includes = {
         LegendEntityDIModule.class,
@@ -45,5 +48,17 @@ public final class LegendPackageDIModule {
     @Reusable
     LegendSetModule module(LegendSetModuleImpl impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCall<LegendSet> legendSetCall(LegendSetCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    LegendSetService legendSetService(Retrofit retrofit) {
+        return retrofit.create(LegendSetService.class);
     }
 }

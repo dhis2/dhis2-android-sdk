@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import android.content.Context
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import javax.inject.Inject
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
@@ -35,7 +37,8 @@ import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable
 internal class FileResourceModuleWiper @Inject constructor(
-    private val tableWiper: TableWiper
+    private val tableWiper: TableWiper,
+    private val context: Context
 ) : ModuleWiper {
 
     override fun wipeMetadata() {
@@ -44,5 +47,6 @@ internal class FileResourceModuleWiper @Inject constructor(
 
     override fun wipeData() {
         tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO)
+        FileResourceDirectoryHelper.getFileResourceDirectory(context).deleteRecursively()
     }
 }

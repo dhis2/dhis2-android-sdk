@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.user.internal
 
+import android.content.Context
 import dagger.Reusable
 import javax.inject.Inject
 import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -49,7 +51,8 @@ internal class AccountManagerImpl @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
-    private val logOutCall: LogOutCall
+    private val logOutCall: LogOutCall,
+    private val context: Context
 ) : AccountManager {
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts() ?: emptyList()
@@ -83,6 +86,9 @@ internal class AccountManagerImpl @Inject constructor(
             )
             val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
             databasesConfigurationStore.set(updatedConfiguration)
+
+            val resourcesName = FileResourceDirectoryHelper.getSubfolderName(loggedAccount.databaseName())
+            FileResourceDirectoryHelper.getFileResourceDirectory(context, resourcesName).deleteRecursively()
             databaseAdapterFactory.deleteDatabase(loggedAccount)
         }
     }

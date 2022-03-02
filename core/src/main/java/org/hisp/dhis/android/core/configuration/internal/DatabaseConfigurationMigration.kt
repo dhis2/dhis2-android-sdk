@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
+import java.io.File
 import javax.inject.Inject
 
 @Reusable
@@ -136,15 +137,14 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         configuration?.let {
             if (configuration.accounts().size == 1) {
                 val existingAccount = configuration.accounts().first()
-                val existingDbName = existingAccount.databaseName()
+                val existingDbName = FileResourceDirectoryHelper.getSubfolderName(existingAccount.databaseName())
 
                 val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
                 val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, existingDbName)
 
-                rootResources.listFiles()?.forEach {
-                    it.copyTo(dstResources)
-                    it.delete()
-                }
+                rootResources.listFiles()
+                    ?.filter { it.isFile }
+                    ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
             }
         }
     }

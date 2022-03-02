@@ -92,6 +92,7 @@ public class Dhis2MockServer {
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
     private static final String EVENTS_JSON = "event/events.json";
+    private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
@@ -256,6 +257,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
+                } else if (path.startsWith("/api/legendSets?")) {
+                    return createMockResponse(LEGEND_SETS_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else {
@@ -319,6 +322,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(VISUALIZATIONS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
+        enqueueMockResponse(LEGEND_SETS_JSON);
     }
 
     private MockResponse createMockResponse(String fileName) {

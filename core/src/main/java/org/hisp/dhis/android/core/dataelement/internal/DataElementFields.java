@@ -75,7 +75,7 @@ public final class DataElementFields {
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
                             .with(AccessFields.read),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
             ).build();
 

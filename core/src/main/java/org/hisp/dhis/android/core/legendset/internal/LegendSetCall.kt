@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,30 +28,28 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import io.reactivex.Single
+import javax.inject.Inject
+import kotlin.String
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-@Module
-internal class IndicatorLegendSetEntityDIModule {
-
-    @Provides
-    @Reusable
-    internal fun store(databaseAdapter: DatabaseAdapter): LinkStore<IndicatorLegendSetLink> {
-        return IndicatorLegendSetLinkStore.create(databaseAdapter)
+@Reusable
+internal class LegendSetCall @Inject constructor(
+    private val service: LegendSetService,
+    private val handler: Handler<LegendSet>,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<LegendSet> {
+    override fun download(uids: Set<String>): Single<List<LegendSet>> {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
+            service.getLegendSets(LegendSetFields.allFields, LegendSetFields.uid.`in`(partitionUids), false)
+        }
     }
 
-    @Provides
-    @Reusable
-    internal fun handler(
-        store: LinkStore<IndicatorLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

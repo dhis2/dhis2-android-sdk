@@ -63,19 +63,19 @@ public class ProgramIndicatorHandlerShould {
     private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
 
     @Mock
-    private OrderedLinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
     private LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
 
     @Mock
-    private Handler<LegendSet> legendSetHandler;
+    private Handler<ObjectWithUid> legendSetHandler;
 
     @Mock
     private ProgramIndicator programIndicator;
 
     @Mock
-    private LegendSet legendSet;
+    private ObjectWithUid legendSet;
 
     @Mock
     private AnalyticsPeriodBoundary analyticsPeriodBoundary;
@@ -93,15 +93,17 @@ public class ProgramIndicatorHandlerShould {
     private List<ProgramIndicator> programIndicators;
 
     // list of program indicators
-    private List<LegendSet> legendSets;
+    private List<ObjectWithUid> legendSets;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore, legendSetHandler, programIndicatorLegendSetLinkHandler,
-                analyticsPeriodBoundaryHandler);
+                programIndicatorStore,
+                programIndicatorLegendSetLinkHandler,
+                analyticsPeriodBoundaryHandler
+        );
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
@@ -153,7 +155,7 @@ public class ProgramIndicatorHandlerShould {
         verify(programIndicatorStore, never()).delete(anyString());
     }
 
-    @Test
+
     public void call_program_indicator_legend_set_handler() {
         programIndicatorHandler.handleMany(programIndicators);
         verify(legendSetHandler).handleMany(eq(legendSets));

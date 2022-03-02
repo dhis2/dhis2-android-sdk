@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,30 +28,20 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import io.reactivex.Completable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
-@Module
-internal class IndicatorLegendSetEntityDIModule {
-
-    @Provides
-    @Reusable
-    internal fun store(databaseAdapter: DatabaseAdapter): LinkStore<IndicatorLegendSetLink> {
-        return IndicatorLegendSetLinkStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    internal fun handler(
-        store: LinkStore<IndicatorLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
+@Reusable
+class LegendSetModuleDownloader @Inject internal constructor(
+    private val legendSetUidsSeeker: LegendSetUidsSeeker,
+    private val legendSetCall: LegendSetCall
+) : UntypedModuleDownloader {
+    override fun downloadMetadata(): Completable {
+        return Single.fromCallable { legendSetUidsSeeker.seekUids() }
+            .flatMap { legendSetCall.download(it) }
+            .ignoreElement()
     }
 }

@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
-import javax.inject.Inject
 
 @Reusable
 internal class MetadataIdsStore @Inject constructor(
@@ -86,19 +86,19 @@ internal class MetadataIdsStore @Inject constructor(
                 }
                 val metadataIds =
                     buildFor(it, SMSConsts.MetadataType.USER) +
-                            buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
-                            buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
-                            buildFor(it, SMSConsts.MetadataType.PROGRAM) +
-                            buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
-                            buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
-                            buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
-                            buildFor(it, SMSConsts.MetadataType.DATASET) +
-                            buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
-                            buildFor(it, SMSConsts.MetadataType.EVENT) +
-                            buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
-                            buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
-                            buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
-                            buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
+                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
+                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
+                        buildFor(it, SMSConsts.MetadataType.PROGRAM) +
+                        buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
+                        buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
+                        buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
+                        buildFor(it, SMSConsts.MetadataType.DATASET) +
+                        buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
+                        buildFor(it, SMSConsts.MetadataType.EVENT) +
+                        buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
+                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
+                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
+                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
 
                 smsMetadataIdsStore.delete()
                 metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }

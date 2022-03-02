@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 
 @Reusable
 internal class MultiUserDatabaseManager @Inject internal constructor(
@@ -46,8 +45,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val configurationHelper: DatabaseConfigurationHelper,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val databaseExport: DatabaseExport,
-    private val localDbRepository: LocalDbRepository
+    private val databaseExport: DatabaseExport
 ) {
     fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
@@ -97,7 +95,6 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         }
 
         val userConfiguration = addNewAccountInternal(serverUrl, username, encrypt)
-        localDbRepository.blockingClear()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
     }
 

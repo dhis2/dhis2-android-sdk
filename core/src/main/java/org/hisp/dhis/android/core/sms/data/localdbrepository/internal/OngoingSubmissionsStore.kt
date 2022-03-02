@@ -32,12 +32,11 @@ import android.util.Pair
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.OngoingSubmissionsStore
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
-import javax.inject.Inject
 
 @Reusable
 internal class OngoingSubmissionsStore @Inject constructor(
@@ -59,6 +58,7 @@ internal class OngoingSubmissionsStore @Inject constructor(
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     fun addOngoingSubmission(id: Int?, type: SubmissionType?): Completable {
         if (id == null || id < 0 || id > 255) {
             return Completable.error(IllegalArgumentException("Wrong submission id"))
@@ -112,6 +112,7 @@ internal class OngoingSubmissionsStore @Inject constructor(
         smsConfigStore.set(SMSConfigKey.LAST_SUBMISSION_ID, id.toString())
     }
 
+    @SuppressWarnings("MagicNumber")
     fun generateNextSubmissionId(): Single<Int> {
         return Single.zip<Map<Int, SubmissionType>, Int, Pair<Map<Int, SubmissionType>, Int>>(
             getOngoingSubmissions(),

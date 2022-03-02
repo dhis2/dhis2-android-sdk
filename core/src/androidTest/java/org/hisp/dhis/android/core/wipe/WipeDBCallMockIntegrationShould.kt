@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.wipe
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
+import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
 import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
@@ -41,6 +42,7 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
@@ -51,6 +53,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
     @Test
     fun have_empty_database_when_wipe_db_after_sync_data() {
         givenAFreshLoginInDatabase()
+        activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
         givenOthersInDatabase()
@@ -70,6 +73,10 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         } finally {
             d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
         }
+    }
+
+    private fun activateSMSModule() {
+        d2.smsModule().configCase().setModuleEnabled(true).blockingAwait()
     }
 
     private fun givenAMetadataInDatabase() {
@@ -107,5 +114,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
                 .build()
         )
         ProgramTempOwnerStore.create(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
+        SMSConfigStoreImpl.create(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
     }
 }

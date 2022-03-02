@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples.keyValuePairSample
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SMSConfigStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<KeyValuePair>(
-    create(TestDatabaseAdapterFactory.get()),
+    SMSConfigStoreImpl.create(TestDatabaseAdapterFactory.get()),
     SMSConfigTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

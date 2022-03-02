@@ -57,7 +57,8 @@ internal object SMSMetadataIdTableInfo {
         override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                TYPE
+                TYPE,
+                UID
             )
         }
 

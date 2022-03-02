@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 
 internal interface SMSConfigStore : ObjectWithoutUidStore<KeyValuePair> {
     fun get(key: SMSConfigKey): String?
-    fun set(key: SMSConfigKey, value: String)
-    fun delete(key: SMSConfigKey): Boolean
+    fun set(key: SMSConfigKey, value: String): HandleAction
+    fun delete(key: SMSConfigKey)
 }

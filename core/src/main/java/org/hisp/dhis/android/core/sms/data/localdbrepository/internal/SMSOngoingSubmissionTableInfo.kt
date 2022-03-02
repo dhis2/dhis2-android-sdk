@@ -25,33 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.sms.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-@Reusable
-class SMSModuleWiper @Inject internal constructor(
-    private val localDbRepository: LocalDbRepository,
-    private val tableWiper: TableWiper
-) : ModuleWiper {
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            SMSMetadataIdTableInfo.TABLE_INFO,
-            SMSConfigTableInfo.TABLE_INFO,
-            SMSOngoingSubmissionTableInfo.TABLE_INFO
-        )
-        localDbRepository.clear().blockingAwait()
+internal object SMSOngoingSubmissionTableInfo {
+
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "SMSOngoingSubmission"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    override fun wipeData() {
-        // No data to wipe
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                SUBMISSION_ID,
+                TYPE
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                SUBMISSION_ID
+            )
+        }
+
+        companion object {
+            const val SUBMISSION_ID = "submissionId"
+            const val TYPE = "type"
+        }
     }
 }

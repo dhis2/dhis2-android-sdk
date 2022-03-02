@@ -25,33 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.sms.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
-@Reusable
-class SMSModuleWiper @Inject internal constructor(
-    private val localDbRepository: LocalDbRepository,
-    private val tableWiper: TableWiper
-) : ModuleWiper {
+import android.database.Cursor;
 
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            SMSMetadataIdTableInfo.TABLE_INFO,
-            SMSConfigTableInfo.TABLE_INFO,
-            SMSOngoingSubmissionTableInfo.TABLE_INFO
-        )
-        localDbRepository.clear().blockingAwait()
+import androidx.annotation.NonNull;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SMSOngoingSubmissionColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+
+@AutoValue
+public abstract class SMSOngoingSubmission implements CoreObject {
+
+    @NonNull
+    public abstract Integer submissionId();
+
+    @NonNull
+    @ColumnAdapter(SMSOngoingSubmissionColumnAdapter.class)
+    public abstract SubmissionType type();
+
+    public static Builder builder() {
+        return new $AutoValue_SMSOngoingSubmission.Builder();
     }
 
-    override fun wipeData() {
-        // No data to wipe
+    public static SMSOngoingSubmission create(Cursor cursor) {
+        return $AutoValue_SMSOngoingSubmission.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder submissionId(Integer submissionId);
+
+        public abstract Builder type(SubmissionType type);
+
+        public abstract SMSOngoingSubmission build();
     }
 }

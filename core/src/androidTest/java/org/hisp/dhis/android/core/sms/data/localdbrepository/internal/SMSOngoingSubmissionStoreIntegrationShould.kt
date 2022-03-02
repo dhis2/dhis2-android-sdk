@@ -25,33 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.sms.internal
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Reusable
-class SMSModuleWiper @Inject internal constructor(
-    private val localDbRepository: LocalDbRepository,
-    private val tableWiper: TableWiper
-) : ModuleWiper {
-
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            SMSMetadataIdTableInfo.TABLE_INFO,
-            SMSConfigTableInfo.TABLE_INFO,
-            SMSOngoingSubmissionTableInfo.TABLE_INFO
-        )
-        localDbRepository.clear().blockingAwait()
+@RunWith(D2JunitRunner::class)
+class SMSOngoingSubmissionStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSOngoingSubmission>(
+    SMSOngoingSubmissionStore.create(TestDatabaseAdapterFactory.get()),
+    SMSOngoingSubmissionTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): SMSOngoingSubmission {
+        return SMSOngoingSubmissionSample.get
     }
 
-    override fun wipeData() {
-        // No data to wipe
+    override fun buildObjectToUpdate(): SMSOngoingSubmission {
+        return SMSOngoingSubmissionSample.get
+            .toBuilder()
+            .type(SubmissionType.ENROLLMENT)
+            .build()
     }
 }

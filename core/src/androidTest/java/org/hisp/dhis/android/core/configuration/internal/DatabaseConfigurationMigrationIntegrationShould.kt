@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(D2JunitRunner::class)
 class DatabaseConfigurationMigrationIntegrationShould {

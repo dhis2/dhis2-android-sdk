@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
+import java.io.File
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
-import java.io.File
 
 object FileResourceDirectoryHelper {
 
-    private const val FilesDir = "sdk_resources"
-    private const val CacheDir = "sdk_cache_resources"
+    internal const val FilesDir = "sdk_resources"
+    internal const val CacheDir = "sdk_cache_resources"
 
     /**
      * This method returns a [File] object whose path points to the Sdk resources directory where the Sdk will
@@ -54,7 +54,7 @@ object FileResourceDirectoryHelper {
     }
 
     internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
-        val childPath = subfolder?.let { "${FilesDir}/${it}" } ?: FilesDir
+        val childPath = subfolder?.let { "$FilesDir/$it" } ?: FilesDir
         val file = File(context.filesDir, childPath)
         return if (!file.exists() && file.mkdirs()) {
             file
@@ -74,7 +74,7 @@ object FileResourceDirectoryHelper {
      * @return A [File] object whose path points to the Sdk cache resources directory.
      */
     fun getFileCacheResourceDirectory(context: Context): File {
-        val file = File(context.cacheDir, "${CacheDir}/${getSubfolderName()}")
+        val file = File(context.cacheDir, "$CacheDir/${getSubfolderName()}")
         return if (!file.exists() && file.mkdirs()) {
             file
         } else file

@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper

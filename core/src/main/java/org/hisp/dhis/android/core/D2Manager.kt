@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
  * singleton across the application.
  */
+@Suppress("TooManyFunctions")
 object D2Manager {
     private var d2: D2? = null
     private var isTestMode = false

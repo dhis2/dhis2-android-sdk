@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.helpers
 import android.content.Context
 import java.io.File
 import org.hisp.dhis.android.core.D2Manager
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 
 object FileResourceDirectoryHelper {
@@ -59,6 +60,11 @@ object FileResourceDirectoryHelper {
         return if (!file.exists() && file.mkdirs()) {
             file
         } else file
+    }
+
+    internal fun deleteFileResourceDirectory(context: Context, databaseAccount: DatabaseAccount) {
+        val resourcesName = getSubfolderName(databaseAccount.databaseName())
+        getFileResourceDirectory(context, resourcesName).deleteRecursively()
     }
 
     /**

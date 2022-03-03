@@ -146,7 +146,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withLegendSets().one().blockingGet();
         assertThat(programIndicators.legendSets().size()).isEqualTo(1);
-        assertThat(programIndicators.legendSets().get(0).uid()).isEqualTo("rtOkbpGEud4");
+        assertThat(programIndicators.legendSets().get(0).uid()).isEqualTo("TiOkbpGEud4");
     }
 
     @Test

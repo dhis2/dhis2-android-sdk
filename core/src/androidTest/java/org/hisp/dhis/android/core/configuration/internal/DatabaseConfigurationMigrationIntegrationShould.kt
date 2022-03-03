@@ -84,6 +84,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
             context, databasesConfigurationStore,
             credentialsSecureStore, insecureStore, nameGenerator, renamer, databaseAdapterFactory
         )
+
+        FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
     }
 
     @Test

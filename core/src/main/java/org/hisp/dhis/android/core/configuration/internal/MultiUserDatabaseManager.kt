@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.util.Log
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
-import javax.inject.Inject
 
 @Reusable
 internal class MultiUserDatabaseManager @Inject internal constructor(

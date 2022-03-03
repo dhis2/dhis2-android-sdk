@@ -62,6 +62,10 @@ object FileResourceDirectoryHelper {
         } else file
     }
 
+    internal fun deleteRootFileResourceDirectory(context: Context) {
+        getRootFileResourceDirectory(context).deleteRecursively()
+    }
+
     internal fun deleteFileResourceDirectory(context: Context, databaseAccount: DatabaseAccount) {
         val resourcesName = getSubfolderName(databaseAccount.databaseName())
         getFileResourceDirectory(context, resourcesName).deleteRecursively()

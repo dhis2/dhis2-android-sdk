@@ -85,7 +85,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void find_by_legend_set() {
         List<Legend> legends = d2.legendSetModule().legends()
-                .byLegendSet().eq("TiOkbpGEud4")
+                .byLegendSet().eq("QiOkbpGEud4")
                 .blockingGet();
         assertThat(legends.size()).isEqualTo(2);
     }

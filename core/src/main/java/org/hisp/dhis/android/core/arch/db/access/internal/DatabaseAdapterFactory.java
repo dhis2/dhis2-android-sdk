@@ -106,11 +106,11 @@ public class DatabaseAdapterFactory {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
             String password = passwordManager.getPassword(databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password), openHelper.getDatabaseName());
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
+            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase(), openHelper.getDatabaseName());
         }
     }
 

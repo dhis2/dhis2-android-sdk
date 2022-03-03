@@ -151,4 +151,6 @@ public interface DatabaseAdapter {
     boolean isReady();
 
     void close();
+
+    String getDatabaseName();
 }

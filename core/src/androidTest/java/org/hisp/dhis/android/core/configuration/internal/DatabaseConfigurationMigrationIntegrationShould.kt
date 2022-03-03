@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
@@ -82,6 +84,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
             context, databasesConfigurationStore,
             credentialsSecureStore, insecureStore, nameGenerator, renamer, databaseAdapterFactory
         )
+
+        FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
     }
 
     @Test
@@ -148,6 +152,9 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(oldDatabaseConfiguration)
 
+        val rootSdkResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        File(rootSdkResources, "sample.txt").createNewFile()
+
         migration.apply()
 
         val migrated = databasesConfigurationStore.get()
@@ -158,6 +165,13 @@ class DatabaseConfigurationMigrationIntegrationShould {
             assertThat(it.serverUrl()).isEqualTo(serverUrl)
             assertThat(it.databaseName()).isEqualTo(newName)
         }
+
+        assertThat(rootSdkResources.listFiles()?.filter { it.isFile }).isEmpty()
+        assertThat(rootSdkResources.listFiles()?.filter { it.isDirectory }?.size).isEqualTo(1)
+
+        val directoryFiles = rootSdkResources.listFiles()?.find { it.isDirectory }?.listFiles()
+        assertThat(directoryFiles?.size).isEqualTo(1)
+        assertThat(directoryFiles?.first()?.name).isEqualTo("sample.txt")
     }
 
     @Test

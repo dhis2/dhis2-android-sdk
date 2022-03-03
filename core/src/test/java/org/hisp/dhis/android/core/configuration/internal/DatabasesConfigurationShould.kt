@@ -40,6 +40,7 @@ class DatabasesConfigurationShould :
     override fun map_from_json_string() {
         val configuration = deserialize(DatabasesConfiguration::class.java)
 
+        assertThat(configuration.versionCode()).isEqualTo(260)
         assertThat(configuration.maxAccounts()).isEqualTo(3)
         assertThat(configuration.accounts().size).isEqualTo(2)
 

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import android.content.Context
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
@@ -42,6 +43,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
+    private val context: Context = mock()
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration> = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseExport: DatabaseExport = mock()
@@ -85,7 +87,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = MultiUserDatabaseManager(
-            databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
+            context, databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
             databaseAdapterFactory, databaseExport, localDbRepository
         )
     }

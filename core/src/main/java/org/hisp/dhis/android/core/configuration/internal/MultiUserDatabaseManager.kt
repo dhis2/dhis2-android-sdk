@@ -27,19 +27,21 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import android.content.Context
 import android.util.Log
 import dagger.Reusable
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 
 @Reusable
 internal class MultiUserDatabaseManager @Inject internal constructor(
+    private val context: Context,
     private val databaseAdapter: DatabaseAdapter,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val configurationHelper: DatabaseConfigurationHelper,
@@ -88,7 +90,10 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
                 DatabaseConfigurationHelper.removeAccount(configuration, exceedingAccounts)
 
             databaseConfigurationSecureStore.set(updatedConfiguration)
-            exceedingAccounts.forEach { databaseAdapterFactory.deleteDatabase(it) }
+            exceedingAccounts.forEach {
+                FileResourceDirectoryHelper.deleteFileResourceDirectory(context, it)
+                databaseAdapterFactory.deleteDatabase(it)
+            }
         }
 
         val userConfiguration = addNewAccountInternal(serverUrl, username, encrypt)

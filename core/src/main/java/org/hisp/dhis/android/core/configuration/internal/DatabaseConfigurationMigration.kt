@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
-import android.os.FileUtils
 import dagger.Reusable
+import java.io.File
+import javax.inject.Inject
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
@@ -38,9 +39,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
-import java.io.File
-import javax.inject.Inject
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
@@ -81,11 +81,11 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         } else {
             try {
                 try {
+                    // This is the main flow after versionCode 260
                     val configuration = databaseConfigurationStore.get()
-                    if (configuration.versionCode() != BuildConfig.VERSION_CODE) {
-                        configuration.toBuilder().versionCode(BuildConfig.VERSION_CODE).build()
-                        databaseConfigurationStore.set(configuration)
-                    }
+                    existingVersionCode = configuration.versionCode()
+
+                    migrateVersionCodeIfNeeded(configuration)
                 } catch (e: RuntimeException) {
                     val configuration = tryOldDatabaseConfiguration()
                     databaseConfigurationStore.set(configuration)
@@ -96,7 +96,14 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         }
 
         if (existingVersionCode == null) {
-            migrateFileResources()
+            migrateVersion260()
+        }
+    }
+
+    private fun migrateVersionCodeIfNeeded(configuration: DatabasesConfiguration) {
+        if (configuration.versionCode() != BuildConfig.VERSION_CODE) {
+            configuration.toBuilder().versionCode(BuildConfig.VERSION_CODE).build()
+            databaseConfigurationStore.set(configuration)
         }
     }
 
@@ -131,21 +138,41 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         return store.selectFirst()?.serverUrl()
     }
 
-    private fun migrateFileResources() {
+    private fun migrateVersion260() {
         val configuration = databaseConfigurationStore.get()
 
         configuration?.let {
             if (configuration.accounts().size == 1) {
                 val existingAccount = configuration.accounts().first()
-                val existingDbName = FileResourceDirectoryHelper.getSubfolderName(existingAccount.databaseName())
+                val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
+                databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, existingAccount)
 
-                val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
-                val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, existingDbName)
+                migrateFileResources260(databaseAdapter)
 
-                rootResources.listFiles()
-                    ?.filter { it.isFile }
-                    ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
+                databaseAdapter.close()
             }
+        }
+    }
+
+    private fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
+        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.databaseName)
+
+        val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, accountSubFolder)
+
+        rootResources.listFiles()
+            ?.filter { it.isFile }
+            ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
+
+        val fileResourcesStore = FileResourceStoreImpl.create(databaseAdapter)
+        val fileResources = fileResourcesStore.selectAll()
+        fileResources.forEach {
+            val newPath = it.path()?.replace(
+                oldValue = FileResourceDirectoryHelper.FilesDir,
+                newValue = FileResourceDirectoryHelper.FilesDir + "/" + accountSubFolder
+            ) ?: ""
+            val newFileResource = it.toBuilder().path(newPath).build()
+            fileResourcesStore.updateOrInsert(newFileResource)
         }
     }
 

@@ -57,7 +57,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
                 .blockingGet();
 
         assertThat(indicator.legendSets().size()).isEqualTo(1);
-        assertThat(indicator.legendSets().get(0).name()).isEqualTo("Age 40y interval");
+        assertThat(indicator.legendSets().get(0).uid()).isEqualTo("rtOkbpGEud4");
     }
 
     @Test

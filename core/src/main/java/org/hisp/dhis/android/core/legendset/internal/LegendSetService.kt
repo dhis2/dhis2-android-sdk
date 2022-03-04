@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,30 +28,21 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.legendset.LegendSet
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-@Module
-internal class IndicatorLegendSetEntityDIModule {
-
-    @Provides
-    @Reusable
-    internal fun store(databaseAdapter: DatabaseAdapter): LinkStore<IndicatorLegendSetLink> {
-        return IndicatorLegendSetLinkStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    internal fun handler(
-        store: LinkStore<IndicatorLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
-    }
+internal interface LegendSetService {
+    @GET("legendSets")
+    fun getLegendSets(
+        @Query("fields") @Which fields: Fields<LegendSet>,
+        @Query("filter") @Where uids: Filter<LegendSet, String>,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<LegendSet>>
 }

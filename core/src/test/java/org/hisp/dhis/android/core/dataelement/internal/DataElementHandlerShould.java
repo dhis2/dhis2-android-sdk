@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
@@ -69,23 +70,23 @@ public class DataElementHandlerShould {
     private Handler<Attribute> attributeHandler;
 
     @Mock
-    private OrderedLinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+    private OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
 
     @Mock
-    private Handler<LegendSet> legendSetHandler;
+    private Handler<ObjectWithUid> legendSetHandler;
 
     @Mock
     private DataElement dataElement;
 
     @Mock
-    private LegendSet legendSet;
+    private ObjectWithUid legendSet;
 
     // object to test
     private Handler<DataElement> dataElementHandler;
 
     private List<DataElement> dataElements;
 
-    private List<LegendSet> legendSets;
+    private List<ObjectWithUid> legendSets;
 
     private List<AttributeValue> attributeValues = new ArrayList<>();
 
@@ -96,8 +97,11 @@ public class DataElementHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         dataElementHandler = new DataElementHandler(
-                dataElementStore, attributeHandler,dataElementAttributeValueLinkHandler,
-                legendSetHandler, dataElementLegendSetLinkHandler);
+                dataElementStore,
+                attributeHandler,
+                dataElementAttributeValueLinkHandler,
+                dataElementLegendSetLinkHandler
+        );
 
         dataElements = new ArrayList<>();
         dataElements.add(dataElement);
@@ -166,7 +170,6 @@ public class DataElementHandlerShould {
         verify(dataElementAttributeValueLinkHandler).handleMany(eq(dataElement.uid()), eq(Arrays.asList(attribute)), any());
     }
 
-    @Test
     public void call_legend_set_handler() {
         dataElementHandler.handleMany(dataElements);
         verify(legendSetHandler).handleMany(eq(legendSets));

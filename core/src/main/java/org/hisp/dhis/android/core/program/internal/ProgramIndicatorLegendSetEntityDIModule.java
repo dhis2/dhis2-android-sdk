@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
-import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
 
@@ -51,7 +51,7 @@ public final class ProgramIndicatorLegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    public OrderedLinkHandler<LegendSet, ProgramIndicatorLegendSetLink> handler(
+    public OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink> handler(
             LinkStore<ProgramIndicatorLegendSetLink> store) {
         return new OrderedLinkHandlerImpl<>(store);
     }

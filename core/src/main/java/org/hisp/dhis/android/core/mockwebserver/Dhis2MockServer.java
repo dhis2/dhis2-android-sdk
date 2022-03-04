@@ -98,6 +98,7 @@ public class Dhis2MockServer {
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
     private static final String RESERVE_VALUES_JSON = "trackedentity/tracked_entity_attribute_reserved_values.json";
+    private static final String SMS_METADATA = "sms/metadata_ids.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
@@ -258,6 +259,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
+                } else if (path.startsWith("/api/metadata")) {
+                    return createMockResponse(SMS_METADATA);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)

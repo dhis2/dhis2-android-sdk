@@ -25,42 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-@Suppress("MagicNumber")
-internal object LocalDataStoreStore {
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
-        w.bind(1, o.key())
-        w.bind(2, o.value())
+internal object SMSMetadataIdTableInfo {
+
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "SmsMetadataId"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(3, o.key())
-    }
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                TYPE,
+                UID
+            )
+        }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(1, o.key())
-    }
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                TYPE,
+                UID
+            )
+        }
 
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            LocalDataStoreTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
+        companion object {
+            const val TYPE = "type"
+            const val UID = "uid"
+        }
     }
 }

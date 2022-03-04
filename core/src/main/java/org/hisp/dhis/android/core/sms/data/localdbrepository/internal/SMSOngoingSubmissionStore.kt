@@ -25,42 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 
 @Suppress("MagicNumber")
-internal object LocalDataStoreStore {
+internal object SMSOngoingSubmissionStore {
 
-    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
-        w.bind(1, o.key())
-        w.bind(2, o.value())
+    private val BINDER: StatementBinder<SMSOngoingSubmission> = StatementBinder { o, w ->
+        w.bind(1, o.submissionId())
+        w.bind(2, o.type())
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(3, o.key())
-    }
+    private val WHERE_UPDATE_BINDER =
+        WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
+            w.bind(3, o.submissionId())
+        }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(1, o.key())
-    }
+    private val WHERE_DELETE_BINDER =
+        WhereStatementBinder<SMSOngoingSubmission> { o: SMSOngoingSubmission, w: StatementWrapper ->
+            w.bind(1, o.submissionId())
+        }
 
     @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return objectWithoutUidStore(
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSOngoingSubmission> {
+        return StoreFactory.objectWithoutUidStore(
             databaseAdapter,
-            LocalDataStoreTableInfo.TABLE_INFO,
+            SMSOngoingSubmissionTableInfo.TABLE_INFO,
             BINDER,
             WHERE_UPDATE_BINDER,
             WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
+        ) { cursor -> SMSOngoingSubmission.create(cursor) }
     }
 }

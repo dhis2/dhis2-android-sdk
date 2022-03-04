@@ -25,42 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
-@Suppress("MagicNumber")
-internal object LocalDataStoreStore {
+import android.database.Cursor;
 
-    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
-        w.bind(1, o.key())
-        w.bind(2, o.value())
+import androidx.annotation.NonNull;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SMSOngoingSubmissionColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+
+@AutoValue
+public abstract class SMSOngoingSubmission implements CoreObject {
+
+    @NonNull
+    public abstract Integer submissionId();
+
+    @NonNull
+    @ColumnAdapter(SMSOngoingSubmissionColumnAdapter.class)
+    public abstract SubmissionType type();
+
+    public static Builder builder() {
+        return new $AutoValue_SMSOngoingSubmission.Builder();
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(3, o.key())
+    public static SMSOngoingSubmission create(Cursor cursor) {
+        return $AutoValue_SMSOngoingSubmission.createFromCursor(cursor);
     }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(1, o.key())
-    }
+    public abstract Builder toBuilder();
 
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            LocalDataStoreTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder submissionId(Integer submissionId);
+
+        public abstract Builder type(SubmissionType type);
+
+        public abstract SMSOngoingSubmission build();
     }
 }

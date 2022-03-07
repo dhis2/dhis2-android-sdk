@@ -1,11 +1,11 @@
 package org.hisp.dhis.android.core.analytics
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import javax.inject.Inject
 
 internal class LegendEvaluator @Inject constructor(
     private val dataElementRepository: DataElementCollectionRepository,
@@ -48,8 +48,6 @@ internal class LegendEvaluator @Inject constructor(
             val legendSet = dataElement.legendSets()!![0]
 
             return getLegendByLegendSet(legendSet.uid(), value)
-            
-            null
         } catch (e: Exception) {
             null
         }

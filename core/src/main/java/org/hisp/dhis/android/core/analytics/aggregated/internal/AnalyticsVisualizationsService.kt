@@ -113,8 +113,9 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         val legendSetUId = visualization.legend()?.set()?.uid()
 
         val legendStrategy = when (visualizationLegendStrategy) {
-            LegendStrategy.FIXED -> if (legendSetUId != null) AnalyticsLegendStrategy.Fixed(legendSetUId)
-            else AnalyticsLegendStrategy.None
+            LegendStrategy.FIXED ->
+                if (legendSetUId != null) AnalyticsLegendStrategy.Fixed(legendSetUId)
+                else AnalyticsLegendStrategy.None
             LegendStrategy.BY_DATA_ITEM, null -> AnalyticsLegendStrategy.ByDataItem
         }
 

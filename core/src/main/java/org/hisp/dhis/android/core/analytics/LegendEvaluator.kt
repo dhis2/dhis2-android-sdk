@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
+@Suppress("TooGenericExceptionCaught")
 internal class LegendEvaluator @Inject constructor(
     private val dataElementRepository: DataElementCollectionRepository,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,

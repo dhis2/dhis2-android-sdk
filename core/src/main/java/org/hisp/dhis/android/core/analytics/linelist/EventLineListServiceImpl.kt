@@ -64,6 +64,7 @@ internal class EventLineListServiceImpl @Inject constructor(
         return evaluateEvents(params)
     }
 
+    @Suppress("LongMethod", "ComplexMethod")
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
 
         val events = getEvents(params)

@@ -84,11 +84,7 @@ internal class LegendEvaluator @Inject constructor(
         } else try {
             return legendRepository
                 .byStartValue().smallerThan(value.toDouble())
-                .byEndValue().biggerThan(value.toDouble())
-                .byLegendSet().eq(legendSetUid)
-                .one()
-                .blockingGet() ?: legendRepository
-                .byEndValue().eq(value.toDouble())
+                .byEndValue().biggerOrEqualTo(value.toDouble())
                 .byLegendSet().eq(legendSetUid)
                 .one()
                 .blockingGet()

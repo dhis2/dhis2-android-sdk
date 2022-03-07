@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryOptionCombo
@@ -133,7 +133,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             dataElementRepository = d2.dataElementModule().dataElements(),
             programIndicatorRepository = d2.programModule().programIndicators(),
             legendRepository = d2.legendSetModule().legends(),
-            indicatorRepository = d2.indicatorModule().indicators())
+            indicatorRepository = d2.indicatorModule().indicators()
+        )
     )
 
     @Before

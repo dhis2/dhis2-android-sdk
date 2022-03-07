@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataEl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 import org.hisp.dhis.android.core.legendset.Legend
-import javax.inject.Inject
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementSQLEvaluator,
@@ -110,8 +110,10 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     }
 
     private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): Legend? {
-        val dimensionDataItem = (evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
-            evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()).first()
+        val dimensionDataItem = (
+            evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
+                evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
+            ).first()
 
         return when (dimensionDataItem) {
             is DimensionItem.DataItem.DataElementItem -> legendEvaluator.getLegendByDataElement(

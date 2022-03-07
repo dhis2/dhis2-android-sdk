@@ -59,7 +59,9 @@ internal class AnalyticsService @Inject constructor(
 
             val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
-            val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy) }
+            val values = evaluationItems.map {
+                analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
+            }
 
             Result.Success(
                 DimensionalResponse(

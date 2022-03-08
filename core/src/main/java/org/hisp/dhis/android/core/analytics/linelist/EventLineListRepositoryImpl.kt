@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.linelist
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
@@ -83,6 +84,13 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         return EventLineListRepositoryImpl(
             eventLineListService,
             eventLineListParams.copy(programIndicators = updatedProgramIndicators)
+        )
+    }
+
+    override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): EventLineListRepository {
+        return EventLineListRepositoryImpl(
+            eventLineListService,
+            eventLineListParams.copy(analyticsLegendStrategy = analyticsLegendStrategy)
         )
     }
 

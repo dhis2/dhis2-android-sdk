@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated
 
+import org.hisp.dhis.android.core.legendset.Legend
+
 data class GridAnalyticsResponse(
     val metadata: Map<String, MetadataItem>,
     val headers: GridHeader,
@@ -55,5 +57,6 @@ data class GridDimension(
 data class GridResponseValue(
     val columns: List<String>,
     val rows: List<String>,
-    val value: String?
+    val value: String?,
+    val legend: Legend?
 )

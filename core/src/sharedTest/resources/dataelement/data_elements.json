@@ -34,7 +34,12 @@
       "style": {
         "color": "#645",
         "icon": "data-element-icon"
-      }
+      },
+      "legendSets": [
+        {
+          "id": "QiOkbpGEud4"
+        }
+      ]
     },
     {
       "code": "DE_2005835",
@@ -196,7 +201,7 @@
       },
       "legendSets": [
         {
-          "id": "QiOkbpGEud4"
+          "id": "TiOkbpGEud4"
         }
       ],
       "attributeValues": [

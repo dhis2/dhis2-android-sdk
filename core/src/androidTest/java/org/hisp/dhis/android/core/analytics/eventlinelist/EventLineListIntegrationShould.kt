@@ -28,12 +28,16 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.enrollment
+import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.legendSet1
+import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.legendSet2
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.organisationUnit1
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.program1
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.program1Stage1
@@ -52,6 +56,12 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
+import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
+import org.hisp.dhis.android.core.legendset.internal.LegendStore
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -84,6 +94,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val programStore = ProgramStore.create(databaseAdapter)
     private val programStageStore = ProgramStageStore.create(databaseAdapter)
     private val dataElementStore = DataElementStore.create(databaseAdapter)
+    private val dataElementLegendSetLinkStore = DataElementLegendSetLinkStore.create(databaseAdapter)
     private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
     private val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
     private val organisationUnitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
@@ -92,8 +103,10 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val eventStore = EventStoreImpl.create(databaseAdapter)
     private val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
     private val programIndicatorStore = ProgramIndicatorStore.create(databaseAdapter)
+    private val programIndicatorLegendSetLinkStore = ProgramIndicatorLegendSetLinkStore.create(databaseAdapter)
     private val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
-
+    private val legendSetStore = LegendSetStore.create(databaseAdapter)
+    private val legendStore = LegendStore.create(databaseAdapter)
     private val calendarProvider = CalendarProviderFactory.createFixed()
     private val dateFilterPeriodHelper =
         DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
@@ -114,7 +127,13 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programIndicatorEngine = d2.programModule().programIndicatorEngine(),
         periodHelper = d2.periodModule().periodHelper(),
         dateFilterPeriodHelper = dateFilterPeriodHelper,
-        organisationUnitHelper = organisationUnitHelper
+        organisationUnitHelper = organisationUnitHelper,
+        legendEvaluator = LegendEvaluator(
+            dataElementRepository = d2.dataElementModule().dataElements(),
+            programIndicatorRepository = d2.programModule().programIndicators(),
+            legendRepository = d2.legendSetModule().legends(),
+            indicatorRepository = d2.indicatorModule().indicators()
+        )
     )
 
     @Before
@@ -130,8 +149,21 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programStageStore.insert(program1Stage1)
         programStageStore.insert(program1Stage2)
 
+        legendSetStore.insert(legendSet1)
+        legendSetStore.insert(legendSet2)
+
+        val legends1 =
+            legendSet1.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet1.uid())).build() }
+        legendStore.insert(legends1)
+
+        val legends2 =
+            legendSet2.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet2.uid())).build() }
+        legendStore.insert(legends2)
+
         dataElementStore.insert(dataElement1)
+        createDataElementLegendSetLinks(dataElement1.uid(), dataElement1.legendSets()!!)
         dataElementStore.insert(dataElement2)
+        createDataElementLegendSetLinks(dataElement2.uid(), dataElement2.legendSets()!!)
 
         organisationUnitStore.insert(organisationUnit1)
         userOrganisationUnitStore.insert(userOrganisationUnit)
@@ -148,13 +180,17 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programStore.delete()
         programStageStore.delete()
         dataElementStore.delete()
+        dataElementLegendSetLinkStore.delete()
         organisationUnitStore.delete()
         userOrganisationUnitStore.delete()
         trackedEntityInstanceStore.delete()
         eventStore.delete()
         trackedEntityDataValueStore.delete()
         programIndicatorStore.delete()
+        programIndicatorLegendSetLinkStore.delete()
         enrollmentStore.delete()
+        legendSetStore.delete()
+        legendStore.delete()
     }
 
     @Test
@@ -398,6 +434,158 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(result.first().uid).isEqualTo(event1.uid())
     }
 
+    @Test
+    fun should_return_program_indicators_without_legend_if_legend_strategy_is_none() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "1.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "10.0")
+
+        val programIndicator = createProgramIndicator(
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+        )
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            programIndicators = listOf(LineListItem(programIndicator.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.all { line -> line.values.all { value -> value.legend == null } }).isTrue()
+    }
+
+    @Test
+    fun should_return_program_indicators_with_legend_by_PI_if_legend_strategy_is_by_data_item() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "1.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "10.0")
+
+        val programIndicator = createProgramIndicator(
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+        )
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            programIndicators = listOf(LineListItem(programIndicator.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        val values = result[0].values
+
+        assertThat(values.size == 1).isTrue()
+        assertThat(values[0].uid == programIndicator.uid()).isTrue()
+        assertThat(values[0].legend?.color() == legendSet1.legends()?.get(0)?.color()).isTrue()
+    }
+
+    @Test
+    fun should_return_program_indicators_legend_by_fixed_if_legend_strategy_is_fixed() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "30.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "40.0")
+
+        val programIndicator = createProgramIndicator(
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+        )
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            programIndicators = listOf(LineListItem(programIndicator.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        val values = result[0].values
+
+        assertThat(values.size == 1).isTrue()
+        assertThat(values[0].uid == programIndicator.uid()).isTrue()
+        assertThat(values[0].legend?.color() == legendSet2.legends()?.get(1)?.color()).isTrue()
+    }
+
+    @Test
+    fun should_return_data_elements_without_legend_if_legend_strategy_is_none() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "10.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "30.0")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.all { line -> line.values.all { value -> value.legend == null } }).isTrue()
+    }
+
+    @Test
+    fun should_return_data_elements_with_legend_by_DE_if_legend_strategy_is_by_data_item() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "10.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "30.0")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        val values = result[0].values
+
+        assertThat(values.size == 2).isTrue()
+        assertThat(values[0].uid == dataElement1.uid()).isTrue()
+        assertThat(values[0].value == "10.0").isTrue()
+        assertThat(values[0].legend?.color() == legendSet1.legends()?.get(0)?.color()).isTrue()
+
+        assertThat(values[1].uid == dataElement2.uid()).isTrue()
+        assertThat(values[1].value == "30.0").isTrue()
+        assertThat(values[1].legend?.color() == legendSet1.legends()?.get(1)?.color()).isTrue()
+    }
+
+    @Test
+    fun should_return_data_elements_with_legend_by_fixed_if_legend_strategy_is_fixed() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "10.0")
+        createDataValue(event1.uid(), dataElement2.uid(), "30.0")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        val values = result[0].values
+
+        assertThat(values.size == 2).isTrue()
+        assertThat(values[0].uid == dataElement1.uid()).isTrue()
+        assertThat(values[0].value == "10.0").isTrue()
+        assertThat(values[0].legend?.color() == legendSet2.legends()?.get(0)?.color()).isTrue()
+
+        assertThat(values[1].uid == dataElement2.uid()).isTrue()
+        assertThat(values[1].value == "30.0").isTrue()
+        assertThat(values[1].legend?.color() == legendSet2.legends()?.get(0)?.color()).isTrue()
+    }
+
     private fun createTei() {
         trackedEntityInstanceStore.insert(trackedEntityInstance)
     }
@@ -434,6 +622,22 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private fun createProgramIndicator(expression: String): ProgramIndicator {
         val programIndicator = EventLineListSamples.programIndicator(expression)
         programIndicatorStore.insert(programIndicator)
+        programIndicatorLegendSetLinkStore.insert(
+            ProgramIndicatorLegendSetLink.builder().programIndicator(programIndicator.uid()).legendSet(
+                legendSet1.uid()
+            ).build()
+        )
         return programIndicator
+    }
+
+    private fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<ObjectWithUid>) {
+        legendSets.forEach {
+            val dataElementLegendSetLink = DataElementLegendSetLink.builder()
+                .dataElement(dataElement)
+                .legendSet(it.uid())
+                .build()
+
+            dataElementLegendSetLinkStore.insert(dataElementLegendSetLink)
+        }
     }
 }

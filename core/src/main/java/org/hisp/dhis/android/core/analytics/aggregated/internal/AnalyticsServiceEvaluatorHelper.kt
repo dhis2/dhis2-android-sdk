@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -37,22 +39,33 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
+import org.hisp.dhis.android.core.legendset.Legend
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
-    private val indicatorEvaluator: IndicatorEvaluator
+    private val indicatorEvaluator: IndicatorEvaluator,
+    private val legendEvaluator: LegendEvaluator
 ) {
-
     fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        legendStrategy: AnalyticsLegendStrategy,
     ): DimensionalValue {
         val evaluator = getEvaluator(evaluationItem)
 
+        val value = evaluator.evaluate(evaluationItem, metadata)
+
+        val legend = when (legendStrategy) {
+            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(legendStrategy.legendSetUid, value)
+            is AnalyticsLegendStrategy.ByDataItem -> getLegendFromDataDimension(evaluationItem, value)
+            is AnalyticsLegendStrategy.None -> null
+        }
+
         return DimensionalValue(
             dimensions = evaluationItem.dimensionItems.map { (it as DimensionItem).id },
-            value = evaluator.evaluate(evaluationItem, metadata)
+            value = value,
+            legend = legend
         )
     }
 
@@ -93,6 +106,32 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
             is DimensionItem.DataItem.DataElementOperandItem -> dataElementEvaluator
             is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorEvaluator
             is DimensionItem.DataItem.IndicatorItem -> indicatorEvaluator
+        }
+    }
+
+    private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): Legend? {
+        val dimensionDataItem = (
+            evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
+                evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
+            ).first()
+
+        return when (dimensionDataItem) {
+            is DimensionItem.DataItem.DataElementItem -> legendEvaluator.getLegendByDataElement(
+                dimensionDataItem.uid,
+                value
+            )
+            is DimensionItem.DataItem.DataElementOperandItem -> legendEvaluator.getLegendByDataElement(
+                dimensionDataItem.dataElement,
+                value
+            )
+            is DimensionItem.DataItem.ProgramIndicatorItem -> legendEvaluator.getLegendByProgramIndicator(
+                dimensionDataItem.uid,
+                value
+            )
+            is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicator(
+                dimensionDataItem.uid,
+                value
+            )
         }
     }
 }

@@ -99,7 +99,7 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
     public void filter_by_legend_id() {
         List<Visualization> visualizations = d2.visualizationModule().visualizations()
             .byLegendUid()
-            .eq("Yf6UHoPkd56")
+            .eq("Yf6UHoPkd57")
             .blockingGet();
 
         assertThat(visualizations.size()).isEqualTo(1);

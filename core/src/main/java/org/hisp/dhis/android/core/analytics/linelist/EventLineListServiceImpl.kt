@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
@@ -54,13 +56,15 @@ internal class EventLineListServiceImpl @Inject constructor(
     private val programIndicatorEngine: ProgramIndicatorEngine,
     private val periodHelper: PeriodHelper,
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
-    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper
+    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper,
+    private val legendEvaluator: LegendEvaluator
 ) : EventLineListService {
 
     override fun evaluate(params: EventLineListParams): List<LineListResponse> {
         return evaluateEvents(params)
     }
 
+    @Suppress("LongMethod", "ComplexMethod")
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
 
         val events = getEvents(params)
@@ -87,19 +91,45 @@ internal class EventLineListServiceImpl @Inject constructor(
 
                 val eventDataValues = params.dataElements.map { de ->
                     val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
+
+                    val legend = when (params.analyticsLegendStrategy) {
+                        is AnalyticsLegendStrategy.None -> null
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(
+                            de.uid, dv?.value()
+                        )
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+                            params.analyticsLegendStrategy.legendSetUid,
+                            dv?.value()
+                        )
+                    }
+
                     LineListResponseValue(
                         uid = de.uid,
                         displayName = metadataMap[de.uid] ?: de.uid,
-                        value = dv?.value()
+                        value = dv?.value(),
+                        legend = legend
                     )
                 }
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
+
                     val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
+
+                    val legend = when (params.analyticsLegendStrategy) {
+                        is AnalyticsLegendStrategy.None -> null
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(
+                            pi.uid, value
+                        )
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+                            params.analyticsLegendStrategy.legendSetUid, value
+                        )
+                    }
+
                     LineListResponseValue(
                         uid = pi.uid,
                         displayName = metadataMap[pi.uid] ?: pi.uid,
-                        value = value
+                        value = value,
+                        legend = legend
                     )
                 }
 

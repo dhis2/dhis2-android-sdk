@@ -55,5 +55,6 @@ data class GridDimension(
 data class GridResponseValue(
     val columns: List<String>,
     val rows: List<String>,
-    val value: String?
+    val value: String?,
+    val legend: String?
 )

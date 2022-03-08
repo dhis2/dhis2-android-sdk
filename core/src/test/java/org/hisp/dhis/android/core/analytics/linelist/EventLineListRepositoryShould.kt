@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -115,5 +116,42 @@ class EventLineListRepositoryShould {
         verify(eventLineListService).evaluate(paramsCaptor.capture())
         assertThat(paramsCaptor.firstValue.organisationUnits?.first()?.relativeOrganisationUnit)
             .isEqualTo(RelativeOrganisationUnit.USER_ORGUNIT)
+    }
+
+    @Test
+    fun `Call service with fixed legend strategy`() {
+        repository
+            .withLegendStrategy(AnalyticsLegendStrategy.Fixed("uid1"))
+            .blockingEvaluate()
+
+        verify(eventLineListService).evaluate(paramsCaptor.capture())
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
+
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.Fixed::class.java)
+        assertThat((legendStrategy as AnalyticsLegendStrategy.Fixed).legendSetUid).isEqualTo("uid1")
+    }
+
+    @Test
+    fun `Call service with none legend strategy`() {
+        repository
+            .withLegendStrategy(AnalyticsLegendStrategy.None)
+            .blockingEvaluate()
+
+        verify(eventLineListService).evaluate(paramsCaptor.capture())
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
+
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.None::class.java)
+    }
+
+    @Test
+    fun `Call service with byDataItem legend strategy`() {
+        repository
+            .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
+            .blockingEvaluate()
+
+        verify(eventLineListService).evaluate(paramsCaptor.capture())
+        val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
+
+        assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.ByDataItem::class.java)
     }
 }

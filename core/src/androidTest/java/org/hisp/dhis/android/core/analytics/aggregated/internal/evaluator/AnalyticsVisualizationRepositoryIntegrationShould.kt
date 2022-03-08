@@ -109,4 +109,17 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.succeeded).isFalse()
     }
+
+    @Test
+    fun return_data_elements_with_legend_by_DE_if_legend_strategy_is_by_data_item() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .blockingEvaluate()
+            .getOrThrow()
+
+        assertThat(result.values.size).isEqualTo(3)
+        assertThat(result.values[0][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[1][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[2][0].legend).isEqualTo("rlXteEDaTpt")
+    }
 }

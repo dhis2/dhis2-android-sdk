@@ -25,9 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-internal data class ItemsWithFileResources<T> (
-    val items: List<T>,
-    val fileResources: List<String>
-)
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
+
+@Reusable
+internal class JobReportFileResourceHandler @Inject internal constructor(
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceHelper: FileResourceHelper
+) {
+    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
+        return Observable.fromCallable {
+            val progress = D2ProgressManager(null)
+
+            val fileResources = jobObjects.flatMap { it.fileResources() }
+
+            fileResources.forEach { fr ->
+                val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+                val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+                fileResourceStore.setSyncStateIfUploading(fr, state)
+            }
+            progress.increaseProgress(FileResource::class.java, false)
+        }
+    }
+}

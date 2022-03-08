@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -44,8 +46,6 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentImportHandler @Inject constructor(
@@ -57,6 +57,7 @@ internal class EnrollmentImportHandler @Inject constructor(
     private val dataStatePropagator: DataStatePropagator
 ) {
 
+    @Suppress("NestedBlockDepth")
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,

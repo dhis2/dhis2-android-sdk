@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -46,8 +48,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
@@ -65,6 +65,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val alreadyDeletedInServerRegex =
         Regex("Tracked entity instance (\\w{11}) cannot be deleted as it is not present in the system")
 
+    @Suppress("NestedBlockDepth")
     fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
         instances: List<TrackedEntityInstance>

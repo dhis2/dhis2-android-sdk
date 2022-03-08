@@ -47,7 +47,8 @@ internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
-    private val handler: JobReportHandler
+    private val handler: JobReportHandler,
+    private val fileResourceHandler: JobReportFileResourceHandler
 ) {
 
     fun queryPendingJobs(): Observable<D2Progress> {
@@ -62,12 +63,19 @@ internal class JobQueryCall @Inject internal constructor(
                     Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
                 }
             }
-            .flatMap { queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
+            .flatMap {
+                queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING)
+                    .flatMap { _ -> updateFileResourceStates(it.second) }
+            }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
         return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
+    }
+
+    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
+        return fileResourceHandler.updateFileResourceStates(jobObjects)
     }
 
     private fun queryJobInternal(

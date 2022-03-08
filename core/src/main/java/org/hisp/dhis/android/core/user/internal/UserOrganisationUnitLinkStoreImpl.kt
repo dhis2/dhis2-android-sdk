@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.database.Cursor
+import java.lang.RuntimeException
+import kotlin.Throws
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
-import kotlin.Throws
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import java.lang.RuntimeException
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 
 internal class UserOrganisationUnitLinkStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -50,7 +50,9 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
     builder,
     masterColumn,
     binder,
-    { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) }), UserOrganisationUnitLinkStore {
+    { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) }
+),
+    UserOrganisationUnitLinkStore {
 
     @Throws(RuntimeException::class)
     override fun queryRootCaptureOrganisationUnitUids(): List<String> {

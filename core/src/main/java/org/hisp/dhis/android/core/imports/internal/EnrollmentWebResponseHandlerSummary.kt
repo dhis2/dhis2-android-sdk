@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal data class EnrollmentWebResponseHandlerSummary(
     val ignoredEnrollments: MutableList<Enrollment> = mutableListOf()

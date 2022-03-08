@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.State
@@ -38,8 +39,8 @@ import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 internal class FileResourceHelper @Inject constructor(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,

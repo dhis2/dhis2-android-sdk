@@ -103,6 +103,7 @@ internal class LogInCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun handleOnlineException(d2Error: D2Error, credentials: Credentials?): D2Error {
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
             try {

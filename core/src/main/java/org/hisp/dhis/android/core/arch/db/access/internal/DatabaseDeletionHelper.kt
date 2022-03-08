@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import dagger.Reusable
+import java.io.IOException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
@@ -41,7 +42,7 @@ internal class DatabaseDeletionHelper @Inject internal constructor(
     private val credentialsSecureStore: CredentialsSecureStore
 ) {
     fun deleteActiveDatabase() {
-        val credentials = credentialsSecureStore.get() ?: throw RuntimeException("No active database")
+        val credentials = credentialsSecureStore.get() ?: throw IOException("No active database")
         deleteDatabase(credentials.serverUrl, credentials.username)
     }
 

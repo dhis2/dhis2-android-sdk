@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.junit.Assert;
 import org.junit.Before;
 

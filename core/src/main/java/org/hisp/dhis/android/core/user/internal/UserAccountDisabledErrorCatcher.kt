@@ -39,6 +39,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 @Reusable
+@Suppress("TooGenericExceptionCaught")
 internal class UserAccountDisabledErrorCatcher @Inject constructor(
     private val objectMapper: ObjectMapper,
     private val databaseDeletionHelper: DatabaseDeletionHelper

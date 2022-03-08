@@ -33,7 +33,6 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable

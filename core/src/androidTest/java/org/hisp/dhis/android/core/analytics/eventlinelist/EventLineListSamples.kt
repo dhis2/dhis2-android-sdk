@@ -150,7 +150,7 @@ object EventLineListSamples {
         .displayName("Data Element 1")
         .valueType(ValueType.NUMBER)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
-        .legendSets(listOf(legendSet1))
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     val dataElement2: DataElement = DataElement.builder()
@@ -158,7 +158,7 @@ object EventLineListSamples {
         .displayName("Data Element 2")
         .valueType(ValueType.NUMBER)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
-        .legendSets(listOf(legendSet1))
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     fun programIndicator(expression: String): ProgramIndicator = ProgramIndicator.builder()
@@ -167,7 +167,7 @@ object EventLineListSamples {
         .program(ObjectWithUid.fromIdentifiable(program1))
         .expression(expression)
         .aggregationType(AggregationType.SUM)
-        .legendSets(listOf(legendSet1))
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     fun event(programStage: String, eventDate: Date): Event {

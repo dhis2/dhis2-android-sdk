@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -53,6 +54,8 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class CategoryOptionItem(val item: CategoryOption) : MetadataItem(item.uid(), item.displayName()!!)
 
     class CategoryOptionGroupSetItem(uid: String, displayName: String) : MetadataItem(uid, displayName)
+
+    class LegendItem(val item: Legend) : MetadataItem(item.uid(), item.displayName()!!)
 
     class OrganisationUnitItem(val item: OrganisationUnit) : MetadataItem(item.uid(), item.displayName()!!)
     class OrganisationUnitLevelItem(

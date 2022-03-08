@@ -17,7 +17,7 @@ internal class LegendEvaluator @Inject constructor(
     fun getLegendByProgramIndicator(
         programIndicatorUid: String,
         value: String?
-    ): Legend? {
+    ): String? {
         return if (value == null) {
             null
         } else try {
@@ -37,7 +37,7 @@ internal class LegendEvaluator @Inject constructor(
     fun getLegendByDataElement(
         dataElementUid: String,
         value: String?
-    ): Legend? {
+    ): String? {
         return if (value == null) {
             null
         } else try {
@@ -57,7 +57,7 @@ internal class LegendEvaluator @Inject constructor(
     fun getLegendByIndicator(
         indicatorUid: String,
         value: String?
-    ): Legend? {
+    ): String? {
         return if (value == null) {
             null
         } else try {
@@ -77,7 +77,7 @@ internal class LegendEvaluator @Inject constructor(
     fun getLegendByLegendSet(
         legendSetUid: String,
         value: String?
-    ): Legend? {
+    ): String? {
 
         return if (value == null || value.toDouble().isNaN()) {
             null
@@ -87,7 +87,7 @@ internal class LegendEvaluator @Inject constructor(
                 .byEndValue().biggerOrEqualTo(value.toDouble())
                 .byLegendSet().eq(legendSetUid)
                 .one()
-                .blockingGet()
+                .blockingGet().uid()
         } catch (e: Exception) {
             null
         }

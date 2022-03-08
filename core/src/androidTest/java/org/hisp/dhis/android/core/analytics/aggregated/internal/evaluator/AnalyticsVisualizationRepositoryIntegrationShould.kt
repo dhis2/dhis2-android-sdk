@@ -118,8 +118,8 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
             .getOrThrow()
 
         assertThat(result.values.size).isEqualTo(3)
-        assertThat(result.values[0][0].legend?.color()).isEqualTo("#F7A629")
-        assertThat(result.values[1][0].legend?.color()).isEqualTo("#F7A629")
-        assertThat(result.values[2][0].legend?.color()).isEqualTo("#F7A629")
+        assertThat(result.values[0][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[1][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[2][0].legend).isEqualTo("rlXteEDaTpt")
     }
 }

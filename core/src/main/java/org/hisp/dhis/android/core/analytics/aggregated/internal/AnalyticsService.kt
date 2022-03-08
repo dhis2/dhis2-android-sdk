@@ -63,9 +63,12 @@ internal class AnalyticsService @Inject constructor(
                 analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
             }
 
+            val legends = values.filter { it.legend != null }.map { it.legend!! }
+            val finalMetadata = analyticsServiceMetadataHelper.includeLegendsToMetadata(metadata, legends)
+
             Result.Success(
                 DimensionalResponse(
-                    metadata = metadata,
+                    metadata = finalMetadata,
                     dimensions = dimensions,
                     dimensionItems = dimensionItems.groupBy { it.dimension },
                     filters = params.filters.map { it.id },

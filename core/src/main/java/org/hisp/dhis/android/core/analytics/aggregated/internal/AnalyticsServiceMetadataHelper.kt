@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -54,6 +55,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val indicatorStore: IdentifiableObjectStore<Indicator>,
+    private val legendStore: IdentifiableObjectStore<Legend>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
@@ -71,6 +73,18 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         }
 
         return metadata
+    }
+
+    fun includeLegendsToMetadata(metadata: Map<String, MetadataItem>, legends: List<String>): Map<String, MetadataItem> {
+        val finalMetadata = metadata.toMutableMap()
+
+        val legends = legendStore.selectByUids(legends.distinct()).map { MetadataItem.LegendItem(it) }
+
+        val metadataItemsMap = legends.map { it.id to it }.toMap()
+
+        finalMetadata += metadataItemsMap
+
+        return finalMetadata
     }
 
     private fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {

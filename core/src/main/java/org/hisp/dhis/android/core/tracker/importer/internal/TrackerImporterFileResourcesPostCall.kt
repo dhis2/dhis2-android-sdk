@@ -28,9 +28,12 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
+import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -41,6 +44,7 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
@@ -179,6 +183,21 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         }
 
         return Pair(successfulEvents, uploadedFileResources)
+    }
+
+    fun updateFileResourceStates(payloadWrapper: NewTrackerImporterPayloadWrapper): Observable<D2Progress> {
+        return Observable.fromCallable {
+            val progress = D2ProgressManager(null)
+            val fileResources = (payloadWrapper.deleted.fileResourcesMap.values +
+                    payloadWrapper.updated.fileResourcesMap.values).flatten()
+
+            fileResources.forEach { fr ->
+                val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+                val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+                fileResourceStore.setSyncStateIfUploading(fr, state)
+            }
+            progress.increaseProgress(FileResource::class.java, false)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")

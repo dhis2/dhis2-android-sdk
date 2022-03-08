@@ -28,21 +28,19 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportEnrollmentHandler @Inject internal constructor(
@@ -50,9 +48,8 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore,
-    fileResourceStore: IdentifiableDataObjectStore<FileResource>
-) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST

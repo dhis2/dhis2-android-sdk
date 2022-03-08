@@ -80,7 +80,8 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         return fileResourcesPostCall.uploadFileResources(payloadWrapper).flatMapObservable { payload ->
             Observable.concat(
                 doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE),
-                doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+                doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE),
+                fileResourcesPostCall.updateFileResourceStates(payload)
             )
         }
     }

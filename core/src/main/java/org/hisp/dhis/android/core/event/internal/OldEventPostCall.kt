@@ -87,7 +87,10 @@ internal class OldEventPostCall @Inject internal constructor(
                     listOf(409),
                     EventWebResponse::class.java
                 )
-                handleWebResponse(webResponse, validEvents.items, validEvents.fileResources)
+                handleWebResponse(webResponse, validEvents.items)
+
+                fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
+
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
                 trackerPostStateManager.restorePayloadStates(
@@ -101,13 +104,11 @@ internal class OldEventPostCall @Inject internal constructor(
 
     private fun handleWebResponse(
         webResponse: EventWebResponse?,
-        events: List<Event>,
-        fileResources: List<String>
+        events: List<Event>
     ) {
         eventImportHandler.handleEventImportSummaries(
             webResponse?.response()?.importSummaries(),
-            events,
-            fileResources
+            events
         )
     }
 }

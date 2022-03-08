@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -38,15 +35,16 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class EventImportHandler @Inject constructor(
@@ -56,16 +54,15 @@ internal class EventImportHandler @Inject constructor(
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
     private val dataStatePropagator: DataStatePropagator,
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourceHelper: FileResourceHelper
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore
 ) {
 
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>,
-        fileResources: List<String>
-    ) {
+        events: List<Event>
+    ): TEIWebResponseHandlerSummary {
+        val summary = TEIWebResponseHandlerSummary()
+
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
             eventImportSummary.reference()?.let { eventUid ->
                 val enrollmentUid = events.find { it.uid() == eventUid }?.enrollment()
@@ -77,9 +74,9 @@ internal class EventImportHandler @Inject constructor(
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
 
                 if (state == State.ERROR || state == State.WARNING) {
-                    setEventFileResourceStates(event, fileResources, State.TO_POST)
+                    event?.let { summary.events.error.add(it) }
                 } else {
-                    setEventFileResourceStates(event, fileResources, State.SYNCED)
+                    event?.let { summary.events.success.add(it) }
                 }
 
                 if (handleAction !== HandleAction.Delete) {
@@ -95,7 +92,8 @@ internal class EventImportHandler @Inject constructor(
             }
         }
 
-        processIgnoredEvents(eventImportSummaries, events, fileResources)
+        val ignoredEvents = processIgnoredEvents(eventImportSummaries, events)
+        summary.events.ignored.addAll(ignoredEvents)
 
         val enrollmentUids = events.mapNotNull { it.enrollment() }.distinct()
         val teiUids = enrollmentUids.mapNotNull { enrollmentStore.selectByUid(it)?.trackedEntityInstance() }.distinct()
@@ -107,20 +105,20 @@ internal class EventImportHandler @Inject constructor(
         teiUids.forEach {
             dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
         }
+
+        return summary
     }
 
     private fun processIgnoredEvents(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>,
-        fileResources: List<String>
-    ) {
+        events: List<Event>
+    ): List<Event> {
         val processedEvents = getReferences(eventImportSummaries)
 
-        events.filterNot { processedEvents.contains(it.uid()) }.forEach { event ->
+        return events.filterNot { processedEvents.contains(it.uid()) }.onEach { event ->
             val state = State.TO_UPDATE
             trackerImportConflictStore.deleteEventConflicts(event.uid())
             eventStore.setSyncStateOrDelete(event.uid(), state)
-            setEventFileResourceStates(event, fileResources, State.TO_POST)
         }
     }
 
@@ -156,20 +154,6 @@ internal class EventImportHandler @Inject constructor(
         }
 
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
-    }
-
-    private fun setEventFileResourceStates(
-        event: Event?,
-        fileResources: List<String>,
-        state: State
-    ) {
-        event?.let {
-            val dataValues = event.trackedEntityDataValues()
-
-            fileResources.filter { fileResourceHelper.isPresentInDataValues(it, dataValues) }.forEach {
-                fileResourceStore.setSyncStateIfUploading(it, state)
-            }
-        }
     }
 
     private fun getConflictBuilder(

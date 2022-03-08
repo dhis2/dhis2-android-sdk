@@ -27,10 +27,52 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal data class TEIWebResponseHandlerSummary(
-    val ignoredTeis: MutableList<TrackedEntityInstance> = mutableListOf(),
-    val ignoredEnrollments: MutableList<Enrollment> = mutableListOf()
-)
+    val teis: TrackerResponseHandlerSummary<TrackedEntityInstance> = TrackerResponseHandlerSummary(),
+    val enrollments: TrackerResponseHandlerSummary<Enrollment> = TrackerResponseHandlerSummary(),
+    val events: TrackerResponseHandlerSummary<Event> = TrackerResponseHandlerSummary()
+) {
+    fun add(other: TEIWebResponseHandlerSummary) {
+        teis.add(other.teis)
+        enrollments.add(other.enrollments)
+        events.add(other.events)
+    }
+
+    fun update(other: TEIWebResponseHandlerSummary) {
+        teis.update(other.teis)
+        enrollments.update(other.enrollments)
+        events.update(other.events)
+    }
+}
+
+internal data class TrackerResponseHandlerSummary<E : ObjectWithUidInterface>(
+    val success: MutableList<E> = mutableListOf(),
+    val error: MutableList<E> = mutableListOf(),
+    val ignored: MutableList<E> = mutableListOf()
+) {
+    fun add(other: TrackerResponseHandlerSummary<E>) {
+        success.addAll(other.success)
+        error.addAll(other.error)
+        ignored.addAll(other.ignored)
+    }
+
+    fun update(other: TrackerResponseHandlerSummary<E>) {
+        val updatedIds = (other.success + other.ignored + other.error).map { it.uid() }
+
+        val updatedSuccess = success.filter { updatedIds.contains(it.uid()) }
+        success.removeAll(updatedSuccess)
+
+        val updatedError = error.filter { updatedIds.contains(it.uid()) }
+        error.removeAll(updatedError)
+
+        val updatedIgnored = ignored.filter { updatedIds.contains(it.uid()) }
+        ignored.removeAll(updatedIgnored)
+
+        add(other)
+    }
+}

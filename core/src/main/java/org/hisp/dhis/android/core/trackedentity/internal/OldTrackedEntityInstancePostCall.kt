@@ -91,7 +91,8 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                         listOf(409),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition, partition.fileResources)
+                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
+                    fileResourcePostCall.updateFileResourceStates(partition.fileResources)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
                     stateManager.restorePayloadStates(

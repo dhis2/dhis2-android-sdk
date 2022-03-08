@@ -111,13 +111,17 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
             for (partition in teiPartitions) {
                 try {
-                    val summary = postPartition(partition.items, partition.fileResources)
+                    val summary = postPartition(partition.items)
                     val glassErrors = getGlassProtectedErrors(summary, partition.items)
 
                     if (glassErrors.isNotEmpty()) {
                         fakeBreakGlass(glassErrors)
-                        postPartition(glassErrors, partition.fileResources)
+                        val breakGlassSummary = postPartition(glassErrors)
+
+                        summary.update(breakGlassSummary)
                     }
+
+                    fileResourcePostCall.updateFileResourceStates(partition.fileResources)
 
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
@@ -143,8 +147,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     }
 
     private fun postPartition(
-        trackedEntityInstances: List<TrackedEntityInstance>,
-        fileResources: List<String>
+        trackedEntityInstances: List<TrackedEntityInstance>
     ): TEIWebResponseHandlerSummary {
         trackerStateManager.setPayloadStates(
             trackedEntityInstances = trackedEntityInstances,
@@ -159,14 +162,14 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             listOf(HTTP_CONFLICT),
             TEIWebResponse::class.java
         )
-        return teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances, fileResources)
+        return teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances)
     }
 
     private fun getGlassProtectedErrors(
         summary: TEIWebResponseHandlerSummary,
         instances: List<TrackedEntityInstance>
     ): List<TrackedEntityInstance> {
-        return summary.ignoredEnrollments.filter { enrollment ->
+        return summary.enrollments.ignored.filter { enrollment ->
             isProtectedProgram(enrollment.program()) && isNotCaptureScope(enrollment.organisationUnit())
         }.mapNotNull { enrollment ->
             instances.mapNotNull { tei ->
@@ -230,9 +233,11 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     )
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = payload.events,
-                        fileResources = validEvents.fileResources
+                        events = payload.events
                     )
+
+                    fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
+
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
                     trackerStateManager.restorePayloadStates(

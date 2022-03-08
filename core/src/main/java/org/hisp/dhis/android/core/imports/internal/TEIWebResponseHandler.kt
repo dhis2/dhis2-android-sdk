@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
+import javax.inject.Inject
 
 @Reusable
 internal class TEIWebResponseHandler @Inject constructor(
@@ -39,12 +39,11 @@ internal class TEIWebResponseHandler @Inject constructor(
 
     fun handleWebResponse(
         webResponse: TEIWebResponse?,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
+        instances: List<TrackedEntityInstance>
     ): TEIWebResponseHandlerSummary {
         return webResponse?.response()?.let { response ->
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(), instances, fileResources
+                response.importSummaries(), instances
             )
         } ?: TEIWebResponseHandlerSummary()
     }

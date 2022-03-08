@@ -31,6 +31,7 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
@@ -153,6 +154,14 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
             event.toBuilder().trackedEntityDataValues(updatedDataValues).build(),
             uploadedFileResources
         )
+    }
+
+    fun updateFileResourceStates(fileResources: List<String>) {
+        fileResources.forEach { fr ->
+            val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+            fileResourceStore.setSyncStateIfUploading(fr, state)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")

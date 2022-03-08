@@ -57,7 +57,6 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
-import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
@@ -631,7 +630,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         return programIndicator
     }
 
-    private fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<LegendSet>) {
+    private fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<ObjectWithUid>) {
         legendSets.forEach {
             val dataElementLegendSetLink =
                 DataElementLegendSetLink.builder().dataElement(dataElement).legendSet(it.uid()).build()

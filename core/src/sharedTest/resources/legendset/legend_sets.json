@@ -72,6 +72,14 @@
           "startValue": 15,
           "endValue": 30,
           "color": "#E6AE5E"
+        },
+        {
+          "id": "rlXteEDaTpt",
+          "name": "0 - 15",
+          "startValue": 0,
+          "endValue": 15,
+          "color": "#F7A629",
+          "displayName": "0 - 15"
         }
       ]
     },

@@ -40,11 +40,10 @@ class LegendSetUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDisp
     @Test
     fun seek_legendSet_uids() {
         val legendSets = LegendSetUidsSeeker(databaseAdapter).seekUids()
-        Truth.assertThat(legendSets.size).isEqualTo(5)
+        Truth.assertThat(legendSets.size).isEqualTo(4)
         Truth.assertThat(legendSets.contains("TiOkbpGEud4")).isTrue()
         Truth.assertThat(legendSets.contains("QiOkbpGEud4")).isTrue()
         Truth.assertThat(legendSets.contains("rtOkbpGEud4")).isTrue()
         Truth.assertThat(legendSets.contains("Yf6UHoPkd57")).isTrue()
-        Truth.assertThat(legendSets.contains("Yf6UHoPkd56")).isTrue()
     }
 }

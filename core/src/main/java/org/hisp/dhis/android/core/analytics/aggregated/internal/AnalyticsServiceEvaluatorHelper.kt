@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
-import org.hisp.dhis.android.core.legendset.Legend
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementSQLEvaluator,

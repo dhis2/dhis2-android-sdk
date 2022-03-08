@@ -75,7 +75,10 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return metadata
     }
 
-    fun includeLegendsToMetadata(metadata: Map<String, MetadataItem>, legends: List<String>): Map<String, MetadataItem> {
+    fun includeLegendsToMetadata(
+        metadata: Map<String, MetadataItem>,
+        legends: List<String>
+    ): Map<String, MetadataItem> {
         val finalMetadata = metadata.toMutableMap()
 
         val legends = legendStore.selectByUids(legends.distinct()).map { MetadataItem.LegendItem(it) }

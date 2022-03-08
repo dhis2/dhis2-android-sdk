@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import java.util.Date
-import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.period.Period
 
 data class LineListResponse(

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated
 
-import org.hisp.dhis.android.core.legendset.Legend
-
 data class DimensionalResponse(
     val metadata: Map<String, MetadataItem>,
     val dimensions: List<Dimension>,
@@ -41,5 +39,5 @@ data class DimensionalResponse(
 data class DimensionalValue(
     val dimensions: List<String>,
     val value: String?,
-    val legend: Legend?
+    val legend: String?
 )

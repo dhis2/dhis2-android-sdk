@@ -482,7 +482,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
         assertThat(values.size == 1).isTrue()
         assertThat(values[0].uid == programIndicator.uid()).isTrue()
-        assertThat(values[0].legend?.color() == legendSet1.legends()?.get(0)?.color()).isTrue()
+        assertThat(values[0].legend == legendSet1.legends()?.get(0)?.uid()).isTrue()
     }
 
     @Test
@@ -509,7 +509,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
         assertThat(values.size == 1).isTrue()
         assertThat(values[0].uid == programIndicator.uid()).isTrue()
-        assertThat(values[0].legend?.color() == legendSet2.legends()?.get(1)?.color()).isTrue()
+        assertThat(values[0].legend == legendSet2.legends()?.get(1)?.uid()).isTrue()
     }
 
     @Test
@@ -552,11 +552,11 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(values.size == 2).isTrue()
         assertThat(values[0].uid == dataElement1.uid()).isTrue()
         assertThat(values[0].value == "10.0").isTrue()
-        assertThat(values[0].legend?.color() == legendSet1.legends()?.get(0)?.color()).isTrue()
+        assertThat(values[0].legend == legendSet1.legends()?.get(0)?.uid()).isTrue()
 
         assertThat(values[1].uid == dataElement2.uid()).isTrue()
         assertThat(values[1].value == "30.0").isTrue()
-        assertThat(values[1].legend?.color() == legendSet1.legends()?.get(1)?.color()).isTrue()
+        assertThat(values[1].legend == legendSet1.legends()?.get(1)?.uid()).isTrue()
     }
 
     @Test
@@ -580,11 +580,11 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(values.size == 2).isTrue()
         assertThat(values[0].uid == dataElement1.uid()).isTrue()
         assertThat(values[0].value == "10.0").isTrue()
-        assertThat(values[0].legend?.color() == legendSet2.legends()?.get(0)?.color()).isTrue()
+        assertThat(values[0].legend == legendSet2.legends()?.get(0)?.uid()).isTrue()
 
         assertThat(values[1].uid == dataElement2.uid()).isTrue()
         assertThat(values[1].value == "30.0").isTrue()
-        assertThat(values[1].legend?.color() == legendSet2.legends()?.get(0)?.color()).isTrue()
+        assertThat(values[1].legend == legendSet2.legends()?.get(0)?.uid()).isTrue()
     }
 
     private fun createTei() {

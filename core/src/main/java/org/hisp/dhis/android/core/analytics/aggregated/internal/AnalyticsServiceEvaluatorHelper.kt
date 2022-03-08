@@ -109,7 +109,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         }
     }
 
-    private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): Legend? {
+    private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): String? {
         val dimensionDataItem = (
             evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
                 evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()

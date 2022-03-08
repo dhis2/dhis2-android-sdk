@@ -121,7 +121,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             throw IllegalArgumentException("MaxAccounts must be greater than 0")
         } else {
             val configuration = databaseConfigurationSecureStore.get()
-            val updatedConfiguration = (configuration.toBuilder() ?: DatabasesConfiguration.builder())
+            val updatedConfiguration = (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
                 .maxAccounts(maxAccounts)
                 .build()
             databaseConfigurationSecureStore.set(updatedConfiguration)

@@ -126,7 +126,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         migration.apply()
 
-        assertThat(databasesConfigurationStore.get()).isNull()
+        assertThat(databasesConfigurationStore.get()?.accounts()).isEmpty()
     }
 
     @Test
@@ -175,12 +175,12 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun migrate_null_from_old_database_configuration() {
+    fun migrate_empty_from_old_database_configuration() {
         DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(null)
 
         migration.apply()
 
-        assertThat(databasesConfigurationStore.get()).isNull()
+        assertThat(databasesConfigurationStore.get()?.accounts()).isEmpty()
     }
 
     private fun setCredentialsAndServerUrl(databaseAdapter: DatabaseAdapter) {

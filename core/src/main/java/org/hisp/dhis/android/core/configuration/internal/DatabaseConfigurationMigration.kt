@@ -93,6 +93,10 @@ internal class DatabaseConfigurationMigration @Inject constructor(
             }
         }
 
+        if (databaseConfigurationStore.get() == null) {
+            databaseConfigurationStore.set(DatabasesConfiguration.builder().build())
+        }
+
         if (existingVersionCode == null) {
             Migration260(context, databaseConfigurationStore, databaseAdapterFactory).apply()
         }

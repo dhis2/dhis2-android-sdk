@@ -45,7 +45,8 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
         val response =
             Response.error<Any>(HttpsURLConnection.HTTP_REQ_TOO_LONG, ResponseBody.create(null, ""))
 
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.TOO_MANY_ORG_UNITS)
+        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.TOO_MANY_ORG_UNITS)
     }
 
     @Test
@@ -59,7 +60,8 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             }"""
 
         val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.MAX_TEI_COUNT_REACHED)
+        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.MAX_TEI_COUNT_REACHED)
     }
 
     @Test
@@ -73,7 +75,8 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             }"""
 
         val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
+        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
     }
 
     @Test
@@ -87,6 +90,7 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             }"""
 
         val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED)
+        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED)
     }
 }

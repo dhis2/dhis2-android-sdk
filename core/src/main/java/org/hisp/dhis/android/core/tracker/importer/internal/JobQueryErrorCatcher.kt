@@ -37,7 +37,7 @@ internal class JobQueryErrorCatcher : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean = false
 
-    override fun catchError(response: Response<*>): D2ErrorCode? {
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
             D2ErrorCode.JOB_REPORT_NOT_AVAILABLE
         } else {

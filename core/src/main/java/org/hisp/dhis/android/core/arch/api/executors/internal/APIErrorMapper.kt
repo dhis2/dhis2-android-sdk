@@ -129,9 +129,10 @@ internal class APIErrorMapper @Inject constructor() {
     fun responseException(
         errorBuilder: D2Error.Builder,
         response: Response<*>,
-        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
+        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE,
+        errorBody: String?
     ): D2Error {
-        val serverMessage = getServerMessage(response)
+        val serverMessage = errorBody ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
             .errorCode(errorCode)
@@ -155,5 +156,16 @@ internal class APIErrorMapper @Inject constructor() {
             }
 
         return message ?: "No server message"
+    }
+
+    fun getErrorBody(response: Response<*>): String {
+        val errorBody =
+            try {
+                getIfNotEmpty(response.errorBody()!!.string()) ?: getIfNotEmpty(response.errorBody().toString())
+            } catch (e: IOException) {
+                null
+            }
+
+        return errorBody ?: "No error message"
     }
 }

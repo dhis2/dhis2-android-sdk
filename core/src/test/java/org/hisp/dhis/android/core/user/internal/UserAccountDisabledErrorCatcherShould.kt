@@ -58,12 +58,13 @@ class UserAccountDisabledErrorCatcherShould {
 
     @Test
     fun return_account_disabled() {
-        Truth.assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
+        Truth.assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
     }
 
     @Test
     fun delete_database() {
-        catcher.catchError(response)
+        catcher.catchError(response, response.errorBody()!!.string())
         verify(databaseDeletionHelper, times(1)).deleteActiveDatabase()
     }
 }

@@ -45,6 +45,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -98,14 +99,17 @@ public final class APICallExecutorImpl implements APICallExecutor {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
                 return processSuccessfulResponse(errorBuilder(call), response, emptyBodyExpected);
-            } else if (userAccountDisabledErrorCatcher.isUserAccountLocked(response)) {
-                this.catchAndThrow(userAccountDisabledErrorCatcher, errorBuilder(call), response);
-            } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
-                return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
-            } else if (errorCatcher != null) {
-                this.catchAndThrow(errorCatcher, errorBuilder(call), response);
+            } else {
+                String errorBody = errorMapper.getErrorBody(response);
+                if (userAccountDisabledErrorCatcher.isUserAccountLocked(response, errorBody)) {
+                    this.catchAndThrow(userAccountDisabledErrorCatcher, errorBuilder(call), response, errorBody);
+                } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
+                    return ObjectMapperFactory.objectMapper().readValue(errorBody, errorClass);
+                } else if (errorCatcher != null) {
+                    this.catchAndThrow(errorCatcher, errorBuilder(call), response, errorBody);
+                }
+                throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response, errorBody));
             }
-            throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response));
         } catch (D2Error d2Error) {
             throw d2Error;
         } catch (Throwable t) {
@@ -114,11 +118,11 @@ public final class APICallExecutorImpl implements APICallExecutor {
     }
 
     private <P> void catchAndThrow(APICallErrorCatcher errorCatcher, D2Error.Builder errorBuilder,
-                                   Response<P> response) throws IOException, D2Error {
-        D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
+                                   Response<P> response, String errorBody) throws IOException, D2Error {
+        D2ErrorCode d2ErrorCode = errorCatcher.catchError(response, errorBody);
 
         if (d2ErrorCode != null) {
-            D2Error d2error = errorMapper.responseException(errorBuilder, response, d2ErrorCode);
+            D2Error d2error = errorMapper.responseException(errorBuilder, response, d2ErrorCode, errorBody);
 
             if (errorCatcher.mustBeStored()) {
                 throw storeAndReturn(d2error);
@@ -133,7 +137,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
         if (emptyBodyExpected) {
             return null;
         } else if (response.body() == null) {
-            throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
+            throw storeAndReturn(errorMapper.responseException(errorBuilder, response, null));
         } else {
             return response.body();
         }

@@ -49,7 +49,7 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
         return true
     }
 
-    override fun catchError(response: Response<*>): D2ErrorCode? {
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return try {
             databaseDeletionHelper.deleteActiveDatabase()
             D2ErrorCode.USER_ACCOUNT_DISABLED
@@ -58,11 +58,11 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
         }
     }
 
-    fun isUserAccountLocked(response: Response<*>): Boolean {
+    fun isUserAccountLocked(response: Response<*>, errorBody: String?): Boolean {
         return try {
             val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-            val errorBody = objectMapper.readValue(response.errorBody()!!.string(), HttpMessageResponse::class.java)
-            isUnauthorized && errorBody.message().contains("Account disabled")
+            val responseErrorBody = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+            isUnauthorized && responseErrorBody.message().contains("Account disabled")
         } catch (e: Exception) {
             false
         }
@@ -70,13 +70,15 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
 
     fun catchError(throwable: Throwable): D2ErrorCode? {
         val response = (throwable as HttpException).response()!!
-        return catchError(response)
+        val errorBody = response.errorBody()?.string() ?: "No error"
+        return catchError(response, errorBody)
     }
 
     fun isUserAccountLocked(throwable: Throwable): Boolean {
         return try {
             val response = (throwable as HttpException).response()!!
-            isUserAccountLocked(response)
+            val errorBody = response.errorBody()?.string()
+            isUserAccountLocked(response, errorBody)
         } catch (e: Exception) {
             false
         }

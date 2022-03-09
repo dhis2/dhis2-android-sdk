@@ -6,9 +6,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Ignore("Test for db deletion on user disabled. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
 class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
@@ -20,7 +22,6 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
 
     @Test
     fun delete_database_when_user_disabled() {
-        // Enqueue user disabled response
         dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
         addDummyData()
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
@@ -36,7 +37,6 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
 
     @Test
     fun do_not_delete_database_when_user_has_bad_credentials() {
-        // Enqueue user bad credentials response
         dhis2MockServer.enqueueMockResponse(401, "user/user_unauthorized.json")
         addDummyData()
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)

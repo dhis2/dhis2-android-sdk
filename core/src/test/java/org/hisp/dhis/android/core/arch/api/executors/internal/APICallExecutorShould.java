@@ -196,7 +196,7 @@ public class APICallExecutorShould {
                 "Account disabled"));
 
         when(objectAPICall.execute()).thenReturn(disabledResponse);
-        when(userAccountDisabledErrorCatcher.isUserAccountLocked(any())).thenReturn(true);
+        when(userAccountDisabledErrorCatcher.isUserAccountLocked(any(), any())).thenReturn(true);
 
         try {
             apiCallExecutor.executeObjectCall(objectAPICall);
@@ -204,6 +204,6 @@ public class APICallExecutorShould {
             //Empty block
         }
 
-        verify(userAccountDisabledErrorCatcher).catchError(any());
+        verify(userAccountDisabledErrorCatcher).catchError(any(), any());
     }
 }

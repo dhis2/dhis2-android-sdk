@@ -57,26 +57,33 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
         val teiUid = "PgmUFEQYZdt"
 
         dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_single.json")
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_collection.json")
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
 
-        verifyDownloadedTrackedEntityInstanceSingle("trackedentity/tracked_entity_instance_single.json", teiUid)
+        verifyDownloadedTrackedEntityInstanceSingle("trackedentity/tracked_entity_instance.json", teiUid)
     }
 
     @Test
     fun remove_data_removed_in_server_after_second_download() {
         val teiUid = "PgmUFEQYZdt"
+        val program = "lxAQ7Zs9VYR"
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_single.json")
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byUid().eq(teiUid)
+            .byProgramUid(program)
+            .blockingDownload()
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_single.json")
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byUid().eq(teiUid)
+            .byProgramUid(program)
+            .blockingDownload()
 
         verifyDownloadedTrackedEntityInstanceSingle(
             "trackedentity/tracked_entity_instance_with_removed_data_single.json",
@@ -87,11 +94,15 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
     @Test
     fun download_glass_protected_tracked_entity_instance() {
         val teiUid = "PgmUFEQYZdt"
+        val program = "lxAQ7Zs9VYR"
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json")
         try {
-            d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
+            d2.trackedEntityModule().trackedEntityInstanceDownloader()
+                .byUid().eq(teiUid)
+                .byProgramUid(program)
+                .blockingDownload()
             fail("It should throw ownership error")
         } catch (e: RuntimeException) {
             assertThat(e.cause is D2Error).isTrue()
@@ -99,11 +110,14 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
         }
 
         dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json")
-        d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, "lxAQ7Zs9VYR", "Reason")
+        d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, program, "Reason")
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json")
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byUid().eq(teiUid)
+            .byProgramUid(program)
+            .blockingDownload()
 
         verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid)
     }

@@ -28,28 +28,27 @@
 package org.hisp.dhis.android.core.event.internal
 
 import android.util.Log
-import org.hisp.dhis.android.core.event.EventInternalAccessor.accessRelationships
 import dagger.Reusable
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
-import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler
-import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
-import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.event.EventInternalAccessor.accessRelationships
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.note.Note
-import java.util.ArrayList
-import javax.inject.Inject
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler
 
 @Reusable
 internal class EventHandler @Inject constructor(
@@ -89,16 +88,18 @@ internal class EventHandler @Inject constructor(
                     o.trackedEntityDataValues()
                 ) { dataValue: TrackedEntityDataValue -> dataValue.toBuilder().event(eventUid).build() }
             }
-            val notes: MutableCollection<Note> = ArrayList()
-            if (o.notes() != null) {
-                for (note in o.notes()!!) {
-                    notes.add(noteVersionManager.transform(Note.NoteType.EVENT_NOTE, o.uid(), note))
+
+            o.notes()?.let { notes ->
+                val transformed = notes.map { note ->
+                    noteVersionManager.transform(Note.NoteType.EVENT_NOTE, o.uid(), note)
                 }
+
+                val notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    transformed, Note.NoteType.EVENT_NOTE, o.uid()
+                )
+                noteHandler.handleMany(notesToSync)
             }
-            val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                notes, Note.NoteType.EVENT_NOTE, o.uid()
-            )
-            noteHandler.handleMany(notesToSync)
+
             val relationships = accessRelationships(o)
             if (relationships != null && relationships.isNotEmpty()) {
                 handleRelationships(relationships, o, relatives)
@@ -110,8 +111,11 @@ internal class EventHandler @Inject constructor(
     }
 
     override fun deleteIfCondition(o: Event): Boolean {
-        val validEventDate =
-            o.eventDate() != null || o.status() == EventStatus.SCHEDULE || o.status() == EventStatus.SKIPPED || o.status() == EventStatus.OVERDUE
+        val validEventDate = o.eventDate() != null ||
+            o.status() == EventStatus.SCHEDULE ||
+            o.status() == EventStatus.SKIPPED ||
+            o.status() == EventStatus.OVERDUE
+
         return !validEventDate || o.organisationUnit() == null
     }
 

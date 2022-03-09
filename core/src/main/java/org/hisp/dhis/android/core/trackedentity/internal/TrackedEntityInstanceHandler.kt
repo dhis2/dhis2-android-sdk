@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.util.Log
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.*
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceHandler @Inject constructor(
@@ -74,8 +74,10 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     }
 
     override fun afterObjectHandled(
-        o: TrackedEntityInstance, action: HandleAction?,
-        params: IdentifiableDataHandlerParams, relatives: RelationshipItemRelatives?
+        o: TrackedEntityInstance,
+        action: HandleAction?,
+        params: IdentifiableDataHandlerParams,
+        relatives: RelationshipItemRelatives?
     ) {
         if (action !== HandleAction.Delete) {
             trackedEntityAttributeValueHandler.handleMany(
@@ -96,7 +98,8 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
                     hasAllAttributes = false,
                     hasAllEnrollments = false,
                     params.overwrite,
-                    asRelationship = false)
+                    asRelationship = false
+                )
                 enrollmentHandler.handleMany(enrollments, thisParams, relatives)
             }
             val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(o)

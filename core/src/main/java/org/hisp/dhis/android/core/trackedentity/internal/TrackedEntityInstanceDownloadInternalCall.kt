@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -113,9 +112,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         iterationCount: Int
     ): Boolean {
         return params.limitByProgram() != true &&
-                iterables.teisCount < bundle.commonParams().limit &&
-                iterables.orgUnitsBundleToDownload.isNotEmpty() &&
-                iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+            iterables.teisCount < bundle.commonParams().limit &&
+            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     private fun iterateBundle(
@@ -275,10 +274,12 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
         for (uid in bundle.commonParams().uids) {
             try {
-                val tei = querySingleTei(uid, teiQuery)
+                val useEntityEndpoint = teiQuery.commonParams().program != null
+
+                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery)
 
                 if (tei != null) {
-                    val hasAllAttributes = teiQuery.commonParams().program == null
+                    val hasAllAttributes = !useEntityEndpoint
                     val hasAllEnrollments = teiQuery.commonParams().program == null
 
                     persistenceCallFactory.persistTEIs(
@@ -301,16 +302,16 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         return result
     }
 
-    private fun querySingleTei(uid: String, query: TrackerQuery): TrackedEntityInstance? {
-        return if (query.commonParams().program == null) {
+    private fun querySingleTei(uid: String, useEntityEndpoint: Boolean, query: TrackerQuery): TrackedEntityInstance? {
+        return if (useEntityEndpoint) {
+            apiCallExecutor.executeObjectCallWithErrorCatcher(
+                endpointCallFactory.getEntityCall(uid, query), TrackedEntityInstanceCallErrorCatcher()
+            )
+        } else {
             val collectionQuery = query.toBuilder().uids(listOf(uid)).build()
             rxApiCallExecutor.wrapSingle(
                 endpointCallFactory.getCollectionCall(collectionQuery), true
             ).blockingGet().items().firstOrNull()
-        } else {
-            apiCallExecutor.executeObjectCallWithErrorCatcher(
-                endpointCallFactory.getEntityCall(uid, query), TrackedEntityInstanceCallErrorCatcher()
-            )
         }
     }
 

@@ -29,26 +29,25 @@ package org.hisp.dhis.android.core.enrollment.internal
 
 import android.util.Log
 import dagger.Reusable
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
-import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
-import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentHandler @Inject constructor(
@@ -97,16 +96,17 @@ internal class EnrollmentHandler @Inject constructor(
                 asRelationship = false
             )
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(o), thisParams, relatives)
-            val notes: MutableCollection<Note> = ArrayList()
-            if (o.notes() != null) {
-                for (note in o.notes()!!) {
-                    notes.add(noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, o.uid(), note))
+
+            o.notes()?.let { notes ->
+                val transformed = notes.map { note ->
+                    noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, o.uid(), note)
                 }
+                val notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    transformed, Note.NoteType.ENROLLMENT_NOTE, o.uid()
+                )
+                noteHandler.handleMany(notesToSync)
             }
-            val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                notes, Note.NoteType.ENROLLMENT_NOTE, o.uid()
-            )
-            noteHandler.handleMany(notesToSync)
+
             val relationships = EnrollmentInternalAccessor.accessRelationships(o)
             if (relationships != null && relationships.isNotEmpty()) {
                 handleRelationships(relationships, o, relatives)

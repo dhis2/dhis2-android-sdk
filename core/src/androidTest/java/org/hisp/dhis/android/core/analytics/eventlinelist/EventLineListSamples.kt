@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -64,6 +66,36 @@ object EventLineListSamples {
         .uid(generator.generate())
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
+
+    val legendSet1: LegendSet = LegendSet.builder()
+        .uid(generator.generate())
+        .displayName("Legend set 1")
+        .legends(
+            listOf(
+                Legend.builder().uid(generator.generate()).name("0 - 20").startValue(0.0).endValue(20.0)
+                    .color("#ffffb2").build(),
+                Legend.builder().uid(generator.generate()).name("20 - 40").startValue(20.0).endValue(40.0)
+                    .color("#fecc5c").build(),
+                Legend.builder().uid(generator.generate()).name("40 - 60").startValue(40.0).endValue(60.0)
+                    .color("#f03b20").build(),
+                Legend.builder().uid(generator.generate()).name("60 - 80").startValue(60.0).endValue(80.0)
+                    .color("#fecc5c").build(),
+                Legend.builder().uid(generator.generate()).name("80 - 100").startValue(80.0).endValue(100.0)
+                    .color("#bd0026").build()
+            )
+        ).build()
+
+    val legendSet2: LegendSet = LegendSet.builder()
+        .uid(generator.generate())
+        .displayName("Legend set 2")
+        .legends(
+            listOf(
+                Legend.builder().uid(generator.generate()).name("0 - 50").startValue(0.0).endValue(50.0)
+                    .color("#ffffff").build(),
+                Legend.builder().uid(generator.generate()).name("50 - 100").startValue(50.0).endValue(100.0)
+                    .color("#000000").build()
+            )
+        ).build()
 
     val program1: Program = Program.builder()
         .uid(generator.generate())
@@ -118,6 +150,7 @@ object EventLineListSamples {
         .displayName("Data Element 1")
         .valueType(ValueType.NUMBER)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     val dataElement2: DataElement = DataElement.builder()
@@ -125,6 +158,7 @@ object EventLineListSamples {
         .displayName("Data Element 2")
         .valueType(ValueType.NUMBER)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     fun programIndicator(expression: String): ProgramIndicator = ProgramIndicator.builder()
@@ -133,6 +167,7 @@ object EventLineListSamples {
         .program(ObjectWithUid.fromIdentifiable(program1))
         .expression(expression)
         .aggregationType(AggregationType.SUM)
+        .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
         .build()
 
     fun event(programStage: String, eventDate: Date): Event {

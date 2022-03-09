@@ -75,35 +75,43 @@ object DimensionalResponseSamples {
         values = listOf(
             DimensionalValue(
                 listOf(dataElement1.uid(), co11.uid(), period1.periodId()!!),
-                "34.5"
+                "34.5",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co12.uid(), period1.periodId()!!),
-                "10.0"
+                "10.0",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co11.uid(), period1.periodId()!!),
-                "13"
+                "13",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co12.uid(), period1.periodId()!!),
-                "15"
+                "15",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co11.uid(), period2.periodId()!!),
-                "34.5"
+                "34.5",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co12.uid(), period2.periodId()!!),
-                "10.0"
+                "10.0",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co11.uid(), period2.periodId()!!),
-                "13"
+                "13",
+                null
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co12.uid(), period2.periodId()!!),
-                "15"
+                "15",
+                null
             )
         )
     )

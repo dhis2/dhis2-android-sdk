@@ -62,6 +62,16 @@ public final class DoubleFilterConnector<R extends BaseRepository>
         return newWithWrappedScope(FilterItemOperator.GT, value);
     }
 
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The biggerOrEqualTo filter checks if the given field has a value which is bigger or equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    public R biggerOrEqualTo(double value) {
+        return newWithWrappedScope(FilterItemOperator.GE, value);
+    }
+
     String wrapValue(Double value) {
         return value.toString();
     }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.OrganisationUnitFilter
@@ -40,7 +41,9 @@ internal data class EventLineListParams(
 
     val eventDates: List<DateFilterPeriod>? = null,
 
-    val organisationUnits: List<OrganisationUnitFilter>? = null
+    val organisationUnits: List<OrganisationUnitFilter>? = null,
+
+    val analyticsLegendStrategy: AnalyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
 ) : BaseScope
 
 internal data class LineListItem(

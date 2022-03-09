@@ -42,5 +42,6 @@ data class LineListResponse(
 data class LineListResponseValue(
     val uid: String,
     val displayName: String,
-    val value: String?
+    val value: String?,
+    val legend: String?
 )

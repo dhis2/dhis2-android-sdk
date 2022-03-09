@@ -38,5 +38,6 @@ data class DimensionalResponse(
 
 data class DimensionalValue(
     val dimensions: List<String>,
-    val value: String?
+    val value: String?,
+    val legend: String?
 )

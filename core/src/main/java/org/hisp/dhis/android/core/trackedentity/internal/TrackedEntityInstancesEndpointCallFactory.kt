@@ -40,7 +40,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     private val trackedEntityInstanceService: TrackedEntityInstanceService
 ) {
 
-    fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
+    fun getCollectionCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             getUidStr(query),
             query.orgUnit(),
@@ -76,7 +76,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
         }
     }
 
-    fun getSingleCall(uid: String, query: TrackerQuery): Call<TrackedEntityInstance> {
+    fun getEntityCall(uid: String, query: TrackerQuery): Call<TrackedEntityInstance> {
         return trackedEntityInstanceService.getSingleTrackedEntityInstance(
             uid,
             query.commonParams().ouMode.name,

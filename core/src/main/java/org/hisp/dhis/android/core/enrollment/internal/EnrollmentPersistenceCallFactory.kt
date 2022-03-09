@@ -25,60 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class TrackerQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @Nullable
-    abstract String orgUnit();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract EnrollmentStatus programStatus();
-
-    @Nullable
-    abstract String lastUpdatedStr();
-
-    abstract Builder toBuilder();
-
-    static Builder builder() {
-        return new AutoValue_TrackerQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .uids(Collections.emptyList());
+@Reusable
+internal class EnrollmentPersistenceCallFactory @Inject constructor(
+    private val enrollmentHandler: IdentifiableDataHandler<Enrollment>
+) {
+    fun persistAsRelationships(enrollments: List<Enrollment>): Completable {
+        return persistEnrollmentsInternal(enrollments, true, false, false)
     }
 
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnit(String orgUnit);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder lastUpdatedStr(String lastUpdatedStr);
-
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        abstract TrackerQuery build();
+    private fun persistEnrollmentsInternal(
+        enrollments: List<Enrollment>, asRelationship: Boolean, isFullUpdate: Boolean, overwrite: Boolean
+    ): Completable {
+        val params = IdentifiableDataHandlerParams(
+            hasAllAttributes = true,
+            hasAllEnrollments = isFullUpdate,
+            overwrite = overwrite,
+            asRelationship = asRelationship
+        )
+        return Completable.defer {
+            enrollmentHandler.handleMany(enrollments, params, relatives = null)
+            Completable.complete()
+        }
     }
 }

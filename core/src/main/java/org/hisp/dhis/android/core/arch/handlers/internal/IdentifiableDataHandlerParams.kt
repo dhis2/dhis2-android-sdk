@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Completable;
-
-@Reusable
-public final class EnrollmentPersistenceCallFactory {
-
-    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
-
-    @Inject
-    EnrollmentPersistenceCallFactory(
-            @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler) {
-        this.enrollmentHandler = enrollmentHandler;
-    }
-
-    public Completable persistAsRelationships(final List<Enrollment> enrollments) {
-        return persistEnrollmentsInternal(enrollments, true, false, false);
-    }
-
-    private Completable persistEnrollmentsInternal(
-            final List<Enrollment> enrollments, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
-        return Completable.defer(() -> {
-            enrollmentHandler.handleMany(enrollments, asRelationship, isFullUpdate, overwrite, null);
-            return Completable.complete();
-        });
-    }
-}
+data class IdentifiableDataHandlerParams(
+    val hasAllAttributes: Boolean,
+    val hasAllEnrollments: Boolean,
+    val overwrite: Boolean,
+    val asRelationship: Boolean
+)

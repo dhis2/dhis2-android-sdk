@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -112,9 +113,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         iterationCount: Int
     ): Boolean {
         return params.limitByProgram() != true &&
-            iterables.teisCount < bundle.commonParams().limit &&
-            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
-            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+                iterables.teisCount < bundle.commonParams().limit &&
+                iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+                iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     private fun iterateBundle(
@@ -238,13 +239,16 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             teiQueryBuilder.page(paging.page())
 
             val pageTEIs = rxApiCallExecutor.wrapSingle(
-                endpointCallFactory.getCall(teiQueryBuilder.build()), true
+                endpointCallFactory.getCollectionCall(teiQueryBuilder.build()), true
             ).blockingGet().items()
 
             val teisToPersist = getTEIsToPersist(paging, pageTEIs)
 
-            val isFullUpdate = baseQuery.commonParams().program == null
-            persistenceCallFactory.persistTEIs(teisToPersist, isFullUpdate, overwrite, relatives).blockingAwait()
+            val hasAllAttributes = true
+            val hasAllEnrollments = baseQuery.commonParams().program == null
+
+            persistenceCallFactory.persistTEIs(teisToPersist, hasAllAttributes, hasAllEnrollments, overwrite, relatives)
+                .blockingAwait()
 
             downloadedTEIsForCombination += teisToPersist.size
 
@@ -271,13 +275,20 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
         for (uid in bundle.commonParams().uids) {
             try {
-                val tei = apiCallExecutor.executeObjectCallWithErrorCatcher(
-                    endpointCallFactory.getSingleCall(uid, teiQuery), TrackedEntityInstanceCallErrorCatcher()
-                )
+                val tei = querySingleTei(uid, teiQuery)
 
                 if (tei != null) {
-                    val isFullUpdate = teiQuery.commonParams().program == null
-                    persistenceCallFactory.persistTEIs(listOf(tei), isFullUpdate, overwrite, relatives).blockingAwait()
+                    val hasAllAttributes = teiQuery.commonParams().program == null
+                    val hasAllEnrollments = teiQuery.commonParams().program == null
+
+                    persistenceCallFactory.persistTEIs(
+                        listOf(tei),
+                        hasAllAttributes,
+                        hasAllEnrollments,
+                        overwrite,
+                        relatives
+                    ).blockingAwait()
+
                     result.teiCount++
                 }
             } catch (d2Error: D2Error) {
@@ -288,6 +299,19 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             }
         }
         return result
+    }
+
+    private fun querySingleTei(uid: String, query: TrackerQuery): TrackedEntityInstance? {
+        return if (query.commonParams().program == null) {
+            val collectionQuery = query.toBuilder().uids(listOf(uid)).build()
+            rxApiCallExecutor.wrapSingle(
+                endpointCallFactory.getCollectionCall(collectionQuery), true
+            ).blockingGet().items().firstOrNull()
+        } else {
+            apiCallExecutor.executeObjectCallWithErrorCatcher(
+                endpointCallFactory.getEntityCall(uid, query), TrackedEntityInstanceCallErrorCatcher()
+            )
+        }
     }
 
     private fun getTEIsToPersist(paging: Paging, pageTEIs: List<TrackedEntityInstance>): List<TrackedEntityInstance> {

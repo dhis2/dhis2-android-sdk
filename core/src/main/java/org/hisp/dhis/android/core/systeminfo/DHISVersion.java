@@ -71,7 +71,7 @@ public enum DHISVersion {
         } else if (versionStr.startsWith(V2_37_STR)) {
             return V2_37;
         } else if (versionStr.startsWith(V2_38_STR)) {
-            return V2_37;
+            return V2_38;
         } else {
             return null;
         }

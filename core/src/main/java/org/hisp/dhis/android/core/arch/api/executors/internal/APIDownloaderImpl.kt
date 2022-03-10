@@ -106,6 +106,23 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
+    override fun <K, V> downloadPartitionedMap(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: (Map<K, V>) -> Any,
+        pageDownloader: (Set<String>) -> Single<out Map<K, V>>
+    ): Single<Map<K, V>> {
+        val partitions = CollectionsHelper.setPartition(uids, pageSize)
+        return Observable.fromIterable(partitions)
+            .flatMapSingle(pageDownloader)
+            .reduce(
+                mapOf()
+            ) { items: Map<K, V>, items2: Map<K, V> ->
+                items + items2
+            }
+            .doOnSuccess { map: Map<K, V> -> handler(map) }
+    }
+
     override fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,

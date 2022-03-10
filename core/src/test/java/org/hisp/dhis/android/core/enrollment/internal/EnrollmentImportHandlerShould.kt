@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
@@ -66,6 +67,8 @@ class EnrollmentImportHandlerShould {
 
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
 
+    private val fileResourceHelper: FileResourceHelper = mock()
+
     private val enrollment: Enrollment = mock()
 
     private val missingEnrollment: Enrollment = mock()
@@ -84,7 +87,7 @@ class EnrollmentImportHandlerShould {
     fun setUp() {
         enrollmentImportHandler = EnrollmentImportHandler(
             enrollmentStore, eventImportHandler, trackerImportConflictStore, trackerImportConflictParser,
-            jobReportEnrollmentHandler, dataStatePropagator, fileResourceStore
+            jobReportEnrollmentHandler, dataStatePropagator, fileResourceStore, fileResourceHelper
         )
 
         whenever(enrollment.trackedEntityInstance()).thenReturn("tei_uid")

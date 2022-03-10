@@ -26,28 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal;
+package org.hisp.dhis.android.core.category;
 
-public final class ServerURLWrapper {
+import java.util.HashMap;
+import java.util.List;
 
-    private static String baseUrlUpToAPI;
-
-    public static void setServerUrl(String newHost) {
-        baseUrlUpToAPI = extractBeforeAPI(newHost);
-    }
-    
-    public static String getServerUrl() {
-        return baseUrlUpToAPI;
-    }
-
-    private static String extractBeforeAPI(String url) {
-        return url.split("/api/")[0];
-    }
-
-    static String extractAfterAPI(String url) {
-        return url.split("/api/")[1];
-    }
-
-    private ServerURLWrapper() {
-    }
+public class CategoryOptionOrganisationUnits extends HashMap<String, List<String>> {
 }

@@ -25,33 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class TrackerJobObjectStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject> {
-
-    public TrackerJobObjectStoreIntegrationShould() {
-        super(TrackerJobObjectStore.create(TestDatabaseAdapterFactory.get()), TrackerJobObjectTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected TrackerJobObject buildObject() {
-        return TrackerJobObjectSamples.get1();
-    }
-
-    @Override
-    protected TrackerJobObject buildObjectToUpdate() {
+@RunWith(D2JunitRunner::class)
+class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
+    create(TestDatabaseAdapterFactory.get()),
+    TrackerJobObjectTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()
-                .toBuilder()
-                .jobUid("anotherJobId")
-                .build();
+    }
+
+    override fun buildObjectToUpdate(): TrackerJobObject {
+        return TrackerJobObjectSamples.get1()
+            .toBuilder()
+            .jobUid("anotherJobId")
+            .build()
     }
 }

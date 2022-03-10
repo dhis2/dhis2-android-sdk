@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.tracker.importer.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
+object TrackerJobObjectSamples {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        FileResourceEntityDIModule.class
-})
-public final class FileResourcePackageDIModule {
-
-    @Provides
-    @Reusable
-    FileResourceService service(Retrofit retrofit) {
-        return retrofit.create(FileResourceService.class);
-    }
-
-    @Provides
-    @Reusable
-    FileResourceModule module(FileResourceModuleImpl impl) {
-        return impl;
+    fun get1(): TrackerJobObject {
+        return TrackerJobObject.builder()
+            .id(1L)
+            .trackerType(TrackerImporterObjectType.EVENT)
+            .objectUid("oUid")
+            .jobUid("jUid")
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .fileResources(listOf("resource1", "resource2"))
+            .build()
     }
 }

@@ -27,28 +27,44 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 internal abstract class JobReportTypeHandler constructor(
-    protected val relationshipStore: RelationshipStore
+    protected val relationshipStore: RelationshipStore,
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
 ) {
 
-    fun handleSuccess(uid: String) {
-        val handleAction = handleObject(uid, State.SYNCED)
+    fun handleSuccess(jo: TrackerJobObject) {
+        val handleAction = handleObject(jo.objectUid(), State.SYNCED)
+        setFileResourceState(jo, State.SYNCED)
 
         if (handleAction === HandleAction.Delete) {
-            getRelatedRelationships(uid).forEach { relationshipStore.delete(it) }
+            getRelatedRelationships(jo.objectUid()).forEach { relationshipStore.delete(it) }
         }
     }
 
-    fun handleError(errorReport: JobValidationError) {
-        handleObject(errorReport.uid, State.ERROR)
+    fun handleError(jo: TrackerJobObject, errorReport: JobValidationError) {
+        handleObject(jo.objectUid(), State.ERROR)
+        setFileResourceState(jo, State.TO_POST)
         storeConflict(errorReport)
     }
 
-    abstract fun handleObject(uid: String, state: State): HandleAction
-    abstract fun storeConflict(errorReport: JobValidationError)
-    abstract fun getRelatedRelationships(uid: String): List<String>
+    fun handleNotPresent(jo: TrackerJobObject) {
+        handleObject(jo.objectUid(), State.TO_UPDATE)
+        setFileResourceState(jo, State.TO_POST)
+    }
+
+    private fun setFileResourceState(jobObject: TrackerJobObject, state: State) {
+        jobObject.fileResources().forEach {
+            fileResourceStore.setSyncStateIfUploading(it, state)
+        }
+    }
+
+    protected abstract fun handleObject(uid: String, state: State): HandleAction
+    protected abstract fun storeConflict(errorReport: JobValidationError)
+    protected abstract fun getRelatedRelationships(uid: String): List<String>
 }

@@ -42,7 +42,7 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
         var redirects = 0
         while (response.isRedirect && redirects <= MaxRedirects) {
             val location = response.header(LOCATION_KEY)
-            ServerURLWrapper.setServerUrl(location)
+            location?.let { ServerURLWrapper.setServerUrl(it) }
             response.close()
             val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
             response = chain.proceed(redirectReq)

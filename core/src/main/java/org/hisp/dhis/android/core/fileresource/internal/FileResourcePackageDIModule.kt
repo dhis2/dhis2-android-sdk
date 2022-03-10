@@ -25,49 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.core.fileresource.internal
 
-import androidx.annotation.NonNull;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
-import org.hisp.dhis.android.core.fileresource.FileResource;
+@Module(
+    includes = [
+        FileResourceEntityDIModule::class
+    ]
+)
+internal class FileResourcePackageDIModule {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-@Reusable
-public class FileResourceCall {
-
-    private final RxAPICallExecutor rxCallExecutor;
-
-    private final FileResourceModuleDownloader fileResourceModuleDownloader;
-
-    @Inject
-    FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                     @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
-        this.rxCallExecutor = rxCallExecutor;
-        this.fileResourceModuleDownloader = fileResourceModuleDownloader;
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): FileResourceService {
+        return retrofit.create(FileResourceService::class.java)
     }
 
-    public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(1);
-
-        return rxCallExecutor.wrapObservableTransactionally(
-                Observable.create(emitter -> {
-
-                    fileResourceModuleDownloader.downloadMetadata().call();
-                    emitter.onNext(progressManager.increaseProgress(FileResource.class, false));
-
-                    emitter.onComplete();
-
-                }), true);
-    }
-
-    public void blockingDownload() {
-        download().blockingSubscribe();
+    @Provides
+    @Reusable
+    fun module(impl: FileResourceModuleImpl): FileResourceModule {
+        return impl
     }
 }

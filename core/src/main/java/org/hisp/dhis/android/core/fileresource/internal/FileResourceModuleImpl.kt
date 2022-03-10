@@ -25,29 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
-import retrofit2.http.GET
-import retrofit2.http.Query
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
 
-internal interface CategoryOptionService {
+@Reusable
+internal class FileResourceModuleImpl @Inject internal constructor(
+    private val fileResources: FileResourceCollectionRepository,
+    private val fileResourceCall: FileResourceCall
+) : FileResourceModule {
 
-    @GET("categoryOptions")
-    fun getCategoryOptions(
-        @Query("fields") @Which fields: Fields<CategoryOption>,
-        @Query("filter") categoryUidsFilterString: String,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<CategoryOption>>
+    override fun download(): Observable<D2Progress> {
+        return fileResourceCall.download()
+    }
 
-    @GET("categoryOptions/orgUnits")
-    fun getCategoryOptionOrgUnits(
-        @Query("categoryOptions") categoryOptions: String
-    ): Single<CategoryOptionOrganisationUnits>
+    override fun blockingDownload() {
+        fileResourceCall.blockingDownload()
+    }
+
+    override fun fileResources(): FileResourceCollectionRepository {
+        return fileResources
+    }
 }

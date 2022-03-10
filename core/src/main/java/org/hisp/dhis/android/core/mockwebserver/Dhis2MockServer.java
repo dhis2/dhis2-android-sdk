@@ -86,6 +86,7 @@ public class Dhis2MockServer {
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
     private static final String CATEGORIES_JSON = "category/categories.json";
     private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
+    private static final String CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json";
     private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
@@ -230,6 +231,8 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORIES_JSON);
                 } else if (path.startsWith("/api/categoryOptions?")) {
                     return createMockResponse(CATEGORY_OPTIONS_JSON);
+                } else if (path.startsWith("/api/categoryOptions/orgUnits?")) {
+                    return createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
                 } else if (path.startsWith("/api/visualizations?")) {
                     return createMockResponse(VISUALIZATIONS_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
@@ -307,6 +310,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
+        enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
         enqueueMockResponse(VISUALIZATIONS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);

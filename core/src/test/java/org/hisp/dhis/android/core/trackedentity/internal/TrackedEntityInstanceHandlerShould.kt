@@ -225,13 +225,28 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun do_not_delete_orphan_attribute_values_if_not_all_attributes() {
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+    fun do_not_delete_orphan_attribute_values_if_not_all_attributes_and_null_program() {
+        val params = IdentifiableDataHandlerParams(false, false, false, false, null)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
 
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
         verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
+        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInProgramAttributes(any(), any(), any())
+    }
+
+    @Test
+    fun delete_orphan_program_attribute_values_if_not_all_attributes_and_program() {
+        val params = IdentifiableDataHandlerParams(false, false, false, false, "program")
+        trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
+
+        verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
+        verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
+        verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
+        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
+        verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInProgramAttributes(
+            any(), any(), any()
+        )
     }
 }

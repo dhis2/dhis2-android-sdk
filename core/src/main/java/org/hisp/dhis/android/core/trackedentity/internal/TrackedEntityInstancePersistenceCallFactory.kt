@@ -43,17 +43,9 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
 ) {
     fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
-        hasAllAttributes: Boolean,
-        hasAllEnrollments: Boolean,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives
     ): Completable {
-        val params = IdentifiableDataHandlerParams(
-            hasAllAttributes = hasAllAttributes,
-            hasAllEnrollments = hasAllEnrollments,
-            overwrite = overwrite,
-            asRelationship = false
-        )
         return persistTEIsInternal(trackedEntityInstances, params, relatives)
     }
 

@@ -87,9 +87,9 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
             }
 
             if (params.hasAllAttributes) {
-                deleteOrphanAttributes(o)
-            } else {
-                // TODO Delete program attributes
+                deleteOrphanAttributes(o, program = null)
+            } else if (params.program != null) {
+                deleteOrphanAttributes(o, params.program)
             }
 
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
@@ -128,15 +128,19 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
         return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build()
     }
 
-    private fun deleteOrphanAttributes(tei: TrackedEntityInstance) {
-        val trackedEntityAttributeValues = tei.trackedEntityAttributeValues()
+    private fun deleteOrphanAttributes(tei: TrackedEntityInstance, program: String?) {
+        tei.trackedEntityAttributeValues()?.let { attributes ->
+            val attributeUids = attributes.mapNotNull { it.trackedEntityAttribute() }
 
-        if (trackedEntityAttributeValues.isNullOrEmpty()) {
-            return
+            if (program == null) {
+                trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(tei.uid(), attributeUids)
+            } else {
+                trackedEntityAttributeValueStore.deleteByInstanceAndNotInProgramAttributes(
+                    tei.uid(),
+                    attributeUids,
+                    program
+                )
+            }
         }
-
-        val attributeUids = trackedEntityAttributeValues.mapNotNull { it.trackedEntityAttribute() }
-
-        trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(tei.uid(), attributeUids)
     }
 }

@@ -32,5 +32,6 @@ data class IdentifiableDataHandlerParams(
     val hasAllAttributes: Boolean,
     val hasAllEnrollments: Boolean,
     val overwrite: Boolean,
-    val asRelationship: Boolean
+    val asRelationship: Boolean,
+    val program: String? = null
 )

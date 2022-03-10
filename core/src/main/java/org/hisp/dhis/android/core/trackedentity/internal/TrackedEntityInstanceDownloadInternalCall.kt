@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -243,10 +244,15 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
             val teisToPersist = getTEIsToPersist(paging, pageTEIs)
 
-            val hasAllAttributes = true
-            val hasAllEnrollments = baseQuery.commonParams().program == null
+            val persistParams = IdentifiableDataHandlerParams(
+                hasAllAttributes = true,
+                hasAllEnrollments = baseQuery.commonParams().program == null,
+                overwrite = overwrite,
+                asRelationship = false,
+                program = baseQuery.commonParams().program
+            )
 
-            persistenceCallFactory.persistTEIs(teisToPersist, hasAllAttributes, hasAllEnrollments, overwrite, relatives)
+            persistenceCallFactory.persistTEIs(teisToPersist, persistParams, relatives)
                 .blockingAwait()
 
             downloadedTEIsForCombination += teisToPersist.size
@@ -279,16 +285,15 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                 val tei = querySingleTei(uid, useEntityEndpoint, teiQuery)
 
                 if (tei != null) {
-                    val hasAllAttributes = !useEntityEndpoint
-                    val hasAllEnrollments = teiQuery.commonParams().program == null
+                    val persistParams = IdentifiableDataHandlerParams(
+                        hasAllAttributes = !useEntityEndpoint,
+                        hasAllEnrollments = teiQuery.commonParams().program == null,
+                        overwrite = overwrite,
+                        asRelationship = false,
+                        program = teiQuery.commonParams().program
+                    )
 
-                    persistenceCallFactory.persistTEIs(
-                        listOf(tei),
-                        hasAllAttributes,
-                        hasAllEnrollments,
-                        overwrite,
-                        relatives
-                    ).blockingAwait()
+                    persistenceCallFactory.persistTEIs(listOf(tei), persistParams, relatives).blockingAwait()
 
                     result.teiCount++
                 }

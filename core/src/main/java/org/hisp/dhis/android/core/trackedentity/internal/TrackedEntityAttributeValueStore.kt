@@ -25,25 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<TrackedEntityAttributeValue> {
+    fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>>
+    fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue>
+    fun deleteByInstanceAndNotInAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>
+    )
+    fun deleteByInstanceAndNotInProgramAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        program: String
+    )
 
-import java.util.List;
-import java.util.Map;
-
-import androidx.annotation.NonNull;
-
-public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
-
-    Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost();
-
-    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
-
-    void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
-                                            @NonNull List<String> trackedEntityAttributeUids);
-
-    void removeDeletedAttributeValuesByInstance(@NonNull String trackedEntityInstanceUid);
+    fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
 }

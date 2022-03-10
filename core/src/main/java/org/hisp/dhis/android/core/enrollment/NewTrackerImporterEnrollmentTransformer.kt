@@ -54,7 +54,7 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .organisationUnit(o.organisationUnit())
             .program(o.program())
             .enrolledAt(o.enrollmentDate())
-            .occurredAt(o.enrollmentDate())
+            .occurredAt(o.incidentDate())
             .completedAt(o.completedDate())
             .followUp(o.followUp())
             .status(o.status())

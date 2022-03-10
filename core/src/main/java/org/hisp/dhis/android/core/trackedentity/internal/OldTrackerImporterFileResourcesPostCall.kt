@@ -31,12 +31,14 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.imports.internal.ItemsWithFileResources
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -50,34 +52,38 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
     fun uploadTrackedEntityFileResources(
         trackedEntityInstances: List<TrackedEntityInstance>
-    ): Single<Pair<List<TrackedEntityInstance>, List<String>>> {
+    ): Single<ItemsWithFileResources<TrackedEntityInstance>> {
         return Single.create { emitter ->
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                emitter.onSuccess(Pair(trackedEntityInstances, emptyList()))
+                emitter.onSuccess(ItemsWithFileResources(trackedEntityInstances, emptyList()))
             } else {
                 val successfulTeis = trackedEntityInstances.mapNotNull {
                     catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
                 }
-                emitter.onSuccess(Pair(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second }))
+                emitter.onSuccess(
+                    ItemsWithFileResources(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second })
+                )
             }
         }
     }
 
     fun uploadEventsFileResources(
         events: List<Event>
-    ): Single<Pair<List<Event>, List<String>>> {
+    ): Single<ItemsWithFileResources<Event>> {
         return Single.create { emitter ->
             val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
 
             if (fileResources.isEmpty()) {
-                emitter.onSuccess(Pair(events, emptyList()))
+                emitter.onSuccess(ItemsWithFileResources(events, emptyList()))
             } else {
                 val successfulEvents = events.mapNotNull {
                     catchErrorToNull { uploadEvent(it, fileResources) }
                 }
-                emitter.onSuccess(Pair(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second }))
+                emitter.onSuccess(
+                    ItemsWithFileResources(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second })
+                )
             }
         }
     }
@@ -148,6 +154,14 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
             event.toBuilder().trackedEntityDataValues(updatedDataValues).build(),
             uploadedFileResources
         )
+    }
+
+    fun updateFileResourceStates(fileResources: List<String>) {
+        fileResources.forEach { fr ->
+            val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+            fileResourceStore.setSyncStateIfUploading(fr, state)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")

@@ -27,15 +27,12 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import java.util.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.*
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -76,10 +73,6 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
 
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
-
-    private val fileResourceHelper: FileResourceHelper = mock()
-
     private val trackedEntityInstance: TrackedEntityInstance = mock()
 
     private val instances: List<TrackedEntityInstance> = ArrayList()
@@ -94,7 +87,7 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
             trackerImportConflictParser, relationshipStore, dataStatePropagator, relationshipDHISVersionManager,
-            relationshipCollectionRepository, trackedEntityAttributeValueStore, fileResourceStore, fileResourceHelper
+            relationshipCollectionRepository, trackedEntityAttributeValueStore
         )
 
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)
@@ -102,7 +95,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun do_nothing_when_passing_null_argument() {
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances, emptyList())
+        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances)
         verify(trackedEntityInstanceStore, never()).setSyncStateOrDelete(anyString(), any())
     }
 
@@ -112,7 +105,7 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances, emptyList()
+            listOf(importSummary), instances
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -125,7 +118,7 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances, emptyList()
+            listOf(importSummary), instances
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -142,12 +135,12 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importEnrollment.importSummaries()).doReturn(enrollmentSummaries)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances, emptyList()
+            listOf(importSummary), instances
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-            eq(enrollmentSummaries), anyList(), eq(State.SYNCED), anyList()
+            eq(enrollmentSummaries), anyList(), eq(State.SYNCED)
         )
     }
 
@@ -160,7 +153,7 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances, emptyList()
+            listOf(importSummary), instances
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
@@ -168,47 +161,19 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun mark_file_resources_as_synced_if_success() {
+    fun return_tracked_entity_instances_not_present_in_the_response() {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
-        val teis = listOf(
-            sampleTei(sampleTeiUid, listOf(sampleAttributeValue(sampleTeiUid, "att1", "resource1")))
+        val instances = listOf(trackedEntityInstance)
+        whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
+
+        val response = trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+            listOf(importSummary), instances
         )
 
-        whenever(
-            fileResourceHelper.isPresentInAttributeValues("resource1", teis.first().trackedEntityAttributeValues())
-        ).doReturn(true)
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), teis, listOf("resource1", "resource2")
-        )
-
-        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
-        verify(fileResourceStore, times(1)).setSyncStateIfUploading("resource1", State.SYNCED)
-        verifyNoMoreInteractions(fileResourceStore)
-    }
-
-    @Test
-    fun mark_file_resources_as_to_post_if_failure() {
-        whenever(importSummary.status()).doReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
-
-        val teis = listOf(
-            sampleTei(sampleTeiUid, listOf(sampleAttributeValue(sampleTeiUid, "att1", "resource1")))
-        )
-
-        whenever(
-            fileResourceHelper.isPresentInAttributeValues("resource1", teis.first().trackedEntityAttributeValues())
-        ).doReturn(true)
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), teis, listOf("resource1", "resource2")
-        )
-
-        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.ERROR)
-        verify(fileResourceStore, times(1)).setSyncStateIfUploading("resource1", State.TO_POST)
-        verifyNoMoreInteractions(fileResourceStore)
+        assertThat(response.teis.ignored.size).isEqualTo(1)
+        assertThat(response.teis.ignored.first().uid()).isEqualTo("missing_tei_uid")
     }
 
     @Test
@@ -224,18 +189,10 @@ class TrackedEntityInstanceImportHandlerShould {
         val teis = listOf(sampleTei(sampleTeiUid, emptyList()))
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), teis, emptyList()
+            listOf(importSummary), teis
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
-    }
-
-    private fun sampleAttributeValue(uid: String, attribute: String, value: String): TrackedEntityAttributeValue {
-        return TrackedEntityAttributeValue.builder()
-            .trackedEntityInstance(uid)
-            .trackedEntityAttribute(attribute)
-            .value(value)
-            .build()
     }
 
     private fun sampleTei(uid: String, attributeValues: List<TrackedEntityAttributeValue>): TrackedEntityInstance {

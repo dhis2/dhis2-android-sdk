@@ -25,35 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.imports.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.enrollment.Enrollment
 
-@Reusable
-internal class JobReportRelationshipHandler @Inject internal constructor(
-    relationshipStore: RelationshipStore
-) : JobReportTypeHandler(relationshipStore) {
-
-    override fun handleObject(uid: String, state: State): HandleAction {
-        val handledState =
-            if (state == State.ERROR || state == State.WARNING) {
-                State.TO_UPDATE
-            } else {
-                state
-            }
-
-        return relationshipStore.setSyncStateOrDelete(uid, handledState)
-    }
-
-    @Suppress("EmptyFunctionBlock")
-    override fun storeConflict(errorReport: JobValidationError) {
-    }
-
-    override fun getRelatedRelationships(uid: String): List<String> {
-        return emptyList()
-    }
-}
+internal data class EnrollmentWebResponseHandlerSummary(
+    val ignoredEnrollments: MutableList<Enrollment> = mutableListOf()
+)

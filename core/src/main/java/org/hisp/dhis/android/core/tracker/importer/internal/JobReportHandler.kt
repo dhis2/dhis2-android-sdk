@@ -43,7 +43,7 @@ internal class JobReportHandler @Inject internal constructor(
 ) {
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
-        val jobObjectsMap = jobObjects.map { jo -> Pair(jo.trackerType(), jo.objectUid()) to jo }.toMap()
+        val jobObjectsMap = jobObjects.associateBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
         val relatedUids = getRelatedUids(jobObjects)
 
         handleErrors(o, jobObjectsMap)

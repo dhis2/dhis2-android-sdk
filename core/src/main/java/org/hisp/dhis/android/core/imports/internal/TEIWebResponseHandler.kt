@@ -39,13 +39,12 @@ internal class TEIWebResponseHandler @Inject constructor(
 
     fun handleWebResponse(
         webResponse: TEIWebResponse?,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
-    ) {
-        webResponse?.response()?.let { response ->
+        instances: List<TrackedEntityInstance>
+    ): TEIWebResponseHandlerSummary {
+        return webResponse?.response()?.let { response ->
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(), instances, fileResources
+                response.importSummaries(), instances
             )
-        }
+        } ?: TEIWebResponseHandlerSummary()
     }
 }

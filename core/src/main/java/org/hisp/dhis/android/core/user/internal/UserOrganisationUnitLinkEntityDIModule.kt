@@ -25,35 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.user.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl.Companion.create
 
-@Reusable
-internal class JobReportRelationshipHandler @Inject internal constructor(
-    relationshipStore: RelationshipStore
-) : JobReportTypeHandler(relationshipStore) {
-
-    override fun handleObject(uid: String, state: State): HandleAction {
-        val handledState =
-            if (state == State.ERROR || state == State.WARNING) {
-                State.TO_UPDATE
-            } else {
-                state
-            }
-
-        return relationshipStore.setSyncStateOrDelete(uid, handledState)
+@Module
+internal class UserOrganisationUnitLinkEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): UserOrganisationUnitLinkStore {
+        return create(databaseAdapter)
     }
 
-    @Suppress("EmptyFunctionBlock")
-    override fun storeConflict(errorReport: JobValidationError) {
-    }
-
-    override fun getRelatedRelationships(uid: String): List<String> {
-        return emptyList()
+    @Provides
+    @Reusable
+    fun handler(store: UserOrganisationUnitLinkStore): LinkHandler<OrganisationUnit, UserOrganisationUnitLink> {
+        return LinkHandlerImpl(store)
     }
 }

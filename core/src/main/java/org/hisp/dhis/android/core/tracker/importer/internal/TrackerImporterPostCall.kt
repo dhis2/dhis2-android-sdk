@@ -56,7 +56,8 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private val fileResourcesPostCall: TrackerImporterFileResourcesPostCall,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
-    private val jobObjectHandler: Handler<TrackerJobObject>
+    private val jobObjectHandler: Handler<TrackerJobObject>,
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
 ) {
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
@@ -92,14 +93,31 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         return if (payload.isEmpty()) {
             Observable.empty<D2Progress>()
         } else {
-            stateManager.setStates(payload, State.UPLOADING)
-            Single.fromCallable {
-                doPostCallInternal(payload, importStrategy)
-            }.doOnError {
-                stateManager.restoreStates(payload)
-            }.flatMapObservable {
-                jobQueryCall.queryJob(it)
+            doPost(payload, importStrategy).flatMap { d2Progress ->
+                val glassErrors = breakTheGlassHelper.getGlassErrors(payload)
+
+                if (glassErrors.isEmpty()) {
+                    Observable.just(d2Progress)
+                } else {
+                    breakTheGlassHelper.fakeBreakGlass(payload)
+                    doPost(payload, importStrategy)
+                }
             }
+        }
+    }
+
+    private fun doPost(
+        payload: NewTrackerImporterPayload,
+        importStrategy: String
+    ): Observable<D2Progress> {
+        stateManager.setStates(payload, State.UPLOADING)
+
+        return Single.fromCallable {
+            doPostCallInternal(payload, importStrategy)
+        }.doOnError {
+            stateManager.restoreStates(payload)
+        }.flatMapObservable {
+            jobQueryCall.queryJob(it)
         }
     }
 

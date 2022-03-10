@@ -32,7 +32,9 @@ import io.reactivex.Completable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -73,6 +75,26 @@ internal class OwnershipManagerImpl @Inject constructor(
                 .httpErrorCode(breakGlassResponse.httpStatusCode())
                 .build()
         }
+    }
+
+    internal fun fakeBreakGlass(trackedEntityInstance: String, program: String) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstance)
+            .appendKeyStringValue(ProgramTempOwnerTableInfo.Columns.PROGRAM, program)
+            .build()
+
+        val mostRecent = programTempOwnerStore.selectWhere(
+            filterWhereClause = whereClause,
+            orderByClause = ProgramTempOwnerTableInfo.Columns.CREATED + " " + RepositoryScope.OrderByDirection.DESC,
+            limit = 1
+        )
+
+        val previousReason = mostRecent.firstOrNull()?.reason() ?: "<Previous reason not found>"
+        val fakeReason = "Android App sync: $previousReason"
+
+        apiCallExecutor.executeObjectCall(
+            ownershipService.breakGlass(trackedEntityInstance, program, fakeReason)
+        )
     }
 
     private fun getValidUntil(): Date {

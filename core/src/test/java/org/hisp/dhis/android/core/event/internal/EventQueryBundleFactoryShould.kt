@@ -48,7 +48,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
 import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
@@ -83,7 +82,7 @@ class EventQueryBundleFactoryShould {
         whenever(resourceHandler.getLastUpdated(any())).thenReturn(null)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(programList)
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
-        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(ArgumentMatchers.any()))
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
 
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)

@@ -28,32 +28,32 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
+import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 
 @Reusable
-internal class JobReportRelationshipHandler @Inject internal constructor(
-    relationshipStore: RelationshipStore
-) : JobReportTypeHandler(relationshipStore) {
+internal class JobReportFileResourceHandler @Inject internal constructor(
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceHelper: FileResourceHelper
+) {
+    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
+        return Observable.fromCallable {
+            val progress = D2ProgressManager(null)
 
-    override fun handleObject(uid: String, state: State): HandleAction {
-        val handledState =
-            if (state == State.ERROR || state == State.WARNING) {
-                State.TO_UPDATE
-            } else {
-                state
+            val fileResources = jobObjects.flatMap { it.fileResources() }
+
+            fileResources.forEach { fr ->
+                val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+                val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+                fileResourceStore.setSyncStateIfUploading(fr, state)
             }
-
-        return relationshipStore.setSyncStateOrDelete(uid, handledState)
-    }
-
-    @Suppress("EmptyFunctionBlock")
-    override fun storeConflict(errorReport: JobValidationError) {
-    }
-
-    override fun getRelatedRelationships(uid: String): List<String> {
-        return emptyList()
+            progress.increaseProgress(FileResource::class.java, false)
+        }
     }
 }

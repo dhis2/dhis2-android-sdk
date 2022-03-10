@@ -30,18 +30,15 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -53,7 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 @Reusable
-@Suppress("LongParameterList", "TooManyFunctions")
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentImportHandler: EnrollmentImportHandler,
@@ -63,19 +59,18 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val dataStatePropagator: DataStatePropagator,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
-    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourceHelper: FileResourceHelper
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
 ) {
 
     private val alreadyDeletedInServerRegex =
         Regex("Tracked entity instance (\\w{11}) cannot be deleted as it is not present in the system")
 
+    @Suppress("NestedBlockDepth")
     fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
-    ) {
+        instances: List<TrackedEntityInstance>
+    ): TEIWebResponseHandlerSummary {
+        val summary = TEIWebResponseHandlerSummary()
         val processedTeis = mutableListOf<String>()
 
         teiImportSummaries?.filterNotNull()?.forEach { teiImportSummary ->
@@ -91,15 +86,17 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                 val handleAction = trackedEntityInstanceStore.setSyncStateOrDelete(teiUid, state)
 
                 if (state == State.ERROR || state == State.WARNING) {
-                    resetNestedDataStates(instance, fileResources)
+                    resetNestedDataStates(instance)
+                    instance?.let { summary.teis.error.add(it) }
                 } else {
                     setRelationshipsState(teiUid, State.SYNCED)
-                    setTEIFileResourcesState(instance, fileResources, State.SYNCED)
+                    instance?.let { summary.teis.success.add(it) }
                 }
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
-                    handleEnrollmentImportSummaries(teiImportSummary, instances, state, fileResources)
+                    val enSummary = handleEnrollmentImportSummaries(teiImportSummary, instances, state)
+                    summary.add(enSummary)
                     dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
                 }
 
@@ -111,24 +108,26 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             }
         }
 
-        processIgnoredTEIs(processedTeis, instances, fileResources)
+        val ignoredTeis = processIgnoredTEIs(processedTeis, instances)
+
+        summary.teis.ignored.addAll(ignoredTeis)
+
+        return summary
     }
 
     private fun handleEnrollmentImportSummaries(
         teiImportSummary: TEIImportSummary,
         instances: List<TrackedEntityInstance>,
-        teiState: State,
-        fileResources: List<String>
-    ) {
-        teiImportSummary.enrollments()?.importSummaries().let { importSummaries ->
+        teiState: State
+    ): TEIWebResponseHandlerSummary {
+        return teiImportSummary.enrollments()?.importSummaries()?.let { importSummaries ->
             val teiUid = teiImportSummary.reference()
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
                 getEnrollments(teiUid, instances),
-                teiState,
-                fileResources
+                teiState
             )
-        }
+        } ?: TEIWebResponseHandlerSummary()
     }
 
     private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
@@ -165,53 +164,19 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
     private fun processIgnoredTEIs(
         processedTEIs: List<String>,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
-    ) {
-        instances.filterNot { processedTEIs.contains(it.uid()) }.forEach { instance ->
+        instances: List<TrackedEntityInstance>
+    ): List<TrackedEntityInstance> {
+        return instances.filterNot { processedTEIs.contains(it.uid()) }.onEach { instance ->
             trackerImportConflictStore.deleteTrackedEntityConflicts(instance.uid())
             trackedEntityInstanceStore.setSyncStateOrDelete(instance.uid(), State.TO_UPDATE)
-            resetNestedDataStates(instance, fileResources)
+            resetNestedDataStates(instance)
         }
     }
 
-    private fun resetNestedDataStates(instance: TrackedEntityInstance?, fileResources: List<String>) {
+    private fun resetNestedDataStates(instance: TrackedEntityInstance?) {
         instance?.let {
             dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid())
             setRelationshipsState(instance.uid(), State.TO_UPDATE)
-            setTEIFileResourcesState(instance, fileResources, State.TO_POST)
-            setEventFileResourcesState(instance, fileResources, State.TO_POST)
-        }
-    }
-
-    private fun setTEIFileResourcesState(
-        instance: TrackedEntityInstance?,
-        fileResources: List<String>,
-        state: State
-    ) {
-        instance?.let {
-            val attributeValues = instance.trackedEntityAttributeValues()
-
-            fileResources.filter { fileResourceHelper.isPresentInAttributeValues(it, attributeValues) }.forEach {
-                fileResourceStore.setSyncStateIfUploading(it, state)
-            }
-        }
-    }
-
-    private fun setEventFileResourcesState(
-        instance: TrackedEntityInstance?,
-        fileResources: List<String>,
-        state: State
-    ) {
-        instance?.let {
-            val dataValues = TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)
-                ?.flatMap { EnrollmentInternalAccessor.accessEvents(it) }
-                ?.filterNotNull()
-                ?.flatMap { it.trackedEntityDataValues() ?: emptyList() }
-
-            fileResources.filter { fileResourceHelper.isPresentInDataValues(it, dataValues) }.forEach {
-                fileResourceStore.setSyncStateIfUploading(it, state)
-            }
         }
     }
 

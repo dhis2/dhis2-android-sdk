@@ -58,7 +58,11 @@ public enum DHISPatchVersion {
 
     V2_35_0(DHISVersion.V2_35, "2.35.0", SMSVersion.V2),
 
-    V2_36_0(DHISVersion.V2_36, "2.36.0", SMSVersion.V2);
+    V2_36_0(DHISVersion.V2_36, "2.36.0", SMSVersion.V2),
+
+    V2_37_0(DHISVersion.V2_36, "2.37.0", SMSVersion.V2),
+
+    V2_38_0(DHISVersion.V2_36, "2.38.0", SMSVersion.V2);
 
     private String strValue;
     private DHISVersion majorVersion;

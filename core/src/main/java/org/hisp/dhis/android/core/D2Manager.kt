@@ -49,6 +49,7 @@ object D2Manager {
     private var isTestMode = false
     private var testingSecureStore: SecureStore? = null
     private var testingInsecureStore: InsecureStore? = null
+    private var testingServerUrl: String? = null
     private var testingDatabaseName: String? = null
     private var testingUsername: String? = null
 
@@ -102,7 +103,12 @@ object D2Manager {
             val credentials = d2DIComponent.credentialsSecureStore().get()
 
             if (wantToImportDBForExternalTesting()) {
-                multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername)
+                multiUserDatabaseManager.loadDbForTesting(
+                    testingServerUrl,
+                    testingDatabaseName,
+                    false,
+                    testingUsername
+                )
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials)
             }
@@ -151,7 +157,8 @@ object D2Manager {
     }
 
     @VisibleForTesting
-    fun setTestingDatabase(databaseName: String, username: String) {
+    fun setTestingDatabase(serverUrl: String, databaseName: String, username: String) {
+        testingServerUrl = serverUrl
         testingDatabaseName = databaseName
         testingUsername = username
     }

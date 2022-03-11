@@ -34,6 +34,7 @@ public interface DHISVersionManager {
 
     SMSVersion getSmsVersion();
 
+    @Deprecated
     boolean is2_29();
 
     boolean is2_30();

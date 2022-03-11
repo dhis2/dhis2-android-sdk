@@ -444,20 +444,20 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |**Variables:**             |AnalyticsPeriodEnd     | Yes       | No            |
 |                           |AnalyticsPeriodStart   | Yes       | No            |
 |                           |CreationDate           | Yes       | Yes           |
-|                           |CurrentDate       searchrepo     | Yes       | Yes           |
+|                           |CurrentDate            | Yes       | Yes           |
 |                           |CompletedDate          | Yes       | Yes           |
 |                           |DueDate                | Yes       | Yes           |
 |                           |EnrollmentCount        | Yes       | Yes           |
 |                           |EnrollmentDate         | Yes       | Yes           |
-|                           |EnrollmentStatus  searchrepo     | Yes       | Yes           |
+|                           |EnrollmentStatus       | Yes       | Yes           |
 |                           |EventStatus            | Yes       | Yes           |
 |                           |EventCount             | Yes       | Yes           |
 |                           |ExecutionDate          | Yes       | Yes           |
 |                           |EventDate              | Yes       | Yes           |
 |                           |IncidentDate           | Yes       | Yes           |
 |                           |OrgunitCount           | Yes       | No            |
-|                           |ProgramStageId         | Yes       | No            |
-|                           |ProgramStageName       | Yes       | No            |
+|                           |ProgramStageId         | Yes       | Yes           |
+|                           |ProgramStageName       | Yes       | Yes           |
 |                           |SyncDate               | Yes       | No            |
 |                           |TeiCount               | Yes       | Yes           |
 |                           |ValueCount             | Yes       | Yes           |

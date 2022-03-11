@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -43,7 +44,8 @@ internal class ProgramIndicatorExecutor constructor(
     private val constantMap: Map<String, Constant>,
     private val programIndicatorContext: ProgramIndicatorContext,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
+    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    private val programStageStore: IdentifiableObjectStore<ProgramStage>
 ) {
     fun getProgramIndicatorValue(programIndicator: ProgramIndicator): String? {
         val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)
@@ -114,6 +116,7 @@ internal class ProgramIndicatorExecutor constructor(
             .withProgramIndicatorExecutor(this)
             .withDataElementStore(dataElementStore)
             .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
+            .withProgramStageStore(programStageStore)
             .buildForProgramIndicator()
     }
 }

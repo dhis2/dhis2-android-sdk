@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -55,7 +56,8 @@ internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrati
     private val expressionService = ExpressionService(
         DataElementStore.create(databaseAdapter),
         CategoryOptionComboStoreImpl.create(databaseAdapter),
-        OrganisationUnitGroupStore.create(databaseAdapter)
+        OrganisationUnitGroupStore.create(databaseAdapter),
+        ProgramStageStore.create(databaseAdapter)
     )
 
     private val indicatorEngine = IndicatorEngine(

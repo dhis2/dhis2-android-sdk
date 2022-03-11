@@ -211,7 +211,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 "NOT EXISTS($tempOwnershipSubQuery) " +
                 "OR " +
                 "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)}) " +
-                ">= ${DateUtils.DATE_FORMAT.format(Date())}" +
+                ">= '${DateUtils.DATE_FORMAT.format(Date())}'" +
                 ") ELSE 1 END "
         )
     }

@@ -205,14 +205,18 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
             dot(programAlias, IdentifiableColumns.UID)
 
+        /* Break the glass query. The condition is:
+         * - Not to have a record: this applies to CAPTURE teis and SEARCH teis that didn't need a ownership request.
+         * - To have a record that is not expired.
+         */
         where.appendComplexQuery(
             "CASE " +
                 "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
                 "THEN (" +
                 "NOT EXISTS($tempOwnershipSubQuery) " +
                 "OR " +
-                "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)}) " +
-                ">= '${DateUtils.DATE_FORMAT.format(Date())}'" +
+                "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
+                ">= '${DateUtils.DATE_FORMAT.format(Date())}')" +
                 ") ELSE 1 END "
         )
     }

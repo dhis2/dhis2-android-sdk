@@ -25,41 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Completable;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.enrollment.Enrollment
 
 @Reusable
-public final class EnrollmentPersistenceCallFactory {
-
-    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
-
-    @Inject
-    EnrollmentPersistenceCallFactory(
-            @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler) {
-        this.enrollmentHandler = enrollmentHandler;
+internal class EnrollmentPersistenceCallFactory @Inject constructor(
+    private val enrollmentHandler: IdentifiableDataHandler<Enrollment>
+) {
+    fun persistAsRelationships(enrollments: List<Enrollment>): Completable {
+        return persistEnrollmentsInternal(enrollments, true, false, false)
     }
 
-    public Completable persistAsRelationships(final List<Enrollment> enrollments) {
-        return persistEnrollmentsInternal(enrollments, true, false, false);
-    }
-
-    private Completable persistEnrollmentsInternal(
-            final List<Enrollment> enrollments, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
-        return Completable.defer(() -> {
-            enrollmentHandler.handleMany(enrollments, asRelationship, isFullUpdate, overwrite, null);
-            return Completable.complete();
-        });
+    private fun persistEnrollmentsInternal(
+        enrollments: List<Enrollment>,
+        asRelationship: Boolean,
+        isFullUpdate: Boolean,
+        overwrite: Boolean
+    ): Completable {
+        val params = IdentifiableDataHandlerParams(
+            hasAllAttributes = true,
+            hasAllEnrollments = isFullUpdate,
+            overwrite = overwrite,
+            asRelationship = asRelationship
+        )
+        return Completable.defer {
+            enrollmentHandler.handleMany(enrollments, params, relatives = null)
+            Completable.complete()
+        }
     }
 }

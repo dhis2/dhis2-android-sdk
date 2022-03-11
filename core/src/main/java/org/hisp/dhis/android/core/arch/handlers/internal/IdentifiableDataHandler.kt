@@ -35,9 +35,7 @@ internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O :
     @JvmSuppressWildcards
     fun handleMany(
         oCollection: Collection<O>?,
-        asRelationship: Boolean,
-        isFullUpdate: Boolean,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     )
 }

@@ -32,6 +32,7 @@ import io.reactivex.Completable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -57,7 +58,13 @@ internal class EventPersistenceCallFactory @Inject constructor(
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {
-            eventHandler.handleMany(events, asRelationship, false, false, relatives)
+            val params = IdentifiableDataHandlerParams(
+                hasAllAttributes = false,
+                hasAllEnrollments = false,
+                overwrite = false,
+                asRelationship = asRelationship
+            )
+            eventHandler.handleMany(events, params, relatives)
             if (hasMissingOrganisationUnitUids(events)) {
                 organisationUnitDownloader.refreshOrganisationUnits()
             } else {

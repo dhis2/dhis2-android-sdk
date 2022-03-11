@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,59 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class TrackerQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @Nullable
-    abstract String orgUnit();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract EnrollmentStatus programStatus();
-
-    @Nullable
-    abstract String lastUpdatedStr();
-
-    abstract Builder toBuilder();
-
-    static Builder builder() {
-        return new AutoValue_TrackerQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .uids(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnit(String orgUnit);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder lastUpdatedStr(String lastUpdatedStr);
-
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        abstract TrackerQuery build();
-    }
-}
+data class IdentifiableDataHandlerParams(
+    val hasAllAttributes: Boolean,
+    val hasAllEnrollments: Boolean,
+    val overwrite: Boolean,
+    val asRelationship: Boolean,
+    val program: String? = null
+)

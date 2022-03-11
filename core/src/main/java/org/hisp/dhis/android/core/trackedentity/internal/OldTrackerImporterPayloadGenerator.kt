@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.internal.NoteToPostTransformer
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -64,8 +63,6 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
     private val programStore: ProgramStoreInterface
 ) {
-
-    private val noteTransformer = NoteToPostTransformer(versionManager)
 
     private data class ExtraData(
         val dataValueMap: Map<String, List<TrackedEntityDataValue>>,
@@ -334,15 +331,11 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     }
 
     private fun getEventNotes(notes: List<Note>, event: Event): List<Note> {
-        return notes
-            .filter { it.event() == event.uid() }
-            .map { noteTransformer.transform(it) }
+        return notes.filter { it.event() == event.uid() }
     }
 
     private fun getEnrollmentNotes(notes: List<Note>, enrollment: Enrollment): List<Note> {
-        return notes
-            .filter { it.enrollment() == enrollment.uid() }
-            .map { noteTransformer.transform(it) }
+        return notes.filter { it.enrollment() == enrollment.uid() }
     }
 
     private fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {

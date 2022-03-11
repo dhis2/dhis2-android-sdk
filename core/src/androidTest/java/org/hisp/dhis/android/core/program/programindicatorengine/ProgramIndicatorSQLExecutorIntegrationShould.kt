@@ -916,6 +916,62 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         ).isEqualTo("2")
     }
 
+    @Test
+    fun should_evaluate_program_stage_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = firstNovember2019
+        )
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("tei_count"),
+                    filter = "${`var`("program_stage_id")} == '${programStage1.uid()}'",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("tei_count"),
+                    filter = "${`var`("program_stage_id")} == '${programStage1.uid()}'",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("tei_count"),
+                    filter = "${`var`("program_stage_name")} == '${programStage1.name()}'",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("tei_count"),
+                    filter = "${`var`("program_stage_name")} == '${programStage1.name()}'",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+    }
+
     private fun setProgramIndicator(
         expression: String,
         filter: String? = null,

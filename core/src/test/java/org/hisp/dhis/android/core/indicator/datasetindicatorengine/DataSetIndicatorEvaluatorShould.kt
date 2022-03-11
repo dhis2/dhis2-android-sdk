@@ -62,7 +62,7 @@ class DataSetIndicatorEvaluatorShould {
 
     @Before
     fun setUp() {
-        expressionService = ExpressionService(mock(), mock(), mock())
+        expressionService = ExpressionService(mock(), mock(), mock(), mock())
         evaluator = DataSetIndicatorEvaluator(expressionService)
 
         whenever(indicatorType.factor()) doReturn 1

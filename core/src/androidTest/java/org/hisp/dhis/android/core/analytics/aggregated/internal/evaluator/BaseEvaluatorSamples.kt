@@ -211,6 +211,7 @@ object BaseEvaluatorSamples {
 
     val programStage1: ProgramStage = ProgramStage.builder()
         .uid(generator.generate())
+        .name("Program stage 1")
         .program(ObjectWithUid.create(program.uid()))
         .formType(FormType.DEFAULT)
         .build()

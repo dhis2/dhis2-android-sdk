@@ -29,9 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -40,13 +38,11 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 
 @Reusable
 internal class TrackerPostStateManager @Inject internal constructor(
-    private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
@@ -87,13 +83,7 @@ internal class TrackerPostStateManager @Inject internal constructor(
                 }
             }
             TrackedEntityInstanceInternalAccessor.accessRelationships(instance)?.forEach { r ->
-                if (versionManager.is2_29) {
-                    val whereClause = WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build()
-                    val dbRelationship = relationshipStore.selectOneWhere(whereClause)
-                    dbRelationship?.let { h.addState(relationshipMap, it, forcedState) }
-                } else {
-                    h.addState(relationshipMap, r, forcedState)
-                }
+                h.addState(relationshipMap, r, forcedState)
             }
         }
 

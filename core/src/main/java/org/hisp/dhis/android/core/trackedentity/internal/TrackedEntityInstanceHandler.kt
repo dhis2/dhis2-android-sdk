@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.*
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -45,14 +45,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 
 @Reusable
 internal class TrackedEntityInstanceHandler @Inject constructor(
-    private val relationshipVersionManager: RelationshipDHISVersionManager,
+    relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue>,
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment>,
     private val enrollmentOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Enrollment>,
-    private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship229Compatible>
+    private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
     trackedEntityInstanceStore,
     relationshipVersionManager,
@@ -104,8 +104,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
             }
             val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(o)
             if (relationships != null && relationships.isNotEmpty()) {
-                val relationshipsList = relationshipVersionManager.from229Compatible(relationships)
-                handleRelationships(relationshipsList, o, relatives)
+                handleRelationships(relationships, o, relatives)
             }
             if (params.hasAllEnrollments) {
                 enrollmentOrphanCleaner.deleteOrphan(

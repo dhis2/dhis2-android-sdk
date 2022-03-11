@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
@@ -54,7 +54,7 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.Date;
@@ -117,8 +117,8 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreRelationship229CompatibleListColumnAdapter.class)
-    abstract List<Relationship229Compatible> relationships();
+    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
+    abstract List<Relationship> relationships();
 
     @Nullable
     @JsonProperty()
@@ -193,7 +193,7 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
             return aggregatedSyncState(state).syncState(state);
         }
 
-        abstract Builder relationships(List<Relationship229Compatible> relationships);
+        abstract Builder relationships(List<Relationship> relationships);
 
         abstract Builder enrollments(List<Enrollment> enrollments);
 

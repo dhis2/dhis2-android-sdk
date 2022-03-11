@@ -65,7 +65,6 @@ public class DHISVersionManagerShould {
     public void compare_version_when_not_null() {
         when(systemInfo.version()).thenReturn("2.31.2");
 
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_29)).isTrue();
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue();
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse();
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse();

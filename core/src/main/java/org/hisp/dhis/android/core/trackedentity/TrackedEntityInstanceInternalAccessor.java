@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.List;
 
@@ -48,13 +48,13 @@ public final class TrackedEntityInstanceInternalAccessor {
         return builder.enrollments(enrollments);
     }
 
-    public static List<Relationship229Compatible> accessRelationships(TrackedEntityInstance trackedEntityInstance) {
+    public static List<Relationship> accessRelationships(TrackedEntityInstance trackedEntityInstance) {
         return trackedEntityInstance.relationships();
     }
 
     public static TrackedEntityInstance.Builder insertRelationships(
             TrackedEntityInstance.Builder builder,
-            List<Relationship229Compatible> relationships) {
+            List<Relationship> relationships) {
         return builder.relationships(relationships);
     }
 }

@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
@@ -67,7 +66,6 @@ import io.reactivex.Single;
 final class AggregatedDataCall {
 
     private final SystemInfoModuleDownloader systemInfoModuleDownloader;
-    private final DHISVersionManager dhisVersionManager;
     private final QueryCall<DataValue, DataValueQuery> dataValueCall;
     private final QueryCall<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCall;
@@ -82,7 +80,6 @@ final class AggregatedDataCall {
 
     @Inject
     AggregatedDataCall(@NonNull SystemInfoModuleDownloader systemInfoModuleDownloader,
-                       @NonNull DHISVersionManager dhisVersionManager,
                        @NonNull QueryCall<DataValue, DataValueQuery> dataValueCall,
                        @NonNull QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCall,
@@ -94,7 +91,6 @@ final class AggregatedDataCall {
                        @NonNull ResourceHandler resourceHandler,
                        @NonNull AggregatedDataSyncHashHelper hashHelper) {
         this.systemInfoModuleDownloader = systemInfoModuleDownloader;
-        this.dhisVersionManager = dhisVersionManager;
         this.dataValueCall = dataValueCall;
         this.dataSetCompleteRegistrationCall = dataSetCompleteRegistrationCall;
         this.dataApprovalCall = dataApprovalCall;
@@ -148,11 +144,9 @@ final class AggregatedDataCall {
             add(dataSetCompleteRegistrationSingle);
         }};
 
-        if (!dhisVersionManager.is2_29()) {
-            Single<D2Progress> approvalSingle = getApprovalSingle(bundle, progressManager);
-            if (approvalSingle != null) {
-                list.add(approvalSingle);
-            }
+        Single<D2Progress> approvalSingle = getApprovalSingle(bundle, progressManager);
+        if (approvalSingle != null) {
+            list.add(approvalSingle);
         }
 
         list.add(updateAggregatedDataSync(bundle, progressManager));

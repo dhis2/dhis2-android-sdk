@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -41,8 +39,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class Relationship30Should extends BaseObjectShould implements ObjectShould {
 
-    private RelationshipSamples samples = new RelationshipSamples();
-
     public Relationship30Should() {
         super("relationship/relationship_30.json");
     }
@@ -50,7 +46,7 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Relationship229Compatible relationship = deserialize(Relationship229Compatible.class);
+        Relationship relationship = deserialize(Relationship.class);
 
         assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
         assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");

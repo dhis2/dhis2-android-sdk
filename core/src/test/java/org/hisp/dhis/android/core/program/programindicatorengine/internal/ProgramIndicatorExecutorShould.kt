@@ -387,6 +387,19 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
+    fun evaluate_program_stage_id() {
+        setExpression(`var`("program_stage_id"))
+        whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+        whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
+        whenever(event2_2.eventDate()) doReturn null
+
+        whenever(event2_1.programStage()) doReturn programStage2
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo(programStage2)
+    }
+
+    @Test
     fun evaluate_empty_filter() {
         setExpression("4")
         setFilter("")

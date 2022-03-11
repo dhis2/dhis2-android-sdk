@@ -194,10 +194,10 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         return when {
             params.uids().isNotEmpty() -> params.uids().size
             params.limitByProgram() != true -> {
-                val numOfCombinations = iterables.bundleOrgUnitPrograms.values.map { it.size }.sum()
+                val numOfCombinations = iterables.bundleOrgUnitPrograms.values.sumOf { it.size }
                 val pendingTeis = bundle.commonParams().limit - iterables.teisCount
 
-                if (numOfCombinations == 0) 0
+                if (numOfCombinations == 0 || pendingTeis == 0) 0
                 else ceil(pendingTeis.toDouble() / numOfCombinations.toDouble()).roundToInt()
             }
             else -> bundle.commonParams().limit - iterables.teisCount

@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
 @Reusable
@@ -53,7 +52,6 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    private val dhisVersionManager: DHISVersionManager,
     childrenAppenders: MutableMap<String, ChildrenAppender<RelationshipType>>,
     scope: RepositoryScope
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
@@ -63,7 +61,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     FilterConnectorFactory<RelationshipTypeCollectionRepository>(scope) { s: RepositoryScope ->
         RelationshipTypeCollectionRepository(
             store, teiStore, enrollmentStore, eventStore,
-            dhisVersionManager, childrenAppenders, s
+            childrenAppenders, s
         )
     }
 ) {
@@ -97,16 +95,11 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
      * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
-        return if (dhisVersionManager.is2_29) {
-            // All relationships are allowed for TEIs in 2.29
-            this
-        } else {
-            val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
-            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
-                FilterItemOperator.IN,
-                availableForTrackedEntityInstanceRawQuery(trackedEntityInstance)
-            )
-        }
+        val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
+        return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+            FilterItemOperator.IN,
+            availableForTrackedEntityInstanceRawQuery(trackedEntityInstance)
+        )
     }
 
     /**
@@ -115,16 +108,11 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
      * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
-        return if (dhisVersionManager.is2_29) {
-            // Enrollment relationships are not supported in 2.29
-            cf.string(IdentifiableColumns.UID).`in`(emptyList())
-        } else {
-            val enrollment = enrollmentStore.selectByUid(enrollmentUid)
-            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
-                FilterItemOperator.IN,
-                availableForEnrollmentRawQuery(enrollment)
-            )
-        }
+        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+        return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+            FilterItemOperator.IN,
+            availableForEnrollmentRawQuery(enrollment)
+        )
     }
 
     /**
@@ -133,16 +121,11 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
      * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
-        return if (dhisVersionManager.is2_29) {
-            // Event relationships are not supported in 2.29
-            cf.string(IdentifiableColumns.UID).`in`(emptyList())
-        } else {
-            val event = eventStore.selectByUid(eventUid)
-            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
-                FilterItemOperator.IN,
-                availableForEventRawQuery(event)
-            )
-        }
+        val event = eventStore.selectByUid(eventUid)
+        return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+            FilterItemOperator.IN,
+            availableForEventRawQuery(event)
+        )
     }
 
     fun withConstraints(): RelationshipTypeCollectionRepository {

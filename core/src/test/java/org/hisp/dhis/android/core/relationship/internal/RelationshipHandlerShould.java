@@ -66,9 +66,6 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     private RelationshipItemElementStoreSelector storeSelector;
 
     @Mock
-    private RelationshipDHISVersionManager versionManager;
-
-    @Mock
     private StoreWithState itemElementStore;
 
     private final String NEW_UID = "new-uid";
@@ -94,7 +91,7 @@ public class RelationshipHandlerShould extends RelationshipSamples {
         MockitoAnnotations.initMocks(this);
 
         relationshipHandler = new RelationshipHandlerImpl(relationshipStore, relationshipItemStore,
-                relationshipItemHandler, storeSelector, versionManager);
+                relationshipItemHandler, storeSelector);
 
         when(storeSelector.getElementStore(any(RelationshipItem.class))).thenReturn(itemElementStore);
         when(itemElementStore.exists(FROM_UID)).thenReturn(true);
@@ -104,27 +101,8 @@ public class RelationshipHandlerShould extends RelationshipSamples {
         when(relationshipItemStore.getRelationshipUidsForItems(fromItem, toItem)).thenReturn(Collections.singletonList(UID));
         when(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(Collections.emptyList());
         when(relationshipStore.selectByUid(UID)).thenReturn(get230());
-        when(versionManager.isRelationshipSupported(any(Relationship.class))).thenReturn(true);
 
         when(relationshipStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_relationship_is_no_compatible() {
-        when(versionManager.isRelationshipSupported(existingRelationship)).thenReturn(false);
-        relationshipHandler.handle(existingRelationship);
-    }
-
-    @Test()
-    public void call_relationship_item_store_for_existing_relationship() {
-        relationshipHandler.handle(existingRelationship);
-        verify(relationshipItemStore).getRelationshipUidsForItems(fromItem, toItem);
-    }
-
-    @Test()
-    public void call_relationship_store_for_existing_relationship() {
-        relationshipHandler.handle(existingRelationship);
-        verify(relationshipStore).selectByUid(UID);
     }
 
     @Test()
@@ -137,12 +115,6 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     public void not_call_delete_if_no_existing_relationship() {
         relationshipHandler.handle(newRelationship);
         verify(relationshipStore, never()).delete(UID);
-    }
-
-    @Test()
-    public void delete_relationship_if_existing_id_doesnt_match() {
-        relationshipHandler.handle(existingRelationshipWithNewUid);
-        verify(relationshipStore).delete(UID);
     }
 
     @Test()

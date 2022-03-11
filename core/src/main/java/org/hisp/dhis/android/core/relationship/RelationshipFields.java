@@ -31,16 +31,9 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 public final class RelationshipFields {
-    // 2.29 only //
-    private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-    private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-    private static final String RELATIVE = "relative";
-
     static final String RELATIONSHIP = "relationship";
     static final String RELATIONSHIP_NAME = "relationshipName";
     private static final String RELATIONSHIP_TYPE = "relationshipType";
@@ -50,34 +43,17 @@ public final class RelationshipFields {
     // Used only for children appending, can't be used in query
     public static final String ITEMS = "items";
 
-    private static FieldsHelper<Relationship229Compatible> fh = new FieldsHelper<>();
+    private static final FieldsHelper<Relationship> fh = new FieldsHelper<>();
 
-    public static final Fields<Relationship229Compatible> allFields
-            = Fields.<Relationship229Compatible>builder().fields(
-            fh.<String>field(TRACKED_ENTITY_INSTANCE_A),
-            fh.<String>field(TRACKED_ENTITY_INSTANCE_B),
+    public static final Fields<Relationship> allFields
+            = Fields.<Relationship>builder().fields(
             fh.<String>field(RELATIONSHIP),
             fh.<String>field(RELATIONSHIP_NAME),
             fh.<String>field(RELATIONSHIP_TYPE),
             fh.<String>field(BaseIdentifiableObject.CREATED),
             fh.<String>field(BaseIdentifiableObject.LAST_UPDATED),
             fh.<RelationshipItem>nestedField(FROM).with(RelationshipItemFields.allFields),
-            fh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields),
-            fh.<TrackedEntityInstance>nestedField(RELATIVE)
-    ).build();
-
-    private static FieldsHelper<Relationship> rfh = new FieldsHelper<>();
-
-    public static final Fields<Relationship> allNewModelFields
-            = Fields.<Relationship>builder().fields(
-            rfh.<String>field(RELATIONSHIP),
-            rfh.<String>field(RELATIONSHIP_NAME),
-            rfh.<String>field(RELATIONSHIP_TYPE),
-            rfh.<String>field(BaseIdentifiableObject.CREATED),
-            rfh.<String>field(BaseIdentifiableObject.LAST_UPDATED),
-            rfh.<RelationshipItem>nestedField(FROM).with(RelationshipItemFields.allFields),
-            rfh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields),
-            rfh.<TrackedEntityInstance>nestedField(RELATIVE)
+            fh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields)
     ).build();
 
     private RelationshipFields() {

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import java.net.HttpURLConnection.*
@@ -36,17 +35,12 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 
 @Reusable
@@ -115,35 +109,6 @@ internal class RelationshipPostCall @Inject internal constructor(
                     Observable.error<D2Progress>(e)
                 }
             }
-        }
-    }
-
-    fun postDeletedRelationships29(trackedEntityInstances: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
-        return trackedEntityInstances.map { instance ->
-            val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(instance)
-
-            if (relationships == null || relationships.isEmpty()) {
-                instance
-            } else {
-                val partitionedRelationships = relationships.partition { CollectionsHelper.isDeleted(it) }
-
-                partitionedRelationships.first.forEach {
-                    deleteRelationship29(it).blockingAwait()
-                }
-
-                TrackedEntityInstanceInternalAccessor
-                    .insertRelationships(instance.toBuilder(), partitionedRelationships.second)
-                    .build()
-            }
-        }
-    }
-
-    private fun deleteRelationship29(relationship: Relationship229Compatible): Completable {
-        return Completable.fromCallable {
-            val whereClause = WhereClauseBuilder()
-                .appendKeyStringValue(CoreColumns.ID, relationship.id()).build()
-            relationshipStore.deleteWhereIfExists(whereClause)
-            return@fromCallable RelationshipDeleteWebResponse.empty()
         }
     }
 }

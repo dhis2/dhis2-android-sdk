@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -64,13 +63,12 @@ class TrackedEntityInstanceHandlerShould {
 
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val enrollment: Enrollment = mock()
-    private val relationship229Compatible: Relationship229Compatible = mock()
     private val relationshipItemRelatives: RelationshipItemRelatives = mock()
     private val relationship: Relationship = mock()
     private val relative: TrackedEntityInstance = mock()
     private val relativeBuilder: TrackedEntityInstance.Builder = mock()
     private val enrollmentCleaner: OrphanCleaner<TrackedEntityInstance, Enrollment> = mock()
-    private val relationshipCleaner: OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> = mock()
+    private val relationshipCleaner: OrphanCleaner<TrackedEntityInstance, Relationship> = mock()
     private val relatives: RelationshipItemRelatives = mock()
     private val teiBuilder: TrackedEntityInstance.Builder = mock()
 
@@ -93,8 +91,6 @@ class TrackedEntityInstanceHandlerShould {
         whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
             .thenReturn(listOf(enrollment))
         whenever(TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance))
-            .thenReturn(listOf(relationship229Compatible))
-        whenever(relationshipVersionManager.from229Compatible(listOf(relationship229Compatible)))
             .thenReturn(listOf(relationship))
         whenever(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE)
         whenever(relationship.from()).thenReturn(RelationshipHelper.teiItem(TEI_UID))
@@ -196,7 +192,7 @@ class TrackedEntityInstanceHandlerShould {
 
     @Test
     fun invoke_relationship_handler_with_relationship_from_version_manager() {
-        whenever(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).doReturn(relative)
+        whenever(relationshipVersionManager.getRelativeTei(relationship, TEI_UID)).doReturn(relative)
         whenever(relationshipVersionManager.getOwnedRelationships(listOf(relationship), TEI_UID))
             .doReturn(listOf(relationship))
         whenever(relative.toBuilder()).doReturn(relativeBuilder)
@@ -216,7 +212,7 @@ class TrackedEntityInstanceHandlerShould {
 
     @Test
     fun do_not_invoke_relationship_repository_when_no_relative() {
-        whenever(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).doReturn(null)
+        whenever(relationshipVersionManager.getRelativeTei(relationship, TEI_UID)).doReturn(null)
 
         val params = IdentifiableDataHandlerParams(true, false, false, false)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relationshipItemRelatives)

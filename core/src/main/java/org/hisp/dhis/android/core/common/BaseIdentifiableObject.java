@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -50,6 +51,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     public static SafeDateFormat SPACE_DATE_FORMAT = DateUtils.SPACE_DATE_FORMAT;
 
     public static final String UID = "id";
+    public static final String UUID = "uid";
     public static final String CODE = "code";
     public static final String NAME = "name";
     public static final String DISPLAY_NAME = "displayName";
@@ -108,6 +110,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     public static abstract class Builder<T extends Builder> {
 
         @JsonProperty(UID)
+        @JsonAlias({UUID})  // Introduced in 2.38 due to changes in userCredentials model DHIS2-12577
         public abstract T uid(String uid);
 
         public abstract T code(@Nullable String code);

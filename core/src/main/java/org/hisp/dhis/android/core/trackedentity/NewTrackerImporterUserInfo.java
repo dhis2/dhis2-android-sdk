@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-public interface DHISVersionManager {
-    DHISVersion getVersion();
+package org.hisp.dhis.android.core.trackedentity;
 
-    DHISPatchVersion getPatchVersion();
+import androidx.annotation.Nullable;
 
-    SMSVersion getSmsVersion();
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    boolean is2_29();
+@AutoValue
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterUserInfo.Builder.class)
+public abstract class NewTrackerImporterUserInfo {
 
-    boolean is2_30();
+    @Nullable
+    @JsonProperty()
+    public abstract String uid();
 
-    boolean is2_31();
+    public abstract Builder toBuilder();
 
-    boolean is2_32();
+    public static Builder builder() {
+        return new AutoValue_NewTrackerImporterUserInfo.Builder();
+    }
 
-    boolean is2_33();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-    boolean is2_34();
+        public abstract Builder uid(String uid);
 
-    boolean is2_35();
-
-    boolean is2_36();
-
-    boolean is2_37();
-
-    boolean is2_38();
-
-    /**
-     * Check if the current version is strictly greater than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is strictly greater than the parameter.
-     */
-    boolean isGreaterThan(DHISVersion version);
-
-    /**
-     * Check if the current version is greater or equal than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is greater or equal than the parameter.
-     */
-    boolean isGreaterOrEqualThan(DHISVersion version);
+        public abstract NewTrackerImporterUserInfo build();
+    }
 }

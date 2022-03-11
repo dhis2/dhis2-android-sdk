@@ -40,7 +40,7 @@ apply from: project.file("plugins/android-pmd.gradle")
 ext {
     configuration = [
             buildToolsVersion: "30.0.2",
-            minSdkVersion    : 19,
+            minSdkVersion    : 21,
             targetSdkVersion : 31,
             versionCode      : 260,
             versionName      : "1.6.0-SNAPSHOT"
@@ -176,7 +176,6 @@ dependencies {
     // Jackson
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:${libraries.jackson}"
-
 
     // Google's play services
     api "com.google.android.gms:play-services-safetynet:${libraries.safetyNet}"

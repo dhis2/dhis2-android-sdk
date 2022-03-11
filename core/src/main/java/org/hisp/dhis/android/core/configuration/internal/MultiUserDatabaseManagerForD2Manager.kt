@@ -55,7 +55,7 @@ internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
         }
     }
 
-    fun loadDbForTesting(serverUrl:String?, name: String?, encrypt: Boolean, username: String?) {
+    fun loadDbForTesting(serverUrl: String?, name: String?, encrypt: Boolean, username: String?) {
         val config = DatabaseAccount.builder()
             .databaseName(name)
             .encrypted(encrypt)

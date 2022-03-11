@@ -157,7 +157,7 @@ object D2Manager {
     }
 
     @VisibleForTesting
-    fun setTestingDatabase(serverUrl:String, databaseName: String, username: String) {
+    fun setTestingDatabase(serverUrl: String, databaseName: String, username: String) {
         testingServerUrl = serverUrl
         testingDatabaseName = databaseName
         testingUsername = username

@@ -82,14 +82,6 @@ public class RelationshipDHISVersionManager {
         return getRelativeTEI230(relationship, teiUid);
     }
 
-    boolean isRelationshipSupported(BaseRelationship relationship) {
-        return isItemSupported(relationship.from()) && isItemSupported(relationship.to());
-    }
-
-    private boolean isItemSupported(RelationshipItem item) {
-        return true;
-    }
-
     public TrackedEntityInstance getRelativeTEI230(BaseRelationship baseRelationship, String teiUid) {
         String fromTEIUid = RelationshipHelper.getTeiUid(baseRelationship.from());
         String toTEIUid = RelationshipHelper.getTeiUid(baseRelationship.to());

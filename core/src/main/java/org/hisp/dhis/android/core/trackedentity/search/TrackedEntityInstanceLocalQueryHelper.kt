@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -48,8 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -99,11 +99,11 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         if (hasProgram(scope)) {
             queryStr += " JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias"
             queryStr += " ON ${dot(teiAlias, IdentifiableColumns.UID)} = " +
-                    dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
+                dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
 
             queryStr += " JOIN ${ProgramTableInfo.TABLE_INFO.name()} $programAlias"
             queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
-                    dot(programAlias, IdentifiableColumns.UID)
+                dot(programAlias, IdentifiableColumns.UID)
 
             appendProgramWhere(where, scope)
             if (hasEvent(scope)) {
@@ -199,14 +199,15 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
 
         val tempOwnershipSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $ownAlias " +
-                "WHERE ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
-                dot(teiAlias, IdentifiableColumns.UID) +
-                " AND " +
-                "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
-                dot(programAlias, IdentifiableColumns.UID)
+            "WHERE ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+            dot(teiAlias, IdentifiableColumns.UID) +
+            " AND " +
+            "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
+            dot(programAlias, IdentifiableColumns.UID)
 
-        where.appendComplexQuery("CASE " +
-            "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
+        where.appendComplexQuery(
+            "CASE " +
+                "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
                 "THEN (" +
                 "NOT EXISTS($tempOwnershipSubQuery) " +
                 "OR " +
@@ -218,14 +219,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun hasOrgunits(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
         return (
-                (
-                        scope.orgUnits().isNotEmpty() &&
-                                OrganisationUnitMode.ALL != scope.orgUnitMode() &&
-                                OrganisationUnitMode.ACCESSIBLE != scope.orgUnitMode()
-                        ) ||
-                        OrganisationUnitMode.CAPTURE == scope.orgUnitMode() ||
-                        hasOrgunitSortOrder(scope)
-                )
+            (
+                scope.orgUnits().isNotEmpty() &&
+                    OrganisationUnitMode.ALL != scope.orgUnitMode() &&
+                    OrganisationUnitMode.ACCESSIBLE != scope.orgUnitMode()
+                ) ||
+                OrganisationUnitMode.CAPTURE == scope.orgUnitMode() ||
+                hasOrgunitSortOrder(scope)
+            )
     }
 
     private fun hasOrgunitSortOrder(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
@@ -509,7 +510,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         val programClause = if (program == null) "" else "AND ${EnrollmentTableInfo.Columns.PROGRAM} = '$program'"
         return String.format(
             "(SELECT %s FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s = %s %s) " +
-                    "ORDER BY IFNULL(%s, %s) DESC LIMIT 1) %s",
+                "ORDER BY IFNULL(%s, %s) DESC LIMIT 1) %s",
             field,
             EventTableInfo.TABLE_INFO.name(),
             EventTableInfo.Columns.ENROLLMENT,

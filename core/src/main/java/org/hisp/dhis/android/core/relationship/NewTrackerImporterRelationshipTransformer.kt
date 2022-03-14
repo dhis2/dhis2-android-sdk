@@ -52,9 +52,19 @@ internal object NewTrackerImporterRelationshipTransformer : Transformer<Relation
                 .relationshipItemType(item.relationshipItemType())
 
             when {
-                item.hasTrackedEntityInstance() -> builder.trackedEntity(item.elementUid()).build()
-                item.hasEnrollment() -> builder.enrollment(item.elementUid()).build()
-                item.hasEvent() -> builder.event(item.elementUid()).build()
+                item.hasTrackedEntityInstance() ->
+                    builder.trackedEntity(
+                        NewTrackerImporterRelationshipItemTrackedEntity.builder().trackedEntity(item.elementUid())
+                            .build()
+                    ).build()
+                item.hasEnrollment() ->
+                    builder.enrollment(
+                        NewTrackerImporterRelationshipItemEnrollment.builder().enrollment(item.elementUid()).build()
+                    ).build()
+                item.hasEvent() ->
+                    builder.event(
+                        NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build()
+                    ).build()
                 else -> null
             }
         }

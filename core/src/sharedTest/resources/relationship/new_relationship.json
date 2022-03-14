@@ -1,0 +1,152 @@
+{
+  "relationship": "VdjOfugUb9y",
+  "relationshipName": "Malaria case linked to person",
+  "relationshipType": "mxZDvSZYxlw",
+  "createdAt": "2021-07-26T13:34:46.887",
+  "updatedAt": "2021-07-26T15:34:46.887",
+  "bidirectional": true,
+  "from": {
+    "event": {
+      "event": "mOFppqD2q8d",
+      "status": "COMPLETED",
+      "program": "VBqh0ynB2wv",
+      "programStage": "pTo4uMt3xur",
+      "enrollment": "xw4GwQ4hIsc",
+      "orgUnit": "DiszpKrYNg8",
+      "orgUnitName": "Ngelehun CHC",
+      "occurredAt": "2022-07-06T00:00:00.000",
+      "scheduledAt": "2022-07-06T23:13:58.332",
+      "storedBy": "android",
+      "followup": false,
+      "deleted": false,
+      "createdAt": "2021-07-06T23:13:58.332",
+      "updatedAt": "2021-07-06T23:13:58.332",
+      "attributeOptionCombo": "HllvX50cXC0",
+      "attributeCategoryOptions": "xYerKDKCefk",
+      "completedAt": "2022-07-06T16:13:56.209",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.646,
+          16.04144
+        ]
+      },
+      "assignedUser": {},
+      "createdBy": {
+        "uid": "DXyJmlo9rge",
+        "username": "android",
+        "firstName": "John",
+        "surname": "Barnes"
+      },
+      "updatedBy": {
+        "uid": "DXyJmlo9rge",
+        "username": "android",
+        "firstName": "John",
+        "surname": "Barnes"
+      },
+      "dataValues": [
+        {
+          "createdAt": "2021-07-06T23:13:58.328",
+          "updatedAt": "2021-07-06T23:13:58.328",
+          "providedElsewhere": false,
+          "dataElement": "F3ogKBuviRA",
+          "value": "[-89.16002,14.89767]",
+          "createdBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          },
+          "updatedBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          }
+        },
+        {
+          "createdAt": "2021-07-06T23:13:58.328",
+          "updatedAt": "2021-07-06T23:13:58.328",
+          "providedElsewhere": false,
+          "dataElement": "qrur9Dvnyt5",
+          "value": "25",
+          "createdBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          },
+          "updatedBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          }
+        },
+        {
+          "createdAt": "2021-07-06T23:13:58.328",
+          "updatedAt": "2021-07-06T23:13:58.328",
+          "providedElsewhere": false,
+          "dataElement": "oZg33kd9taw",
+          "value": "Male",
+          "createdBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          },
+          "updatedBy": {
+            "uid": "DXyJmlo9rge",
+            "username": "android",
+            "firstName": "John",
+            "surname": "Barnes"
+          }
+        }
+      ],
+      "notes": []
+    }
+  },
+  "to": {
+    "trackedEntity": {
+      "trackedEntity": "vOxUH373fy5",
+      "trackedEntityType": "nEenWmSyUEp",
+      "createdAt": "2017-01-20T10:44:02.770",
+      "createdAtClient": "2017-01-20T10:44:02.770",
+      "updatedAt": "2021-02-24T15:06:46.251",
+      "updatedAtClient": "2017-05-26T11:46:22.372",
+      "orgUnit": "DiszpKrYNg8",
+      "inactive": false,
+      "deleted": false,
+      "potentialDuplicate": false,
+      "attributes": [
+        {
+          "attribute": "zDhUuAYrxNC",
+          "displayName": "Last name",
+          "createdAt": "2017-05-26T11:46:22.371",
+          "updatedAt": "2017-05-26T11:46:22.371",
+          "valueType": "TEXT",
+          "value": "Ryder"
+        },
+        {
+          "attribute": "w75KJ2mc4zz",
+          "code": "MMD_PER_NAM",
+          "displayName": "First name",
+          "createdAt": "2017-05-26T11:46:22.369",
+          "updatedAt": "2017-05-26T11:46:22.369",
+          "valueType": "TEXT",
+          "value": "Filona"
+        },
+        {
+          "attribute": "cejWyOfXge6",
+          "displayName": "Gender",
+          "createdAt": "2017-05-26T11:46:22.336",
+          "updatedAt": "2017-05-26T11:46:22.336",
+          "valueType": "TEXT",
+          "value": "Female"
+        }
+      ],
+      "enrollments": [],
+      "programOwners": []
+    }
+  }
+}

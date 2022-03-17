@@ -49,7 +49,12 @@ internal class DatabaseDeletionHelper @Inject internal constructor(
     fun deleteDatabase(serverUrl: String, username: String) {
         val account =
             DatabaseConfigurationHelper.getAccount(databaseConfigurationSecureStore.get(), serverUrl, username)
-        databaseAdapterFactory.deleteDatabase(account)
-        databaseConfigurationSecureStore.remove()
+
+        if (account != null) {
+            databaseAdapterFactory.deleteDatabase(account)
+            val updatedConfiguration =
+                DatabaseConfigurationHelper.removeAccount(databaseConfigurationSecureStore.get(), listOf(account))
+            databaseConfigurationSecureStore.set(updatedConfiguration)
+        }
     }
 }

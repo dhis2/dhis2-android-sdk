@@ -42,7 +42,6 @@ import static okhttp3.Credentials.basic;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -140,7 +139,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
 
     @Mock
-    private DatabaseDeletionHelper databaseDeletionHelper;
+    private AccountManagerImpl accountManager;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -194,7 +193,7 @@ public class LogInCallUnitShould extends BaseCallShould {
                 userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, apiCallErrorCatcher,
                 new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-                new LogInExceptions(credentialsSecureStore), databaseDeletionHelper).logIn(username, password, serverUrl);
+                new LogInExceptions(credentialsSecureStore), accountManager).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

@@ -32,7 +32,6 @@ import dagger.Reusable
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.HttpException
@@ -42,7 +41,7 @@ import retrofit2.Response
 @Suppress("TooGenericExceptionCaught")
 internal class UserAccountDisabledErrorCatcher @Inject constructor(
     private val objectMapper: ObjectMapper,
-    private val databaseDeletionHelper: DatabaseDeletionHelper
+    private val accountManager: AccountManagerImpl
 ) : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean {
@@ -51,7 +50,7 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
 
     override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return try {
-            databaseDeletionHelper.deleteActiveDatabase()
+            accountManager.deleteCurrentAccount()
             D2ErrorCode.USER_ACCOUNT_DISABLED
         } catch (e: Throwable) {
             D2ErrorCode.USER_ACCOUNT_DISABLED

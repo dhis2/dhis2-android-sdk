@@ -33,6 +33,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -76,18 +77,23 @@ internal class AccountManagerImpl @Inject constructor(
                 .errorComponent(D2ErrorComponent.SDK)
                 .build()
         } else {
-            logOutCall.logOut().blockingAwait()
-            val configuration = databasesConfigurationStore.get()
-            val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
-                configuration,
-                credentials.username,
-                credentials.serverUrl
-            )
-            val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
-            databasesConfigurationStore.set(updatedConfiguration)
-
-            FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
-            databaseAdapterFactory.deleteDatabase(loggedAccount)
+            deleteAccount(credentials)
         }
+    }
+
+    @Throws(D2Error::class)
+    override fun deleteAccount(credentials: Credentials) {
+        logOutCall.logOut().blockingAwait()
+        val configuration = databasesConfigurationStore.get()
+        val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
+            configuration,
+            credentials.username,
+            credentials.serverUrl
+        )
+        val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
+        databasesConfigurationStore.set(updatedConfiguration)
+
+        FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
+        databaseAdapterFactory.deleteDatabase(loggedAccount)
     }
 }

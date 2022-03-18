@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user
 
 import kotlin.jvm.Throws
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
 
@@ -41,4 +42,7 @@ interface AccountManager {
 
     @Throws(D2Error::class)
     fun deleteCurrentAccount()
+
+    @Throws(D2Error::class)
+    fun deleteAccount(credentials: Credentials)
 }

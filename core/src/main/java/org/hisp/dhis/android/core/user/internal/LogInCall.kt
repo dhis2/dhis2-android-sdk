@@ -34,7 +34,6 @@ import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDeletionHelper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -65,7 +64,7 @@ internal class LogInCall @Inject internal constructor(
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,
-    private val databaseDeletionHelper: DatabaseDeletionHelper
+    private val accountManager: AccountManagerImpl
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -107,7 +106,9 @@ internal class LogInCall @Inject internal constructor(
     private fun handleOnlineException(d2Error: D2Error, credentials: Credentials?): D2Error {
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
             try {
-                databaseDeletionHelper.deleteDatabase(credentials!!.serverUrl, credentials.username)
+                if (credentials != null) {
+                    accountManager.deleteAccount(credentials)
+                }
                 d2Error
             } catch (e: Exception) {
                 d2Error

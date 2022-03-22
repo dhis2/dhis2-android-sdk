@@ -49,4 +49,5 @@ public interface UserModule {
     boolean blockingIsLogged();
 
     OpenIDConnectHandler openIdHandler();
+    UserDisabledEmitter userDisabledEmitter();
 }

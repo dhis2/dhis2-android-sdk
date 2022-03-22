@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountManager
+import org.hisp.dhis.android.core.user.UserDisabledEmitter
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(
@@ -52,6 +53,7 @@ internal class AccountManagerImpl @Inject constructor(
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
+    private val userDisabledEmitter: UserDisabledEmitter,
     private val context: Context
 ) : AccountManager {
     override fun getAccounts(): List<DatabaseAccount> {
@@ -83,6 +85,7 @@ internal class AccountManagerImpl @Inject constructor(
 
     @Throws(D2Error::class)
     override fun deleteAccount(credentials: Credentials) {
+        userDisabledEmitter.emit()
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
         val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(

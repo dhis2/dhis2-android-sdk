@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.user.internal
 
 import android.content.Context
 import dagger.Reusable
-import javax.inject.Inject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -44,7 +45,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountManager
-import org.hisp.dhis.android.core.user.UserDisabledEmitter
+import javax.inject.Inject
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(
@@ -53,9 +54,10 @@ internal class AccountManagerImpl @Inject constructor(
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
-    private val userDisabledEmitter: UserDisabledEmitter,
     private val context: Context
 ) : AccountManager {
+    private val accountDeletionSubject = PublishSubject.create<Unit>()
+
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts() ?: emptyList()
     }
@@ -85,7 +87,7 @@ internal class AccountManagerImpl @Inject constructor(
 
     @Throws(D2Error::class)
     override fun deleteAccount(credentials: Credentials) {
-        userDisabledEmitter.emit()
+        accountDeletionSubject.onNext(Unit)
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
         val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
@@ -98,5 +100,9 @@ internal class AccountManagerImpl @Inject constructor(
 
         FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
         databaseAdapterFactory.deleteDatabase(loggedAccount)
+    }
+
+    override fun accountDeletionObservable(): Observable<Unit> {
+        return accountDeletionSubject
     }
 }

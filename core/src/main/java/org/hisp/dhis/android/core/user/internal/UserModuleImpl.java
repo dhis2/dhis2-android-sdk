@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository;
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository;
-import org.hisp.dhis.android.core.user.UserDisabledEmitter;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.user.UserObjectRepository;
 import org.hisp.dhis.android.core.user.UserRoleCollectionRepository;
@@ -64,8 +63,6 @@ public final class UserModuleImpl implements UserModule {
 
     private final OpenIDConnectHandler openIDConnectHandler;
 
-    private final UserDisabledEmitter userDisabledEmitter;
-
     @Inject
     UserModuleImpl(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
                    LogOutCall logoutCallCallFactory,
@@ -76,8 +73,7 @@ public final class UserModuleImpl implements UserModule {
                    UserCredentialsObjectRepository userCredentials,
                    UserObjectRepository user,
                    AccountManagerImpl accountManager,
-                   OpenIDConnectHandlerImpl openIdHandlerImpl,
-                   UserDisabledEmitter userDisabledEmitter) {
+                   OpenIDConnectHandlerImpl openIdHandlerImpl) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallFactory = logoutCallCallFactory;
         this.logInCall = logInCall;
@@ -88,7 +84,6 @@ public final class UserModuleImpl implements UserModule {
         this.user = user;
         this.accountManager = accountManager;
         this.openIDConnectHandler = openIdHandlerImpl;
-        this.userDisabledEmitter = userDisabledEmitter;
     }
 
     @Override
@@ -161,11 +156,5 @@ public final class UserModuleImpl implements UserModule {
     @NonNull
     public OpenIDConnectHandler openIdHandler() {
         return openIDConnectHandler;
-    }
-
-    @Override
-    @NonNull
-    public UserDisabledEmitter userDisabledEmitter() {
-        return userDisabledEmitter;
     }
 }

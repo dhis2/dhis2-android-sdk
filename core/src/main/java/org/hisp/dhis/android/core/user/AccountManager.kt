@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user
 
 import io.reactivex.Observable
 import kotlin.jvm.Throws
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
 

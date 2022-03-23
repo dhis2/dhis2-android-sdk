@@ -43,15 +43,12 @@ final class TrackedEntityAttributeReservedValueCallErrorCatcher implements APICa
     }
 
     @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
-
-        String errorResponse = response.errorBody().string();
-
-        if (errorResponse.contains("Not enough values left to reserve")) {
+    public D2ErrorCode catchError(Response<?> response, String errorBody) throws IOException {
+        if (errorBody.contains("Not enough values left to reserve")) {
             return D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER;
-        } else if (errorResponse.contains("Generation and reservation of values took too long")) {
+        } else if (errorBody.contains("Generation and reservation of values took too long")) {
             return D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG;
-        } else if (errorResponse.contains("You might be running low on available values")) {
+        } else if (errorBody.contains("You might be running low on available values")) {
             return D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES;
         } else if (response.code() == 409) {
             return D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER;

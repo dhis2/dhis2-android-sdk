@@ -106,7 +106,7 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
         d2 = D2Factory.forNewDatabase();
 
-        executor = APICallExecutorImpl.create(d2.databaseAdapter());
+        executor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
         ownershipService = d2.retrofit().create(OwnershipService.class);

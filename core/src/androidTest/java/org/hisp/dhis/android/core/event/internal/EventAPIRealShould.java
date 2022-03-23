@@ -80,7 +80,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         super.setUp();
 
         d2 = D2Factory.forNewDatabase();
-        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
+        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         eventService = d2.retrofit().create(EventService.class);
     }

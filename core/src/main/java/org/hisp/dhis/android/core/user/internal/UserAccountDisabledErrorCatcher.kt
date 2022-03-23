@@ -25,23 +25,61 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal
-
+import com.fasterxml.jackson.databind.ObjectMapper
+import dagger.Reusable
 import java.net.HttpURLConnection
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import retrofit2.HttpException
 import retrofit2.Response
 
-internal class JobQueryErrorCatcher : APICallErrorCatcher {
+@Reusable
+@Suppress("TooGenericExceptionCaught")
+internal class UserAccountDisabledErrorCatcher @Inject constructor(
+    private val objectMapper: ObjectMapper,
+    private val accountManager: AccountManagerImpl
+) : APICallErrorCatcher {
 
-    override fun mustBeStored(): Boolean = false
+    override fun mustBeStored(): Boolean {
+        return true
+    }
 
     override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
-        return if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-            D2ErrorCode.JOB_REPORT_NOT_AVAILABLE
-        } else {
-            null
+        return try {
+            accountManager.deleteCurrentAccount()
+            D2ErrorCode.USER_ACCOUNT_DISABLED
+        } catch (e: Throwable) {
+            D2ErrorCode.USER_ACCOUNT_DISABLED
+        }
+    }
+
+    fun isUserAccountLocked(response: Response<*>, errorBody: String?): Boolean {
+        return try {
+            val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
+            val responseErrorBody = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+            isUnauthorized && responseErrorBody.message().contains("Account disabled")
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun catchError(throwable: Throwable): D2ErrorCode? {
+        val response = (throwable as HttpException).response()!!
+        val errorBody = response.errorBody()?.string() ?: "No error"
+        return catchError(response, errorBody)
+    }
+
+    fun isUserAccountLocked(throwable: Throwable): Boolean {
+        return try {
+            val response = (throwable as HttpException).response()!!
+            val errorBody = response.errorBody()?.string()
+            isUserAccountLocked(response, errorBody)
+        } catch (e: Exception) {
+            false
         }
     }
 }

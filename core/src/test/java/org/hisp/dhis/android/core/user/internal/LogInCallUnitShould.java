@@ -57,7 +57,6 @@ import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -131,9 +130,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private WipeModule wipeModule;
-
-    @Mock
     private MultiUserDatabaseManager multiUserDatabaseManager;
 
     @Mock
@@ -141,6 +137,9 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     @Mock
     private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
+
+    @Mock
+    private AccountManagerImpl accountManager;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -192,9 +191,9 @@ public class LogInCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new LogInCall(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, apiCallErrorCatcher,
+                systemInfoRepository, userStore, apiCallErrorCatcher,
                 new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-                new LogInExceptions(credentialsSecureStore)).logIn(username, password, serverUrl);
+                new LogInExceptions(credentialsSecureStore), accountManager).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -267,39 +266,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void succeed_when_no_previous_user_or_system_info() {
         logInSingle.blockingGet();
         verifySuccess();
-    }
-
-    @Test
-    public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
-        logInSingle.blockingGet();
-
-        verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void not_wipe_db_when_previously_user() throws Exception {
-        when(userStore.selectFirst()).thenReturn(user);
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_account_disabled() throws Exception {
-        whenAPICall().thenThrow(d2Error);
-        when(d2Error.errorCode()).thenReturn(D2ErrorCode.USER_ACCOUNT_DISABLED);
-        when(d2Error.isOffline()).thenReturn(false);
-
-        TestObserver<User> testObserver = logInSingle.test();
-        testObserver.awaitTerminalEvent();
-
-        assertThat(testObserver.errorCount()).isEqualTo(1);
-        testObserver.dispose();
-
-        verify(wipeModule).wipeEverything();
     }
 
     @Test

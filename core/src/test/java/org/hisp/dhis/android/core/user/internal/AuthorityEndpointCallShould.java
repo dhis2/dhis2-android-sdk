@@ -62,6 +62,9 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     @Mock
     private List<String> payload;
 
+    @Mock
+    private UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
+
     private Callable<List<Authority>> endpointCall;
 
 
@@ -70,7 +73,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher);
         endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler,
                 retrofit.create(AuthorityService.class)).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));

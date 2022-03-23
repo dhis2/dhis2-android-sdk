@@ -36,5 +36,5 @@ internal interface APICallErrorCatcher {
     fun mustBeStored(): Boolean?
 
     @Throws(IOException::class)
-    fun catchError(response: Response<*>): D2ErrorCode?
+    fun catchError(response: Response<*>, errorBody: String): D2ErrorCode?
 }

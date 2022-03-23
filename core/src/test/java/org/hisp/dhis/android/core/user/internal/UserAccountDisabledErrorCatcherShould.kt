@@ -25,23 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal
-
-import java.net.HttpURLConnection
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import com.google.common.truth.Truth
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import retrofit2.Response
 
-internal class JobQueryErrorCatcher : APICallErrorCatcher {
+@RunWith(JUnit4::class)
+class UserAccountDisabledErrorCatcherShould {
+    private lateinit var catcher: UserAccountDisabledErrorCatcher
+    private lateinit var response: Response<Any>
+    private var accountManager: AccountManagerImpl = mock()
 
-    override fun mustBeStored(): Boolean = false
+    @Before
+    fun setUp() {
+        catcher = UserAccountDisabledErrorCatcher(objectMapper(), accountManager)
 
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
-        return if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-            D2ErrorCode.JOB_REPORT_NOT_AVAILABLE
-        } else {
-            null
-        }
+        val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
+            "\"message\": \"Account disabled\"}"
+        response = Response.error(401, ResponseBody.create(null, responseError))
+    }
+
+    @Test
+    fun return_account_disabled() {
+        Truth.assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
+    }
+
+    @Test
+    fun delete_database() {
+        catcher.catchError(response, response.errorBody()!!.string())
+        verify(accountManager, times(1)).deleteCurrentAccount()
     }
 }

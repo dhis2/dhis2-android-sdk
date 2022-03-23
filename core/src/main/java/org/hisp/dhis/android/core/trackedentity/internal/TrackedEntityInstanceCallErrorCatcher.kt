@@ -41,11 +41,8 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
     }
 
     @Throws(IOException::class)
-    override fun catchError(response: Response<*>): D2ErrorCode? {
-        val parsed = objectMapper().readValue(
-            response.errorBody()!!.string(),
-            HttpMessageResponse::class.java
-        )
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
+        val parsed = objectMapper().readValue(errorBody, HttpMessageResponse::class.java)
 
         @Suppress("MagicNumber")
         return if (parsed.httpStatusCode() == 401) {

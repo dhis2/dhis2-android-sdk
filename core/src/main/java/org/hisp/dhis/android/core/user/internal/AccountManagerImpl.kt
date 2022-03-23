@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.user.internal
 
 import android.content.Context
 import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -53,6 +56,8 @@ internal class AccountManagerImpl @Inject constructor(
     private val logOutCall: LogOutCall,
     private val context: Context
 ) : AccountManager {
+    private val accountDeletionSubject = PublishSubject.create<Unit>()
+
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts() ?: emptyList()
     }
@@ -76,18 +81,28 @@ internal class AccountManagerImpl @Inject constructor(
                 .errorComponent(D2ErrorComponent.SDK)
                 .build()
         } else {
-            logOutCall.logOut().blockingAwait()
-            val configuration = databasesConfigurationStore.get()
-            val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
-                configuration,
-                credentials.username,
-                credentials.serverUrl
-            )
-            val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
-            databasesConfigurationStore.set(updatedConfiguration)
-
-            FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
-            databaseAdapterFactory.deleteDatabase(loggedAccount)
+            deleteAccount(credentials)
         }
+    }
+
+    @Throws(D2Error::class)
+    fun deleteAccount(credentials: Credentials) {
+        accountDeletionSubject.onNext(Unit)
+        logOutCall.logOut().blockingAwait()
+        val configuration = databasesConfigurationStore.get()
+        val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
+            configuration,
+            credentials.username,
+            credentials.serverUrl
+        )
+        val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
+        databasesConfigurationStore.set(updatedConfiguration)
+
+        FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
+        databaseAdapterFactory.deleteDatabase(loggedAccount)
+    }
+
+    override fun accountDeletionObservable(): Observable<Unit> {
+        return accountDeletionSubject
     }
 }

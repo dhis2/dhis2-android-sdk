@@ -52,7 +52,7 @@ object EventCallFactory {
 
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter)
+            APICallExecutorImpl.create(databaseAdapter, null)
         ).getCall(eventQuery)
     }
 }

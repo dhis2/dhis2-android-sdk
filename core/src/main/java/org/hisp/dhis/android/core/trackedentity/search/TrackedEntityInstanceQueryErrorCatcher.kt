@@ -43,7 +43,7 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
     }
 
     @SuppressWarnings("MagicNumber")
-    override fun catchError(response: Response<*>): D2ErrorCode? {
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode {
         return when {
             response.code() == HttpsURLConnection.HTTP_REQ_TOO_LONG ->
                 D2ErrorCode.TOO_MANY_ORG_UNITS
@@ -52,16 +52,13 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
                 D2ErrorCode.TOO_MANY_REQUESTS
 
             else ->
-                parseErrorMessage(response)
+                parseErrorMessage(errorBody)
         }
     }
 
-    private fun parseErrorMessage(response: Response<*>): D2ErrorCode {
+    private fun parseErrorMessage(errorBody: String): D2ErrorCode {
         return try {
-            val parsed = objectMapper().readValue(
-                response.errorBody()!!.string(),
-                HttpMessageResponse::class.java
-            )
+            val parsed = objectMapper().readValue(errorBody, HttpMessageResponse::class.java)
             if (parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
                 when {
                     parsed.message() == "maxteicountreached" -> D2ErrorCode.MAX_TEI_COUNT_REACHED

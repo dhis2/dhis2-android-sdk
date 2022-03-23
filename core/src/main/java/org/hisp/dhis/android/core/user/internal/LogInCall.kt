@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.core.wipe.internal.WipeModule
 
 @Reusable
 @Suppress("LongParameterList")
@@ -62,10 +61,10 @@ internal class LogInCall @Inject internal constructor(
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val userStore: IdentifiableObjectStore<User>,
-    private val wipeModule: WipeModule,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
-    private val exceptions: LogInExceptions
+    private val exceptions: LogInExceptions,
+    private val accountManager: AccountManagerImpl
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -98,15 +97,22 @@ internal class LogInCall @Inject internal constructor(
             if (d2Error.isOffline) {
                 tryLoginOffline(credentials, d2Error)
             } else {
-                throw handleOnlineException(d2Error)
+                throw handleOnlineException(d2Error, credentials)
             }
         }
     }
 
-    private fun handleOnlineException(d2Error: D2Error): D2Error {
+    @Suppress("TooGenericExceptionCaught")
+    private fun handleOnlineException(d2Error: D2Error, credentials: Credentials?): D2Error {
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-            wipeModule.wipeEverything()
-            d2Error
+            try {
+                if (credentials != null) {
+                    accountManager.deleteAccount(credentials)
+                }
+                d2Error
+            } catch (e: Exception) {
+                d2Error
+            }
         } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
             d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
         ) {
@@ -173,12 +179,13 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
 
+        var credentials: Credentials? = null
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
+            credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
-            throw handleOnlineException(d2Error)
+            throw handleOnlineException(d2Error, credentials)
         }
     }
 

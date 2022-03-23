@@ -30,13 +30,10 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import android.util.Log
 import dagger.Reusable
 import java.io.IOException
-import java.lang.Exception
-import java.lang.RuntimeException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.net.ssl.SSLException
-import kotlin.jvm.JvmOverloads
 import okhttp3.Request
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -132,9 +129,10 @@ internal class APIErrorMapper @Inject constructor() {
     fun responseException(
         errorBuilder: D2Error.Builder,
         response: Response<*>,
-        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
+        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE,
+        errorBody: String?
     ): D2Error {
-        val serverMessage = getServerMessage(response)
+        val serverMessage = errorBody ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
             .errorCode(errorCode)
@@ -158,5 +156,16 @@ internal class APIErrorMapper @Inject constructor() {
             }
 
         return message ?: "No server message"
+    }
+
+    fun getErrorBody(response: Response<*>): String {
+        val errorBody =
+            try {
+                getIfNotEmpty(response.errorBody()!!.string()) ?: getIfNotEmpty(response.errorBody().toString())
+            } catch (e: IOException) {
+                null
+            }
+
+        return errorBody ?: "No error message"
     }
 }

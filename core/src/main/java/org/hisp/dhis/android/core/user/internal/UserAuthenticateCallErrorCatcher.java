@@ -60,7 +60,7 @@ class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
     }
 
     @Override
-    public D2ErrorCode catchError(Response<?> response) {
+    public D2ErrorCode catchError(Response<?> response, String errorBody) {
 
         String errorBodyStr = null;
         if (response.errorBody() != null) {

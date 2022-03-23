@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user
 
+import io.reactivex.Observable
 import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -41,4 +42,6 @@ interface AccountManager {
 
     @Throws(D2Error::class)
     fun deleteCurrentAccount()
+
+    fun accountDeletionObservable(): Observable<Unit>
 }

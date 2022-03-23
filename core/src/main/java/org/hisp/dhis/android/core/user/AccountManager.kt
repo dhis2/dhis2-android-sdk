@@ -44,8 +44,5 @@ interface AccountManager {
     @Throws(D2Error::class)
     fun deleteCurrentAccount()
 
-    @Throws(D2Error::class)
-    fun deleteAccount(credentials: Credentials)
-
     fun accountDeletionObservable(): Observable<Unit>
 }

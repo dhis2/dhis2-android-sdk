@@ -86,7 +86,7 @@ internal class AccountManagerImpl @Inject constructor(
     }
 
     @Throws(D2Error::class)
-    override fun deleteAccount(credentials: Credentials) {
+    fun deleteAccount(credentials: Credentials) {
         accountDeletionSubject.onNext(Unit)
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()

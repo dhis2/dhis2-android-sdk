@@ -94,20 +94,20 @@ internal class TrackerQueryBundleInternalFactory constructor(
         ) {
             return enrollmentScopeToProgramStatus(params.programStatus())
         }
-        if (programUid != null && programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting?.enrollmentDownload() != null) {
-                return enrollmentScopeToProgramStatus(specificSetting.enrollmentDownload())
+        if (params.uids().isNotEmpty()) {
+            // Do not apply programStatus coming from Settings app if uids are explicitly defined
+            return null
+        }
+        if (programUid != null) {
+            programSettings?.specificSettings()?.get(programUid)?.enrollmentDownload()?.let {
+                return enrollmentScopeToProgramStatus(it)
             }
         }
         if (params.programStatus() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
             return enrollmentScopeToProgramStatus(params.programStatus())
         }
-        if (programSettings != null) {
-            val globalSetting = programSettings.globalSettings()
-            if (globalSetting?.enrollmentDownload() != null) {
-                return enrollmentScopeToProgramStatus(globalSetting.enrollmentDownload())
-            }
+        programSettings?.globalSettings()?.enrollmentDownload()?.let {
+            return enrollmentScopeToProgramStatus(it)
         }
         return null
     }

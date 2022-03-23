@@ -163,6 +163,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                         limit = iterables.bundleLimit
                     )
                 )
+                .programStatus(bundle.programStatus())
                 .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
                 .orgUnit(orgUnitUid)
                 .uids(params.uids())

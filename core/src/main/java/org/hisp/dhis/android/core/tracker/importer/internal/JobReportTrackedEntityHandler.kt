@@ -58,11 +58,17 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
-        conflictStore.insert(
-            conflictHelper.getConflictBuilder(errorReport)
-                .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-                .trackedEntityInstance(errorReport.uid).build()
-        )
+        trackedEntityStore.selectByUid(errorReport.uid)?.let { trackedEntity ->
+            if (errorReport.errorCode == ImporterError.E1063.name && trackedEntity.deleted() == true) {
+                trackedEntityStore.delete(trackedEntity.uid())
+            } else {
+                conflictStore.insert(
+                    conflictHelper.getConflictBuilder(errorReport)
+                        .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
+                        .trackedEntityInstance(errorReport.uid).build()
+                )
+            }
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

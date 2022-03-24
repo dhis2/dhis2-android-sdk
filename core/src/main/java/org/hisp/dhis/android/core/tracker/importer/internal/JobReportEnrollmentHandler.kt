@@ -75,14 +75,19 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
-        val enrollment = enrollmentStore.selectByUid(errorReport.uid)
-        conflictStore.insert(
-            conflictHelper.getConflictBuilder(errorReport)
-                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
-                .enrollment(errorReport.uid)
-                .trackedEntityInstance(enrollment!!.trackedEntityInstance())
-                .build()
-        )
+        enrollmentStore.selectByUid(errorReport.uid)?.let { enrollment ->
+            if (errorReport.errorCode == ImporterError.E1081.name && enrollment.deleted() == true) {
+                enrollmentStore.delete(enrollment.uid())
+            } else {
+                conflictStore.insert(
+                    conflictHelper.getConflictBuilder(errorReport)
+                        .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
+                        .enrollment(errorReport.uid)
+                        .trackedEntityInstance(enrollment.trackedEntityInstance())
+                        .build()
+                )
+            }
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

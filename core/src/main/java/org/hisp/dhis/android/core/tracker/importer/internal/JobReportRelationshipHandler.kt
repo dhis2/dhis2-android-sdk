@@ -51,6 +51,11 @@ internal class JobReportRelationshipHandler @Inject internal constructor(
 
     @Suppress("EmptyFunctionBlock")
     override fun storeConflict(errorReport: JobValidationError) {
+        val relationship by lazy { relationshipStore.selectByUid(errorReport.uid) }
+
+        if (errorReport.errorCode == ImporterError.E4005.name && relationship?.deleted() == true) {
+            relationshipStore.delete(errorReport.uid)
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

@@ -60,4 +60,10 @@ public class CommonPackageDIModule {
     public DataStatePropagator dataStatePropagator(DataStatePropagatorImpl impl) {
         return impl;
     }
+
+    @Provides
+    @Reusable
+    public TrackerDataManager trackerDataManager(TrackerDataManagerImpl impl) {
+        return impl;
+    }
 }

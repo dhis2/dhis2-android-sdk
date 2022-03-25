@@ -51,7 +51,7 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
     }
 
     @Override
-    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+    public OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.dataSets(childStore.getChildren(organisationUnit));
         return builder.build();

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -57,7 +57,7 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         <Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository> {
 
     private final EnrollmentStore store;
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
 
     @Inject
     EnrollmentCollectionRepository(
@@ -65,22 +65,22 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
             final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<EnrollmentCreateProjection, Enrollment> transformer,
-            final DataStatePropagator dataStatePropagator) {
+            final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
+                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, trackerDataManager)));
         this.store = store;
-        this.dataStatePropagator = dataStatePropagator;
+        this.trackerDataManager = trackerDataManager;
     }
 
     @Override
     protected void propagateState(Enrollment enrollment) {
-        dataStatePropagator.propagateEnrollmentUpdate(enrollment);
+        trackerDataManager.propagateEnrollmentUpdate(enrollment);
     }
 
     @Override
     public EnrollmentObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
+        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
     }
 
     public StringFilterConnector<EnrollmentCollectionRepository> byUid() {

@@ -52,7 +52,7 @@ final class DataSetCompulsoryDataElementOperandChildrenAppender extends Children
     }
 
     @Override
-    protected DataSet appendChildren(DataSet dataSet) {
+    public DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
         builder.compulsoryDataElementOperands(linkChildStore.getChildren(dataSet));
         return builder.build();

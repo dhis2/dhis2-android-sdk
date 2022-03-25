@@ -53,7 +53,7 @@ final class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender extends
     }
 
     @Override
-    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+    public OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.organisationUnitGroups(linkChildStore.getChildren(organisationUnit));
         return builder.build();

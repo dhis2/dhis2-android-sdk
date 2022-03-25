@@ -51,7 +51,7 @@ public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<Dat
     }
 
     @Override
-    protected DataSet appendChildren(DataSet dataSet) {
+    public DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
         builder.indicators(linkChildStore.getChildren(dataSet));
         return builder.build();

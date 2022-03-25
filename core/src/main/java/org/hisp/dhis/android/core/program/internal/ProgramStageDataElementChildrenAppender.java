@@ -51,7 +51,7 @@ final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<Pro
     }
 
     @Override
-    protected ProgramStage appendChildren(ProgramStage programStage) {
+    public ProgramStage appendChildren(ProgramStage programStage) {
         return ProgramStageInternalAccessor.insertProgramStageDataElements(programStage.toBuilder(),
                 childStore.getChildren(programStage)).build();
     }

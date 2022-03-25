@@ -25,38 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 
-final class ProgramIndicatorLegendSetChildrenAppender extends ChildrenAppender<ProgramIndicator> {
+@Reusable
+internal class RelationshipItemChildrenAppender @Inject constructor(
+    private val store: RelationshipItemStore
+) : ChildrenAppender<Relationship>() {
 
-    private final ObjectWithUidChildStore<ProgramIndicator> linkChildStore;
-
-    private ProgramIndicatorLegendSetChildrenAppender(
-            ObjectWithUidChildStore<ProgramIndicator> linkChildStore) {
-        this.linkChildStore = linkChildStore;
-    }
-
-    @Override
-    public ProgramIndicator appendChildren(ProgramIndicator programIndicator) {
-        ProgramIndicator.Builder builder = programIndicator.toBuilder();
-        builder.legendSets(linkChildStore.getChildren(programIndicator));
-        return builder.build();
-    }
-
-    static ChildrenAppender<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorLegendSetChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                        databaseAdapter,
-                        ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                        ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
-        );
+    override fun appendChildren(relationship: Relationship): Relationship {
+        val fromItem = store.getForRelationshipUidAndConstraintType(
+            relationship.uid()!!, RelationshipConstraintType.FROM
+        )
+        val toItem = store.getForRelationshipUidAndConstraintType(
+            relationship.uid()!!, RelationshipConstraintType.TO
+        )
+        return relationship.toBuilder()
+            .from(fromItem)
+            .to(toItem)
+            .build()
     }
 }

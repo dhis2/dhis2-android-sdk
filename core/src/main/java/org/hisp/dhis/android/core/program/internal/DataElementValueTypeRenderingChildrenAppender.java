@@ -46,7 +46,7 @@ final class DataElementValueTypeRenderingChildrenAppender
     }
 
     @Override
-    protected ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
+    public ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
         ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programStageDataElement);
 
         return programStageDataElement.toBuilder().renderType(valueTypeRendering).build();

@@ -52,7 +52,7 @@ final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAp
     }
 
     @Override
-    protected CategoryOptionCombo appendChildren(CategoryOptionCombo optionCombo) {
+    public CategoryOptionCombo appendChildren(CategoryOptionCombo optionCombo) {
         CategoryOptionCombo.Builder builder = optionCombo.toBuilder();
         builder.categoryOptions(linkChildStore.getChildren(optionCombo));
         return builder.build();

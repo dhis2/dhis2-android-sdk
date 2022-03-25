@@ -38,5 +38,5 @@ public abstract class ChildrenAppender<M> {
          */
     }
 
-    protected abstract M appendChildren(M m);
+    public abstract M appendChildren(M m);
 }

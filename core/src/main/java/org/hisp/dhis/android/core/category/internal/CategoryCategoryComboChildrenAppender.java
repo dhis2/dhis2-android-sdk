@@ -52,7 +52,7 @@ final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<Categ
     }
 
     @Override
-    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         builder.categories(linkChildStore.getChildren(categoryCombo));
         return builder.build();

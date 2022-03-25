@@ -52,7 +52,7 @@ final class CategoryCategoryOptionChildrenAppender extends ChildrenAppender<Cate
     }
 
     @Override
-    protected Category appendChildren(Category category) {
+    public Category appendChildren(Category category) {
         Category.Builder builder = category.toBuilder();
         builder.categoryOptions(linkChildStore.getChildren(category));
         return builder.build();

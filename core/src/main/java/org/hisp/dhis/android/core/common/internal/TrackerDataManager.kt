@@ -25,36 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-import javax.inject.Inject;
+internal interface TrackerDataManager {
 
-import dagger.Reusable;
+    fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?)
 
-@Reusable
-final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
+    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
-    private final RelationshipItemStore store;
+    fun propagateEventUpdate(event: Event?)
 
-    @Inject
-    RelationshipItemChildrenAppender(RelationshipItemStore store) {
-        this.store = store;
-    }
+    fun propagateRelationshipUpdate(relationship: Relationship)
 
-    @Override
-    protected Relationship appendChildren(Relationship relationship) {
-        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.TO);
-        return relationship.toBuilder()
-                .from(fromItem)
-                .to(toItem)
-                .build();
-    }
+    fun deleteTrackedEntity(tei: TrackedEntityInstance?)
+
+    fun deleteEnrollment(enrollment: Enrollment?)
+
+    fun deleteEvent(event: Event?)
+
+    fun deleteRelationship(relationship: Relationship?)
 }

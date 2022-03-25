@@ -43,7 +43,7 @@ final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
     }
 
     @Override
-    protected LegendSet appendChildren(LegendSet legendSet) {
+    public LegendSet appendChildren(LegendSet legendSet) {
         LegendSet.Builder builder = legendSet.toBuilder();
         builder.legends(childStore.getChildren(legendSet));
         return builder.build();

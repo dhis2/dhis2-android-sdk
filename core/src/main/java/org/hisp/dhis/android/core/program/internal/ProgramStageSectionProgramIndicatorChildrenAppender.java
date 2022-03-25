@@ -52,7 +52,7 @@ final class ProgramStageSectionProgramIndicatorChildrenAppender extends Children
     }
 
     @Override
-    protected ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
+    public ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
         ProgramStageSection.Builder builder = programStageSection.toBuilder();
         builder.programIndicators(linkChildStore.getChildren(programStageSection));
         return builder.build();

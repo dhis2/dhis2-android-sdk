@@ -45,7 +45,7 @@ public final class TrackedEntityTypeAttributeChildrenAppender extends ChildrenAp
     }
 
     @Override
-    protected TrackedEntityType appendChildren(TrackedEntityType trackedEntityType) {
+    public TrackedEntityType appendChildren(TrackedEntityType trackedEntityType) {
         TrackedEntityType.Builder builder = trackedEntityType.toBuilder();
         builder.trackedEntityTypeAttributes(childStore.getChildren(trackedEntityType));
         return builder.build();

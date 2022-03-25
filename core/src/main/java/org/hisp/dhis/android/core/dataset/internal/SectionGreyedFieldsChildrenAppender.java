@@ -51,7 +51,7 @@ final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section
     }
 
     @Override
-    protected Section appendChildren(Section section) {
+    public Section appendChildren(Section section) {
         Section.Builder builder = section.toBuilder();
         builder.greyedFields(linkChildStore.getChildren(section));
         return builder.build();

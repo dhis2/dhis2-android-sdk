@@ -47,7 +47,7 @@ final class ProgramTrackedEntityTypeChildrenAppender extends ChildrenAppender<Pr
     }
 
     @Override
-    protected Program appendChildren(Program program) {
+    public Program appendChildren(Program program) {
         Program.Builder builder = program.toBuilder();
         TrackedEntityType trackedEntityType = program.trackedEntityType();
         if (trackedEntityType != null) {

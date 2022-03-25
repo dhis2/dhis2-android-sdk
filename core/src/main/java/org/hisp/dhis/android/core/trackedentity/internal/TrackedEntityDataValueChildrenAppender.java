@@ -44,7 +44,7 @@ public final class TrackedEntityDataValueChildrenAppender extends ChildrenAppend
     }
 
     @Override
-    protected Event appendChildren(Event event) {
+    public Event appendChildren(Event event) {
         Event.Builder builder = event.toBuilder();
         builder.trackedEntityDataValues(childStore.getChildren(event));
         return builder.build();

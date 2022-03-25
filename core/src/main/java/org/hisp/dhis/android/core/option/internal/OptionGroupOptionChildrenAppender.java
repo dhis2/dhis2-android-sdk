@@ -50,7 +50,7 @@ final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGro
     }
 
     @Override
-    protected OptionGroup appendChildren(OptionGroup optionGroup) {
+    public OptionGroup appendChildren(OptionGroup optionGroup) {
         OptionGroup.Builder builder = optionGroup.toBuilder();
         builder.options(childStore.getChildren(optionGroup));
         return builder.build();

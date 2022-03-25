@@ -44,7 +44,7 @@ final class DataElementLegendSetChildrenAppender extends ChildrenAppender<DataEl
     }
 
     @Override
-    protected DataElement appendChildren(DataElement dataElement) {
+    public DataElement appendChildren(DataElement dataElement) {
         DataElement.Builder builder = dataElement.toBuilder();
         builder.legendSets(linkChildStore.getChildren(dataElement));
         return builder.build();

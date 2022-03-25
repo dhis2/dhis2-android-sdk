@@ -43,7 +43,7 @@ final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRu
     }
 
     @Override
-    protected ProgramRule appendChildren(ProgramRule programRule) {
+    public ProgramRule appendChildren(ProgramRule programRule) {
         ProgramRule.Builder builder = programRule.toBuilder();
         builder.programRuleActions(childStore.getChildren(programRule));
         return builder.build();

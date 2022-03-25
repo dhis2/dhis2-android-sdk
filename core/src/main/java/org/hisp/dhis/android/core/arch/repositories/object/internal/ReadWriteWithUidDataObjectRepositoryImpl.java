@@ -49,7 +49,7 @@ import java.util.Map;
 
 import io.reactivex.Completable;
 
-public class ReadWriteWithUidDataObjectRepositoryImpl
+public abstract class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends CoreObject & ObjectWithUidInterface & DeletableDataObject, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
@@ -97,13 +97,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                     .errorDescription("Tried to delete non existing object")
                     .build();
         } else {
-            if (object.syncState() == State.TO_POST) {
-                store.delete(object.uid());
-            } else {
-                store.setDeleted(object.uid());
-                store.setSyncState(object.uid(), State.TO_UPDATE);
-                propagateState(object);
-            }
+            deleteObject(object);
         }
     }
 
@@ -147,4 +141,6 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     protected void propagateState(M m) {
          // Method is empty because is the default action.
     }
+
+    protected abstract void deleteObject(M m);
 }

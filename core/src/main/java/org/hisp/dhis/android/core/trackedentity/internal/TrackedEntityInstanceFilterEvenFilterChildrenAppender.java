@@ -45,7 +45,7 @@ public final class TrackedEntityInstanceFilterEvenFilterChildrenAppender
     }
 
     @Override
-    protected TrackedEntityInstanceFilter appendChildren(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
+    public TrackedEntityInstanceFilter appendChildren(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
         TrackedEntityInstanceFilter.Builder builder = trackedEntityInstanceFilter.toBuilder();
         builder.eventFilters(childStore.getChildren(trackedEntityInstanceFilter));
         return builder.build();

@@ -52,7 +52,7 @@ final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<Pro
     }
 
     @Override
-    protected ProgramSection appendChildren(ProgramSection programSection) {
+    public ProgramSection appendChildren(ProgramSection programSection) {
         ProgramSection.Builder builder = programSection.toBuilder();
         builder.attributes(linkChildStore.getChildren(programSection));
         return builder.build();

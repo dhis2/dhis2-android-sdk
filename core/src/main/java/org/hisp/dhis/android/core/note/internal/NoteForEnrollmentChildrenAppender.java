@@ -43,7 +43,7 @@ public final class NoteForEnrollmentChildrenAppender extends ChildrenAppender<En
     }
 
     @Override
-    protected Enrollment appendChildren(Enrollment enrollment) {
+    public Enrollment appendChildren(Enrollment enrollment) {
         Enrollment.Builder builder = enrollment.toBuilder();
         builder.notes(childStore.getChildren(enrollment));
         return builder.build();

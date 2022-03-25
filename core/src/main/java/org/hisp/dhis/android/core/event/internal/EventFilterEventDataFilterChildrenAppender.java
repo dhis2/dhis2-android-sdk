@@ -45,7 +45,7 @@ public final class EventFilterEventDataFilterChildrenAppender extends ChildrenAp
     }
 
     @Override
-    protected EventFilter appendChildren(EventFilter eventFilter) {
+    public EventFilter appendChildren(EventFilter eventFilter) {
         if (eventFilter.eventQueryCriteria() != null) {
             EventQueryCriteria.Builder criteriaBuilder = eventFilter.eventQueryCriteria().toBuilder();
             criteriaBuilder.dataFilters(childStore.getChildren(eventFilter));

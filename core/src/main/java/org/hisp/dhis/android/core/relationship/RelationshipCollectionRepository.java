@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -69,7 +69,7 @@ public class RelationshipCollectionRepository
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemElementStoreSelector storeSelector;
     private final RelationshipManager relationshipManager;
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
 
     @Inject
     RelationshipCollectionRepository(final RelationshipStore store,
@@ -78,15 +78,15 @@ public class RelationshipCollectionRepository
                                      final RelationshipHandler relationshipHandler,
                                      final RelationshipItemElementStoreSelector storeSelector,
                                      final RelationshipManager relationshipManager,
-                                     final DataStatePropagator dataStatePropagator) {
+                                     final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipCollectionRepository(store, childrenAppenders, s,
-                        relationshipHandler, storeSelector, relationshipManager, dataStatePropagator)));
+                        relationshipHandler, storeSelector, relationshipManager, trackerDataManager)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.storeSelector = storeSelector;
         this.relationshipManager = relationshipManager;
-        this.dataStatePropagator = dataStatePropagator;
+        this.trackerDataManager = trackerDataManager;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class RelationshipCollectionRepository
                         .syncState(State.TO_POST)
                         .deleted(false)
                         .build());
-                dataStatePropagator.propagateRelationshipUpdate(relationship);
+                trackerDataManager.propagateRelationshipUpdate(relationship);
             } else {
                 throw D2Error
                         .builder()
@@ -146,7 +146,7 @@ public class RelationshipCollectionRepository
     @Override
     public ReadWriteObjectRepository<Relationship> uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new RelationshipObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
     }
 
     private boolean isUpdatableState(State state) {

@@ -49,7 +49,7 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
     }
 
     @Override
-    protected DataSet appendChildren(DataSet dataSet) {
+    public DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
         builder.dataSetElements(childStore.getChildren(dataSet));
         return builder.build();

@@ -52,7 +52,7 @@ final class ProgramStageSectionDataElementChildrenAppender extends ChildrenAppen
     }
 
     @Override
-    protected ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
+    public ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
         ProgramStageSection.Builder builder = programStageSection.toBuilder();
         builder.dataElements(linkChildStore.getChildren(programStageSection));
         return builder.build();

@@ -48,7 +48,7 @@ final class UserRoleChildrenAppender extends ChildrenAppender<UserCredentials> {
     }
 
     @Override
-    protected UserCredentials appendChildren(UserCredentials userCredentials) {
+    public UserCredentials appendChildren(UserCredentials userCredentials) {
         UserCredentials.Builder builder = userCredentials.toBuilder();
         builder.userRoles(store.selectAll());
         return builder.build();

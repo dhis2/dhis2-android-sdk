@@ -47,7 +47,7 @@ final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
     }
 
     @Override
-    protected ProgramTrackedEntityAttribute appendChildren(
+    public ProgramTrackedEntityAttribute appendChildren(
             ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
         ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programTrackedEntityAttribute);
 

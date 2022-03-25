@@ -45,7 +45,7 @@ public final class TrackedEntityAttributeValueChildrenAppender extends ChildrenA
     }
 
     @Override
-    protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
+    public TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
         TrackedEntityInstance.Builder builder = tei.toBuilder();
         builder.trackedEntityAttributeValues(childStore.getChildren(tei));
         return builder.build();

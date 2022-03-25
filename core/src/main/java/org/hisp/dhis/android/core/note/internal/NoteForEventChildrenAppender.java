@@ -43,7 +43,7 @@ public final class NoteForEventChildrenAppender extends ChildrenAppender<Event> 
     }
 
     @Override
-    protected Event appendChildren(Event event) {
+    public Event appendChildren(Event event) {
         Event.Builder builder = event.toBuilder();
         builder.notes(childStore.getChildren(event));
         return builder.build();

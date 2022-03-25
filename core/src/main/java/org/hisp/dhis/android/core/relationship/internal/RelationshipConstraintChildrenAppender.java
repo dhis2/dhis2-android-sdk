@@ -52,7 +52,7 @@ final class RelationshipConstraintChildrenAppender extends ChildrenAppender<Rela
     }
 
     @Override
-    protected RelationshipType appendChildren(RelationshipType relationshipType) {
+    public RelationshipType appendChildren(RelationshipType relationshipType) {
         RelationshipType.Builder builder = relationshipType.toBuilder();
         for (RelationshipConstraint constraint : this.constraints) {
             if (constraint.relationshipType().uid().equals(relationshipType.uid())) {

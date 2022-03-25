@@ -53,14 +53,11 @@ public abstract class ReadWriteWithUidDataObjectRepositoryImpl
         <M extends CoreObject & ObjectWithUidInterface & DeletableDataObject, R extends ReadOnlyObjectRepository<M>>
         extends ReadWriteWithUidObjectRepositoryImpl<M, R> implements ReadWriteObjectRepository<M> {
 
-    private final IdentifiableDeletableDataObjectStore<M> store;
-
     public ReadWriteWithUidDataObjectRepositoryImpl(IdentifiableDeletableDataObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     ObjectRepositoryFactory<R> repositoryFactory) {
         super(store, childrenAppenders, scope, repositoryFactory);
-        this.store = store;
     }
 
     /**
@@ -138,9 +135,7 @@ public abstract class ReadWriteWithUidDataObjectRepositoryImpl
         return new Unit();
     }
 
-    protected void propagateState(M m) {
-         // Method is empty because is the default action.
-    }
+    protected abstract void propagateState(M m);
 
     protected abstract void deleteObject(M m);
 }

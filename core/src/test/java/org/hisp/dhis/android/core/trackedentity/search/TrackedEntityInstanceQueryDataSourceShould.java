@@ -275,7 +275,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     private ChildrenAppender<TrackedEntityInstance> identityAppender() {
         return new ChildrenAppender<TrackedEntityInstance>() {
             @Override
-            protected TrackedEntityInstance appendChildren(TrackedEntityInstance m) {
+            public TrackedEntityInstance appendChildren(TrackedEntityInstance m) {
                 return m;
             }
         };

@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import javax.inject.Inject
 
 @Reusable
 internal class RelationshipItemChildrenAppender @Inject constructor(

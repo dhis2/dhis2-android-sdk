@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.common.DeletableDataObject
@@ -45,9 +46,9 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 internal class TrackerDataManagerImpl @Inject constructor(
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,

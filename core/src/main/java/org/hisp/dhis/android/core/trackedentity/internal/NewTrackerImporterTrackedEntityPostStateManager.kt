@@ -82,15 +82,16 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
         val relationshipMap = mutableMapOf<State, MutableList<String>>()
 
         objects.forEach {
-            when(it.trackerType()) {
+            when (it.trackerType()) {
                 TrackerImporterObjectType.EVENT -> eventStore.selectByUid(it.objectUid())?.let { e ->
                     h.addState(eventMap, e, forcedState)
                 }
                 TrackerImporterObjectType.ENROLLMENT -> enrollmentStore.selectByUid(it.objectUid())?.let { e ->
                     h.addState(enrollmentMap, e, forcedState)
                 }
-                TrackerImporterObjectType.TRACKED_ENTITY -> trackedEntityInstanceStore.selectByUid(it.objectUid())
-                    ?.let { t -> h.addState(teiMap, t, forcedState) }
+                TrackerImporterObjectType.TRACKED_ENTITY ->
+                    trackedEntityInstanceStore.selectByUid(it.objectUid())
+                        ?.let { t -> h.addState(teiMap, t, forcedState) }
                 TrackerImporterObjectType.RELATIONSHIP -> relationshipStore.selectByUid(it.objectUid())?.let { r ->
                     h.addState(relationshipMap, r, forcedState)
                 }

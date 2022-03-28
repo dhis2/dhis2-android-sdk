@@ -89,7 +89,7 @@ internal class JobQueryCall @Inject internal constructor(
         attempts: Int
     ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
-        @Suppress("MagicNumber")
+        @Suppress("TooGenericExceptionCaught")
         return Observable.interval(ATTEMPTS_INITIAL_DELAY, ATTEMPTS_INTERVAL, TimeUnit.SECONDS)
             .map {
                 try {

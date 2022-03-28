@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -101,7 +101,7 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
                 }
             }
             it.fileResources().forEach { id ->
-                fileResourceStore.selectByUid(id)?.let { fr -> h.addState(fileResourcesMap, fr, forcedState ) }
+                fileResourceStore.selectByUid(id)?.let { fr -> h.addState(fileResourcesMap, fr, forcedState) }
             }
         }
 

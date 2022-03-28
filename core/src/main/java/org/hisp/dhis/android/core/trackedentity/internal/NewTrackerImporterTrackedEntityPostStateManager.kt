@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(
@@ -45,6 +47,10 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
 
     fun restoreStates(payload: NewTrackerImporterPayload) {
         setStates(payload, null)
+    }
+
+    fun restoreStates(objects: List<TrackerJobObject>) {
+        setStates(objects, null)
     }
 
     fun setStates(payload: NewTrackerImporterPayload, forcedState: State?) {
@@ -62,6 +68,34 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
         enrollments.forEach { h.addState(enrollmentMap, it, forcedState) }
         events.forEach { h.addState(eventMap, it, forcedState) }
         relationships.forEach { h.addState(relationshipMap, it, forcedState) }
+
+        h.persistStates(teiMap, trackedEntityInstanceStore)
+        h.persistStates(enrollmentMap, enrollmentStore)
+        h.persistStates(eventMap, eventStore)
+        h.persistStates(relationshipMap, relationshipStore)
+    }
+
+    fun setStates(objects: List<TrackerJobObject>, forcedState: State?) {
+        val teiMap = mutableMapOf<State, MutableList<String>>()
+        val enrollmentMap = mutableMapOf<State, MutableList<String>>()
+        val eventMap = mutableMapOf<State, MutableList<String>>()
+        val relationshipMap = mutableMapOf<State, MutableList<String>>()
+
+        objects.forEach {
+            when(it.trackerType()) {
+                TrackerImporterObjectType.EVENT -> eventStore.selectByUid(it.objectUid())?.let { e ->
+                    h.addState(eventMap, e, forcedState)
+                }
+                TrackerImporterObjectType.ENROLLMENT -> enrollmentStore.selectByUid(it.objectUid())?.let { e ->
+                    h.addState(enrollmentMap, e, forcedState)
+                }
+                TrackerImporterObjectType.TRACKED_ENTITY -> trackedEntityInstanceStore.selectByUid(it.objectUid())
+                    ?.let { t -> h.addState(teiMap, t, forcedState) }
+                TrackerImporterObjectType.RELATIONSHIP -> relationshipStore.selectByUid(it.objectUid())?.let { r ->
+                    h.addState(relationshipMap, r, forcedState)
+                }
+            }
+        }
 
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)

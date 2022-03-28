@@ -36,6 +36,9 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
 
 internal const val ATTEMPTS_AFTER_UPLOAD = 90
 internal const val ATTEMPTS_WHEN_QUERYING = 1
@@ -48,7 +51,8 @@ internal class JobQueryCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
     private val handler: JobReportHandler,
-    private val fileResourceHandler: JobReportFileResourceHandler
+    private val fileResourceHandler: JobReportFileResourceHandler,
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager
 ) {
 
     fun queryPendingJobs(): Observable<D2Progress> {
@@ -91,8 +95,13 @@ internal class JobQueryCall @Inject internal constructor(
                 try {
                     downloadAndHandle(jobId, jobObjects)
                     true
-                } catch (_: Throwable) {
-                    false
+                } catch (e: Throwable) {
+                    if (e is D2Error && e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
+                        false
+                    } else {
+                        handlerError(jobId, jobObjects)
+                        true
+                    }
                 }
             }
             .takeUntil { it }
@@ -112,6 +121,11 @@ internal class JobQueryCall @Inject internal constructor(
         )
         trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
         handler.handle(jobReport, jobObjects)
+    }
+
+    private fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
+        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        stateManager.restoreStates(jobObjects)
     }
 
     private fun byJobIdClause(jobId: String) = WhereClauseBuilder()

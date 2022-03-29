@@ -46,6 +46,8 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
     @NonNull
     public abstract String organisationUnit();
 
+    public abstract String restriction();
+
     public static Builder builder() {
         return new $$AutoValue_CategoryOptionOrganisationUnitLink.Builder();
     }
@@ -63,6 +65,8 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
         public abstract Builder categoryOption(String categoryOption);
 
         public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder restriction(String restriction);
 
         public abstract CategoryOptionOrganisationUnitLink build();
     }

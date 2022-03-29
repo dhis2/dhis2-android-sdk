@@ -29,16 +29,17 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import retrofit2.http.GET
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.datavalue.DataValue
-import retrofit2.http.POST
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
+@Suppress("LongParameterList")
 internal interface DataValueService {
 
     @GET("dataValueSets")

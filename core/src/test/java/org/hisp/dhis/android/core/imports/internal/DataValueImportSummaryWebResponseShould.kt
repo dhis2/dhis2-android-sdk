@@ -36,8 +36,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DataValueImportSummaryWebResponseShould
-    : BaseObjectShould("imports/data_value_import_summary_web_response.json"), ObjectShould {
+class DataValueImportSummaryWebResponseShould :
+    BaseObjectShould("imports/data_value_import_summary_web_response.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {

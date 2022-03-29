@@ -37,17 +37,18 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import retrofit2.Call
 import retrofit2.http.*
 
+@Suppress("LongParameterList")
 internal interface DataSetCompleteRegistrationService {
 
     @GET("completeDataSetRegistrations")
     fun getDataSetCompleteRegistrations(
         @Query("fields") @Which fields: Fields<DataSetCompleteRegistration>,
         @Query("lastUpdated") lastUpdated: String?,
-        @Query("dataSet") dataSetUids: String?,
-        @Query("period") periodIds: String?,
-        @Query("orgUnit") organisationUnitIds: String?,
-        @Query("children") children: Boolean?,
-        @Query("paging") paging: Boolean?
+        @Query("dataSet") dataSetUids: String,
+        @Query("period") periodIds: String,
+        @Query("orgUnit") organisationUnitIds: String,
+        @Query("children") children: Boolean,
+        @Query("paging") paging: Boolean
     ): Single<DataSetCompleteRegistrationPayload>
 
     @POST("completeDataSetRegistrations")
@@ -62,11 +63,11 @@ internal interface DataSetCompleteRegistrationService {
 
     @DELETE("completeDataSetRegistrations")
     fun deleteDataSetCompleteRegistration(
-        @Query("ds") dataSet: String?,
-        @Query("pe") periodId: String?,
-        @Query("ou") orgUnit: String?,
-        @Query("cc") categoryComboUid: String?,
-        @Query("cp") categoryOptionUids: String?,
-        @Query("multiOu") multiOrganisationUnit: Boolean?
+        @Query("ds") dataSet: String,
+        @Query("pe") periodId: String,
+        @Query("ou") orgUnit: String,
+        @Query("cc") categoryComboUid: String,
+        @Query("cp") categoryOptionUids: String,
+        @Query("multiOu") multiOrganisationUnit: Boolean
     ): Call<Unit>
 }

@@ -53,7 +53,10 @@ internal object FileResourceUtil {
     fun renameFile(file: File, newFileName: String, context: Context): File {
         val contentType = URLConnection.guessContentTypeFromName(file.name)
         val generatedName = generateFileName(MediaType.get(contentType), newFileName)
-        val newFile = File(context.filesDir, "sdk_resources/$generatedName")
+        val newFile = File(
+            FileResourceDirectoryHelper.getFileResourceDirectory(context),
+            generatedName
+        )
 
         if (!file.renameTo(newFile)) {
             Log.d(FileResourceUtil::class.java.canonicalName, "Fail renaming " + file.name + " to " + generatedName)

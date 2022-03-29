@@ -112,6 +112,7 @@ internal class JobQueryCall @Inject internal constructor(
                     it && isLastJob
                 )
             }
+            .flatMap { updateFileResourceStates(jobObjects) }
     }
 
     private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {

@@ -34,6 +34,7 @@ enum class VisualizationType {
     STACKED_BAR,
     LINE,
     AREA,
+    STACKED_AREA,
     PIE,
     RADAR,
     GAUGE,

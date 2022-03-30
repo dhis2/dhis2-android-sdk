@@ -51,17 +51,18 @@ internal class UserAuthenticateCallErrorCatcher @Inject constructor(private val 
         return try {
             if (errorBody == APIErrorMapper.noErrorMessage) {
                 D2ErrorCode.NO_DHIS2_SERVER
-            }
-            val errorResponse = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
-            val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-            if (isUnauthorized && errorResponse.message().contains("Account locked")) {
-                D2ErrorCode.USER_ACCOUNT_LOCKED
-            } else if (isUnauthorized) {
-                D2ErrorCode.BAD_CREDENTIALS
-            } else if (hasInvalidCharacters(response.code(), errorBody)) {
-                D2ErrorCode.INVALID_CHARACTERS
             } else {
-                D2ErrorCode.NO_DHIS2_SERVER
+                val errorResponse = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+                val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
+                if (isUnauthorized && errorResponse.message().contains("Account locked")) {
+                    D2ErrorCode.USER_ACCOUNT_LOCKED
+                } else if (isUnauthorized) {
+                    D2ErrorCode.BAD_CREDENTIALS
+                } else if (hasInvalidCharacters(response.code(), errorBody)) {
+                    D2ErrorCode.INVALID_CHARACTERS
+                } else {
+                    D2ErrorCode.NO_DHIS2_SERVER
+                }
             }
         } catch (e: Exception) {
             if (hasInvalidCharacters(response.code(), errorBody)) {

@@ -34,6 +34,8 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     TEXT(TextValidator),
     LONG_TEXT(LongTextValidator),
     LETTER(LetterValidator),
+    PHONE_NUMBER(PhoneNumberValidator),
+    EMAIL(EmailValidator),
     BOOLEAN(BooleanValidator),
     TRUE_ONLY(TrueOnlyValidator),
     DATE(DateValidator),
@@ -46,16 +48,16 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     INTEGER_POSITIVE(IntegerPositiveValidator),
     INTEGER_NEGATIVE(IntegerNegativeValidator),
     INTEGER_ZERO_OR_POSITIVE(IntegerZeroOrPositiveValidator),
-    FILE_RESOURCE(UidValidator),
-    COORDINATE(CoordinateValidator),
-    PHONE_NUMBER(PhoneNumberValidator),
-    EMAIL(EmailValidator),
-    USERNAME(TextValidator),
-    ORGANISATION_UNIT(UidValidator),
     TRACKER_ASSOCIATE(UidValidator),
+    USERNAME(TextValidator),
+    COORDINATE(CoordinateValidator),
+    ORGANISATION_UNIT(UidValidator),
+    REFERENCE(TextValidator),
     AGE(DateValidator),
     URL(TextValidator),
-    IMAGE(UidValidator);
+    FILE_RESOURCE(UidValidator),
+    IMAGE(UidValidator),
+    GEOJSON(TextValidator);
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)

@@ -25,32 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+@Suppress("LongParameterList")
+internal interface DataValueService {
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
-
-interface DataValueService {
     @GET("dataValueSets")
-    Single<DataValueSet> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
-                                             @Query("lastUpdated") String lastUpdated,
-                                             @Query("dataSet") String dataSetUids,
-                                             @Query("period") String periodIds,
-                                             @Query("orgUnit") String orgUnitUids,
-                                             @Query("children") Boolean children,
-                                             @Query("paging") Boolean paging,
-                                             @Query("includeDeleted") Boolean includeDeleted);
+    fun getDataValues(
+        @Query("fields") @Which fields: Fields<DataValue?>?,
+        @Query("lastUpdated") lastUpdated: String?,
+        @Query("dataSet") dataSetUids: String?,
+        @Query("period") periodIds: String?,
+        @Query("orgUnit") orgUnitUids: String?,
+        @Query("children") children: Boolean?,
+        @Query("paging") paging: Boolean?,
+        @Query("includeDeleted") includeDeleted: Boolean?
+    ): Single<DataValueSet>
 
     @POST("dataValueSets")
-    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
+    fun postDataValues(@Body dataValueSet: DataValueSet): Call<DataValueImportSummary>
+
+    @POST("dataValueSets")
+    fun postDataValuesWebResponse(@Body dataValueSet: DataValueSet): Call<DataValueImportSummaryWebResponse>
 }

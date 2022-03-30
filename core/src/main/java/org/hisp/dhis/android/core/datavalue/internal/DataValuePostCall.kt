@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import java.net.HttpURLConnection
 
 @Reusable
 internal class DataValuePostCall @Inject constructor(

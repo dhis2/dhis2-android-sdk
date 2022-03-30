@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 
@@ -52,6 +53,7 @@ object D2Manager {
     private var testingServerUrl: String? = null
     private var testingDatabaseName: String? = null
     private var testingUsername: String? = null
+    private lateinit var d2DIComponent : D2DIComponent
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the
@@ -87,7 +89,7 @@ object D2Manager {
             val insecureStore = testingInsecureStore ?: AndroidInsecureStore(context)
 
             val d2Configuration = validateAndSetDefaultValues(d2Config)
-            val d2DIComponent = D2DIComponent.create(d2Configuration, secureStore, insecureStore)
+            d2DIComponent = D2DIComponent.create(d2Configuration, secureStore, insecureStore)
 
             if (isTestMode) {
                 enableNotClosedObjectsDetection()
@@ -103,6 +105,7 @@ object D2Manager {
             val credentials = d2DIComponent.credentialsSecureStore().get()
 
             if (wantToImportDBForExternalTesting()) {
+           //     d2DIComponent.credentialsSecureStore().set(Credentials("Android", testingServerUrl!!,"Android123!", null))
                 multiUserDatabaseManager.loadDbForTesting(
                     testingServerUrl,
                     testingDatabaseName,
@@ -161,6 +164,19 @@ object D2Manager {
         testingServerUrl = serverUrl
         testingDatabaseName = databaseName
         testingUsername = username
+    }
+
+    @VisibleForTesting
+    fun removeCredentials(){
+        d2DIComponent.credentialsSecureStore().remove()
+    }
+
+    @VisibleForTesting
+    fun setCredentials(username: String, password: String){
+        if (testingServerUrl.isNullOrEmpty()){
+            throw NoSuchFieldException("No testing Server Url")
+        }
+        d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!,password, null))
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {

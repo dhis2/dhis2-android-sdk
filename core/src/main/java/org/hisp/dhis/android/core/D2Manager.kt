@@ -105,7 +105,6 @@ object D2Manager {
             val credentials = d2DIComponent.credentialsSecureStore().get()
 
             if (wantToImportDBForExternalTesting()) {
-           //     d2DIComponent.credentialsSecureStore().set(Credentials("Android", testingServerUrl!!,"Android123!", null))
                 multiUserDatabaseManager.loadDbForTesting(
                     testingServerUrl,
                     testingDatabaseName,

@@ -39,9 +39,11 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOr
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.net.HttpURLConnection
 
 @Reusable
 internal class DataValuePostCall @Inject constructor(
@@ -76,8 +78,10 @@ internal class DataValuePostCall @Inject constructor(
 
     private fun executePostCall(dataValueSet: DataValueSet): DataValueImportSummary? {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiCallExecutor.executeObjectCall(
-                dataValueService.postDataValuesWebResponse(dataValueSet)
+            apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                dataValueService.postDataValuesWebResponse(dataValueSet),
+                listOf(HttpURLConnection.HTTP_CONFLICT),
+                DataValueImportSummaryWebResponse::class.java
             ).response()
         } else {
             apiCallExecutor.executeObjectCall(

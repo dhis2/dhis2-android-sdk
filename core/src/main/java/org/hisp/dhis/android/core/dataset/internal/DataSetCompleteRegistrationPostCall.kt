@@ -42,9 +42,11 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionReposito
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.net.HttpURLConnection
 
 @Reusable
 internal class DataSetCompleteRegistrationPostCall @Inject constructor(
@@ -139,8 +141,10 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
 
     private fun postCompleteRegistrations(payload: DataSetCompleteRegistrationPayload): DataValueImportSummary? {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiCallExecutor.executeObjectCall(
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload)
+            apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload),
+                listOf(HttpURLConnection.HTTP_CONFLICT),
+                DataValueImportSummaryWebResponse::class.java
             ).response()
         } else {
             apiCallExecutor.executeObjectCall(

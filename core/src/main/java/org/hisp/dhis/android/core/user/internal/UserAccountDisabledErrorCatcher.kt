@@ -32,6 +32,7 @@ import dagger.Reusable
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.HttpException
@@ -69,7 +70,7 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
 
     fun catchError(throwable: Throwable): D2ErrorCode? {
         val response = (throwable as HttpException).response()!!
-        val errorBody = response.errorBody()?.string() ?: "No error"
+        val errorBody = APIErrorMapper().getErrorBody(response)
         return catchError(response, errorBody)
     }
 

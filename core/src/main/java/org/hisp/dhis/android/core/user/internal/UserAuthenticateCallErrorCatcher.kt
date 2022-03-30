@@ -25,79 +25,61 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import android.util.Log;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import retrofit2.Response;
+import android.util.Log
+import com.fasterxml.jackson.databind.ObjectMapper
+import dagger.Reusable
+import java.lang.Exception
+import java.net.HttpURLConnection
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import retrofit2.Response
 
 @Reusable
-class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
-
-    private final ObjectMapper objectMapper;
-
-    @Inject
-    UserAuthenticateCallErrorCatcher(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+internal class UserAuthenticateCallErrorCatcher @Inject constructor(private val objectMapper: ObjectMapper) :
+    APICallErrorCatcher {
+    override fun mustBeStored(): Boolean {
+        return true
     }
 
-    @Override
-    public Boolean mustBeStored() {
-        return true;
-    }
-
-    @Override
-    public D2ErrorCode catchError(Response<?> response, String errorBody) {
-
-        String errorBodyStr = null;
-        if (response.errorBody() != null) {
-            try {
-                errorBodyStr = response.errorBody().string();
-            } catch (IOException e) {
-                return D2ErrorCode.NO_DHIS2_SERVER;
+    @Suppress("TooGenericExceptionCaught")
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode {
+        return try {
+            if (errorBody == APIErrorMapper.noErrorMessage) {
+                D2ErrorCode.NO_DHIS2_SERVER
             }
-        }
-
-        try {
-            HttpMessageResponse errorResponse = objectMapper.readValue(errorBodyStr, HttpMessageResponse.class);
-            boolean isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED;
+            val errorResponse = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+            val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
             if (isUnauthorized && errorResponse.message().contains("Account locked")) {
-                return D2ErrorCode.USER_ACCOUNT_LOCKED;
+                D2ErrorCode.USER_ACCOUNT_LOCKED
             } else if (isUnauthorized) {
-                return D2ErrorCode.BAD_CREDENTIALS;
-            } else if (hasInvalidCharacters(response.code(), errorBodyStr)) {
-                return D2ErrorCode.INVALID_CHARACTERS;
+                D2ErrorCode.BAD_CREDENTIALS
+            } else if (hasInvalidCharacters(response.code(), errorBody)) {
+                D2ErrorCode.INVALID_CHARACTERS
             } else {
-                return D2ErrorCode.NO_DHIS2_SERVER;
+                D2ErrorCode.NO_DHIS2_SERVER
             }
-        } catch (Exception e) {
-            if (hasInvalidCharacters(response.code(), errorBodyStr)) {
-                return D2ErrorCode.INVALID_CHARACTERS;
+        } catch (e: Exception) {
+            if (hasInvalidCharacters(response.code(), errorBody)) {
+                D2ErrorCode.INVALID_CHARACTERS
+            } else {
+                Log.e(UserAuthenticateCallErrorCatcher::class.java.simpleName, e.javaClass.simpleName, e)
+                D2ErrorCode.NO_DHIS2_SERVER
             }
-            Log.e(UserAuthenticateCallErrorCatcher.class.getSimpleName(), e.getClass().getSimpleName(), e);
-            return D2ErrorCode.NO_DHIS2_SERVER;
         }
     }
 
-    private boolean hasInvalidCharacters(int code, String errorBodyStr) {
-        try {
-            boolean isBadRequest = code == HttpURLConnection.HTTP_BAD_REQUEST;
-            return isBadRequest && errorBodyStr.contains("Invalid character");
-        } catch (Exception e) {
-            return false;
+    @Suppress("TooGenericExceptionCaught")
+    private fun hasInvalidCharacters(code: Int, errorBodyStr: String): Boolean {
+        return try {
+            val isBadRequest = code == HttpURLConnection.HTTP_BAD_REQUEST
+            isBadRequest && errorBodyStr.contains("Invalid character")
+        } catch (e: Exception) {
+            false
         }
     }
 }

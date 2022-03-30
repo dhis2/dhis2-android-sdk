@@ -166,6 +166,10 @@ internal class APIErrorMapper @Inject constructor() {
                 null
             }
 
-        return errorBody ?: "No error message"
+        return errorBody ?: noErrorMessage
+    }
+
+    companion object {
+        internal const val noErrorMessage: String = "No error message"
     }
 }

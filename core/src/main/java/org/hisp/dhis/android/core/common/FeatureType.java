@@ -33,7 +33,8 @@ public enum FeatureType {
     POINT("POINT", "Point"),
     POLYGON("POLYGON", "Polygon"),
     MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
-    NONE("NONE", "None");
+    NONE("NONE", "None"),
+    SYMBOL("SYMBOL", "Symbol");
 
     private final String featureType;
     private final String geometryType;

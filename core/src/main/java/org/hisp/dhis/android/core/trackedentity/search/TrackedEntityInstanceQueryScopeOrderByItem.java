@@ -39,16 +39,16 @@ public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    String toAPIString() {
+    public String toAPIString() {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryScopeOrderByItem.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
+    public abstract static class Builder {
 
         public abstract Builder column(TrackedEntityInstanceQueryScopeOrderColumn column);
 

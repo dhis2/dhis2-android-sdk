@@ -83,6 +83,7 @@ internal interface TrackedEntityInstanceService {
         @Query(PROGRAM_STATUS) programStatus: String?,
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
+        @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,

@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-abstract class TrackedEntityInstanceQueryScopeOrderColumn {
+public abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
         CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME,

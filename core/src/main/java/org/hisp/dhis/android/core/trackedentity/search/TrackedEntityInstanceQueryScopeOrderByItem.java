@@ -35,11 +35,16 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 @AutoValue
 public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
 
+    public static TrackedEntityInstanceQueryScopeOrderByItem DEFAULT_TRACKER_ORDER = builder()
+            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
+            .direction(RepositoryScope.OrderByDirection.DESC)
+            .build();
+
     public abstract TrackedEntityInstanceQueryScopeOrderColumn column();
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    String toAPIString() {
+    public String toAPIString() {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 

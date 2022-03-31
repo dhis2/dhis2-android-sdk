@@ -152,10 +152,15 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         // Auxiliary fields to access values
         abstract List<State> states();
+        abstract List<TrackedEntityInstanceQueryScopeOrderByItem> order();
 
         public TrackedEntityInstanceQueryRepositoryScope build() {
             if (states() != null) {
                 mode(RepositoryMode.OFFLINE_ONLY);
+            }
+
+            if (order() == null || order().isEmpty()) {
+                order(Collections.singletonList(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER));
             }
 
             return autoBuild();

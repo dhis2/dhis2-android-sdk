@@ -33,6 +33,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import retrofit2.Call
 
 @Reusable
@@ -49,6 +50,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             getProgramStatus(query),
             getProgramStartDate(query),
             TrackedEntityInstanceFields.allFields,
+            TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
             true,
             query.page(),
             query.pageSize(),

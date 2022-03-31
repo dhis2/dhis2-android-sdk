@@ -119,7 +119,11 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         return itemList
     }
 
-    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String {
-        return orders.mapNotNull { it.toAPIString() }.joinToString(",")
+    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
+        return if (orders.isNotEmpty()) {
+            orders.mapNotNull { it.toAPIString() }.joinToString(",")
+        } else {
+            null
+        }
     }
 }

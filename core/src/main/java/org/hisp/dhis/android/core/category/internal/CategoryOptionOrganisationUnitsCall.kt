@@ -111,15 +111,21 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
     sealed class CategoryOptionRestriction(open val label: String) {
         data class Restricted(
             val uid: String,
-            override val label: String = "RESTRICTED"
+            override val label: String = RESTRICTED
         ) : CategoryOptionRestriction(label)
 
         class NotRestricted(
-            override val label: String = "NOT_RESTRICTED"
+            override val label: String = NOT_RESTRICTED
         ) : CategoryOptionRestriction(label)
 
         class NotAccessibleToUser(
-            override val label: String = "NOT_ACCESSIBLE_TO_USER"
+            override val label: String = NOT_ACCESSIBLE_TO_USER
         ) : CategoryOptionRestriction(label)
+
+        companion object {
+            const val NOT_RESTRICTED = "NOT_RESTRICTED"
+            const val RESTRICTED = "RESTRICTED"
+            const val NOT_ACCESSIBLE_TO_USER = "NOT_ACCESSIBLE_TO_USER"
+        }
     }
 }

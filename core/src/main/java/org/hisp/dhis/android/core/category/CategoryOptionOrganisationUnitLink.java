@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.category;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
@@ -43,7 +44,7 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
     @NonNull
     public abstract String categoryOption();
 
-    @NonNull
+    @Nullable
     public abstract String organisationUnit();
 
     public abstract String restriction();
@@ -64,7 +65,7 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
 
         public abstract Builder categoryOption(String categoryOption);
 
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
 
         public abstract Builder restriction(String restriction);
 

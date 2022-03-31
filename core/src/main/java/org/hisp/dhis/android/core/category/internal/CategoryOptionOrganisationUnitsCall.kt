@@ -34,13 +34,12 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
-    private val handler: LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>,
+    private val handler: LinkHandler<CategoryOptionRestriction, CategoryOptionOrganisationUnitLink>,
     private val service: CategoryOptionService,
     private val dhisVersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader
@@ -53,10 +52,13 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
     fun download(uids: Set<String>): Single<Map<String, List<String>>> {
         return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
-                uids,
-                UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-                { map: Map<String, List<String?>> -> map.forEach { handleEntry(it) } },
-                { partitionUids: Set<String> ->
+                uids = uids,
+                pageSize = UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
+                handler = { map: Map<String, List<String?>> ->
+                    val data = getUpdatedEntries(uids, map)
+                    data.forEach { handleEntry(it) }
+                },
+                pageDownloader = { partitionUids: Set<String> ->
                     service.getCategoryOptionOrgUnits(partitionUids.joinToString(","))
                 }
             )
@@ -65,15 +67,59 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
         }
     }
 
-    private fun handleEntry(entry: Map.Entry<String, List<String?>>) {
-        handler.handleMany(
-            entry.key,
-            entry.value.filterNotNull().map { ObjectWithUid.create(it) }
-        ) { o ->
-            CategoryOptionOrganisationUnitLink.builder()
-                .organisationUnit(o.uid())
-                .categoryOption(entry.key)
-                .build()
+    private fun getUpdatedEntries(
+        uids: Set<String>,
+        data: Map<String, List<String?>>
+    ): Map<String, List<CategoryOptionRestriction>> {
+
+        val updatedEntries = mutableMapOf<String, List<CategoryOptionRestriction>>()
+        for (uid in uids) {
+            if (!data.keys.contains(uid)) {
+                updatedEntries[uid] = listOf(CategoryOptionRestriction.NotAccessibleToUser())
+            } else {
+                updatedEntries[uid] = data[uid]!!.map {
+                    if (it == null) {
+                        CategoryOptionRestriction.NotRestricted()
+                    } else {
+                        CategoryOptionRestriction.Restricted(it)
+                    }
+                }
+            }
         }
+        return updatedEntries
+    }
+
+    private fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
+        handler.handleMany(
+            masterUid = entry.key,
+            slaves = entry.value,
+            transformer = { o ->
+                val orgUnit = when (o) {
+                    is CategoryOptionRestriction.NotAccessibleToUser -> null
+                    is CategoryOptionRestriction.NotRestricted -> null
+                    is CategoryOptionRestriction.Restricted -> o.uid
+                }
+                CategoryOptionOrganisationUnitLink.builder()
+                    .organisationUnit(orgUnit)
+                    .categoryOption(entry.key)
+                    .restriction(o.label)
+                    .build()
+            }
+        )
+    }
+
+    sealed class CategoryOptionRestriction(open val label: String) {
+        data class Restricted(
+            val uid: String,
+            override val label: String = "RESTRICTED"
+        ) : CategoryOptionRestriction(label)
+
+        class NotRestricted(
+            override val label: String = "NOT_RESTRICTED"
+        ) : CategoryOptionRestriction(label)
+
+        class NotAccessibleToUser(
+            override val label: String = "NOT_ACCESSIBLE_TO_USER"
+        ) : CategoryOptionRestriction(label)
     }
 }

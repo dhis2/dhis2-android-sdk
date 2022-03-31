@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
-import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Module
 internal class CategoryOptionOrganisationUnitEntityDIModule {
@@ -49,7 +48,7 @@ internal class CategoryOptionOrganisationUnitEntityDIModule {
     @Provides
     @Reusable
     fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>):
-        LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink> {
+        LinkHandler<CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction, CategoryOptionOrganisationUnitLink> {
             return LinkHandlerImpl(store)
         }
 }

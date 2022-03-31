@@ -83,9 +83,10 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkCleaner<Program> linkCleaner(DatabaseAdapter databaseAdapter) {
+    public LinkCleaner<Program> linkCleaner(ProgramStoreInterface programStore,
+                                            DatabaseAdapter databaseAdapter) {
         return new LinkCleanerImpl<>(OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, databaseAdapter);
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programStore, databaseAdapter);
     }
 
     @Provides

@@ -31,4 +31,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface LinkCleaner<P : ObjectWithUidInterface> {
     fun deleteNotPresent(objects: Collection<P>?): Boolean
+    fun deleteNotPresentInDb(): Boolean
 }

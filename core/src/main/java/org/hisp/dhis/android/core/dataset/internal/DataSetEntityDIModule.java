@@ -82,9 +82,11 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkCleaner<DataSet> linkCleaner(DatabaseAdapter databaseAdapter) {
+    public LinkCleaner<DataSet> linkCleaner(IdentifiableObjectStore<DataSet> dataSetStore,
+                                            DatabaseAdapter databaseAdapter) {
         return new LinkCleanerImpl<>(DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                dataSetStore,
                 databaseAdapter);
     }
 

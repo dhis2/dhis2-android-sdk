@@ -45,5 +45,6 @@ public enum ValueTypeRenderingType {
     LINEAR_SCALE,
     AUTOCOMPLETE,
     QR_CODE,
-    BAR_CODE
+    BAR_CODE,
+    GS1_DATAMATRIX
 }

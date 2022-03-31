@@ -27,58 +27,58 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Reusable
+import java.lang.Exception
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import retrofit2.HttpException
 import retrofit2.Response
 
 @Reusable
-@Suppress("TooGenericExceptionCaught")
-internal class UserAccountDisabledErrorCatcher @Inject constructor(
-    private val objectMapper: ObjectMapper,
-    private val accountManager: AccountManagerImpl
-) : APICallErrorCatcher {
-
+internal class UserAuthenticateCallErrorCatcher @Inject constructor(private val objectMapper: ObjectMapper) :
+    APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
         return true
     }
 
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
+    @Suppress("TooGenericExceptionCaught")
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode {
         return try {
-            accountManager.deleteCurrentAccount()
-            D2ErrorCode.USER_ACCOUNT_DISABLED
-        } catch (e: Throwable) {
-            D2ErrorCode.USER_ACCOUNT_DISABLED
-        }
-    }
-
-    fun isUserAccountLocked(response: Response<*>, errorBody: String?): Boolean {
-        return try {
-            val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-            val responseErrorBody = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
-            isUnauthorized && responseErrorBody.message().contains("Account disabled")
+            if (errorBody == APIErrorMapper.noErrorMessage) {
+                D2ErrorCode.NO_DHIS2_SERVER
+            } else {
+                val errorResponse = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+                val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
+                if (isUnauthorized && errorResponse.message().contains("Account locked")) {
+                    D2ErrorCode.USER_ACCOUNT_LOCKED
+                } else if (isUnauthorized) {
+                    D2ErrorCode.BAD_CREDENTIALS
+                } else if (hasInvalidCharacters(response.code(), errorBody)) {
+                    D2ErrorCode.INVALID_CHARACTERS
+                } else {
+                    D2ErrorCode.NO_DHIS2_SERVER
+                }
+            }
         } catch (e: Exception) {
-            false
+            if (hasInvalidCharacters(response.code(), errorBody)) {
+                D2ErrorCode.INVALID_CHARACTERS
+            } else {
+                Log.e(UserAuthenticateCallErrorCatcher::class.java.simpleName, e.javaClass.simpleName, e)
+                D2ErrorCode.NO_DHIS2_SERVER
+            }
         }
     }
 
-    fun catchError(throwable: Throwable): D2ErrorCode? {
-        val response = (throwable as HttpException).response()!!
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        return catchError(response, errorBody)
-    }
-
-    fun isUserAccountLocked(throwable: Throwable): Boolean {
+    @Suppress("TooGenericExceptionCaught")
+    private fun hasInvalidCharacters(code: Int, errorBodyStr: String): Boolean {
         return try {
-            val response = (throwable as HttpException).response()!!
-            val errorBody = response.errorBody()?.string()
-            isUserAccountLocked(response, errorBody)
+            val isBadRequest = code == HttpURLConnection.HTTP_BAD_REQUEST
+            isBadRequest && errorBodyStr.contains("Invalid character")
         } catch (e: Exception) {
             false
         }

@@ -53,7 +53,7 @@ object D2Manager {
     private var testingServerUrl: String? = null
     private var testingDatabaseName: String? = null
     private var testingUsername: String? = null
-    private lateinit var d2DIComponent : D2DIComponent
+    private lateinit var d2DIComponent: D2DIComponent
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the
@@ -166,16 +166,16 @@ object D2Manager {
     }
 
     @VisibleForTesting
-    fun removeCredentials(){
+    fun removeCredentials() {
         d2DIComponent.credentialsSecureStore().remove()
     }
 
     @VisibleForTesting
-    fun setCredentials(username: String, password: String){
-        if (testingServerUrl.isNullOrEmpty()){
+    fun setCredentials(username: String, password: String) {
+        if (testingServerUrl.isNullOrEmpty()) {
             throw NoSuchFieldException("No testing Server Url")
         }
-        d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!,password, null))
+        d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!, password, null))
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {

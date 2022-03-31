@@ -32,10 +32,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderColumn
 import retrofit2.Call
 
 @Reusable
@@ -52,7 +50,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             getProgramStatus(query),
             getProgramStartDate(query),
             TrackedEntityInstanceFields.allFields,
-            defaultSortOrder.toAPIString(),
+            TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
             true,
             query.page(),
             query.pageSize(),
@@ -91,13 +89,5 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             true,
             true
         )
-    }
-
-    companion object {
-        private val defaultSortOrder: TrackedEntityInstanceQueryScopeOrderByItem =
-            TrackedEntityInstanceQueryScopeOrderByItem.builder()
-                .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
-                .direction(RepositoryScope.OrderByDirection.DESC)
-                .build()
     }
 }

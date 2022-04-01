@@ -146,7 +146,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
                 .uid("TXGfLxZlInA")
                 .blockingGet();
 
-        assertThat(categoryOption.organisationUnits()).isEmpty();
+        assertThat(categoryOption.organisationUnits()).isNull();
     }
 
     @Test
@@ -156,6 +156,6 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
                 .uid("apsOixVZlf1")
                 .blockingGet();
 
-        assertThat(categoryOption.organisationUnits()).isNull();
+        assertThat(categoryOption.organisationUnits()).isEmpty();
     }
 }

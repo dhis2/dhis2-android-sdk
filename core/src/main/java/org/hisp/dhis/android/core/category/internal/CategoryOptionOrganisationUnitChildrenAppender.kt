@@ -51,8 +51,9 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
         }.build()
         val links = childStore.selectWhere(whereClause)
         val organisationUnit = when {
-            links.all { it.restriction() == NOT_RESTRICTED } -> emptyList()
-            links.all { it.restriction() == NOT_ACCESSIBLE_TO_USER } -> null
+            links.isEmpty() -> null
+            links.all { it.restriction() == NOT_RESTRICTED } -> null
+            links.all { it.restriction() == NOT_ACCESSIBLE_TO_USER } -> emptyList()
             else -> links.map { ObjectWithUid.create(it.organisationUnit()) }
         }
 

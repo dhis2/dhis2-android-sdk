@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.core.data.category.CategoryOptionOrganisationUnitLinkSamples
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Suppress("MagicNumber")
-internal object CategoryOptionOrganisationUnitLinkStore {
-    private val BINDER = StatementBinder { o: CategoryOptionOrganisationUnitLink, w: StatementWrapper ->
-        w.bind(1, o.categoryOption())
-        w.bind(2, o.organisationUnit())
-        w.bind(3, o.restriction())
+@RunWith(D2JunitRunner::class)
+class CategoryOptionOrganisationUnitLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<CategoryOptionOrganisationUnitLink>(
+        CategoryOptionOrganisationUnitLinkStore.create(TestDatabaseAdapterFactory.get()),
+        CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
+
+    override fun buildObjectWithOtherMasterUid(): CategoryOptionOrganisationUnitLink {
+        return buildObject().toBuilder()
+            .categoryOption("new_category_option")
+            .build()
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionOrganisationUnitLink> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-            BINDER
-        ) { CategoryOptionOrganisationUnitLink.create(it) }
+    override fun addMasterUid(): String {
+        return CategoryOptionOrganisationUnitLinkSamples
+            .getCategoryOptionOrganisationUnitLink()
+            .categoryOption()
+    }
+
+    override fun buildObject(): CategoryOptionOrganisationUnitLink {
+        return CategoryOptionOrganisationUnitLinkSamples
+            .getCategoryOptionOrganisationUnitLink()
     }
 }

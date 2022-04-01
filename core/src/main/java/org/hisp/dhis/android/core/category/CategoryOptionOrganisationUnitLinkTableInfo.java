@@ -54,11 +54,12 @@ public final class CategoryOptionOrganisationUnitLinkTableInfo {
 
         public static final String CATEGORY_OPTION = "categoryOption";
         public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String RESTRICTION = "restriction";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    CATEGORY_OPTION, ORGANISATION_UNIT);
+                    CATEGORY_OPTION, ORGANISATION_UNIT, RESTRICTION);
         }
 
         @Override

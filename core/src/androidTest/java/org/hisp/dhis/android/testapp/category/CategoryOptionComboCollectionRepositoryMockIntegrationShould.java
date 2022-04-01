@@ -138,4 +138,24 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         assertThat(categoryOption.organisationUnits().size()).isEqualTo(1);
         assertThat(categoryOption.organisationUnits().get(0).uid()).isEqualTo("DiszpKrYNg8");
     }
+
+    @Test
+    public void include_organisation_units_as_children_no_restrictions() {
+        CategoryOption categoryOption = d2.categoryModule().categoryOptions()
+                .withOrganisationUnits()
+                .uid("TXGfLxZlInA")
+                .blockingGet();
+
+        assertThat(categoryOption.organisationUnits()).isNull();
+    }
+
+    @Test
+    public void include_organisation_units_as_children_restrictions_out_of_scope() {
+        CategoryOption categoryOption = d2.categoryModule().categoryOptions()
+                .withOrganisationUnits()
+                .uid("apsOixVZlf1")
+                .blockingGet();
+
+        assertThat(categoryOption.organisationUnits()).isEmpty();
+    }
 }

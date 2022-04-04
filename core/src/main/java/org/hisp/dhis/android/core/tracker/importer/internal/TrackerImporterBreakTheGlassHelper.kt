@@ -59,7 +59,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
         instances: List<TrackedEntityInstance>
     ): List<TrackedEntityInstance> {
         return summary.enrollments.ignored.filter { enrollment ->
-            isProtectedProgram(enrollment.program()) && isNotCaptureScope(enrollment.organisationUnit())
+            isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
         }.mapNotNull { enrollment ->
             instances.mapNotNull { tei ->
                 val teiEnrollment =
@@ -99,7 +99,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
         candidateEnrollments
             .mapNotNull { error -> error.enrollment()?.let { id -> payload.enrollments.find { it.uid() == id } } }
             .filter { enrollment ->
-                isProtectedProgram(enrollment.program()) && isNotCaptureScope(enrollment.organisationUnit())
+                isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
             }
             .map { enrollment ->
                 glassErrors.enrollments.add(enrollment)
@@ -120,7 +120,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
             .mapNotNull { error -> error.event()?.let { id -> payload.events.find { it.uid() == id } } }
             .filter { event ->
                 event.enrollment()?.let { enrollmentStore.selectByUid(it) }?.let {
-                    isProtectedProgram(it.program()) && isNotCaptureScope(it.organisationUnit())
+                    isProtectedInSearchScope(it.program(), it.organisationUnit())
                 } ?: false
             }
             .map { event ->
@@ -161,6 +161,14 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
                     }
                 }
             }
+    }
+
+    fun isProtectedInSearchScope(program: String?, organisationUnit: String?): Boolean {
+        return if (program != null && organisationUnit != null) {
+            isProtectedProgram(program) && isNotCaptureScope(organisationUnit)
+        } else {
+            false
+        }
     }
 
     private fun isProtectedProgram(program: String?): Boolean {

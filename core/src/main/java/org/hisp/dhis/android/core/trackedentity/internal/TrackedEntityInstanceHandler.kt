@@ -51,7 +51,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue>,
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment>,
-    private val enrollmentOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Enrollment>,
+    private val enrollmentOrphanCleaner: TrackedEntityEnrollmentOrphanCleaner,
     private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
     trackedEntityInstanceStore,
@@ -109,7 +109,8 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
             if (params.hasAllEnrollments) {
                 enrollmentOrphanCleaner.deleteOrphan(
                     o,
-                    TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
+                    TrackedEntityInstanceInternalAccessor.accessEnrollments(o),
+                    params.program
                 )
                 relationshipOrphanCleaner.deleteOrphan(
                     o,

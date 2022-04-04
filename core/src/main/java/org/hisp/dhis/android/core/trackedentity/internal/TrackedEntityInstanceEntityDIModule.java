@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleanerImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -78,9 +74,8 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, DataColumns.SYNC_STATE, databaseAdapter);
+    TrackedEntityEnrollmentOrphanCleaner enrollmentOrphanCleaner(TrackedEntityEnrollmentOrphanCleanerImpl impl) {
+        return impl;
     }
 
     @Provides

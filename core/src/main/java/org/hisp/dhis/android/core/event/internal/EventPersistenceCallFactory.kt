@@ -45,11 +45,11 @@ internal class EventPersistenceCallFactory @Inject constructor(
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader
 ) {
     fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {
-        return persistEventsInternal(events, false, relatives)
+        return persistEventsInternal(events, asRelationship = false, relatives)
     }
 
     fun persistAsRelationships(events: List<Event>): Completable {
-        return persistEventsInternal(events, true, null)
+        return persistEventsInternal(events, asRelationship = true, relatives = null)
     }
 
     private fun persistEventsInternal(
@@ -60,7 +60,6 @@ internal class EventPersistenceCallFactory @Inject constructor(
         return Completable.defer {
             val params = IdentifiableDataHandlerParams(
                 hasAllAttributes = false,
-                hasAllEnrollments = false,
                 overwrite = false,
                 asRelationship = asRelationship
             )

@@ -89,13 +89,16 @@ internal class EnrollmentHandler @Inject constructor(
         relatives: RelationshipItemRelatives?
     ) {
         if (action !== HandleAction.Delete) {
-            val thisParams = IdentifiableDataHandlerParams(
-                hasAllAttributes = false,
-                hasAllEnrollments = false,
-                overwrite = params.overwrite,
-                asRelationship = false
-            )
-            eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(o), thisParams, relatives)
+            val events = EnrollmentInternalAccessor.accessEvents(o)
+            if (events != null) {
+                val thisParams = IdentifiableDataHandlerParams(
+                    hasAllAttributes = false,
+                    overwrite = params.overwrite,
+                    asRelationship = false
+                )
+                eventHandler.handleMany(events, thisParams, relatives)
+                eventOrphanCleaner.deleteOrphan(o, events)
+            }
 
             o.notes()?.let { notes ->
                 val transformed = notes.map { note ->
@@ -108,16 +111,10 @@ internal class EnrollmentHandler @Inject constructor(
             }
 
             val relationships = EnrollmentInternalAccessor.accessRelationships(o)
-            if (relationships != null && relationships.isNotEmpty()) {
+            if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
+                relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
         }
-        if (params.hasAllEnrollments) {
-            relationshipOrphanCleaner.deleteOrphan(
-                o,
-                EnrollmentInternalAccessor.accessRelationships(o)
-            )
-        }
-        eventOrphanCleaner.deleteOrphan(o, EnrollmentInternalAccessor.accessEvents(o))
     }
 }

@@ -42,6 +42,12 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
         trackedEntityAttributeUids: List<String>,
         program: String
     )
+    fun deleteByInstanceAndNotInAccessibleAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        teiType: String,
+        programs: List<String>
+    )
 
     fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
 }

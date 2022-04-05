@@ -51,7 +51,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue>,
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment>,
-    private val enrollmentOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Enrollment>,
+    private val enrollmentOrphanCleaner: TrackedEntityEnrollmentOrphanCleaner,
     private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
     trackedEntityInstanceStore,
@@ -86,35 +86,23 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
                 value.toBuilder().trackedEntityInstance(o.uid()).build()
             }
 
-            if (params.hasAllAttributes) {
-                deleteOrphanAttributes(o, program = null)
-            } else if (params.program != null) {
-                deleteOrphanAttributes(o, params.program)
-            }
+            deleteOrphanAttributes(o, params)
 
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
             if (enrollments != null) {
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
-                    hasAllEnrollments = false,
                     params.overwrite,
                     asRelationship = false
                 )
                 enrollmentHandler.handleMany(enrollments, thisParams, relatives)
+                enrollmentOrphanCleaner.deleteOrphan(o, enrollments, params.program)
             }
+
             val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(o)
-            if (relationships != null && relationships.isNotEmpty()) {
+            if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
-            }
-            if (params.hasAllEnrollments) {
-                enrollmentOrphanCleaner.deleteOrphan(
-                    o,
-                    TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
-                )
-                relationshipOrphanCleaner.deleteOrphan(
-                    o,
-                    TrackedEntityInstanceInternalAccessor.accessRelationships(o)
-                )
+                relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
         }
     }
@@ -127,18 +115,32 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
         return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build()
     }
 
-    private fun deleteOrphanAttributes(tei: TrackedEntityInstance, program: String?) {
+    private fun deleteOrphanAttributes(tei: TrackedEntityInstance, params: IdentifiableDataHandlerParams) {
         tei.trackedEntityAttributeValues()?.let { attributes ->
             val attributeUids = attributes.mapNotNull { it.trackedEntityAttribute() }
 
-            if (program == null) {
-                trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(tei.uid(), attributeUids)
-            } else {
-                trackedEntityAttributeValueStore.deleteByInstanceAndNotInProgramAttributes(
-                    tei.uid(),
-                    attributeUids,
-                    program
-                )
+            when {
+                params.asRelationship -> {
+                    trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(tei.uid(), attributeUids)
+                }
+                params.program != null -> {
+                    trackedEntityAttributeValueStore.deleteByInstanceAndNotInProgramAttributes(
+                        tei.uid(),
+                        attributeUids,
+                        params.program
+                    )
+                }
+                else -> {
+                    val programs =
+                        TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).mapNotNull { it.program() }
+
+                    trackedEntityAttributeValueStore.deleteByInstanceAndNotInAccessibleAttributes(
+                        trackedEntityInstanceUid = tei.uid(),
+                        trackedEntityAttributeUids = attributeUids,
+                        teiType = tei.trackedEntityType()!!,
+                        programs = programs
+                    )
+                }
             }
         }
     }

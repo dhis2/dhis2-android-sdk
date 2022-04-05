@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor.accessRelationships
+import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
@@ -93,20 +93,17 @@ internal class EventHandler @Inject constructor(
                 val transformed = notes.map { note ->
                     noteVersionManager.transform(Note.NoteType.EVENT_NOTE, o.uid(), note)
                 }
-
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
                     transformed, Note.NoteType.EVENT_NOTE, o.uid()
                 )
                 noteHandler.handleMany(notesToSync)
             }
 
-            val relationships = accessRelationships(o)
-            if (relationships != null && relationships.isNotEmpty()) {
+            val relationships = EventInternalAccessor.accessRelationships(o)
+            if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
+                relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
-        }
-        if (params.hasAllEnrollments) {
-            relationshipOrphanCleaner.deleteOrphan(o, accessRelationships(o))
         }
     }
 

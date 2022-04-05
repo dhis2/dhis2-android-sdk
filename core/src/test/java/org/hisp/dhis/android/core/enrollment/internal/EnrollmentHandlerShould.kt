@@ -93,7 +93,7 @@ class EnrollmentHandlerShould {
 
     @Test
     fun do_nothing_when_passing_null_argument() {
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(null, params, relationshipItemRelatives)
 
         // verify that store or event handler is never called
@@ -108,7 +108,7 @@ class EnrollmentHandlerShould {
     fun invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
         whenever(enrollment.deleted()).doReturn(Boolean.TRUE)
 
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)
 
         // verify that enrollment store is only invoked with delete
@@ -117,7 +117,7 @@ class EnrollmentHandlerShould {
 
         // event handler should not be invoked
         verify(eventHandler, never()).handleMany(any(), any(), any())
-        verify(eventCleaner, times(1)).deleteOrphan(any(), any())
+        verify(eventCleaner, never()).deleteOrphan(any(), any())
         verify(noteHandler, never()).handleMany(any())
     }
 
@@ -126,7 +126,7 @@ class EnrollmentHandlerShould {
         whenever(enrollment.deleted()).doReturn(Boolean.FALSE)
         whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
 
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)
 
         // verify that enrollment store is only invoked with update

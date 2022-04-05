@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper

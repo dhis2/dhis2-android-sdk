@@ -145,12 +145,12 @@ internal class TrackedEntityAttributeValueStoreImpl private constructor(
             .appendInSubQuery(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
-                        "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} IN ($programsStr) " +
-                        "UNION ALL " +
-                        "SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
-                        "FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '${teiType}'"
+                    "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} IN ($programsStr) " +
+                    "UNION ALL " +
+                    "SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
+                    "FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '$teiType'"
             )
             .build()
         deleteWhere(deleteWhereQuery)

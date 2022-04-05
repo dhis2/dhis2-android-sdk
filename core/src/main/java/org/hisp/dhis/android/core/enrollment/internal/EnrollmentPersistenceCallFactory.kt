@@ -39,18 +39,16 @@ internal class EnrollmentPersistenceCallFactory @Inject constructor(
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment>
 ) {
     fun persistAsRelationships(enrollments: List<Enrollment>): Completable {
-        return persistEnrollmentsInternal(enrollments, true, false, false)
+        return persistEnrollmentsInternal(enrollments, asRelationship = true, overwrite = false)
     }
 
     private fun persistEnrollmentsInternal(
         enrollments: List<Enrollment>,
         asRelationship: Boolean,
-        isFullUpdate: Boolean,
         overwrite: Boolean
     ): Completable {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = true,
-            hasAllEnrollments = isFullUpdate,
             overwrite = overwrite,
             asRelationship = asRelationship
         )

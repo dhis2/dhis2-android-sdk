@@ -96,26 +96,17 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
             if (enrollments != null) {
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
-                    hasAllEnrollments = false,
                     params.overwrite,
                     asRelationship = false
                 )
                 enrollmentHandler.handleMany(enrollments, thisParams, relatives)
+                enrollmentOrphanCleaner.deleteOrphan(o, enrollments, params.program)
             }
+
             val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(o)
-            if (relationships != null && relationships.isNotEmpty()) {
+            if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
-            }
-            if (params.hasAllEnrollments) {
-                enrollmentOrphanCleaner.deleteOrphan(
-                    o,
-                    TrackedEntityInstanceInternalAccessor.accessEnrollments(o),
-                    params.program
-                )
-                relationshipOrphanCleaner.deleteOrphan(
-                    o,
-                    TrackedEntityInstanceInternalAccessor.accessRelationships(o)
-                )
+                relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
         }
     }

@@ -67,7 +67,7 @@ class TrackedEntityInstanceHandlerShould {
     private val relationship: Relationship = mock()
     private val relative: TrackedEntityInstance = mock()
     private val relativeBuilder: TrackedEntityInstance.Builder = mock()
-    private val enrollmentCleaner: OrphanCleaner<TrackedEntityInstance, Enrollment> = mock()
+    private val enrollmentCleaner: TrackedEntityEnrollmentOrphanCleaner = mock()
     private val relationshipCleaner: OrphanCleaner<TrackedEntityInstance, Relationship> = mock()
     private val relatives: RelationshipItemRelatives = mock()
     private val teiBuilder: TrackedEntityInstance.Builder = mock()
@@ -122,7 +122,7 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityAttributeValueHandler, never()).handleMany(any(), any())
         verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
         verify(enrollmentHandler, never()).handleMany(any(), any(), any())
-        verify(enrollmentCleaner, never()).deleteOrphan(any(), any())
+        verify(enrollmentCleaner, never()).deleteOrphan(any(), any(), anyOrNull())
         verify(relationshipCleaner, never()).deleteOrphan(any(), any())
     }
 
@@ -174,7 +174,7 @@ class TrackedEntityInstanceHandlerShould {
         val params = IdentifiableDataHandlerParams(true, true, false, false)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
 
-        verify(enrollmentCleaner, times(1)).deleteOrphan(any(), anyOrNull())
+        verify(enrollmentCleaner, times(1)).deleteOrphan(any(), anyOrNull(), anyOrNull())
         verify(relationshipCleaner, times(1)).deleteOrphan(any(), anyOrNull())
     }
 
@@ -186,7 +186,7 @@ class TrackedEntityInstanceHandlerShould {
         val params = IdentifiableDataHandlerParams(true, false, false, false)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
 
-        verify(enrollmentCleaner, never()).deleteOrphan(any(), any())
+        verify(enrollmentCleaner, never()).deleteOrphan(any(), any(), anyOrNull())
         verify(relationshipCleaner, never()).deleteOrphan(any(), any())
     }
 

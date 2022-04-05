@@ -52,7 +52,6 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
     fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>): Completable {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = false,
-            hasAllEnrollments = false,
             overwrite = false,
             asRelationship = true
         )

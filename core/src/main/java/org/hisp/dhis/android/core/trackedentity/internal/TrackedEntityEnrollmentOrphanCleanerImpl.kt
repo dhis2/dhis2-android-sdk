@@ -48,7 +48,6 @@ internal class TrackedEntityEnrollmentOrphanCleanerImpl @Inject constructor(
         children: Collection<Enrollment>?,
         program: String?
     ): Boolean {
-
         return if (parent != null && children != null) {
             val orphanEnrollmentsClause = WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, parent.uid())
@@ -74,7 +73,7 @@ internal class TrackedEntityEnrollmentOrphanCleanerImpl @Inject constructor(
                 enrollmentStore.deleteWhere(deleteWhereClause)
             }
 
-            true
+            deletedEnrollments.isNotEmpty()
         } else {
             false
         }

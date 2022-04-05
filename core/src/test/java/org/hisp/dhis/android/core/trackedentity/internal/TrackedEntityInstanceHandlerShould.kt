@@ -71,6 +71,7 @@ class TrackedEntityInstanceHandlerShould {
 
     // Constants
     private val TEI_UID = "test_tei_uid"
+    private val TET_UID = "test_tet_uid"
     private val RELATIVE_UID = "relative_uid"
     private val RELATIONSHIP_TYPE = "type_uid"
 
@@ -83,13 +84,14 @@ class TrackedEntityInstanceHandlerShould {
     @Before
     fun setUp() {
         whenever(trackedEntityInstance.uid()).doReturn(TEI_UID)
+        whenever(trackedEntityInstance.trackedEntityType()).doReturn(TET_UID)
         whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
             .thenReturn(listOf(enrollment))
         whenever(TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance))
             .thenReturn(listOf(relationship))
         whenever(trackedEntityInstance.toBuilder()).doReturn(teiBuilder)
-        whenever(teiBuilder.syncState(State.SYNCED)).thenReturn(teiBuilder)
-        whenever(teiBuilder.aggregatedSyncState(State.SYNCED)).thenReturn(teiBuilder)
+        whenever(teiBuilder.syncState(any())).thenReturn(teiBuilder)
+        whenever(teiBuilder.aggregatedSyncState(any())).thenReturn(teiBuilder)
         whenever(teiBuilder.build()).thenReturn(trackedEntityInstance)
 
         whenever(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE)
@@ -119,7 +121,7 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any())
         verify(trackedEntityAttributeValueHandler, never()).handleMany(any(), any())
-        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
+        verifyNoMoreInteractions(trackedEntityAttributeValueStore)
         verify(enrollmentHandler, never()).handleMany(any(), any(), any())
         verify(enrollmentCleaner, never()).deleteOrphan(any(), any(), anyOrNull())
         verify(relationshipCleaner, never()).deleteOrphan(any(), any())
@@ -135,7 +137,7 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, times(1)).deleteIfExists(any())
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any())
         verify(trackedEntityAttributeValueHandler, never()).handleMany(any(), any())
-        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
+        verifyNoMoreInteractions(trackedEntityAttributeValueStore)
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handleMany(any(), any(), any())
@@ -157,7 +159,8 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
-        verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInAttributes(any(), any())
+        verify(trackedEntityAttributeValueStore, times(1))
+            .deleteByInstanceAndNotInAccessibleAttributes(any(), any(), any(), any())
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handleMany(any(), any(), any())
@@ -202,15 +205,15 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun do_not_delete_orphan_attribute_values_if_not_all_attributes_and_null_program() {
-        val thisParams = params.copy(hasAllAttributes = false)
+    fun delete_orphan_attributes_if_as_relationship() {
+        val thisParams = params.copy(asRelationship = true)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), thisParams, relatives)
 
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
-        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
-        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInProgramAttributes(any(), any(), any())
+        verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInAttributes(any(), any())
+        verifyNoMoreInteractions(trackedEntityAttributeValueStore)
     }
 
     @Test
@@ -221,9 +224,9 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
-        verify(trackedEntityAttributeValueStore, never()).deleteByInstanceAndNotInAttributes(any(), any())
         verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInProgramAttributes(
             any(), any(), any()
         )
+        verifyNoMoreInteractions(trackedEntityAttributeValueStore)
     }
 }

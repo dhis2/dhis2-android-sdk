@@ -41,8 +41,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.*
 
 internal class TrackedEntityAttributeValueStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -122,6 +121,36 @@ internal class TrackedEntityAttributeValueStoreImpl private constructor(
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
                     "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
                     "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = '$program'"
+            )
+            .build()
+        deleteWhere(deleteWhereQuery)
+    }
+
+    override fun deleteByInstanceAndNotInAccessibleAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        teiType: String,
+        programs: List<String>
+    ) {
+        val programsStr = programs.joinToString(separator = ",", prefix = "'", postfix = "'")
+        val deleteWhereQuery = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                trackedEntityInstanceUid
+            )
+            .appendNotInKeyStringValues(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                trackedEntityAttributeUids
+            )
+            .appendInSubQuery(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
+                        "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} IN ($programsStr) " +
+                        "UNION ALL " +
+                        "SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
+                        "FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '${teiType}'"
             )
             .build()
         deleteWhere(deleteWhereQuery)

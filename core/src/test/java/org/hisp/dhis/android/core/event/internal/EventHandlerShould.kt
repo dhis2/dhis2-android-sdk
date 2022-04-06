@@ -91,7 +91,7 @@ class EventHandlerShould {
 
     @Test
     fun do_nothing_when_passing_empty_list_argument() {
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(), params, relationshipItemRelatives)
 
         // verify that store is never invoked
@@ -105,7 +105,7 @@ class EventHandlerShould {
     fun invoke_only_delete_when_a_event_is_set_as_deleted() {
         whenever(event.deleted()).doReturn(Boolean.TRUE)
 
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)
 
         // verify that delete is invoked once
@@ -126,7 +126,7 @@ class EventHandlerShould {
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
 
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)
 
         // verify that update and insert is invoked, since we're updating before inserting
@@ -142,7 +142,7 @@ class EventHandlerShould {
     fun delete_event_data_values_if_empty_list() {
         whenever(event.trackedEntityDataValues()).doReturn(emptyList())
 
-        val params = IdentifiableDataHandlerParams(false, false, false, false)
+        val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)
 
         verify(trackedEntityDataValueHandler, times(1)).removeEventDataValues(any())

@@ -247,7 +247,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
             val persistParams = IdentifiableDataHandlerParams(
                 hasAllAttributes = true,
-                hasAllEnrollments = baseQuery.commonParams().program == null,
                 overwrite = overwrite,
                 asRelationship = false,
                 program = baseQuery.commonParams().program
@@ -288,7 +287,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                 if (tei != null) {
                     val persistParams = IdentifiableDataHandlerParams(
                         hasAllAttributes = !useEntityEndpoint,
-                        hasAllEnrollments = teiQuery.commonParams().program == null,
                         overwrite = overwrite,
                         asRelationship = false,
                         program = teiQuery.commonParams().program

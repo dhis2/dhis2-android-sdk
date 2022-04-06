@@ -87,6 +87,8 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
         private val BOOLEAN_TYPES: Set<ValueType> = HashSet(listOf(BOOLEAN, TRUE_ONLY))
         private val TEXT_TYPES: Set<ValueType> = HashSet(listOf(TEXT, LONG_TEXT, LETTER, COORDINATE, TIME))
         private val DATE_TYPES: Set<ValueType> = HashSet(listOf(DATE, DATETIME))
-        private val FILE_TYPES: Set<ValueType> = HashSet(listOf(FILE_RESOURCE, IMAGE))
+
+        // FILE_RESOURCE is not supported yet ANDROSDK-1531
+        private val FILE_TYPES: Set<ValueType> = HashSet(listOf(IMAGE))
     }
 }

@@ -25,12 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.handlers.internal
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-data class IdentifiableDataHandlerParams(
-    val hasAllAttributes: Boolean,
-    val overwrite: Boolean,
-    val asRelationship: Boolean,
-    val program: String? = null
-)
+internal interface TrackedEntityEnrollmentOrphanCleaner {
+
+    fun deleteOrphan(
+        parent: TrackedEntityInstance?,
+        children: Collection<Enrollment>?,
+        program: String?
+    ): Boolean
+}

@@ -104,7 +104,7 @@ class FileResourceCleaner {
 
         return trackedEntityModule.trackedEntityAttributes()
                 .byUid().in(attributeUids)
-                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.FILE_RESOURCE)
+                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.IMAGE)
                 .get()
                 .map(fileAttributes -> {
                     if (fileAttributes.isEmpty()) {

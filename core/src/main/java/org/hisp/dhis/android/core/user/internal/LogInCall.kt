@@ -107,7 +107,7 @@ internal class LogInCall @Inject internal constructor(
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
             try {
                 if (credentials != null) {
-                    accountManager.deleteAccount(credentials)
+                    accountManager.deleteAccountAndEmit(credentials)
                 }
                 d2Error
             } catch (e: Exception) {

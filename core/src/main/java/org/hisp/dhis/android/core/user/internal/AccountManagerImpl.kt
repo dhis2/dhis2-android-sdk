@@ -81,13 +81,22 @@ internal class AccountManagerImpl @Inject constructor(
                 .errorComponent(D2ErrorComponent.SDK)
                 .build()
         } else {
-            deleteAccount(credentials)
+            deleteAccountAndEmit(credentials)
         }
     }
 
     @Throws(D2Error::class)
     fun deleteAccount(credentials: Credentials) {
+        deleteAccountInternal(credentials)
+    }
+
+    internal fun deleteAccountAndEmit(credentials: Credentials) {
         accountDeletionSubject.onNext(Unit)
+        deleteAccountInternal(credentials)
+    }
+
+    @Throws(D2Error::class)
+    private fun deleteAccountInternal(credentials: Credentials) {
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
         val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(

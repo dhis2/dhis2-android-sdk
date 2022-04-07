@@ -72,13 +72,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val trackedEntityAttribute = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE
     private val trackedEntityInstance = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
 
-    fun getSqlQuery(scope: TrackedEntityInstanceQueryRepositoryScope, excludeList: Set<String>, limit: Int): String {
+    fun getSqlQuery(scope: TrackedEntityInstanceQueryRepositoryScope, excludeList: Set<String>?, limit: Int): String {
         return getSqlQuery(scope, excludeList, limit, teiAll)
     }
 
     fun getUidsWhereClause(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        excludeList: Set<String>,
+        excludeList: Set<String>?,
         limit: Int
     ): String {
         val selectSubQuery = getSqlQuery(scope, excludeList, limit, teiUid)
@@ -89,7 +89,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun getSqlQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        excludeList: Set<String>,
+        excludeList: Set<String>?,
         limit: Int,
         columns: String
     ): String {

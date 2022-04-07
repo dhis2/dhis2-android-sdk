@@ -95,6 +95,16 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
     }
 
     @Test
+    public void exclude_uids() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .excludeUids().in("nWrB0TfWlvh")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
     public void get_scope() {
         TrackedEntityInstanceQueryRepositoryScope scope =
                 d2.trackedEntityModule().trackedEntityInstanceQuery().getScope();

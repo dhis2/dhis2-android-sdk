@@ -52,7 +52,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> = onlineHelper.fromScope(scope)
     private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> = HashMap()
 
-    private var returnedUidsOffline: MutableSet<String> = HashSet()
+    private var returnedUidsOffline: MutableSet<String> = scope.excludedUids() ?: HashSet()
     private var returnedUidsOnline: MutableSet<String> = HashSet()
     private var returnedErrorCodes: MutableSet<D2ErrorCode> = HashSet()
     private var isExhaustedOffline = false
@@ -64,7 +64,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     }
 
     fun refresh() {
-        returnedUidsOffline = HashSet()
+        returnedUidsOffline = scope.excludedUids() ?: HashSet()
         returnedUidsOnline = HashSet()
         returnedErrorCodes = HashSet()
     }

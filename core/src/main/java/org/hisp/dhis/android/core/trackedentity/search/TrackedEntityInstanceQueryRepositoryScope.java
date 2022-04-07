@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @AutoValue
 public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
@@ -94,6 +95,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     @NonNull
     public abstract Boolean allowOnlineCache();
+
+    @Nullable
+    public abstract Set<String> excludedUids();
 
     abstract Builder toBuilder();
 
@@ -147,6 +151,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder order(List<TrackedEntityInstanceQueryScopeOrderByItem> order);
 
         public abstract Builder allowOnlineCache(Boolean allowOnlineCache);
+
+        public abstract Builder excludedUids(Set<String> excludedUids);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

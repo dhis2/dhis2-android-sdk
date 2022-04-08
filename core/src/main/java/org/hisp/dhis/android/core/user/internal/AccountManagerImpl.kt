@@ -75,14 +75,30 @@ internal class AccountManagerImpl @Inject constructor(
         val credentials = credentialsSecureStore.get()
 
         if (credentials == null) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
-                .errorDescription("There is not any authenticated user")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
+            throwNotAnyAuthenticatedUser()
+        } else {
+            deleteAccount(credentials)
+        }
+    }
+
+    @Throws(D2Error::class)
+    internal fun deleteCurrentAccountAndEmit() {
+        val credentials = credentialsSecureStore.get()
+
+        if (credentials == null) {
+            throwNotAnyAuthenticatedUser()
         } else {
             deleteAccountAndEmit(credentials)
         }
+    }
+
+    @Throws(D2Error::class)
+    private fun throwNotAnyAuthenticatedUser() {
+        throw D2Error.builder()
+            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+            .errorDescription("There is not any authenticated user")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
     }
 
     @Throws(D2Error::class)

@@ -64,6 +64,6 @@ class UserAccountDisabledErrorCatcherShould {
     @Test
     fun delete_database() {
         catcher.catchError(response, response.errorBody()!!.string())
-        verify(accountManager, times(1)).deleteCurrentAccount()
+        verify(accountManager, times(1)).deleteCurrentAccountAndEmit()
     }
 }

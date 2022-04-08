@@ -51,7 +51,7 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
 
     override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return try {
-            accountManager.deleteCurrentAccount()
+            accountManager.deleteCurrentAccountAndEmit()
             D2ErrorCode.USER_ACCOUNT_DISABLED
         } catch (e: Throwable) {
             D2ErrorCode.USER_ACCOUNT_DISABLED

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatche
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.user.AccountDeletionReason
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -51,7 +52,7 @@ internal class UserAccountDisabledErrorCatcher @Inject constructor(
 
     override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return try {
-            accountManager.deleteCurrentAccountAndEmit()
+            accountManager.deleteCurrentAccountAndEmit(AccountDeletionReason.ACCOUNT_DISABLED)
             D2ErrorCode.USER_ACCOUNT_DISABLED
         } catch (e: Throwable) {
             D2ErrorCode.USER_ACCOUNT_DISABLED

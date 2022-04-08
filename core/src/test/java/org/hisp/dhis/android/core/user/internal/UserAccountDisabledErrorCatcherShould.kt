@@ -34,6 +34,7 @@ import com.nhaarman.mockitokotlin2.verify
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,6 +65,6 @@ class UserAccountDisabledErrorCatcherShould {
     @Test
     fun delete_database() {
         catcher.catchError(response, response.errorBody()!!.string())
-        verify(accountManager, times(1)).deleteCurrentAccountAndEmit()
+        verify(accountManager, times(1)).deleteCurrentAccountAndEmit(AccountDeletionReason.ACCOUNT_DISABLED)
     }
 }

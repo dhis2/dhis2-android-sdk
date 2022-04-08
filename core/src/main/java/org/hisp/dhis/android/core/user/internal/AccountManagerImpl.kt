@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
 
 @Reusable
@@ -56,7 +57,7 @@ internal class AccountManagerImpl @Inject constructor(
     private val logOutCall: LogOutCall,
     private val context: Context
 ) : AccountManager {
-    private val accountDeletionSubject = PublishSubject.create<Unit>()
+    private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts() ?: emptyList()
@@ -82,13 +83,13 @@ internal class AccountManagerImpl @Inject constructor(
     }
 
     @Throws(D2Error::class)
-    internal fun deleteCurrentAccountAndEmit() {
+    internal fun deleteCurrentAccountAndEmit(deletionReason: AccountDeletionReason) {
         val credentials = credentialsSecureStore.get()
 
         if (credentials == null) {
             throwNotAnyAuthenticatedUser()
         } else {
-            deleteAccountAndEmit(credentials)
+            deleteAccountAndEmit(credentials, deletionReason)
         }
     }
 
@@ -103,16 +104,16 @@ internal class AccountManagerImpl @Inject constructor(
 
     @Throws(D2Error::class)
     fun deleteAccount(credentials: Credentials) {
-        deleteAccountInternal(credentials)
+        deleteAccountInternal(credentials, AccountDeletionReason.APPLICATION_REQUEST)
     }
 
-    internal fun deleteAccountAndEmit(credentials: Credentials) {
-        accountDeletionSubject.onNext(Unit)
-        deleteAccountInternal(credentials)
+    internal fun deleteAccountAndEmit(credentials: Credentials, deletionReason: AccountDeletionReason) {
+        deleteAccountInternal(credentials, deletionReason)
     }
 
     @Throws(D2Error::class)
-    private fun deleteAccountInternal(credentials: Credentials) {
+    private fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
+        accountDeletionSubject.onNext(deletionReason)
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
         val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
@@ -127,7 +128,7 @@ internal class AccountManagerImpl @Inject constructor(
         databaseAdapterFactory.deleteDatabase(loggedAccount)
     }
 
-    override fun accountDeletionObservable(): Observable<Unit> {
+    override fun accountDeletionObservable(): Observable<AccountDeletionReason> {
         return accountDeletionSubject
     }
 }

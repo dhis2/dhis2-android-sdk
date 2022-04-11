@@ -43,6 +43,7 @@ public class GeneralSettingsSamples {
                 .smsResultSender("+34654321456")
                 .matomoID(123)
                 .matomoURL("https://www.matomo.org")
+                .allowScreenCapture(true)
                 .build();
     }
 }

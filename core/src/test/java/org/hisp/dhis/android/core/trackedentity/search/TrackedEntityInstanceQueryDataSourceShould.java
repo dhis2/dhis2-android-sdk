@@ -32,12 +32,13 @@ import androidx.paging.ItemKeyedDataSource;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
+import org.hisp.dhis.android.core.arch.helpers.Result;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.period.internal.CalendarProvider;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator;
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -100,7 +101,8 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     private final TrackedEntityInstanceLocalQueryHelper localQueryHelper =
             new TrackedEntityInstanceLocalQueryHelper(periodHelper);
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache = new ExpirableCache<>();
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache =
+            new ExpirableCache<>();
 
     private final int initialLoad = 30;
 

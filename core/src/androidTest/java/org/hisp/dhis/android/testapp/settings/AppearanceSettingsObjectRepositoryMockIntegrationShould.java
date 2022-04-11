@@ -65,7 +65,7 @@ public class AppearanceSettingsObjectRepositoryMockIntegrationShould extends Bas
     public void should_return_only_dataSetFilters_for_specific_uid() {
         String UID = "lyLU2wR22tC";
         Map<DataSetFilter, FilterSetting> specificFilters = d2.settingModule().appearanceSettings().getDataSetFiltersByUid(UID);
-        assertThat(specificFilters.size()).isEqualTo(4);
+        assertThat(specificFilters.size()).isEqualTo(5);
         assertThat(specificFilters.get(DataSetFilter.SYNC_STATUS).uid()).isEqualTo(UID);
     }
 

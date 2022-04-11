@@ -37,4 +37,9 @@ internal interface AnalyticsEvaluator {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String?
+
+    fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String?
 }

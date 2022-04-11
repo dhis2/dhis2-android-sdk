@@ -60,19 +60,17 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     @Override
     public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
-        D2Error.Builder errorBuilder = errorMapper.getCollectionErrorBuilder(call);
-
         try {
             Response<Payload<P>> response = call.execute();
             if (response.isSuccessful() && response.body() != null) {
                 return response.body().items();
             } else {
-                throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
+                throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response));
             }
         } catch (D2Error d2Error) {
             throw d2Error;
         } catch (Throwable t) {
-            throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder));
+            throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder(call)));
         }
     }
 
@@ -103,23 +101,20 @@ public final class APICallExecutorImpl implements APICallExecutor {
                                             Class<P> errorClass,
                                             APICallErrorCatcher errorCatcher,
                                             boolean emptyBodyExpected) throws D2Error {
-
-        D2Error.Builder errorBuilder = errorMapper.getObjectErrorBuilder(call);
-
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                return processSuccessfulResponse(errorBuilder, response, emptyBodyExpected);
+                return processSuccessfulResponse(errorBuilder(call), response, emptyBodyExpected);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher != null) {
-                this.catchAndThrow(errorCatcher, errorBuilder, response);
+                this.catchAndThrow(errorCatcher, errorBuilder(call), response);
             }
-            throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
+            throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response));
         } catch (D2Error d2Error) {
             throw d2Error;
         } catch (Throwable t) {
-            throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder));
+            throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder(call)));
         }
     }
 
@@ -154,6 +149,10 @@ public final class APICallExecutorImpl implements APICallExecutor {
             errorStore.insert(error);
         }
         return error;
+    }
+
+    private <P> D2Error.Builder errorBuilder(Call<P> call) {
+        return errorMapper.getBaseErrorBuilder(call);
     }
 
     public static APICallExecutor create(DatabaseAdapter databaseAdapter) {

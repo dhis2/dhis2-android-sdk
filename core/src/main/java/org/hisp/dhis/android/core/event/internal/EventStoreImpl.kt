@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.common.State.Companion.uploadableStates
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -54,23 +54,20 @@ internal class EventStoreImpl private constructor(
     objectFactory: Function1<Cursor, Event>
 ) : IdentifiableDeletableDataObjectStoreImpl<Event>(databaseAdapter, builder, binder, objectFactory), EventStore {
 
-    override fun queryEventsAttachedToEnrollmentToPost(): Map<String, MutableList<Event>> {
+    override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                EventTableInfo.Columns.SYNC_STATE, asStringList(uploadableStates().toList())
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStatesIncludingError().toList())
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
-        val eventsMap: MutableMap<String, MutableList<Event>> = HashMap()
-        for (event in eventList) {
-            addEventsToMap(eventsMap, event)
-        }
-        return eventsMap
+
+        return eventList.filter { it.enrollment() != null }.groupBy { it.enrollment()!! }
     }
 
     override fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStates().toList()))
+            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList()))
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
             " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
@@ -150,15 +147,6 @@ internal class EventStoreImpl private constructor(
         val cursor = databaseAdapter.rawQuery(query)
         addObjectsToCollection(cursor, eventList)
         return eventList
-    }
-
-    private fun addEventsToMap(eventsMap: MutableMap<String, MutableList<Event>>, event: Event) {
-        event.enrollment()?.let { enrollmentUid ->
-            if (eventsMap[enrollmentUid] == null) {
-                eventsMap[enrollmentUid] = ArrayList()
-            }
-            eventsMap[enrollmentUid]!!.add(event)
-        }
     }
 
     companion object {

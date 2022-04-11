@@ -87,9 +87,9 @@ public final class CategoryOptionCollectionRepository
     }
 
     /**
-     * @deprecated this property is not used due to performance issues.
+     * This method only return results in versions greater or equal to 2.37.
+     * @return Collection repository
      */
-    @Deprecated
     public CategoryOptionCollectionRepository withOrganisationUnits() {
         return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS);
     }

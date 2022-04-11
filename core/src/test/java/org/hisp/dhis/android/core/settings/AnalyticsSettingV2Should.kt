@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.settings
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
@@ -43,51 +43,60 @@ class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v
     override fun map_from_json_string() {
         val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
 
-        Truth.assertThat(analyticsSettings.tei().size).isEqualTo(3)
+        assertThat(analyticsSettings.tei().size).isEqualTo(3)
 
         analyticsSettings.tei().forEach { tei ->
             when (tei.uid()) {
                 "fqEx2avRp1L" -> {
-                    Truth.assertThat(tei.name()).isEqualTo("Height evolution")
-                    Truth.assertThat(tei.shortName()).isEqualTo("H. evolution")
-                    Truth.assertThat(tei.program()).isEqualTo("IpHINAT79UW")
-                    Truth.assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
-                    Truth.assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
-                    Truth.assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
+                    assertThat(tei.name()).isEqualTo("Height evolution")
+                    assertThat(tei.shortName()).isEqualTo("H. evolution")
+                    assertThat(tei.program()).isEqualTo("IpHINAT79UW")
+                    assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
+                    assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
+                    assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
+                }
+                "XQUhloISaQJ" -> {
+                    assertThat(tei.data()?.indicators()?.size).isEqualTo(1)
+                    assertThat(tei.data()?.indicators()?.first()?.programStage()).isEqualTo("dBwrot7S420")
+                    assertThat(tei.data()?.indicators()?.first()?.indicator()).isEqualTo("GSae40Fyppf")
+                }
+                "yEdtdG7ql9K" -> {
+                    assertThat(tei.whoNutritionData()?.y()?.indicators()?.size).isEqualTo(1)
+                    assertThat(tei.whoNutritionData()?.y()?.indicators()?.first()?.indicator()).isEqualTo("GSae40Fyppf")
                 }
             }
         }
 
-        Truth.assertThat(analyticsSettings.dhisVisualizations().home().size).isEqualTo(2)
+        assertThat(analyticsSettings.dhisVisualizations().home().size).isEqualTo(2)
         analyticsSettings.dhisVisualizations().home().forEach { group ->
             when (group.id()) {
                 "12345678910" -> {
-                    Truth.assertThat(group.name()).isEqualTo("Ejemplo")
-                    Truth.assertThat(group.visualizations().size).isEqualTo(2)
+                    assertThat(group.name()).isEqualTo("Ejemplo")
+                    assertThat(group.visualizations().size).isEqualTo(2)
                 }
                 "12345678911" -> {
-                    Truth.assertThat(group.name()).isEqualTo("Otro ejemplo")
-                    Truth.assertThat(group.visualizations().size).isEqualTo(1)
+                    assertThat(group.name()).isEqualTo("Otro ejemplo")
+                    assertThat(group.visualizations().size).isEqualTo(1)
                 }
             }
         }
 
-        Truth.assertThat(analyticsSettings.dhisVisualizations().dataSet().size).isEqualTo(1)
+        assertThat(analyticsSettings.dhisVisualizations().dataSet().size).isEqualTo(1)
         analyticsSettings.dhisVisualizations().dataSet().forEach { map ->
             when (map.key) {
                 "BfMAe6Itzgt" -> {
-                    Truth.assertThat(map.value.size).isEqualTo(1)
-                    Truth.assertThat(map.value[0].visualizations().size).isEqualTo(1)
+                    assertThat(map.value.size).isEqualTo(1)
+                    assertThat(map.value[0].visualizations().size).isEqualTo(1)
                 }
             }
         }
 
-        Truth.assertThat(analyticsSettings.dhisVisualizations().program().size).isEqualTo(1)
+        assertThat(analyticsSettings.dhisVisualizations().program().size).isEqualTo(1)
         analyticsSettings.dhisVisualizations().program().forEach { map ->
             when (map.key) {
                 "IpHINAT79UW" -> {
-                    Truth.assertThat(map.value.size).isEqualTo(1)
-                    Truth.assertThat(map.value[0].visualizations().size).isEqualTo(2)
+                    assertThat(map.value.size).isEqualTo(1)
+                    assertThat(map.value[0].visualizations().size).isEqualTo(2)
                 }
             }
         }

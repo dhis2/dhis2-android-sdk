@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseObject;
@@ -40,17 +38,15 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class UserOrganisationUnitLink implements CoreObject {
 
-    @Nullable
     public abstract String user();
 
-    @Nullable
     public abstract String organisationUnit();
 
-    @Nullable
     public abstract String organisationUnitScope();
 
-    @Nullable
     public abstract Boolean root();
+
+    public abstract Boolean userAssigned();
 
     public static Builder builder() {
         return new AutoValue_UserOrganisationUnitLink.Builder();
@@ -67,13 +63,15 @@ public abstract class UserOrganisationUnitLink implements CoreObject {
 
         public abstract Builder id(Long id);
 
-        public abstract Builder user(@Nullable String user);
+        public abstract Builder user(String user);
 
-        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+        public abstract Builder organisationUnit(String organisationUnit);
 
-        public abstract Builder organisationUnitScope(@Nullable String organisationUnitScope);
+        public abstract Builder organisationUnitScope(String organisationUnitScope);
 
-        public abstract Builder root(@Nullable Boolean root);
+        public abstract Builder root(Boolean root);
+
+        public abstract Builder userAssigned(Boolean userAssigned);
 
         public abstract UserOrganisationUnitLink build();
     }

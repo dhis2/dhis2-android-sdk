@@ -47,4 +47,8 @@ public abstract class Paging {
                                 boolean isLastPage) {
         return new AutoValue_Paging(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount, isLastPage);
     }
+
+    public Boolean isFullPage() {
+        return this.isLastPage() || this.previousItemsToSkipCount() > 0 || this.posteriorItemsToSkipCount() > 0;
+    }
 }

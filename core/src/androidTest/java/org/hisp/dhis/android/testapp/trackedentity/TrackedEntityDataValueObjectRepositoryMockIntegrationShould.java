@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -74,6 +75,33 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         assertThat(d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "jDx8LZlznYu").blockingExists()).isEqualTo(Boolean.TRUE);
+    }
+
+    @Test
+    public void mark_a_value_as_deleted_using_the_delete_method() throws D2Error {
+        TrackedEntityDataValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        repository.blockingDelete();
+        assertValueIsDeleted(repository);
+    }
+
+    @Test
+    public void mark_a_value_as_deleted_when_setting_a_null() throws D2Error {
+        TrackedEntityDataValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        repository.blockingSet(null);
+        assertValueIsDeleted(repository);
+    }
+
+    private void assertValueIsDeleted(TrackedEntityDataValueObjectRepository objectRepository) throws D2Error {
+        assertThat(objectRepository.blockingExists()).isEqualTo(false);
+        assertThat(objectRepository.blockingGet().value()).isEqualTo(null);
+        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(true);
+        objectRepository.blockingSet("1");
+        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(false);
+        objectRepository.blockingSet(null);
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {

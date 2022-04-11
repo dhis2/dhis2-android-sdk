@@ -28,6 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -51,16 +61,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
-
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceHandlerShould {
@@ -87,6 +87,9 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Mock
     private Relationship229Compatible relationship229Compatible;
+
+    @Mock
+    private RelationshipItemRelatives relationshipItemRelatives;
 
     @Mock
     private Relationship relationship;
@@ -147,14 +150,14 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        trackedEntityInstanceHandler.handleMany(null, tei -> tei, false);
+        trackedEntityInstanceHandler.handleMany(null, false, false, false, relationshipItemRelatives);
 
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
                 anyCollection(), any());
-        verify(enrollmentHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
+        verify(enrollmentHandler, never()).handleMany(anyCollection(), anyBoolean(), anyBoolean(), anyBoolean(), any());
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
         verify(relationshipCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
@@ -163,7 +166,8 @@ public class TrackedEntityInstanceHandlerShould {
     public void invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.TRUE);
 
-        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), o -> o, false);
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance),
+                false, false, false, relationshipItemRelatives);
 
         // verify that tracked entity instance store is only called with delete
         verify(trackedEntityInstanceStore, times(1)).deleteIfExists(anyString());
@@ -173,7 +177,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyCollection(), any());
 
         // verify that enrollment handler is never called
-        verify(enrollmentHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
+        verify(enrollmentHandler, never()).handleMany(anyCollection(), anyBoolean(), anyBoolean(), anyBoolean(), any());
     }
 
     @Test
@@ -181,7 +185,8 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.FALSE);
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
-        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), o -> o, false);
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance),
+                false, false, false, relationshipItemRelatives);
 
         // verify that tracked entity instance store is only called with update
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any(TrackedEntityInstance.class));
@@ -192,7 +197,8 @@ public class TrackedEntityInstanceHandlerShould {
                 anyCollection(), any());
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handleMany(anyCollection(), any(), anyBoolean());
+        verify(enrollmentHandler, times(1)).handleMany(
+                anyCollection(), anyBoolean(), anyBoolean(), anyBoolean(), any());
     }
 
     @Test
@@ -222,6 +228,8 @@ public class TrackedEntityInstanceHandlerShould {
     @Test
     public void invoke_relationship_handler_with_relationship_from_version_manager() {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(relative);
+        when(relationshipVersionManager.getOwnedRelationships(Collections.singletonList(relationship), TEI_UID))
+                .thenReturn(Collections.singletonList(relationship));
         when(relative.toBuilder()).thenReturn(relativeBuilder);
         when(relativeBuilder.syncState(any(State.class))).thenReturn(relativeBuilder);
         when(relativeBuilder.aggregatedSyncState(any(State.class))).thenReturn(relativeBuilder);
@@ -238,7 +246,8 @@ public class TrackedEntityInstanceHandlerShould {
     @Test
     public void do_not_invoke_relationship_repository_when_no_relative() {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(null);
-        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), o -> o, false);
+        trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance),
+                false, false, false, relationshipItemRelatives);
         verify(relationshipHandler, never()).handle(any(Relationship.class));
     }
 }

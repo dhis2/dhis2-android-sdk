@@ -28,21 +28,32 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnit.Scope.SCOPE_TEI_SEARCH;
+
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 @RunWith(D2JunitRunner.class)
 public class UserOrganisationUnitLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<UserOrganisationUnitLink> {
 
+    UserOrganisationUnitLinkStore linkStore;
+
     public UserOrganisationUnitLinkStoreIntegrationShould() {
         super(UserOrganisationUnitLinkStoreImpl.create(TestDatabaseAdapterFactory.get()),
                 UserOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+
+        linkStore = (UserOrganisationUnitLinkStore) store;
     }
 
     @Override
@@ -60,5 +71,25 @@ public class UserOrganisationUnitLinkStoreIntegrationShould
         return buildObject().toBuilder()
                 .organisationUnitScope("other-scope")
                 .build();
+    }
+
+    @Test
+    public void assignedOrgUnitForDataCapture() {
+        linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink());
+        linkStore.insert(UserOrganisationUnitLinkSamples.getAssignedUserOrganisationUnitLink(SCOPE_DATA_CAPTURE));
+        linkStore.insert(UserOrganisationUnitLinkSamples.getUnassignedUserOrganisationUnitLink(SCOPE_DATA_CAPTURE));
+        List<String> orgUnitUids = linkStore.queryAssignedOrganisationUnitUidsByScope(SCOPE_DATA_CAPTURE);
+
+        assertThat(orgUnitUids.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void assignedOrgUnitForTEISearch() {
+        linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink());
+        linkStore.insert(UserOrganisationUnitLinkSamples.getAssignedUserOrganisationUnitLink(SCOPE_TEI_SEARCH));
+        linkStore.insert(UserOrganisationUnitLinkSamples.getUnassignedUserOrganisationUnitLink(SCOPE_TEI_SEARCH));
+        List<String> orgUnitUids = linkStore.queryAssignedOrganisationUnitUidsByScope(SCOPE_TEI_SEARCH);
+
+        assertThat(orgUnitUids.size()).isEqualTo(1);
     }
 }

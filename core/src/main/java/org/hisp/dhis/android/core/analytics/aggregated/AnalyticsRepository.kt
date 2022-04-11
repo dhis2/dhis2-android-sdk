@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 interface AnalyticsRepository {
 
@@ -36,7 +38,7 @@ interface AnalyticsRepository {
 
     fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository
 
-    fun evaluate(): Single<DimensionalResponse>
+    fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
 
-    fun blockingEvaluate(): DimensionalResponse
+    fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException>
 }

@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression.operator;
 
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.antlr.operator.AntlrOperatorCompareLessThanOrEqual;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 /**
  * Compare operator: less than or equal
@@ -39,4 +41,10 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorCompareLessThanOrEqual;
 public class OperatorCompareLessThanOrEqual
         extends AntlrOperatorCompareLessThanOrEqual
         implements ExpressionItem {
+
+    @Override
+    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.castStringVisit(ctx.expr(0))
+                + " <= " + visitor.castStringVisit(ctx.expr(1));
+    }
 }

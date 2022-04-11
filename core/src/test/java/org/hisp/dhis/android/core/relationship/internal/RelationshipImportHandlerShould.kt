@@ -102,7 +102,7 @@ class RelationshipImportHandlerShould {
             listOf(importSummary), relationships
         )
 
-        verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.ERROR)
+        verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.TO_UPDATE)
         verify(dataStatePropagator, times(1)).propagateRelationshipUpdate(any())
     }
 

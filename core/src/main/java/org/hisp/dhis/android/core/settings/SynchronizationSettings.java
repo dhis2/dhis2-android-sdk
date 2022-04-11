@@ -39,9 +39,11 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterVersionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.DataSetSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.ProgramSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_SynchronizationSettings.Builder.class)
@@ -56,7 +58,8 @@ public abstract class SynchronizationSettings implements CoreObject {
     public abstract MetadataSyncPeriod metadataSync();
 
     @Nullable
-    public abstract Boolean newTrackerImporter();
+    @ColumnAdapter(TrackerImporterVersionColumnAdapter.class)
+    public abstract TrackerImporterVersion trackerImporterVersion();
 
     @Nullable
     @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
@@ -87,7 +90,7 @@ public abstract class SynchronizationSettings implements CoreObject {
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
-        public abstract Builder newTrackerImporter(Boolean newTrackerImporter);
+        public abstract Builder trackerImporterVersion(TrackerImporterVersion trackerImporterVersion);
 
         public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 

@@ -69,8 +69,18 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     }
 
     public void blockingSet(String value) throws D2Error {
-        TrackedEntityAttributeValue objectWithValue = setBuilder().value(value).build();
-        setObject(objectWithValue);
+        setObject(setBuilder().value(value).build());
+    }
+
+    @Override
+    protected void delete(TrackedEntityAttributeValue trackedEntityAttributeValue) throws D2Error {
+        blockingSet(null);
+    }
+
+    @Override
+    public boolean blockingExists() {
+        TrackedEntityAttributeValue value = blockingGetWithoutChildren();
+        return value == null ? Boolean.FALSE : value.deleted() != Boolean.TRUE;
     }
 
     private TrackedEntityAttributeValue.Builder setBuilder() {

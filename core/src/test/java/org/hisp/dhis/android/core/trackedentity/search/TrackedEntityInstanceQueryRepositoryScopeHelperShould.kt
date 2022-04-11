@@ -65,7 +65,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
 
         assertThat(updatedScope.program()).isEqualTo(programId)
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(enrollmentStatus))
-        // TODO followUp
+        assertThat(updatedScope.followUp()).isEqualTo(followUp)
 
         assertThat(updatedScope.programDate()).isNotNull()
         val daysBetween = updatedScope.programDate()!!.endBuffer()!! - updatedScope.programDate()!!.startBuffer()!!

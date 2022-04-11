@@ -31,10 +31,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
 
@@ -81,11 +83,19 @@ public final class ProgramIndicatorCollectionRepository
         return cf.string(Columns.AGGREGATION_TYPE);
     }
 
+    public EnumFilterConnector<ProgramIndicatorCollectionRepository, AnalyticsType> byAnalyticsType() {
+        return cf.enumC(Columns.ANALYTICS_TYPE);
+    }
+
     public StringFilterConnector<ProgramIndicatorCollectionRepository> byProgramUid() {
         return cf.string(Columns.PROGRAM);
     }
 
     public ProgramIndicatorCollectionRepository withLegendSets() {
         return cf.withChild(ProgramIndicatorFields.LEGEND_SETS);
+    }
+
+    public ProgramIndicatorCollectionRepository withAnalyticsPeriodBoundaries() {
+        return cf.withChild(ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES);
     }
 }

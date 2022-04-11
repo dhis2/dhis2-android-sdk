@@ -49,8 +49,7 @@ internal class CategoryOptionCall @Inject constructor(
         private const val QUERY_WITHOUT_UIDS_LENGTH = (
             "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
                 "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
-                ",organisationUnits[id]&filter=categories.id:in:[]&filter=access.data.read:eq:true&paging=false" +
-                "&restrictToCaptureScope=true"
+                "&filter=categories.id:in:[]&filter=access.data.read:eq:true&paging=false"
             ).length
     }
 
@@ -62,11 +61,10 @@ internal class CategoryOptionCall @Inject constructor(
             handler
         ) { partitionUids: Set<String> ->
             service.getCategoryOptions(
-                CategoryOptionFields.allFields(false),
+                CategoryOptionFields.allFields,
                 "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
                 accessDataReadFilter,
-                paging = false,
-                restrictToCaptureScope = null
+                paging = false
             )
         }
     }

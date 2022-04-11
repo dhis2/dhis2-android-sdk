@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.level3
 import org.hisp.dhis.android.core.common.RelativePeriod
 
 object AnalyticsServiceHelperSamples {
@@ -44,7 +45,7 @@ object AnalyticsServiceHelperSamples {
     val periodLast3Days = DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_DAYS)
 
     val orgunitAbsolute = DimensionItem.OrganisationUnitItem.Absolute(AggregatedSamples.orgunit1.uid())
-    val orgunitLevel3 = DimensionItem.OrganisationUnitItem.Level(3)
+    val orgunitLevel3 = DimensionItem.OrganisationUnitItem.Level(level3.uid())
 
     val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
     val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())

@@ -36,46 +36,39 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val trackedEntityInstanceService: TrackedEntityInstanceService
 ) {
 
-    fun getCall(query: TeiQuery): Single<Payload<TrackedEntityInstance>> {
+    fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             getUidStr(query),
-            getOuStr(query),
+            query.orgUnit(),
             query.commonParams().ouMode.name,
             query.commonParams().program,
             getProgramStatus(query),
             getProgramStartDate(query),
             TrackedEntityInstanceFields.allFields,
-            true, query.page(),
+            true,
+            query.page(),
             query.pageSize(),
-            lastUpdatedManager.getLastUpdatedStr(query.commonParams()),
+            query.lastUpdatedStr(),
             true,
             true
         )
     }
 
-    private fun getUidStr(query: TeiQuery): String? {
+    private fun getUidStr(query: TrackerQuery): String? {
         return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
     }
 
-    private fun getOuStr(query: TeiQuery): String? {
-        return if (query.orgUnits().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(
-            query.orgUnits(),
-            ";"
-        )
-    }
-
-    private fun getProgramStatus(query: TeiQuery): String? {
+    private fun getProgramStatus(query: TrackerQuery): String? {
         return when {
             query.commonParams().program != null -> query.programStatus()?.toString()
             else -> null
         }
     }
 
-    private fun getProgramStartDate(query: TeiQuery): String? {
+    private fun getProgramStartDate(query: TrackerQuery): String? {
         return when {
             query.commonParams().program != null -> query.commonParams().startDate
             else -> null

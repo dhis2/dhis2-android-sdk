@@ -170,11 +170,13 @@ public final class AndroidSecureStore implements SecureStore {
 
     public String getData(@NonNull String key) {
         KeyStore ks = null;
+        PrivateKey privateKey;
+        String value = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
-            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
-            String value = preferences.getString(key, null);
+            privateKey = (PrivateKey) ks.getKey(ALIAS, null);
+            value = preferences.getString(key, null);
 
             return value == null ? null :
                     new String(decrypt(privateKey, value), CHARSET);
@@ -182,7 +184,12 @@ public final class AndroidSecureStore implements SecureStore {
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key, e);
+            String valueToDisplay = value == null ? "null" : value;
+            String errorMessage = String.format(
+                    "Couldn't get value from AndroidSecureStore for key: %s and value: %s",
+                    key,
+                    valueToDisplay);
+            throw new RuntimeException(errorMessage, e);
         }
     }
 

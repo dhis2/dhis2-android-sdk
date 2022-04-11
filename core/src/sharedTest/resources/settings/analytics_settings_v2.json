@@ -18,7 +18,7 @@
     {
       "uid": "XQUhloISaQJ",
       "data": {
-        "indicators": [
+        "programIndicators": [
           "dBwrot7S420.GSae40Fyppf"
         ],
         "attributes": [
@@ -47,7 +47,7 @@
           ]
         },
         "y": {
-          "indicators": [
+          "programIndicators": [
             "GSae40Fyppf"
           ]
         }
@@ -69,6 +69,7 @@
         "visualizations": [
           {
             "id": "FAFa11yFeFe",
+            "name": "Sample title fro visualization",
             "timestamp": "2021-07-01T03:01:16.8770"
           },
           {

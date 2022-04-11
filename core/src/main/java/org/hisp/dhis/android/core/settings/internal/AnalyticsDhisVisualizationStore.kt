@@ -47,7 +47,8 @@ internal object AnalyticsDhisVisualizationStore {
         w.bind(3, o.scope())
         w.bind(4, o.groupUid())
         w.bind(5, o.groupName())
-        w.bind(6, o.timestamp())
+        w.bind(6, o.name())
+        w.bind(7, o.timestamp())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AnalyticsDhisVisualization, _: StatementWrapper ->

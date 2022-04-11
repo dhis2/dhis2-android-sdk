@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
+import org.hisp.dhis.android.core.arch.helpers.Result;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
@@ -50,7 +52,7 @@ public final class TrackedEntityInstanceQueryEntityDIModule {
 
     @Provides
     @Reusable
-    public D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache() {
+    public D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache() {
         return new ExpirableCache<>(TimeUnit.MINUTES.toMillis(5));
     }
 

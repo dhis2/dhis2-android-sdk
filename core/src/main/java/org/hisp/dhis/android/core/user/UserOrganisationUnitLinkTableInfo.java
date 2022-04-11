@@ -56,11 +56,12 @@ public final class UserOrganisationUnitLinkTableInfo {
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
         public static final String ROOT = "root";
+        public static final String USER_ASSIGNED = "userAssigned";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
+                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT, USER_ASSIGNED);
         }
 
         @Override

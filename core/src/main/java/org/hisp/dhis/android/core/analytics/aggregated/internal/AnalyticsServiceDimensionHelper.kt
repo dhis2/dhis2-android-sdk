@@ -85,10 +85,13 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
                             DimensionItem.OrganisationUnitItem.Absolute(it)
                         }
                     is DimensionItem.OrganisationUnitItem.Level ->
-                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevel(item.level).map {
+                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevelUid(item.uid).map {
                             DimensionItem.OrganisationUnitItem.Absolute(it)
                         }
-                    is DimensionItem.OrganisationUnitItem.Group -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Group ->
+                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByGroup(item.uid).map {
+                            DimensionItem.OrganisationUnitItem.Absolute(it)
+                        }
                 }
             is DimensionItem.CategoryItem -> listOf(item)
         }

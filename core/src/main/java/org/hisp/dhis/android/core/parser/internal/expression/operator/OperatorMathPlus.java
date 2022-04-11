@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression.operator;
 
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.antlr.operator.AntlrOperatorMathPlus;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 /**
  * Expression math operator: Plus
@@ -39,4 +41,14 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorMathPlus;
 public class OperatorMathPlus
         extends AntlrOperatorMathPlus
         implements ExpressionItem {
+
+    @Override
+    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        if (ctx.expr().size() == 1) { // Unary plus operator
+            return "+ " + visitor.castStringVisit(ctx.expr(0));
+        } else { // Addition operator
+            return visitor.castStringVisit(ctx.expr(0)) +
+                    " + " + visitor.castStringVisit(ctx.expr(1));
+        }
+    }
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 
 object EventLineListSamples {
 
@@ -89,6 +91,14 @@ object EventLineListSamples {
     val organisationUnit1: OrganisationUnit = OrganisationUnit.builder()
         .uid(generator.generate())
         .displayName("Organisation unit 1")
+        .build()
+
+    val userOrganisationUnit: UserOrganisationUnitLink = UserOrganisationUnitLink.builder()
+        .organisationUnit(organisationUnit1.uid())
+        .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name)
+        .root(true)
+        .userAssigned(true)
+        .user(UserSamples.getUser().uid())
         .build()
 
     val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum ProgramFilter {
@@ -56,5 +57,8 @@ public enum ProgramFilter {
     CAT_COMBO,
 
     @JsonProperty("followUp")
-    FOLLOW_UP
+    FOLLOW_UP,
+
+    @JsonEnumDefaultValue
+    UNKNOWN
 }

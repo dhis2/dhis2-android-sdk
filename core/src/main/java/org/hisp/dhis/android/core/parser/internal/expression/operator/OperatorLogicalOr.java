@@ -76,4 +76,10 @@ public class OperatorLogicalOr
 
         return value;
     }
+
+    @Override
+    public Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.castStringVisit(ctx.expr(0))
+                + " or " + visitor.castStringVisit(ctx.expr(1));
+    }
 }

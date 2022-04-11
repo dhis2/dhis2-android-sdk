@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModu
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
 @Reusable
-class EventPersistenceCallFactory @Inject internal constructor(
+internal class EventPersistenceCallFactory @Inject constructor(
     private val eventHandler: IdentifiableDataHandler<Event>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader
@@ -58,13 +58,16 @@ class EventPersistenceCallFactory @Inject internal constructor(
     ): Completable {
         return Completable.defer {
             eventHandler.handleMany(events, asRelationship, false, false, relatives)
-            val searchUnitUids = getMissingOrganisationUnitUids(events)
-            organisationUnitDownloader.downloadSearchOrganisationUnits(searchUnitUids)
+            if (hasMissingOrganisationUnitUids(events)) {
+                organisationUnitDownloader.refreshOrganisationUnits()
+            } else {
+                Completable.complete()
+            }
         }
     }
 
-    private fun getMissingOrganisationUnitUids(events: Collection<Event>): Set<String> {
+    private fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
         val uids = events.mapNotNull { it.organisationUnit() }.toSet()
-        return uids - organisationUnitStore.selectUids()
+        return (uids - organisationUnitStore.selectUids()).isNotEmpty()
     }
 }

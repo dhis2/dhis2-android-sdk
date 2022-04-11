@@ -45,6 +45,35 @@ public final class UserOrganisationUnitLinkHelper {
     private UserOrganisationUnitLinkHelper() {
     }
 
+    public static boolean userIsAssigned(
+            OrganisationUnit.Scope scope,
+            User user,
+            OrganisationUnit organisationUnit
+    ) {
+
+        List<OrganisationUnit> selectedScopeOrganisationUnits = null;
+
+        switch (scope) {
+            case SCOPE_TEI_SEARCH:
+                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
+                break;
+
+            case SCOPE_DATA_CAPTURE:
+                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
+                break;
+
+            default:
+                break;
+        }
+
+        if (selectedScopeOrganisationUnits == null) {
+            return false;
+        } else {
+            Set<String> assignedOrgUnitUids = UidsHelper.getUids(selectedScopeOrganisationUnits);
+            return assignedOrgUnitUids.contains(organisationUnit.uid());
+        }
+    }
+
     public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
                                  @NonNull User user,
                                  @NonNull OrganisationUnit organisationUnit) {

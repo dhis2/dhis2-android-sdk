@@ -39,9 +39,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataDimensionItemTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.DataDimensionItemProgramAttributeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.DataDimensionItemProgramDataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataDimensionItem.Builder.class)
@@ -82,13 +85,13 @@ public abstract class DataDimensionItem implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid programDataElement();
+    @ColumnAdapter(DataDimensionItemProgramDataElementWithUidColumnAdapter.class)
+    public abstract DataDimensionItemProgramDataElement programDataElement();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid programAttribute();
+    @ColumnAdapter(DataDimensionItemProgramAttributeWithUidColumnAdapter.class)
+    public abstract DataDimensionItemProgramAttribute programAttribute();
 
     @Nullable
     @JsonProperty()
@@ -97,7 +100,7 @@ public abstract class DataDimensionItem implements CoreObject {
 
     @Nullable
     public String dataDimensionItem() {
-        ObjectWithUid item = dataDimensionItemObject();
+        ObjectWithUidInterface item = dataDimensionItemObject();
         if (item == null) {
             return null;
         } else {
@@ -106,7 +109,7 @@ public abstract class DataDimensionItem implements CoreObject {
     }
 
     @Nullable
-    private ObjectWithUid dataDimensionItemObject() {
+    private ObjectWithUidInterface dataDimensionItemObject() {
         DataDimensionItemType type = dataDimensionItemType();
         if (type == null) {
             return null;
@@ -164,9 +167,9 @@ public abstract class DataDimensionItem implements CoreObject {
 
         public abstract Builder programIndicator(ObjectWithUid programIndicator);
 
-        public abstract Builder programDataElement(ObjectWithUid programDataElement);
+        public abstract Builder programDataElement(DataDimensionItemProgramDataElement programDataElement);
 
-        public abstract Builder programAttribute(ObjectWithUid programAttribute);
+        public abstract Builder programAttribute(DataDimensionItemProgramAttribute programAttribute);
 
         public abstract Builder validationRule(ObjectWithUid validationRule);
 

@@ -173,6 +173,7 @@
           "expression": "d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})",
           "dimensionItem": "GSae40Fyppf",
           "dimensionItemType": "PROGRAM_INDICATOR",
+          "analyticsType": "EVENT",
           "access": {
             "read": true,
             "updateWithSection": true,
@@ -210,6 +211,23 @@
                 }
               ]
             }
+          ],
+          "analyticsPeriodBoundaries": [
+            {
+              "offsetPeriodType": "SixMonthly",
+              "analyticsPeriodBoundaryType": "AFTER_END_OF_REPORTING_PERIOD",
+              "boundaryTarget": "Custom boundary",
+              "offsetPeriods": 1
+            },
+            {
+              "analyticsPeriodBoundaryType": "BEFORE_START_OF_REPORTING_PERIOD",
+              "boundaryTarget": "INCIDENT_DATE",
+              "offsetPeriods": -3
+            },
+            {
+              "analyticsPeriodBoundaryType": "BEFORE_END_OF_REPORTING_PERIOD",
+              "boundaryTarget": "EVENT_DATE"
+            }
           ]
         },
         {
@@ -228,10 +246,24 @@
           "displayShortName": "Health immunization score",
           "decimals": 2,
           "filter": "#{edqlbukwRfQ.vANAXwtLwcT} < 11",
+          "analyticsType": "ENROLLMENT",
           "program": {
             "id": "lxAQ7Zs9VYR"
           },
-          "legendSets": []
+          "legendSets": [],
+          "analyticsPeriodBoundaries": [
+            {
+              "offsetPeriodType": "FinancialOct",
+              "analyticsPeriodBoundaryType": "BEFORE_START_OF_REPORTING_PERIOD",
+              "offsetPeriods": 1
+            },
+            {
+              "offsetPeriodType": "FinancialApril",
+              "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD",
+              "boundaryTarget": "ENROLLMENT_DATE",
+              "offsetPeriods": 2
+            }
+          ]
         }
       ],
       "programSections": [

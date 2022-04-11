@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -43,9 +44,16 @@ internal data class OldTrackerImporterPayload(
 
     fun concat(other: OldTrackerImporterPayload): OldTrackerImporterPayload {
         return OldTrackerImporterPayload(
-            trackedEntityInstances = trackedEntityInstances + other.trackedEntityInstances,
-            events = events + other.events,
-            relationships = relationships + other.relationships
+            trackedEntityInstances = concat(trackedEntityInstances, other.trackedEntityInstances),
+            events = concat(events, other.events),
+            relationships = concat(relationships, other.relationships)
         )
+    }
+
+    private fun <I : ObjectWithUidInterface> concat(aList: List<I>, bList: List<I>): List<I> {
+        val aListIds = aList.mapNotNull { it.uid() }
+        val filteredBList = bList.filter { !aListIds.contains(it.uid()) }
+
+        return aList + filteredBList
     }
 }

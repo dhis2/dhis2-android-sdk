@@ -1,7 +1,7 @@
 {
   "dataSync": "24h",
   "metadataSync": "12h",
-  "newTrackerImporter": false,
+  "trackerImporterVersion": "V1",
   "dataSetSettings": {
     "globalSettings": {
       "lastUpdated": "2020-01-31T22:42:57.763Z",

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum DataSetFilter {
@@ -44,5 +45,8 @@ public enum DataSetFilter {
     PERIOD,
 
     @JsonProperty("categoryCombo")
-    CAT_COMBO
+    CAT_COMBO,
+
+    @JsonEnumDefaultValue
+    UNKNOWN
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
@@ -61,6 +62,7 @@ public final class ProgramModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
+                AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
                 ProgramTableInfo.TABLE_INFO,
                 ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
                 ProgramRuleVariableTableInfo.TABLE_INFO,

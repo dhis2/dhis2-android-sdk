@@ -4,5 +4,6 @@
   "matomoURL": "https://www.matomo.org",
   "smsGateway": "+84566464",
   "reservedValues": 40,
-  "smsResultSender": "+9456498778"
+  "smsResultSender": "+9456498778",
+  "allowScreenCapture": true
 }

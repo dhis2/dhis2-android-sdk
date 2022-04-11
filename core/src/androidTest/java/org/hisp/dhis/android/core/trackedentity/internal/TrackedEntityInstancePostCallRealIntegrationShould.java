@@ -403,7 +403,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         assertThat(responseTeiB.size() == 1).isTrue();
 
         List<Relationship> relationships =
-                d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true);
+                d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true, false);
         assertThat(relationships.size() > 0).isTrue();
 
         boolean relationshipFound = false;

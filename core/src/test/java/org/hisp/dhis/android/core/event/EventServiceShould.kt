@@ -103,16 +103,19 @@ class EventServiceShould {
     }
 
     @Test
-    fun `Should return false if program or program stage have not write access`() {
+    fun `Should return false if program stage has not write access`() {
         whenever(program.access()) doReturn writeDataAccess
         whenever(programStage.access()) doReturn readDataAccess
 
         assertFalse(eventService.blockingHasDataWriteAccess(event.uid()))
+    }
 
+    @Test
+    fun `Should return true if programStage has write access and program has not write access`() {
         whenever(program.access()) doReturn readDataAccess
         whenever(programStage.access()) doReturn writeDataAccess
 
-        assertFalse(eventService.blockingHasDataWriteAccess(event.uid()))
+        assertTrue(eventService.blockingHasDataWriteAccess(event.uid()))
     }
 
     @Test

@@ -161,7 +161,7 @@ class EventQueryBundleFactoryShould {
                 assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
                 assertThat(bundle.commonParams().limit).isEqualTo(100)
             } else {
-                assertThat(bundle.commonParams().limit).isEqualTo(5000)
+                assertThat(bundle.commonParams().limit).isEqualTo(4800)
             }
         }
     }

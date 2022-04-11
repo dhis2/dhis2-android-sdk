@@ -30,6 +30,7 @@ It gives additional information about app settings:
 - **Reserved values**: number of attribute values to reserve. It might be overridden by the app.
 - Mobile configuration: gateway number, result sender number. They must be consumed by the application and used to configure the SMS module in the SDK.
 - Matomo configuration: if you have your own Matomo instance, you can expose this information to the app in order to configure its Matomo client.
+- AllowScreenCapture: parameter to determine if the application should allow screen capture or not.
 
 ### Synchronization settings { #android_sdk_synchronization_settings }
 
@@ -40,6 +41,7 @@ d2.settingModule().synchronizationSettings()
 If offers additional parameters to control metadata/data synchronization.
 
 - MetadataSync, DataSync: these two parameters define the periodicity of metadata/data sync. They must be used by the app to create scheduled jobs.
+- **TrackerImporterVersion:** version of the tracker importer: *V1* refers to the legacy tracker importer (`/api/trackedEntityInstances` endpoint); *V2* refers to the importer introduced in 2.37 (`/api/tracker` endpoint).
 - **ProgramSettings:** this section controls the program data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all programs. Additionally it allows to set specific settings for particular programs. All these parameters are consumed by the SDK and used in the synchronization process.
 - **DataSetsSettings:** this section controls the aggregated data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all dataSets. Additionally it allows to set specific setting for particular dataSets. All these parameters are consumed by the SDK and used in the synchronization process.
 
@@ -62,10 +64,17 @@ These settings refer to visual components so they must be consumed by the app.
 d2.settingModule().analyticsSetting()
 
 d2.settingModule().analyticsSetting().teis()
+
+d2.settingModule().analyticsSetting().dhisVisualizations()
 ```
 
 Analytics settings define the analytic elements (charts, tables,...) that must be displayed to the user.
 
-- teis collection: they define analytic elements referred to the context of a single TEI. These elements are intended to be displayed in a TEI dashboard.
+- **teis collection:** they define analytic elements referred to the context of a single TEI. These elements are intended to be displayed in a TEI dashboard.
+- **dhisVisualizations:** they are organized into three sections (home, program, dataSet) and each section is composed of a list of groups. Each group contains a list of visualizations. About the sections:
+    - *home:* those visualizations that must be displayed in the *home* screen.
+    - *program:* map of objects with the key being a programId. These visualizations are intended to be displayed in the context of a particular program.
+    - *dataSet:* map of objects with the key being a dataSetId. These visualizations are intended to be displayed in the context of a particular dataSet.
+
 
 These settings refer to visual components so they must be consumed by the app.

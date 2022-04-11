@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.*
 
 internal open class IdentifiableDataObjectStoreImpl<O>(
@@ -47,8 +48,14 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     private var selectStateQuery: String? = null
     private var existsQuery: String? = null
     private var setStateStatement: StatementWrapper? = null
+    private var setStateIfUploadingStatement: StatementWrapper? = null
+
     val tableName: String = builder.tableName
     private var adapterHashCode: Int? = null
+
+    companion object {
+        private const val EQ = " = "
+    }
 
     private fun compileStatements() {
         resetStatementsIfDbChanged()
@@ -57,6 +64,10 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
             val setState = "UPDATE " + tableName + " SET " +
                 DataColumns.SYNC_STATE + " =?" + whereUid
             setStateStatement = databaseAdapter.compileStatement(setState)
+
+            val setStateIfUploading = setState + " AND " + DataColumns.SYNC_STATE + EQ + "'" + State.UPLOADING + "'"
+            setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading)
+
             selectStateQuery = "SELECT " + DataColumns.SYNC_STATE + " FROM " + tableName + whereUid
             existsQuery = "SELECT 1 FROM $tableName$whereUid"
         }
@@ -71,7 +82,9 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     private fun resetStatementsIfDbChanged() {
         if (hasAdapterChanged()) {
             setStateStatement!!.close()
+            setStateIfUploadingStatement!!.close()
             setStateStatement = null
+            setStateIfUploadingStatement = null
         }
     }
 
@@ -95,6 +108,17 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return databaseAdapter.update(tableName, updates, whereClause, null)
     }
 
+    override fun setSyncStateIfUploading(uid: String, state: State): Int {
+        compileStatements()
+        setStateIfUploadingStatement!!.bind(1, state)
+
+        // bind the where argument
+        setStateIfUploadingStatement!!.bind(2, uid)
+        val affectedRows = databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement)
+        setStateIfUploadingStatement!!.clearBindings()
+        return affectedRows
+    }
+
     override fun getSyncState(uid: String): State? {
         compileStatements()
         val cursor = databaseAdapter.rawQuery(selectStateQuery, uid)
@@ -113,5 +137,15 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         val count = cursor.count
         cursor.close()
         return count > 0
+    }
+
+    override fun getUploadableSyncStatesIncludingError(): List<O> {
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE,
+                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
+            ).build()
+
+        return selectWhere(whereClause)
     }
 }

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal class NewTrackerImporterTrackedEntityDataValueTransformer :
+internal object NewTrackerImporterTrackedEntityDataValueTransformer :
     Transformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
 
     override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {

@@ -103,7 +103,8 @@ public final class TrackedEntityAttributeValueStoreImpl
 
     private String teiInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.uploadableStatesIncludingError())));
         return "(" + TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE +
                 "." +
                 DataColumns.AGGREGATED_SYNC_STATE +
@@ -126,6 +127,17 @@ public final class TrackedEntityAttributeValueStoreImpl
                         trackedEntityInstanceUid)
                 .appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                         trackedEntityAttributeUids)
+                .build();
+
+        deleteWhere(deleteWhereQuery);
+    }
+
+    @Override
+    public void removeDeletedAttributeValuesByInstance(@NonNull String trackedEntityInstanceUid) {
+        String deleteWhereQuery = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                        trackedEntityInstanceUid)
+                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
                 .build();
 
         deleteWhere(deleteWhereQuery);

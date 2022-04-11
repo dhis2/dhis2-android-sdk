@@ -28,11 +28,14 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +55,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Lists;
+
 @RunWith(JUnit4.class)
 public class ProgramIndicatorHandlerShould {
     @Mock
@@ -61,6 +66,9 @@ public class ProgramIndicatorHandlerShould {
     private LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
+    private LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
+
+    @Mock
     private Handler<LegendSet> legendSetHandler;
 
     @Mock
@@ -68,6 +76,12 @@ public class ProgramIndicatorHandlerShould {
 
     @Mock
     private LegendSet legendSet;
+
+    @Mock
+    private AnalyticsPeriodBoundary analyticsPeriodBoundary;
+
+    @Mock
+    private AnalyticsPeriodBoundary.Builder analyticsPeriodBoundaryBuilder;
 
     @Mock
     private ObjectWithUid program;
@@ -86,7 +100,8 @@ public class ProgramIndicatorHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore, legendSetHandler, programIndicatorLegendSetLinkHandler);
+                programIndicatorStore, legendSetHandler, programIndicatorLegendSetLinkHandler,
+                analyticsPeriodBoundaryHandler);
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
@@ -98,6 +113,11 @@ public class ProgramIndicatorHandlerShould {
         when(program.uid()).thenReturn("test_program_uid");
         when(programIndicator.program()).thenReturn(program);
         when(programIndicator.legendSets()).thenReturn(legendSets);
+        when(programIndicator.analyticsPeriodBoundaries()).thenReturn(Lists.newArrayList(analyticsPeriodBoundary));
+        when(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder);
+        when(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder);
+        when(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary);
+        when(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -137,5 +157,11 @@ public class ProgramIndicatorHandlerShould {
     public void call_program_indicator_legend_set_handler() {
         programIndicatorHandler.handleMany(programIndicators);
         verify(legendSetHandler).handleMany(eq(legendSets));
+    }
+
+    @Test
+    public void call_program_indicator_analytics_period_boundary_handler_and_store() {
+        programIndicatorHandler.handleMany(programIndicators);
+        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any(), any());
     }
 }

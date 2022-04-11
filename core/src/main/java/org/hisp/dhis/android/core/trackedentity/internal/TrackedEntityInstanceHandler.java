@@ -83,7 +83,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
     @NonNull
     @Override
-    protected TrackedEntityInstance beforeObjectHandled(TrackedEntityInstance tei, Boolean override) {
+    protected TrackedEntityInstance beforeObjectHandled(TrackedEntityInstance tei, Boolean overwrite) {
         if (GeometryHelper.isValid(tei.geometry())) {
             return tei;
         } else {
@@ -104,11 +104,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             List<Enrollment> enrollments =
                     TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
             if (enrollments != null) {
-                enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
-                                .syncState(State.SYNCED)
-                                .aggregatedSyncState(State.SYNCED)
-                                .build(),
-                        overwrite);
+                enrollmentHandler.handleMany(enrollments, false, false, overwrite, relatives);
             }
 
             List<Relationship229Compatible> relationships =

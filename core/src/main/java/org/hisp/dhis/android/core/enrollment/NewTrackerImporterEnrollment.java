@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStat
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.DataColumns;
@@ -55,6 +56,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue;
 
 import java.util.Date;
 import java.util.List;
@@ -136,6 +138,11 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter.class)
+    public abstract List<NewTrackerImporterTrackedEntityAttributeValue> attributes();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
     public abstract List<NewTrackerImporterEvent> events();
 
@@ -196,6 +203,9 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder aggregatedSyncState(State aggregatedSyncState);
+
+        public abstract Builder attributes(
+                List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         public abstract Builder events(List<NewTrackerImporterEvent> events);
 

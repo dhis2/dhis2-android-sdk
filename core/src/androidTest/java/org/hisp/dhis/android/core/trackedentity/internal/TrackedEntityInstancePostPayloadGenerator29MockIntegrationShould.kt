@@ -68,29 +68,6 @@ class TrackedEntityInstancePostPayloadGenerator29MockIntegrationShould : BasePay
         )
 
     @Test
-    fun build_payload_without_events_marked_as_error() {
-        storeTrackerData()
-
-        enrollmentStore.setAggregatedSyncState(enrollment3Id, State.TO_POST)
-
-        val partitions = partitions
-
-        assertThat(partitions.size).isEqualTo(1)
-        assertThat(partitions.first().size).isEqualTo(1)
-
-        for (instance in partitions.first()) {
-            assertThat(getEnrollments(instance).size).isEqualTo(3)
-            for (enrollment in getEnrollments(instance)) {
-                if (enrollment.uid() == enrollment3Id) {
-                    assertThat(getEvents(enrollment).size).isEqualTo(0)
-                } else {
-                    assertThat(getEvents(enrollment).size).isEqualTo(1)
-                }
-            }
-        }
-    }
-
-    @Test
     fun handle_import_conflicts_correctly() {
         storeTrackerData()
 
@@ -160,7 +137,7 @@ class TrackedEntityInstancePostPayloadGenerator29MockIntegrationShould : BasePay
 
         val partitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(
             d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
-                .byAggregatedSyncState().`in`(*State.uploadableStates()).blockingGet()
+                .byAggregatedSyncState().`in`(*State.uploadableStatesIncludingError()).blockingGet()
         )
 
         assertThat(partitions.size).isEqualTo(1)

@@ -30,12 +30,14 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -49,15 +51,17 @@ internal class TrackerPostStateManager @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val h: StatePersistorHelper
 ) {
 
     fun restorePayloadStates(
         trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
         events: List<Event> = emptyList(),
-        relationships: List<Relationship> = emptyList()
+        relationships: List<Relationship> = emptyList(),
+        fileResources: List<String> = emptyList()
     ) {
-        setPayloadStates(trackedEntityInstances, events, relationships, null)
+        setPayloadStates(trackedEntityInstances, events, relationships, fileResources, null)
     }
 
     @Suppress("NestedBlockDepth")
@@ -65,12 +69,14 @@ internal class TrackerPostStateManager @Inject internal constructor(
         trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
         events: List<Event> = emptyList(),
         relationships: List<Relationship> = emptyList(),
+        fileResources: List<String> = emptyList(),
         forcedState: State?
     ) {
         val teiMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val eventMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val relationshipMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+        val fileResourceMap: MutableMap<State, MutableList<String>> = mutableMapOf()
 
         trackedEntityInstances.forEach { instance ->
             h.addState(teiMap, instance, forcedState)
@@ -95,9 +101,16 @@ internal class TrackerPostStateManager @Inject internal constructor(
 
         relationships.forEach { h.addState(relationshipMap, it, forcedState) }
 
+        fileResources.forEach { fileResource ->
+            fileResourceStore.selectByUid(fileResource)?.let {
+                h.addState(fileResourceMap, it, forcedState)
+            }
+        }
+
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
         h.persistStates(relationshipMap, relationshipStore)
+        h.persistStates(fileResourceMap, fileResourceStore)
     }
 }

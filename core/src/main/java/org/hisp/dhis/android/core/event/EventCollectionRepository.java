@@ -96,7 +96,7 @@ public final class EventCollectionRepository
     public Observable<D2Progress> upload() {
         return Observable.concat(
                 jobQueryCall.queryPendingJobs(),
-                Observable.fromCallable(() -> byAggregatedSyncState().in(State.uploadableStates())
+                Observable.fromCallable(() -> byAggregatedSyncState().in(State.uploadableStatesIncludingError())
                         .byEnrollmentUid().isNull()
                         .blockingGetWithoutChildren())
                         .flatMap(postCall::uploadEvents)

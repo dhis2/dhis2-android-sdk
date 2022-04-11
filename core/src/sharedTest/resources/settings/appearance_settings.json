@@ -50,6 +50,14 @@
           "organisationUnit": {
             "sort": "false",
             "filter": "false"
+          },
+          "newFilter1": {
+            "sort": "false",
+            "filter": "false"
+          },
+          "newFilter2": {
+            "sort": "false",
+            "filter": "false"
           }
         }
       }

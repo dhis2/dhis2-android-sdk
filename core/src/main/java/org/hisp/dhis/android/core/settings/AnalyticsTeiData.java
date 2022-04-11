@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -59,6 +60,7 @@ public abstract class AnalyticsTeiData {
     public abstract static class Builder {
         public abstract Builder dataElements(List<AnalyticsTeiDataElement> globalSettings);
 
+        @JsonAlias("programIndicators")
         public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
 
         public abstract Builder attributes(List<AnalyticsTeiAttribute> attributes);

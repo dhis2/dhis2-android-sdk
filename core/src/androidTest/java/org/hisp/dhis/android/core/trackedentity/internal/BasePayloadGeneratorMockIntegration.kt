@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples
@@ -44,6 +45,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore.create
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
@@ -52,6 +55,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
 import org.junit.BeforeClass
@@ -250,6 +254,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         internal lateinit var teiDataValueStore: TrackedEntityDataValueStore
         internal lateinit var eventStore: EventStore
         internal lateinit var enrollmentStore: EnrollmentStore
+        internal lateinit var trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>
+        internal lateinit var programStore: ProgramStoreInterface
 
         @BeforeClass
         @JvmStatic
@@ -262,6 +268,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             teiDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
             eventStore = EventStoreImpl.create(databaseAdapter)
             enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
+            trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
+            programStore = ProgramStore.create(databaseAdapter)
         }
     }
 }

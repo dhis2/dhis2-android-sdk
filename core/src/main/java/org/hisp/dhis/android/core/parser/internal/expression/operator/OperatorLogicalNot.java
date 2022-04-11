@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression.operator;
 
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 /**
  * Logical operator: Not
@@ -49,4 +51,9 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot;
 public class OperatorLogicalNot
         extends AntlrOperatorLogicalNot
         implements ExpressionItem {
+
+    @Override
+    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return "not " + visitor.castStringVisit(ctx.expr(0));
+    }
 }

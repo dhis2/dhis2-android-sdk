@@ -279,6 +279,11 @@ public class ExpressionServiceShould {
     }
 
     @Test
+    public void evaluate_divide_by_zero() {
+        assertThat(service.getExpressionValue("4 / 0")).isEqualTo(null);
+    }
+
+    @Test
     public void get_dataelement_ids() {
         String expression = de(dataElementId1) + " + " + de(dataElementId2);
         Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);

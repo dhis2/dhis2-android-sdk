@@ -45,7 +45,7 @@ public class SynchronizationSettingObjectRepositoryMockIntegrationShould extends
 
         assertThat(syncSettings.dataSync()).isNotNull();
         assertThat(syncSettings.metadataSync()).isNotNull();
-        assertThat(syncSettings.newTrackerImporter()).isNotNull();
+        assertThat(syncSettings.trackerImporterVersion()).isNotNull();
         assertThat(syncSettings.dataSetSettings()).isNotNull();
         assertThat(syncSettings.programSettings()).isNotNull();
     }

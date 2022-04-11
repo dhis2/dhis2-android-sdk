@@ -38,102 +38,112 @@ import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore.create
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.*
-import org.hisp.dhis.android.core.trackedentity.internal.*
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.today
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.twoDaysBefore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
-    private val teiUid = "H87GEVeG3JH"
-    private val enrollmentUid = "la16vwCoFM8"
-    private val event1 = "gphKB0UjOrX"
-    private val event2 = "EAZOUgr2Ksv"
-    private val event3 = "BVL4LcEEDdU"
-    private val dataElement1 = "ddaBs9lgZyP"
-    private val dataElement2 = "Kb9hZ428FyH"
-    private val attribute1 = "Kmtdopp5GC1"
-    private val programIndicatorUid = "rg3JkCv0skl"
+    private lateinit var programIndicatorEngine: ProgramIndicatorEngine
 
-    // Auxiliary variables
-    private val orgunitUid = "orgunit_uid"
-    private val teiTypeUid = "tei_type_uid"
-    private val programUid = "program_uid"
-    private val programStage1 = "iM4svLr2hlO"
-    private val programStage2 = "RXFTSe1oefv"
-    private var programIndicatorEngine: ProgramIndicatorEngine? = null
+    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+
+    companion object Factory {
+
+        private const val teiUid = "H87GEVeG3JH"
+        private const val enrollmentUid = "la16vwCoFM8"
+        private const val event1 = "gphKB0UjOrX"
+        private const val event2 = "EAZOUgr2Ksv"
+        private const val event3 = "BVL4LcEEDdU"
+        private const val dataElement1 = "ddaBs9lgZyP"
+        private const val dataElement2 = "Kb9hZ428FyH"
+        private const val attribute1 = "Kmtdopp5GC1"
+        private const val programIndicatorUid = "rg3JkCv0skl"
+
+        // Auxiliary variables
+        private const val orgunitUid = "orgunit_uid"
+        private const val teiTypeUid = "tei_type_uid"
+        private const val programUid = "program_uid"
+        private const val programStage1 = "iM4svLr2hlO"
+        private const val programStage2 = "RXFTSe1oefv"
+
+        @BeforeClass
+        @JvmStatic
+        @Throws(Exception::class)
+        fun setUp() {
+            setUpClass()
+
+            val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
+            OrganisationUnitStore.create(databaseAdapter).insert(orgunit)
+
+            val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
+            TrackedEntityTypeStore.create(databaseAdapter).insert(trackedEntityType)
+
+            val categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID)
+            databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
+
+            val access = Access.create(true, false, DataAccess.create(true, true))
+            val program = Program.builder().uid(programUid)
+                .access(access)
+                .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
+                .build()
+            ProgramStore.create(databaseAdapter).insert(program)
+
+            val stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
+                .formType(FormType.CUSTOM).build()
+            val stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
+                .formType(FormType.CUSTOM).build()
+            val programStageStore = ProgramStageStore.create(databaseAdapter)
+            programStageStore.insert(stage1)
+            programStageStore.insert(stage2)
+
+            val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
+            val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
+            val dataElementStore = DataElementStore.create(databaseAdapter)
+            dataElementStore.insert(de1)
+            dataElementStore.insert(de2)
+
+            val tea = TrackedEntityAttribute.builder().uid(attribute1).build()
+            TrackedEntityAttributeStore.create(databaseAdapter).insert(tea)
+        }
+
+        @AfterClass
+        @JvmStatic
+        @Throws(D2Error::class)
+        fun tearDownClass() {
+            d2.wipeModule().wipeEverything()
+        }
+    }
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
-        setUpClass()
+    fun setUpTest() {
         programIndicatorEngine = d2.programModule().programIndicatorEngine()
 
-        val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
-        create(databaseAdapter).insert(orgunit)
-
-        val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
-        TrackedEntityTypeStore.create(databaseAdapter).insert(trackedEntityType)
-
-        val teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
-        val trackedEntityInstance = TrackedEntityInstance.builder()
-            .uid(teiUid)
-            .created(Date())
-            .lastUpdated(Date())
-            .organisationUnit(orgunitUid)
-            .trackedEntityType(teiTypeUid)
-            .build()
-        teiStore.insert(trackedEntityInstance)
-
-        val categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID)
-        databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
-
-        val access = Access.create(true, false, DataAccess.create(true, true))
-        val program = Program.builder().uid(programUid)
-            .access(access)
-            .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
-            .build()
-        ProgramStore.create(databaseAdapter).insert(program)
-
-        val stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
-            .formType(FormType.CUSTOM).build()
-        val stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
-            .formType(FormType.CUSTOM).build()
-        val programStageStore = ProgramStageStore.create(databaseAdapter)
-        programStageStore.insert(stage1)
-        programStageStore.insert(stage2)
-
-        val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
-        val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
-        val dataElementStore = DataElementStore.create(databaseAdapter)
-        dataElementStore.insert(de1)
-        dataElementStore.insert(de2)
-
-        val tea = TrackedEntityAttribute.builder().uid(attribute1).build()
-        TrackedEntityAttributeStore.create(databaseAdapter).insert(tea)
+        helper.createTrackedEntity(teiUid, orgunitUid, teiTypeUid)
     }
 
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().wipeData()
     }
 
     @Test
@@ -142,7 +152,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "4")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("4")
     }
 
@@ -152,7 +162,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "text data-value")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("text data-value")
     }
 
@@ -163,7 +173,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "5")
         insertTrackedEntityDataValue(event1, dataElement2, "3")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} * ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")
     }
 
@@ -174,7 +184,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "3")
         insertTrackedEntityDataValue(event1, dataElement2, "5")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} / ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("0.6")
     }
 
@@ -197,7 +207,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
         insertTrackedEntityDataValue(event3, dataElement1, "3")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("2")
     }
 
@@ -221,7 +231,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
         insertTrackedEntityDataValue(event3, dataElement1, "3")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("2")
     }
 
@@ -237,12 +247,12 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             "(${de(programStage1, dataElement1)} + ${de(programStage2, dataElement2)})" +
                 " / ${att(attribute1)}"
         )
-        val enrollmentValue = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(
+        val enrollmentValue = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
             programIndicatorUid
         )
-        val event1Value = programIndicatorEngine!!.getEventProgramIndicatorValue(event1, programIndicatorUid)
-        val event2Value = programIndicatorEngine!!.getEventProgramIndicatorValue(event2, programIndicatorUid)
+        val event1Value = programIndicatorEngine.getEventProgramIndicatorValue(event1, programIndicatorUid)
+        val event2Value = programIndicatorEngine.getEventProgramIndicatorValue(event2, programIndicatorUid)
         assertThat(enrollmentValue).isEqualTo("3.25")
         assertThat(event1Value).isEqualTo("2.5")
         assertThat(event2Value).isEqualTo("0.75")
@@ -255,7 +265,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(event2, programStage2)
         createTrackerEvent(event3, programStage2, deleted = true)
         setProgramIndicatorExpression(`var`("event_count"))
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
             programIndicatorUid
         )
@@ -271,7 +281,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         setProgramIndicatorExpression(
             "d2:round(${de(programStage1, dataElement1)}) * ${de(programStage1, dataElement2)}"
         )
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")
     }
 
@@ -282,7 +292,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         val incidentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-21T00:00:00.000")
         createEnrollment(enrollmentDate, incidentDate)
         setProgramIndicatorExpression("d2:daysBetween(V{enrollment_date}, V{incident_date})")
-        val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("16")
     }
 
@@ -292,28 +302,12 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "3.0")
         insertTrackedEntityDataValue(event1, dataElement2, "4.0")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} + ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine!!.getEventProgramIndicatorValue(event1, programIndicatorUid)
+        val result = programIndicatorEngine.getEventProgramIndicatorValue(event1, programIndicatorUid)
         assertThat(result).isEqualTo("7")
     }
 
     private fun createEnrollment(enrollmentDate: Date? = null, incidentDate: Date? = null) {
-        val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
-            .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid).build()
-        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
-    }
-
-    private fun createEvent(
-        eventUid: String,
-        programStageUid: String,
-        enrollmentUid: String? = null,
-        deleted: Boolean = false,
-        eventDate: Date?,
-        lastUpdated: Date? = null
-    ) {
-        val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
-            .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
-            .eventDate(eventDate).deleted(deleted).build()
-        EventStoreImpl.create(databaseAdapter).insert(event)
+        helper.createEnrollment(teiUid, enrollmentUid, programUid, orgunitUid, enrollmentDate, incidentDate)
     }
 
     private fun createTrackerEvent(
@@ -323,13 +317,9 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         eventDate: Date? = null,
         lastUpdated: Date? = null
     ) {
-        createEvent(
-            eventUid = eventUid,
-            programStageUid = programStageUid,
-            enrollmentUid = enrollmentUid,
-            deleted = deleted,
-            eventDate = eventDate,
-            lastUpdated = lastUpdated
+        helper.createEvent(
+            eventUid, programUid, programStageUid, enrollmentUid, orgunitUid,
+            deleted, eventDate, lastUpdated
         )
     }
 
@@ -340,13 +330,9 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         eventDate: Date? = null,
         lastUpdated: Date? = null
     ) {
-        createEvent(
-            eventUid = eventUid,
-            programStageUid = programStageUid,
-            enrollmentUid = null,
-            deleted = deleted,
-            eventDate = eventDate,
-            lastUpdated = lastUpdated
+        helper.createEvent(
+            eventUid, programUid, programStageUid, null, orgunitUid,
+            deleted, eventDate, lastUpdated
         )
     }
 
@@ -355,43 +341,14 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     private fun insertProgramIndicator(expression: String, aggregationType: AggregationType) {
-        val programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
-            .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build()
-        ProgramIndicatorStore.create(databaseAdapter).insert(programIndicator)
+        helper.insertProgramIndicator(programIndicatorUid, programUid, expression, aggregationType)
     }
 
     private fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
-        val trackedEntityDataValue = TrackedEntityDataValue.builder()
-            .event(eventUid)
-            .dataElement(dataElementUid)
-            .value(value).build()
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(trackedEntityDataValue)
+        helper.insertTrackedEntityDataValue(eventUid, dataElementUid, value)
     }
 
     private fun insertTrackedEntityAttributeValue(attributeUid: String, value: String) {
-        val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
-            .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
-        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).insert(trackedEntityAttributeValue)
-    }
-
-    private fun de(programStageUid: String, dataElementUid: String): String {
-        return "#{$programStageUid.$dataElementUid}"
-    }
-
-    private fun att(attributeUid: String): String {
-        return "A{$attributeUid}"
-    }
-
-    private fun `var`(variable: String): String {
-        return "V{$variable}"
-    }
-
-    private fun today(): Date {
-        return Date()
-    }
-
-    private fun twoDaysBefore(): Date {
-        val newTime = Date().time - 2 * 24 * 60 * 60 * 1000
-        return Date(newTime)
+        helper.insertTrackedEntityAttributeValue(teiUid, attributeUid, value)
     }
 }

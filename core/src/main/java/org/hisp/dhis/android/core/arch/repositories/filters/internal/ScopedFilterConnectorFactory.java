@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.OrganisationUnitFilter;
 
 import java.util.List;
 
@@ -69,5 +70,16 @@ public class ScopedFilterConnectorFactory<R extends BaseRepository, S extends Ba
 
     public PeriodFilterConnector<R> periodConnector(BaseScopeFactory<S, DateFilterPeriod> baseScopeFactory) {
         return new PeriodFilterConnector<>(filter -> repositoryFactory.updated(baseScopeFactory.updated(filter)));
+    }
+
+    public PeriodsFilterConnector<R> periodsConnector(BaseScopeFactory<S, List<DateFilterPeriod>> baseScopeFactory) {
+        return new PeriodsFilterConnector<>(filter -> repositoryFactory.updated(baseScopeFactory.updated(filter)));
+    }
+
+    public OrganisationUnitFilterConnector<R> organisationUnitConnector(
+            BaseScopeFactory<S, List<OrganisationUnitFilter>> baseScopeFactory
+    ) {
+        return new OrganisationUnitFilterConnector<>(filter ->
+                repositoryFactory.updated(baseScopeFactory.updated(filter)));
     }
 }

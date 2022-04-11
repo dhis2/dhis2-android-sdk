@@ -39,6 +39,61 @@ Calling module or repository methods before a successful login or after a logout
 
 Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 
+## Login with OpenID { #android_sdk_login_open_id }
+
+The SDK includes support for OpenID. To perform a login using OpenID an OpenIDConnectConfig is required:
+
+```java
+OpenIDConnectConfig openIdConfig = new OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl);
+```
+
+It is mandatory to either provide a discoveryUri or both authorizationUrl and tokenUrl.
+
+This configuration can be used to perform a login.
+
+```java
+d2.userModule().openIdHandler().logIn(openIdConfig)
+```
+
+This call returns an IntentWithRequestCode which in an android app allows starting the OpenID login screen from the configuration provider.
+
+```java
+startActivityForResult(intentWithRequestCode.getIntent(), intentWithRequestCode.getRequestCode());
+```
+
+Upon a successful login, the returned intent data can be used alongside the server url to start the sync.
+
+```java
+d2.userModule().openIdHandler().handleLogInResponse(serverUrl, data, requestCode);
+```
+
+It is mandatory to include the following activity in the application Manifest file:
+
+```xml
+<activity   android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            tools:node="replace">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="<your redirect url scheme>" />
+            </intent-filter>
+</activity>
+```
+
+In order to configure all parameters check the following OpenID providers guidelines the server implements:
+
+|OpenID Providers|
+|----------------|
+|[Google](https://github.com/openid/AppAuth-Android/blob/master/app/README-Google.md)          |
+|[GitHub](https://docs.github.com/en/developers/apps/authorizing-oauth-apps)          |
+|[ID-porten](https://docs.digdir.no/oidc_protocol_authorize.html)       |
+|[OKTA](https://github.com/openid/AppAuth-Android/blob/master/app/README-Okta.md)            |
+|[KeyCloak](https://www.keycloak.org/docs/latest/authorization_services/index.html#_service_authorization_api)        |
+|[Azure AD](https://docs.microsoft.com/es-es/azure/active-directory-b2c/signin-appauth-android?tabs=app-reg-ga)        |
+|[WS02](https://medium.com/@maduranga.siriwardena/configuring-appauth-android-with-wso2-identity-server-8d378835c10a)            |
+
 ## Metadata synchronization { #android_sdk_metadata_synchronization }
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:
@@ -51,25 +106,29 @@ In order to save bandwidth usage and storage space, the SDK does not synchronize
 
 Based on that, metadata sync includes the following elements:
 
-|   Element             |   Condition or scope |
-|-----------------------|-------------|
-| System info           | All |
-| System settings       | KeyFlag, KeyStyle |
-| User settings         | KeyDbLocale, KeyUiLocale |
-| User                  | Only authenticated user |
-| UserRole              | Roles assigned to authenticated user |
-| Authority             | Authorities assigned to authenticated user |
-| Program               | Programs that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
-| RelationshipTypes     | All |
-| OptionGroups          | Only if server is greater than 2.29 |
-| DataSet               | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
-| Validation rules      | Validation rules associated to the dataSets |
-| Indicators            | Indicators assigned to downloaded dataSets |
-| OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
-| OrganisationUnitGroup | Groups assigned to downloaded organisationUnits |
-| OrganisationUnitLevel | All |
-| Constant              | All |
-| SMS Module metadata   | Only if SMS module enabled |
+|   Element                     |   Condition or scope |
+|-----------------------        |-------------|
+| System info                   | All |
+| System settings               | KeyFlag, KeyStyle |
+| Android Settings App          | General settings, Synchronization, Appearance, Analaytics |
+| User settings                 | KeyDbLocale, KeyUiLocale |
+| User                          | Only authenticated user |
+| UserRole                      | Roles assigned to authenticated user |
+| Authority                     | Authorities assigned to authenticated user |
+| Program                       | Programs that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
+| RelationshipTypes             | All the types visible by the user |
+| OptionGroups                  | Only if server is greater than 2.29 |
+| EventFilters                  | Those related to downloaded programs |
+| TrackedEntityInstanceFilters  | Those related to downloaded programs |
+| DataSet                       | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
+| Validation rules              | Validation rules associated to the dataSets |
+| OrganisationUnit              | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
+| OrganisationUnitGroup         | Groups assigned to downloaded organisationUnits |
+| OrganisationUnitLevel         | All |
+| Constant                      | All |
+| Visualizations                | Visualizations assigned to Analytics settings (Android Settings App) |
+| Indicators                    | Indicators assigned to downloaded dataSets and visualizations |
+| SMS Module metadata           | Only if SMS module enabled |
 
 In the case of Programs and DataSets, metadata sync includes all the metadata related to them: stages, sections, dataElements, options, categories, etc. Those elements that are not related to any Program or DataSet are not included.
 
@@ -85,7 +144,7 @@ d2.maintenanceModule().foreignKeyViolations()
 
 ## Data states { #android_sdk_data_states }
 
-Data objects have a read-only `state` property that indicates the current state of the object in terms of synchronization with the server. This state is maintained by the SDK.
+Data objects have a read-only `syncState` property that indicates the current state of the object in terms of synchronization with the server. This state is maintained by the SDK. 
 
 The possible states are:
 
@@ -98,9 +157,17 @@ The possible states are:
 - **ERROR**. Data that received an error from the server after the last upload.
 - **WARNING**. Data that received a warning from the server after the last upload.
 
-Additionally, in `TrackedEntityInstance` we might have:
+Additionally, in `TrackedEntityInstance`, `Enrollment` and `Events` we might have:
 
-- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such as enrollments, events or relationships are not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
+- **RELATIONSHIP**. This element has been downloaded with the sole purpose of fulfilling a relationship to another element. This `RELATIONSHIP` element only has basic information (uid, type, etc) and the list of TrackedEntityAttributes (in case of TrackedEntityInstances) to be able to print meaningful information about the relationship. Other data such as enrollments, events, notes, values or relationships are not downloaded. Also, this element cannot be modified or uploaded to the server.
+
+Besides the property `syncState`, the classes `TrackedEntityInstance`, `Enrollment` and `Events` have a property called `aggregatedSyncState` that represents the sync state of its children. For example, if a dataValue is modified in an `Event`, the resulting states for the related objects would be:
+
+| Element               | SyncState   | AggregatedSyncState |
+|-----------------------|-------------|---------------------|
+| TrackedEntityInstance | SYNCED      | TO_UPDATE           |
+| Enrollment            | SYNCED      | TO_UPDATE           |
+| Event                 | TO_UPDATE   | TO_UPDATE           |
 
 ## Tracker data { #android_sdk_tracker_data }
 
@@ -174,7 +241,7 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .download()
 ```
 
-Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#dealing-with-fileresources) section for more details.
+Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#android_sdk_file_resources) section for more details.
 
 ### Tracker data search
 
@@ -296,6 +363,8 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
     .getScope();
 ```
 
+In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntityInstanceQuery repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
+
 
 *Working lists / Tracked entity instance filters*
 
@@ -336,7 +405,17 @@ For example, writing a TrackedEntityDataValue would be like:
 d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
 ```
 
-Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#dealing-with-fileresources) section below.
+Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#android_sdk_file_resources) section below.
+
+#### Write events in read-only TEIs
+
+It is important to pay special attention to user's data access to the TEIs, enrollments and events. The SDK modify the status of the data when any *write* method is executed in order to upload it to the server in the next synchronization. If a user has no write data access to a particular element, the app should prevent the edition of this element.
+
+The restrictions that must be followed by the app are these ones:
+
+- **TrackedEntityInstances:** the user must have write data access to the **TrackedEntityType**.
+- **Enrollemnts:** the user must have write data access to **both the TrackedEntityType and the Program** (this additional restriction is imposed by the SDK).
+- **Events:** the user must have write data access to the **ProgramStage**.
 
 ### Tracker data upload
 
@@ -349,6 +428,16 @@ d2.( trackedEntityModule() | eventModule() )
 ```
 
 Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to solve the conflicts before attempting a new upload: this means to do a modification in the problematic data, which forces their state back to `TO_UPDATE`.
+
+As of version 2.37, a new tracker importer was introduced (`/api/tracker` endpoint). The default tracker importer is still the legacy one (`/api/trackedEntityInstances`), but you can opt-in to use this new tracker importer by using the Android Settings webapp (see [Synchronization](#android_sdk_synchronization_settings)). This is internal to the SDK; the API exposed to the app does not change.
+
+File resources must be uploaded in a different post call before tracker data upload. The query to post file resources is:
+
+```java
+d2.fileResourceModule().fileResources().upload();
+```
+
+More information about file resources in the section [*Dealing with FileResources*](#android_sdk_file_resources).
 
 #### Tracker conflicts
 
@@ -386,7 +475,15 @@ d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orguni
 
 ### Tracker data: relationships
 
-Currently the SDK has partial support for relationships. Relationship from TEI to TEI are fully supported. Other kind of relationships (TEI-event, event-event,...) are downloaded and can be accessed, but they cannot be created or modified. 
+The SDK supports all types of relationships. They are downloaded when syncing and can be accessed and created or modified. 
+
+
+|                    | TEI        | Enrollment   | Event      |
+|--------------------|:----------:|:------------:|:----------:|
+| **TEI**            | X          | X            | X          |
+| **Enrollment**     | X          | X            | X          |
+| **Event**          | X          | X            | X          |
+_Supported relationships_
 
 Relationships are accessed by using the relationships module.
 
@@ -398,7 +495,23 @@ d2.relationshipModule().relationships().getByItem(
 )
 ```
 
-In the same module you can create new relationships using this method:
+Query relationships associated to an enrollment.
+
+```java
+d2.relationshipModule().relationships().getByItem(
+    RelationshipHelper.enrollmentItem("enrollmentUid")
+)
+```
+
+Or query relationships associated to an event.
+
+```java
+d2.relationshipModule().relationships().getByItem(
+    RelationshipHelper.eventItem("eventUid")
+)
+```
+
+In the same module you can create new relationships of any type using the `RelationshipHelper` to model the relationship and adding them later to the relationship collection repository:
 
 ```java
 Relationship relationship = RelationshipHelper.teiToTeiRelationship("fromTEIUid", "toTEIUid", "relationshipTypeUid");

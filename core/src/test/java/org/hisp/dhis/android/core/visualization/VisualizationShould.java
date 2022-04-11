@@ -28,29 +28,48 @@
 
 package org.hisp.dhis.android.core.visualization;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class VisualizationShould extends BaseObjectShould implements ObjectShould {
 
     public VisualizationShould() {
-        super("visualization/visualization_simplified.json");
+        super("visualization/visualization.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
-                .toBuilder().id(null).build();
-        Visualization expectedVisualization = VisualizationSamples.INSTANCE.visualization()
-                .toBuilder().id(null).build();
-        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
+        Visualization visualization = objectMapper.readValue(jsonStream, Visualization.class);
+
+        assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC");
+        assertThat(visualization.type()).isEqualTo(VisualizationType.PIVOT_TABLE);
+        assertThat(visualization.digitGroupSeparator()).isEqualTo(DigitGroupSeparator.COMMA);
+
+        assertThat(visualization.dataDimensionItems().get(0).indicator().uid()).isEqualTo("Uvn6LCg7dVU");
+        assertThat(visualization.dataDimensionItems().get(1).dataElement().uid()).isEqualTo("cYeuwXTCPkU");
+        assertThat(visualization.dataDimensionItems().get(2).dataElementOperand().uid())
+                .isEqualTo("Jtf34kNZhzP.pq2XI5kz2BY");
+        assertThat(visualization.dataDimensionItems().get(3).programIndicator().uid()).isEqualTo("p2Zxg0wcPQ3");
+        assertThat(visualization.dataDimensionItems().get(4).programDataElement().uid())
+                .isEqualTo("lxAQ7Zs9VYR.sWoqcoByYmD");
+        assertThat(visualization.dataDimensionItems().get(4).programDataElement().program().uid())
+                .isEqualTo("lxAQ7Zs9VYR");
+        assertThat(visualization.dataDimensionItems().get(4).programDataElement().dataElement().uid())
+                .isEqualTo("sWoqcoByYmD");
+        assertThat(visualization.dataDimensionItems().get(5).programAttribute().uid())
+                .isEqualTo("U5KybNCtA3E.iggSfNDnsCw");
+        assertThat(visualization.dataDimensionItems().get(5).programAttribute().program().uid())
+                .isEqualTo("U5KybNCtA3E");
+        assertThat(visualization.dataDimensionItems().get(5).programAttribute().attribute().uid())
+                .isEqualTo("iggSfNDnsCw");
     }
 }

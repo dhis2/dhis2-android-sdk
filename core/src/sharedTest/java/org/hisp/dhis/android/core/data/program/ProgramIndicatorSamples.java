@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.program;
 
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 
@@ -72,6 +73,7 @@ public class ProgramIndicatorSamples {
                 .dimensionItem("GSae40Fyppf")
                 .expression("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
                 .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .analyticsType(AnalyticsType.EVENT)
                 .build();
     }
 }

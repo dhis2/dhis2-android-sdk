@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
@@ -46,19 +47,22 @@ import org.hisp.dhis.android.core.visualization.Visualization
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.anyString
 
 @RunWith(JUnit4::class)
 class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     private val categoryStore: IdentifiableObjectStore<Category> = mock()
+    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val category: Category = mock()
     private val visualization: Visualization = mock()
+    private val orgUnitLevel: OrganisationUnitLevel = mock()
 
     private val uid1 = "GMpWZUg2QUf"
     private val uid2 = "AC6H8zCDb3B"
     private val uid3 = "eEIN8RQWxWp"
 
-    private val helper = AnalyticsVisualizationsServiceDimensionHelper(categoryStore)
+    private val helper = AnalyticsVisualizationsServiceDimensionHelper(categoryStore, organisationUnitLevelStore)
 
     @Test
     fun `Should parse dataElement dimension items`() {
@@ -156,20 +160,22 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
             ObjectWithUid.create(uid1),
             ObjectWithUid.create(uid2)
         )
-        val orgunitLevels = listOf(1, 3)
+        val orgunitLevels = listOf(1)
 
         whenever(visualization.organisationUnits()) doReturn orgunitItems
         whenever(visualization.organisationUnitLevels()) doReturn orgunitLevels
+        whenever(organisationUnitLevelStore.selectOneWhere(anyString())) doReturn orgUnitLevel
+        whenever(orgUnitLevel.uid()) doReturn uid3
 
         val dimensionItems = helper.getDimensionItems(visualization, listOf("ou"))
 
-        assertThat(dimensionItems).hasSize(4)
+        assertThat(dimensionItems).hasSize(3)
 
         val absolute = dimensionItems.filterIsInstance<DimensionItem.OrganisationUnitItem.Absolute>()
         assertThat(absolute.map { it.uid }).containsExactly(uid1, uid2)
 
         val levels = dimensionItems.filterIsInstance<DimensionItem.OrganisationUnitItem.Level>()
-        assertThat(levels.map { it.level }).containsExactlyElementsIn(orgunitLevels)
+        assertThat(levels.map { it.uid }).containsExactly(uid3)
     }
 
     @Test

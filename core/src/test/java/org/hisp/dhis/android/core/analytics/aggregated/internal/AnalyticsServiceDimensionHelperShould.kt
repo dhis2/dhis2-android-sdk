@@ -167,7 +167,7 @@ class AnalyticsServiceDimensionHelperShould {
 
     @Test
     fun `Should evaluate orgunits by level`() {
-        whenever(organisationUnitHelper.getOrganisationUnitUidsByLevel(any()))
+        whenever(organisationUnitHelper.getOrganisationUnitUidsByLevelUid(any()))
             .thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 
         val params = AnalyticsRepositoryParams(

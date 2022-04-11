@@ -85,6 +85,11 @@ public class ItemConstant implements ExpressionItem {
         }
     }
 
+    @Override
+    public Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return evaluate(ctx, visitor);
+    }
+
     private DimensionalItemId getDimensionalItemId(ExprContext ctx) {
         return DimensionalItemId.builder()
                 .dimensionalItemType(DimensionalItemType.CONSTANT)

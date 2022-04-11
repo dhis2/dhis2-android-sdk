@@ -53,17 +53,17 @@ public abstract class DimensionalItemId {
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
+    public abstract static class Builder {
 
-        abstract Builder dimensionalItemType(DimensionalItemType dimensionalItemType);
+        public abstract Builder dimensionalItemType(DimensionalItemType dimensionalItemType);
 
-        abstract Builder id0(String id0);
+        public abstract Builder id0(String id0);
 
-        abstract Builder id1(@Nullable String id1);
+        public abstract Builder id1(@Nullable String id1);
 
-        abstract Builder id2(@Nullable String id2);
+        public abstract Builder id2(@Nullable String id2);
 
-        abstract DimensionalItemId build();
+        public abstract DimensionalItemId build();
     }
 
     public boolean isDataElementOrOperand() {

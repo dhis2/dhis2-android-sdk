@@ -69,9 +69,8 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
     public abstract Access access();
 
     /**
-     * @deprecated this property is not used due to performance issues.
+     * This method only return results in versions greater or equal to 2.37.
      */
-    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)

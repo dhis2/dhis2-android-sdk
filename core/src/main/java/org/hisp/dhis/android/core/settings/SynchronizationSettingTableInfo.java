@@ -53,14 +53,14 @@ public final class SynchronizationSettingTableInfo {
     public static class Columns extends CoreColumns {
         public static final String DATA_SYNC = "dataSync";
         public static final String METADATA_SYNC = "metadataSync";
-        public static final String NEW_TRACKER_IMPORTER = "newTrackerImporter";
+        public static final String TRACKER_IMPORTER_VERSION = "trackerImporterVersion";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SYNC,
                     METADATA_SYNC,
-                    NEW_TRACKER_IMPORTER
+                    TRACKER_IMPORTER_VERSION
             );
         }
     }

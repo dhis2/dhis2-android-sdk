@@ -95,7 +95,7 @@ internal class LogInCall @Inject internal constructor(
             loginOnline(parsedServerUrl, user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
-                loginOffline(parsedServerUrl, credentials)
+                tryLoginOffline(parsedServerUrl, credentials, d2Error)
             } else {
                 throw handleOnlineException(d2Error)
             }
@@ -144,10 +144,10 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private fun loginOffline(serverUrl: HttpUrl, credentials: Credentials): User {
+    private fun tryLoginOffline(serverUrl: HttpUrl, credentials: Credentials, originalError: D2Error): User {
         val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, credentials.username)
         if (!existingDatabase) {
-            throw exceptions.noUserOfflineError()
+            throw originalError
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 

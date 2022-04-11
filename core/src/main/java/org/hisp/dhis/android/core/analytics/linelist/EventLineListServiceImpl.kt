@@ -28,8 +28,12 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.OrganisationUnitFilter
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.period.PeriodType
@@ -39,6 +43,7 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 
+@Suppress("LongParameterList")
 internal class EventLineListServiceImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,
     private val dataValueRepository: TrackedEntityDataValueCollectionRepository,
@@ -47,7 +52,9 @@ internal class EventLineListServiceImpl @Inject constructor(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
     private val programIndicatorEngine: ProgramIndicatorEngine,
-    private val periodHelper: PeriodHelper
+    private val periodHelper: PeriodHelper,
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper,
+    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper
 ) : EventLineListService {
 
     override fun evaluate(params: EventLineListParams): List<LineListResponse> {
@@ -55,26 +62,9 @@ internal class EventLineListServiceImpl @Inject constructor(
     }
 
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
-        var repoBuilder = eventRepository
-            .byProgramStageUid().eq(params.programStage)
-            .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
-            .byDeleted().isFalse
 
-        if (params.organisationUnits.isNotEmpty()) {
-            repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)
-        }
-
-        if (params.trackedEntityInstance != null) {
-            repoBuilder = repoBuilder.byTrackedEntityInstanceUids(listOf(params.trackedEntityInstance))
-        }
-
+        val events = getEvents(params)
         val programStage = programStageRepository.uid(params.programStage).blockingGet()
-
-        // TODO Apply filters
-
-        // TODO Filter by dates
-
-        val events = repoBuilder.blockingGet()
 
         val metadataMap = getMetadataMap(
             params.dataElements, params.programIndicators,
@@ -125,6 +115,36 @@ internal class EventLineListServiceImpl @Inject constructor(
         }
     }
 
+    private fun getEvents(params: EventLineListParams): List<Event> {
+        var repoBuilder = eventRepository
+            .byProgramStageUid().eq(params.programStage)
+            .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
+            .byDeleted().isFalse
+
+        if (params.trackedEntityInstance != null) {
+            repoBuilder = repoBuilder.byTrackedEntityInstanceUids(listOf(params.trackedEntityInstance))
+        }
+
+        getOrganisationUnitUids(params.organisationUnits)?.let {
+            repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(it)
+        }
+
+        return if (params.eventDates.isNullOrEmpty()) {
+            repoBuilder.blockingGet()
+        } else {
+            params.eventDates.flatMap { filter ->
+                var innerBuilder = repoBuilder
+                dateFilterPeriodHelper.getStartDate(filter)?.let {
+                    innerBuilder = innerBuilder.byEventDate().afterOrEqual(it)
+                }
+                dateFilterPeriodHelper.getEndDate(filter)?.let {
+                    innerBuilder = innerBuilder.byEventDate().beforeOrEqual(it)
+                }
+                innerBuilder.blockingGet()
+            }
+        }
+    }
+
     private fun getMetadataMap(
         dataElements: List<LineListItem>,
         programIndicators: List<LineListItem>,
@@ -154,5 +174,15 @@ internal class EventLineListServiceImpl @Inject constructor(
             .map { it.uid()!! to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
+    }
+
+    private fun getOrganisationUnitUids(organisationUnitFilters: List<OrganisationUnitFilter>?): List<String>? {
+        return organisationUnitFilters?.flatMap { filter ->
+            val relativeOrgunitUids = filter.relativeOrganisationUnit?.let {
+                organisationUnitHelper.getRelativeOrganisationUnitUids(it)
+            } ?: listOf()
+
+            relativeOrgunitUids + filter.organisationUnitUid
+        }?.filterNotNull()
     }
 }

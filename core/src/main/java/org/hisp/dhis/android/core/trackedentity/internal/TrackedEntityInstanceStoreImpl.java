@@ -70,7 +70,7 @@ public final class TrackedEntityInstanceStoreImpl
 
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
-        List<String> uploadableStatesString = EnumHelper.asStringList(State.uploadableStates());
+        List<String> uploadableStatesString = EnumHelper.asStringList(State.uploadableStatesIncludingError());
         String whereToSyncClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, uploadableStatesString)
                 .build();

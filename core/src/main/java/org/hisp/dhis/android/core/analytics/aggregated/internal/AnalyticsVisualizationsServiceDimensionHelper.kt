@@ -29,17 +29,22 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 
 internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
-    private val categoryStore: IdentifiableObjectStore<Category>
+    private val categoryStore: IdentifiableObjectStore<Category>,
+    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>
 ) {
     private val dataDimension = "dx"
     private val orgUnitDimension = "ou"
@@ -90,7 +95,12 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
         } ?: emptyList()
 
         val levels = visualization.organisationUnitLevels()?.map {
-            DimensionItem.OrganisationUnitItem.Level(it)
+            val level = organisationUnitLevelStore.selectOneWhere(
+                WhereClauseBuilder()
+                    .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, it)
+                    .build()
+            ) ?: throw AnalyticsException.InvalidOrganisationUnitLevel(it.toString())
+            DimensionItem.OrganisationUnitItem.Level(level.uid())
         } ?: emptyList()
 
         val relative = listOfNotNull(

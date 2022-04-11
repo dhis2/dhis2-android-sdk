@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 @Reusable
 class MockAnalyticsVisualizationsRepository @Inject constructor() : AnalyticsVisualizationsRepository {
@@ -52,9 +54,10 @@ class MockAnalyticsVisualizationsRepository @Inject constructor() : AnalyticsVis
         return MockAnalyticsVisualizationsRepository()
     }
 
-    override fun evaluate(): Single<GridAnalyticsResponse> {
+    override fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): GridAnalyticsResponse = GridAnalyticsResponseSamples.sample1
+    override fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> =
+        Result.Success(GridAnalyticsResponseSamples.sample1)
 }

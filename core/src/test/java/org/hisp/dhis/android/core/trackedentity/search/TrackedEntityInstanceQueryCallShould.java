@@ -27,6 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -56,19 +68,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import retrofit2.Call;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-@SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
@@ -121,7 +120,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 .paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenReturn(searchGrid);
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
         when(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).thenReturn(true);
 
@@ -150,15 +149,23 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         verifyNoMoreInteractions(service);
     }
 
-    @Test(expected = D2Error.class)
+    @Test()
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
-        call.call();
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenThrow(d2Error);
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.MAX_TEI_COUNT_REACHED);
+
+        try {
+            call.call();
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
+            assertThat(d2e.errorCode() == D2ErrorCode.MAX_TEI_COUNT_REACHED).isTrue();
+        }
     }
 
     @Test()
     public void throw_too_many_org_units_exception_when_request_was_too_long() throws Exception {
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenThrow(d2Error);
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.TOO_MANY_ORG_UNITS);
         when(d2Error.httpErrorCode()).thenReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG);
 
         try {

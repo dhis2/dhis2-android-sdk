@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
@@ -51,22 +53,34 @@ import dagger.Reusable;
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
+    private final IdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
+    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
+                                          IdentifiableObjectStore<RelationshipType> relationshipTypeStore) {
         this.versionManager = versionManager;
+        this.relationshipTypeStore = relationshipTypeStore;
     }
 
-    public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
+    public List<Relationship> getOwnedRelationships(Collection<Relationship> relationships, String elementUid) {
         List<Relationship> ownedRelationships = new ArrayList<>();
         for (Relationship relationship : relationships) {
-            RelationshipItem fromTei = relationship.from();
-            if (versionManager.is2_29() || fromTei != null && fromTei.trackedEntityInstance() != null &&
-                    fromTei.trackedEntityInstance().trackedEntityInstance().equals(teiUid)) {
+            RelationshipItem fromItem = relationship.from();
+            if (versionManager.is2_29() || isBidirectional(relationship) ||
+                    fromItem != null && fromItem.elementUid() != null && fromItem.elementUid().equals(elementUid)) {
                 ownedRelationships.add(relationship);
             }
         }
         return ownedRelationships;
+    }
+
+    private boolean isBidirectional(Relationship relationship) {
+        if (relationship.relationshipType() == null) {
+            return false;
+        } else {
+            RelationshipType relationshipType = relationshipTypeStore.selectByUid(relationship.relationshipType());
+            return relationshipType != null && relationshipType.bidirectional();
+        }
     }
 
     public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {

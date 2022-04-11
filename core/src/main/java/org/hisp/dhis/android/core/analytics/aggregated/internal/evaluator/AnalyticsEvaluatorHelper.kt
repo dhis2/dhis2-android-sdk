@@ -28,63 +28,130 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
-import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 
+/**
+ * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
+ * example a Period dimension might include January, February and March. It is important to join the inner clauses
+ * using an OR operator in order to include all the element that match any element in the dimension. For example, this
+ * query should result in something like:
+ * - ... AND (period = January OR period = February OR period = March)...
+ *
+ * This logic applies for all the dimensions.
+ */
 internal object AnalyticsEvaluatorHelper {
 
-    const val Sum = "SUM"
-    const val Avg = "AVG"
-    const val Count = "COUNT"
-    const val Max = "MAX"
-    const val Min = "MIN"
+    fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
+        return (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .groupBy { it.dimension }
+    }
 
-    fun getInPeriodClause(period: Period): String {
-        return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
-            "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${getPeriodWhereClause(period)}"
+    fun appendOrgunitWhereClause(
+        columnName: String,
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
+    ): WhereClauseBuilder {
+        val innerClause = WhereClauseBuilder().apply {
+            items.map { i ->
+                when (val item = i as DimensionItem.OrganisationUnitItem) {
+                    is DimensionItem.OrganisationUnitItem.Absolute -> {
+                        appendOrInSubQuery(columnName, getOrgunitClause(item.uid))
+                    }
+                    is DimensionItem.OrganisationUnitItem.Level -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitLevelItem
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
+                    }
+                    is DimensionItem.OrganisationUnitItem.Relative -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitRelativeItem
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
+                    }
+                    is DimensionItem.OrganisationUnitItem.Group -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitGroupItem
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
+                    }
+                }
+            }
+        }.build()
+
+        return builder.appendComplexQuery(innerClause)
+    }
+
+    fun getReportingPeriods(
+        items: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): List<Period> {
+        return mutableListOf<Period>().apply {
+            items.forEach { i ->
+                when (val item = i as DimensionItem.PeriodItem) {
+                    is DimensionItem.PeriodItem.Absolute -> {
+                        val periodItem = metadata[item.periodId] as MetadataItem.PeriodItem
+                        add(periodItem.item)
+                    }
+                    is DimensionItem.PeriodItem.Relative -> {
+                        val relativeItem = metadata[item.id] as MetadataItem.RelativePeriodItem
+                        addAll(relativeItem.periods)
+                    }
+                }
+            }
+        }
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
             "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${periods.joinToString(" OR ") { "(${getPeriodWhereClause(it)})" }}"
+            "WHERE ${periods.joinToString(" OR ") {
+                "(${getPeriodWhereClause(PeriodTableInfo.Columns.START_DATE, PeriodTableInfo.Columns.END_DATE, it)})"
+            }}"
     }
 
-    private fun getPeriodWhereClause(period: Period): String {
-        return "${PeriodTableInfo.Columns.START_DATE} >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
+    fun getPeriodWhereClause(columnStart: String, columnEnd: String, period: Period): String {
+        return "$columnStart >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
             "AND " +
-            "${PeriodTableInfo.Columns.END_DATE} <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
+            "$columnEnd <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
     }
 
-    fun getOrgunitClause(orgunitUid: String): String {
+    private fun getOrgunitClause(orgunitUid: String): String {
         return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
             "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
             "WHERE " +
             "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunitUid%'"
     }
 
-    fun getLevelOrgunitClause(level: Int): String {
-        return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
-            "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
-            "WHERE " +
-            "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
-    }
-
-    fun getOrgunitListClause(orgunitUids: List<String>): String {
+    private fun getOrgunitListClause(orgunitUids: List<String>): String {
         return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
             "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
             "WHERE " +
             orgunitUids.joinToString(" OR ") { "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$it%'" }
     }
 
-    fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
+    fun appendCategoryWhereClause(
+        columnName: String,
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder
+    ): WhereClauseBuilder {
+        val innerClause = WhereClauseBuilder().apply {
+            items.map { it as DimensionItem.CategoryItem }.map { item ->
+                appendOrInSubQuery(columnName, getCategoryOptionClause(item.uid, item.categoryOption))
+            }
+        }.build()
+
+        return builder.appendComplexQuery(innerClause)
+    }
+
+    private fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
         return "SELECT ${cocInfo.Columns.UID} " +
             "FROM ${cocInfo.TABLE_INFO.name()} " +
             "WHERE " +
@@ -101,16 +168,5 @@ internal object AnalyticsEvaluatorHelper {
             "FROM ${cToCcInfo.TABLE_INFO.name()} " +
             "WHERE ${cToCcInfo.Columns.CATEGORY} = '$categoryUid'" +
             ") "
-    }
-
-    fun getDataElementAggregator(aggregationType: String?): String {
-        return when (aggregationType?.let { AggregationType.valueOf(it) } ?: AggregationType.SUM) {
-            AggregationType.SUM -> Sum
-            AggregationType.AVERAGE -> Avg
-            AggregationType.COUNT -> Count
-            AggregationType.MAX -> Max
-            AggregationType.MIN -> Min
-            else -> Sum
-        }
     }
 }

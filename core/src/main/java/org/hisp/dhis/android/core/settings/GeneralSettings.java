@@ -104,6 +104,9 @@ public abstract class GeneralSettings implements CoreObject {
     @Nullable
     public abstract String matomoURL();
 
+    @Nullable
+    public abstract Boolean allowScreenCapture();
+
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
@@ -140,6 +143,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder matomoID(Integer matomoID);
 
         public abstract Builder matomoURL(String matomoURL);
+
+        public abstract Builder allowScreenCapture(Boolean allowScreenCapture);
 
         public abstract GeneralSettings build();
     }

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -107,7 +108,7 @@ internal class LogInCall @Inject internal constructor(
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
             try {
                 if (credentials != null) {
-                    accountManager.deleteAccount(credentials)
+                    accountManager.deleteAccountAndEmit(credentials, AccountDeletionReason.ACCOUNT_DISABLED)
                 }
                 d2Error
             } catch (e: Exception) {

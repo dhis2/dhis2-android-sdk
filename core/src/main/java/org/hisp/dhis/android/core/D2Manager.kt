@@ -62,6 +62,7 @@ object D2Manager {
      * @throws IllegalStateException if the D2 object wasn't instantiated
      */
     @Throws(IllegalStateException::class)
+    @JvmStatic
     fun getD2(): D2 {
         return d2 ?: throw IllegalStateException("D2 is not instantiated yet")
     }
@@ -70,6 +71,7 @@ object D2Manager {
      * Returns if D2 has already been instantiated using the [D2Manager.instantiateD2] method.
      * @return if D2 has already been instantiated
      */
+    @JvmStatic
     fun isD2Instantiated(): Boolean {
         return d2 != null
     }
@@ -80,6 +82,7 @@ object D2Manager {
      * @param d2Config the configuration
      * @return the D2 instance wrapped in a RxJava Single
      */
+    @JvmStatic
     fun instantiateD2(d2Config: D2Configuration): Single<D2> {
         return Single.fromCallable {
             val startTime = System.currentTimeMillis()
@@ -159,6 +162,7 @@ object D2Manager {
     }
 
     @VisibleForTesting
+    @JvmStatic
     fun setTestingDatabase(serverUrl: String, databaseName: String, username: String) {
         testingServerUrl = serverUrl
         testingDatabaseName = databaseName
@@ -166,11 +170,13 @@ object D2Manager {
     }
 
     @VisibleForTesting
+    @JvmStatic
     fun removeCredentials() {
         d2DIComponent.credentialsSecureStore().remove()
     }
 
     @VisibleForTesting
+    @JvmStatic
     fun setCredentials(username: String, password: String) {
         if (testingServerUrl.isNullOrEmpty()) {
             throw NoSuchFieldException("No testing Server Url")

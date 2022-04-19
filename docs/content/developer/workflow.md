@@ -32,6 +32,16 @@ d2.userModule().accountManager().getAccounts();
 // Get/set the maximum number of accounts
 d2.userModule().accountManager().getMaxAccounts();
 d2.userModule().accountManager().setMaxAccounts();
+
+// Delete account for current user
+d2.userModule().accountManager().deleteCurrentAccount();
+```
+
+The accountManager exposes an observable that emits an event when the current account is deleted. It includes the reason why the account was deleted.
+
+```java
+// Emits an event when the current account is deleted
+d2.userModule().accountManager().accountDeletionObservable();
 ```
 
 After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:

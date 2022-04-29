@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,40 +29,35 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
-import java.util.Collections;
 import java.util.Map;
 
 final class RelationshipObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository> {
 
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
 
     RelationshipObjectRepository(final RelationshipStore store,
                                  final String uid,
                                  final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                  final RepositoryScope scope,
-                                 final DataStatePropagator dataStatePropagator) {
+                                 final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope,
-                s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
-        this.dataStatePropagator = dataStatePropagator;
+                s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, trackerDataManager));
+        this.trackerDataManager = trackerDataManager;
     }
 
     @Override
     protected void propagateState(Relationship relationship) {
-        if (relationship.from() == null || relationship.to() == null) {
-            Relationship withChildren = ChildrenAppenderExecutor.appendInObject(relationship, childrenAppenders,
-                    new ChildrenSelection(Collections.singleton(
-                            RelationshipFields.ITEMS)));
-            dataStatePropagator.propagateRelationshipUpdate(withChildren);
-        } else {
-            dataStatePropagator.propagateRelationshipUpdate(relationship);
-        }
+        trackerDataManager.propagateRelationshipUpdate(relationship);
+    }
+
+    @Override
+    protected void deleteObject(Relationship relationship) {
+        trackerDataManager.deleteRelationship(relationship);
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,8 @@ public enum FeatureType {
     POINT("POINT", "Point"),
     POLYGON("POLYGON", "Polygon"),
     MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
-    NONE("NONE", "None");
+    NONE("NONE", "None"),
+    SYMBOL("SYMBOL", "Symbol");
 
     private final String featureType;
     private final String geometryType;

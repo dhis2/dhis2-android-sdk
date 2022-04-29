@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,14 @@ internal object VisualizationSamples {
         .percentStackedValues(false)
         .noSpaceBetweenColumns(false)
         .skipRounding(false)
+        .legend(
+            VisualizationLegend.builder()
+                .set(ObjectWithUid.create("Yf6UHoPkd57"))
+                .showKey(false)
+                .strategy(LegendStrategy.FIXED)
+                .style(LegendStyle.FILL)
+                .build()
+        )
         .displayDensity(DisplayDensity.NORMAL)
         .digitGroupSeparator(DigitGroupSeparator.COMMA)
         .relativePeriods(hashMapOf(RelativePeriod.THIS_YEAR to false, RelativePeriod.LAST_12_MONTHS to true))

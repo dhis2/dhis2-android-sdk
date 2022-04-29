@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -248,7 +248,6 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected companion object {
-        internal lateinit var payloadGenerator29: TrackedEntityInstancePostPayloadGenerator29
         internal lateinit var oldTrackerPayloadGenerator: OldTrackerImporterPayloadGenerator
         internal lateinit var teiStore: TrackedEntityInstanceStore
         internal lateinit var teiDataValueStore: TrackedEntityDataValueStore
@@ -262,7 +261,6 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         @Throws(Exception::class)
         fun setUp() {
             setUpClass()
-            payloadGenerator29 = objects.d2DIComponent.trackedEntityInstancePostPayloadGenerator()
             oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator()
             teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
             teiDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)

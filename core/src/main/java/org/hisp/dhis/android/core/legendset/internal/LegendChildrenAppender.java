@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
     }
 
     @Override
-    protected LegendSet appendChildren(LegendSet legendSet) {
+    public LegendSet appendChildren(LegendSet legendSet) {
         LegendSet.Builder builder = legendSet.toBuilder();
         builder.legends(childStore.getChildren(legendSet));
         return builder.build();

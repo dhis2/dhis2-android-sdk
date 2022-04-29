@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
@@ -67,7 +67,7 @@ public final class TrackedEntityInstanceCollectionRepository
 
     private final TrackedEntityInstancePostParentCall postCall;
     private final TrackedEntityInstanceStore store;
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
     private final JobQueryCall jobQueryCall;
 
     @Inject
@@ -76,21 +76,21 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
-            final DataStatePropagator dataStatePropagator,
+            final TrackerDataManager trackerDataManager,
             final TrackedEntityInstancePostParentCall postCall,
             final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
                 new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer,
-                        dataStatePropagator, postCall, jobQueryCall)));
+                        trackerDataManager, postCall, jobQueryCall)));
         this.postCall = postCall;
         this.store = store;
-        this.dataStatePropagator = dataStatePropagator;
+        this.trackerDataManager = trackerDataManager;
         this.jobQueryCall = jobQueryCall;
     }
 
     @Override
     protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
-        dataStatePropagator.propagateTrackedEntityInstanceUpdate(trackedEntityInstance);
+        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance);
     }
 
     @Override
@@ -112,7 +112,7 @@ public final class TrackedEntityInstanceCollectionRepository
     public TrackedEntityInstanceObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope,
-                dataStatePropagator);
+                trackerDataManager);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {

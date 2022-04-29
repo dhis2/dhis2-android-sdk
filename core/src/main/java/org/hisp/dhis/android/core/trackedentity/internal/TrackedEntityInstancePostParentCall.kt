@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostC
 
 @Reusable
 internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
+    private val oldTrackerImporterCall: OldTrackerImporterPostCall,
     private val trackerImporterCall: TrackerImporterPostCall,
     private val trackerParentCallHelper: TrackerPostParentCallHelper
 ) {
@@ -49,7 +49,7 @@ internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
             if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
             } else {
-                oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
+                oldTrackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
             }
         }
     }

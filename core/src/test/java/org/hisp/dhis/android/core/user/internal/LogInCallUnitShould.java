@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,17 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static okhttp3.Credentials.basic;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -36,7 +47,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
@@ -46,7 +57,6 @@ import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,17 +70,6 @@ import org.mockito.stubbing.OngoingStubbing;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
-import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
@@ -89,7 +88,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Mock
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
     private UserIdInMemoryStore userIdStore;
@@ -131,9 +130,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private WipeModule wipeModule;
-
-    @Mock
     private MultiUserDatabaseManager multiUserDatabaseManager;
 
     @Mock
@@ -141,6 +137,9 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     @Mock
     private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
+
+    @Mock
+    private AccountManagerImpl accountManager;
 
     // call we are testing
     private Single<User> logInSingle;
@@ -150,7 +149,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     private static final String PASSWORD = "test_password";
 
     private static final String baseEndpoint = "https://dhis-instance.org";
-    private static final String baseEndpointWithAPI = baseEndpoint + "/api/";
     private static final String serverUrl = baseEndpoint;
 
     @Before
@@ -193,9 +191,9 @@ public class LogInCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new LogInCall(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, apiCallErrorCatcher,
+                systemInfoRepository, userStore, apiCallErrorCatcher,
                 new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-                new LogInExceptions(credentialsSecureStore)).logIn(username, password, serverUrl);
+                new LogInExceptions(credentialsSecureStore), accountManager).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -271,39 +269,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
-        logInSingle.blockingGet();
-
-        verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void not_wipe_db_when_previously_user() throws Exception {
-        when(userStore.selectFirst()).thenReturn(user);
-
-        logInSingle.blockingGet();
-
-        verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
-    public void wipe_db_when_account_disabled() throws Exception {
-        whenAPICall().thenThrow(d2Error);
-        when(d2Error.errorCode()).thenReturn(D2ErrorCode.USER_ACCOUNT_DISABLED);
-        when(d2Error.isOffline()).thenReturn(false);
-
-        TestObserver<User> testObserver = logInSingle.test();
-        testObserver.awaitTerminalEvent();
-
-        assertThat(testObserver.errorCount()).isEqualTo(1);
-        testObserver.dispose();
-
-        verify(wipeModule).wipeEverything();
-    }
-
-    @Test
     public void throw_d2_error_if_user_already_signed_in() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
         when(userIdStore.get()).thenReturn("userId");
@@ -324,7 +289,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void succeed_for_login_offline_if_database_exists_and_authenticated_user_too() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logInSingle.test().awaitTerminalEvent();
@@ -336,7 +301,7 @@ public class LogInCallUnitShould extends BaseCallShould {
         whenAPICall().thenThrow(d2Error);
         
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
-        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true);
 
         Single<User> loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/");
 
@@ -358,7 +323,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void throw_d2_error_if_no_previous_authenticated_user_offline() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         TestObserver<User> testObserver = logInSingle.test();
@@ -370,7 +335,7 @@ public class LogInCallUnitShould extends BaseCallShould {
         whenAPICall().thenThrow(d2Error);
 
         when(authenticatedUser.hash()).thenReturn("different_hash");
-        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         TestObserver<User> testObserver = logInSingle.test();
@@ -389,7 +354,7 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        verify(credentialsSecureStore).set(new Credentials(USERNAME, PASSWORD, null));
+        verify(credentialsSecureStore).set(new Credentials(USERNAME, serverUrl, PASSWORD, null));
         verify(userIdStore).set("test_uid");
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,9 +52,19 @@ internal object NewTrackerImporterRelationshipTransformer : Transformer<Relation
                 .relationshipItemType(item.relationshipItemType())
 
             when {
-                item.hasTrackedEntityInstance() -> builder.trackedEntity(item.elementUid()).build()
-                item.hasEnrollment() -> builder.enrollment(item.elementUid()).build()
-                item.hasEvent() -> builder.event(item.elementUid()).build()
+                item.hasTrackedEntityInstance() ->
+                    builder.trackedEntity(
+                        NewTrackerImporterRelationshipItemTrackedEntity.builder().trackedEntity(item.elementUid())
+                            .build()
+                    ).build()
+                item.hasEnrollment() ->
+                    builder.enrollment(
+                        NewTrackerImporterRelationshipItemEnrollment.builder().enrollment(item.elementUid()).build()
+                    ).build()
+                item.hasEvent() ->
+                    builder.event(
+                        NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build()
+                    ).build()
                 else -> null
             }
         }

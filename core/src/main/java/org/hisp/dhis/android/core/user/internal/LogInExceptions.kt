@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,15 +29,14 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 @Reusable
 internal class LogInExceptions @Inject internal constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+    private val credentialsSecureStore: CredentialsSecureStore
 ) {
 
     @Throws(D2Error::class)

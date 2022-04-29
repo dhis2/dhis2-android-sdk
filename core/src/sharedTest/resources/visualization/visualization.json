@@ -314,10 +314,14 @@
   "numberType": "VALUE",
   "aggregationType": "DEFAULT",
   "legend": {
-    "hidden": false
+    "hidden": false,
+    "showKey": false,
+    "style": "FILL",
+    "strategy": "FIXED",
+    "set": {
+      "id": "Yf6UHoPkd56"
+    }
   },
-  "legendDisplayStrategy": "FIXED",
-  "legendDisplayStyle": "FILL",
   "fontSize": "NORMAL",
   "favorite": false,
   "sortOrder": 0,

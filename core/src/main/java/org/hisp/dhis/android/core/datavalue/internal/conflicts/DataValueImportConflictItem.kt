@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,8 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal interface DataValueImportConflictItem {
-    val regex: Regex
 
     fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
-
-    fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
-    }
 
     fun getConflictBuilder(
         dataValue: DataValue,
@@ -58,6 +53,7 @@ internal interface DataValueImportConflictItem {
             .period(dataValue.period())
             .status(ImportStatus.WARNING)
             .displayDescription(displayDescription)
+            .errorCode(conflict.errorCode())
             .created(Date())
     }
 }

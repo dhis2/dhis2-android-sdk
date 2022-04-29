@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,12 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
@@ -50,9 +48,8 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore,
-    fileResourceStore: IdentifiableDataObjectStore<FileResource>
-) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
@@ -78,14 +75,19 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
-        val enrollment = enrollmentStore.selectByUid(errorReport.uid)
-        conflictStore.insert(
-            conflictHelper.getConflictBuilder(errorReport)
-                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
-                .enrollment(errorReport.uid)
-                .trackedEntityInstance(enrollment!!.trackedEntityInstance())
-                .build()
-        )
+        enrollmentStore.selectByUid(errorReport.uid)?.let { enrollment ->
+            if (errorReport.errorCode == ImporterError.E1081.name && enrollment.deleted() == true) {
+                enrollmentStore.delete(enrollment.uid())
+            } else {
+                conflictStore.insert(
+                    conflictHelper.getConflictBuilder(errorReport)
+                        .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
+                        .enrollment(errorReport.uid)
+                        .trackedEntityInstance(enrollment.trackedEntityInstance())
+                        .build()
+                )
+            }
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,10 @@ internal object FileResourceUtil {
     fun renameFile(file: File, newFileName: String, context: Context): File {
         val contentType = URLConnection.guessContentTypeFromName(file.name)
         val generatedName = generateFileName(MediaType.get(contentType), newFileName)
-        val newFile = File(context.filesDir, "sdk_resources/$generatedName")
+        val newFile = File(
+            FileResourceDirectoryHelper.getFileResourceDirectory(context),
+            generatedName
+        )
 
         if (!file.renameTo(newFile)) {
             Log.d(FileResourceUtil::class.java.canonicalName, "Fail renaming " + file.name + " to " + generatedName)
@@ -86,6 +89,7 @@ internal object FileResourceUtil {
     fun writeInputStream(inputStream: InputStream, file: File, fileSize: Long): File {
         var outputStream: OutputStream? = null
         try {
+            @Suppress("MagicNumber")
             val fileReader = ByteArray(1024)
             var fileSizeDownloaded: Long = 0
             outputStream = FileOutputStream(file)
@@ -104,20 +108,20 @@ internal object FileResourceUtil {
             }
             outputStream.flush()
         } catch (e: IOException) {
-            Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+            logMessage(e)
         } finally {
             try {
                 inputStream.close()
                 outputStream?.close()
             } catch (e: IOException) {
-                Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+                logMessage(e)
             }
         }
         if (outputStream != null) {
             try {
                 outputStream.close()
             } catch (e: IOException) {
-                Log.v(FileResourceUtil::class.java.canonicalName, e.message)
+                logMessage(e)
             }
         }
         return file
@@ -125,5 +129,9 @@ internal object FileResourceUtil {
 
     private fun generateFileName(mediaType: MediaType, fileName: String): String {
         return String.format("%s.%s", fileName, mediaType.subtype())
+    }
+
+    private fun logMessage(e: Exception) {
+        e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
     }
 }

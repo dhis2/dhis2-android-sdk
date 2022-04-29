@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,9 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemEnrollmentAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemEventAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemTrackedEntityAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -57,15 +60,18 @@ public abstract class NewTrackerImporterRelationshipItem implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    public abstract String trackedEntity();
+    @ColumnAdapter(IgnoreNewRelationshipItemTrackedEntityAdapter.class)
+    public abstract NewTrackerImporterRelationshipItemTrackedEntity trackedEntity();
 
     @Nullable
     @JsonProperty()
-    public abstract String enrollment();
+    @ColumnAdapter(IgnoreNewRelationshipItemEnrollmentAdapter.class)
+    public abstract NewTrackerImporterRelationshipItemEnrollment enrollment();
 
     @Nullable
     @JsonProperty()
-    public abstract String event();
+    @ColumnAdapter(IgnoreNewRelationshipItemEventAdapter.class)
+    public abstract NewTrackerImporterRelationshipItemEvent event();
 
     public static Builder builder() {
         return new $$AutoValue_NewTrackerImporterRelationshipItem.Builder();
@@ -87,11 +93,11 @@ public abstract class NewTrackerImporterRelationshipItem implements CoreObject {
 
         public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 
-        public abstract Builder trackedEntity(String relationship);
+        public abstract Builder trackedEntity(NewTrackerImporterRelationshipItemTrackedEntity trackedEntity);
 
-        public abstract Builder enrollment(String relationship);
+        public abstract Builder enrollment(NewTrackerImporterRelationshipItemEnrollment enrollment);
 
-        public abstract Builder event(String relationship);
+        public abstract Builder event(NewTrackerImporterRelationshipItemEvent event);
 
         public abstract NewTrackerImporterRelationshipItem build();
     }

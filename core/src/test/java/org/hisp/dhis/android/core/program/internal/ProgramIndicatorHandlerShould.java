@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
@@ -63,19 +63,19 @@ public class ProgramIndicatorHandlerShould {
     private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
 
     @Mock
-    private LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
     private LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
 
     @Mock
-    private Handler<LegendSet> legendSetHandler;
+    private Handler<ObjectWithUid> legendSetHandler;
 
     @Mock
     private ProgramIndicator programIndicator;
 
     @Mock
-    private LegendSet legendSet;
+    private ObjectWithUid legendSet;
 
     @Mock
     private AnalyticsPeriodBoundary analyticsPeriodBoundary;
@@ -93,15 +93,17 @@ public class ProgramIndicatorHandlerShould {
     private List<ProgramIndicator> programIndicators;
 
     // list of program indicators
-    private List<LegendSet> legendSets;
+    private List<ObjectWithUid> legendSets;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore, legendSetHandler, programIndicatorLegendSetLinkHandler,
-                analyticsPeriodBoundaryHandler);
+                programIndicatorStore,
+                programIndicatorLegendSetLinkHandler,
+                analyticsPeriodBoundaryHandler
+        );
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
@@ -153,7 +155,7 @@ public class ProgramIndicatorHandlerShould {
         verify(programIndicatorStore, never()).delete(anyString());
     }
 
-    @Test
+
     public void call_program_indicator_legend_set_handler() {
         programIndicatorHandler.handleMany(programIndicators);
         verify(legendSetHandler).handleMany(eq(legendSets));

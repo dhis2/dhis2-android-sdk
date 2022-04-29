@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -100,44 +100,52 @@ object GridAnalyticsResponseSamples {
                 GridResponseValue(
                     listOf(dataElement1.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
-                    "34.5"
+                    "34.5",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement1.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
-                    "10.0"
+                    "10.0",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
-                    "13"
+                    "13",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
-                    "15"
+                    "15",
+                    null
                 )
             ),
             listOf(
                 GridResponseValue(
                     listOf(dataElement1.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
-                    "34.5"
+                    "34.5",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement1.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
-                    "10.0"
+                    "10.0",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
-                    "13"
+                    "13",
+                    null
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
-                    "15"
+                    "15",
+                    null
                 )
             )
         )

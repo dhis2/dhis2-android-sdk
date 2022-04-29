@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,14 +29,12 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
@@ -52,13 +50,10 @@ import dagger.Reusable;
 @Reusable
 public class RelationshipDHISVersionManager {
 
-    private final DHISVersionManager versionManager;
     private final IdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
-                                          IdentifiableObjectStore<RelationshipType> relationshipTypeStore) {
-        this.versionManager = versionManager;
+    public RelationshipDHISVersionManager(IdentifiableObjectStore<RelationshipType> relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }
 
@@ -66,7 +61,7 @@ public class RelationshipDHISVersionManager {
         List<Relationship> ownedRelationships = new ArrayList<>();
         for (Relationship relationship : relationships) {
             RelationshipItem fromItem = relationship.from();
-            if (versionManager.is2_29() || isBidirectional(relationship) ||
+            if (isBidirectional(relationship) ||
                     fromItem != null && fromItem.elementUid() != null && fromItem.elementUid().equals(elementUid)) {
                 ownedRelationships.add(relationship);
             }
@@ -83,91 +78,8 @@ public class RelationshipDHISVersionManager {
         }
     }
 
-    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
-        List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
-        for (Relationship relationship : storedRelationships) {
-            transformedRelationships.add(to229Compatible(relationship, teiUid));
-        }
-        return transformedRelationships;
-    }
-
-    Relationship229Compatible to229Compatible(Relationship relationship, String teiUid) {
-        Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
-                .id(relationship.id())
-                .name(relationship.name())
-                .created(relationship.created())
-                .lastUpdated(relationship.lastUpdated())
-                .syncState(relationship.syncState())
-                .deleted(relationship.deleted());
-
-        if (versionManager.is2_29()) {
-            return builder
-                    .uid(relationship.relationshipType())
-                    .trackedEntityInstanceA(relationship.from().trackedEntityInstance().trackedEntityInstance())
-                    .trackedEntityInstanceB(relationship.to().trackedEntityInstance().trackedEntityInstance())
-                    .relative(getRelativeTEI230(relationship, teiUid))
-                    .build();
-        } else {
-            return builder
-                    .uid(relationship.uid())
-                    .relationshipType(relationship.relationshipType())
-                    .from(relationship.from())
-                    .to(relationship.to())
-                    .build();
-        }
-    }
-
-    public Relationship from229Compatible(Relationship229Compatible relationship229Compatible) {
-        Relationship.Builder builder = Relationship.builder()
-                .name(relationship229Compatible.name())
-                .created(relationship229Compatible.created())
-                .lastUpdated(relationship229Compatible.lastUpdated())
-                .syncState(relationship229Compatible.syncState())
-                .deleted(relationship229Compatible.deleted());
-
-        if (versionManager.is2_29()) {
-            return builder
-                    .uid(new UidGeneratorImpl().generate())
-                    .relationshipType(relationship229Compatible.uid())
-                    .from(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceA()))
-                    .to(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceB()))
-                    .build();
-        } else {
-            return builder
-                    .uid(relationship229Compatible.uid())
-                    .relationshipType(relationship229Compatible.relationshipType())
-                    .from(relationship229Compatible.from())
-                    .to(relationship229Compatible.to())
-                    .build();
-        }
-    }
-
-    public Collection<Relationship> from229Compatible(Collection<Relationship229Compatible> list) {
-        List<Relationship> result = new ArrayList<>(list.size());
-        for (Relationship229Compatible r : list) {
-            result.add(from229Compatible(r));
-        }
-        return result;
-    }
-
-    public TrackedEntityInstance getRelativeTei(Relationship229Compatible relationship229Compatible, String teiUid) {
-        if (versionManager.is2_29()) {
-            return relationship229Compatible.relative();
-        } else {
-            return getRelativeTEI230(relationship229Compatible, teiUid);
-        }
-    }
-
-    boolean isRelationshipSupported(BaseRelationship relationship) {
-        return isItemSupported(relationship.from()) && isItemSupported(relationship.to());
-    }
-
-    private boolean isItemSupported(RelationshipItem item) {
-        if (versionManager.is2_29()) {
-            return item.hasTrackedEntityInstance();
-        } else {
-            return true;
-        }
+    public TrackedEntityInstance getRelativeTei(Relationship relationship, String teiUid) {
+        return getRelativeTEI230(relationship, teiUid);
     }
 
     public TrackedEntityInstance getRelativeTEI230(BaseRelationship baseRelationship, String teiUid) {

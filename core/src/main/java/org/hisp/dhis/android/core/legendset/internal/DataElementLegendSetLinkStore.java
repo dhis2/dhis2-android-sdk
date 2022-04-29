@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ public final class DataElementLegendSetLinkStore {
     private static final StatementBinder<DataElementLegendSetLink> BINDER = (o, w) -> {
         w.bind(1, o.dataElement());
         w.bind(2, o.legendSet());
+        w.bind(3, o.sortOrder());
     };
 
     private DataElementLegendSetLinkStore() {}

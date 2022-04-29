@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,7 @@ public final class GeneralSettingTableInfo {
         public static final String MATOMO_ID = "matomoID";
         public static final String MATOMO_URL = "matomoURL";
         public static final String ALLOW_SCREEN_CAPTURE = "allowScreenCapture";
+        public static final String MESSAGE_OF_THE_DAY = "messageOfTheDay";
 
         @Override
         public String[] all() {
@@ -70,7 +71,8 @@ public final class GeneralSettingTableInfo {
                     SMS_RESULT_SENDER,
                     MATOMO_ID,
                     MATOMO_URL,
-                    ALLOW_SCREEN_CAPTURE
+                    ALLOW_SCREEN_CAPTURE,
+                    MESSAGE_OF_THE_DAY
             );
         }
     }

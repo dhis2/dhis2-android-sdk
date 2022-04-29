@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -50,12 +49,12 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O?,
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
-        overwrite: Boolean
+        params: IdentifiableDataHandlerParams
     ) {
         if (o == null) {
             return
         }
-        val oTransformed = handleInternal(o, transformer, overwrite)
+        val oTransformed = handleInternal(o, transformer, params)
         oTransformedCollection.add(oTransformed)
     }
 
@@ -64,63 +63,58 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O?,
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     ) {
         if (o == null) {
             return
         }
-        val oTransformed = handleInternal(o, transformer, overwrite, relatives)
+        val oTransformed = handleInternal(o, transformer, params, relatives)
         oTransformedCollection.add(oTransformed)
     }
 
-    private fun handleInternal(o: O, transformer: (O) -> O, overwrite: Boolean): O {
-        val o2 = beforeObjectHandled(o, overwrite)
+    private fun handleInternal(o: O, transformer: (O) -> O, params: IdentifiableDataHandlerParams): O {
+        val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
-        afterObjectHandled(o3, action, overwrite, null)
+        afterObjectHandled(o3, action, params, null)
         return o3
     }
 
     private fun handleInternal(
         o: O,
         transformer: (O) -> O,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     ): O {
-        val o2 = beforeObjectHandled(o, overwrite)
+        val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
-        afterObjectHandled(o3, action, overwrite, relatives)
+        afterObjectHandled(o3, action, params, relatives)
         return o3
     }
 
     @JvmSuppressWildcards
     override fun handleMany(
         oCollection: Collection<O>?,
-        asRelationship: Boolean,
-        isFullUpdate: Boolean,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     ) {
         if (oCollection == null) {
             return
         }
         val transformer =
-            if (asRelationship) {
+            if (params.asRelationship) {
                 relationshipTransformer()
             } else {
                 { o: O -> addSyncedState(o) }
             }
-        val preHandledCollection = beforeCollectionHandled(oCollection, overwrite, asRelationship)
+        val preHandledCollection = beforeCollectionHandled(oCollection, params)
         val transformedCollection: MutableList<O> = ArrayList(preHandledCollection.size)
         for (o in preHandledCollection) {
-            handle(o, transformer, transformedCollection, overwrite, relatives)
-            if (isFullUpdate) {
-                deleteOrphans(o)
-            }
+            handle(o, transformer, transformedCollection, params, relatives)
         }
-        afterCollectionHandled(transformedCollection, overwrite)
+        afterCollectionHandled(transformedCollection, params)
     }
 
     private fun relationshipTransformer(): (O) -> O {
@@ -159,7 +153,6 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     protected abstract fun addRelationshipState(o: O): O
     protected abstract fun addSyncedState(o: O): O
-    protected abstract fun deleteOrphans(o: O)
     protected fun deleteOrPersist(o: O): HandleAction {
         val modelUid = o.uid()
         return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
@@ -174,27 +167,26 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         return false
     }
 
-    protected open fun beforeObjectHandled(o: O, overwrite: Boolean?): O {
+    protected open fun beforeObjectHandled(o: O, params: IdentifiableDataHandlerParams): O {
         return o
     }
 
     protected abstract fun afterObjectHandled(
         o: O,
         action: HandleAction?,
-        overwrite: Boolean?,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     )
 
     protected fun beforeCollectionHandled(
         oCollection: Collection<O>,
-        overwrite: Boolean,
-        asRelationship: Boolean
+        params: IdentifiableDataHandlerParams
     ): Collection<O> {
         return when {
-            overwrite -> {
+            params.overwrite -> {
                 oCollection
             }
-            asRelationship -> {
+            params.asRelationship -> {
                 removeAllowedExistingObjects(
                     oCollection,
                     listOf(State.RELATIONSHIP.name)
@@ -213,7 +205,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected fun afterCollectionHandled(oCollection: Collection<O>?, overwrite: Boolean?) {
+    protected fun afterCollectionHandled(oCollection: Collection<O>?, params: IdentifiableDataHandlerParams) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */

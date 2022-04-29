@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -100,7 +100,7 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
 
         d2 = D2Factory.forNewDatabase();
 
-        executor = APICallExecutorImpl.create(d2.databaseAdapter());
+        executor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
     }

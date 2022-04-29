@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.List;
 
@@ -50,25 +49,21 @@ final class RelationshipTypeCall implements ListCall<RelationshipType> {
 
     private final RelationshipTypeService service;
     private final Handler<RelationshipType> handler;
-    private final DHISVersionManager versionManager;
     private final APIDownloader apiDownloader;
 
     @Inject
     RelationshipTypeCall(RelationshipTypeService service,
                          Handler<RelationshipType> handler,
-                         DHISVersionManager versionManager,
                          APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
-        this.versionManager = versionManager;
         this.apiDownloader = apiDownloader;
     }
 
     @Override
     public Single<List<RelationshipType>> download() {
         return apiDownloader.downloadWithLastUpdated(handler, resourceType, lastUpdated -> {
-            String accessDataFilter = versionManager.is2_29() ? null :
-                    "access.data." + DataAccessFields.read.eq(true).generateString();
+            String accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
 
             return service.getRelationshipTypes(RelationshipTypeFields.allFields,
                     RelationshipTypeFields.lastUpdated.gt(lastUpdated), accessDataFilter, Boolean.FALSE);

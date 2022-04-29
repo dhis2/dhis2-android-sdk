@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,13 @@ import io.reactivex.Observable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
 
 @Reusable
 internal class EventPostParentCall @Inject internal constructor(
-    private val oldCall: OldEventPostCall,
+    private val oldTrackerImporterCall: OldTrackerImporterPostCall,
     private val trackerImporterCall: TrackerImporterPostCall,
     private val trackerParentCallHelper: TrackerPostParentCallHelper
 ) {
@@ -49,7 +50,7 @@ internal class EventPostParentCall @Inject internal constructor(
             if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadEvents(events)
             } else {
-                oldCall.uploadEvents(events)
+                oldTrackerImporterCall.uploadEvents(events)
             }
         }
     }

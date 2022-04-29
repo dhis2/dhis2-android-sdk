@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal open class InvalidDataElementTypeConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex(".*, must match data element type: (\\w{11})")

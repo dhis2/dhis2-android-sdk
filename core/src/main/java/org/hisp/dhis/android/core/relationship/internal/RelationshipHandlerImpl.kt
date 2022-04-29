@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,23 +42,8 @@ internal class RelationshipHandlerImpl @Inject constructor(
     relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
     private val relationshipItemHandler: Handler<RelationshipItem>,
-    private val storeSelector: RelationshipItemElementStoreSelector,
-    private val versionManager: RelationshipDHISVersionManager
+    private val storeSelector: RelationshipItemElementStoreSelector
 ) : IdentifiableHandlerImpl<Relationship>(relationshipStore), RelationshipHandler {
-
-    override fun beforeObjectHandled(o: Relationship): Relationship {
-        if (!versionManager.isRelationshipSupported(o)) {
-            @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException("Only TEI to TEI relationships are supported in 2.29")
-        }
-        val existingRelationshipUid = getExistingRelationshipUid(o)
-
-        // Compatibility with 2.29. Relationships do not have uids and must be matched based on their items.
-        if (existingRelationshipUid != null && existingRelationshipUid != o.uid()) {
-            store.delete(existingRelationshipUid)
-        }
-        return o
-    }
 
     override fun afterObjectHandled(o: Relationship, action: HandleAction) {
         relationshipItemHandler.handle(

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,11 +43,11 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
 import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
@@ -82,7 +82,7 @@ class EventQueryBundleFactoryShould {
         whenever(resourceHandler.getLastUpdated(any())).thenReturn(null)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(programList)
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
-        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(ArgumentMatchers.any()))
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
 
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
@@ -126,7 +126,7 @@ class EventQueryBundleFactoryShould {
                     assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
                 }
                 else -> {
-                    throw RuntimeException("Not a valid bundle")
+                    fail("Not a valid bundle")
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 class BaseDatabaseOpenHelper {
 
-    static final int VERSION = 116;
+    static final int VERSION = 124;
 
     private final AssetManager assetManager;
     private final int targetVersion;

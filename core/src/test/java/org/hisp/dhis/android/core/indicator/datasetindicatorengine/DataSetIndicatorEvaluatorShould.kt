@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ class DataSetIndicatorEvaluatorShould {
 
     @Before
     fun setUp() {
-        expressionService = ExpressionService(mock(), mock(), mock())
+        expressionService = ExpressionService(mock(), mock(), mock(), mock())
         evaluator = DataSetIndicatorEvaluator(expressionService)
 
         whenever(indicatorType.factor()) doReturn 1

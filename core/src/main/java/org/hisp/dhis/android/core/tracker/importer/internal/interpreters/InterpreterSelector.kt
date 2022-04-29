@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,18 +44,18 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1003 -> E1003Interpreter(interpreterHelper, error.regex)
             ImporterError.E1005 -> E1005Interpreter(interpreterHelper, error.regex)
             ImporterError.E1006 -> E1006Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1007 -> E1007Interpreter(interpreterHelper, error.regex)
+            ImporterError.E1007 -> E1007Interpreter(error.regex)
             ImporterError.E1008 -> E1008Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1009 -> E1009Interpreter(interpreterHelper, error.regex)
+            ImporterError.E1009 -> E1009Interpreter(error.regex)
             ImporterError.E1032 -> E1032Interpreter(interpreterHelper, error.regex)
             ImporterError.E1063 -> E1063Interpreter(interpreterHelper, error.regex)
             ImporterError.E1064 -> E1064Interpreter(interpreterHelper, error.regex)
             ImporterError.E1069 -> E1069Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1081 -> E1081Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1084 -> E1084Interpreter(interpreterHelper, error.regex)
+            ImporterError.E1081 -> E1081Interpreter(error.regex)
+            ImporterError.E1084 -> E1084Interpreter(error.regex)
             ImporterError.E1100 -> E1100Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1103 -> E1103Interpreter(interpreterHelper, error.regex)
-            else -> DefaultInterpreter(interpreterHelper, error.regex)
+            ImporterError.E1103 -> E1103Interpreter(error.regex)
+            else -> DefaultInterpreter(error.regex)
         }
     }
 }

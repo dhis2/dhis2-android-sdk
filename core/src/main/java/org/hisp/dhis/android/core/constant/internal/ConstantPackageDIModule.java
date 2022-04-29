@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.ConstantTableInfo;
 
 import java.util.Collections;
@@ -83,5 +84,11 @@ public final class ConstantPackageDIModule {
     @Reusable
     CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ConstantModule module(ConstantModuleImpl impl) {
+        return impl;
     }
 }

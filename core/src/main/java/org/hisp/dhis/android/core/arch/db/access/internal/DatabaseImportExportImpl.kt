@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import java.io.File
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.*
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -49,7 +49,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
-    private val credentialsStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val databaseRenamer: DatabaseRenamer,
     private val databaseAdapter: DatabaseAdapter
@@ -79,7 +79,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
 
             val openHelper = UnencryptedDatabaseOpenHelper(context, TmpDatabase, BaseDatabaseOpenHelper.VERSION)
             val database = openHelper.readableDatabase
-            databaseAdapter = UnencryptedDatabaseAdapter(database)
+            databaseAdapter = UnencryptedDatabaseAdapter(database, openHelper.databaseName)
 
             if (database.version > BaseDatabaseOpenHelper.VERSION) {
                 throw d2ErrorBuilder
@@ -95,7 +95,8 @@ internal class DatabaseImportExportImpl @Inject constructor(
             val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
             val serverUrl = ServerUrlParser.parse(contextPath).toString()
 
-            val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
+            // TODO What to do if username is null?
+            val databaseName = nameGenerator.getDatabaseName(serverUrl, username!!, false)
 
             if (!context.databaseList().contains(databaseName)) {
                 val destDatabase = context.getDatabasePath(databaseName)
@@ -124,12 +125,12 @@ internal class DatabaseImportExportImpl @Inject constructor(
                 .build()
         }
 
-        val username = credentialsStore.get().username
+        val credentials = credentialsStore.get()
         val databasesConfiguration = databaseConfigurationSecureStore.get()
-        val serverUrl = databasesConfiguration.loggedServerUrl()
-        val serverConfiguration = databasesConfiguration.servers()
-            .find { it.serverUrl() == serverUrl }
-        val userConfiguration = serverConfiguration!!.users().find { it.username() == username }!!
+        val userConfiguration = DatabaseConfigurationHelper.getLoggedAccount(
+            databasesConfiguration,
+            credentials.serverUrl, credentials.username
+        )
 
         if (userConfiguration.encrypted()) {
             throw d2ErrorBuilder

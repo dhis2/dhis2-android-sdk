@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,10 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import android.util.Log
 import dagger.Reusable
 import java.io.IOException
-import java.lang.Exception
-import java.lang.RuntimeException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.net.ssl.SSLException
-import kotlin.jvm.JvmOverloads
 import okhttp3.Request
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -47,6 +44,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 @Reusable
+@Suppress("TooManyFunctions")
 internal class APIErrorMapper @Inject constructor() {
 
     fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
@@ -131,9 +129,10 @@ internal class APIErrorMapper @Inject constructor() {
     fun responseException(
         errorBuilder: D2Error.Builder,
         response: Response<*>,
-        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
+        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE,
+        errorBody: String?
     ): D2Error {
-        val serverMessage = getServerMessage(response)
+        val serverMessage = errorBody ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
             .errorCode(errorCode)
@@ -142,25 +141,35 @@ internal class APIErrorMapper @Inject constructor() {
             .build()
     }
 
-    private fun nonEmptyMessage(message: String?): Boolean {
-        return message != null && message.isNotEmpty()
+    private fun getIfNotEmpty(message: String?): String? {
+        return if (message != null && message.isNotEmpty()) message else null
     }
 
     private fun getServerMessage(response: Response<*>): String {
-        if (nonEmptyMessage(response.message())) {
-            return response.message()
-        }
-        try {
-            val errorBodyString = response.errorBody()!!.string()
-            if (nonEmptyMessage(errorBodyString)) {
-                return errorBodyString
+        val message =
+            try {
+                getIfNotEmpty(response.message())
+                    ?: getIfNotEmpty(response.errorBody()!!.string())
+                    ?: getIfNotEmpty(response.errorBody().toString())
+            } catch (e: IOException) {
+                null
             }
-            if (nonEmptyMessage(response.errorBody().toString())) {
-                return response.errorBody().toString()
+
+        return message ?: "No server message"
+    }
+
+    fun getErrorBody(response: Response<*>): String {
+        val errorBody =
+            try {
+                getIfNotEmpty(response.errorBody()!!.string()) ?: getIfNotEmpty(response.errorBody().toString())
+            } catch (e: IOException) {
+                null
             }
-        } catch (e: IOException) {
-            // IGNORE
-        }
-        return "No server message"
+
+        return errorBody ?: noErrorMessage
+    }
+
+    companion object {
+        internal const val noErrorMessage: String = "No error message"
     }
 }

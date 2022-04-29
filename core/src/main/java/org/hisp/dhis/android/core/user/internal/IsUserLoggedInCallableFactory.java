@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 
 import javax.inject.Inject;
 
@@ -40,10 +39,10 @@ import io.reactivex.Single;
 final class IsUserLoggedInCallableFactory {
 
     @NonNull
-    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private final CredentialsSecureStore credentialsSecureStore;
 
     @Inject
-    IsUserLoggedInCallableFactory(@NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+    IsUserLoggedInCallableFactory(@NonNull CredentialsSecureStore credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
     }
 

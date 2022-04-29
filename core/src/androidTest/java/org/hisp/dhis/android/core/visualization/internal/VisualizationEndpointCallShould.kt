@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.visualization.internal
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
 import io.reactivex.Single
-import java.util.*
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -54,13 +53,21 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
                     Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")
                 )
             )
-            dhis2MockServer.enqueueMockResponse("visualization/visualizations.json")
-            d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
         }
     }
 
     @Test
     fun download_persist_and_get_visualizations_successfully() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+
+        dhis2MockServer.enqueueMockResponse("visualization/visualizations.json")
+        d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
+
         var visualizations = visualizationsSingle.blockingGet()
         Truth.assertThat(visualizations.isEmpty()).isFalse()
         visualizations = d2.visualizationModule().visualizations().blockingGet()

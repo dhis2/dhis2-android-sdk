@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -235,16 +235,6 @@ public class MockLocalDbRepository implements LocalDbRepository {
     @Override
     public Completable updateDataSetSubmissionState(String dataSet, String orgUnit, String period, String attributeOptionComboUid, State state) {
         return Completable.complete();
-    }
-
-    @Override
-    public Completable clear() {
-        return Completable.fromAction(() -> this.moduleEnabled = false);
-    }
-
-    @Override
-    public void blockingClear() {
-        clear().blockingAwait();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -45,16 +45,16 @@ import java.util.Map;
 public final class EnrollmentObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository> {
 
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
 
     EnrollmentObjectRepository(final EnrollmentStore store,
                                final String uid,
                                final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
                                final RepositoryScope scope,
-                               final DataStatePropagator dataStatePropagator) {
+                               final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope,
-                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
-        this.dataStatePropagator = dataStatePropagator;
+                s -> new EnrollmentObjectRepository(store, uid, childrenAppenders, s, trackerDataManager));
+        this.trackerDataManager = trackerDataManager;
     }
 
     public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
@@ -102,6 +102,11 @@ public final class EnrollmentObjectRepository
 
     @Override
     protected void propagateState(Enrollment enrollment) {
-        dataStatePropagator.propagateEnrollmentUpdate(enrollment);
+        trackerDataManager.propagateEnrollmentUpdate(enrollment);
+    }
+
+    @Override
+    protected void deleteObject(Enrollment enrollment) {
+        trackerDataManager.deleteEnrollment(enrollment);
     }
 }

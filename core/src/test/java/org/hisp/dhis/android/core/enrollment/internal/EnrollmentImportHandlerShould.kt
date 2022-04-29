@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,13 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
@@ -65,10 +63,6 @@ class EnrollmentImportHandlerShould {
 
     private val dataStatePropagator: DataStatePropagator = mock()
 
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
-
-    private val fileResourceHelper: FileResourceHelper = mock()
-
     private val enrollment: Enrollment = mock()
 
     private val missingEnrollment: Enrollment = mock()
@@ -87,7 +81,7 @@ class EnrollmentImportHandlerShould {
     fun setUp() {
         enrollmentImportHandler = EnrollmentImportHandler(
             enrollmentStore, eventImportHandler, trackerImportConflictStore, trackerImportConflictParser,
-            jobReportEnrollmentHandler, dataStatePropagator, fileResourceStore, fileResourceHelper
+            jobReportEnrollmentHandler, dataStatePropagator
         )
 
         whenever(enrollment.trackedEntityInstance()).thenReturn("tei_uid")
@@ -101,7 +95,7 @@ class EnrollmentImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).thenReturn(enrollmentUid)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
     }
@@ -111,7 +105,7 @@ class EnrollmentImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).thenReturn(enrollmentUid)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.ERROR)
     }
@@ -125,9 +119,9 @@ class EnrollmentImportHandlerShould {
         val eventSummaries: List<EventImportSummary> = listOf(eventSummary)
         whenever(importEvent.importSummaries()).thenReturn(eventSummaries)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
-        verify(eventImportHandler, times(1)).handleEventImportSummaries(eq(eventSummaries), anyList(), anyList())
+        verify(eventImportHandler, times(1)).handleEventImportSummaries(eq(eventSummaries), anyList())
     }
 
     @Test
@@ -138,9 +132,25 @@ class EnrollmentImportHandlerShould {
         val enrollments = listOf(enrollment, missingEnrollment)
         whenever(missingEnrollment.uid()).thenReturn("missing_enrollment_uid")
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState, emptyList())
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("missing_enrollment_uid", State.TO_UPDATE)
+    }
+
+    @Test
+    fun return_enrollments_not_present_in_the_response() {
+        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
+        whenever(importSummary.reference()).thenReturn(enrollmentUid)
+
+        val enrollments = listOf(enrollment, missingEnrollment)
+        whenever(missingEnrollment.uid()).thenReturn("missing_enrollment_uid")
+
+        val response = enrollmentImportHandler.handleEnrollmentImportSummary(
+            listOf(importSummary), enrollments, teiState
+        )
+
+        assertThat(response.enrollments.ignored.size).isEqualTo(1)
+        assertThat(response.enrollments.ignored.first().uid()).isEqualTo("missing_enrollment_uid")
     }
 }

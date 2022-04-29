@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.legendset;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -36,7 +38,6 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,7 +46,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
     public void find_all() {
         List<Legend> legends = d2.legendSetModule().legends()
                 .blockingGet();
-        assertThat(legends.size()).isEqualTo(4);
+        assertThat(legends.size()).isEqualTo(7);
     }
 
     @Test
@@ -70,7 +71,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
                 .byStartValue().smallerThan(20.0)
                 .byEndValue().biggerThan(20.0)
                 .blockingGet();
-        assertThat(legends.size()).isEqualTo(2);
+        assertThat(legends.size()).isEqualTo(3);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void find_by_legend_set() {
         List<Legend> legends = d2.legendSetModule().legends()
-                .byLegendSet().eq("TiOkbpGEud4")
+                .byLegendSet().eq("QiOkbpGEud4")
                 .blockingGet();
         assertThat(legends.size()).isEqualTo(2);
     }

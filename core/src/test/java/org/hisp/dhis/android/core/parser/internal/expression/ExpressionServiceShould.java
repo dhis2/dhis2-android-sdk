@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
@@ -39,6 +42,7 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject;
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,9 +53,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
 
 public class ExpressionServiceShould {
 
@@ -83,6 +84,9 @@ public class ExpressionServiceShould {
     IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
 
     @Mock
+    IdentifiableObjectStore<ProgramStage> programStageStore;
+
+    @Mock
     OrganisationUnitGroup organisationUnitGroup;
 
     @Mock
@@ -98,7 +102,8 @@ public class ExpressionServiceShould {
         service = new ExpressionService(
                 dataElementStore,
                 categoryOptionComboStore,
-                organisationUnitGroupStore);
+                organisationUnitGroupStore,
+                programStageStore);
 
         when(dataElementStore.selectByUid(dataElementId1)).thenReturn(dataElement1);
         when(dataElementStore.selectByUid(dataElementId2)).thenReturn(dataElement2);

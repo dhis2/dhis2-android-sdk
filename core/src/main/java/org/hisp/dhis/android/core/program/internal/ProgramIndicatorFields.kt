@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,6 @@ object ProgramIndicatorFields {
             fh.field<AnalyticsType>(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE),
             fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
                 .with(AnalyticsPeriodBoundaryFields.allFields),
-            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.allFields)
+            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid)
         ).build()
 }

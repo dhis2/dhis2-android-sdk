@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,5 +45,13 @@ object DataValueImportConflictSamples {
     fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict.create(
         "202111",
         "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6"
+    )
+
+    fun indexedImportConflict(): ImportConflict = ImportConflict.create(
+        "UOlfIjgN8X6",
+        "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
+        "E7619",
+        "value",
+        listOf(1, 3)
     )
 }

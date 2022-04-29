@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ public final class TrackedEntityTypeAttributeChildrenAppender extends ChildrenAp
     }
 
     @Override
-    protected TrackedEntityType appendChildren(TrackedEntityType trackedEntityType) {
+    public TrackedEntityType appendChildren(TrackedEntityType trackedEntityType) {
         TrackedEntityType.Builder builder = trackedEntityType.toBuilder();
         builder.trackedEntityTypeAttributes(childStore.getChildren(trackedEntityType));
         return builder.build();

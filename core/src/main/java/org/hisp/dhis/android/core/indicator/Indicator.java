@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
@@ -80,6 +83,11 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
     @JsonProperty()
     public abstract Integer decimals();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid>  legendSets();
+
     public static Builder builder() {
         return new $$AutoValue_Indicator.Builder();
     }
@@ -106,6 +114,8 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
         public abstract Builder denominator(String denominator);
 
         public abstract Builder denominatorDescription(String denominatorDescription);
+
+        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
 
         public abstract Builder url(String url);
 

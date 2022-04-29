@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
     public void find_all() {
         List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
+        assertThat(legendSets.size()).isEqualTo(5);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
         List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .bySymbolizer().eq("color")
                 .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
+        assertThat(legendSets.size()).isEqualTo(5);
     }
 
     @Test

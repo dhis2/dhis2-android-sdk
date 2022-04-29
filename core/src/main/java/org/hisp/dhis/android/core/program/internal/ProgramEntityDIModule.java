@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -83,9 +83,10 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkCleaner<Program> linkCleaner(DatabaseAdapter databaseAdapter) {
+    public LinkCleaner<Program> linkCleaner(ProgramStoreInterface programStore,
+                                            DatabaseAdapter databaseAdapter) {
         return new LinkCleanerImpl<>(OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, databaseAdapter);
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programStore, databaseAdapter);
     }
 
     @Provides

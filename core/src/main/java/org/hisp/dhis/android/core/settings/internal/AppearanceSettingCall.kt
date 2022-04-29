@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
 @Reusable
 internal class AppearanceSettingCall @Inject constructor(
     private val filterSettingHandler: Handler<FilterSetting>,
-    private val completionSpinnerHandler: Handler<CompletionSpinner>,
+    private val programConfigurationSettingHandler: Handler<ProgramConfigurationSetting>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager
@@ -75,9 +75,9 @@ internal class AppearanceSettingCall @Inject constructor(
         } ?: emptyList()
         filterSettingHandler.handleMany(filterSettingsList)
 
-        val completionSpinnerSettings = item?.let {
-            SettingsAppHelper.getCompletionSpinnerList(it)
+        val programConfigurationSettings = item?.let {
+            SettingsAppHelper.getProgramConfigurationSettingList(it)
         } ?: emptyList()
-        completionSpinnerHandler.handleMany(completionSpinnerSettings)
+        programConfigurationSettingHandler.handleMany(programConfigurationSettings)
     }
 }

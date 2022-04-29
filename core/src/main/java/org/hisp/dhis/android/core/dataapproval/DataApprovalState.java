@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,15 @@
 package org.hisp.dhis.android.core.dataapproval;
 
 public enum DataApprovalState {
-    UNAPPROVABLE, UNAPPROVED_WAITING, UNAPPROVED_ELSEWHERE, UNAPPROVED_READY, UNAPPROVED_ABOVE,
-    APPROVED_HERE, APPROVED_ELSEWHERE, APPROVED_ABOVE,
-    ACCEPTED_HERE, ACCEPTED_ELSEWHERE
+    UNAPPROVABLE,
+    UNAPPROVED_ABOVE,
+    UNAPPROVED_WAITING,
+    UNAPPROVED_READY,
+    APPROVED_ABOVE,
+    APPROVED_HERE,
+    ACCEPTED_HERE,
+
+    UNAPPROVED_ELSEWHERE,
+    APPROVED_ELSEWHERE,
+    ACCEPTED_ELSEWHERE
 }

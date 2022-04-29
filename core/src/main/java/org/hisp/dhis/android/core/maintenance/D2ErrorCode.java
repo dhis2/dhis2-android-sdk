@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,7 @@ public enum D2ErrorCode {
     OBJECT_CANT_BE_INSERTED,
     ORGUNIT_NOT_IN_SEARCH_SCOPE,
     OWNERSHIP_ACCESS_DENIED,
+    PROGRAM_ACCESS_CLOSED,
     SEARCH_GRID_PARSE,
     SERVER_URL_NULL,
     SERVER_URL_MALFORMED,

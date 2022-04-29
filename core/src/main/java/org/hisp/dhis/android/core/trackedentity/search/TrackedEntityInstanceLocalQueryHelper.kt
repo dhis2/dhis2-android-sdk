@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,11 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.program.AccessLevel
+import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 
@@ -58,6 +61,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val eventAlias = "ev"
     private val orgunitAlias = "ou"
     private val teavAlias = "teav"
+    private val programAlias = "pr"
+    private val ownAlias = "own"
 
     private val teiUid = dot(teiAlias, "uid")
     private val teiAll = dot(teiAlias, "*")
@@ -67,13 +72,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val trackedEntityAttribute = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE
     private val trackedEntityInstance = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
 
-    fun getSqlQuery(scope: TrackedEntityInstanceQueryRepositoryScope, excludeList: Set<String>, limit: Int): String {
+    fun getSqlQuery(scope: TrackedEntityInstanceQueryRepositoryScope, excludeList: Set<String>?, limit: Int): String {
         return getSqlQuery(scope, excludeList, limit, teiAll)
     }
 
     fun getUidsWhereClause(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        excludeList: Set<String>,
+        excludeList: Set<String>?,
         limit: Int
     ): String {
         val selectSubQuery = getSqlQuery(scope, excludeList, limit, teiUid)
@@ -84,7 +89,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun getSqlQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        excludeList: Set<String>,
+        excludeList: Set<String>?,
         limit: Int,
         columns: String
     ): String {
@@ -95,6 +100,10 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             queryStr += " JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias"
             queryStr += " ON ${dot(teiAlias, IdentifiableColumns.UID)} = " +
                 dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
+
+            queryStr += " JOIN ${ProgramTableInfo.TABLE_INFO.name()} $programAlias"
+            queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
+                dot(programAlias, IdentifiableColumns.UID)
 
             appendProgramWhere(where, scope)
             if (hasEvent(scope)) {
@@ -188,6 +197,28 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             val value = if (scope.followUp() == true) 1 else 0
             where.appendKeyNumberValue(dot(enrollmentAlias, EnrollmentTableInfo.Columns.FOLLOW_UP), value)
         }
+
+        val tempOwnershipSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $ownAlias " +
+            "WHERE ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+            dot(teiAlias, IdentifiableColumns.UID) +
+            " AND " +
+            "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
+            dot(programAlias, IdentifiableColumns.UID)
+
+        /* Break the glass query. The condition is:
+         * - Not to have a record: this applies to CAPTURE teis and SEARCH teis that didn't need a ownership request.
+         * - To have a record that is not expired.
+         */
+        where.appendComplexQuery(
+            "CASE " +
+                "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
+                "THEN (" +
+                "NOT EXISTS($tempOwnershipSubQuery) " +
+                "OR " +
+                "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
+                ">= '${DateUtils.DATE_FORMAT.format(Date())}')" +
+                ") ELSE 1 END "
+        )
     }
 
     private fun hasOrgunits(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
@@ -238,7 +269,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             OrganisationUnitMode.SELECTED -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
             }
-            OrganisationUnitMode.ACCESSIBLE, OrganisationUnitMode.ALL -> {}
+            OrganisationUnitMode.ACCESSIBLE, OrganisationUnitMode.ALL -> {
+            }
         }
         if (!inner.isEmpty) {
             where.appendComplexQuery(inner.build())

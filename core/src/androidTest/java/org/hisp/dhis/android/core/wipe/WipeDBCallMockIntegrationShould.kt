@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.wipe
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
+import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
+import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
+import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
@@ -40,6 +43,9 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.Test
@@ -49,6 +55,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
     @Test
     fun have_empty_database_when_wipe_db_after_sync_data() {
         givenAFreshLoginInDatabase()
+        activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
         givenOthersInDatabase()
@@ -68,6 +75,10 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         } finally {
             d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
         }
+    }
+
+    private fun activateSMSModule() {
+        d2.smsModule().configCase().setModuleEnabled(true).blockingAwait()
     }
 
     private fun givenAMetadataInDatabase() {
@@ -104,5 +115,9 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
                 .value("value2")
                 .build()
         )
+        ProgramTempOwnerStore.create(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
+
+        SMSConfigStoreImpl.create(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
+        SMSOngoingSubmissionStore.create(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ internal object TrackerQueryCommonParamsSamples {
     @JvmStatic
     fun get(): TrackerQueryCommonParams {
         return TrackerQueryCommonParams(
-            listOf(), null, "start-date", false,
+            listOf(), listOf(), null, "start-date", false,
             OrganisationUnitMode.ACCESSIBLE, listOf(), 50
         )
     }

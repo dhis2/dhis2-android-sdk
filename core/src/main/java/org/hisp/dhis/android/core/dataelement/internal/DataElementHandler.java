@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,14 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
-import org.hisp.dhis.android.core.legendset.LegendSet;
+
 
 import java.util.List;
 
@@ -50,21 +52,18 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
     private final Handler<Attribute> attributeHandler;
     private final LinkHandler<Attribute, DataElementAttributeValueLink>
             dataElementAttributeLinkHandler;
-    private final Handler<LegendSet> legendSetHandler;
-    private final LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+    private final OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
 
     @Inject
     DataElementHandler(
             IdentifiableObjectStore<DataElement> programStageDataElementStore,
             Handler<Attribute> attributeHandler,
             LinkHandler<Attribute, DataElementAttributeValueLink> dataElementAttributeLinkHandler,
-            Handler<LegendSet> legendSetHandler,
-            LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler
+            OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink> dataElementLegendSetLinkHandler
     ) {
         super(programStageDataElementStore);
         this.attributeHandler = attributeHandler;
         this.dataElementAttributeLinkHandler = dataElementAttributeLinkHandler;
-        this.legendSetHandler = legendSetHandler;
         this.dataElementLegendSetLinkHandler = dataElementLegendSetLinkHandler;
     }
 
@@ -84,11 +83,12 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
         }
 
         if (dataElement.legendSets() != null) {
-            legendSetHandler.handleMany(dataElement.legendSets());
-
             dataElementLegendSetLinkHandler.handleMany(dataElement.uid(), dataElement.legendSets(),
-                    legendSet -> DataElementLegendSetLink.builder()
-                            .dataElement(dataElement.uid()).legendSet(legendSet.uid()).build());
+                    (legendSet, sortOrder) -> DataElementLegendSetLink.builder()
+                            .dataElement(dataElement.uid())
+                            .legendSet(legendSet.uid())
+                            .sortOrder(sortOrder)
+                            .build());
         }
     }
 }

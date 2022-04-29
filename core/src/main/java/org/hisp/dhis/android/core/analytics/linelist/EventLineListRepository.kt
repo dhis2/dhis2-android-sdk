@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
@@ -66,6 +67,11 @@ interface EventLineListRepository : BaseRepository {
      * program indicators but appends a new one to the response.
      */
     fun withProgramIndicator(programIndicatorUid: String): EventLineListRepository
+
+    /**
+     * Assign the strategy to apply with legend.
+     */
+    fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): EventLineListRepository
 
     /**
      * Evaluate the given parameters and get a list of events in the format of [LineListResponse].

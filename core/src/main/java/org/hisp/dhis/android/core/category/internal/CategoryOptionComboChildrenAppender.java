@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ final class CategoryOptionComboChildrenAppender extends ChildrenAppender<Categor
     }
 
     @Override
-    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         List<CategoryOptionCombo> optionCombos = store.getForCategoryCombo(categoryCombo.uid());
         return builder.categoryOptionCombos(optionCombos).build();

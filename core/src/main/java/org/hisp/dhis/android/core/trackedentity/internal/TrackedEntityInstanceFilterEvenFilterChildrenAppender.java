@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ public final class TrackedEntityInstanceFilterEvenFilterChildrenAppender
     }
 
     @Override
-    protected TrackedEntityInstanceFilter appendChildren(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
+    public TrackedEntityInstanceFilter appendChildren(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
         TrackedEntityInstanceFilter.Builder builder = trackedEntityInstanceFilter.toBuilder();
         builder.eventFilters(childStore.getChildren(trackedEntityInstanceFilter));
         return builder.build();

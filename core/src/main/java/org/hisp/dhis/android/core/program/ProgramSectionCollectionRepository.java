@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,14 @@ public final class ProgramSectionCollectionRepository
 
     public StringFilterConnector<ProgramSectionCollectionRepository> byIcon() {
         return cf.string(Columns.ICON);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byDesktopRenderType() {
+        return cf.string(ProgramSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byMobileRenderType() {
+        return cf.string(ProgramSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
     }
 
     public ProgramSectionCollectionRepository withAttributes() {

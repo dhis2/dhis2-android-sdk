@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings({"PMD.TooManyFields"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessivePublicCount"})
 public class CommonExpressionVisitor
         extends AntlrExpressionVisitor {
 
@@ -68,6 +69,8 @@ public class CommonExpressionVisitor
     private IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore;
 
     private IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
+
+    private IdentifiableObjectStore<ProgramStage> programStageStore;
 
     /**
      * Map of ExprItem instances to call for each expression item
@@ -286,6 +289,10 @@ public class CommonExpressionVisitor
         return organisationUnitGroupStore;
     }
 
+    public IdentifiableObjectStore<ProgramStage> getProgramStageStore() {
+        return programStageStore;
+    }
+
     public Map<String, String> getItemDescriptions() {
         return itemDescriptions;
     }
@@ -403,6 +410,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withProgramStageStore(IdentifiableObjectStore<ProgramStage> store) {
+            this.visitor.programStageStore = store;
+            return this;
+        }
+
         public Builder withProgramIndicatorContext(ProgramIndicatorContext programIndicatorContext) {
             this.visitor.programIndicatorContext = programIndicatorContext;
             return this;
@@ -434,6 +446,7 @@ public class CommonExpressionVisitor
             Validate.notNull(this.visitor.dataElementStore, missingProperty("dataElementStore"));
             Validate.notNull(this.visitor.categoryOptionComboStore, missingProperty("categoryOptionComboStore"));
             Validate.notNull(this.visitor.organisationUnitGroupStore, missingProperty("organisationUnitGroupStore"));
+            Validate.notNull(this.visitor.programStageStore, missingProperty("programStageStore"));
 
             return validateCommonProperties();
         }
@@ -442,6 +455,7 @@ public class CommonExpressionVisitor
             Validate.notNull(this.visitor.programIndicatorContext, missingProperty("programIndicatorContext"));
             Validate.notNull(this.visitor.programIndicatorExecutor, missingProperty("programIndicatorExecutor"));
             Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
+            Validate.notNull(this.visitor.programStageStore, missingProperty("programStageStore"));
 
             return validateCommonProperties();
         }

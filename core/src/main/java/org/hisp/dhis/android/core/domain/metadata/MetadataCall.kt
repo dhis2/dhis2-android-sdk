@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,7 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -49,6 +48,8 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataHelper
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -83,7 +84,8 @@ class MetadataCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val generalSettingCall: GeneralSettingCall,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val legendSetModuleDownloader: LegendSetModuleDownloader
 ) {
 
     companion object {
@@ -147,6 +149,9 @@ class MetadataCall @Inject internal constructor(
                     },
                     indicatorModuleDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Indicator::class.java, false)
+                    },
+                    legendSetModuleDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(LegendSet::class.java, false)
                     }
                 ).toObservable()
             }

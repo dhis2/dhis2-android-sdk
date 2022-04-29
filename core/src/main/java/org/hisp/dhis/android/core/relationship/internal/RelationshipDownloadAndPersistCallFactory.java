@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory;
@@ -78,8 +77,6 @@ public final class RelationshipDownloadAndPersistCallFactory {
     private final EventService eventService;
     private final EventPersistenceCallFactory eventPersistenceCallFactory;
 
-    private final DHISVersionManager dhisVersionManager;
-
     private final String ouMode = OrganisationUnitMode.ACCESSIBLE.name();
 
     @Inject
@@ -90,8 +87,7 @@ public final class RelationshipDownloadAndPersistCallFactory {
             @NonNull EnrollmentService enrollmentService,
             @NonNull EnrollmentPersistenceCallFactory enrollmentPersistenceCallFactory,
             @NonNull EventService eventService,
-            @NonNull EventPersistenceCallFactory eventPersistenceCallFactory,
-            @NonNull DHISVersionManager dhisVersionManager) {
+            @NonNull EventPersistenceCallFactory eventPersistenceCallFactory) {
         this.relationshipStore = relationshipStore;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.teiPersistenceCallFactory = teiPersistenceCallFactory;
@@ -99,21 +95,14 @@ public final class RelationshipDownloadAndPersistCallFactory {
         this.enrollmentPersistenceCallFactory = enrollmentPersistenceCallFactory;
         this.eventService = eventService;
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
-        this.dhisVersionManager = dhisVersionManager;
     }
 
     public Completable downloadAndPersist(RelationshipItemRelatives relatives) {
-        return Completable.defer(() -> {
-            if (dhisVersionManager.is2_29()) {
-                return Completable.complete();
-            } else {
-                return downloadRelativeEvents(relatives).andThen(
-                        downloadRelativeEnrolments(relatives).andThen(
-                                downloadRelativeTEIs(relatives)
-                        )
-                );
-            }
-        });
+        return Completable.defer(() -> downloadRelativeEvents(relatives).andThen(
+                downloadRelativeEnrolments(relatives).andThen(
+                        downloadRelativeTEIs(relatives)
+                )
+        ));
     }
 
     private Completable downloadRelativeEvents(RelationshipItemRelatives relatives) {

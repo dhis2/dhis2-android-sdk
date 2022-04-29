@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@ class RelativePeriodGeneratorImplShould {
     }
 
     @Test
+    @Suppress("ComplexMethod")
     fun `Should create relative periods for all period types`() {
         RelativePeriod.values().forEach { relativePeriod ->
             val periods = periodGenerator.generateRelativePeriods(relativePeriod)

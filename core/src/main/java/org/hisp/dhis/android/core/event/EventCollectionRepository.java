@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
@@ -72,7 +72,7 @@ public final class EventCollectionRepository
     private final EventPostParentCall postCall;
 
     private final EventStore store;
-    private final DataStatePropagator dataStatePropagator;
+    private final TrackerDataManager trackerDataManager;
     private final JobQueryCall jobQueryCall;
 
     @Inject
@@ -81,14 +81,14 @@ public final class EventCollectionRepository
                               final RepositoryScope scope,
                               final EventPostParentCall postCall,
                               final Transformer<EventCreateProjection, Event> transformer,
-                              final DataStatePropagator dataStatePropagator,
+                              final TrackerDataManager trackerDataManager,
                               final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer,
                 new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(
-                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator, jobQueryCall)));
+                        store, childrenAppenders, s, postCall, transformer, trackerDataManager, jobQueryCall)));
         this.store = store;
         this.postCall = postCall;
-        this.dataStatePropagator = dataStatePropagator;
+        this.trackerDataManager = trackerDataManager;
         this.jobQueryCall = jobQueryCall;
     }
 
@@ -110,13 +110,13 @@ public final class EventCollectionRepository
 
     @Override
     protected void propagateState(Event event) {
-        dataStatePropagator.propagateEventUpdate(event);
+        trackerDataManager.propagateEventUpdate(event);
     }
 
     @Override
     public EventObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
+        return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
     }
 
     public StringFilterConnector<EventCollectionRepository> byUid() {

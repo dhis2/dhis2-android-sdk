@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -146,7 +146,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withLegendSets().one().blockingGet();
         assertThat(programIndicators.legendSets().size()).isEqualTo(1);
-        assertThat(programIndicators.legendSets().get(0).name()).isEqualTo("Age 15y interval");
+        assertThat(programIndicators.legendSets().get(0).uid()).isEqualTo("TiOkbpGEud4");
     }
 
     @Test

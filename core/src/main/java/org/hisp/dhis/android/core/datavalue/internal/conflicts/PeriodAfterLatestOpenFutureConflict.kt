@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 @Suppress("MagicNumber")
 internal class PeriodAfterLatestOpenFutureConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex("Period: (\\d+) is after latest open future period: (\\d+) for data element: (\\w{11})")

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -61,7 +61,7 @@ public final class TrackedEntityInstanceFields {
     public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder()
             .fields(getCommonFields())
             .fields(
-                    fh.<Relationship229Compatible>nestedField(RELATIONSHIPS)
+                    fh.<Relationship>nestedField(RELATIONSHIPS)
                             .with(RelationshipFields.allFields),
                     fh.<Enrollment>nestedField(ENROLLMENTS)
                             .with(EnrollmentFields.allFields)

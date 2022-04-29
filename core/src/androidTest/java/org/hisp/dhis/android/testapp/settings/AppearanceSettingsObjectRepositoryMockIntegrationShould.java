@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.CompletionSpinner;
 import org.hisp.dhis.android.core.settings.DataSetFilter;
 import org.hisp.dhis.android.core.settings.FilterSetting;
 import org.hisp.dhis.android.core.settings.HomeFilter;
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting;
 import org.hisp.dhis.android.core.settings.ProgramFilter;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -78,10 +79,27 @@ public class AppearanceSettingsObjectRepositoryMockIntegrationShould extends Bas
     }
 
     @Test
+    public void should_return_global_program_configuration_setting() {
+        ProgramConfigurationSetting setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting();
+        assertThat(setting.uid()).isNull();
+        assertThat(setting.completionSpinner()).isEqualTo(true);
+        assertThat(setting.optionalSearch()).isNull();
+    }
+
+    @Test
     public void should_return_global_completion_spinner_settings() {
         CompletionSpinner completionSpinner = d2.settingModule().appearanceSettings().getGlobalCompletionSpinner();
         assertThat(completionSpinner.uid()).isNull();
         assertThat(completionSpinner.visible()).isEqualTo(true);
+    }
+
+    @Test
+    public void should_return_program_configuration_setting_for_specific_uid() {
+        String UID = "IpHINAT79UW";
+        ProgramConfigurationSetting setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
+        assertThat(setting.uid()).isEqualTo(UID);
+        assertThat(setting.completionSpinner()).isEqualTo(true);
+        assertThat(setting.optionalSearch()).isEqualTo(true);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .organisationUnit(o.organisationUnit())
             .program(o.program())
             .enrolledAt(o.enrollmentDate())
-            .occurredAt(o.enrollmentDate())
+            .occurredAt(o.incidentDate())
             .completedAt(o.completedDate())
             .followUp(o.followUp())
             .status(o.status())

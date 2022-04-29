@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttrib
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService;
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
 
 import dagger.Module;
@@ -58,6 +59,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        OwnershipEntityDIModule.class,
         ReservedValueSettingDIModule.class,
         TrackedEntityAttributeEntityDIModule.class,
         TrackedEntityAttributeReservedValueEntityDIModule.class,

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ public final class DataElementFields {
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
                             .with(AccessFields.read),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
             ).build();
 

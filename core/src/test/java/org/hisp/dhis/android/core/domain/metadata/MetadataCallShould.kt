@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,14 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
+import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -78,7 +78,8 @@ class MetadataCallShould : BaseCallShould() {
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials> = mock()
+    private val credentialsSecureStore: CredentialsSecureStore = mock()
+    private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
 
     // object to test
     private var metadataCall: MetadataCall? = null
@@ -105,6 +106,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
             Single.just(emptyList())
         )
+        whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
@@ -116,8 +118,7 @@ class MetadataCallShould : BaseCallShould() {
                 any(),
                 any()
             )
-        )
-            .then(AdditionalAnswers.returnsFirstArg<Any>())
+        ).then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
         metadataCall = MetadataCall(
@@ -136,7 +137,8 @@ class MetadataCallShould : BaseCallShould() {
             databaseAdapter,
             generalSettingCall,
             multiUserDatabaseManager,
-            credentialsSecureStore
+            credentialsSecureStore,
+            legendSetModuleDownloader,
         )
     }
 

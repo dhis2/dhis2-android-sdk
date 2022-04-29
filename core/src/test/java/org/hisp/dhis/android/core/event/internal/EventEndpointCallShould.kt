@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.AfterClass
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
@@ -51,11 +51,7 @@ class EventEndpointCallShould {
     private val startDateStr = "2021-01-01"
 
     private val databaseAdapter: DatabaseAdapter = mock()
-
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-    }
+    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher = mock()
 
     @Test
     fun realize_request_with_page_filters_when_included_in_query() {
@@ -119,7 +115,7 @@ class EventEndpointCallShould {
     private fun givenACallForQuery(eventQuery: EventQuery): Callable<List<Event>> {
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter)
+            APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
         ).getCall(eventQuery)
     }
 
@@ -132,6 +128,7 @@ class EventEndpointCallShould {
             .orgUnit(orgUnit)
             .commonParams(
                 TrackerQueryCommonParams(
+                    listOf(),
                     listOfNotNull(program),
                     program,
                     startDate,

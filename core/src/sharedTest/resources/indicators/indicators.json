@@ -18,7 +18,12 @@
       "annualized": false,
       "indicatorType": {
         "id": "bWuNrMHEoZ0"
-      }
+      },
+      "legendSets": [
+        {
+          "id": "rtOkbpGEud4"
+        }
+      ]
     }
   ]
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,9 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,28 +49,21 @@ final class OptionGroupCall implements UidsCall<OptionGroup> {
     private final OptionGroupService service;
     private final Handler<OptionGroup> handler;
     private final APIDownloader apiDownloader;
-    private final DHISVersionManager versionManager;
 
     @Inject
     OptionGroupCall(OptionGroupService service,
                     Handler<OptionGroup> handler,
-                    APIDownloader apiDownloader,
-                    DHISVersionManager versionManager) {
+                    APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;
-        this.versionManager = versionManager;
     }
 
     @Override
     public Single<List<OptionGroup>> download(Set<String> optionSetUids) {
-        if (versionManager.is2_29()) {
-            return Single.just(new ArrayList<>());
-        } else {
-            return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-                String optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.in(partitionUids).generateString();
-                return service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
-            });
-        }
+        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.in(partitionUids).generateString();
+            return service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
+        });
     }
 }

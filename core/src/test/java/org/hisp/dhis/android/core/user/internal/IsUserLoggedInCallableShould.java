@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,14 +42,11 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Single;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class IsUserLoggedInCallableShould {
 
     @Mock
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
     private Credentials credentials;

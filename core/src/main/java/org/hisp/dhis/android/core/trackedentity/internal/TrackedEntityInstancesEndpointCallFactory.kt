@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,15 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
+import retrofit2.Call
 
 @Reusable
 internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     private val trackedEntityInstanceService: TrackedEntityInstanceService
 ) {
 
-    fun getCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
+    fun getCollectionCall(query: TrackerQuery): Single<Payload<TrackedEntityInstance>> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             getUidStr(query),
             query.orgUnit(),
@@ -48,6 +50,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             getProgramStatus(query),
             getProgramStartDate(query),
             TrackedEntityInstanceFields.allFields,
+            TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
             true,
             query.page(),
             query.pageSize(),
@@ -73,5 +76,18 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             query.commonParams().program != null -> query.commonParams().startDate
             else -> null
         }
+    }
+
+    fun getEntityCall(uid: String, query: TrackerQuery): Call<TrackedEntityInstance> {
+        return trackedEntityInstanceService.getSingleTrackedEntityInstance(
+            uid,
+            query.commonParams().ouMode.name,
+            query.commonParams().program,
+            getProgramStatus(query),
+            getProgramStartDate(query),
+            TrackedEntityInstanceFields.allFields,
+            true,
+            true
+        )
     }
 }

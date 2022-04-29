@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -123,8 +123,8 @@ internal object IndicatorParserUtils {
                 }
             }.flatten()
 
-        val start = periods.mapNotNull { it.startDate() }.minBy { it.time }
-        val end = periods.mapNotNull { it.endDate() }.maxBy { it.time }
+        val start = periods.mapNotNull { it.startDate() }.minByOrNull { it.time }
+        val end = periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
 
         return if (start != null && end != null) {
             return PeriodHelper.getDays(Period.builder().startDate(start).endDate(end).build())

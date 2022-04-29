@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,9 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     @Mock
     private List<String> payload;
 
+    @Mock
+    private UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
+
     private Callable<List<Authority>> endpointCall;
 
 
@@ -70,7 +73,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher);
         endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler,
                 retrofit.create(AuthorityService.class)).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));

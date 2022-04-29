@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserRole;
 
@@ -42,6 +43,7 @@ public final class UserCredentialsFields {
     public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
+                    fh.<String>field(BaseIdentifiableObject.UUID),
                     fh.<String>field(USERNAME),
                     fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
             ).build();

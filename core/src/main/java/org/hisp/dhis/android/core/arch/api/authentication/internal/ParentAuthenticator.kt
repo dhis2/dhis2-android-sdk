@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,11 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 
 @Reusable
 internal class ParentAuthenticator @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsSecureStore: CredentialsSecureStore,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
     private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
     private val cookieHelper: CookieAuthenticatorHelper

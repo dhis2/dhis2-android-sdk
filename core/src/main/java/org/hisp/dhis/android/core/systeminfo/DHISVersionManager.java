@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ public interface DHISVersionManager {
 
     SMSVersion getSmsVersion();
 
+    @Deprecated
     boolean is2_29();
 
     boolean is2_30();
@@ -51,6 +52,8 @@ public interface DHISVersionManager {
     boolean is2_36();
 
     boolean is2_37();
+
+    boolean is2_38();
 
     /**
      * Check if the current version is strictly greater than the parameter.

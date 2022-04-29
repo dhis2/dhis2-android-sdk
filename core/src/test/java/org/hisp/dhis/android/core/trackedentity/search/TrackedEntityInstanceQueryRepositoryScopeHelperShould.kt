@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -102,7 +103,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                     val daysBetween = it.eventDate()!!.endBuffer()!! - it.eventDate()!!.startBuffer()!!
                     assertThat(daysBetween).isEqualTo(7)
                 }
-                else -> throw RuntimeException("Unknown programStageId")
+                else -> fail("Unknown programStageId")
             }
         }
     }

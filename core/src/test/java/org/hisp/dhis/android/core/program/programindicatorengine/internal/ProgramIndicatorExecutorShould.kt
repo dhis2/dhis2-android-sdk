@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
@@ -67,6 +68,8 @@ class ProgramIndicatorExecutorShould {
     private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
 
     private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
+
+    private val programStageStore: IdentifiableObjectStore<ProgramStage> = mock()
 
     private val programIndicator: ProgramIndicator = mock()
 
@@ -101,6 +104,8 @@ class ProgramIndicatorExecutorShould {
     private val dataElement1: DataElement = mock()
     private val dataElement2: DataElement = mock()
 
+    private val programStage: ProgramStage = mock()
+
     private val attribute1: TrackedEntityAttribute = mock()
     private val attribute2: TrackedEntityAttribute = mock()
 
@@ -108,7 +113,8 @@ class ProgramIndicatorExecutorShould {
         constantMap,
         programIndicatorContext,
         dataElementStore,
-        trackedEntityAttributeStore
+        trackedEntityAttributeStore,
+        programStageStore
     )
 
     @Before
@@ -387,6 +393,33 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
+    fun evaluate_program_stage_id() {
+        setExpression(`var`("program_stage_id"))
+        whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+        whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
+        whenever(event2_2.eventDate()) doReturn null
+
+        whenever(event2_1.programStage()) doReturn programStage2
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo(programStage2)
+    }
+
+    @Test
+    fun evaluate_program_stage_name() {
+        setExpression(`var`("program_stage_name"))
+        whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+        whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
+
+        whenever(event2_1.programStage()) doReturn programStage2
+        whenever(programStageStore.selectByUid(programStage2)) doReturn programStage
+        whenever(programStage.name()) doReturn "Program stage name"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("Program stage name")
+    }
+
+    @Test
     fun evaluate_empty_filter() {
         setExpression("4")
         setFilter("")
@@ -396,12 +429,12 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
-    fun evaluate_invalid_filter() {
+    fun evaluate_truthy_filter() {
         setExpression("4")
         setFilter("1")
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
-        assertThat(result).isNull()
+        assertThat(result).isEqualTo("4")
     }
 
     @Test

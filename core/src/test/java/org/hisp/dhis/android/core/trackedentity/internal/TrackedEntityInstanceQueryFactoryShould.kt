@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryFactoryShould {
@@ -72,11 +71,10 @@ class TrackedEntityInstanceQueryFactoryShould {
     )
 
     // Object to test
-    private var queryFactory: TrackerQueryBundleFactory? = null
+    private lateinit var queryFactory: TrackerQueryBundleFactory
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
@@ -98,7 +96,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     @Test
     fun create_a_single_bundle_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
-        val queries = queryFactory!!.getQueries(params)
+        val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
         assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
@@ -113,7 +111,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
-        val queries = queryFactory!!.getQueries(params)
+        val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.commonParams().program != null) {
@@ -126,7 +124,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     @Test
     fun single_query_if_program_provided_by_user() {
         val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
-        val queries = queryFactory!!.getQueries(params)
+        val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
             assertThat(query.commonParams().program).isEqualTo(p1)
@@ -141,7 +139,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         val settings = ProgramSetting.builder().uid(p1).teiDownload(100).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
-        val queries = queryFactory!!.getQueries(params)
+        val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.commonParams().program != null) {
@@ -151,5 +149,12 @@ class TrackedEntityInstanceQueryFactoryShould {
                 assertThat(query.commonParams().limit).isEqualTo(4800)
             }
         }
+    }
+
+    @Test
+    fun single_query_if_tei_provided_by_user() {
+        val params = ProgramDataDownloadParams.builder().uids(listOf("tei_uid")).build()
+
+        val queries = queryFactory.getQueries(params)
     }
 }

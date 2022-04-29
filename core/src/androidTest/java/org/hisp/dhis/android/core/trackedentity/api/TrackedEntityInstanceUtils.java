@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -75,7 +75,7 @@ class TrackedEntityInstanceUtils {
     private static TrackedEntityInstance createTrackedEntityInstance(String trackedEntityInstanceUid,
                                                               String orgUnitUid,
                                                               List<TrackedEntityAttributeValue> attributes,
-                                                              List<Relationship229Compatible> relationships,
+                                                              List<Relationship> relationships,
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 

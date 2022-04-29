@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,8 @@ public interface UserModule {
     AuthorityCollectionRepository authorities();
     UserCredentialsObjectRepository userCredentials();
     UserObjectRepository user();
+
+    AccountManager accountManager();
     
     Single<User> logIn(String username, String password, String serverUrl);
     User blockingLogIn(String username, String password, String serverUrl);

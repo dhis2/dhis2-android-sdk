@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<Categ
     }
 
     @Override
-    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         builder.categories(linkChildStore.getChildren(categoryCombo));
         return builder.build();

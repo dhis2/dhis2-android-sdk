@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
             migrations.forEach { executeMigration(it) }
             transaction.setSuccessful()
         } catch (e: IOException) {
-            Log.e("Database Error:", e.message)
+            Log.e("Database Error:", e.message ?: "")
         } finally {
             transaction.end()
         }

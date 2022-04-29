@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,17 +35,21 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.IndexedDataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementType37Conflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class DataValueConflictParser @Inject constructor(
     dataElementStore: IdentifiableObjectStore<DataElement>,
     dataValueStore: DataValueStore,
-    dataSetStore: IdentifiableObjectStore<DataSet>
+    dataSetStore: IdentifiableObjectStore<DataSet>,
+    val versionManager: DHISVersionManager
 ) {
 
     private val conflicts = listOf(
@@ -55,12 +59,18 @@ internal class DataValueConflictParser @Inject constructor(
         PeriodAfterLatestOpenFutureConflict(dataElementStore)
     )
 
+    private val indexedDataValueConflict = IndexedDataValueConflict()
+
     fun getDataValueConflicts(
         conflict: ImportConflict,
         dataValues: List<DataValue>
     ): List<DataValueConflict> {
-        return conflicts.find {
-            it.matches(conflict)
-        }?.getDataValues(conflict, dataValues) ?: emptyList()
+        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+            indexedDataValueConflict.getDataValues(conflict, dataValues)
+        } else {
+            conflicts.find {
+                it.matches(conflict)
+            }?.getDataValues(conflict, dataValues) ?: emptyList()
+        }
     }
 }

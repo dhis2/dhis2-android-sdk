@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,16 +29,23 @@ package org.hisp.dhis.android.core.sms.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable
 class SMSModuleWiper @Inject internal constructor(
-    private val localDbRepository: LocalDbRepository
+    private val tableWiper: TableWiper
 ) : ModuleWiper {
 
     override fun wipeMetadata() {
-        localDbRepository.clear().blockingAwait()
+        tableWiper.wipeTables(
+            SMSMetadataIdTableInfo.TABLE_INFO,
+            SMSConfigTableInfo.TABLE_INFO,
+            SMSOngoingSubmissionTableInfo.TABLE_INFO
+        )
     }
 
     override fun wipeData() {

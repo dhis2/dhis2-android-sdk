@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,15 +51,31 @@ internal class VisualizationCall @Inject constructor(
 
     override fun download(uids: Set<String>): Single<List<Visualization>> {
         return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
-            apiDownloader.downloadPartitioned(
-                uids,
-                MAX_UID_LIST_SIZE,
-                handler
-            ) { partitionUids: Set<String> ->
-                service.getVisualizations(
-                    VisualizationFields.allFields,
-                    VisualizationFields.uid.`in`(partitionUids),
-                    paging = false
+            if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+                apiDownloader.downloadPartitioned(
+                    uids,
+                    MAX_UID_LIST_SIZE,
+                    handler
+                ) { partitionUids: Set<String> ->
+                    service.getVisualizations(
+                        VisualizationFields.allFields,
+                        VisualizationFields.uid.`in`(partitionUids),
+                        paging = false
+                    )
+                }
+            } else {
+                apiDownloader.downloadPartitioned(
+                    uids,
+                    MAX_UID_LIST_SIZE,
+                    handler,
+                    { partitionUids: Set<String> ->
+                        service.getVisualizations36(
+                            VisualizationFields.allFieldsAPI36,
+                            VisualizationFields.uid.`in`(partitionUids),
+                            paging = false
+                        )
+                    },
+                    { it.toVisualization() }
                 )
             }
         } else {

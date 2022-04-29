@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -59,11 +59,16 @@ internal class AnalyticsService @Inject constructor(
 
             val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
-            val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
+            val values = evaluationItems.map {
+                analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
+            }
+
+            val legends = values.filter { it.legend != null }.map { it.legend!! }
+            val finalMetadata = analyticsServiceMetadataHelper.includeLegendsToMetadata(metadata, legends)
 
             Result.Success(
                 DimensionalResponse(
-                    metadata = metadata,
+                    metadata = finalMetadata,
                     dimensions = dimensions,
                     dimensionItems = dimensionItems.groupBy { it.dimension },
                     filters = params.filters.map { it.id },

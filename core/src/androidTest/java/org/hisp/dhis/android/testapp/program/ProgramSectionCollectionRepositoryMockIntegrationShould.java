@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -119,6 +119,28 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections()
                 .byIcon().eq("section-icon")
                 .blockingGet();
+        assertThat(programSections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_desktop_render_type() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byDesktopRenderType()
+                        .eq("LISTING")
+                        .blockingGet();
+
+        assertThat(programSections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_mobile_render_type() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections()
+                        .byMobileRenderType()
+                        .eq("LISTING")
+                        .blockingGet();
+
         assertThat(programSections.size()).isEqualTo(1);
     }
 

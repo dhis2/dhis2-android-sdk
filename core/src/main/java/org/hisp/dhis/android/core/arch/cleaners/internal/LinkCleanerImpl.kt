@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal class LinkCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val applicableColumn: String,
+    private val parentStore: ObjectStore<P>,
     private val databaseAdapter: DatabaseAdapter
 ) : LinkCleaner<P> {
 
@@ -44,5 +46,9 @@ internal class LinkCleanerImpl<P : ObjectWithUidInterface>(
         val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
         val clause = "$applicableColumn NOT IN ($objectUids);"
         return databaseAdapter.delete(tableName, clause, null) > 0
+    }
+
+    override fun deleteNotPresentInDb(): Boolean {
+        return deleteNotPresent(parentStore.selectAll())
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
+import static okhttp3.Credentials.basic;
+
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler;
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
@@ -50,16 +54,12 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-import static com.google.common.truth.Truth.assertThat;
-import static okhttp3.Credentials.basic;
-import static org.mockito.Mockito.when;
-
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
 @RunWith(JUnit4.class)
 public class ParentAuthenticatorShould {
 
     @Mock
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    private CredentialsSecureStore credentialsSecureStore;
 
     @Mock
     private UserIdInMemoryStore userIdStore;
@@ -96,7 +96,7 @@ public class ParentAuthenticatorShould {
 
     @Test
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
-        Credentials credentials = new Credentials("test_user", "test_password", null);
+        Credentials credentials = new Credentials("test_user", "test_server", "test_password", null);
 
         when(credentialsSecureStore.get()).thenReturn(credentials);
         when(userIdStore.get()).thenReturn("user-id");

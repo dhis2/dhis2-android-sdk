@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,12 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 
-final class IndicatorFields {
+public final class IndicatorFields {
 
+    public static final String LEGEND_SETS = "legendSets";
     private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
 
     public static final Field<Indicator, String> uid = fh.uid();
@@ -52,6 +55,7 @@ final class IndicatorFields {
                     fh.<String>field(Columns.DENOMINATOR),
                     fh.<String>field(Columns.DENOMINATOR_DESCRIPTION),
                     fh.<String>field(Columns.URL),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.<Integer>field(Columns.DECIMALS)
             ).build();
 

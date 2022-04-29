@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,10 +41,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
@@ -91,7 +90,6 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator29;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
@@ -164,7 +162,7 @@ public interface D2DIComponent {
     DatabaseAdapter databaseAdapter();
     UserIdInMemoryStore userIdInMemoryStore();
     MultiUserDatabaseManagerForD2Manager multiUserDatabaseManagerForD2Manager();
-    ObjectKeyValueStore<Credentials> credentialsSecureStore();
+    CredentialsSecureStore credentialsSecureStore();
 
     @VisibleForTesting
     Retrofit retrofit();
@@ -184,8 +182,6 @@ public interface D2DIComponent {
     Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     Handler<TrackedEntityType> trackedEntityTypeHandler();
-    @VisibleForTesting
-    TrackedEntityInstancePostPayloadGenerator29 trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
     OldTrackerImporterPayloadGenerator oldTrackerImporterPayloadGenerator();
     @VisibleForTesting

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ public final class EventFields {
             .fields(getCommonFields())
             .fields(
                     fh.<Note>nestedField(NOTES).with(NoteFields.all),
-                    fh.<Relationship>nestedField(RELATIONSHIPS).with(RelationshipFields.allNewModelFields),
+                    fh.<Relationship>nestedField(RELATIONSHIPS).with(RelationshipFields.allFields),
                     fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
                             .with(TrackedEntityDataValueFields.allFields)
             ).build();

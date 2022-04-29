@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.linelist
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
@@ -83,6 +84,13 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         return EventLineListRepositoryImpl(
             eventLineListService,
             eventLineListParams.copy(programIndicators = updatedProgramIndicators)
+        )
+    }
+
+    override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): EventLineListRepository {
+        return EventLineListRepositoryImpl(
+            eventLineListService,
+            eventLineListParams.copy(analyticsLegendStrategy = analyticsLegendStrategy)
         )
     }
 

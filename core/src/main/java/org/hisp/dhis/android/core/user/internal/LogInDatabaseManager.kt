@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import javax.inject.Inject
-import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 
@@ -40,25 +39,25 @@ internal class LogInDatabaseManager @Inject internal constructor(
     private val generalSettingCall: GeneralSettingCall
 ) {
 
-    fun loadDatabaseOnline(serverUrl: HttpUrl, username: String): Completable {
+    fun loadDatabaseOnline(serverUrl: String, username: String): Completable {
         return generalSettingCall.isDatabaseEncrypted()
             .doOnSuccess { encrypt: Boolean ->
                 multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl.toString(), username, encrypt
+                    serverUrl, username, encrypt
                 )
             }
             .doOnError {
                 multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl.toString(), username, false
+                    serverUrl, username, false
                 )
             }
             .ignoreElement()
             .onErrorComplete()
     }
 
-    fun loadExistingKeepingEncryption(serverUrl: HttpUrl, username: String): Boolean {
+    fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return multiUserDatabaseManager.loadExistingKeepingEncryption(
-            serverUrl.toString(),
+            serverUrl,
             username
         )
     }

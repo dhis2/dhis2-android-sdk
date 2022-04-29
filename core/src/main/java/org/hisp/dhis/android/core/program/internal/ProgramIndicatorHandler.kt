@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,10 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -42,18 +42,17 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 @Reusable
 internal class ProgramIndicatorHandler @Inject constructor(
     programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
-    private val legendSetHandler: Handler<LegendSet>,
-    private val programIndicatorLegendSetLinkHandler: LinkHandler<LegendSet, ProgramIndicatorLegendSetLink>,
+    private val programIndicatorLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink>,
     private val analyticsPeriodBoundaryHandler: LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
     override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
-        legendSetHandler.handleMany(o.legendSets())
-        programIndicatorLegendSetLinkHandler.handleMany(
-            o.uid(), o.legendSets()
-        ) { legendSet: LegendSet ->
+        programIndicatorLegendSetLinkHandler.handleMany(o.uid(), o.legendSets()) { legendSet, sortOrder ->
             ProgramIndicatorLegendSetLink.builder()
-                .programIndicator(o.uid()).legendSet(legendSet.uid()).build()
+                .programIndicator(o.uid())
+                .legendSet(legendSet.uid())
+                .sortOrder(sortOrder)
+                .build()
         }
         analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList()) { b ->
             b.toBuilder().programIndicator(o.uid()).build()

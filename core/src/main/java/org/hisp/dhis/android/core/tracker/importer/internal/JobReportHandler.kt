@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ internal class JobReportHandler @Inject internal constructor(
 ) {
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
-        val jobObjectsMap = jobObjects.map { jo -> Pair(jo.trackerType(), jo.objectUid()) to jo }.toMap()
+        val jobObjectsMap = jobObjects.associateBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
         val relatedUids = getRelatedUids(jobObjects)
 
         handleErrors(o, jobObjectsMap)

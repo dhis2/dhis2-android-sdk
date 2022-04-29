@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@ import android.util.Log;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
 
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.io.File;
 
@@ -62,21 +62,21 @@ public class DatabaseExport {
         this.configurationHelper = configurationHelper;
     }
 
-    public void encrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
-        DatabaseUserConfiguration newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
+    public void encrypt(String serverUrl, DatabaseAccount oldConfiguration) {
+        DatabaseAccount newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
         export(oldConfiguration, newConfiguration, null,
                 passwordManager.getPassword(newConfiguration.databaseName()), "Encrypt", null,
                 EncryptedDatabaseOpenHelper.hook);
     }
 
-    public void decrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
-        DatabaseUserConfiguration newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
+    public void decrypt(String serverUrl, DatabaseAccount oldConfiguration) {
+        DatabaseAccount newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
         export(oldConfiguration, newConfiguration, passwordManager.getPassword(oldConfiguration.databaseName()),
                 "", "Decrypt", EncryptedDatabaseOpenHelper.hook, null);
     }
 
-    private void export(DatabaseUserConfiguration oldConfiguration,
-                        DatabaseUserConfiguration newConfiguration, String oldPassword, String newPassword, String tag,
+    private void export(DatabaseAccount oldConfiguration,
+                        DatabaseAccount newConfiguration, String oldPassword, String newPassword, String tag,
                         SQLiteDatabaseHook oldHook, SQLiteDatabaseHook newHook) {
         wrapAction(() -> {
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());

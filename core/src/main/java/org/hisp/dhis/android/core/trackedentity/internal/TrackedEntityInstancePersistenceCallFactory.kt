@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -42,33 +43,29 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
 ) {
     fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
-        isFullUpdate: Boolean,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives
     ): Completable {
-        return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite, relatives)
+        return persistTEIsInternal(trackedEntityInstances, params, relatives)
     }
 
     fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>): Completable {
-        return persistTEIsInternal(
-            trackedEntityInstances,
-            asRelationship = true,
-            isFullUpdate = false,
+        val params = IdentifiableDataHandlerParams(
+            hasAllAttributes = false,
             overwrite = false,
-            relatives = null
+            asRelationship = true
         )
+        return persistTEIsInternal(trackedEntityInstances, params, relatives = null)
     }
 
     private fun persistTEIsInternal(
         trackedEntityInstances: List<TrackedEntityInstance>,
-        asRelationship: Boolean,
-        isFullUpdate: Boolean,
-        overwrite: Boolean,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {
             trackedEntityInstanceHandler.handleMany(
-                trackedEntityInstances, asRelationship, isFullUpdate, overwrite, relatives
+                trackedEntityInstances, params, relatives
             )
             if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
                 organisationUnitDownloader.refreshOrganisationUnits()

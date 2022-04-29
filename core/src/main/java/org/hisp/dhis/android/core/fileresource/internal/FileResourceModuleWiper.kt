@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,18 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import android.content.Context
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable
 internal class FileResourceModuleWiper @Inject constructor(
-    private val tableWiper: TableWiper
+    private val tableWiper: TableWiper,
+    private val context: Context
 ) : ModuleWiper {
 
     override fun wipeMetadata() {
@@ -44,5 +47,6 @@ internal class FileResourceModuleWiper @Inject constructor(
 
     override fun wipeData() {
         tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO)
+        FileResourceDirectoryHelper.getFileResourceDirectory(context).deleteRecursively()
     }
 }

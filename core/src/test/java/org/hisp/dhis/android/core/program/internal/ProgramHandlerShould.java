@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -122,9 +121,6 @@ public class ProgramHandlerShould {
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
     @Mock
-    private List<ProgramIndicator> programIndicators;
-
-    @Mock
     private ProgramRuleVariable programRuleVariable;
 
     @Mock
@@ -145,9 +141,16 @@ public class ProgramHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programHandler = new ProgramHandler(
-                programStore, programRuleVariableHandler, programIndicatorHandler,
-                programTrackedEntityAttributeHandler, programSectionHandler, orphanCleaner,
-                collectionCleaner, linkCleaner, attributeHandler, programAttributeValueLinkHandler);
+                programStore,
+                programRuleVariableHandler,
+                programTrackedEntityAttributeHandler,
+                programSectionHandler,
+                orphanCleaner,
+                collectionCleaner,
+                linkCleaner,
+                attributeHandler,
+                programAttributeValueLinkHandler
+        );
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -179,7 +182,6 @@ public class ProgramHandlerShould {
 
         when(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
                 .thenReturn(programTrackedEntityAttributes);
-        when(ProgramInternalAccessor.accessProgramIndicators(program)).thenReturn(programIndicators);
         when(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
         when(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections);
         when(program.access()).thenReturn(access);

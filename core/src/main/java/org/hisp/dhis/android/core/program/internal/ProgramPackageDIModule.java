@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -70,6 +71,12 @@ public final class ProgramPackageDIModule {
 
     @Provides
     @Reusable
+    UidsCall<ProgramIndicator> programIndicatorCall(ProgramIndicatorCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
     UidsCall<ProgramRule> programRuleCall(ProgramRuleCall impl) {
         return impl;
     }
@@ -84,6 +91,12 @@ public final class ProgramPackageDIModule {
     @Reusable
     ProgramRuleService programRuleService(Retrofit retrofit) {
         return retrofit.create(ProgramRuleService.class);
+    }
+
+    @Provides
+    @Reusable
+    ProgramIndicatorService programIndicatorService(Retrofit retrofit) {
+        return retrofit.create(ProgramIndicatorService.class);
     }
 
     @Provides

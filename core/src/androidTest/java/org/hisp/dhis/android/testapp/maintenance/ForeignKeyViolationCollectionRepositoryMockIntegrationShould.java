@@ -46,7 +46,7 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     @Test
     public void find_all() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(3);
+        assertThat(foreignKeyViolations.size()).isEqualTo(4);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     public void filter_by_to_column() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
                 .byToColumn().eq("uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(2);
+        assertThat(foreignKeyViolations.size()).isEqualTo(3);
     }
 
     @Test
@@ -102,6 +102,6 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     public void filter_by_created() throws ParseException {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
                 .byCreated().after(BaseIdentifiableObject.parseDate("2019-01-15T08:14:06.767")).blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(3);
+        assertThat(foreignKeyViolations.size()).isEqualTo(4);
     }
 }

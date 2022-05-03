@@ -105,6 +105,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
             Single.just(emptyList())
         )
+        whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
             Single.just(emptyList())
         )

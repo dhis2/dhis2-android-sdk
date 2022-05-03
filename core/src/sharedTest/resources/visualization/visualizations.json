@@ -84,6 +84,12 @@
           "dataElement": {
             "id": "cYeuwXTCPkU"
           }
+        },
+        {
+          "dataDimensionItemType": "PROGRAM_INDICATOR",
+          "programIndicator": {
+            "id": "p2Zxg0wcPQ3"
+          }
         }
       ],
       "organisationUnitLevels": [
@@ -165,6 +171,12 @@
           "dataDimensionItemType": "DATA_ELEMENT",
           "dataElement": {
             "id": "g9eOBujte1U"
+          }
+        },
+        {
+          "dataDimensionItemType": "PROGRAM_INDICATOR",
+          "programIndicator": {
+            "id": "GSae40Fyppf"
           }
         }
       ],

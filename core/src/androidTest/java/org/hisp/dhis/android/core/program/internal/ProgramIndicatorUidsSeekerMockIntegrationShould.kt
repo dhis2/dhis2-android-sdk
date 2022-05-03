@@ -26,24 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.internal
 
-import java.util.List;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-public final class ProgramInternalAccessor {
-
-    private ProgramInternalAccessor() {
-    }
-
-    public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
-        return program.programTrackedEntityAttributes();
-    }
-
-    public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
-        return program.programRuleVariables();
-    }
-
-    public static List<ProgramSection> accessProgramSections(Program program) {
-        return program.programSections();
+@RunWith(D2JunitRunner::class)
+class ProgramIndicatorUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun seek_programIndicator_uids() {
+        val programIndicatorsUids = ProgramIndicatorUidsSeeker(databaseAdapter).seekUids()
+        Truth.assertThat(programIndicatorsUids.size).isEqualTo(2)
+        Truth.assertThat(programIndicatorsUids.contains("p2Zxg0wcPQ3")).isTrue()
+        Truth.assertThat(programIndicatorsUids.contains("GSae40Fyppf")).isTrue()
     }
 }

@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
@@ -77,9 +76,6 @@ public class ProgramHandlerShould {
 
     @Mock
     private Handler<ProgramRuleVariable> programRuleVariableHandler;
-
-    @Mock
-    private Handler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
     private Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
@@ -211,12 +207,6 @@ public class ProgramHandlerShould {
     public void call_program_tracked_entity_attributes_handler() {
         programHandler.handle(program);
         verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class));
-    }
-
-    @Test
-    public void call_program_indicator_handler() {
-        programHandler.handle(program);
-        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class));
     }
 
     @Test

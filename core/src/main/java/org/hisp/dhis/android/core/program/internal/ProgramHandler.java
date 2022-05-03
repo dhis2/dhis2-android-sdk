@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
@@ -58,7 +57,6 @@ import dagger.Reusable;
 final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
 
     private final Handler<ProgramRuleVariable> programRuleVariableHandler;
-    private final Handler<ProgramIndicator> programIndicatorHandler;
     private final Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final Handler<ProgramSection> programSectionHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
@@ -73,7 +71,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
                    Handler<ProgramRuleVariable> programRuleVariableHandler,
-                   Handler<ProgramIndicator> programIndicatorHandler,
                    Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    Handler<ProgramSection> programSectionHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
@@ -83,7 +80,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    LinkHandler<Attribute, ProgramAttributeValueLink> programAttributeLinkHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
-        this.programIndicatorHandler = programIndicatorHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
         this.orphanCleaner = orphanCleaner;
@@ -97,7 +93,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     protected void afterObjectHandled(Program program, HandleAction action) {
         programTrackedEntityAttributeHandler.handleMany(ProgramInternalAccessor
                 .accessProgramTrackedEntityAttributes(program));
-        programIndicatorHandler.handleMany(ProgramInternalAccessor.accessProgramIndicators(program));
         programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(program));
         programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(program));
 
@@ -105,7 +100,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
             orphanCleaner.deleteOrphan(program);
         }
 
-        if (program.attributeValues() != null){
+        if (program.attributeValues() != null) {
             final List<Attribute> attributes = AttributeValueUtils.extractAttributes(program.attributeValues());
 
             attributeHandler.handleMany(attributes);

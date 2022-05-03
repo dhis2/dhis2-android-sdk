@@ -61,7 +61,7 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
 
     @Nullable
     @JsonProperty()
-    public abstract String expression();
+    public abstract String  expression();
 
     @Nullable
     @JsonProperty()

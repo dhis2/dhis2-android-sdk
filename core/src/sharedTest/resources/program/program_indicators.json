@@ -1,0 +1,88 @@
+{
+  "programIndicators": [
+    {
+      "lastUpdated": "2015-09-21T23:47:57.820",
+      "id": "GSae40Fyppf",
+      "href": "https://play.dhis2.org/dev/api/programIndicators/GSae40Fyppf",
+      "created": "2015-09-21T23:35:50.945",
+      "name": "Age at visit",
+      "shortName": "Age",
+      "aggregationType": "AVERAGE",
+      "displayName": "Age at visit",
+      "displayInForm": true,
+      "publicAccess": "rw------",
+      "description": "Age at visit",
+      "displayShortName": "Age",
+      "externalAccess": false,
+      "displayDescription": "Age at visit",
+      "expression": "1",
+      "dimensionItem": "GSae40Fyppf",
+      "dimensionItemType": "PROGRAM_INDICATOR",
+      "analyticsType": "EVENT",
+      "access": {
+        "read": true,
+        "updateWithSection": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "legendSets": [
+        {
+          "id": "TiOkbpGEud4"
+        }
+      ],
+      "analyticsPeriodBoundaries": [
+        {
+          "offsetPeriodType": "SixMonthly",
+          "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD",
+          "boundaryTarget": "EVENT_DATE",
+          "offsetPeriods": 1
+        },
+        {
+          "analyticsPeriodBoundaryType": "BEFORE_END_OF_REPORTING_PERIOD",
+          "boundaryTarget": "EVENT_DATE",
+          "offsetPeriods": -3
+        }
+      ]
+    },
+    {
+      "created": "2014-10-20T11:26:19.631",
+      "lastUpdated": "2014-10-20T11:26:19.631",
+      "name": "Health immunization score",
+      "id": "p2Zxg0wcPQ3",
+      "shortName": "Health immunization score",
+      "displayDescription": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+      "aggregationType": "AVERAGE",
+      "expression": "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR.rxBfISxXS2U}) * d2:condition('#{A03MvHHogjR.a3kGcGDCuk6} >= 2',1,2)",
+      "dimensionItem": "rXoaHGAXWy9",
+      "displayName": "Health immunization score",
+      "displayInForm": false,
+      "description": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+      "displayShortName": "Health immunization score",
+      "decimals": 2,
+      "filter": "#{edqlbukwRfQ.vANAXwtLwcT} < 11",
+      "analyticsType": "ENROLLMENT",
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "legendSets": [],
+      "analyticsPeriodBoundaries": [
+        {
+          "offsetPeriodType": "FinancialOct",
+          "analyticsPeriodBoundaryType": "BEFORE_START_OF_REPORTING_PERIOD",
+          "offsetPeriods": 1
+        },
+        {
+          "offsetPeriodType": "FinancialApril",
+          "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD",
+          "boundaryTarget": "ENROLLMENT_DATE",
+          "offsetPeriods": 2
+        }
+      ]
+    }
+  ]
+}

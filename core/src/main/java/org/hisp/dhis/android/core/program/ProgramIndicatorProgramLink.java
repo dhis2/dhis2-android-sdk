@@ -26,35 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.program;
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import android.database.Cursor;
 
-@Reusable
-internal class ProgramIndicatorUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
+import com.google.auto.value.AutoValue;
 
-    fun seekUids(): Set<String> {
-        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
-            .build()
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val programIndicators = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    programIndicators.add(cursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-        return programIndicators
+@AutoValue
+public abstract class ProgramIndicatorProgramLink implements CoreObject {
+
+    public abstract String program();
+
+    public abstract String programIndicator();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramIndicatorProgramLink.Builder();
+    }
+
+    public static ProgramIndicatorProgramLink create(Cursor cursor) {
+        return $AutoValue_ProgramIndicatorProgramLink.createFromCursor(cursor);
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder programIndicator(String programIndicator);
+
+        public abstract ProgramIndicatorProgramLink build();
     }
 }

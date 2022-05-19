@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -40,7 +41,9 @@ internal interface ProgramIndicatorService {
     @GET("programIndicators")
     fun getProgramIndicator(
         @Query("fields") @Which fields: Fields<ProgramIndicator>,
-        @Query("filter") filter: String,
+        @Query("filter") displayInForm: String?,
+        @Query("filter") program: String?,
+        @Query("filter") uids: Filter<ProgramIndicator, String>?,
         @Query("paging") paging: Boolean,
     ): Single<Payload<ProgramIndicator>>
 }

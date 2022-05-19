@@ -38,13 +38,29 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLink
 
 @Reusable
 internal class ProgramIndicatorHandler @Inject constructor(
     programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
     private val programIndicatorLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink>,
+    private val programIndicatorProgramLinkHandler: LinkHandler<ProgramIndicator, ProgramIndicatorProgramLink>,
     private val analyticsPeriodBoundaryHandler: LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
+
+    override fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
+        val programIndicators = oCollection?.filter { programIndicator ->
+            programIndicator.program() != null
+        }
+        programIndicators?.groupBy { it.program()!!.uid() }?.forEach {
+            programIndicatorProgramLinkHandler.handleMany(it.key, it.value) { programIndicator ->
+                ProgramIndicatorProgramLink.builder()
+                    .programIndicator(programIndicator.uid())
+                    .program(programIndicator.program()!!.uid())
+                    .build()
+            }
+        }
+    }
 
     override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
         programIndicatorLegendSetLinkHandler.handleMany(o.uid(), o.legendSets()) { legendSet, sortOrder ->

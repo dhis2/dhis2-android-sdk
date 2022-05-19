@@ -26,35 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.program
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
 
-@Reusable
-internal class ProgramIndicatorUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
+class ProgramIndicatorProgramLinkTableInfo {
 
-    fun seekUids(): Set<String> {
-        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
-            .build()
+    companion object {
+        val TABLE_INFO: TableInfo = object : TableInfo() {
+            override fun name(): String {
+                return "ProgramIndicatorProgramLink"
+            }
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val programIndicators = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    programIndicators.add(cursor.getString(0))
-                } while (mCursor.moveToNext())
+            override fun columns(): CoreColumns {
+                return Columns()
             }
         }
-        return programIndicators
+        val CHILD_PROJECTION = LinkTableChildProjection(
+            LegendSetTableInfo.TABLE_INFO,
+            Columns.PROGRAM,
+            Columns.PROGRAM_INDICATOR,
+        )
+    }
+
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM, PROGRAM_INDICATOR
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return arrayOf(PROGRAM, PROGRAM_INDICATOR)
+        }
+
+        companion object {
+            const val PROGRAM = "program"
+            const val PROGRAM_INDICATOR = "programIndicator"
+        }
     }
 }

@@ -72,7 +72,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -534,23 +533,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                List<TrackedEntityInstance> instances = new ArrayList<>();
-                Set<String> returnedUids = scope.excludedUids() == null ? Collections.emptySet() : scope.excludedUids();
-
-                List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
-
-                for (TrackedEntityInstanceQueryOnline onlineQuery : onlineQueries) {
-                    TrackedEntityInstanceQueryOnline noPagingQuery = onlineQuery.toBuilder().paging(false).build();
-                    List<TrackedEntityInstance> pageInstances = onlineCallFactory.getCall(noPagingQuery).call();
-
-                    for (TrackedEntityInstance instance : pageInstances) {
-                        if (!returnedUids.contains(instance.uid())) {
-                            instances.add(instance);
-                            returnedUids.add(instance.uid());
-                        }
-                    }
-                }
-                return instances;
+                return onlineHelper.queryOnlineBlocking(onlineCallFactory, scope);
             } catch (D2Error e) {
                 throw new RuntimeException(e);
             } catch (Exception e) {

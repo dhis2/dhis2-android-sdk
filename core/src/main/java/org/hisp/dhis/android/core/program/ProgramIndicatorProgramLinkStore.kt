@@ -26,35 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.program
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 
-@Reusable
-internal class ProgramIndicatorUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
 
-    fun seekUids(): Set<String> {
-        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
-            .build()
+@Suppress("MagicNumber")
+internal class ProgramIndicatorProgramLinkStore {
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val programIndicators = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    programIndicators.add(cursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
+    companion object {
+        private val BINDER = StatementBinder { o: ProgramIndicatorProgramLink, w: StatementWrapper ->
+            w.bind(1, o.program())
+            w.bind(2, o.programIndicator())
         }
-        return programIndicators
+
+        @JvmStatic
+        fun create(databaseAdapter: DatabaseAdapter): LinkStore<ProgramIndicatorProgramLink> {
+            return StoreFactory.linkStore(
+                databaseAdapter = databaseAdapter,
+                tableInfo = ProgramIndicatorProgramLinkTableInfo.TABLE_INFO,
+                masterColumn = ProgramIndicatorProgramLinkTableInfo.Columns.PROGRAM,
+                binder = BINDER,
+                objectFactory = {
+                    ProgramIndicatorProgramLink.create(it)
+                }
+            )
+        }
     }
 }

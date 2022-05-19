@@ -28,33 +28,33 @@
 
 package org.hisp.dhis.android.core.program.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLink
+import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLinkStore.Companion.create
 
-@Reusable
-internal class ProgramIndicatorUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
 
-    fun seekUids(): Set<String> {
-        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
-            .build()
+@Module
+internal class ProgramIndicatorProgramEntityDIModule {
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val programIndicators = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    programIndicators.add(cursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-        return programIndicators
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<ProgramIndicatorProgramLink> {
+        return create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun handler(
+        store: LinkStore<ProgramIndicatorProgramLink>
+    ): LinkHandler<ProgramIndicator, ProgramIndicatorProgramLink> {
+        return LinkHandlerImpl(store)
     }
 }

@@ -50,6 +50,12 @@ internal interface APIDownloader {
         transform: (O) -> P
     ): Single<List<P>>
 
+    fun <P> downloadPartitioned(
+        uids: Set<String>,
+        pageSize: Int,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): Single<List<P>>
+
     fun <K, V> downloadPartitionedMap(
         uids: Set<String>,
         pageSize: Int,

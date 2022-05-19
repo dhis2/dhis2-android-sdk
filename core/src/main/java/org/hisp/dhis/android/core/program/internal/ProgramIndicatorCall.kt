@@ -32,7 +32,6 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,7 +41,8 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 internal class ProgramIndicatorCall @Inject constructor(
     private val service: ProgramIndicatorService,
     private val handler: Handler<ProgramIndicator>,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
+    private val programStore: ProgramStoreInterface
 ) : UidsCall<ProgramIndicator> {
 
     companion object {
@@ -50,32 +50,42 @@ internal class ProgramIndicatorCall @Inject constructor(
     }
 
     override fun download(uids: Set<String>): Single<List<ProgramIndicator>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids ->
-            val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true).generateString()
-            val programUidsFilter = "program.${ObjectWithUid.uid.`in`(partitionUids).generateString()}"
+        val programUids = programStore.selectUids()
 
-            val programFilterSingle = service.getProgramIndicator(
-                fields = ProgramIndicatorFields.allFields,
-                filter = programUidsFilter,
-                false
-            )
-            val displayInFormFilterSingle = service.getProgramIndicator(
-                fields = ProgramIndicatorFields.allFields,
-                filter = displayInFormFilter,
-                false
-            )
+        val firstPayload = apiDownloader.downloadPartitioned(
+            uids = programUids.toSet(),
+            pageSize = MAX_UID_LIST_SIZE,
+            pageDownloader = {  partitionUids ->
+                val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true).generateString()
+                val programUidsFilter = "program.${ObjectWithUid.uid.`in`(partitionUids).generateString()}"
+                service.getProgramIndicator(
+                    fields = ProgramIndicatorFields.allFields,
+                    displayInForm = displayInFormFilter,
+                    program = programUidsFilter,
+                    uids = null,
+                    false
+                )
+            }
+        )
 
-            Single.merge(programFilterSingle, displayInFormFilterSingle).reduce { t1, t2 ->
-                val data = t1.items() + t2.items()
-                val updatedPayload = Payload<ProgramIndicator>()
-                updatedPayload.apply {
-                    items().addAll(data)
-                }
-            }.toSingle()
-        }
+        val secondPayload = apiDownloader.downloadPartitioned(
+            uids = uids,
+            pageSize = MAX_UID_LIST_SIZE,
+            pageDownloader = { partitionUids ->
+                service.getProgramIndicator(
+                    fields = ProgramIndicatorFields.allFields,
+                    displayInForm = null,
+                    program = null,
+                    uids = ProgramIndicatorFields.uid.`in`(partitionUids),
+                    false
+                )
+            }
+        )
+
+        return Single.merge(firstPayload, secondPayload).reduce { t1, t2 ->
+            val data = (t1 + t2).toSet()
+            handler.handleMany(data)
+            data.toList()
+        }.toSingle()
     }
 }

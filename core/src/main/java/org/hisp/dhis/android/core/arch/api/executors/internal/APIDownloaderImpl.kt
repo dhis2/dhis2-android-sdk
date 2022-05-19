@@ -74,6 +74,37 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
+    override fun <P> downloadPartitioned(
+        uids: Set<String>,
+        pageSize: Int,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): Single<List<P>> {
+        return downloadPartitionedWithoutHandling(
+            uids = uids,
+            pageSize = pageSize,
+            pageDownloader = pageDownloader,
+            transform = { it }
+        )
+    }
+
+    private fun <P, O> downloadPartitionedWithoutHandling(
+        uids: Set<String>,
+        pageSize: Int,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
+    ): Single<List<P>> {
+        val partitions = CollectionsHelper.setPartition(uids, pageSize)
+        return Observable.fromIterable(partitions)
+            .flatMapSingle(pageDownloader)
+            .map { obj: Payload<O> -> obj.items() }
+            .reduce(emptyList()) { items: List<O>, items2: List<O> ->
+                items + items2
+            }
+            .map { items: List<O> ->
+                items.map { transform(it) }
+            }
+    }
+
     private fun <P, O> downloadPartitionedWithCustomHandling(
         uids: Set<String>,
         pageSize: Int,

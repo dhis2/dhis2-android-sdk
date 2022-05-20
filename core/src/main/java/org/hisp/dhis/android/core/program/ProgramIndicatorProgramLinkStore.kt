@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 
-
 @Suppress("MagicNumber")
 internal class ProgramIndicatorProgramLinkStore {
 

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import java.lang.Exception
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper

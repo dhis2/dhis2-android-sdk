@@ -56,7 +56,7 @@ internal class ProgramIndicatorCall @Inject constructor(
             uids = programUids.toSet(),
             pageSize = MAX_UID_LIST_SIZE,
             pageDownloader = { partitionUids ->
-                val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true).generateString()
+                val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true)
                 val programUidsFilter = "program.${ObjectWithUid.uid.`in`(partitionUids).generateString()}"
                 service.getProgramIndicator(
                     fields = ProgramIndicatorFields.allFields,

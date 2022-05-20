@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 
 @Reusable
 @VisibleForTesting
+@Suppress("TooManyFunctions")
 internal class APIDownloaderImpl @Inject constructor(private val resourceHandler: ResourceHandler) : APIDownloader {
 
     override fun <P> downloadPartitioned(

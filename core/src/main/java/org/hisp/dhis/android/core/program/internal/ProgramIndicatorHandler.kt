@@ -29,36 +29,39 @@ package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLink
 
 @Reusable
 internal class ProgramIndicatorHandler @Inject constructor(
-    programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+    private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
     private val programIndicatorLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink>,
-    private val programIndicatorProgramLinkHandler: LinkHandler<ProgramIndicator, ProgramIndicatorProgramLink>,
     private val analyticsPeriodBoundaryHandler: LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
     override fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
-        val programIndicators = oCollection?.filter { programIndicator ->
-            programIndicator.program() != null
+        val inDbProgramIndicatorUids = programIndicatorStore.selectUids()
+        val apiProgramIndicatorUids = oCollection?.map(ProgramIndicator::uid)
+        val deleteProgramIndicatorUid = inDbProgramIndicatorUids.filter { inDbProgramIndicatorUid ->
+            val isPresentOnline = apiProgramIndicatorUids?.contains(inDbProgramIndicatorUid)
+            isPresentOnline == false
         }
-        programIndicators?.groupBy { it.program()!!.uid() }?.forEach {
-            programIndicatorProgramLinkHandler.handleMany(it.key, it.value) { programIndicator ->
-                ProgramIndicatorProgramLink.builder()
-                    .programIndicator(programIndicator.uid())
-                    .program(programIndicator.program()!!.uid())
-                    .build()
+        val query = WhereClauseBuilder().apply {
+            deleteProgramIndicatorUid.forEach { uid ->
+                appendOrKeyStringValue(IdentifiableColumns.UID, uid)
             }
+        }
+        if (!query.isEmpty) {
+            programIndicatorStore.deleteWhere(query.build())
         }
     }
 

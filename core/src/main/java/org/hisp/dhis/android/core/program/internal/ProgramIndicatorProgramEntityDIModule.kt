@@ -35,11 +35,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLink
 import org.hisp.dhis.android.core.program.ProgramIndicatorProgramLinkStore.Companion.create
-
 
 @Module
 internal class ProgramIndicatorProgramEntityDIModule {

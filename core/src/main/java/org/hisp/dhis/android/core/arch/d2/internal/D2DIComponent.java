@@ -80,6 +80,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPack
 import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorProgramEntityDIModule;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
@@ -149,6 +150,7 @@ import retrofit2.Retrofit;
         UserPackageDIModule.class,
         ValidationPackageDIModule.class,
         VisualizationPackageDIModule.class,
+        ProgramIndicatorProgramEntityDIModule.class,
         DataValueConflictDIModule.class}
 )
 

@@ -31,7 +31,10 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.level3
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
 
 object AnalyticsServiceHelperSamples {
 
@@ -50,4 +53,22 @@ object AnalyticsServiceHelperSamples {
     val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
     val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())
     val categoryItem2_1 = DimensionItem.CategoryItem(AggregatedSamples.cc2.uid(), AggregatedSamples.co21.uid())
+
+    val period1 = Period.builder()
+        .periodType(PeriodType.Daily)
+        .periodId("20210701")
+        .startDate(DateUtils.DATE_FORMAT.parse("2021-07-01T00:00:00.000"))
+        .build()
+
+    val period2 = Period.builder()
+        .periodType(PeriodType.Daily)
+        .periodId("20210702")
+        .startDate(DateUtils.DATE_FORMAT.parse("2021-07-02T00:00:00.000"))
+        .build()
+
+    val period3 = Period.builder()
+        .periodType(PeriodType.Daily)
+        .periodId("20210703")
+        .startDate(DateUtils.DATE_FORMAT.parse("2021-07-03T00:00:00.000"))
+        .build()
 }

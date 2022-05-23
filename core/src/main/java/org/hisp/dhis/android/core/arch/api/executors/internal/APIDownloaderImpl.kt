@@ -113,19 +113,14 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
         transform: (O) -> P
     ): Single<List<P>> {
-        val partitions = CollectionsHelper.setPartition(uids, pageSize)
-        return Observable.fromIterable(partitions)
-            .flatMapSingle(pageDownloader)
-            .map { obj: Payload<O> -> obj.items() }
-            .reduce(emptyList()) { items: List<O>, items2: List<O> ->
-                items + items2
-            }
-            .map { items: List<O> ->
-                items.map { transform(it) }
-            }
-            .doOnSuccess { oCollection: List<P> ->
-                handler.handleMany(oCollection)
-            }
+        return downloadPartitionedWithoutHandling(
+            uids = uids,
+            pageSize = pageSize,
+            pageDownloader = pageDownloader,
+            transform = transform
+        ).doOnSuccess { oCollection: List<P> ->
+            handler.handleMany(oCollection)
+        }
     }
 
     override fun <K, V> downloadPartitionedMap(

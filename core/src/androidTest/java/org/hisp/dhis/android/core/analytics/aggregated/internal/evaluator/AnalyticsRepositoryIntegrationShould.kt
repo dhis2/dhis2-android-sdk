@@ -40,14 +40,16 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         val result = d2.analyticsModule().analytics()
             .withDimension(DimensionItem.DataItem.DataElementItem("g9eOBujte1U"))
             .withDimension(DimensionItem.PeriodItem.Absolute("2022"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("202105"))
             .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
             .blockingEvaluate()
             .getOrThrow()
 
         val valuePeriods = result.values.map { it.dimensions.last() }
-        assertThat(valuePeriods.size).isEqualTo(2)
-        assertThat(valuePeriods[0]).isEqualTo("2021")
-        assertThat(valuePeriods[1]).isEqualTo("2022")
+        assertThat(valuePeriods.size).isEqualTo(3)
+        assertThat(valuePeriods[0]).isEqualTo("202105")
+        assertThat(valuePeriods[1]).isEqualTo("2021")
+        assertThat(valuePeriods[2]).isEqualTo("2022")
     }
 
     @Test
@@ -57,6 +59,7 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
             .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
             .withDimension(DimensionItem.PeriodItem.Absolute("2022"))
             .withDimension(DimensionItem.PeriodItem.Absolute("2022"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
             .blockingEvaluate()
             .getOrThrow()
 

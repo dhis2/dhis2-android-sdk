@@ -31,14 +31,15 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
-import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -48,9 +49,11 @@ class AnalyticsServiceDimensionHelperShould {
 
     private val periodGenerator: ParentPeriodGenerator = mock()
 
+    private val periodHelper: PeriodHelper = mock()
+
     private val organisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
 
-    private val helper = AnalyticsServiceDimensionHelper(periodGenerator, organisationUnitHelper)
+    private val helper = AnalyticsServiceDimensionHelper(periodGenerator, periodHelper, organisationUnitHelper)
 
     @Test
     fun `Should extract unique dimension values`() {
@@ -71,7 +74,7 @@ class AnalyticsServiceDimensionHelperShould {
             filters = listOf()
         )
 
-        val dimensionSet = helper.getDimensions(params)
+        val dimensionSet = helper.getQueryDimensions(params)
 
         assertThat(dimensionSet).containsExactly(
             Dimension.Data,
@@ -96,12 +99,14 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = listOf(
-            Dimension.Period, Dimension.Data, Dimension.OrganisationUnit,
-            Dimension.Category(s.categoryItem1_1.uid)
+        val dimensionsMap = mapOf(
+            Dimension.Period to listOf(s.periodAbsolute1, s.periodAbsolute2),
+            Dimension.Data to listOf(s.dataElementItem1, s.indicatorItem),
+            Dimension.OrganisationUnit to listOf(s.orgunitAbsolute),
+            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1, s.categoryItem1_2)
         )
 
-        val items = helper.getEvaluationItems(params, dimensions)
+        val items = helper.getEvaluationItems(params, dimensionsMap)
 
         assertThat(items).containsExactly(
             item(s.periodAbsolute1, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1),
@@ -126,9 +131,13 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = listOf(Dimension.Period, Dimension.Data, Dimension.Category(s.categoryItem1_1.uid))
+        val dimensionsMap = mapOf(
+            Dimension.Period to listOf(s.periodAbsolute1),
+            Dimension.Data to listOf(s.dataElementItem1),
+            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1)
+        )
 
-        val items = helper.getEvaluationItems(params, dimensions)
+        val items = helper.getEvaluationItems(params, dimensionsMap)
 
         assertThat(items).containsExactly(
             item(s.periodAbsolute1, s.dataElementItem1, s.categoryItem1_1)
@@ -138,30 +147,31 @@ class AnalyticsServiceDimensionHelperShould {
     @Test
     fun `Should evaluate relative periods`() {
         whenever(periodGenerator.generateRelativePeriods(s.periodLast3Days.relative))
-            .thenReturn(
-                listOf(
-                    Period.builder().periodId("20210701").build(),
-                    Period.builder().periodId("20210702").build(),
-                    Period.builder().periodId("20210703").build()
-                )
-            )
+            .thenReturn(listOf(s.period1, s.period2, s.period3))
 
-        val params = AnalyticsRepositoryParams(
-            dimensions = listOf(
-                s.dataElementItem1,
-                s.periodLast3Days,
-                s.orgunitAbsolute
-            ),
-            filters = listOf()
+        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period1.periodId()!!)).doReturn(s.period1)
+        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period2.periodId()!!)).doReturn(s.period2)
+        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period3.periodId()!!)).doReturn(s.period3)
+
+        val dimensionItems = listOf(
+            s.dataElementItem1,
+            s.periodLast3Days,
+            s.orgunitAbsolute
         )
         val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
-        val items = helper.getEvaluationItems(params, dimensions)
+        val items = helper.getQueryAbsoluteDimensionItems(dimensionItems, dimensions)
 
-        assertThat(items).containsExactly(
-            item(s.dataElementItem1, DimensionItem.PeriodItem.Absolute("20210701"), s.orgunitAbsolute),
-            item(s.dataElementItem1, DimensionItem.PeriodItem.Absolute("20210702"), s.orgunitAbsolute),
-            item(s.dataElementItem1, DimensionItem.PeriodItem.Absolute("20210703"), s.orgunitAbsolute)
+        assertThat(items).isEqualTo(
+            mapOf(
+                Dimension.Data to listOf(s.dataElementItem1),
+                Dimension.Period to listOf(
+                    DimensionItem.PeriodItem.Absolute("20210701"),
+                    DimensionItem.PeriodItem.Absolute("20210702"),
+                    DimensionItem.PeriodItem.Absolute("20210703")
+                ),
+                Dimension.OrganisationUnit to listOf(s.orgunitAbsolute)
+            )
         )
     }
 
@@ -170,22 +180,25 @@ class AnalyticsServiceDimensionHelperShould {
         whenever(organisationUnitHelper.getOrganisationUnitUidsByLevelUid(any()))
             .thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 
-        val params = AnalyticsRepositoryParams(
-            dimensions = listOf(
-                s.dataElementItem1,
-                s.periodAbsolute1,
-                s.orgunitLevel3
-            ),
-            filters = listOf()
+        val dimensionItems = listOf(
+            s.dataElementItem1,
+            s.periodAbsolute1,
+            s.orgunitLevel3
         )
         val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
-        val items = helper.getEvaluationItems(params, dimensions)
+        val items = helper.getQueryAbsoluteDimensionItems(dimensionItems, dimensions)
 
-        assertThat(items).containsExactly(
-            item(s.dataElementItem1, s.periodAbsolute1, DimensionItem.OrganisationUnitItem.Absolute("orgunit1")),
-            item(s.dataElementItem1, s.periodAbsolute1, DimensionItem.OrganisationUnitItem.Absolute("orgunit2")),
-            item(s.dataElementItem1, s.periodAbsolute1, DimensionItem.OrganisationUnitItem.Absolute("orgunit3"))
+        assertThat(items).isEqualTo(
+            mapOf(
+                Dimension.Data to listOf(s.dataElementItem1),
+                Dimension.Period to listOf(s.periodAbsolute1),
+                Dimension.OrganisationUnit to listOf(
+                    DimensionItem.OrganisationUnitItem.Absolute("orgunit1"),
+                    DimensionItem.OrganisationUnitItem.Absolute("orgunit2"),
+                    DimensionItem.OrganisationUnitItem.Absolute("orgunit3")
+                )
+            )
         )
     }
 

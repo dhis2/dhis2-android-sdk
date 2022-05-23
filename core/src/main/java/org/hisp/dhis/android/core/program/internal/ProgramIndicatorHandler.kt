@@ -55,13 +55,13 @@ internal class ProgramIndicatorHandler @Inject constructor(
             val isPresentOnline = apiProgramIndicatorUids?.contains(inDbProgramIndicatorUid)
             isPresentOnline == false
         }
-        val query = WhereClauseBuilder().apply {
-            deleteProgramIndicatorUid.forEach { uid ->
-                appendOrKeyStringValue(IdentifiableColumns.UID, uid)
+
+        if (deleteProgramIndicatorUid.isNotEmpty()) {
+            val query = WhereClauseBuilder()
+                .appendInKeyStringValues(IdentifiableColumns.UID, deleteProgramIndicatorUid)
+            if (!query.isEmpty) {
+                programIndicatorStore.deleteWhere(query.build())
             }
-        }
-        if (!query.isEmpty) {
-            programIndicatorStore.deleteWhere(query.build())
         }
     }
 

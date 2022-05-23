@@ -33,29 +33,45 @@ import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 
 internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val periodGenerator: ParentPeriodGenerator,
+    private val periodHelper: PeriodHelper,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper
 ) {
 
-    fun getDimensions(params: AnalyticsRepositoryParams): List<Dimension> {
+    fun getQueryDimensions(params: AnalyticsRepositoryParams): List<Dimension> {
         return params.dimensions.map { it.dimension }.distinct()
+    }
+
+    /**
+     * Return the list of AbsoluteDimensionItems by each dimension.
+     */
+    fun getQueryAbsoluteDimensionItems(
+        queryDimensionItems: List<DimensionItem>,
+        dimensions: List<Dimension>
+    ): Map<Dimension, List<AbsoluteDimensionItem>> {
+        return dimensions.associateWith { dimension ->
+            queryDimensionItems
+                .filter { it.dimension == dimension }
+                .flatMap { item -> toAbsoluteDimensionItems(item) }
+                .let {
+                    when (dimension) {
+                        is Dimension.Period -> orderAndDeduplicatePeriods(it)
+                        else -> it
+                    }
+                }
+        }
     }
 
     fun getEvaluationItems(
         params: AnalyticsRepositoryParams,
-        dimensions: List<Dimension>
+        queryAbsoluteDimensionItems: Map<Dimension, List<AbsoluteDimensionItem>>
     ): List<AnalyticsServiceEvaluationItem> {
-        val absoluteDimensionItemList = dimensions.map { dimension ->
-            params.dimensions
-                .filter { it.dimension == dimension }
-                .flatMap { item -> toAbsoluteDimensionItems(item) }
-        }
-
-        val dimensionCartesianProductList = absoluteDimensionItemList
-            .fold(listOf(listOf<AbsoluteDimensionItem>())) { acc, dimension ->
-                acc.flatMap { list -> dimension.map { element -> list + element } }
+        val dimensionCartesianProductList = queryAbsoluteDimensionItems.entries
+            .fold(listOf(listOf<AbsoluteDimensionItem>())) { acc, dimensionEntry ->
+                acc.flatMap { list -> dimensionEntry.value.map { element -> list + element } }
             }
 
         return dimensionCartesianProductList.map { dimensionList ->
@@ -95,5 +111,25 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
                 }
             is DimensionItem.CategoryItem -> listOf(item)
         }
+    }
+
+    private fun orderAndDeduplicatePeriods(periods: List<AbsoluteDimensionItem>): List<AbsoluteDimensionItem> {
+        return periods
+            .asSequence()
+            .map { it as DimensionItem.PeriodItem.Absolute }
+            .distinct()
+            .map { Pair(it, periodHelper.blockingGetPeriodForPeriodId(it.periodId)) }
+            .sortedWith { a, b ->
+                val aPeriod = a.second
+                val bPeriod = b.second
+
+                if (aPeriod.periodType()!!.sortOrder != bPeriod.periodType()!!.sortOrder) {
+                    aPeriod.periodType()!!.sortOrder - bPeriod.periodType()!!.sortOrder
+                } else {
+                    (aPeriod.startDate()!!.time - bPeriod.startDate()!!.time).toInt()
+                }
+            }
+            .map { it.first }
+            .toList()
     }
 }

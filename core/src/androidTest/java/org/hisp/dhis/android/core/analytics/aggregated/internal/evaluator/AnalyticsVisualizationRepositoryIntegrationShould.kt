@@ -80,11 +80,13 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
     fun evaluate_visualization_with_unordered_periods() {
         val result = d2.analyticsModule().visualizations()
             .withVisualization(visualizationUid)
-            .withPeriods(listOf(
-                DimensionItem.PeriodItem.Absolute("2022"),
-                DimensionItem.PeriodItem.Absolute("2022"),
-                DimensionItem.PeriodItem.Absolute("2021")
-            ))
+            .withPeriods(
+                listOf(
+                    DimensionItem.PeriodItem.Absolute("2022"),
+                    DimensionItem.PeriodItem.Absolute("2022"),
+                    DimensionItem.PeriodItem.Absolute("2021")
+                )
+            )
             .blockingEvaluate()
             .getOrThrow()
 

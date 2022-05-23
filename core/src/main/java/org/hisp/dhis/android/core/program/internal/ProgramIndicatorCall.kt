@@ -84,8 +84,9 @@ internal class ProgramIndicatorCall @Inject constructor(
 
         return Single.merge(firstPayload, secondPayload).reduce { t1, t2 ->
             val data = (t1 + t2).toSet()
-            handler.handleMany(data)
             data.toList()
+        }.doOnSuccess {
+            handler.handleMany(it)
         }.toSingle()
     }
 }

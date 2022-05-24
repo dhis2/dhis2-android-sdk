@@ -51,7 +51,6 @@ internal class ProgramIndicatorCall @Inject constructor(
 
     override fun download(uids: Set<String>): Single<List<ProgramIndicator>> {
         val programUids = programStore.selectUids()
-
         val firstPayload = apiDownloader.downloadPartitioned(
             uids = programUids.toSet(),
             pageSize = MAX_UID_LIST_SIZE,
@@ -83,8 +82,8 @@ internal class ProgramIndicatorCall @Inject constructor(
         )
 
         return Single.merge(firstPayload, secondPayload).reduce { t1, t2 ->
-            val data = (t1 + t2).toSet()
-            data.toList()
+            val data = t1 + t2
+            data.distinctBy { it.uid() }
         }.doOnSuccess {
             handler.handleMany(it)
         }.toSingle()

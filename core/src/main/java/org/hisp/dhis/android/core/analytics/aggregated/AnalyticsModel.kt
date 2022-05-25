@@ -40,7 +40,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 sealed class MetadataItem(val id: String, val displayName: String) {
     class DataElementItem(val item: DataElement) : MetadataItem(item.uid(), item.displayName()!!)
@@ -49,6 +51,10 @@ sealed class MetadataItem(val id: String, val displayName: String) {
 
     class IndicatorItem(val item: Indicator) : MetadataItem(item.uid(), item.displayName()!!)
     class ProgramIndicatorItem(val item: ProgramIndicator) : MetadataItem(item.uid(), item.displayName()!!)
+    class EventDataElementItem(val item: DataElement, val program: Program) :
+        MetadataItem("${item.uid()}.${program.uid()}", "${program.displayName()} ${item.displayName()}")
+    class EventAttributeItem(val item: TrackedEntityAttribute, program: Program) :
+        MetadataItem("${item.uid()}.${program.uid()}", "${program.displayName()} ${item.displayName()}")
 
     class CategoryItem(val item: Category) : MetadataItem(item.uid(), item.displayName()!!)
     class CategoryOptionItem(val item: CategoryOption) : MetadataItem(item.uid(), item.displayName()!!)
@@ -92,6 +98,12 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
 
         data class IndicatorItem(val uid: String) : DataItem(uid)
         data class ProgramIndicatorItem(val uid: String) : DataItem(uid)
+
+        sealed class EventDataItem(id: String) : DataItem(id) {
+            data class DataElement(val program: String, val dataElement: String) :
+                EventDataItem("$program.$dataElement")
+            data class Attribute(val program: String, val attribute: String) : EventDataItem("$program.$attribute")
+        }
     }
 
     sealed class PeriodItem(id: String) : DimensionItem(Dimension.Period, id) {

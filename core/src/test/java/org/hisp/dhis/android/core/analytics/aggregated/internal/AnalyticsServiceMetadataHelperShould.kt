@@ -46,6 +46,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -62,6 +64,8 @@ class AnalyticsServiceMetadataHelperShould {
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
+    private val programStore: ProgramStoreInterface = mock()
+    private val trackedEntityAttribute: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository = mock()
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
     private val parentPeriodGenerator: ParentPeriodGenerator = mock()
@@ -77,6 +81,8 @@ class AnalyticsServiceMetadataHelperShould {
         organisationUnitStore,
         organisationUnitGroupStore,
         organisationUnitLevelStore,
+        programStore,
+        trackedEntityAttribute,
         programIndicatorRepository,
         analyticsOrganisationUnitHelper,
         parentPeriodGenerator,

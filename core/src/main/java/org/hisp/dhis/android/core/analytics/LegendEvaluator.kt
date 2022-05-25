@@ -81,6 +81,14 @@ internal class LegendEvaluator @Inject constructor(
         }
     }
 
+    fun getLegendByTrackedEntityAttribute(
+        trackedEntityAttributeUid: String,
+        value: String?
+    ): String? {
+        // TODO JIRA ANDROSDK-1546
+        return null
+    }
+
     fun getLegendByIndicator(
         indicatorUid: String,
         value: String?

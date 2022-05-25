@@ -26,24 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.internal
 
-import java.util.List;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-public final class ProgramInternalAccessor {
-
-    private ProgramInternalAccessor() {
-    }
-
-    public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
-        return program.programTrackedEntityAttributes();
-    }
-
-    public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
-        return program.programRuleVariables();
-    }
-
-    public static List<ProgramSection> accessProgramSections(Program program) {
-        return program.programSections();
-    }
+internal interface ProgramIndicatorService {
+    @GET("programIndicators")
+    fun getProgramIndicator(
+        @Query("fields") @Which fields: Fields<ProgramIndicator>,
+        @Query("filter") @Where displayInForm: Filter<ProgramIndicator, Boolean>?,
+        @Query("filter") program: String?,
+        @Query("filter") @Where uids: Filter<ProgramIndicator, String>?,
+        @Query("paging") paging: Boolean,
+    ): Single<Payload<ProgramIndicator>>
 }

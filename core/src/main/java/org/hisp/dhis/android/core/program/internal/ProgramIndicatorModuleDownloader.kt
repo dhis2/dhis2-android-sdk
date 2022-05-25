@@ -26,24 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.internal
 
-import java.util.List;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
-public final class ProgramInternalAccessor {
+@Reusable
+internal class ProgramIndicatorModuleDownloader @Inject constructor(
+    private val programIndicatorCall: UidsCall<ProgramIndicator>,
+    private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker
+) : UntypedModuleDownloader {
 
-    private ProgramInternalAccessor() {
-    }
-
-    public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
-        return program.programTrackedEntityAttributes();
-    }
-
-    public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
-        return program.programRuleVariables();
-    }
-
-    public static List<ProgramSection> accessProgramSections(Program program) {
-        return program.programSections();
+    override fun downloadMetadata(): Completable {
+        return Single.fromCallable { programIndicatorUidsSeeker.seekUids() }
+            .flatMap { programIndicatorCall.download(it) }
+            .ignoreElement()
     }
 }

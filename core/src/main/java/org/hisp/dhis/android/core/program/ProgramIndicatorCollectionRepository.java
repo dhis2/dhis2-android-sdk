@@ -51,9 +51,11 @@ public final class ProgramIndicatorCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository> {
 
     @Inject
-    ProgramIndicatorCollectionRepository(final IdentifiableObjectStore<ProgramIndicator> store,
-                                         final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
-                                         final RepositoryScope scope) {
+    ProgramIndicatorCollectionRepository(
+        final IdentifiableObjectStore<ProgramIndicator> store,
+        final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
+        final RepositoryScope scope
+    ) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, s)));
     }

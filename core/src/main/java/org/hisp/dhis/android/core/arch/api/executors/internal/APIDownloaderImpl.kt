@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 
 @Reusable
 @VisibleForTesting
+@Suppress("TooManyFunctions")
 internal class APIDownloaderImpl @Inject constructor(private val resourceHandler: ResourceHandler) : APIDownloader {
 
     override fun <P> downloadPartitioned(
@@ -74,10 +75,22 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
-    private fun <P, O> downloadPartitionedWithCustomHandling(
+    override fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): Single<List<P>> {
+        return downloadPartitionedWithoutHandling(
+            uids = uids,
+            pageSize = pageSize,
+            pageDownloader = pageDownloader,
+            transform = { it }
+        )
+    }
+
+    private fun <P, O> downloadPartitionedWithoutHandling(
+        uids: Set<String>,
+        pageSize: Int,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
         transform: (O) -> P
     ): Single<List<P>> {
@@ -91,9 +104,23 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             .map { items: List<O> ->
                 items.map { transform(it) }
             }
-            .doOnSuccess { oCollection: List<P> ->
-                handler.handleMany(oCollection)
-            }
+    }
+
+    private fun <P, O> downloadPartitionedWithCustomHandling(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
+    ): Single<List<P>> {
+        return downloadPartitionedWithoutHandling(
+            uids = uids,
+            pageSize = pageSize,
+            pageDownloader = pageDownloader,
+            transform = transform
+        ).doOnSuccess { oCollection: List<P> ->
+            handler.handleMany(oCollection)
+        }
     }
 
     override fun <K, V> downloadPartitionedMap(

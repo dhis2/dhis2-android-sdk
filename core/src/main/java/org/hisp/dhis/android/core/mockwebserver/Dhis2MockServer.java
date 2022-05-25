@@ -66,6 +66,7 @@ public class Dhis2MockServer {
     private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
+    private static final String PROGRAMS_INDICATORS_JSON = "program/program_indicators.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
     private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
@@ -159,7 +160,7 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
-    public void setDhis2Dispatcher(){
+    public void setDhis2Dispatcher() {
         server.setDispatcher(dhis2Dispatcher);
     }
 
@@ -200,6 +201,8 @@ public class Dhis2MockServer {
                     return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
+                } else if (path.startsWith("/api/programIndicators?")) {
+                    return createMockResponse(PROGRAMS_INDICATORS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
                     return createMockResponse(PROGRAM_STAGES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
@@ -323,6 +326,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
         enqueueMockResponse(VISUALIZATIONS_JSON);
+        enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
+        enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
         enqueueMockResponse(LEGEND_SETS_JSON);

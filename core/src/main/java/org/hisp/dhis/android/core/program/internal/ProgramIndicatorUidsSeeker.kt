@@ -26,55 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal
+package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
 
 @Reusable
-internal class LegendSetUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+internal class ProgramIndicatorUidsSeeker @Inject constructor(
+    private val databaseAdapter: DatabaseAdapter
+) {
 
     fun seekUids(): Set<String> {
-        val tableNames = listOf(
-            ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
-            IndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
-            DataElementLegendSetLinkTableInfo.TABLE_INFO.name(),
-        )
+        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
         val query = MultipleTableQueryBuilder()
-            .generateQuery(ProgramIndicatorLegendSetLinkTableInfo.Columns.LEGEND_SET, tableNames)
-            .build()
-
-        val legendSetIdColumnName = VisualizationTableInfo.Columns.LEGEND_SET_ID
-        val visualisationLegendSetQuery = MultipleTableQueryBuilder()
-            .generateQuery(legendSetIdColumnName, listOf(VisualizationTableInfo.TABLE_INFO.name()))
+            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
             .build()
 
         val cursor = databaseAdapter.rawQuery(query)
-        val legendSets = hashSetOf<String>()
+        val programIndicators = hashSetOf<String>()
         cursor.use { mCursor ->
             if (mCursor.count > 0) {
                 mCursor.moveToFirst()
                 do {
-                    legendSets.add(mCursor.getString(0))
+                    programIndicators.add(cursor.getString(0))
                 } while (mCursor.moveToNext())
             }
         }
-
-        val visualisationCursor = databaseAdapter.rawQuery(visualisationLegendSetQuery)
-        visualisationCursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    legendSets.add(mCursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-        return legendSets
+        return programIndicators
     }
 }

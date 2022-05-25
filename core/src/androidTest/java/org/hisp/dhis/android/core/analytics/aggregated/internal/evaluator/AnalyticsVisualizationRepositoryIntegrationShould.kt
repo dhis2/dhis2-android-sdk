@@ -48,7 +48,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
         assertThat(result.dimensionItems[Dimension.Period]!!.size).isEqualTo(3)
         assertThat(result.metadata).isNotEmpty()
@@ -65,7 +65,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
         assertThat(result.dimensionItems[Dimension.Period]).isEqualTo(
             listOf(
@@ -113,7 +113,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]).isEqualTo(
             listOf(
                 DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT)

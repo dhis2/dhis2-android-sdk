@@ -35,20 +35,14 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-
-import java.util.Set;
+import org.hisp.dhis.android.core.common.FilterOperators;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_EventDataFilter.Builder.class)
-public abstract class EventDataFilter implements CoreObject {
+public abstract class EventDataFilter extends FilterOperators implements CoreObject {
 
     /**
      * The related event filter
@@ -64,65 +58,6 @@ public abstract class EventDataFilter implements CoreObject {
     @JsonProperty()
     public abstract String dataItem();
 
-    /**
-     * Less than or equal to
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String le();
-
-    /**
-     * Greater than or equal to
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String ge();
-
-    /**
-     * Greater than
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String gt();
-
-    /**
-     * Lesser than
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String lt();
-
-    /**
-     * Equal to
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String eq();
-
-    /**
-     * In a list
-     */
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(StringSetColumnAdapter.class)
-    @ColumnName(EventDataFilterTableInfo.Columns.IN)
-    public abstract Set<String> in();
-
-    /**
-     * Like
-     */
-    @Nullable
-    @JsonProperty()
-    public abstract String like();
-
-    /**
-     * If the dataItem is of type date, then date filtering parameters are specified using this.
-     */
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod dateFilter();
-
     public static Builder builder() {
         return new $$AutoValue_EventDataFilter.Builder();
     }
@@ -135,28 +70,12 @@ public abstract class EventDataFilter implements CoreObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public static abstract class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder eventFilter(String eventFilter);
 
         public abstract Builder dataItem(String dataItem);
-
-        public abstract Builder le(String le);
-
-        public abstract Builder ge(String ge);
-
-        public abstract Builder gt(String gt);
-
-        public abstract Builder lt(String lt);
-
-        public abstract Builder eq(String eq);
-
-        public abstract Builder in(Set<String> in);
-
-        public abstract Builder like(String like);
-
-        public abstract Builder dateFilter(DateFilterPeriod dateFilter);
 
         public abstract EventDataFilter build();
     }

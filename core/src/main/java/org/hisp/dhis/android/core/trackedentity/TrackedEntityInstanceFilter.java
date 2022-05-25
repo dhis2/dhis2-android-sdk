@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EntityQueryCriteriaColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
@@ -71,19 +72,36 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     @JsonProperty()
     public abstract Integer sortOrder();
 
+    /**
+     * @deprecated Use {@link #entityQueryCriteria().enrollmentStatus()} instead.
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus enrollmentStatus();
 
+    /**
+     * @deprecated Use {@link #entityQueryCriteria().followUp()} instead.
+     */
+    @Deprecated
     @Nullable
     @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
+    /**
+     * @deprecated Use {@link #entityQueryCriteria().enrollmentCreatedDate()} instead.
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(FilterPeriodColumnAdapter.class)
     public abstract FilterPeriod enrollmentCreatedPeriod();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(EntityQueryCriteriaColumnAdapter.class)
+    public abstract EntityQueryCriteria entityQueryCriteria();
 
     @Nullable
     @JsonProperty()
@@ -119,6 +137,8 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder enrollmentCreatedPeriod(FilterPeriod enrollmentCreatedPeriod);
+
+        public abstract Builder entityQueryCriteria(EntityQueryCriteria entityQueryCriteria);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);
 

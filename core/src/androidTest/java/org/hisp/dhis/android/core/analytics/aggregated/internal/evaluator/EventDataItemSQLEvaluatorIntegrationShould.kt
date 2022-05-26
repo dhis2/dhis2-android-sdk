@@ -105,7 +105,8 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         return eventDataItemEvaluator.evaluate(
             evaluationItem,
-            metadata + (metadataItem.id to metadataItem))
+            metadata + (metadataItem.id to metadataItem)
+        )
     }
 
     private fun evaluateEventAttribute(program: Program, attribute: TrackedEntityAttribute): String? {
@@ -123,6 +124,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         return eventDataItemEvaluator.evaluate(
             evaluationItem,
-            metadata + (metadataItem.id to metadataItem))
+            metadata + (metadataItem.id to metadataItem)
+        )
     }
 }

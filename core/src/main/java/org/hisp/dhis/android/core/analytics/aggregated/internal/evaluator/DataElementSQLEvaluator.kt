@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import javax.inject.Inject
 
 internal class DataElementSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
@@ -59,7 +58,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val items = getItemsByDimension(evaluationItem)
+        val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
@@ -76,8 +75,8 @@ internal class DataElementSQLEvaluator @Inject constructor(
         val aggregator = getAggregator(evaluationItem, metadata)
 
         return "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE $whereClause"
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause"
     }
 
     private fun appendDataWhereClause(
@@ -151,7 +150,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val item: DimensionItem.DataItem = AnalyticsEvaluatorHelper.getSingleItemByDimension(evaluationItem)
+        val item: DimensionItem.DataItem = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
         val metadataItem = metadata[item.id]
             ?: throw AnalyticsException.InvalidArguments("Invalid arguments: ${item.id} not found in metadata.")

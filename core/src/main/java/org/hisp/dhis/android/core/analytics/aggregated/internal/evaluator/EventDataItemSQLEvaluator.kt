@@ -28,19 +28,18 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import javax.inject.Inject
 
 internal class EventDataItemSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
@@ -62,7 +61,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val items = getItemsByDimension(evaluationItem)
+        val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
@@ -82,22 +81,22 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         return when (eventDataItem) {
             is DimensionItem.DataItem.EventDataItem.DataElement ->
                 "SELECT $aggregator(${TrackedEntityDataValueTableInfo.Columns.VALUE}) " +
-                        "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
-                        "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-                        "ON $dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.EVENT} = " +
-                        "$eventAlias.${EventTableInfo.Columns.UID} " +
-                        "WHERE $whereClause"
+                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
+                    "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+                    "ON $dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.EVENT} = " +
+                    "$eventAlias.${EventTableInfo.Columns.UID} " +
+                    "WHERE $whereClause"
 
             is DimensionItem.DataItem.EventDataItem.Attribute ->
                 "SELECT $aggregator(${TrackedEntityAttributeValueTableInfo.Columns.VALUE}) " +
-                        "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
-                        "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
-                        "ON $attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
-                        "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                        "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-                        "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
-                        "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} " +
-                        "WHERE $whereClause"
+                    "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
+                    "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
+                    "ON $attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+                    "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                    "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+                    "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
+                    "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} " +
+                    "WHERE $whereClause"
         }
     }
 
@@ -137,7 +136,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                    "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
+                                "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
                         )
                 }
             }.build()
@@ -159,11 +158,11 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
             val innerClause = reportingPeriods.joinToString(" OR ") {
                 "(${
-                    AnalyticsEvaluatorHelper.getPeriodWhereClause(
-                        columnStart = eventDateColumn,
-                        columnEnd = eventDateColumn,
-                        period = it
-                    )
+                AnalyticsEvaluatorHelper.getPeriodWhereClause(
+                    columnStart = eventDateColumn,
+                    columnEnd = eventDateColumn,
+                    period = it
+                )
                 })"
             }
 
@@ -177,7 +176,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
-            columnName = "${eventAlias}.${EventTableInfo.Columns.ORGANISATION_UNIT}",
+            columnName = "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}",
             items = items,
             builder = builder,
             metadata = metadata
@@ -189,7 +188,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         builder: WhereClauseBuilder
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
-            columnName = "${eventAlias}.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
+            columnName = "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
             items = items,
             builder = builder
         )
@@ -198,7 +197,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     private fun getEventDataItem(
         evaluationItem: AnalyticsServiceEvaluationItem,
     ): DimensionItem.DataItem.EventDataItem {
-        return AnalyticsEvaluatorHelper.getSingleItemByDimension(evaluationItem)
+        return AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
     }
 
     private fun getAggregator(

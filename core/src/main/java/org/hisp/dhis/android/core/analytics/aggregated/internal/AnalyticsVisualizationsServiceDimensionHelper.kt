@@ -69,6 +69,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
         }?.flatten() ?: emptyList()
     }
 
+    @Suppress("ComplexMethod")
     private fun extractDataDimensionItems(visualization: Visualization): List<DimensionItem> {
         return visualization.dataDimensionItems()?.mapNotNull { item ->
             when (item.dataDimensionItemType()) {

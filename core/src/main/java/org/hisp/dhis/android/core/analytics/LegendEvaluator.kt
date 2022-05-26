@@ -81,6 +81,7 @@ internal class LegendEvaluator @Inject constructor(
         }
     }
 
+    @Suppress("UnusedPrivateMember", "FunctionOnlyReturningConstant")
     fun getLegendByTrackedEntityAttribute(
         trackedEntityAttributeUid: String,
         value: String?

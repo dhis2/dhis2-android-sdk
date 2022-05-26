@@ -112,7 +112,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return metadata
     }
 
-    @SuppressWarnings("ThrowsCount")
+    @SuppressWarnings("ThrowsCount", "ComplexMethod")
     private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {

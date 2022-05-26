@@ -155,9 +155,11 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     fun `Should parse event dataElements dimension items`() {
         val dataDimensionItems = listOf(
             DataDimensionItem.builder()
-                .programDataElement(DataDimensionItemProgramDataElement.builder()
-                    .uid("$uid1.$uid2")
-                    .build())
+                .programDataElement(
+                    DataDimensionItemProgramDataElement.builder()
+                        .uid("$uid1.$uid2")
+                        .build()
+                )
                 .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
                 .build()
         )
@@ -181,9 +183,11 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     fun `Should parse event attribute dimension items`() {
         val dataDimensionItems = listOf(
             DataDimensionItem.builder()
-                .programAttribute(DataDimensionItemProgramAttribute.builder()
-                    .uid("$uid1.$uid2")
-                    .build())
+                .programAttribute(
+                    DataDimensionItemProgramAttribute.builder()
+                        .uid("$uid1.$uid2")
+                        .build()
+                )
                 .dataDimensionItemType(DataDimensionItemType.PROGRAM_ATTRIBUTE)
                 .build()
         )

@@ -28,17 +28,14 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
@@ -53,30 +50,6 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
  * This logic applies for all the dimensions.
  */
 internal object AnalyticsEvaluatorHelper {
-
-    fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
-        return (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
-            .groupBy { it.dimension }
-    }
-
-    inline fun <reified E : DimensionItem> getSingleItemByDimension(
-        item: AnalyticsServiceEvaluationItem
-    ): E {
-        val dimensionItems = item.dimensionItems.filterIsInstance<E>()
-
-        val items = when (dimensionItems.size) {
-            0 -> item.filters.filterIsInstance<E>()
-            1 -> dimensionItems
-            else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
-        }
-
-        return when (items.size) {
-            0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no items for dimension.")
-            1 -> items.first()
-            else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
-        }
-    }
 
     fun getElementAggregator(aggregationType: String?): String {
         return aggregationType?.let { AggregationType.valueOf(it).sql }

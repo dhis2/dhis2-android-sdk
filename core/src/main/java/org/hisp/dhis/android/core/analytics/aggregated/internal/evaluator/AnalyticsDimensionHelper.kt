@@ -28,49 +28,35 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
-class AnalyticsDimensionHelperShould {
+internal object AnalyticsDimensionHelper {
 
-    @Test
-    fun `Should return single dimension item`() {
-        val item = AnalyticsServiceEvaluationItem(
-            dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem("dataElement1"),
-                DimensionItem.PeriodItem.Absolute("periodId")
-            ),
-            filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute("orgunit")
-            )
-        )
-
-        val dataItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
-        assertThat(dataItem).isInstanceOf(DimensionItem.DataItem::class.java)
-
-        val periodItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.PeriodItem>(item)
-        assertThat(periodItem).isInstanceOf(DimensionItem.PeriodItem::class.java)
-
-        val ouItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.OrganisationUnitItem>(item)
-        assertThat(ouItem).isInstanceOf(DimensionItem.OrganisationUnitItem::class.java)
+    fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
+        return (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .groupBy { it.dimension }
     }
 
-    @Test(expected = AnalyticsException.InvalidArguments::class)
-    fun `Should return error when multiple dimension items`() {
-        val item = AnalyticsServiceEvaluationItem(
-            dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem("dataElement1"),
-                DimensionItem.DataItem.DataElementItem("dataElement2")
-            ),
-            filters = listOf()
-        )
+    @Suppress("ThrowsCount")
+    inline fun <reified E : DimensionItem> getSingleItemByDimension(
+        item: AnalyticsServiceEvaluationItem
+    ): E {
+        val dimensionItems = item.dimensionItems.filterIsInstance<E>()
 
-        AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
+        val items = when (dimensionItems.size) {
+            0 -> item.filters.filterIsInstance<E>()
+            1 -> dimensionItems
+            else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
+        }
+
+        return when (items.size) {
+            0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no items for dimension.")
+            1 -> items.first()
+            else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
+        }
     }
 }

@@ -13,7 +13,7 @@ The SDK uses Retrofit to make requests to the Web API and the first thing we hav
 ```java
 interface MyService {
 
-    @GET("/endPoint")
+    @GET("/end-point")
     Single<Payload<User>> getSomeThing();
 }
 

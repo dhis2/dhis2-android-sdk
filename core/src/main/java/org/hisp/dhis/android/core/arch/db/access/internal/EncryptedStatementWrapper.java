@@ -44,6 +44,11 @@ public class EncryptedStatementWrapper implements StatementWrapper {
     }
 
     @Override
+    public void bindNull(int index) {
+        s.bindNull(index);
+    }
+
+    @Override
     public void bind(int index, String arg) {
         if (arg == null) {
             s.bindNull(index);

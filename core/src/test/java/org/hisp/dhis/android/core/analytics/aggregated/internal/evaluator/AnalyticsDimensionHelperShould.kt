@@ -52,13 +52,16 @@ class AnalyticsDimensionHelperShould {
         )
 
         val dataItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
-        assertThat(dataItem).isInstanceOf(DimensionItem.DataItem::class.java)
+        assertThat(dataItem.size).isEqualTo(1)
+        assertThat(dataItem.first()).isInstanceOf(DimensionItem.DataItem::class.java)
 
         val periodItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.PeriodItem>(item)
-        assertThat(periodItem).isInstanceOf(DimensionItem.PeriodItem::class.java)
+        assertThat(periodItem.size).isEqualTo(1)
+        assertThat(periodItem.first()).isInstanceOf(DimensionItem.PeriodItem::class.java)
 
         val ouItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.OrganisationUnitItem>(item)
-        assertThat(ouItem).isInstanceOf(DimensionItem.OrganisationUnitItem::class.java)
+        assertThat(ouItem.size).isEqualTo(1)
+        assertThat(ouItem.first()).isInstanceOf(DimensionItem.OrganisationUnitItem::class.java)
     }
 
     @Test(expected = AnalyticsException.InvalidArguments::class)
@@ -72,5 +75,21 @@ class AnalyticsDimensionHelperShould {
         )
 
         AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
+    }
+
+    @Test
+    fun `Should return last item when multiple items has filter`() {
+        val item = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(),
+            filters = listOf(
+                DimensionItem.DataItem.DataElementItem("dataElement1"),
+                DimensionItem.DataItem.DataElementItem("dataElement2")
+            )
+        )
+
+        val dataItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
+        assertThat(dataItem.size).isEqualTo(2)
+        assertThat(dataItem[0]).isInstanceOf(DimensionItem.DataItem::class.java)
+        assertThat(dataItem[1]).isInstanceOf(DimensionItem.DataItem::class.java)
     }
 }

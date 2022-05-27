@@ -75,7 +75,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
             appendKeyNumberValue("$eventAlias.${EventTableInfo.Columns.DELETED}", 0)
         }.build()
 
-        val eventDataItem = getEventDataItem(evaluationItem)
+        val eventDataItem = getEventDataItems(evaluationItem)[0]
         val aggregator = getAggregator(eventDataItem, metadata)
 
         return when (eventDataItem) {
@@ -194,9 +194,9 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         )
     }
 
-    private fun getEventDataItem(
+    private fun getEventDataItems(
         evaluationItem: AnalyticsServiceEvaluationItem,
-    ): DimensionItem.DataItem.EventDataItem {
+    ): List<DimensionItem.DataItem.EventDataItem> {
         return AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
     }
 

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 
 internal class DataElementSQLEvaluator @Inject constructor(
@@ -150,21 +151,26 @@ internal class DataElementSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val item: DimensionItem.DataItem = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
+        val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
-        val metadataItem = metadata[item.id]
-            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: ${item.id} not found in metadata.")
+        return if (itemList.size > 1) {
+            AnalyticsEvaluatorHelper.getElementAggregator(AggregationType.SUM.name)
+        } else {
+            val item = itemList[0]
+            val metadataItem = metadata[item.id]
+                ?: throw AnalyticsException.InvalidArguments("Invalid arguments: ${item.id} not found in metadata.")
 
-        val aggregationType = when (metadataItem) {
-            is MetadataItem.DataElementItem -> metadataItem.item.aggregationType()
-            is MetadataItem.DataElementOperandItem ->
-                metadata[metadataItem.item.dataElement()?.uid()]?.let {
-                    (it as MetadataItem.DataElementItem).item.aggregationType()
-                }
-            else ->
-                throw AnalyticsException.InvalidArguments("Invalid arguments: invalid dataElement item ${item.id}.")
+            val aggregationType = when (metadataItem) {
+                is MetadataItem.DataElementItem -> metadataItem.item.aggregationType()
+                is MetadataItem.DataElementOperandItem ->
+                    metadata[metadataItem.item.dataElement()?.uid()]?.let {
+                        (it as MetadataItem.DataElementItem).item.aggregationType()
+                    }
+                else ->
+                    throw AnalyticsException.InvalidArguments("Invalid arguments: invalid dataElement item ${item.id}.")
+            }
+
+            AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
         }
-
-        return AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
     }
 }

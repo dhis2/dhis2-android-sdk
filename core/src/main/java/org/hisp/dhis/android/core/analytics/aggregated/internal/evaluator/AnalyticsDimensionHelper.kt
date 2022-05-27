@@ -44,18 +44,18 @@ internal object AnalyticsDimensionHelper {
     @Suppress("ThrowsCount")
     inline fun <reified E : DimensionItem> getSingleItemByDimension(
         item: AnalyticsServiceEvaluationItem
-    ): E {
+    ): List<E> {
         val dimensionItems = item.dimensionItems.filterIsInstance<E>()
 
-        val items = when (dimensionItems.size) {
-            0 -> item.filters.filterIsInstance<E>()
+        return when (dimensionItems.size) {
+            0 -> {
+                val filterItems = item.filters.filterIsInstance<E>()
+                when (filterItems.size) {
+                    0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no items for dimension.")
+                    else -> filterItems
+                }
+            }
             1 -> dimensionItems
-            else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
-        }
-
-        return when (items.size) {
-            0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no items for dimension.")
-            1 -> items.first()
             else -> throw AnalyticsException.InvalidArguments("Invalid arguments: more than one item as dimension.")
         }
     }

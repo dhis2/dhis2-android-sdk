@@ -125,8 +125,10 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
 
                 if (aPeriod.periodType()!!.sortOrder != bPeriod.periodType()!!.sortOrder) {
                     aPeriod.periodType()!!.sortOrder - bPeriod.periodType()!!.sortOrder
+                } else if (aPeriod.startDate()!!.time > bPeriod.startDate()!!.time) {
+                    1
                 } else {
-                    (aPeriod.startDate()!!.time - bPeriod.startDate()!!.time).toInt()
+                    -1
                 }
             }
             .map { it.first }

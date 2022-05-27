@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -50,6 +51,21 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods[0]).isEqualTo("202105")
         assertThat(valuePeriods[1]).isEqualTo("2021")
         assertThat(valuePeriods[2]).isEqualTo("2022")
+    }
+
+    @Test
+    fun order_relative_periods() {
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.DataElementItem("g9eOBujte1U"))
+            .withDimension(DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
+            .blockingEvaluate()
+            .getOrThrow()
+
+        val valuePeriods = result.values.map { it.dimensions.last() }
+        assertThat(valuePeriods.size).isEqualTo(3)
+        assertThat(valuePeriods[0]).isEqualTo("201909")
+        assertThat(valuePeriods[1]).isEqualTo("201910")
+        assertThat(valuePeriods[2]).isEqualTo("201911")
     }
 
     @Test

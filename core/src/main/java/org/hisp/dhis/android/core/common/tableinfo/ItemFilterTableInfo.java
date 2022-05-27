@@ -26,22 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.common.tableinfo;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 
-public final class EventDataFilterTableInfo {
+public final class ItemFilterTableInfo {
 
-    private EventDataFilterTableInfo() {
+    private ItemFilterTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
         public String name() {
-            return "EventDataFilter";
+            return "ItemFilter";
         }
 
         @Override
@@ -53,6 +53,10 @@ public final class EventDataFilterTableInfo {
     public static class Columns extends CoreColumns {
         public final static String EVENT_FILTER = "eventFilter";
         public final static String DATA_ITEM = "dataItem";
+        public final static String ATTRIBUTE_FILTER = "attributeFilter";
+        public final static String ATTRIBUTE = "attribute";
+        public static final String SW = "sw";
+        public static final String EW = "ew";
         public final static String LE = "le";
         public static final String GE = "ge";
         public static final String GT = "gt";
@@ -67,6 +71,10 @@ public final class EventDataFilterTableInfo {
             return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT_FILTER,
                     DATA_ITEM,
+                    ATTRIBUTE_FILTER,
+                    ATTRIBUTE,
+                    SW,
+                    EW,
                     LE,
                     GE,
                     GT,

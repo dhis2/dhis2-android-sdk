@@ -37,7 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter;
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo;
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
 
 import java.util.Set;
 
@@ -84,7 +84,7 @@ public abstract class FilterOperators {
     @Nullable
     @JsonProperty()
     @ColumnAdapter(StringSetColumnAdapter.class)
-    @ColumnName(EventDataFilterTableInfo.Columns.IN)
+    @ColumnName(ItemFilterTableInfo.Columns.IN)
     public abstract Set<String> in();
 
     /**

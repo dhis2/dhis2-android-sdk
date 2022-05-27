@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.event.EventDataFilterSamples;
 import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
@@ -41,7 +41,7 @@ public class EventDataFilterStoreIntegrationShould extends ObjectStoreAbstractIn
 
     public EventDataFilterStoreIntegrationShould() {
         super(EventDataFilterStore.create(TestDatabaseAdapterFactory.get()),
-                EventDataFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+                ItemFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

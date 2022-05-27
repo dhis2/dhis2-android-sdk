@@ -43,13 +43,14 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.OrganisationUn
 import org.hisp.dhis.android.core.event.EventFilterTableInfo;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
 import java.util.List;
 
 public abstract class FilterQueryCriteria {
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
@@ -94,6 +95,7 @@ public abstract class FilterQueryCriteria {
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder<T extends Builder> {
 
+        @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
         public abstract T followUp(Boolean followUp);
 
         public abstract T organisationUnit(String organisationUnit);

@@ -58,6 +58,20 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     @JsonProperty()
     public abstract String attribute();
 
+    /**
+     * Starts with
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String ew();
+
+    /**
+     * Ends with
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String sw();
+
     public static Builder builder() {
         return new $$AutoValue_AttributeValueFilter.Builder();
     }
@@ -76,6 +90,10 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
         public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
 
         public abstract Builder attribute(String attribute);
+
+        public abstract Builder ew(String ew);
+
+        public abstract Builder sw(String sw);
 
         public abstract AttributeValueFilter build();
     }

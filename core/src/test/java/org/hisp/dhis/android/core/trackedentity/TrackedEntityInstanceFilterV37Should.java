@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TrackedEntityInstanceFilterShould extends TrackedEntityInstanceFilterCommonShould implements ObjectShould {
+public class TrackedEntityInstanceFilterV37Should extends TrackedEntityInstanceFilterCommonShould implements ObjectShould {
 
-    public TrackedEntityInstanceFilterShould() {
-        super("trackedentity/tracked_entity_instance_filter.json");
+    public TrackedEntityInstanceFilterV37Should() {
+        super("trackedentity/tracked_entity_instance_filter_v_37.json");
     }
 
     @Override
@@ -50,9 +47,5 @@ public class TrackedEntityInstanceFilterShould extends TrackedEntityInstanceFilt
                 objectMapper.readValue(jsonStream, TrackedEntityInstanceFilter.class);
 
         teiFilterCommonAsserts(trackedEntityInstanceFilter);
-
-        TrackedEntityInstanceFilter expectedTEIFilter = TrackedEntityInstanceFilterSamples.get().toBuilder()
-                .id(null).build();
-        assertThat(trackedEntityInstanceFilter).isEqualTo(expectedTEIFilter);
     }
 }

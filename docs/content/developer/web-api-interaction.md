@@ -4,7 +4,7 @@ When using the SDK sometimes one would like to make requests that are not suppor
 
 ## Retrofit Service
 
-The SDK uses Retrofit to make requests to the Web API and the first thing we have to do is to create a retrofit service by specifying a particular end-point. Everything you already known about [Retrofit](https://square.github.io/retrofit/) Can be more or less used here.
+The SDK uses Retrofit to make requests to the Web API and the first thing we have to do is to create a retrofit service by specifying a particular end-point. Everything you already know about [Retrofit](https://square.github.io/retrofit/) can be more or less used here.
 
 > **Important**
 >

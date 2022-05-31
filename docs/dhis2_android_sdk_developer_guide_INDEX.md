@@ -26,6 +26,7 @@ applicable_txt: 'Applicable to version 1.5.3'
 !INCLUDE "content/developer/object-style.md"
 !INCLUDE "content/developer/compatibility-strategy.md"
 !INCLUDE "content/developer/db-interaction.md"
+!INCLUDE "content/developer/web-api-interaction.md"
 !INCLUDE "content/developer/program-rule-engine.md"
 !INCLUDE "content/developer/program-indicator-engine.md"
 !INCLUDE "content/developer/validation-rule-engine.md"

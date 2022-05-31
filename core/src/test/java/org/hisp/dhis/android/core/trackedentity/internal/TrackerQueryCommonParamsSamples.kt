@@ -25,20 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
-import org.junit.Test
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-class EventQueryShould {
+internal object TrackerQueryCommonParamsSamples {
 
-    @Test
-    fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
-        Truth.assertThat(eventQuery).isNotNull()
+    @JvmStatic
+    fun get(): TrackerQueryCommonParams {
+        return TrackerQueryCommonParams(
+            listOf(), listOf(), null, "start-date", false,
+            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
+        )
     }
 }

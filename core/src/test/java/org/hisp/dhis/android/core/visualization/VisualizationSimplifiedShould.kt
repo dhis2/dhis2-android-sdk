@@ -25,30 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
-import org.junit.Test;
+class VisualizationSimplifiedShould : BaseObjectShould("visualization/visualization_simplified.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityTypeShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityTypeShould() {
-        super("trackedentity/tracked_entity_type.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityType jsonTrackedEntityType = objectMapper.readValue(jsonStream, TrackedEntityType.class);
-        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get().toBuilder().id(null).build();
-        assertThat(jsonTrackedEntityType).isEqualTo(expectedTrackedEntityType);
+    override fun map_from_json_string() {
+        val jsonVisualization: Visualization = objectMapper.readValue(jsonStream, Visualization::class.java)
+
+        assertThat(jsonVisualization.name()).isEqualTo("Android SDK Visualization sample")
+        assertThat(jsonVisualization.displayName()).isEqualTo("Android SDK Visualization sample")
     }
 }

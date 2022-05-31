@@ -31,7 +31,7 @@ import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
+import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.junit.Before

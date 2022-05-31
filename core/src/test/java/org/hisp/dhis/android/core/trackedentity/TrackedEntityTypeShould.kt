@@ -25,20 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.*
 import org.junit.Test
 
-class EventQueryShould {
+class TrackedEntityTypeShould : BaseObjectShould("trackedentity/tracked_entity_type.json"), ObjectShould {
 
     @Test
-    fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
-        Truth.assertThat(eventQuery).isNotNull()
+    override fun map_from_json_string() {
+        val entityType = objectMapper.readValue(jsonStream, TrackedEntityType::class.java)
+
+        assertThat(entityType.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-08-20T12:28:56.409"))
+        assertThat(entityType.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-14T13:36:53.063"))
+        assertThat(entityType.uid()).isEqualTo("nEenWmSyUEp")
+        assertThat(entityType.name()).isEqualTo("Person")
+        assertThat(entityType.displayName()).isEqualTo("Person")
+        assertThat(entityType.description()).isEqualTo("Person")
+        assertThat(entityType.displayDescription()).isEqualTo("Person")
+        assertThat(entityType.featureType()).isEqualTo(FeatureType.NONE)
+        assertThat(entityType.access()).isEqualTo(AccessHelper.createForDataWrite(true))
     }
 }

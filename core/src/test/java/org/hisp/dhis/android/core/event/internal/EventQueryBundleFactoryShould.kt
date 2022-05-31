@@ -48,7 +48,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class EventQueryBundleFactoryShould {
@@ -78,7 +77,6 @@ class EventQueryBundleFactoryShould {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         whenever(resourceHandler.getLastUpdated(any())).thenReturn(null)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(programList)
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)

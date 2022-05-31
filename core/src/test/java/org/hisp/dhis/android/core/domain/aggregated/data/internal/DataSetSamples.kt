@@ -25,31 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.event;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.period.PeriodType
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.event.EventFilterSamples;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventFilterShould extends BaseObjectShould implements ObjectShould {
-
-    public EventFilterShould() {
-        super("event/event_filter.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        EventFilter eventFilter = objectMapper.readValue(jsonStream, EventFilter.class);
-
-        EventFilter expectedEventFilter = EventFilterSamples.get().toBuilder().id(null).build();
-        assertThat(eventFilter).isEqualTo(expectedEventFilter);
-    }
+object DataSetSamples {
+    val dataSet: DataSet
+        get() {
+            return DataSet.builder()
+                .id(1L)
+                .uid("uid")
+                .name("dataset")
+                .periodType(PeriodType.BiMonthly)
+                .categoryCombo(ObjectWithUid.create("comboUid"))
+                .mobile(false)
+                .version(2)
+                .expiryDays(3)
+                .timelyDays(4)
+                .notifyCompletingUser(true)
+                .openFuturePeriods(6)
+                .fieldCombinationRequired(false)
+                .validCompleteOnly(false)
+                .noValueRequiresComment(true)
+                .skipOffline(false)
+                .dataElementDecoration(true)
+                .renderAsTabs(false)
+                .renderHorizontally(true)
+                .access(AccessHelper.createForDataWrite(true))
+                .build()
+        }
 }

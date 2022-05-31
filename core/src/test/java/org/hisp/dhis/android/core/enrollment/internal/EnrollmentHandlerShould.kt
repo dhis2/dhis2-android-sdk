@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.lang.Boolean
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
@@ -77,7 +75,7 @@ class EnrollmentHandlerShould {
         whenever(enrollment.uid()).doReturn("test_enrollment_uid")
         whenever(EnrollmentInternalAccessor.accessEvents(enrollment)).doReturn(listOf(event))
         whenever(enrollment.notes()).doReturn(listOf(note))
-        whenever(note.storedDate()).doReturn(FillPropertiesTestUtils.LAST_UPDATED_STR)
+        whenever(note.storedDate()).doReturn("2017-12-20T15:08:27.882")
         whenever(enrollment.toBuilder()).doReturn(enrollmentBuilder)
         whenever(enrollmentBuilder.syncState(State.SYNCED)).doReturn(enrollmentBuilder)
         whenever(enrollmentBuilder.aggregatedSyncState(State.SYNCED)).doReturn(enrollmentBuilder)
@@ -106,7 +104,7 @@ class EnrollmentHandlerShould {
 
     @Test
     fun invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
-        whenever(enrollment.deleted()).doReturn(Boolean.TRUE)
+        whenever(enrollment.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)
@@ -123,7 +121,7 @@ class EnrollmentHandlerShould {
 
     @Test
     fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() {
-        whenever(enrollment.deleted()).doReturn(Boolean.FALSE)
+        whenever(enrollment.deleted()).doReturn(false)
         whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)

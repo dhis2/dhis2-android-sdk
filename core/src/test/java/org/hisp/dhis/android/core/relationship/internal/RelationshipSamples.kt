@@ -25,32 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.visualization;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
-import org.junit.Test;
+object RelationshipSamples {
 
-import java.io.IOException;
-import java.text.ParseException;
+    const val UID = "uid"
+    const val FROM_UID = "fromUid"
+    const val TO_UID = "toUid"
+    const val TYPE = "type"
+    const val name = "name"
+    val fromItem: RelationshipItem = RelationshipHelper.teiItem(FROM_UID)
+    val toItem: RelationshipItem = RelationshipHelper.teiItem(TO_UID)
+    val STATE = State.SYNCED
+    const val DELETED = false
 
-import static com.google.common.truth.Truth.assertThat;
+    private val commonBuilder: Relationship.Builder = Relationship
+        .builder()
+        .name(name)
+        .syncState(STATE)
+        .deleted(DELETED)
 
-public class VisualizationSimplifiedShould extends BaseObjectShould implements ObjectShould {
-
-    public VisualizationSimplifiedShould() {
-        super("visualization/visualization_simplified.json");
+    fun get230(uid: String?, fromUid: String?, toUid: String?): Relationship {
+        return get230(uid, RelationshipHelper.teiItem(fromUid), RelationshipHelper.teiItem(toUid))
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
-                .toBuilder().id(null).build();
-        Visualization expectedVisualization = VisualizationSamples.visualization()
-                .toBuilder().id(null).build();
-        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
+    fun get230(): Relationship {
+        return commonBuilder
+            .uid(UID)
+            .relationshipType(TYPE)
+            .from(fromItem)
+            .to(toItem)
+            .build()
+    }
+
+    fun get230(uid: String?, from: RelationshipItem?, to: RelationshipItem?): Relationship {
+        return commonBuilder
+            .uid(uid)
+            .relationshipType(TYPE)
+            .from(from)
+            .to(to)
+            .build()
     }
 }

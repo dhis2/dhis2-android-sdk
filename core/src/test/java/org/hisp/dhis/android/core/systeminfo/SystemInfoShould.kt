@@ -25,20 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.systeminfo
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class EventQueryShould {
+class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
 
     @Test
-    fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
-        Truth.assertThat(eventQuery).isNotNull()
+    override fun map_from_json_string() {
+        val systemInfo = objectMapper.readValue(jsonStream, SystemInfo::class.java)
+
+        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
+        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
+        assertThat(systemInfo.version()).isEqualTo("2.37")
+        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
+        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }
 }

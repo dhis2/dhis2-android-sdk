@@ -25,20 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class EventQueryShould {
+class TrackedEntityTypeAttributeShould :
+    BaseObjectShould("trackedentity/tracked_entity_type_attribute.json"),
+    ObjectShould {
 
     @Test
-    fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
-        Truth.assertThat(eventQuery).isNotNull()
+    override fun map_from_json_string() {
+        val typeAttribute = objectMapper.readValue(jsonStream, TrackedEntityTypeAttribute::class.java)
+
+        assertThat(typeAttribute.displayInList()).isTrue()
+        assertThat(typeAttribute.searchable()).isTrue()
+        assertThat(typeAttribute.mandatory()).isFalse()
+        assertThat(typeAttribute.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp")
+        assertThat(typeAttribute.trackedEntityAttribute()!!.uid()).isEqualTo("w75KJ2mc4zz")
     }
 }

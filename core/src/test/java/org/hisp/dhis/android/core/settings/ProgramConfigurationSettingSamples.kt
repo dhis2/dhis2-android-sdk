@@ -25,30 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.systeminfo;
+object ProgramConfigurationSettingSamples {
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SystemInfoShould extends BaseObjectShould implements ObjectShould {
-
-    public SystemInfoShould() {
-        super("systeminfo/system_info.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SystemInfo jsonSystemInfo = objectMapper.readValue(jsonStream, SystemInfo.class);
-        SystemInfo expectedSystemInfo = SystemInfoSamples.get1().toBuilder().id(null).build();
-        assertThat(jsonSystemInfo).isEqualTo(expectedSystemInfo);
+    fun get(): ProgramConfigurationSetting {
+        return ProgramConfigurationSetting.builder()
+            .id(1L)
+            .uid("aBcDeFg")
+            .completionSpinner(true)
+            .optionalSearch(true)
+            .build()
     }
 }

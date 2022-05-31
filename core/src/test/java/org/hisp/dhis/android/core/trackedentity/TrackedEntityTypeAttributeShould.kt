@@ -25,31 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.event;
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import kotlin.Throws
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import com.google.common.truth.Truth
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.event.EventFilterSamples;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventFilterShould extends BaseObjectShould implements ObjectShould {
-
-    public EventFilterShould() {
-        super("event/event_filter.json");
-    }
-
-    @Override
+class TrackedEntityTypeAttributeShould : BaseObjectShould("trackedentity/tracked_entity_type_attribute.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        EventFilter eventFilter = objectMapper.readValue(jsonStream, EventFilter.class);
-
-        EventFilter expectedEventFilter = EventFilterSamples.get().toBuilder().id(null).build();
-        assertThat(eventFilter).isEqualTo(expectedEventFilter);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val typeAttribute = objectMapper.readValue(jsonStream, TrackedEntityTypeAttribute::class.java)
+        Truth.assertThat(typeAttribute.displayInList()).isTrue()
+        Truth.assertThat(typeAttribute.searchable()).isTrue()
+        Truth.assertThat(typeAttribute.mandatory()).isFalse()
+        Truth.assertThat(typeAttribute.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp")
+        Truth.assertThat(typeAttribute.trackedEntityAttribute()!!.uid()).isEqualTo("w75KJ2mc4zz")
     }
 }

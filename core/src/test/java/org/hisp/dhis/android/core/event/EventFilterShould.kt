@@ -25,30 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityTypeShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityTypeShould() {
-        super("trackedentity/tracked_entity_type.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityType jsonTrackedEntityType = objectMapper.readValue(jsonStream, TrackedEntityType.class);
-        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get().toBuilder().id(null).build();
-        assertThat(jsonTrackedEntityType).isEqualTo(expectedTrackedEntityType);
+import org.hisp.dhis.android.core.data.event.EventFilterSamples
+class EventFilterShould : BaseObjectShould("event/event_filter.json"), ObjectShould {
+    @org.junit.Test
+    @Throws(java.io.IOException::class, java.text.ParseException::class)
+    override fun map_from_json_string() {
+        val eventFilter: EventFilter = objectMapper.readValue<EventFilter>(jsonStream, EventFilter::class.java)
+        val expectedEventFilter: EventFilter = EventFilterSamples.get().toBuilder().id(null).build()
+        Truth.assertThat(eventFilter).isEqualTo(expectedEventFilter)
     }
 }

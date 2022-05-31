@@ -25,32 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
-import org.junit.Test;
+internal object TrackerQueryCommonParamsSamples {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityTypeAttributeShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityTypeAttributeShould() {
-        super("trackedentity/tracked_entity_type_attribute.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityTypeAttribute jsonTrackedEntityTypeAttribute =
-                objectMapper.readValue(jsonStream, TrackedEntityTypeAttribute.class);
-        TrackedEntityTypeAttribute expectedTrackedEntityTypeAttribute =
-                TrackedEntityTypeAttributeSamples.get().toBuilder().id(null).build();
-        assertThat(jsonTrackedEntityTypeAttribute).isEqualTo(expectedTrackedEntityTypeAttribute);
+    @JvmStatic
+    fun get(): TrackerQueryCommonParams {
+        return TrackerQueryCommonParams(
+            listOf(), listOf(), null, "start-date", false,
+            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
+        )
     }
 }

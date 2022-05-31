@@ -25,20 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.systeminfo
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
-import org.junit.Test
-
-class EventQueryShould {
-
-    @Test
-    fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
-        Truth.assertThat(eventQuery).isNotNull()
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
+class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
+    @org.junit.Test
+    @Throws(java.io.IOException::class, java.text.ParseException::class)
+    override fun map_from_json_string() {
+        val jsonSystemInfo: SystemInfo = objectMapper.readValue<SystemInfo>(jsonStream, SystemInfo::class.java)
+        val expectedSystemInfo: SystemInfo = SystemInfoSamples.get1().toBuilder().id(null).build()
+        Truth.assertThat(jsonSystemInfo).isEqualTo(expectedSystemInfo)
     }
 }

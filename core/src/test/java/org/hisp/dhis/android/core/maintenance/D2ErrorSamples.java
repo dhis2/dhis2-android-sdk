@@ -26,31 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
-import org.junit.Test;
+public class D2ErrorSamples {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class VisualizationSimplifiedShould extends BaseObjectShould implements ObjectShould {
-
-    public VisualizationSimplifiedShould() {
-        super("visualization/visualization_simplified.json");
+    public static D2Error get() {
+        return D2Error.builder()
+                .id(1L)
+                .url("http://dhis2.org/api/programs/test_uid")
+                .errorComponent(D2ErrorComponent.Server)
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorDescription("Error processing response")
+                .build();
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
-                .toBuilder().id(null).build();
-        Visualization expectedVisualization = VisualizationSamples.visualization()
-                .toBuilder().id(null).build();
-        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
+    public static D2Error notFound() {
+        return D2Error.builder()
+                .id(1L)
+                .url("http://dhis2.org/api/programs/test_uid")
+                .errorComponent(D2ErrorComponent.Server)
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorDescription("Not found")
+                .httpErrorCode(404)
+                .build();
     }
 }

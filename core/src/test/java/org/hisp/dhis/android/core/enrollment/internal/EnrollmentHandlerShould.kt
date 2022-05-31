@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
@@ -77,7 +76,7 @@ class EnrollmentHandlerShould {
         whenever(enrollment.uid()).doReturn("test_enrollment_uid")
         whenever(EnrollmentInternalAccessor.accessEvents(enrollment)).doReturn(listOf(event))
         whenever(enrollment.notes()).doReturn(listOf(note))
-        whenever(note.storedDate()).doReturn(FillPropertiesTestUtils.LAST_UPDATED_STR)
+        whenever(note.storedDate()).doReturn("2017-12-20T15:08:27.882")
         whenever(enrollment.toBuilder()).doReturn(enrollmentBuilder)
         whenever(enrollmentBuilder.syncState(State.SYNCED)).doReturn(enrollmentBuilder)
         whenever(enrollmentBuilder.aggregatedSyncState(State.SYNCED)).doReturn(enrollmentBuilder)

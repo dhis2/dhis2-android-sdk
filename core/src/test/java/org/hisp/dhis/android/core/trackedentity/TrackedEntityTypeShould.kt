@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.DataAccess
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.*
 import org.junit.Test
 
 class TrackedEntityTypeShould : BaseObjectShould("trackedentity/tracked_entity_type.json"), ObjectShould {
@@ -49,6 +47,6 @@ class TrackedEntityTypeShould : BaseObjectShould("trackedentity/tracked_entity_t
         assertThat(entityType.description()).isEqualTo("Person")
         assertThat(entityType.displayDescription()).isEqualTo("Person")
         assertThat(entityType.featureType()).isEqualTo(FeatureType.NONE)
-        assertThat(entityType.access()).isEqualTo(DataAccess.create(true, true))
+        assertThat(entityType.access()).isEqualTo(AccessHelper.createForDataWrite(true))
     }
 }

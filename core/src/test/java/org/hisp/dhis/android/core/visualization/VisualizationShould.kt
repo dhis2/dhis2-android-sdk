@@ -27,41 +27,36 @@
  */
 package org.hisp.dhis.android.core.visualization
 
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import kotlin.Throws
-import org.hisp.dhis.android.core.visualization.Visualization
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.visualization.VisualizationType
-import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class VisualizationShould : BaseObjectShould("visualization/visualization.json"), ObjectShould {
+
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val visualization = objectMapper.readValue(jsonStream, Visualization::class.java)
-        Truth.assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC")
-        Truth.assertThat(visualization.type()).isEqualTo(VisualizationType.PIVOT_TABLE)
-        Truth.assertThat(visualization.digitGroupSeparator()).isEqualTo(DigitGroupSeparator.COMMA)
-        Truth.assertThat(visualization.dataDimensionItems()!![0].indicator()!!.uid()).isEqualTo("Uvn6LCg7dVU")
-        Truth.assertThat(visualization.dataDimensionItems()!![1].dataElement()!!.uid()).isEqualTo("cYeuwXTCPkU")
-        Truth.assertThat(visualization.dataDimensionItems()!![2].dataElementOperand()!!.uid())
+
+        assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualization.type()).isEqualTo(VisualizationType.PIVOT_TABLE)
+        assertThat(visualization.digitGroupSeparator()).isEqualTo(DigitGroupSeparator.COMMA)
+        assertThat(visualization.dataDimensionItems()!![0].indicator()!!.uid()).isEqualTo("Uvn6LCg7dVU")
+        assertThat(visualization.dataDimensionItems()!![1].dataElement()!!.uid()).isEqualTo("cYeuwXTCPkU")
+        assertThat(visualization.dataDimensionItems()!![2].dataElementOperand()!!.uid())
             .isEqualTo("Jtf34kNZhzP.pq2XI5kz2BY")
-        Truth.assertThat(visualization.dataDimensionItems()!![3].programIndicator()!!.uid()).isEqualTo("p2Zxg0wcPQ3")
-        Truth.assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![3].programIndicator()!!.uid()).isEqualTo("p2Zxg0wcPQ3")
+        assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.uid())
             .isEqualTo("lxAQ7Zs9VYR.sWoqcoByYmD")
-        Truth.assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.program()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.program()!!.uid())
             .isEqualTo("lxAQ7Zs9VYR")
-        Truth.assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.dataElement()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![4].programDataElement()!!.dataElement()!!.uid())
             .isEqualTo("sWoqcoByYmD")
-        Truth.assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.uid())
             .isEqualTo("U5KybNCtA3E.iggSfNDnsCw")
-        Truth.assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.program()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.program()!!.uid())
             .isEqualTo("U5KybNCtA3E")
-        Truth.assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.attribute()!!.uid())
+        assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.attribute()!!.uid())
             .isEqualTo("iggSfNDnsCw")
     }
 }

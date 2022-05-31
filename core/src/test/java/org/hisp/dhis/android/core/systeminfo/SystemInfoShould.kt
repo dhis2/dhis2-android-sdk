@@ -27,13 +27,22 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
+
 class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
-    @org.junit.Test
-    @Throws(java.io.IOException::class, java.text.ParseException::class)
+
+    @Test
     override fun map_from_json_string() {
-        val jsonSystemInfo: SystemInfo = objectMapper.readValue<SystemInfo>(jsonStream, SystemInfo::class.java)
-        val expectedSystemInfo: SystemInfo = SystemInfoSamples.get1().toBuilder().id(null).build()
-        Truth.assertThat(jsonSystemInfo).isEqualTo(expectedSystemInfo)
+        val systemInfo = objectMapper.readValue(jsonStream, SystemInfo::class.java)
+
+        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
+        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
+        assertThat(systemInfo.version()).isEqualTo("2.37")
+        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
+        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }
 }

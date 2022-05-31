@@ -27,16 +27,18 @@
  */
 package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
+
 class VisualizationSimplifiedShould : BaseObjectShould("visualization/visualization_simplified.json"), ObjectShould {
-    @org.junit.Test
-    @Throws(java.io.IOException::class, java.text.ParseException::class)
+
+    @Test
     override fun map_from_json_string() {
-        val jsonVisualization: Visualization =
-            objectMapper.readValue<Visualization>(jsonStream, Visualization::class.java)
-                .toBuilder().id(null).build()
-        val expectedVisualization: Visualization = VisualizationSamples.visualization()
-            .toBuilder().id(null).build()
-        Truth.assertThat(jsonVisualization).isEqualTo(expectedVisualization)
+        val jsonVisualization: Visualization = objectMapper.readValue(jsonStream, Visualization::class.java)
+
+        assertThat(jsonVisualization.name()).isEqualTo("Android SDK Visualization sample")
+        assertThat(jsonVisualization.displayName()).isEqualTo("Android SDK Visualization sample")
     }
 }

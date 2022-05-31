@@ -27,25 +27,23 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import kotlin.Throws
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
-import com.google.common.truth.Truth
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
-class TrackedEntityTypeAttributeShould : BaseObjectShould("trackedentity/tracked_entity_type_attribute.json"),
+class TrackedEntityTypeAttributeShould :
+    BaseObjectShould("trackedentity/tracked_entity_type_attribute.json"),
     ObjectShould {
+
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val typeAttribute = objectMapper.readValue(jsonStream, TrackedEntityTypeAttribute::class.java)
-        Truth.assertThat(typeAttribute.displayInList()).isTrue()
-        Truth.assertThat(typeAttribute.searchable()).isTrue()
-        Truth.assertThat(typeAttribute.mandatory()).isFalse()
-        Truth.assertThat(typeAttribute.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp")
-        Truth.assertThat(typeAttribute.trackedEntityAttribute()!!.uid()).isEqualTo("w75KJ2mc4zz")
+
+        assertThat(typeAttribute.displayInList()).isTrue()
+        assertThat(typeAttribute.searchable()).isTrue()
+        assertThat(typeAttribute.mandatory()).isFalse()
+        assertThat(typeAttribute.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp")
+        assertThat(typeAttribute.trackedEntityAttribute()!!.uid()).isEqualTo("w75KJ2mc4zz")
     }
 }

@@ -25,16 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings
+package org.hisp.dhis.android.core.relationship.internal
 
-object ProgramConfigurationSettingSamples {
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-    fun get(): ProgramConfigurationSetting {
-        return ProgramConfigurationSetting.builder()
-            .id(1L)
-            .uid("aBcDeFg")
-            .completionSpinner(true)
-            .optionalSearch(true)
+object RelationshipSamples {
+
+    const val UID = "uid"
+    const val FROM_UID = "fromUid"
+    const val TO_UID = "toUid"
+    const val TYPE = "type"
+    const val name = "name"
+    val fromItem: RelationshipItem = RelationshipHelper.teiItem(FROM_UID)
+    val toItem: RelationshipItem = RelationshipHelper.teiItem(TO_UID)
+    val STATE = State.SYNCED
+    const val DELETED = false
+
+    private val commonBuilder: Relationship.Builder = Relationship
+        .builder()
+        .name(name)
+        .syncState(STATE)
+        .deleted(DELETED)
+
+    fun get230(uid: String?, fromUid: String?, toUid: String?): Relationship {
+        return get230(uid, RelationshipHelper.teiItem(fromUid), RelationshipHelper.teiItem(toUid))
+    }
+
+    fun get230(): Relationship {
+        return commonBuilder
+            .uid(UID)
+            .relationshipType(TYPE)
+            .from(fromItem)
+            .to(toItem)
+            .build()
+    }
+
+    fun get230(uid: String?, from: RelationshipItem?, to: RelationshipItem?): Relationship {
+        return commonBuilder
+            .uid(uid)
+            .relationshipType(TYPE)
+            .from(from)
+            .to(to)
             .build()
     }
 }

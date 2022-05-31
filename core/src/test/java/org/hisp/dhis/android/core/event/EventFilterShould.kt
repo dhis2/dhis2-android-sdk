@@ -27,13 +27,88 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.data.event.EventFilterSamples
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.junit.Test
+
 class EventFilterShould : BaseObjectShould("event/event_filter.json"), ObjectShould {
-    @org.junit.Test
-    @Throws(java.io.IOException::class, java.text.ParseException::class)
+
+    @Test
+    @Suppress("LongMethod")
     override fun map_from_json_string() {
-        val eventFilter: EventFilter = objectMapper.readValue<EventFilter>(jsonStream, EventFilter::class.java)
-        val expectedEventFilter: EventFilter = EventFilterSamples.get().toBuilder().id(null).build()
-        Truth.assertThat(eventFilter).isEqualTo(expectedEventFilter)
+        val eventFilter: EventFilter = objectMapper.readValue(jsonStream, EventFilter::class.java)
+
+        assertThat(eventFilter.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-09-27T00:19:06.590"))
+        assertThat(eventFilter.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-09-27T00:19:06.590"))
+        assertThat(eventFilter.uid()).isEqualTo("event_filter_uid")
+        assertThat(eventFilter.code()).isEqualTo("tb_events")
+        assertThat(eventFilter.programStage()).isEqualTo("program_stage_uid")
+        assertThat(eventFilter.description()).isEqualTo("Simple Filter for TB events")
+        assertThat(eventFilter.name()).isEqualTo("TB events")
+        assertThat(eventFilter.displayName()).isEqualTo("TB events")
+
+        assertThat(eventFilter.eventQueryCriteria()!!.assignedUserMode()).isEqualTo(AssignedUserMode.CURRENT)
+        assertThat(eventFilter.eventQueryCriteria()!!.organisationUnit()).isEqualTo("orgUnitUid")
+        assertThat(eventFilter.eventQueryCriteria()!!.eventStatus()).isEqualTo(EventStatus.ACTIVE)
+        assertThat(eventFilter.eventQueryCriteria()!!.order()).isEqualTo("dueDate:asc,createdDate:desc")
+        assertThat(eventFilter.eventQueryCriteria()!!.followUp()).isFalse()
+        assertThat(eventFilter.eventQueryCriteria()!!.ouMode()).isEqualTo(OrganisationUnitMode.ACCESSIBLE)
+
+        assertThat(
+            eventFilter.eventQueryCriteria()!!.eventDate()!!.startDate()
+        ).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
+        assertThat(
+            eventFilter.eventQueryCriteria()!!.eventDate()!!.endDate()
+        ).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
+        assertThat(eventFilter.eventQueryCriteria()!!.eventDate()!!.type()).isEqualTo(DatePeriodType.ABSOLUTE)
+
+        assertThat(eventFilter.eventQueryCriteria()!!.dueDate()!!.period()).isEqualTo(RelativePeriod.LAST_2_SIXMONTHS)
+        assertThat(eventFilter.eventQueryCriteria()!!.dueDate()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
+
+        assertThat(eventFilter.eventQueryCriteria()!!.lastUpdatedDate()!!.startBuffer()).isEqualTo(-5)
+        assertThat(eventFilter.eventQueryCriteria()!!.lastUpdatedDate()!!.endBuffer()).isEqualTo(5)
+        assertThat(eventFilter.eventQueryCriteria()!!.lastUpdatedDate()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
+
+        assertThat(eventFilter.eventQueryCriteria()!!.completedDate()!!.period()).isEqualTo(RelativePeriod.TODAY)
+        assertThat(eventFilter.eventQueryCriteria()!!.completedDate()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
+
+        assertThat(eventFilter.eventQueryCriteria()!!.displayColumnOrder()).isEqualTo(
+            listOf(
+                "eventDate",
+                "status",
+                "assignedUser",
+                "qrur9Dvnyt5",
+                "oZg33kd9taw"
+            )
+        )
+        assertThat(eventFilter.eventQueryCriteria()!!.events()).isEqualTo(listOf("event1Uid", "event2Uid"))
+
+        val dateFilter1 = eventFilter.eventQueryCriteria()!!.dataFilters()!![0]!!
+        assertThat(dateFilter1.dataItem()).isEqualTo("abcDataElementUid")
+        assertThat(dateFilter1.le()).isEqualTo("20")
+        assertThat(dateFilter1.ge()).isEqualTo("10")
+        assertThat(dateFilter1.lt()).isEqualTo("20")
+        assertThat(dateFilter1.gt()).isEqualTo("10")
+        assertThat(dateFilter1.`in`()).isEqualTo(setOf("India", "Norway"))
+        assertThat(dateFilter1.like()).isEqualTo("abc")
+
+        val dateFilter2 = eventFilter.eventQueryCriteria()!!.dataFilters()!![1]!!
+        assertThat(dateFilter2.dataItem()).isEqualTo("dateDataElementUid")
+        assertThat(dateFilter2.dateFilter()!!.startDate()).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
+        assertThat(dateFilter2.dateFilter()!!.endDate()).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-03-20"))
+        assertThat(dateFilter2.dateFilter()!!.type()).isEqualTo(DatePeriodType.ABSOLUTE)
+
+        val dateFilter3 = eventFilter.eventQueryCriteria()!!.dataFilters()!![2]!!
+        assertThat(dateFilter3.dataItem()).isEqualTo("anotherDateDataElementUid")
+        assertThat(dateFilter3.dateFilter()!!.startBuffer()).isEqualTo(-5)
+        assertThat(dateFilter3.dateFilter()!!.endBuffer()).isEqualTo(5)
+        assertThat(dateFilter3.dateFilter()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
+
+        val dateFilter4 = eventFilter.eventQueryCriteria()!!.dataFilters()!![3]!!
+        assertThat(dateFilter4.dataItem()).isEqualTo("yetAnotherDateDataElementUid")
+        assertThat(dateFilter4.dateFilter()!!.period()).isEqualTo(RelativePeriod.LAST_WEEK)
+        assertThat(dateFilter4.dateFilter()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
     }
 }

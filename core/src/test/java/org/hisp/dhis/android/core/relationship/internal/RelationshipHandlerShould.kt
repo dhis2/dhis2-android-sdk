@@ -27,133 +27,132 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import com.nhaarman.mockitokotlin2.*
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.data.relationship.RelationshipSamples
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.lang.Exception
 
 @RunWith(JUnit4::class)
 class RelationshipHandlerShould {
-    @Mock
-    private val relationshipStore: RelationshipStore? = null
+    private val relationshipStore: RelationshipStore = mock()
 
-    @Mock
-    private val relationshipItemStore: RelationshipItemStore? = null
+    private val relationshipItemStore: RelationshipItemStore = mock()
 
-    @Mock
-    private val relationshipItemHandler: Handler<RelationshipItem>? = null
+    private val relationshipItemHandler: Handler<RelationshipItem> = mock()
 
-    @Mock
-    private val storeSelector: RelationshipItemElementStoreSelector? = null
+    private val storeSelector: RelationshipItemElementStoreSelector = mock()
 
-    @Mock
-    private val itemElementStore: StoreWithState<*>? = null
+    private val itemElementStore: StoreWithState<*> = mock()
+
     private val NEW_UID = "new-uid"
     private val TEI_3_UID = "tei3"
     private val TEI_4_UID = "tei4"
     private val tei3Item: RelationshipItem = RelationshipHelper.teiItem(TEI_3_UID)
     private val tei4Item: RelationshipItem = RelationshipHelper.teiItem(TEI_4_UID)
-    private val existingRelationship: Relationship = get230()
-    private val existingRelationshipWithNewUid: Relationship = get230().toBuilder().uid(NEW_UID).build()
-    private val newRelationship: Relationship = get230(NEW_UID, TEI_3_UID, TEI_4_UID)
+    private val existingRelationship: Relationship = RelationshipSamples.get230()
+    private val existingRelationshipWithNewUid: Relationship =
+        RelationshipSamples.get230().toBuilder().uid(NEW_UID).build()
+    private val newRelationship: Relationship = RelationshipSamples.get230(NEW_UID, TEI_3_UID, TEI_4_UID)
 
     // object to test
-    private var relationshipHandler: RelationshipHandlerImpl? = null
+    private lateinit var relationshipHandler: RelationshipHandlerImpl
+
     @Before
-    @Throws(Exception::class)
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         relationshipHandler = RelationshipHandlerImpl(
-            relationshipStore!!, relationshipItemStore!!,
-            relationshipItemHandler!!, storeSelector!!
+            relationshipStore, relationshipItemStore,
+            relationshipItemHandler, storeSelector
         )
-        Mockito.`when`<StoreWithState<*>>(
-            storeSelector.getElementStore(
-                ArgumentMatchers.any<RelationshipItem>(
-                    RelationshipItem::class.java
-                )
+        whenever(storeSelector.getElementStore(any())).thenReturn(itemElementStore)
+        whenever(itemElementStore.exists(RelationshipSamples.FROM_UID)).thenReturn(true)
+        whenever(itemElementStore.exists(RelationshipSamples.TO_UID)).thenReturn(true)
+        whenever(itemElementStore.exists(TEI_3_UID)).thenReturn(true)
+        whenever(itemElementStore.exists(TEI_4_UID)).thenReturn(true)
+        whenever(
+            relationshipItemStore.getRelationshipUidsForItems(
+                RelationshipSamples.fromItem, RelationshipSamples.toItem
             )
-        ).thenReturn(itemElementStore)
-        Mockito.`when`<Boolean>(itemElementStore.exists(FROM_UID)).thenReturn(true)
-        Mockito.`when`<Boolean>(itemElementStore.exists(TO_UID)).thenReturn(true)
-        Mockito.`when`<Boolean>(itemElementStore.exists(TEI_3_UID)).thenReturn(true)
-        Mockito.`when`<Boolean>(itemElementStore.exists(TEI_4_UID)).thenReturn(true)
-        Mockito.`when`<List<String>>(relationshipItemStore.getRelationshipUidsForItems(fromItem, toItem))
-            .thenReturn(listOf<String>(UID))
-        Mockito.`when`<List<String>>(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item))
-            .thenReturn(emptyList<String>())
-        Mockito.`when`<Relationship>(relationshipStore.selectByUid(UID)).thenReturn(get230())
-        Mockito.`when`<HandleAction>(relationshipStore.updateOrInsert(ArgumentMatchers.any<Relationship>()))
-            .thenReturn(HandleAction.Insert)
+        ).thenReturn(listOf(RelationshipSamples.UID))
+        whenever(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(emptyList())
+        whenever(relationshipStore.selectByUid(RelationshipSamples.UID)).thenReturn(RelationshipSamples.get230())
+        whenever(relationshipStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
     fun not_delete_relationship_if_existing_id_matches() {
-        relationshipHandler!!.handle(existingRelationship)
-        Mockito.verify<RelationshipStore>(relationshipStore, Mockito.never()).delete(UID)
+        relationshipHandler.handle(existingRelationship)
+        verify(relationshipStore, never()).delete(RelationshipSamples.UID)
     }
 
     @Test
     fun not_call_delete_if_no_existing_relationship() {
-        relationshipHandler!!.handle(newRelationship)
-        Mockito.verify<RelationshipStore>(relationshipStore, Mockito.never()).delete(UID)
+        relationshipHandler.handle(newRelationship)
+        verify(relationshipStore, never()).delete(RelationshipSamples.UID)
     }
 
     @Test
     fun update_relationship_store_for_existing_relationship() {
-        relationshipHandler!!.handle(existingRelationship)
-        Mockito.verify<RelationshipStore>(relationshipStore).updateOrInsert(existingRelationship)
+        relationshipHandler.handle(existingRelationship)
+        verify(relationshipStore).updateOrInsert(existingRelationship)
     }
 
     @Test
     fun update_relationship_store_for_existing_relationship_with_new_uid() {
-        relationshipHandler!!.handle(existingRelationshipWithNewUid)
-        Mockito.verify<RelationshipStore>(relationshipStore).updateOrInsert(existingRelationshipWithNewUid)
+        relationshipHandler.handle(existingRelationshipWithNewUid)
+        verify(relationshipStore).updateOrInsert(existingRelationshipWithNewUid)
     }
 
     @Test
     fun update_relationship_store_for_new_relationship() {
-        relationshipHandler!!.handle(newRelationship)
-        Mockito.verify<RelationshipStore>(relationshipStore).updateOrInsert(newRelationship)
+        relationshipHandler.handle(newRelationship)
+        verify(relationshipStore).updateOrInsert(newRelationship)
     }
 
     @Test
     fun update_relationship_handler_store_for_existing_relationship() {
-        relationshipHandler!!.handle(existingRelationship)
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
-            fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
+        relationshipHandler.handle(existingRelationship)
+        verify(relationshipItemHandler).handle(
+            RelationshipSamples.fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build()
         )
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
-            toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
+        verify(relationshipItemHandler).handle(
+            RelationshipSamples.toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build()
         )
     }
 
     @Test
     fun update_relationship_item_handler_for_existing_relationship_with_new_uid() {
-        relationshipHandler!!.handle(existingRelationshipWithNewUid)
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
-            fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
+        relationshipHandler.handle(existingRelationshipWithNewUid)
+        verify(relationshipItemHandler).handle(
+            RelationshipSamples.fromItem.toBuilder()
+                .relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build()
         )
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
-            toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
+        verify(relationshipItemHandler).handle(
+            RelationshipSamples.toItem.toBuilder()
+                .relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build()
         )
     }
 
     @Test
     fun update_relationship_item_handler_for_new_relationship() {
-        relationshipHandler!!.handle(newRelationship)
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
+        relationshipHandler.handle(newRelationship)
+        verify(relationshipItemHandler).handle(
             tei3Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.FROM).build()
         )
-        Mockito.verify<Handler<RelationshipItem>>(relationshipItemHandler).handle(
+        verify(relationshipItemHandler).handle(
             tei4Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
                 .relationshipItemType(RelationshipConstraintType.TO).build()
         )

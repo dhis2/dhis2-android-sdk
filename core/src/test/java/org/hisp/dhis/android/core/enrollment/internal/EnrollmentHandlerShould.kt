@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.lang.Boolean
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -105,7 +104,7 @@ class EnrollmentHandlerShould {
 
     @Test
     fun invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
-        whenever(enrollment.deleted()).doReturn(Boolean.TRUE)
+        whenever(enrollment.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)
@@ -122,7 +121,7 @@ class EnrollmentHandlerShould {
 
     @Test
     fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() {
-        whenever(enrollment.deleted()).doReturn(Boolean.FALSE)
+        whenever(enrollment.deleted()).doReturn(false)
         whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)

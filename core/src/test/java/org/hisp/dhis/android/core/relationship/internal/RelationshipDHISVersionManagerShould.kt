@@ -27,45 +27,50 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.data.relationship.RelationshipSamples
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
 
 class RelationshipDHISVersionManagerShould {
-    @Mock
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>? = null
+    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType> = mock()
 
-    @Mock
-    private val relationshipType: RelationshipType? = null
-    private var relationshipDHISVersionManager: RelationshipDHISVersionManager? = null
+    private val relationshipType: RelationshipType = mock()
+
+    private lateinit var relationshipDHISVersionManager: RelationshipDHISVersionManager
+
     @Before
-    @Throws(Exception::class)
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         relationshipDHISVersionManager = RelationshipDHISVersionManager(relationshipTypeStore)
     }
 
     @Test
     fun get_owned_relationships_in_bidirectional() {
-        Mockito.`when`<RelationshipType>(relationshipTypeStore.selectByUid(TYPE)).thenReturn(relationshipType)
-        Mockito.`when`<Boolean>(relationshipType.bidirectional()).thenReturn(true)
-        val relationships: Collection<Relationship> = listOf(get230())
-        val ownedRelationships: Collection<Relationship> =
-            relationshipDHISVersionManager!!.getOwnedRelationships(relationships, TO_UID)
-        Truth.assertThat(ownedRelationships.size).isEqualTo(1)
+        whenever(relationshipTypeStore.selectByUid(RelationshipSamples.TYPE)).thenReturn(relationshipType)
+        whenever(relationshipType.bidirectional()).thenReturn(true)
+
+        val relationships = listOf(RelationshipSamples.get230())
+        val ownedRelationships =
+            relationshipDHISVersionManager.getOwnedRelationships(relationships, RelationshipSamples.TO_UID)
+
+        assertThat(ownedRelationships.size).isEqualTo(1)
     }
 
     @Test
     fun get_owned_relationships_in_non_bidirectional() {
-        Mockito.`when`<RelationshipType>(relationshipTypeStore.selectByUid(TYPE)).thenReturn(relationshipType)
-        Mockito.`when`<Boolean>(relationshipType.bidirectional()).thenReturn(false)
-        val relationships: Collection<Relationship> = listOf(get230())
-        val ownedToRelationships: Collection<Relationship> =
-            relationshipDHISVersionManager!!.getOwnedRelationships(relationships, TO_UID)
-        val ownedFromRelationships: Collection<Relationship> =
-            relationshipDHISVersionManager!!.getOwnedRelationships(relationships, FROM_UID)
-        Truth.assertThat(ownedToRelationships).isEmpty()
-        Truth.assertThat(ownedFromRelationships.size).isEqualTo(1)
+        whenever(relationshipTypeStore.selectByUid(RelationshipSamples.TYPE)).thenReturn(relationshipType)
+        whenever(relationshipType.bidirectional()).thenReturn(false)
+
+        val relationships = listOf(RelationshipSamples.get230())
+        val ownedToRelationships =
+            relationshipDHISVersionManager.getOwnedRelationships(relationships, RelationshipSamples.TO_UID)
+        val ownedFromRelationships =
+            relationshipDHISVersionManager.getOwnedRelationships(relationships, RelationshipSamples.FROM_UID)
+
+        assertThat(ownedToRelationships).isEmpty()
+        assertThat(ownedFromRelationships.size).isEqualTo(1)
     }
 }

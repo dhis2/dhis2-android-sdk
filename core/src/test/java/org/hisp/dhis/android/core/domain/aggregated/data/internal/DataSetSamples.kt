@@ -25,16 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-object ProgramConfigurationSettingSamples {
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.period.PeriodType
 
-    fun get(): ProgramConfigurationSetting {
-        return ProgramConfigurationSetting.builder()
-            .id(1L)
-            .uid("aBcDeFg")
-            .completionSpinner(true)
-            .optionalSearch(true)
-            .build()
-    }
+object DataSetSamples {
+    val dataSet: DataSet
+        get() {
+            return DataSet.builder()
+                .id(1L)
+                .uid("uid")
+                .name("dataset")
+                .periodType(PeriodType.BiMonthly)
+                .categoryCombo(ObjectWithUid.create("comboUid"))
+                .mobile(false)
+                .version(2)
+                .expiryDays(3)
+                .timelyDays(4)
+                .notifyCompletingUser(true)
+                .openFuturePeriods(6)
+                .fieldCombinationRequired(false)
+                .validCompleteOnly(false)
+                .noValueRequiresComment(true)
+                .skipOffline(false)
+                .dataElementDecoration(true)
+                .renderAsTabs(false)
+                .renderHorizontally(true)
+                .access(AccessHelper.createForDataWrite(true))
+                .build()
+        }
 }

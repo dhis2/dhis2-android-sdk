@@ -27,23 +27,24 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.data.dataset.DataSetSamples
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
-import java.util.*
 
 class AggregatedDataSyncLastUpdatedCalculatorShould {
-    private val dataSet: DataSet = DataSetSamples.getDataSet()
+    private val dataSet: DataSet = DataSetSamples.dataSet
     private val dataElementsHash = 1111111
     private val organisationUnitsHash = 22222222
     private val pastPeriods = 5
     private val syncLastUpdated = DateUtils.DATE_FORMAT.parse("2018-01-01T15:08:27.882")
-    private val expectedLastUpdated: Date = FillPropertiesTestUtils.parseDate("2017-12-31T15:08:27.882")
+    private val expectedLastUpdated = DateUtils.DATE_FORMAT.parse("2017-12-31T15:08:27.882")
 
-    @Mock
-    private val hashHelper: AggregatedDataSyncHashHelper? = null
+    private val hashHelper: AggregatedDataSyncHashHelper = mock()
     private val syncValue = AggregatedDataSync.builder()
         .dataSet(dataSet.uid())
         .periodType(dataSet.periodType())
@@ -53,98 +54,98 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
         .organisationUnitsHash(organisationUnitsHash)
         .lastUpdated(syncLastUpdated)
         .build()
-    private var calculator: AggregatedDataSyncLastUpdatedCalculator? = null
+    private lateinit var calculator: AggregatedDataSyncLastUpdatedCalculator
+
     @Before
-    @Throws(Exception::class)
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        Mockito.`when`<Int>(hashHelper!!.getDataSetDataElementsHash(dataSet)).thenReturn(dataElementsHash)
+        whenever(hashHelper.getDataSetDataElementsHash(dataSet)).thenReturn(dataElementsHash)
         calculator = AggregatedDataSyncLastUpdatedCalculator(hashHelper)
     }
 
     @Test
     fun return_null_if_sync_value_null() {
-        val lastUpdated = calculator!!.getLastUpdated(null, dataSet, 3, 5, 0)
-        Truth.assertThat<Date>(lastUpdated).isNull()
+        val lastUpdated = calculator.getLastUpdated(null, dataSet, 3, 5, 0)
+        assertThat<Date>(lastUpdated).isNull()
     }
 
     @Test
     fun return_expected_last_updated_if_same_values() {
-        val lastUpdated = calculator!!.getLastUpdated(
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods,
-            dataSet.openFuturePeriods(),
+            dataSet.openFuturePeriods()!!,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isEqualTo(expectedLastUpdated)
+        assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
 
     @Test
     fun return_null_if_organisation_units_hash_changed() {
         val lastUpdated =
-            calculator!!.getLastUpdated(syncValue, dataSet, pastPeriods, dataSet.openFuturePeriods(), 33333)
-        Truth.assertThat<Date>(lastUpdated).isNull()
+            calculator.getLastUpdated(syncValue, dataSet, pastPeriods, dataSet.openFuturePeriods()!!, 33333)
+        assertThat(lastUpdated).isNull()
     }
 
     @Test
     fun return_null_if_data_set_elements_hash_changed() {
-        Mockito.`when`<Int>(hashHelper!!.getDataSetDataElementsHash(dataSet)).thenReturn(77777)
-        val lastUpdated = calculator!!.getLastUpdated(
+        whenever(hashHelper.getDataSetDataElementsHash(dataSet)).thenReturn(77777)
+
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods,
-            dataSet.openFuturePeriods(),
+            dataSet.openFuturePeriods()!!,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isNull()
+        assertThat(lastUpdated).isNull()
     }
 
     @Test
     fun return_null_if_future_periods_are_increased() {
-        val lastUpdated = calculator!!.getLastUpdated(
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods,
-            dataSet.openFuturePeriods() + 1,
+            dataSet.openFuturePeriods()!! + 1,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isNull()
+        assertThat(lastUpdated).isNull()
     }
 
     @Test
     fun return_expected_last_updated_if_future_periods_are_decreased() {
-        val lastUpdated = calculator!!.getLastUpdated(
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods,
-            dataSet.openFuturePeriods() - 1,
+            dataSet.openFuturePeriods()!! - 1,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isEqualTo(expectedLastUpdated)
+        assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
 
     @Test
     fun return_null_if_past_periods_are_increased() {
-        val lastUpdated = calculator!!.getLastUpdated(
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods + 1,
-            dataSet.openFuturePeriods(),
+            dataSet.openFuturePeriods()!!,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isNull()
+        assertThat<Date>(lastUpdated).isNull()
     }
 
     @Test
     fun return_expected_past_updated_if_future_periods_are_decreased() {
-        val lastUpdated = calculator!!.getLastUpdated(
+        val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
             pastPeriods - 1,
-            dataSet.openFuturePeriods(),
+            dataSet.openFuturePeriods()!!,
             organisationUnitsHash
         )
-        Truth.assertThat<Date>(lastUpdated).isEqualTo(expectedLastUpdated)
+        assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
 }

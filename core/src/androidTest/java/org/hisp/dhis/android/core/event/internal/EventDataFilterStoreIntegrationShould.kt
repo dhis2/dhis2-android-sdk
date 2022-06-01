@@ -25,27 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.event.EventDataFilterSamples
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.internal.EventDataFilterStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.event.EventDataFilterSamples;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class EventDataFilterStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<EventDataFilter> {
-
-    public EventDataFilterStoreIntegrationShould() {
-        super(EventDataFilterStore.create(TestDatabaseAdapterFactory.get()),
-                ItemFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected EventDataFilter buildObject() {
-        return EventDataFilterSamples.get();
+@RunWith(D2JunitRunner::class)
+class EventDataFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<EventDataFilter>(
+    create(TestDatabaseAdapterFactory.get()),
+    ItemFilterTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): EventDataFilter {
+        return EventDataFilterSamples.get()
     }
 }

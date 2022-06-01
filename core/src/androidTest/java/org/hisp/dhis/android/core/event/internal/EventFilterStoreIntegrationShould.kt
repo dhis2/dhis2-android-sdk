@@ -25,35 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.event.EventFilterSamples
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.event.EventFilterSamples;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class EventFilterStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<EventFilter> {
-
-    public EventFilterStoreIntegrationShould() {
-        super(EventFilterStore.create(TestDatabaseAdapterFactory.get()),
-                EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+internal class EventFilterStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<EventFilter>(
+    EventFilterStore.create(TestDatabaseAdapterFactory.get()),
+    EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): EventFilter {
+        return EventFilterSamples.get()
     }
 
-    @Override
-    protected EventFilter buildObject() {
-        return EventFilterSamples.get();
-    }
-
-    @Override
-    protected EventFilter buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): EventFilter {
         return EventFilterSamples.get().toBuilder()
-                .description("new_description")
-                .build();
+            .description("new_description")
+            .build()
     }
 }

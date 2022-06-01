@@ -28,18 +28,20 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceFilterHandler @Inject constructor(
     trackedEntityInstanceFilterStore: IdentifiableObjectStore<TrackedEntityInstanceFilter>,
-    private val trackedEntityInstanceEventFilterHandler: HandlerWithTransformer<TrackedEntityInstanceEventFilter>
+    private val trackedEntityInstanceEventFilterHandler: HandlerWithTransformer<TrackedEntityInstanceEventFilter>,
+    private val attributeValueFilterHandler: HandlerWithTransformer<AttributeValueFilter>
 ) : IdentifiableHandlerImpl<TrackedEntityInstanceFilter>(trackedEntityInstanceFilterStore) {
 
     override fun beforeCollectionHandled(
@@ -54,6 +56,11 @@ internal class TrackedEntityInstanceFilterHandler @Inject constructor(
             trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters()) {
                 ef: TrackedEntityInstanceEventFilter ->
                 ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
+            }
+            o.entityQueryCriteria()?.attributeValueFilters()?.let {
+                attributeValueFilterHandler.handleMany(it) { avf: AttributeValueFilter ->
+                    avf.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
+                }
             }
         }
     }

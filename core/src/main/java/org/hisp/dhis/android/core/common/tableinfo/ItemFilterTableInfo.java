@@ -53,7 +53,7 @@ public final class ItemFilterTableInfo {
     public static class Columns extends CoreColumns {
         public final static String EVENT_FILTER = "eventFilter";
         public final static String DATA_ITEM = "dataItem";
-        public final static String ATTRIBUTE_FILTER = "attributeFilter";
+        public final static String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
         public final static String ATTRIBUTE = "attribute";
         public static final String SW = "sw";
         public static final String EW = "ew";
@@ -71,7 +71,7 @@ public final class ItemFilterTableInfo {
             return CollectionsHelper.appendInNewArray(super.all(),
                     EVENT_FILTER,
                     DATA_ITEM,
-                    ATTRIBUTE_FILTER,
+                    TRACKED_ENTITY_INSTANCE_FILTER,
                     ATTRIBUTE,
                     SW,
                     EW,

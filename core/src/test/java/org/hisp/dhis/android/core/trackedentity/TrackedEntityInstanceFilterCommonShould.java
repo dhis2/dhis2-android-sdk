@@ -31,13 +31,10 @@ package org.hisp.dhis.android.core.trackedentity;
 import static com.google.common.truth.Truth.assertThat;
 
 import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
-
-import java.text.ParseException;
 
 public abstract class TrackedEntityInstanceFilterCommonShould extends BaseObjectShould implements ObjectShould {
 
@@ -45,12 +42,10 @@ public abstract class TrackedEntityInstanceFilterCommonShould extends BaseObject
         super(jsonPath);
     }
 
-    protected void teiFilterCommonAsserts(TrackedEntityInstanceFilter trackedEntityInstanceFilter) throws ParseException {
+    protected void teiFilterCommonAsserts(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
 
-        assertThat(trackedEntityInstanceFilter.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-09-27T00:19:06.590"));
-        assertThat(trackedEntityInstanceFilter.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-09-27T00:19:06.590"));
+        assertThat(trackedEntityInstanceFilter.lastUpdated()).isEqualTo(getDate("2019-09-27T00:19:06.590"));
+        assertThat(trackedEntityInstanceFilter.created()).isEqualTo(getDate("2019-09-27T00:19:06.590"));
         assertThat(trackedEntityInstanceFilter.uid()).isEqualTo("klhzVgls081");
         assertThat(trackedEntityInstanceFilter.code()).isEqualTo("assigned_none");
         assertThat(trackedEntityInstanceFilter.name()).isEqualTo("Ongoing foci responses");

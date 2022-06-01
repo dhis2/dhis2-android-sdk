@@ -39,11 +39,8 @@ import org.hisp.dhis.android.core.common.RelativePeriod;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.mockito.internal.util.collections.Sets;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -65,16 +62,6 @@ public class TrackedEntityInstanceFilterSamples {
                 .sortOrder(2)
                 .program(ObjectWithUid.create("M3xtLkYBlKI"))
                 .enrollmentCreatedPeriod(FilterPeriod.create(-15, 15))
-                .eventFilters(Lists.newArrayList(TrackedEntityInstanceEventFilter.builder()
-                        .trackedEntityInstanceFilter("klhzVgls081")
-                        .programStage("uvMKOn1oWvd")
-                        .eventStatus(EventStatus.OVERDUE)
-                        .assignedUserMode(AssignedUserMode.ANY)
-                        .eventCreatedPeriod(FilterPeriod.builder()
-                                .periodFrom(-11)
-                                .periodTo(11)
-                                .build())
-                        .build()))
                 .entityQueryCriteria(EntityQueryCriteria.builder()
                         .followUp(Boolean.FALSE)
                         .enrollmentStatus(EnrollmentStatus.ACTIVE)
@@ -113,25 +100,6 @@ public class TrackedEntityInstanceFilterSamples {
                                 .endBuffer(5)
                                 .type(DatePeriodType.RELATIVE)
                                 .build())
-                        .attributeValueFilters(Lists.newArrayList(AttributeValueFilter.builder()
-                                .ew("aa")
-                                .sw("ac")
-                                .like("abc")
-                                .lt("20")
-                                .le("20")
-                                .attribute("w75KJ2mc4zz")
-                                .gt("10")
-                                .ge("10")
-                                .dateFilter(DateFilterPeriod.builder()
-                                        .period(RelativePeriod.LAST_WEEK)
-                                        .endBuffer(5)
-                                        .startBuffer(-5)
-                                        .type(DatePeriodType.RELATIVE)
-                                        .startDate(getDate("2014-05-01T00:00:00.000"))
-                                        .endDate(getDate("2019-03-20T00:00:00.000"))
-                                        .build())
-                                .in(Sets.newSet("Norway", "India"))
-                                .build()))
                         .build())
                 .build();
     }

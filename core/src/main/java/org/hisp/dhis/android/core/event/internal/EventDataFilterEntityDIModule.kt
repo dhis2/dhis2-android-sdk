@@ -25,31 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.internal.EventDataFilterStore.create
 
 @Module
-public final class EventDataFilterEntityDIModule {
-
+internal class EventDataFilterEntityDIModule {
     @Provides
     @Reusable
-    ObjectWithoutUidStore<EventDataFilter> store(DatabaseAdapter databaseAdapter) {
-        return EventDataFilterStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<EventDataFilter> {
+        return create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    HandlerWithTransformer<EventDataFilter> handler(ObjectWithoutUidStore<EventDataFilter> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    fun handler(store: ObjectWithoutUidStore<EventDataFilter>): HandlerWithTransformer<EventDataFilter> {
+        return ObjectWithoutUidHandlerImpl(store)
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule;
@@ -71,7 +72,8 @@ import retrofit2.Retrofit;
         TrackedEntityInstanceQueryEntityDIModule.class,
         TrackedEntityInstanceSyncEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class,
-        TrackedEntityTypeAttributeEntityDIModule.class
+        TrackedEntityTypeAttributeEntityDIModule.class,
+        AttributeValueFilterEntityDIModule.class
 })
 public final class TrackedEntityPackageDIModule {
 

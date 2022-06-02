@@ -15,7 +15,7 @@ Steps to install it and configure it:
 
 1. Ensure you have the Android SDK installed (you probably will if you are planning to debug an Android app)
 2. Download Flipper from [its website](https://fbflipper.com/)
-3. Modify your build.gradle to install Flipper dependencies.
+3. Check to ensure the flipper dependencies are included in /app/build.gradle to install Flipper dependencies.
 
     ```gradle
     dependencies {

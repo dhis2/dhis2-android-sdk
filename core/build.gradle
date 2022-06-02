@@ -125,6 +125,7 @@ android {
     lintOptions {
         // casting 'InvalidPackage' error to warning
         warning "InvalidPackage"
+        disable 'MissingTranslation'
 
         // Fail early.
         abortOnError true

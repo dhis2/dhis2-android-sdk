@@ -25,22 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.dataset.DataSet
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class AggregatedDataPackageDIModule {
-
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<AggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
-        return AggregatedDataSyncStore.create(databaseAdapter);
+@Reusable
+internal class AggregatedDataSyncHashHelper @Inject constructor() {
+    fun getDataSetDataElementsHash(dataSet: DataSet): Int {
+        return dataSet.dataSetElements()!!
+            .map { it.dataElement().uid() }
+            .toSet()
+            .hashCode()
     }
 }

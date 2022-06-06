@@ -26,28 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataModuleImpl;
+import io.reactivex.Observable
 
-import javax.inject.Inject;
+interface AggregatedDataDownloader {
 
-import dagger.Reusable;
+    fun download(): Observable<AggregatedD2Progress>
 
-@Reusable
-public final class AggregatedModuleImpl implements AggregatedModule {
-
-    private final AggregatedDataModuleImpl dataModule;
-
-    @Inject
-    AggregatedModuleImpl(AggregatedDataModuleImpl dataModule) {
-        this.dataModule = dataModule;
-    }
-
-    @Override
-    public WithProgressDownloader data() {
-        return dataModule;
-    }
+    fun blockingDownload()
 }

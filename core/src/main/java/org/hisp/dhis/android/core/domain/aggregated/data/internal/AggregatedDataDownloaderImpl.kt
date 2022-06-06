@@ -26,33 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
+import javax.inject.Inject
 
 @Reusable
-public final class AggregatedDataModuleImpl implements WithProgressDownloader {
+internal class AggregatedDataDownloaderImpl @Inject constructor(
+    private val dataCall: AggregatedDataCall
+): AggregatedDataDownloader {
 
-    private final AggregatedDataCall aggregatedDataCall;
-
-    @Inject
-    AggregatedDataModuleImpl(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
+    override fun download(): Observable<AggregatedD2Progress> {
+        return dataCall.download()
     }
 
-    @Override
-    public Observable<D2Progress> download() {
-        return aggregatedDataCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        aggregatedDataCall.blockingDownload();
+    override fun blockingDownload() {
+        download().blockingSubscribe()
     }
 }

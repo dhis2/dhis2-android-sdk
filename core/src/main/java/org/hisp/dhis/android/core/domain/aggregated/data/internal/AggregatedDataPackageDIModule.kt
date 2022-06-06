@@ -25,32 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
 
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
+@Module
+internal class AggregatedDataPackageDIModule {
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class AggregatedDataSyncHashHelper {
-
-    @Inject
-    AggregatedDataSyncHashHelper() {
-        // Empty constructor for injection
+    @Provides
+    @Reusable
+    fun downloader(downloaderImpl: AggregatedDataDownloaderImpl): AggregatedDataDownloader {
+        return downloaderImpl
     }
 
-    int getDataSetDataElementsHash(DataSet dataSet) {
-        Set<String> dataElementUids = new HashSet<>(dataSet.dataSetElements().size());
-        for (DataSetElement dse : dataSet.dataSetElements()) {
-            dataElementUids.add(dse.dataElement().uid());
-        }
-        return dataElementUids.hashCode();
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AggregatedDataSync> {
+        return AggregatedDataSyncStore.create(databaseAdapter)
     }
 }

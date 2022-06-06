@@ -74,7 +74,7 @@ Properties included in the `DimensionalResponse` object:
 - **Filters**: list of ids that act as a filter in the query.
 - **Values**: list of `DimensionalValue`. Each value contains an ordered list of ids that define the value. In the example above, the value "17" corresponds to "ANC 1st visit" ("fbfJHSPpUQD") and "August 2021" ("202108"). You can use the metadata map to get more information from those ids.
 
-DimensionItems can be used either as dimensions or as filters. And multiple items of the same dimension can be combined in the same query. For example, this query gets "ANC 1st visit" (DataElement "fbfJHSPpUQD") and "ANC 1-3 Dropout Rate" (Indicator "ReUHfIn0pTQ") disaggregated by the category "Location: Fixed/Outreach" (Category "fMZEcRHuamy") using the options "Fixed" (CategoryOption "qkPbeWaFsnU") and "Outreach" (CategoryOption "wbrDrL2aYEc") within the last 3 months (Relative Period) in the UserOrganisationUnit (Relative OrganisationUnit).
+DimensionItems can be used either as dimensions or as filters. And multiple items of the same dimension can be combined in the same query. For example, this query gets "ANC 1st visit" (DataElement "fbfJHSPpUQD") and "ANC 1-3 Dropout Rate" (Indicator "ReUHfIn0pTQ") disaggregated by the category "Location: Fixed/Outreach" (Category "fMZEcRHuamy") using the options "Fixed" (CategoryOption "qkPbeWaFsnU") and "Outreach" (CategoryOption "wbrDrL2aYEc") within the last 3 months (Relative Period) in the UserOrganisationUnit (Relative OrganisationUnit) and classifying the values by data item legendSet.
 
 ```java
 d2.analyticsModule().analytics()
@@ -85,6 +85,8 @@ d2.analyticsModule().analytics()
         
         .withFilter(new DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
         .withFilter(new DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
+
+        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem.INSTANCE)
         
         .evaluate();
 ```
@@ -98,6 +100,15 @@ Additionally, the query is evaluated against the local metadata and data, which 
 
 1. DimensionItems (DataElement, Indicator, OrganisationUnit, ...) must be downloaded in the device. By default, the SDK downloads all the dataSets and programs accessible to the user and the related metadata.
 2. Data must be downloaded in the device. The evaluation only takes into account the data stored in the local database.
+
+There are three options to define the legendSet strategy. The class `AnalyticsLegendStrategy` is a sealed class in Kotlin, so the keyword `INSTANCE` must be appended at the end of the object values when coding in Java. Code examples:
+
+```java
+d2.analyticsModule().analytics()
+        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem.INSTANCE)       // Data items use their own LegendSet
+        .withLegendStrategy(AnalyticsLegendStrategy.None.INSTANCE)             // LegendSets are not used
+        .withLegendStrategy(new AnalyticsLegendStrategy.Fixed("fqs276KXCXi"))  // The provided LegendSet will be used for all data items
+```
 
 ### Visualization analytics { #android_sdk_visualization_analytics }
 

@@ -32,6 +32,16 @@ d2.userModule().accountManager().getAccounts();
 // Get/set the maximum number of accounts
 d2.userModule().accountManager().getMaxAccounts();
 d2.userModule().accountManager().setMaxAccounts();
+
+// Delete account for current user
+d2.userModule().accountManager().deleteCurrentAccount();
+```
+
+The accountManager exposes an observable that emits an event when the current account is deleted. It includes the reason why the account was deleted.
+
+```java
+// Emits an event when the current account is deleted
+d2.userModule().accountManager().accountDeletionObservable();
 ```
 
 After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
@@ -229,6 +239,7 @@ Currently, it is possible to specify the next filters:
   unique object. This filter can be used to download the tracked entity
   instances found within search scope. (Only for tracked entity
   instances).
+- `byProgramStatus()`. Filters those tracked entity instances that have a enrollment with the given status.
 
 The downloader also allows to limit the number of downloaded objects.
 These limits can also be combined with each other.
@@ -241,6 +252,10 @@ These limits can also be combined with each other.
   organisation unit. The number of objects that will be downloaded will
   be the one obtained by multiplying the limit set by the number of user
   organisation units.
+
+Other properties:
+
+- `overwrite()`. By default, the SDK does not overwrite data in the device in a status other than SYNCED. If you want to overwrite the data in the device, no matter the status it has, add this method to the query chain.
 
 The next snippet of code shows an example of the
 TrackedEntityInstanceDownloader usage.
@@ -389,7 +404,42 @@ d2.trackedEntityModule().trackedEntityInstanceFilters()
     .get();
 ```
 
-[//]: # (Include glass protected download)
+### Break the glass
+
+The "Break the glass" concept is based on the ownership of the pair trackedEntityInstance - enrollment. If the program is **PROTECTED** and the user does not have **DATA CAPTURE** to the organisation unit, it is required to break the glass in order to read and modify the data. The workflow would be:
+
+1. Search for any tracked entity instances in **SEARCH** scope. It is important to not include the program uid in the query: the server will only return those TEIs that are accessible to the user, so protected TEIs in search scope won't be returned (otherwise, the user would know if the TEIs is enrolled or not without giving any reason).
+2. Download the TEI using the downloader and specify the **TEI uid** and the **program uid**. It is important to include both parameters to force the ownership error.
+3. Catch the error, if any, and check if it is an OWNERSHIP_ACCESS_DENIED error.
+4. If so, request the ownwership using the ownership module (see code snippet below).
+5. Try again the query in step 2.
+
+```java
+TrackedEntityInstanceDownloader teiRepository = d2.trackedEntityModule().trackedEntityInstanceDownloader()
+        .byUid().eq(teiUid)
+        .byProgramUid(programUid);
+
+try {
+    teiRepository.blockingDownload();
+} catch (RuntimeException e) {
+    if (e.getCause() instanceof D2Error &&
+            ((D2Error) e.getCause()).errorCode() == D2ErrorCode.OWNERSHIP_ACCESS_DENIED) {
+        // Show a dialog to the user and capture the reason to break the glass
+        String reason = "Reason to break the glass";
+
+        // Break the glass
+        d2.trackedEntityModule().ownershipManager()
+                .blockingBreakGlass(teiUid, programUid, reason);
+
+        // Download again
+        teiRepository.blockingDownload();
+    } else {
+        // Deal with other exceptions
+    }
+}
+```
+
+It is recommended to upload the data immediately after if has been edited because the ownership expires in two hours (it could depend on DHIS2 versions). If the ownership has expired when the user tries to upload the data, the SDK will automatically perform a "break-the-glass" query in the background using the original reason and add the prefix "Android App sync:". In this way, an administrator could easily identify that this operation is not a real break the glass, but just an auxiliary query to perform the synchronization.
 
 ### Tracker data write
 

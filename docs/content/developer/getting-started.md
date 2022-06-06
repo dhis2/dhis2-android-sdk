@@ -6,7 +6,7 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.5.3"
+    implementation "org.hisp.dhis:android-core:1.6.1"
     ...
 }
 ```
@@ -21,6 +21,8 @@ allprojects {
     }
 }
 ```
+
+Check [compatibility here](#android_sdk_compatibility).
 
 ## D2 initialization { #android_sdk_initialization }
 

@@ -57,8 +57,18 @@ public final class TrackedEntityInstanceFilterTableInfo {
         public final static String SORT_ORDER = "sortOrder";
         public final static String ENROLLMENT_STATUS = "enrollmentStatus";
         public final static String FOLLOW_UP = "followUp";
-        public static final String PERIOD_FROM = "periodFrom";
-        public static final String PERIOD_TO = "periodTo";
+        public final static String ORGANISATION_UNIT = "organisationUnit";
+        public final static String OU_MODE = "ouMode";
+        public final static String ASSIGNED_USER_MODE = "assignedUserMode";
+        public final static String ORDER = "orderProperty";
+        public final static String DISPLAY_COLUMN_ORDER = "displayColumnOrder";
+        public final static String EVENT_STATUS = "eventStatus";
+        public final static String EVENT_DATE = "eventDate";
+        public final static String LAST_UPDATED_DATE = "lastUpdatedDate";
+        public final static String PROGRAM_STAGE = "programStage";
+        public final static String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
+        public final static String ENROLLMENT_INCIDENT_DATE = "enrollmentIncidentDate";
+        public final static String ENROLLMENT_CREATED_DATE = "enrollmentCreatedDate";
 
         @Override
         public String[] all() {
@@ -68,8 +78,18 @@ public final class TrackedEntityInstanceFilterTableInfo {
                     SORT_ORDER,
                     ENROLLMENT_STATUS,
                     FOLLOW_UP,
-                    PERIOD_FROM,
-                    PERIOD_TO
+                    ORGANISATION_UNIT,
+                    OU_MODE,
+                    ASSIGNED_USER_MODE,
+                    ORDER,
+                    DISPLAY_COLUMN_ORDER,
+                    EVENT_STATUS,
+                    EVENT_DATE,
+                    LAST_UPDATED_DATE,
+                    PROGRAM_STAGE,
+                    TRACKED_ENTITY_INSTANCES,
+                    ENROLLMENT_INCIDENT_DATE,
+                    ENROLLMENT_CREATED_DATE
             );
         }
     }

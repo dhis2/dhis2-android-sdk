@@ -51,7 +51,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
     @Test
     public void allow_access_to_foreign_key_violations() {
         List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(violations.size()).isEqualTo(3);
+        assertThat(violations.size()).isEqualTo(4);
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(CategoryOptionTableInfo.TABLE_INFO.name())

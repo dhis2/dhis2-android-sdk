@@ -3,11 +3,11 @@ title: 'DHIS 2 Android SDK Developer Guide'
 author: 'DHIS 2'
 date:
 year: 2022
-month: April
+month: June
 keywords: [DHIS2, Android]
 commit:
 version: master
-applicable_txt: 'Applicable to version 1.6.0'
+applicable_txt: 'Applicable to version 1.6.1'
 ---
 <!--DHIS2-SECTION-ID:index-->
 
@@ -26,6 +26,7 @@ applicable_txt: 'Applicable to version 1.6.0'
 !INCLUDE "content/developer/object-style.md"
 !INCLUDE "content/developer/compatibility-strategy.md"
 !INCLUDE "content/developer/db-interaction.md"
+!INCLUDE "content/developer/web-api-interaction.md"
 !INCLUDE "content/developer/program-rule-engine.md"
 !INCLUDE "content/developer/program-indicator-engine.md"
 !INCLUDE "content/developer/validation-rule-engine.md"

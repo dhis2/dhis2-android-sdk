@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableIn
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Reusable
-class LegendSetUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+internal class LegendSetUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
 
     fun seekUids(): Set<String> {
         val tableNames = listOf(

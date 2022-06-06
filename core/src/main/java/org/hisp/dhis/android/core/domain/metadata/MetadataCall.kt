@@ -54,6 +54,8 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -68,7 +70,7 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDown
 
 @Suppress("LongParameterList")
 @Reusable
-class MetadataCall @Inject internal constructor(
+internal class MetadataCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
@@ -80,6 +82,7 @@ class MetadataCall @Inject internal constructor(
     private val visualizationDownloader: VisualizationModuleDownloader,
     private val constantModuleDownloader: ConstantModuleDownloader,
     private val indicatorModuleDownloader: IndicatorModuleDownloader,
+    private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader,
     private val smsModule: SmsModule,
     private val databaseAdapter: DatabaseAdapter,
     private val generalSettingCall: GeneralSettingCall,
@@ -146,6 +149,9 @@ class MetadataCall @Inject internal constructor(
                     },
                     visualizationDownloader.downloadMetadata().map {
                         progressManager.increaseProgress(Visualization::class.java, false)
+                    },
+                    programIndicatorModuleDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(ProgramIndicator::class.java, false)
                     },
                     indicatorModuleDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Indicator::class.java, false)

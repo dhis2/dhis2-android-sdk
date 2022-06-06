@@ -35,25 +35,27 @@ class CoordinateValidatorShould : ValidatorShouldHelper<CoordinateFailure>(Coord
 
     @Test
     fun `Should success when passing valid values`() {
-        valueShouldSuccess("[-11.876444,9.032566]")
-        valueShouldSuccess("[+90.0, -127.554334]")
-        valueShouldSuccess("[45, 180]")
-        valueShouldSuccess("[-90, -180]")
-        valueShouldSuccess("[+90, +180]")
+        valueShouldSuccess("[9.032566,-11.876444]")
+        valueShouldSuccess("[-127.554334, +90.0]")
+        valueShouldSuccess("[180, 45]")
+        valueShouldSuccess("[-180, -90]")
+        valueShouldSuccess("[+180, +90]")
         valueShouldSuccess("[0,0]")
-        valueShouldSuccess("[47.1231231, 179.99999999]")
+        valueShouldSuccess("[179.99999999, 47.1231231]")
+        valueShouldSuccess("[-122.084,34.42199]")
     }
 
     @Test
     fun `Should fail when passing malformed values`() {
-        valueShouldFail("[-90., -180.]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[-368.532519,16.858788]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[-1,181]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[-180., -90.]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[16.858788,-368.532519]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[181,-1]", CoordinateFailure.CoordinateMalformedException)
         valueShouldFail("[-181,1]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[+90.1, -100.111]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[-91, 123.456]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[-91,123.456]", CoordinateFailure.CoordinateMalformedException)
-        valueShouldFail("[045, 180]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[-100.111, +90.1]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[-70.111, +90.1]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[123.456, -91]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[123.456, -91]", CoordinateFailure.CoordinateMalformedException)
+        valueShouldFail("[180, 045]", CoordinateFailure.CoordinateMalformedException)
         valueShouldFail("", CoordinateFailure.CoordinateMalformedException)
         valueShouldFail("egs", CoordinateFailure.CoordinateMalformedException)
     }

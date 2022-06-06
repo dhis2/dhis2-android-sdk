@@ -52,7 +52,7 @@ class VisualizationAPI36Should : BaseObjectShould("visualization/visualization_a
     fun convert_to_visualization() {
         val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
 
-        val visualizationStream = this.javaClass.classLoader.getResourceAsStream("visualization/visualization.json")
+        val visualizationStream = this.javaClass.classLoader!!.getResourceAsStream("visualization/visualization.json")
         val visualization = objectMapper.readValue(visualizationStream, Visualization::class.java)
 
         assertThat(visualizationAPI36.toVisualization()).isEqualTo(visualization)

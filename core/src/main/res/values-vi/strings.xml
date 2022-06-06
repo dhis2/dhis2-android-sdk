@@ -1,0 +1,48 @@
+<!--
+  ~  Copyright (c) 2004-2021, University of Oslo
+  ~  All rights reserved.
+  ~
+  ~  Redistribution and use in source and binary forms, with or without
+  ~  modification, are permitted provided that the following conditions are met:
+  ~  Redistributions of source code must retain the above copyright notice, this
+  ~  list of conditions and the following disclaimer.
+  ~
+  ~  Redistributions in binary form must reproduce the above copyright notice,
+  ~  this list of conditions and the following disclaimer in the documentation
+  ~  and/or other materials provided with the distribution.
+  ~  Neither the name of the HISP project nor the names of its contributors may
+  ~  be used to endorse or promote products derived from this software without
+  ~  specific prior written permission.
+  ~
+  ~  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<resources>
+    <!-- Tracker import errors -->
+    <string name="E1000">Bạn không có quyền truy cập đến %s</string>
+    <string name="E1001">Bạn không có quyền truy cập đến kiểu %s</string>
+    <string name="E1002">%s đã tồn tại. (%s: %s)</string>
+    <string name="E1003">%s ở ngoài phạm vi tìm kiếm của bạn</string>
+    <string name="E1005">Không tìm thấy kiểu %s</string>
+    <string name="E1006">Thuộc tính %skhông tồn tại</string>
+    <string name="E1007">Thuộc tính không khớp với kiểu giá trị `%s `. (Error: %s)</string>
+    <string name="E1008">Giai đoạn chương trình %skhông có tham chiếu đến chương trình. Hãy kiểm tra cấu hình giai đoạn chương trình</string>
+    <string name="E1009">Tập tin đã được gán. (Tập tin: %s)</string>
+    <string name="E1032">Không tìm thấy sự kiện %strên máy chủ. (Sự kiện: %s)</string>
+    <string name="E1063">Không tìm thấy %strên máy chủ. (%s:%s)</string>
+    <string name="E1064">Giá trị  `%s ` của thuộc tính `%s ` không duy nhất. (Thuộc tính: %s)</string>
+    <string name="E1069">Không tìm thấy chương trình %s được liên kết với đăng ký trên máy chủ. (Chương trình: %s, Đăng ký: %s)</string>
+    <string name="E1081">Không tìm thấy Đăng ký trên máy chủ. (Đăng ký: %s)</string>
+    <string name="E1084">Không tìm thấy tham chiếu tập tin trên máy chủ. (Đường dẫn tập tin: %s)</string>
+    <string name="E1100">Bạn không có quyền xóa %s. (%s: %s)</string>
+    <string name="E1103">Bạn không có quyền xóa Đăng ký. (Đăng ký: %s)</string>
+</resources>

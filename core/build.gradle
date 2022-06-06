@@ -42,8 +42,8 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 260,
-            versionName      : "1.6.0"
+            versionCode      : 261,
+            versionName      : "1.6.1"
     ]
 
     libraries = [
@@ -125,6 +125,7 @@ android {
     lintOptions {
         // casting 'InvalidPackage' error to warning
         warning "InvalidPackage"
+        disable 'MissingTranslation'
 
         // Fail early.
         abortOnError true
@@ -138,13 +139,11 @@ android {
     }
 
     sourceSets {
-        String sharedTestDir = 'src/sharedTest/java'
         test {
-            java.srcDir sharedTestDir
             resources.srcDirs += ['src/sharedTest/resources']
         }
         androidTest {
-            java.srcDirs sharedTestDir
+            java.srcDirs += ['src/sharedTest/java']
             resources.srcDirs += ['src/sharedTest/resources']
         }
 

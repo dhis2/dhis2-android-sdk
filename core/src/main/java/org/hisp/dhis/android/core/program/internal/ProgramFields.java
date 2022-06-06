@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
@@ -52,7 +51,6 @@ import org.hisp.dhis.android.core.program.ProgramType;
 public final class ProgramFields {
     public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
-    public static final String PROGRAM_INDICATORS = "programIndicators";
     public static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     private static final String ACCESS = "access";
     private static final String STYLE = "style";
@@ -86,7 +84,6 @@ public final class ProgramFields {
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-                    fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)
                             .with(ProgramRuleVariableFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),

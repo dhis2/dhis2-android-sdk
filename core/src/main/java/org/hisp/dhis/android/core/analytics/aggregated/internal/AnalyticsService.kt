@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -54,8 +55,11 @@ internal class AnalyticsService @Inject constructor(
                 throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
             }
 
-            val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
-            val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
+            val queryDimensions = analyticsServiceDimensionHelper.getQueryDimensions(params)
+            val queryAbsoluteDimensions =
+                analyticsServiceDimensionHelper.getQueryAbsoluteDimensionItems(params.dimensions, queryDimensions)
+
+            val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, queryAbsoluteDimensions)
 
             val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
@@ -66,11 +70,15 @@ internal class AnalyticsService @Inject constructor(
             val legends = values.filter { it.legend != null }.map { it.legend!! }
             val finalMetadata = analyticsServiceMetadataHelper.includeLegendsToMetadata(metadata, legends)
 
+            val dimensionItemsMap =
+                queryAbsoluteDimensions.mapValues { v -> v.value.map { it as DimensionItem } } +
+                    params.filters.groupBy { it.dimension }
+
             Result.Success(
                 DimensionalResponse(
                     metadata = finalMetadata,
-                    dimensions = dimensions,
-                    dimensionItems = dimensionItems.groupBy { it.dimension },
+                    dimensions = queryDimensions,
+                    dimensionItems = dimensionItemsMap,
                     filters = params.filters.map { it.id },
                     values = values
                 )

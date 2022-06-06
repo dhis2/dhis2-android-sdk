@@ -73,13 +73,13 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_periods() {
-        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(203);
+        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(206);
     }
 
     @Test
     public void ensure_future_periods_are_downloaded() {
         int MONTHLY_PERIODS = 11; // Copy from ParentPeriodGeneratorImpl to keep it private
         assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount())
-                .isEqualTo(MONTHLY_PERIODS + 3);
+                .isEqualTo(MONTHLY_PERIODS + 4);
     }
 }

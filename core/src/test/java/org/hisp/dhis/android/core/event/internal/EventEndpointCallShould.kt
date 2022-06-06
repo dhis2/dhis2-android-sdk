@@ -33,11 +33,11 @@ import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.AfterClass
 import org.junit.BeforeClass

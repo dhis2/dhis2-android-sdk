@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples
 import org.junit.Test
 
 class EventQueryShould {

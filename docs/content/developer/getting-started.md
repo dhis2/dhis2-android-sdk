@@ -6,7 +6,7 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.6.0"
+    implementation "org.hisp.dhis:android-core:1.6.1"
     ...
 }
 ```

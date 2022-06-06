@@ -26,30 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.event.EventFilterSamples;
-import org.junit.Test;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventFilterShould extends BaseObjectShould implements ObjectShould {
-
-    public EventFilterShould() {
-        super("event/event_filter.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        EventFilter eventFilter = objectMapper.readValue(jsonStream, EventFilter.class);
-
-        EventFilter expectedEventFilter = EventFilterSamples.get().toBuilder().id(null).build();
-        assertThat(eventFilter).isEqualTo(expectedEventFilter);
-    }
+internal interface ProgramIndicatorService {
+    @GET("programIndicators")
+    fun getProgramIndicator(
+        @Query("fields") @Which fields: Fields<ProgramIndicator>,
+        @Query("filter") @Where displayInForm: Filter<ProgramIndicator, Boolean>?,
+        @Query("filter") program: String?,
+        @Query("filter") @Where uids: Filter<ProgramIndicator, String>?,
+        @Query("paging") paging: Boolean,
+    ): Single<Payload<ProgramIndicator>>
 }

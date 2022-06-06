@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.lang.Boolean
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -103,7 +102,7 @@ class EventHandlerShould {
 
     @Test
     fun invoke_only_delete_when_a_event_is_set_as_deleted() {
-        whenever(event.deleted()).doReturn(Boolean.TRUE)
+        whenever(event.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)

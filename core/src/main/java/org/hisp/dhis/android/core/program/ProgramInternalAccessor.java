@@ -39,10 +39,6 @@ public final class ProgramInternalAccessor {
         return program.programTrackedEntityAttributes();
     }
 
-    public static List<ProgramIndicator> accessProgramIndicators(Program program) {
-        return program.programIndicators();
-    }
-
     public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {
         return program.programRuleVariables();
     }

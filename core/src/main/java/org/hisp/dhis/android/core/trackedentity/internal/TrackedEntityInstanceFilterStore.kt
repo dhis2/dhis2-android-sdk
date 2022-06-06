@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -44,10 +46,20 @@ internal object TrackedEntityInstanceFilterStore {
             w.bind(9, getUidOrNull(o.program()))
             w.bind(10, o.description())
             w.bind(11, o.sortOrder())
-            w.bind(12, o.enrollmentStatus())
-            w.bind(13, o.followUp())
-            w.bind(14, o.enrollmentCreatedPeriod()?.periodFrom())
-            w.bind(15, o.enrollmentCreatedPeriod()?.periodTo())
+            w.bind(12, o.entityQueryCriteria()?.enrollmentStatus())
+            w.bind(13, o.entityQueryCriteria()?.followUp())
+            w.bind(14, o.entityQueryCriteria()?.organisationUnit())
+            w.bind(15, o.entityQueryCriteria()?.ouMode())
+            w.bind(16, o.entityQueryCriteria()?.assignedUserMode())
+            w.bind(17, o.entityQueryCriteria()?.order())
+            w.bind(18, StringListColumnAdapter.serialize(o.entityQueryCriteria()?.displayColumnOrder()))
+            w.bind(19, o.entityQueryCriteria()?.eventStatus())
+            w.bind(20, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria()?.eventDate()))
+            w.bind(21, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria()?.lastUpdatedDate()))
+            w.bind(22, o.entityQueryCriteria()?.programStage())
+            w.bind(23, StringListColumnAdapter.serialize(o.entityQueryCriteria()?.trackedEntityInstances()))
+            w.bind(24, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria()?.enrollmentIncidentDate()))
+            w.bind(25, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria()?.enrollmentCreatedDate()))
         }
     }
 

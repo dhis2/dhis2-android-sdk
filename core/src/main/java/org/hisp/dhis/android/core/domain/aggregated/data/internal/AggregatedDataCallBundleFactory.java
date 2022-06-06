@@ -127,13 +127,13 @@ class AggregatedDataCallBundleFactory {
             if (!periods.isEmpty()) {
                 List<String> periodIds = selectPeriodIds(periods);
 
-                AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
-                        .key(key)
-                        .dataSets(entry.getValue())
-                        .periodIds(periodIds)
-                        .rootOrganisationUnitUids(rootOrganisationUnitUids)
-                        .allOrganisationUnitUidsSet(allOrganisationUnitUids)
-                        .build();
+                AggregatedDataCallBundle bundle = new AggregatedDataCallBundle(
+                        key,
+                        entry.getValue(),
+                        periodIds,
+                        rootOrganisationUnitUids,
+                        allOrganisationUnitUids
+                );
 
                 bundles.add(bundle);
             }

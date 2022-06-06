@@ -22,6 +22,8 @@ allprojects {
 }
 ```
 
+Check [compatibility here](#android_sdk_compatibility).
+
 ## D2 initialization { #android_sdk_initialization }
 
 <!--TODO-->

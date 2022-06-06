@@ -124,7 +124,7 @@ public class AggregatedDataCallBundleFactoryShould {
                 dataSetSettings, rootOrgUnits, allOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(1);
-        assertThat(bundles.get(0).dataSets()).containsExactly(dataSet1, dataSet2);
+        assertThat(bundles.get(0).getDataSets()).containsExactly(dataSet1, dataSet2);
     }
 
     @Test

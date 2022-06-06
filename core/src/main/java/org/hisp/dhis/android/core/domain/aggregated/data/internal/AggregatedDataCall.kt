@@ -73,7 +73,7 @@ internal class AggregatedDataCall @Inject constructor(
         progressManager: AggregatedD2ProgressManager
     ): Observable<AggregatedD2Progress> {
         val bundles = aggregatedDataCallBundleFactory.bundles
-        val dataSets = bundles.flatMap { it.dataSets() }.mapNotNull { it.uid() }
+        val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
         return Observable.merge {
             listOf(
@@ -92,10 +92,10 @@ internal class AggregatedDataCall @Inject constructor(
         val dataValueSingle = dataValueCall.download(dataValueQuery)
 
         val completeRegistrationQuery = DataSetCompleteRegistrationQuery.create(
-            getUids(bundle.dataSets()),
-            bundle.periodIds(),
-            bundle.rootOrganisationUnitUids(),
-            bundle.key().lastUpdatedStr()
+            getUids(bundle.dataSets),
+            bundle.periodIds,
+            bundle.rootOrganisationUnitUids,
+            bundle.key.lastUpdatedStr()
         )
 
         val dataSetCompleteRegistrationSingle = dataSetCompleteRegistrationCall.download(completeRegistrationQuery)
@@ -104,7 +104,7 @@ internal class AggregatedDataCall @Inject constructor(
             .flatMap { dataSetCompleteRegistrationSingle }
             .flatMap { getApprovalSingle(bundle, progressManager) }
             .flatMap { updateAggregatedDataSync(bundle, progressManager) }
-            .map { progressManager.updateDataSets(bundle.dataSets().mapNotNull { it.uid() }, isComplete = true) }
+            .map { progressManager.updateDataSets(bundle.dataSets.mapNotNull { it.uid() }, isComplete = true) }
             .toObservable()
     }
 
@@ -113,15 +113,15 @@ internal class AggregatedDataCall @Inject constructor(
         progressManager: AggregatedD2ProgressManager
     ): Single<AggregatedD2Progress> {
         return Single.fromCallable {
-            for (dataSet in bundle.dataSets()) {
+            for (dataSet in bundle.dataSets) {
                 aggregatedDataSyncStore.updateOrInsertWhere(
                     AggregatedDataSync.builder()
                         .dataSet(dataSet.uid())
                         .periodType(dataSet.periodType())
-                        .pastPeriods(bundle.key().pastPeriods())
+                        .pastPeriods(bundle.key.pastPeriods())
                         .futurePeriods(dataSet.openFuturePeriods())
                         .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
-                        .organisationUnitsHash(bundle.allOrganisationUnitUidsSet().hashCode())
+                        .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
                         .lastUpdated(resourceHandler.serverDate)
                         .build()
                 )
@@ -134,7 +134,7 @@ internal class AggregatedDataCall @Inject constructor(
         bundle: AggregatedDataCallBundle,
         progressManager: AggregatedD2ProgressManager
     ): Single<AggregatedD2Progress> {
-        val dataSetsWithWorkflow = bundle.dataSets().filter { it.workflow() != null }
+        val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
         val workflowUids = dataSetsWithWorkflow.map { it.workflow()!!.uid() }
 
         return if (workflowUids.isEmpty()) {
@@ -143,8 +143,8 @@ internal class AggregatedDataCall @Inject constructor(
             val attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow)
             val dataApprovalQuery = DataApprovalQuery.create(
                 workflowUids,
-                bundle.allOrganisationUnitUidsSet(), bundle.periodIds(), attributeOptionComboUids,
-                bundle.key().lastUpdatedStr()
+                bundle.allOrganisationUnitUidsSet, bundle.periodIds, attributeOptionComboUids,
+                bundle.key.lastUpdatedStr()
             )
             dataApprovalCall.download(dataApprovalQuery)
                 .map { progressManager.increaseProgress(DataApproval::class.java, false) }

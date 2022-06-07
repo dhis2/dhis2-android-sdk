@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegration
     @Test
     public void emit_progress() {
 
-        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
+        TestObserver<AggregatedD2Progress> testObserver = d2.aggregatedModule().data().download().test();
         testObserver.assertValueCount(5);
 
         testObserver.assertValueAt(0, v -> v.lastCall().equals("SystemInfo"));

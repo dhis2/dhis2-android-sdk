@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.dataset.DataSet
 data class AggregatedDataCallBundle(
     val key: AggregatedDataCallBundleKey,
     val dataSets: List<DataSet>,
-    val periodIds: Collection<String>,
+    val periodIds: List<String>,
     val rootOrganisationUnitUids: Collection<String>,
     val allOrganisationUnitUidsSet: Collection<String>
 )

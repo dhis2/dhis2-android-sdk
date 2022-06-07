@@ -25,31 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.period.PeriodType;
+@RunWith(D2JunitRunner::class)
+internal class AggregatedDataSyncStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync>(
+        create(TestDatabaseAdapterFactory.get()),
+        AggregatedDataSyncTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-
-public class AggregatedDataSyncSamples {
-
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
-                .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    override fun buildObject(): AggregatedDataSync {
+        return AggregatedDataSyncSamples.get1()
     }
 
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
-                .build();
+    override fun buildObjectToUpdate(): AggregatedDataSync {
+        return AggregatedDataSyncSamples.get2()
     }
 }

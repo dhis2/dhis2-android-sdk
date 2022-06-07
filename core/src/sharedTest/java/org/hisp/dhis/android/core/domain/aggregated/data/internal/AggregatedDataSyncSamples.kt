@@ -25,49 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.period.PeriodType
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+internal object AggregatedDataSyncSamples {
 
-import org.hisp.dhis.android.core.dataset.DataSet;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class AggregatedDataSyncLastUpdatedCalculator {
-
-    private final AggregatedDataSyncHashHelper hashHelper;
-
-    @Inject
-    AggregatedDataSyncLastUpdatedCalculator(AggregatedDataSyncHashHelper hashHelper) {
-        this.hashHelper = hashHelper;
+    fun get1(): AggregatedDataSync {
+        return AggregatedDataSync.builder()
+            .id(1L)
+            .dataSet("dataSet")
+            .periodType(PeriodType.Daily)
+            .pastPeriods(10)
+            .futurePeriods(1)
+            .dataElementsHash(11111111)
+            .organisationUnitsHash(22222222)
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .build()
     }
 
-    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull Integer pastPeriods,
-                        @NonNull Integer futurePeriods, @NonNull Integer organisationUnitHash) {
-        if (syncValue == null ||
-                syncValue.periodType() != dataSet.periodType() ||
-                syncValue.futurePeriods() < futurePeriods ||
-                syncValue.pastPeriods() < pastPeriods ||
-                syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
-                syncValue.organisationUnitsHash().intValue() != organisationUnitHash) {
-            return null;
-        } else {
-            return getDateMinus24Hours(syncValue.lastUpdated());
-        }
-    }
-
-    private Date getDateMinus24Hours(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, -1);
-        return cal.getTime();
+    fun get2(): AggregatedDataSync {
+        return get1().toBuilder()
+            .dataElementsHash(3333333)
+            .build()
     }
 }

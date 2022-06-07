@@ -107,7 +107,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                         program = teiQuery.commonParams.program
                     )
 
-                    persistenceCallFactory.persistTEIs(listOf(tei), persistParams, relatives).blockingAwait()
+                    persistItems(listOf(tei), persistParams, relatives)
 
                     result.count++
                 }
@@ -140,13 +140,13 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
 
     override fun getQuery(
         bundle: TrackerQueryBundle,
-        bundleProgram: ItemsByProgramCount,
+        program: String?,
         orgunitUid: String?,
         iterables: BundleIterables
     ): TrackerAPIQuery {
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
-                program = bundleProgram.program,
+                program = program,
                 limit = iterables.bundleLimit
             ),
             programStatus = bundle.programStatus(),

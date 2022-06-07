@@ -62,7 +62,7 @@ class EventDownloaderShould {
     fun should_parse_uid_eq_params() {
         downloader.byUid().eq("uid").download()
 
-        verify(call).downloadSingleEvents(capture(paramsCapture))
+        verify(call).download(capture(paramsCapture))
         val params = paramsCapture.value
 
         assertThat(params.uids().size).isEqualTo(1)
@@ -73,7 +73,7 @@ class EventDownloaderShould {
     fun should_parse_uid_in_params() {
         downloader.byUid().`in`("uid0", "uid1", "uid2").download()
 
-        verify(call).downloadSingleEvents(capture(paramsCapture))
+        verify(call).download(capture(paramsCapture))
         val params = paramsCapture.value
 
         assertThat(params.uids().size).isEqualTo(3)

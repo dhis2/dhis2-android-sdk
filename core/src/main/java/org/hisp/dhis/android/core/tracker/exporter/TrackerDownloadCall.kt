@@ -89,7 +89,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle> (
 
     protected abstract fun getQuery(
         bundle: Q,
-        bundleProgram: ItemsByProgramCount,
+        program: String?,
         orgunitUid: String?,
         iterables: BundleIterables
     ): TrackerAPIQuery
@@ -194,7 +194,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle> (
                 break
             }
 
-            val trackerQuery = getQuery(bundle, bundleProgram, orgUnitUid, iterables)
+            val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, iterables)
 
             val result = getItemsForOrgUnitProgramCombination(
                 trackerQuery,

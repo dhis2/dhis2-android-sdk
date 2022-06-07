@@ -68,7 +68,7 @@ public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
      */
     public Observable<D2Progress> download() {
         ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
-        return this.callFactory.downloadSingleEvents(params);
+        return this.callFactory.download(params);
     }
 
     public void blockingDownload() {

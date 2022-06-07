@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -47,13 +48,13 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList")
 internal class AggregatedDataCall @Inject constructor(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val dataValueCall: QueryCall<DataValue, DataValueQuery>,
-    private val dataSetCompleteRegistrationCall: QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>,
+    private val dsCompleteRegistrationCall: QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>,
     private val dataApprovalCall: QueryCall<DataApproval, DataApprovalQuery>,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val rxCallExecutor: RxAPICallExecutor,
@@ -89,7 +90,6 @@ internal class AggregatedDataCall @Inject constructor(
         progressManager: AggregatedD2ProgressManager
     ): Observable<AggregatedD2Progress> {
         val dataValueQuery = DataValueQuery.create(bundle)
-        val dataValueSingle = dataValueCall.download(dataValueQuery)
 
         val completeRegistrationQuery = DataSetCompleteRegistrationQuery.create(
             getUids(bundle.dataSets),
@@ -98,10 +98,8 @@ internal class AggregatedDataCall @Inject constructor(
             bundle.key.lastUpdatedStr()
         )
 
-        val dataSetCompleteRegistrationSingle = dataSetCompleteRegistrationCall.download(completeRegistrationQuery)
-
-        return dataValueSingle
-            .flatMap { dataSetCompleteRegistrationSingle }
+        return dataValueCall.download(dataValueQuery)
+            .flatMap { dsCompleteRegistrationCall.download(completeRegistrationQuery) }
             .flatMap { getApprovalSingle(bundle, progressManager) }
             .flatMap { updateAggregatedDataSync(bundle, progressManager) }
             .map { progressManager.updateDataSets(bundle.dataSets.mapNotNull { it.uid() }, isComplete = true) }
@@ -118,7 +116,7 @@ internal class AggregatedDataCall @Inject constructor(
                     AggregatedDataSync.builder()
                         .dataSet(dataSet.uid())
                         .periodType(dataSet.periodType())
-                        .pastPeriods(bundle.key.pastPeriods())
+                        .pastPeriods(bundle.key.pastPeriods)
                         .futurePeriods(dataSet.openFuturePeriods())
                         .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                         .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())

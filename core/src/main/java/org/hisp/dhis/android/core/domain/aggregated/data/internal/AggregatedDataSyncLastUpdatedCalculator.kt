@@ -25,54 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.dataset.DataSet
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@Reusable
+internal class AggregatedDataSyncLastUpdatedCalculator @Inject constructor(
+    private val hashHelper: AggregatedDataSyncHashHelper
+) {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class AggregatedDataCallBundleKey {
-
-    @NonNull
-    public abstract PeriodType periodType();
-
-    @NonNull
-    public abstract Integer pastPeriods();
-
-    @NonNull
-    public abstract Integer futurePeriods();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public String lastUpdatedStr() {
-        return lastUpdated() == null ? null : BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
+    @Suppress("ComplexCondition")
+    fun getLastUpdated(
+        syncValue: AggregatedDataSync?,
+        dataSet: DataSet,
+        pastPeriods: Int,
+        futurePeriods: Int,
+        organisationUnitHash: Int
+    ): Date? {
+        return if (
+            syncValue == null ||
+            syncValue.periodType() !== dataSet.periodType() ||
+            syncValue.futurePeriods() < futurePeriods ||
+            syncValue.pastPeriods() < pastPeriods ||
+            syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
+            syncValue.organisationUnitsHash() != organisationUnitHash
+        ) {
+            null
+        } else {
+            getDateMinus24Hours(syncValue.lastUpdated())
+        }
     }
 
-    public static Builder builder() {
-        return new AutoValue_AggregatedDataCallBundleKey.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder pastPeriods(Integer pastPeriods);
-
-        public abstract Builder futurePeriods(Integer futurePeriods);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract AggregatedDataCallBundleKey build();
+    private fun getDateMinus24Hours(date: Date): Date {
+        val cal = Calendar.getInstance()
+        cal.time = date
+        cal.add(Calendar.DATE, -1)
+        return cal.time
     }
 }

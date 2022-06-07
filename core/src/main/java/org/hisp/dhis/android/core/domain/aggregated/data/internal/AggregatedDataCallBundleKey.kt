@@ -25,42 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.data.datavalue;
+import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.PeriodType
 
-import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
-import org.hisp.dhis.android.core.dataset.DataSet;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-/**
- * A collection of uids sets for dataValueCalls
- */
-public final class DataValueUtils {
-
-    DataValueUtils () {
-    }
-
-    public static List<DataSet> getDataSets() {
-        List<DataSet> dataSetUids = new ArrayList<>(2);
-        dataSetUids.add(DataSetSamples.getDataSet());
-        dataSetUids.add(DataSetSamples.getDataSet().toBuilder().uid("TuL8IOPzpHh").build());
-        return dataSetUids;
-    }
-
-    public static Set<String> getPeriodIds() {
-        Set<String> periodIds = new HashSet<>();
-        periodIds.add("201712");
-        periodIds.add("2017");
-        return periodIds;
-    }
-
-    public static Set<String> getOrgUnitUids() {
-        Set<String> orgUnitUids = new HashSet<>();
-        orgUnitUids.add("DiszpKrYNg8");
-        return orgUnitUids;
+data class AggregatedDataCallBundleKey(
+    val periodType: PeriodType,
+    val pastPeriods: Int,
+    val futurePeriods: Int,
+    val lastUpdated: Date?
+) {
+    fun lastUpdatedStr(): String? {
+        return lastUpdated?.let { DateUtils.DATE_FORMAT.format(it) }
     }
 }

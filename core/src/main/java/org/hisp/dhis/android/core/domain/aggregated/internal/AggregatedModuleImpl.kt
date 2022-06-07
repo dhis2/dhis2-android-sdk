@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.domain.aggregated.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
-import javax.inject.Inject
 
 @Reusable
 internal class AggregatedModuleImpl @Inject constructor(

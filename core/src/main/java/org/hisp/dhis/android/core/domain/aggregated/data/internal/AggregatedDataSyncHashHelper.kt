@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.dataset.DataSet
 import javax.inject.Inject
+import org.hisp.dhis.android.core.dataset.DataSet
 
 @Reusable
 internal class AggregatedDataSyncHashHelper @Inject constructor() {

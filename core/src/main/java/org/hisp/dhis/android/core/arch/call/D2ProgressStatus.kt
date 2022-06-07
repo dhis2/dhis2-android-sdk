@@ -27,4 +27,4 @@
  */
 package org.hisp.dhis.android.core.arch.call
 
-data class D2ProgressStatus(val isCompleted: Boolean)
+data class D2ProgressStatus(val isComplete: Boolean)

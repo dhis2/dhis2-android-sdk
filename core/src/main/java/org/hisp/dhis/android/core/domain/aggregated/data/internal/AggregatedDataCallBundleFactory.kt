@@ -75,7 +75,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
 
     fun getBundlesInternal(
         dataSets: Collection<DataSet>,
-        dataSetSettings: DataSetSettings,
+        dataSetSettings: DataSetSettings?,
         rootOrganisationUnitUids: List<String>,
         allOrganisationUnitUids: Set<String>,
         syncValues: Map<String, AggregatedDataSync>
@@ -105,7 +105,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
     }
 
     private fun getBundleKey(
-        dataSetSettings: DataSetSettings,
+        dataSetSettings: DataSetSettings?,
         dataSet: DataSet,
         syncValues: Map<String, AggregatedDataSync>,
         organisationUnitsHash: Int

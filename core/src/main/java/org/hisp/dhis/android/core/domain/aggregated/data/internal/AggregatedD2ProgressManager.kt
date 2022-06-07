@@ -51,7 +51,7 @@ class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager(totalCal
 
     fun setDataSets(dataSets: Collection<String>): AggregatedD2Progress {
         return progress.toBuilder()
-            .dataSets(dataSets.associateWith { D2ProgressStatus(isCompleted = false) })
+            .dataSets(dataSets.associateWith { D2ProgressStatus(isComplete = false) })
             .build()
             .also { progress = it }
     }
@@ -59,6 +59,14 @@ class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager(totalCal
     fun updateDataSets(dataSets: Collection<String>, isComplete: Boolean): AggregatedD2Progress {
         return progress.toBuilder()
             .dataSets(progress.dataSets() + dataSets.associateWith { D2ProgressStatus(isComplete) })
+            .build()
+            .also { progress = it }
+    }
+
+    fun complete(): AggregatedD2Progress {
+        return progress.toBuilder()
+            .dataSets(progress.dataSets().mapValues { D2ProgressStatus(isComplete = true) })
+            .isComplete(true)
             .build()
             .also { progress = it }
     }

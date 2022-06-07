@@ -76,13 +76,12 @@ internal class AggregatedDataCall @Inject constructor(
         val bundles = aggregatedDataCallBundleFactory.bundles
         val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
-        return Observable.merge {
-            listOf(
-                Observable.just(progressManager.setDataSets(dataSets)),
-                Observable.fromIterable(bundles).flatMap { downloadInternal(it, progressManager) },
-                Observable.just(progressManager.increaseProgress(DataValue::class.java, isComplete = true))
-            )
-        }
+        return Observable.merge(
+            Observable.fromCallable { progressManager.setDataSets(dataSets) },
+            Observable.fromIterable(bundles).flatMap { downloadInternal(it, progressManager) },
+            Observable.fromCallable { progressManager.complete() }
+        )
+
     }
 
     private fun downloadInternal(

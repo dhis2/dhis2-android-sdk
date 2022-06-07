@@ -81,7 +81,6 @@ internal class AggregatedDataCall @Inject constructor(
             Observable.fromIterable(bundles).flatMap { downloadInternal(it, progressManager) },
             Observable.fromCallable { progressManager.complete() }
         )
-
     }
 
     private fun downloadInternal(

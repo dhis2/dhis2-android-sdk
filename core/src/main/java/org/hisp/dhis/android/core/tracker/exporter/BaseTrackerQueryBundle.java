@@ -26,21 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.tracker.exporter;
 
-import com.google.auto.value.AutoValue;
+import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 
-@AutoValue
-abstract class EventQueryBundle extends BaseTrackerQueryBundle {
+import java.util.List;
 
-    static Builder builder() {
-        return new AutoValue_EventQueryBundle.Builder();
-    }
+public abstract class BaseTrackerQueryBundle {
 
-    @AutoValue.Builder
-    abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
-        abstract EventQueryBundle build();
+    @NonNull
+    public abstract TrackerQueryCommonParams commonParams();
+
+    @NonNull
+    public abstract List<String> orgUnits();
+
+    public abstract static class Builder<T extends Builder> {
+        public abstract T commonParams(TrackerQueryCommonParams commonParams);
+
+        public abstract T orgUnits(List<String> orgUnits);
+
     }
 }

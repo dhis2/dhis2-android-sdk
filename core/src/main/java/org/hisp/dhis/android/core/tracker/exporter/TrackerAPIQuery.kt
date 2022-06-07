@@ -25,22 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.exporter
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
-
-@AutoValue
-abstract class EventQueryBundle extends BaseTrackerQueryBundle {
-
-    static Builder builder() {
-        return new AutoValue_EventQueryBundle.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
-        abstract EventQueryBundle build();
-    }
-}
+internal data class TrackerAPIQuery(
+    val commonParams: TrackerQueryCommonParams,
+    val orgUnit: String? = null,
+    val uids: Collection<String> = emptyList(),
+    val programStatus: EnrollmentStatus? = null,
+    val lastUpdatedStr: String? = null,
+    override val page: Int = 1,
+    override val pageSize: Int = DEFAULT_PAGE_SIZE,
+    override val paging: Boolean = true
+) : BaseQueryKt(
+    page,
+    pageSize,
+    paging
+)

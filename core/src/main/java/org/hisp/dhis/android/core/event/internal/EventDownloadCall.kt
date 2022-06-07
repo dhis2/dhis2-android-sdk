@@ -89,6 +89,7 @@ class EventDownloadCall @Inject internal constructor(
                 iterables.eventsCount = 0
                 iterables.bundleOrgUnitPrograms = mutableMapOf()
                 iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
+
                 bundle.orgUnits()
                     .ifEmpty { listOf(null) }
                     .forEach { orgUnit ->

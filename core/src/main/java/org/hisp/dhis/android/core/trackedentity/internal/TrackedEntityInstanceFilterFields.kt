@@ -25,43 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.FilterPeriod
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.FilterPeriod;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
+object TrackedEntityInstanceFilterFields {
+    private const val ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod"
+    const val FOLLOW_UP = "followup"
+    const val EVENT_FILTERS = "eventFilters"
+    const val ENTITY_QUERY_CRITERIA = "entityQueryCriteria"
 
-public final class TrackedEntityInstanceFilterFields {
+    private val fh = FieldsHelper<TrackedEntityInstanceFilter>()
 
-    public final static String ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod";
-    public final static String FOLLOW_UP = "followup";
-    public final static String EVENT_FILTERS = "eventFilters";
+    val programUid: Field<TrackedEntityInstanceFilter, String> =
+        Field.create(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
 
-    private static final FieldsHelper<TrackedEntityInstanceFilter> fh = new FieldsHelper<>();
+    private val commonFields = Fields.builder<TrackedEntityInstanceFilter>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.nestedFieldWithUid(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM),
+            fh.field<String>(TrackedEntityInstanceFilterTableInfo.Columns.DESCRIPTION),
+            fh.field<Int>(TrackedEntityInstanceFilterTableInfo.Columns.SORT_ORDER),
+            fh.nestedField<TrackedEntityInstanceEventFilter>(EVENT_FILTERS)
+                .with(TrackedEntityInstanceEventFilterFields.allFields)
+        )
 
-    public static final Field<TrackedEntityInstanceFilter, String> programUid =
-            Field.create(Columns.PROGRAM + "." + BaseIdentifiableObject.UID);
+    val allFields: Fields<TrackedEntityInstanceFilter> = commonFields
+        .fields(
+            fh.nestedField<EntityQueryCriteria>(ENTITY_QUERY_CRITERIA)
+                .with(EntityQueryCriteriaFields.allFields)
+        ).build()
 
-    public static final Fields<TrackedEntityInstanceFilter> allFields = Fields.<TrackedEntityInstanceFilter>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.<EnrollmentStatus>field(Columns.ENROLLMENT_STATUS),
-                    fh.<Boolean>field(FOLLOW_UP),
-                    fh.<FilterPeriod>field(ENROLLMENT_CREATED_PERIOD),
-                    fh.<TrackedEntityInstanceEventFilter>nestedField(EVENT_FILTERS)
-                            .with(TrackedEntityInstanceEventFilterFields.allFields)
-            ).build();
-
-    private TrackedEntityInstanceFilterFields() {
-    }
+    val allFieldsAPI37: Fields<TrackedEntityInstanceFilter> = commonFields
+        .fields(
+            fh.field<EnrollmentStatus>(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_STATUS),
+            fh.field<Boolean>(FOLLOW_UP),
+            fh.field<FilterPeriod>(ENROLLMENT_CREATED_PERIOD)
+        ).build()
 }

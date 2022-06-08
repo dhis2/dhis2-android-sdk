@@ -34,9 +34,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TrackedEntityInstanceFilterV37Should extends TrackedEntityInstanceFilterCommonShould implements ObjectShould {
+public class TrackedEntityInstanceFilterAPI37Should extends TrackedEntityInstanceFilterCommonShould implements ObjectShould {
 
-    public TrackedEntityInstanceFilterV37Should() {
+    public TrackedEntityInstanceFilterAPI37Should() {
         super("trackedentity/tracked_entity_instance_filter_v_37.json");
     }
 

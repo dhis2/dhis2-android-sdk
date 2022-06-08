@@ -32,13 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DatePeriodType
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import javax.inject.Inject
@@ -47,8 +41,7 @@ import javax.inject.Inject
 internal class TrackedEntityInstanceFilterHandler @Inject constructor(
     trackedEntityInstanceFilterStore: IdentifiableObjectStore<TrackedEntityInstanceFilter>,
     private val trackedEntityInstanceEventFilterHandler: HandlerWithTransformer<TrackedEntityInstanceEventFilter>,
-    private val attributeValueFilterHandler: HandlerWithTransformer<AttributeValueFilter>,
-    private val versionManager: DHISVersionManager
+    private val attributeValueFilterHandler: HandlerWithTransformer<AttributeValueFilter>
 ) : IdentifiableHandlerImpl<TrackedEntityInstanceFilter>(trackedEntityInstanceFilterStore) {
 
     override fun beforeCollectionHandled(
@@ -58,35 +51,12 @@ internal class TrackedEntityInstanceFilterHandler @Inject constructor(
         return super.beforeCollectionHandled(oCollection)
     }
 
-    override fun beforeObjectHandled(o: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            super.beforeObjectHandled(o)
-        } else {
-            super.beforeObjectHandled(
-                o.toBuilder().entityQueryCriteria(
-                    EntityQueryCriteria.builder()
-                        .followUp(o.followUp())
-                        .enrollmentStatus(o.enrollmentStatus())
-                        .enrollmentCreatedDate(
-                            DateFilterPeriod.builder()
-                                .startBuffer(o.enrollmentCreatedPeriod()?.periodFrom())
-                                .endBuffer(o.enrollmentCreatedPeriod()?.periodTo())
-                                .period(RelativePeriod.TODAY)
-                                .type(DatePeriodType.RELATIVE)
-                                .build()
-                        )
-                        .build()
-                ).build()
-            )
-        }
-    }
-
     override fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
         if (action !== HandleAction.Delete) {
             trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters()) { ef: TrackedEntityInstanceEventFilter ->
                 ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
             }
-            o.entityQueryCriteria()?.attributeValueFilters()?.let {
+            o.entityQueryCriteria().attributeValueFilters()?.let {
                 attributeValueFilterHandler.handleMany(it) { avf: AttributeValueFilter ->
                     avf.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
                 }

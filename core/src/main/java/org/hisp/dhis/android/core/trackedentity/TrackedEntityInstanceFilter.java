@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,18 +40,16 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EntityQueryCriteriaColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityInstanceEventFilterListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
 import java.util.List;
 
@@ -73,32 +72,37 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     public abstract Integer sortOrder();
 
     /**
-     * @deprecated Use {@link #entityQueryCriteria().enrollmentStatus()} instead.
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().enrollmentStatus()} instead.
      */
     @Deprecated
     @Nullable
-    @JsonProperty()
-    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
-    public abstract EnrollmentStatus enrollmentStatus();
+    public EnrollmentStatus enrollmentStatus() {
+        return entityQueryCriteria().enrollmentStatus();
+    }
 
     /**
-     * @deprecated Use {@link #entityQueryCriteria().followUp()} instead.
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().followUp()} instead.
      */
     @Deprecated
     @Nullable
-    @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
-    public abstract Boolean followUp();
+    public Boolean followUp() {
+        return entityQueryCriteria().followUp();
+    }
 
     /**
-     * @deprecated Use {@link #entityQueryCriteria().enrollmentCreatedDate()} instead.
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().enrollmentCreatedDate()} instead.
      */
     @Deprecated
     @Nullable
-    @JsonProperty()
-    @ColumnAdapter(FilterPeriodColumnAdapter.class)
-    public abstract FilterPeriod enrollmentCreatedPeriod();
+    public FilterPeriod enrollmentCreatedPeriod() {
+        DateFilterPeriod dateFilterPeriod = entityQueryCriteria().enrollmentCreatedDate();
+        return dateFilterPeriod != null ? FilterPeriod.builder()
+                .periodFrom(dateFilterPeriod.startBuffer())
+                .periodTo(dateFilterPeriod.endBuffer())
+                .build() : null;
+    }
 
-    @Nullable
+    @NonNull
     @JsonProperty()
     @ColumnAdapter(EntityQueryCriteriaColumnAdapter.class)
     public abstract EntityQueryCriteria entityQueryCriteria();
@@ -131,9 +135,8 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         public abstract Builder sortOrder(Integer sortOrder);
 
-        public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
+        abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
 
-        @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder enrollmentCreatedPeriod(FilterPeriod enrollmentCreatedPeriod);

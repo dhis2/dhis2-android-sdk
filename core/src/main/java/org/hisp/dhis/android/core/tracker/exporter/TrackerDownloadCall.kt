@@ -29,10 +29,6 @@ package org.hisp.dhis.android.core.tracker.exporter
 
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -45,6 +41,10 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
@@ -58,16 +58,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val observable = Observable.defer {
             val progressManager = TrackerD2ProgressManager(null)
             if (userOrganisationUnitLinkStore.count() == 0) {
-                return@defer Observable.just(
+                return@defer Observable.fromCallable {
+                    progressManager.setTotalCalls(1)
                     progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
-                )
+                }
             } else {
                 val relatives = RelationshipItemRelatives()
                 return@defer systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
                     .switchMap {
                         Observable.merge(
-                            downloadInternal(params, progressManager, relatives),
-                            downloadRelationships(progressManager, relatives),
+                            Observable.defer { downloadInternal(params, progressManager, relatives) },
+                            Observable.defer { downloadRelationships(progressManager, relatives) },
                             Observable.fromCallable { progressManager.complete() }
                         )
                     }
@@ -85,7 +86,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             val bundles: List<Q> = getBundles(params)
             val programs = bundles.flatMap { it.commonParams().programs }
 
-            emitter.onNext(progressManager.setPrograms(programs))
+            progressManager.setTotalCalls(programs.size + 2)
+            progressManager.setPrograms(programs)
+            emitter.onNext(progressManager.getProgress())
 
             for (bundle in bundles) {
                 if (bundle.commonParams().uids.isNotEmpty()) {
@@ -119,7 +122,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     }
                 }
             }
-            emitter.onNext(progressManager.completePrograms())
+
+            if (progressManager.getProgress().programs().any { !it.value.isComplete }) {
+                emitter.onNext(progressManager.completePrograms())
+            }
+
             emitter.onComplete()
         }
     }
@@ -131,9 +138,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         iterationCount: Int
     ): Boolean {
         return params.limitByProgram() != true &&
-            bundleResult.bundleCount < bundle.commonParams().limit &&
-            bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
-            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+                bundleResult.bundleCount < bundle.commonParams().limit &&
+                bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
+                iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     @Suppress("LongParameterList")
@@ -219,7 +226,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 }
 
                 if (!hasOtherOrgunits) {
-                    emitter.onNext(progressManager.completeProgram(bundleProgram.program))
+                    progressManager.increaseProgress(TrackedEntityInstance::class.java, false)
+                    progressManager.completeProgram(bundleProgram.program)
+                    emitter.onNext(progressManager.getProgress())
                 }
             }
         }
@@ -320,11 +329,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives
     ): Observable<TrackerD2Progress> {
         return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
-            Observable.just(
+            Observable.fromCallable {
                 progressManager.increaseProgress(
                     TrackedEntityInstance::class.java, false
                 )
-            )
+            }
         )
     }
 

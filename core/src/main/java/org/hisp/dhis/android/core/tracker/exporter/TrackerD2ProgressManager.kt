@@ -25,53 +25,70 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.aggregated.data.internal
+package org.hisp.dhis.android.core.tracker.exporter
 
 import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
+import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 
-internal class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager(totalCalls) {
+internal class TrackerD2ProgressManager(totalCalls: Int?) : D2ProgressManager(totalCalls) {
 
-    private var progress: AggregatedD2Progress
+    private var progress: TrackerD2Progress
 
-    override fun getProgress(): AggregatedD2Progress {
+    override fun getProgress(): TrackerD2Progress {
         return progress
     }
 
-    override fun <T> increaseProgress(resourceClass: Class<T>, isComplete: Boolean): AggregatedD2Progress {
+    override fun <T> increaseProgress(resourceClass: Class<T>, isComplete: Boolean): TrackerD2Progress {
         return progress.toBuilder()
             .doneCalls(progress.doneCalls() + resourceClass.simpleName)
             .isComplete(isComplete)
             .build()
-            .also {
-                progress = it
-            }
+            .also { progress = it }
     }
 
-    fun setDataSets(dataSets: Collection<String>): AggregatedD2Progress {
+    fun setPrograms(programs: Collection<String>): TrackerD2Progress {
         return progress.toBuilder()
-            .dataSets(dataSets.associateWith { D2ProgressStatus() })
+            .programs(programs.associateWith { D2ProgressStatus() })
             .build()
             .also { progress = it }
     }
 
-    fun updateDataSets(dataSets: Collection<String>, isComplete: Boolean): AggregatedD2Progress {
+    fun updateProgramSyncStatus(program: String, status: D2ProgressSyncStatus): TrackerD2Progress {
+        val newProgramStatus = (progress.programs()[program] ?: D2ProgressStatus()).addSyncStatus(status)
         return progress.toBuilder()
-            .dataSets(progress.dataSets() + dataSets.associateWith { D2ProgressStatus(isComplete) })
+            .programs(progress.programs() + (program to newProgramStatus))
             .build()
             .also { progress = it }
     }
 
-    fun complete(): AggregatedD2Progress {
+    fun completeProgram(program: String): TrackerD2Progress {
+        val newProgramStatus = (progress.programs()[program] ?: D2ProgressStatus()).copy(isComplete = true)
         return progress.toBuilder()
-            .dataSets(progress.dataSets().mapValues { it.value.copy(isComplete = true) })
+            .programs(progress.programs() + (program to newProgramStatus))
+            .build()
+            .also { progress = it }
+    }
+
+    fun completePrograms(): TrackerD2Progress {
+        return progress.toBuilder()
+            .programs(
+                progress.programs().mapValues {
+                    it.value.copy(isComplete = true).addSyncStatus(D2ProgressSyncStatus.SUCCESS)
+                }
+            )
+            .build()
+            .also { progress = it }
+    }
+
+    fun complete(): TrackerD2Progress {
+        return progress.toBuilder()
             .isComplete(true)
             .build()
             .also { progress = it }
     }
 
     init {
-        this.progress = AggregatedD2Progress.empty(totalCalls)
+        this.progress = TrackerD2Progress.empty(totalCalls)
     }
 }

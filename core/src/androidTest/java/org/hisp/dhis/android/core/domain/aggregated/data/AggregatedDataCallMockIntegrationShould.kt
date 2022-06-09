@@ -25,44 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.arch.call.internal;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.call.BaseD2Progress;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+class AggregatedDataCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
-import java.util.ArrayList;
-import java.util.List;
+    @Test
+    fun emit_progress() {
+        val testObserver = d2.aggregatedModule().data().download().test()
 
-public class D2ProgressManager {
+        testObserver.assertValueCount(3)
 
-    private BaseD2Progress progress;
-
-    public D2ProgressManager(Integer totalCalls) {
-        this.progress = BaseD2Progress.empty(totalCalls);
-    }
-
-    public D2Progress getProgress() {
-        return progress;
-    }
-
-    public <T> D2Progress increaseProgress(Class<T> resourceClass, boolean isComplete) {
-        List<String> doneCalls = new ArrayList<>(progress.doneCalls());
-        doneCalls.add(resourceClass.getSimpleName());
-        progress = progress.toBuilder()
-                .doneCalls(doneCalls)
-                .isComplete(isComplete)
-                .build();
-        return progress;
-
-    }
-
-    public <T> D2Progress increaseProgressAndCompleteWithCount(Class<T> resourceClass) {
-        Integer totalCalls = progress.totalCalls();
-        if (totalCalls == null) {
-            throw new IllegalStateException("Can't determine progress, total calls is not set");
-        } else {
-            return increaseProgress(resourceClass, progress.doneCalls().size() +  1 == totalCalls);
+        testObserver.assertValueAt(0) { v: AggregatedD2Progress ->
+            !v.isComplete && v.dataSets().all { (_, progress) -> !progress.isComplete }
         }
+        testObserver.assertValueAt(1) { v: AggregatedD2Progress ->
+            !v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+        }
+        testObserver.assertValueAt(2) { v: AggregatedD2Progress ->
+            v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+        }
+
+        testObserver.dispose()
     }
 }

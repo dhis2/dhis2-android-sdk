@@ -27,4 +27,25 @@
  */
 package org.hisp.dhis.android.core.arch.call
 
-data class D2ProgressStatus(val isComplete: Boolean)
+data class D2ProgressStatus(
+    val isComplete: Boolean = false,
+    val syncStatus: D2ProgressSyncStatus? = null
+) {
+    fun addSyncStatus(syncStatus: D2ProgressSyncStatus): D2ProgressStatus {
+        val newStatus = when {
+            this.syncStatus == null -> syncStatus
+            this.syncStatus == D2ProgressSyncStatus.SUCCESS &&
+                syncStatus == D2ProgressSyncStatus.SUCCESS -> D2ProgressSyncStatus.SUCCESS
+            this.syncStatus == D2ProgressSyncStatus.ERROR &&
+                syncStatus == D2ProgressSyncStatus.ERROR -> D2ProgressSyncStatus.ERROR
+            else -> D2ProgressSyncStatus.PARTIAL_ERROR
+        }
+        return copy(syncStatus = newStatus)
+    }
+}
+
+enum class D2ProgressSyncStatus {
+    SUCCESS,
+    ERROR,
+    PARTIAL_ERROR
+}

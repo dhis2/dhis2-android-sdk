@@ -25,36 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+import android.util.Log
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Factory
+import org.junit.Before
 
-import android.util.Log;
+class AggregatedDataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
-
-import java.io.IOException;
-
-public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to
      * the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
+    private lateinit var d2: D2
 
     @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    override fun setUp() {
+        super.setUp()
+        d2 = D2Factory.forNewDatabase()
     }
 
-
-   /* How to extract database from tests:
+    /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)
     DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext()
     .getApplicationContext(), "test.db");
@@ -67,33 +61,29 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
     in datagrip:
     pragma foreign_keys = on;
     pragma foreign_key_check;*/
-
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
-    public void response_successful_on_sync_data_once() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    // This test is uncommented because technically it is flaky.
+    // It depends on a live server to operate and the login is hardcoded here.
+    // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
+    // @Test
+    fun response_successful_on_sync_data_once() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
     }
 
-    //@Test
-    public void response_successful_on_sync_data_value_two_times() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+    // @Test
+    fun response_successful_on_sync_data_value_two_times() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
 
-        d2.metadataModule().blockingDownload();
+        val start = System.currentTimeMillis()
+        d2.aggregatedModule().data().blockingDownload()
+        val end = System.currentTimeMillis()
+        Log.e("AGGSYN", "AGGSYN first: " + (end - start))
 
-        long start = System.currentTimeMillis();
-        d2.aggregatedModule().data().blockingDownload();
-        long end = System.currentTimeMillis();
-        Log.e("AGGSYN", "AGGSYN first: " + (end - start));
-
-        //d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
-
-        long end2 = System.currentTimeMillis();
-        Log.e("AGGSYN", "AGGSYN second: " + (end2 - end));
+        // d2.metadataModule().blockingDownload();
+        d2.aggregatedModule().data().blockingDownload()
+        val end2 = System.currentTimeMillis()
+        Log.e("AGGSYN", "AGGSYN second: " + (end2 - end))
     }
 }

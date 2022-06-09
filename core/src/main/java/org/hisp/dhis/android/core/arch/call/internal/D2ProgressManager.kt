@@ -25,29 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+import org.hisp.dhis.android.core.arch.call.BaseD2Progress
+import org.hisp.dhis.android.core.arch.call.D2Progress
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
-import org.junit.Test;
+open class D2ProgressManager(totalCalls: Int?) {
 
-import io.reactivex.observers.TestObserver;
+    private var progress: BaseD2Progress
 
-public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegrationTestMetadataDispatcher {
+    open fun getProgress(): D2Progress? {
+        return progress
+    }
 
-    @Test
-    public void emit_progress() {
+    open fun <T> increaseProgress(resourceClass: Class<T>, isComplete: Boolean): D2Progress {
+        return progress.toBuilder()
+            .doneCalls(progress.doneCalls() + resourceClass.simpleName)
+            .isComplete(isComplete)
+            .build()
+            .also { progress = it }
+    }
 
-        TestObserver<AggregatedD2Progress> testObserver = d2.aggregatedModule().data().download().test();
-        testObserver.assertValueCount(5);
-
-        testObserver.assertValueAt(0, v -> v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> v.lastCall().equals("DataValue"));
-        testObserver.assertValueAt(2, v -> v.lastCall().equals("DataSetCompleteRegistration"));
-        testObserver.assertValueAt(3, v -> v.lastCall().equals("DataApproval"));
-        testObserver.assertValueAt(4, v -> v.lastCall().equals("AggregatedDataSync"));
-
-
-        testObserver.dispose();
+    init {
+        progress = BaseD2Progress.empty(totalCalls)
     }
 }

@@ -25,46 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import android.util.Log
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.Before
 
-import android.util.Log;
+class TeisCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.junit.Before;
-
-import java.io.IOException;
-
-import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
+    private lateinit var d2: D2
 
     @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    override fun setUp() {
+        super.setUp()
+        d2 = D2Factory.forNewDatabase()
     }
 
-    //@Test
-    public void download_tracked_entity_instances() {
-        d2.userModule().logIn(username, password, url).blockingGet();
+    // @Test
+    fun download_tracked_entity_instances() {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_36)
+        d2.metadataModule().blockingDownload()
 
-        d2.metadataModule().blockingDownload();
+        val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).download()
+            .doOnEach { e -> Log.w("EVENT", e.toString()) }
+            .test()
 
-        TestObserver<D2Progress> testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).download()
-                .doOnEach(e -> Log.w("EVENT", e.toString()))
-                .test();
+        testObserver.awaitTerminalEvent()
 
-        testObserver.awaitTerminalEvent();
-
-        int count = d2.trackedEntityModule().trackedEntityInstances().blockingCount();
-
-        assertThat(count >= 5).isTrue();
+        val count = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
+        assertThat(count >= 5).isTrue()
     }
 }

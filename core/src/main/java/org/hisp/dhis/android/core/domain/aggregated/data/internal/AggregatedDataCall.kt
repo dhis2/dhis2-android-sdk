@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -76,6 +76,9 @@ internal class AggregatedDataCall @Inject constructor(
         val bundles = aggregatedDataCallBundleFactory.bundles
         val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
+        progressManager.setTotalCalls(dataSets.size + 1)
+        progressManager.setDataSets(dataSets)
+
         return Observable.merge(
             Observable.fromCallable { progressManager.setDataSets(dataSets) },
             Observable.fromIterable(bundles).flatMap { downloadInternal(it, progressManager) },
@@ -98,16 +101,21 @@ internal class AggregatedDataCall @Inject constructor(
 
         return dataValueCall.download(dataValueQuery)
             .flatMap { dsCompleteRegistrationCall.download(completeRegistrationQuery) }
-            .flatMap { getApprovalSingle(bundle, progressManager) }
-            .flatMap { updateAggregatedDataSync(bundle, progressManager) }
-            .map { progressManager.updateDataSets(bundle.dataSets.mapNotNull { it.uid() }, isComplete = true) }
+            .flatMap { getApprovalSingle(bundle) }
+            .flatMap { updateAggregatedDataSync(bundle) }
+            .map {
+                bundle.dataSets.forEach {
+                    progressManager.completeDataSet(it.uid())
+                    progressManager.increaseProgress(DataValue::class.java, false)
+                }
+                progressManager.getProgress()
+            }
             .toObservable()
     }
 
     private fun updateAggregatedDataSync(
-        bundle: AggregatedDataCallBundle,
-        progressManager: AggregatedD2ProgressManager
-    ): Single<AggregatedD2Progress> {
+        bundle: AggregatedDataCallBundle
+    ): Single<Unit> {
         return Single.fromCallable {
             for (dataSet in bundle.dataSets) {
                 aggregatedDataSyncStore.updateOrInsertWhere(
@@ -122,19 +130,17 @@ internal class AggregatedDataCall @Inject constructor(
                         .build()
                 )
             }
-            progressManager.increaseProgress(AggregatedDataSync::class.java, false)
         }
     }
 
     private fun getApprovalSingle(
-        bundle: AggregatedDataCallBundle,
-        progressManager: AggregatedD2ProgressManager
-    ): Single<AggregatedD2Progress> {
+        bundle: AggregatedDataCallBundle
+    ): Single<List<DataApproval>> {
         val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
         val workflowUids = dataSetsWithWorkflow.map { it.workflow()!!.uid() }
 
         return if (workflowUids.isEmpty()) {
-            Single.just(progressManager.increaseProgress(DataApproval::class.java, false))
+            Single.just(emptyList())
         } else {
             val attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow)
             val dataApprovalQuery = DataApprovalQuery.create(
@@ -143,7 +149,6 @@ internal class AggregatedDataCall @Inject constructor(
                 bundle.key.lastUpdatedStr()
             )
             dataApprovalCall.download(dataApprovalQuery)
-                .map { progressManager.increaseProgress(DataApproval::class.java, false) }
         }
     }
 

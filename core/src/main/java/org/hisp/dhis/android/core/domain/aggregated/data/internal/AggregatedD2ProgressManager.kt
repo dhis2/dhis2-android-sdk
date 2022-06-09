@@ -49,6 +49,13 @@ internal class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager
             }
     }
 
+    fun setTotalCalls(totalCalls: Int): AggregatedD2Progress {
+        return progress.toBuilder()
+            .totalCalls(totalCalls)
+            .build()
+            .also { progress = it }
+    }
+
     fun setDataSets(dataSets: Collection<String>): AggregatedD2Progress {
         return progress.toBuilder()
             .dataSets(dataSets.associateWith { D2ProgressStatus() })
@@ -56,9 +63,10 @@ internal class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager
             .also { progress = it }
     }
 
-    fun updateDataSets(dataSets: Collection<String>, isComplete: Boolean): AggregatedD2Progress {
+    fun completeDataSet(dataSet: String): AggregatedD2Progress {
+        val newDataSetStatus = (progress.dataSets()[dataSet] ?: D2ProgressStatus()).copy(isComplete = true)
         return progress.toBuilder()
-            .dataSets(progress.dataSets() + dataSets.associateWith { D2ProgressStatus(isComplete) })
+            .dataSets(progress.dataSets() + (dataSet to newDataSetStatus))
             .build()
             .also { progress = it }
     }

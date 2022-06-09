@@ -47,6 +47,13 @@ internal class TrackerD2ProgressManager(totalCalls: Int?) : D2ProgressManager(to
             .also { progress = it }
     }
 
+    fun setTotalCalls(totalCalls: Int): TrackerD2Progress {
+        return progress.toBuilder()
+            .totalCalls(totalCalls)
+            .build()
+            .also { progress = it }
+    }
+
     fun setPrograms(programs: Collection<String>): TrackerD2Progress {
         return progress.toBuilder()
             .programs(programs.associateWith { D2ProgressStatus() })

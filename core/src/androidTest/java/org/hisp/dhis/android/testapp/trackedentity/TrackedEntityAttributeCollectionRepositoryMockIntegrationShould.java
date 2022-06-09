@@ -201,6 +201,16 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     }
 
     @Test
+    public void withLegendSets() {
+        TrackedEntityAttribute trackedEntityAttribute =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .withLegendSets()
+                        .one()
+                        .blockingGet();
+        assertThat(trackedEntityAttribute.legendSets()).isEqualTo(2);
+    }
+
+    @Test
     public void filter_by_field_color() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes()

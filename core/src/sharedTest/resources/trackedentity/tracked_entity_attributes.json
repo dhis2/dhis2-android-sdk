@@ -22,7 +22,15 @@
         "delete": true,
         "write": true,
         "manage": false
-      }
+      },
+      "legendSets": [
+        {
+          "id": "QiOkbpGEud4"
+        },
+        {
+          "id": "rtOkbpGEud4"
+        }
+      ]
     },
     {
       "id": "aejWyOfXge6",
@@ -47,6 +55,11 @@
       "optionSet": {
         "id": "VQ2lai3OfVG"
       },
+      "legendSets": [
+        {
+          "id": "rtOkbpGEud4"
+        },
+      ],
       "access": {
         "read": true,
         "updateWithSection": true,

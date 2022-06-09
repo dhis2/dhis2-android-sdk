@@ -90,6 +90,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
@@ -139,6 +140,7 @@ import retrofit2.Retrofit;
         OrganisationUnitPackageDIModule.class,
         PeriodPackageDIModule.class,
         ProgramPackageDIModule.class,
+        TrackedEntityAttributeLegendSetDIModule.class,
         RelationshipPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,

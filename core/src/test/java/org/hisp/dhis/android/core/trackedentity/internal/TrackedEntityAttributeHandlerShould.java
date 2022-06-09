@@ -53,6 +53,9 @@ public class TrackedEntityAttributeHandlerShould {
     private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
+    private OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> trackedEntityAttributeLegendSetLinkHandler;
+
+    @Mock
     private ObjectStyle objectStyle;
 
     @Mock
@@ -67,7 +70,10 @@ public class TrackedEntityAttributeHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(
+                trackedEntityAttributeStore,
+                trackedEntityAttributeLegendSetLinkHandler
+        );
 
         trackedEntityAttribute = TrackedEntityAttribute.builder()
                 .uid("test_tracked_entity_attribute_uid")

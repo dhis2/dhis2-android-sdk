@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import kotlin.math.ceil
@@ -55,7 +56,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 ) {
 
     fun download(params: ProgramDataDownloadParams): Observable<TrackerD2Progress> {
-        val observable = Observable.defer {
+        return Observable.defer {
             val progressManager = TrackerD2ProgressManager(null)
             if (userOrganisationUnitLinkStore.count() == 0) {
                 return@defer Observable.fromCallable {
@@ -74,7 +75,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     }
             }
         }
-        return rxCallExecutor.wrapObservableTransactionally(observable, true)
     }
 
     private fun downloadInternal(
@@ -194,43 +194,47 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val iterationResult = IterationResult()
 
         for (bundleProgram in bundleResult.bundleOrgUnitPrograms[orgUnitUid]!!) {
-            if (bundleResult.bundleCount >= bundle.commonParams().limit) {
-                break
+            val observable = Completable.fromCallable {
+                if (bundleResult.bundleCount < bundle.commonParams().limit) {
+                    val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
+
+                    val result = getItemsForOrgUnitProgramCombination(
+                        trackerQuery,
+                        limit,
+                        bundleProgram.itemCount,
+                        params.overwrite(),
+                        relatives
+                    )
+
+                    bundleResult.bundleCount += result.count
+                    bundleProgram.itemCount += result.count
+                    iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
+
+                    val syncStatus =
+                        if (result.successfulSync) D2ProgressSyncStatus.SUCCESS
+                        else D2ProgressSyncStatus.ERROR
+
+                    progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
+
+                    if (result.emptyProgram || !result.successfulSync) {
+                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] =
+                            bundleResult.bundleOrgUnitPrograms[orgUnitUid]!!
+                                .filter { it.program != bundleProgram.program }.toMutableList()
+
+                        val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
+                            list.any { it.program == bundleProgram.program }
+                        }
+
+                        if (!hasOtherOrgunits) {
+                            progressManager.increaseProgress(TrackedEntityInstance::class.java, false)
+                            progressManager.completeProgram(bundleProgram.program)
+                            emitter.onNext(progressManager.getProgress())
+                        }
+                    }
+                }
             }
 
-            val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
-
-            val result = getItemsForOrgUnitProgramCombination(
-                trackerQuery,
-                limit,
-                bundleProgram.itemCount,
-                params.overwrite(),
-                relatives
-            )
-
-            bundleResult.bundleCount += result.count
-            bundleProgram.itemCount += result.count
-            iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
-
-            val syncStatus = if (result.successfulSync) D2ProgressSyncStatus.SUCCESS else D2ProgressSyncStatus.ERROR
-
-            progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
-
-            if (result.emptyProgram || !result.successfulSync) {
-                bundleResult.bundleOrgUnitPrograms[orgUnitUid] =
-                    bundleResult.bundleOrgUnitPrograms[orgUnitUid]!!
-                        .filter { it.program != bundleProgram.program }.toMutableList()
-
-                val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
-                    list.any { it.program == bundleProgram.program }
-                }
-
-                if (!hasOtherOrgunits) {
-                    progressManager.increaseProgress(TrackedEntityInstance::class.java, false)
-                    progressManager.completeProgram(bundleProgram.program)
-                    emitter.onNext(progressManager.getProgress())
-                }
-            }
+            rxCallExecutor.wrapCompletableTransactionally(observable, cleanForeignKeys = true).blockingAwait()
         }
         return iterationResult
     }

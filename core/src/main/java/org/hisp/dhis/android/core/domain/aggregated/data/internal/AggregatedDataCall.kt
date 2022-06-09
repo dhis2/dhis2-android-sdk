@@ -65,9 +65,8 @@ internal class AggregatedDataCall @Inject constructor(
 ) {
     fun download(): Observable<AggregatedD2Progress> {
         val progressManager = AggregatedD2ProgressManager(null)
-        val observable = systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+        return systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
             .switchMap { selectDataSetsAndDownload(progressManager) }
-        return rxCallExecutor.wrapObservableTransactionally(observable, true)
     }
 
     private fun selectDataSetsAndDownload(
@@ -99,18 +98,21 @@ internal class AggregatedDataCall @Inject constructor(
             bundle.key.lastUpdatedStr()
         )
 
-        return dataValueCall.download(dataValueQuery)
-            .flatMap { dsCompleteRegistrationCall.download(completeRegistrationQuery) }
-            .flatMap { getApprovalSingle(bundle) }
-            .flatMap { updateAggregatedDataSync(bundle) }
-            .map {
-                bundle.dataSets.forEach {
-                    progressManager.completeDataSet(it.uid())
-                    progressManager.increaseProgress(DataValue::class.java, false)
+        val observable =
+            dataValueCall.download(dataValueQuery)
+                .flatMap { dsCompleteRegistrationCall.download(completeRegistrationQuery) }
+                .flatMap { getApprovalSingle(bundle) }
+                .flatMap { updateAggregatedDataSync(bundle) }
+                .map {
+                    bundle.dataSets.forEach {
+                        progressManager.completeDataSet(it.uid())
+                        progressManager.increaseProgress(DataValue::class.java, false)
+                    }
+                    progressManager.getProgress()
                 }
-                progressManager.getProgress()
-            }
-            .toObservable()
+                .toObservable()
+
+        return rxCallExecutor.wrapObservableTransactionally(observable, cleanForeignKeys = true)
     }
 
     private fun updateAggregatedDataSync(

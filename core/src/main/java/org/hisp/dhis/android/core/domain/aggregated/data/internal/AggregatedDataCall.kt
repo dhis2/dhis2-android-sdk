@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
@@ -105,7 +106,7 @@ internal class AggregatedDataCall @Inject constructor(
                 .flatMap { updateAggregatedDataSync(bundle) }
                 .map {
                     bundle.dataSets.forEach {
-                        progressManager.completeDataSet(it.uid())
+                        progressManager.completeDataSet(it.uid(), D2ProgressSyncStatus.SUCCESS)
                         progressManager.increaseProgress(DataValue::class.java, false)
                     }
                     progressManager.getProgress()

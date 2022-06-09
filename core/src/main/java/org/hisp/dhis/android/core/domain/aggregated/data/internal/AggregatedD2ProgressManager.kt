@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
+import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 
@@ -63,8 +64,10 @@ internal class AggregatedD2ProgressManager(totalCalls: Int?) : D2ProgressManager
             .also { progress = it }
     }
 
-    fun completeDataSet(dataSet: String): AggregatedD2Progress {
-        val newDataSetStatus = (progress.dataSets()[dataSet] ?: D2ProgressStatus()).copy(isComplete = true)
+    fun completeDataSet(dataSet: String, syncStatus: D2ProgressSyncStatus): AggregatedD2Progress {
+        val newDataSetStatus = (progress.dataSets()[dataSet] ?: D2ProgressStatus())
+            .copy(isComplete = true, syncStatus = syncStatus)
+
         return progress.toBuilder()
             .dataSets(progress.dataSets() + (dataSet to newDataSetStatus))
             .build()

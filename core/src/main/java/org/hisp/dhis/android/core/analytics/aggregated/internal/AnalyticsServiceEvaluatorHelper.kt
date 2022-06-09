@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 
@@ -44,6 +45,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val indicatorEvaluator: IndicatorEvaluator,
+    private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
     private val legendEvaluator: LegendEvaluator
 ) {
     fun evaluate(
@@ -105,6 +107,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
             is DimensionItem.DataItem.DataElementOperandItem -> dataElementEvaluator
             is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorEvaluator
             is DimensionItem.DataItem.IndicatorItem -> indicatorEvaluator
+            is DimensionItem.DataItem.EventDataItem -> eventDataItemEvaluator
         }
     }
 
@@ -129,6 +132,14 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
             )
             is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicator(
                 dimensionDataItem.uid,
+                value
+            )
+            is DimensionItem.DataItem.EventDataItem.DataElement -> legendEvaluator.getLegendByDataElement(
+                dimensionDataItem.dataElement,
+                value
+            )
+            is DimensionItem.DataItem.EventDataItem.Attribute -> legendEvaluator.getLegendByTrackedEntityAttribute(
+                dimensionDataItem.attribute,
                 value
             )
         }

@@ -103,7 +103,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val items = AnalyticsEvaluatorHelper.getItemsByDimension(evaluationItem)
+        val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         return WhereClauseBuilder().apply {
             appendKeyNumberValue(EventTableInfo.Columns.DELETED, 0)
@@ -157,7 +157,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val items = AnalyticsEvaluatorHelper.getItemsByDimension(evaluationItem)
+        val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         return WhereClauseBuilder().apply {
             appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, programIndicator.program()?.uid())

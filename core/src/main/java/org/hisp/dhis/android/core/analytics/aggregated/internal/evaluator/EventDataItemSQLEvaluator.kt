@@ -36,10 +36,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
-internal class DataElementSQLEvaluator @Inject constructor(
+internal class EventDataItemSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
@@ -70,14 +72,32 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this)
                 }
             }
-            appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
+            appendKeyNumberValue("$eventAlias.${EventTableInfo.Columns.DELETED}", 0)
         }.build()
 
-        val aggregator = getAggregator(evaluationItem, metadata)
+        val eventDataItem = getEventDataItems(evaluationItem)[0]
+        val aggregator = getAggregator(eventDataItem, metadata)
 
-        return "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-            "WHERE $whereClause"
+        return when (eventDataItem) {
+            is DimensionItem.DataItem.EventDataItem.DataElement ->
+                "SELECT $aggregator(${TrackedEntityDataValueTableInfo.Columns.VALUE}) " +
+                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
+                    "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+                    "ON $dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.EVENT} = " +
+                    "$eventAlias.${EventTableInfo.Columns.UID} " +
+                    "WHERE $whereClause"
+
+            is DimensionItem.DataItem.EventDataItem.Attribute ->
+                "SELECT $aggregator(${TrackedEntityAttributeValueTableInfo.Columns.VALUE}) " +
+                    "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
+                    "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
+                    "ON $attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+                    "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                    "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+                    "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
+                    "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} " +
+                    "WHERE $whereClause"
+        }
     }
 
     private fun appendDataWhereClause(
@@ -87,14 +107,28 @@ internal class DataElementSQLEvaluator @Inject constructor(
         val innerClause = items.map { it as DimensionItem.DataItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
                 when (item) {
-                    is DimensionItem.DataItem.DataElementItem ->
-                        innerBuilder.appendOrKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
-                    is DimensionItem.DataItem.DataElementOperandItem -> {
+                    is DimensionItem.DataItem.EventDataItem.DataElement -> {
                         val operandClause = WhereClauseBuilder()
-                            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.dataElement)
                             .appendKeyStringValue(
-                                DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                                item.categoryOptionCombo
+                                "$dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
+                                item.dataElement
+                            )
+                            .appendKeyStringValue(
+                                "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                item.program
+                            )
+                            .build()
+                        innerBuilder.appendOrComplexQuery(operandClause)
+                    }
+                    is DimensionItem.DataItem.EventDataItem.Attribute -> {
+                        val operandClause = WhereClauseBuilder()
+                            .appendKeyStringValue(
+                                "$attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
+                                item.attribute
+                            )
+                            .appendKeyStringValue(
+                                "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                item.program
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -102,7 +136,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
                         )
                 }
             }.build()
@@ -117,10 +151,23 @@ internal class DataElementSQLEvaluator @Inject constructor(
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
 
-        return builder.appendInSubQuery(
-            DataValueTableInfo.Columns.PERIOD,
-            AnalyticsEvaluatorHelper.getInPeriodsClause(reportingPeriods)
-        )
+        return if (reportingPeriods.isEmpty()) {
+            builder
+        } else {
+            val eventDateColumn = "$eventAlias.${EventTableInfo.Columns.EVENT_DATE}"
+
+            val innerClause = reportingPeriods.joinToString(" OR ") {
+                "(${
+                AnalyticsEvaluatorHelper.getPeriodWhereClause(
+                    columnStart = eventDateColumn,
+                    columnEnd = eventDateColumn,
+                    period = it
+                )
+                })"
+            }
+
+            builder.appendComplexQuery(innerClause)
+        }
     }
 
     private fun appendOrgunitWhereClause(
@@ -129,7 +176,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
-            columnName = DataValueTableInfo.Columns.ORGANISATION_UNIT,
+            columnName = "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}",
             items = items,
             builder = builder,
             metadata = metadata
@@ -141,36 +188,41 @@ internal class DataElementSQLEvaluator @Inject constructor(
         builder: WhereClauseBuilder
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
-            columnName = DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            columnName = "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
             items = items,
             builder = builder
         )
     }
 
-    private fun getAggregator(
+    private fun getEventDataItems(
         evaluationItem: AnalyticsServiceEvaluationItem,
+    ): List<DimensionItem.DataItem.EventDataItem> {
+        return AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
+    }
+
+    private fun getAggregator(
+        item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
+        val metadataItem = metadata[item.id]
 
-        return if (itemList.size > 1) {
-            AnalyticsEvaluatorHelper.getElementAggregator(AggregationType.SUM.name)
-        } else {
-            val item = itemList[0]
-            val metadataItem = metadata[item.id]
-                ?: throw AnalyticsException.InvalidArguments("Invalid arguments: ${item.id} not found in metadata.")
-
-            val aggregationType = when (metadataItem) {
-                is MetadataItem.DataElementItem -> metadataItem.item.aggregationType()
-                is MetadataItem.DataElementOperandItem ->
-                    metadata[metadataItem.item.dataElement()?.uid()]?.let {
-                        (it as MetadataItem.DataElementItem).item.aggregationType()
-                    }
-                else ->
-                    throw AnalyticsException.InvalidArguments("Invalid arguments: invalid dataElement item ${item.id}.")
-            }
-
-            AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
+        val aggregationType = when (metadataItem) {
+            is MetadataItem.EventDataElementItem ->
+                metadataItem.item.aggregationType()
+            is MetadataItem.EventAttributeItem ->
+                // TODO ANDROSDK-1547
+                null
+            else ->
+                throw AnalyticsException.InvalidArguments("Invalid arguments: invalid event data item ${item.id}.")
         }
+
+        return AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
+    }
+
+    companion object {
+        private const val eventAlias = "ev"
+        private const val dataValueAlias = "tdv"
+        private const val attAlias = "av"
+        private const val enrollmentAlias = "en"
     }
 }

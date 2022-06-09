@@ -69,6 +69,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
         }?.flatten() ?: emptyList()
     }
 
+    @Suppress("ComplexMethod")
     private fun extractDataDimensionItems(visualization: Visualization): List<DimensionItem> {
         return visualization.dataDimensionItems()?.mapNotNull { item ->
             when (item.dataDimensionItemType()) {
@@ -83,6 +84,22 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
                     }
                 DataDimensionItemType.PROGRAM_INDICATOR ->
                     item.programIndicator()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it.uid()) }
+                DataDimensionItemType.PROGRAM_DATA_ELEMENT ->
+                    item.programDataElement()?.let {
+                        it.program()?.uid()?.let { program ->
+                            it.dataElement()?.uid()?.let { dataElement ->
+                                DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
+                            }
+                        }
+                    }
+                DataDimensionItemType.PROGRAM_ATTRIBUTE ->
+                    item.programAttribute()?.let {
+                        it.program()?.uid()?.let { program ->
+                            it.attribute()?.uid()?.let { attribute ->
+                                DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
+                            }
+                        }
+                    }
                 else ->
                     null
             }

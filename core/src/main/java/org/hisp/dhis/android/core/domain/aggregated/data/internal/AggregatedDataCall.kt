@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -47,7 +48,6 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")

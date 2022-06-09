@@ -29,6 +29,10 @@ package org.hisp.dhis.android.core.tracker.exporter
 
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -41,10 +45,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
@@ -138,9 +138,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         iterationCount: Int
     ): Boolean {
         return params.limitByProgram() != true &&
-                bundleResult.bundleCount < bundle.commonParams().limit &&
-                bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
-                iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+            bundleResult.bundleCount < bundle.commonParams().limit &&
+            bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
+            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     @Suppress("LongParameterList")

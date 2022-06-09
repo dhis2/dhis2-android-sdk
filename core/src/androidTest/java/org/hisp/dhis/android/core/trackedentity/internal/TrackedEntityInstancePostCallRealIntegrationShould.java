@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
@@ -64,6 +65,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -71,8 +73,6 @@ import java.util.Date;
 import java.util.List;
 
 import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
@@ -359,7 +359,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
-        TestObserver<D2Progress> testObserver =
+        TestObserver<TrackerD2Progress> testObserver =
                 d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).download().test();
         testObserver.awaitTerminalEvent();
 

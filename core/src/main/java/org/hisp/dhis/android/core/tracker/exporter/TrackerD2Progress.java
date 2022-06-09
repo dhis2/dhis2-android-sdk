@@ -55,7 +55,7 @@ public abstract class TrackerD2Progress extends D2Progress {
             throw new IllegalArgumentException("Negative total calls");
         }
         return TrackerD2Progress.builder()
-                .isComplete(totalCalls != null && totalCalls == 0)
+                .isComplete(false)
                 .totalCalls(totalCalls)
                 .doneCalls(Collections.emptyList())
                 .programs(Collections.emptyMap())

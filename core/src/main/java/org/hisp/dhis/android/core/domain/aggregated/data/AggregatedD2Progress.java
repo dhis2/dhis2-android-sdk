@@ -55,7 +55,7 @@ public abstract class AggregatedD2Progress extends D2Progress {
             throw new IllegalArgumentException("Negative total calls");
         }
         return AggregatedD2Progress.builder()
-                .isComplete(totalCalls != null && totalCalls == 0)
+                .isComplete(false)
                 .totalCalls(totalCalls)
                 .doneCalls(Collections.emptyList())
                 .dataSets(Collections.emptyMap())

@@ -32,6 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -108,6 +109,16 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
         List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
                 d2.trackedEntityModule().trackedEntityInstanceFilters()
                         .byOrganisationUnit().eq("orgUnitUid")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_ou_mode() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
                         .blockingGet();
 
         assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);

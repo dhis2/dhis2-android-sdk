@@ -135,8 +135,6 @@
       "displayName": "Events assigned to me",
       "description": "All actve enrollmetns with events assigned to me",
       "externalAccess": false,
-      "followup": false,
-      "enrollmentStatus": "COMPLETED",
       "sortOrder": 1,
       "favorite": false,
       "access": {
@@ -154,10 +152,6 @@
         "displayName": "Tom Wakiki",
         "id": "GOLswS44mh8",
         "username": "system"
-      },
-      "enrollmentCreatedPeriod": {
-        "periodFrom": -20,
-        "periodTo": 20
       },
       "favorites": [
 
@@ -193,7 +187,8 @@
 
       ],
       "entityQueryCriteria": {
-        "followup": true
+        "followup": true,
+        "ouMode": "ACCESSIBLE"
       }
     }
   ]

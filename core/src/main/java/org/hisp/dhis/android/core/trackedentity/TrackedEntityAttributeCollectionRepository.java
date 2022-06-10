@@ -37,8 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 

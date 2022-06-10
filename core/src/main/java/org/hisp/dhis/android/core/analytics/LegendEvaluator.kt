@@ -143,9 +143,3 @@ internal class LegendEvaluator @Inject constructor(
         }
     }
 }
-
-fun main() {
-    val list = mutableListOf<Any>()
-    list.add(list)
-    println(list[0])
-}

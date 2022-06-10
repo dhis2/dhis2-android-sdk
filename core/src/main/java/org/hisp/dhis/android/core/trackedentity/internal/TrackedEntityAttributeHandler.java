@@ -51,7 +51,8 @@ final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<Tracke
     @Inject
     TrackedEntityAttributeHandler(
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-            OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> trackedEntityAttributeLegendSetLinkHandler
+            OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink>
+                    trackedEntityAttributeLegendSetLinkHandler
     ) {
         super(trackedEntityAttributeStore);
         this.trackedEntityAttributeLegendSetLinkHandler = trackedEntityAttributeLegendSetLinkHandler;

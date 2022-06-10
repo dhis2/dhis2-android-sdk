@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetL
 internal class TrackedEntityAttributeLegendSetDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter?): LinkStore<TrackedEntityAttributeLegendSetLink> {
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<TrackedEntityAttributeLegendSetLink> {
         return TrackedEntityAttributeLegendSetLinkStore.create(databaseAdapter)
     }
 
@@ -54,7 +54,7 @@ internal class TrackedEntityAttributeLegendSetDIModule {
     @Reusable
     fun handler(
         store: LinkStore<TrackedEntityAttributeLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid?, TrackedEntityAttributeLegendSetLink> {
+    ): OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> {
         return OrderedLinkHandlerImpl(store)
     }
 

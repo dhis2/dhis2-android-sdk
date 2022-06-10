@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 
+@Suppress("MagicNumber")
 internal object TrackedEntityAttributeLegendSetLinkStore {
     private val BINDER = StatementBinder { o: TrackedEntityAttributeLegendSetLink, w: StatementWrapper ->
         w.bind(1, o.trackedEntityAttribute())
@@ -42,9 +43,9 @@ internal object TrackedEntityAttributeLegendSetLinkStore {
         w.bind(3, o.sortOrder())
     }
 
-    fun create(databaseAdapter: DatabaseAdapter?): LinkStore<TrackedEntityAttributeLegendSetLink> {
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<TrackedEntityAttributeLegendSetLink> {
         return linkStore(
-            databaseAdapter!!, TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
+            databaseAdapter, TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
             TrackedEntityAttributeLegendSetLinkTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
             BINDER
         ) { cursor: Cursor? -> TrackedEntityAttributeLegendSetLink.create(cursor) }

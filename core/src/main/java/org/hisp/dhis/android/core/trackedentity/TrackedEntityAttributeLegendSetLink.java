@@ -36,13 +36,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.jetbrains.annotations.NotNull;
 
 @AutoValue
 public abstract class TrackedEntityAttributeLegendSetLink implements CoreObject {
-    @Nullable
+    @NotNull
     public abstract String trackedEntityAttribute();
 
-    @Nullable
+    @NotNull
     public abstract String legendSet();
 
     @Nullable

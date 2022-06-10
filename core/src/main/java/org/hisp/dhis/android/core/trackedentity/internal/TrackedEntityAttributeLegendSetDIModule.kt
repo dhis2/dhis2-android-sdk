@@ -26,30 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.util.Collections
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkStore
 
 @Module
-public final class TrackedEntityAttributeEntityDIModule {
-
+internal class TrackedEntityAttributeLegendSetDIModule {
     @Provides
     @Reusable
-    public IdentifiableObjectStore<TrackedEntityAttribute> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<TrackedEntityAttributeLegendSetLink> {
+        return TrackedEntityAttributeLegendSetLinkStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    public Handler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
-        return impl;
+    fun handler(
+        store: LinkStore<TrackedEntityAttributeLegendSetLink>
+    ): OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> {
+        return OrderedLinkHandlerImpl(store)
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityAttribute>> {
+        return Collections.singletonMap(
+            TrackedEntityAttributeFields.LEGEND_SETS,
+            TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter)
+        )
     }
 }

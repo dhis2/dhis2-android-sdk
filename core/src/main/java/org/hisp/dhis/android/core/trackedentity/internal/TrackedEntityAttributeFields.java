@@ -36,11 +36,14 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public final class TrackedEntityAttributeFields {
     public static final String UNIQUE = "unique";
+    public static final String LEGEND_SETS = "legendSets";
     private static final String STYLE = "style";
     private static final String ACCESS = "access";
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
@@ -66,6 +69,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(UNIQUE),
                     fh.<Boolean>field(Columns.INHERIT),
                     fh.<String>field(Columns.FIELD_MASK),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.read),

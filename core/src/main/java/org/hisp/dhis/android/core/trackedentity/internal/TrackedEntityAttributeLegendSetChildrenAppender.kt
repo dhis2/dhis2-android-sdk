@@ -26,44 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+internal class TrackedEntityAttributeLegendSetChildrenAppender(
+    private val linkChildStore: ObjectWithUidChildStore<TrackedEntityAttribute>
+) : ChildrenAppender<TrackedEntityAttribute>() {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 125;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    override fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
+        val builder = m.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeLegendSetChildrenAppender {
+            return TrackedEntityAttributeLegendSetChildrenAppender(
+                StoreFactory.objectWithUidChildStore(
+                    databaseAdapter,
+                    TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
+                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION,
+                )
+            )
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

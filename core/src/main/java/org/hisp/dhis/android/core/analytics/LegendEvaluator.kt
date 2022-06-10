@@ -33,13 +33,15 @@ import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 
 @Suppress("TooGenericExceptionCaught")
 internal class LegendEvaluator @Inject constructor(
     private val dataElementRepository: DataElementCollectionRepository,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val indicatorRepository: IndicatorCollectionRepository,
-    private val legendRepository: LegendCollectionRepository
+    private val legendRepository: LegendCollectionRepository,
+    private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
 ) {
     fun getLegendByProgramIndicator(
         programIndicatorUid: String,
@@ -86,8 +88,20 @@ internal class LegendEvaluator @Inject constructor(
         trackedEntityAttributeUid: String,
         value: String?
     ): String? {
-        // TODO JIRA ANDROSDK-1546
-        return null
+        return if (value == null) {
+            null
+        } else try {
+            val trackedEntityAttribute = trackedEntityAttributeCollectionRepository
+                .byUid().eq(trackedEntityAttributeUid)
+                .withLegendSets()
+                .one().blockingGet()
+
+            val legendSet = trackedEntityAttribute.legendSets()!![0]
+
+            return getLegendByLegendSet(legendSet.uid(), value)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun getLegendByIndicator(

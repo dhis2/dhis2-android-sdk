@@ -55,10 +55,4 @@ public final class TrackedEntityAttributeEntityDIModule {
     public Handler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
         return impl;
     }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttribute>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
 }

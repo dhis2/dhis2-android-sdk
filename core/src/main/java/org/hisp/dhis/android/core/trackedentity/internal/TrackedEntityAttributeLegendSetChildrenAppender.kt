@@ -28,42 +28,32 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 
-@Module
-internal class TrackedEntityAttributeLegendSetDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter?): LinkStore<TrackedEntityAttributeLegendSetLink> {
-        return TrackedEntityAttributeLegendSetLinkStore.create(databaseAdapter)
+internal class TrackedEntityAttributeLegendSetChildrenAppender(
+    private val linkChildStore: ObjectWithUidChildStore<TrackedEntityAttribute>
+) : ChildrenAppender<TrackedEntityAttribute>() {
+
+    override fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
+        val builder = m.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(
-        store: LinkStore<TrackedEntityAttributeLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid?, TrackedEntityAttributeLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityAttribute>> {
-        return Collections.singletonMap(
-            TrackedEntityAttributeFields.LEGEND_SETS,
-            TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter)
-        )
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeLegendSetChildrenAppender {
+            return TrackedEntityAttributeLegendSetChildrenAppender(
+                StoreFactory.objectWithUidChildStore(
+                    databaseAdapter,
+                    TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
+                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION,
+                )
+            )
+        }
     }
 }

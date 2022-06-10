@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core;
 import android.util.Log;
 
 import org.junit.Before;
-import org.junit.Test;
+
 
 import java.io.IOException;
 
@@ -94,7 +94,6 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         Thread.sleep(60000);
     }
 
-    @Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 

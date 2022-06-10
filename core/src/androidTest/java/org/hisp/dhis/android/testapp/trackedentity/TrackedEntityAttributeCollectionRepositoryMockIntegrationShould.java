@@ -207,7 +207,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .withLegendSets()
                         .one()
                         .blockingGet();
-        assertThat(trackedEntityAttribute.legendSets()).isEqualTo(2);
+        assertThat(trackedEntityAttribute.legendSets().size()).isEqualTo(2);
     }
 
     @Test

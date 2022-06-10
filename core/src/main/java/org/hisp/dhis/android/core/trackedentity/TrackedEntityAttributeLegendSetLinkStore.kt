@@ -42,7 +42,6 @@ internal object TrackedEntityAttributeLegendSetLinkStore {
         w.bind(3, o.sortOrder())
     }
 
-
     fun create(databaseAdapter: DatabaseAdapter?): LinkStore<TrackedEntityAttributeLegendSetLink> {
         return linkStore(
             databaseAdapter!!, TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,

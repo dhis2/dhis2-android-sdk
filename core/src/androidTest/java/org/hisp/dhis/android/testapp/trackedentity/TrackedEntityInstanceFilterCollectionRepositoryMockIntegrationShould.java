@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -37,8 +39,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShould
@@ -101,26 +101,6 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
                         .blockingGet();
 
         assertThat(trackedEntityInstanceFilters.size()).isEqualTo(0);
-    }
-
-    @Test
-    public void filter_by_period_from() {
-        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
-                d2.trackedEntityModule().trackedEntityInstanceFilters()
-                        .byPeriodFrom().eq(-20)
-                        .blockingGet();
-
-        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
-    }
-
-    @Test
-    public void filter_by_period_to() {
-        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
-                d2.trackedEntityModule().trackedEntityInstanceFilters()
-                        .byPeriodTo().eq(20)
-                        .blockingGet();
-
-        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
     }
 
     @Test

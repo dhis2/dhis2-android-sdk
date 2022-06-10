@@ -25,35 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceFilterStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter> {
-
-    public TrackedEntityInstanceFilterStoreIntegrationShould() {
-        super(TrackedEntityInstanceFilterStore.create(TestDatabaseAdapterFactory.get()),
-                TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class TrackedEntityInstanceFilterStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter>(
+        create(TestDatabaseAdapterFactory.get()),
+        TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun buildObject(): TrackedEntityInstanceFilter {
+        return TrackedEntityInstanceFilterSamples.get()
     }
 
-    @Override
-    protected TrackedEntityInstanceFilter buildObject() {
-        return TrackedEntityInstanceFilterSamples.get();
-    }
-
-    @Override
-    protected TrackedEntityInstanceFilter buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilterSamples.get().toBuilder()
-                .description("new_description")
-                .build();
+            .description("new_description")
+            .build()
     }
 }

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DatePeriodType;
-import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.RelativePeriod;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -57,11 +56,8 @@ public class TrackedEntityInstanceFilterSamples {
                 .created(getDate("2019-09-27T00:19:06.590"))
                 .lastUpdated(getDate("2019-09-27T00:19:06.590"))
                 .description("Foci response assigned to someone, and the enrollment is still active")
-                .followUp(Boolean.FALSE)
-                .enrollmentStatus(EnrollmentStatus.ACTIVE)
                 .sortOrder(2)
                 .program(ObjectWithUid.create("M3xtLkYBlKI"))
-                .enrollmentCreatedPeriod(FilterPeriod.create(-15, 15))
                 .entityQueryCriteria(EntityQueryCriteria.builder()
                         .followUp(Boolean.FALSE)
                         .enrollmentStatus(EnrollmentStatus.ACTIVE)

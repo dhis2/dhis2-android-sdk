@@ -25,27 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class TrackedEntityInstanceFilterAPI37Should :
+    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
+    ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-public class TrackedEntityInstanceFilterAPI37Should extends TrackedEntityInstanceFilterCommonShould implements ObjectShould {
-
-    public TrackedEntityInstanceFilterAPI37Should() {
-        super("trackedentity/tracked_entity_instance_filter_v_37.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityInstanceFilter trackedEntityInstanceFilter =
-                objectMapper.readValue(jsonStream, TrackedEntityInstanceFilter.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val trackedEntityInstanceFilterAPI37 = objectMapper.readValue(jsonStream,
+            TrackedEntityInstanceFilterAPI37::class.java)
 
-        teiFilterCommonAsserts(trackedEntityInstanceFilter);
+        teiFilterCommonAsserts(trackedEntityInstanceFilterAPI37.toTrackedEntityInstanceFilter())
     }
 }

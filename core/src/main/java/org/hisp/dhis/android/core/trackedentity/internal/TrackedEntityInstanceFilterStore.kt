@@ -60,6 +60,7 @@ internal object TrackedEntityInstanceFilterStore {
             w.bind(23, StringListColumnAdapter.serialize(o.entityQueryCriteria().trackedEntityInstances()))
             w.bind(24, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria().enrollmentIncidentDate()))
             w.bind(25, DateFilterPeriodColumnAdapter.serialize(o.entityQueryCriteria().enrollmentCreatedDate()))
+            w.bind(26, o.entityQueryCriteria().trackedEntityType())
         }
     }
 

@@ -69,6 +69,7 @@ public final class TrackedEntityInstanceFilterTableInfo {
         public final static String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
         public final static String ENROLLMENT_INCIDENT_DATE = "enrollmentIncidentDate";
         public final static String ENROLLMENT_CREATED_DATE = "enrollmentCreatedDate";
+        public final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
 
         @Override
         public String[] all() {
@@ -89,7 +90,8 @@ public final class TrackedEntityInstanceFilterTableInfo {
                     PROGRAM_STAGE,
                     TRACKED_ENTITY_INSTANCES,
                     ENROLLMENT_INCIDENT_DATE,
-                    ENROLLMENT_CREATED_DATE
+                    ENROLLMENT_CREATED_DATE,
+                    TRACKED_ENTITY_TYPE
             );
         }
     }

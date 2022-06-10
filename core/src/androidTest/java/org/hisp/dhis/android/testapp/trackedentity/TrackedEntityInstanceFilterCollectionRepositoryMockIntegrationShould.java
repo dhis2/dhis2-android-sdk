@@ -104,6 +104,16 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
     }
 
     @Test
+    public void filter_by_organization_unit() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byOrganisationUnit().eq("orgUnitUid")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
     public void include_event_filters_as_children() {
         TrackedEntityInstanceFilter trackedEntityInstanceFilter =
                 d2.trackedEntityModule().trackedEntityInstanceFilters()

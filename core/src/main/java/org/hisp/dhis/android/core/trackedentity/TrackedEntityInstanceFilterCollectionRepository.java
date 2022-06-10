@@ -37,7 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
@@ -85,12 +88,12 @@ public final class TrackedEntityInstanceFilterCollectionRepository
         return cf.string(Columns.ORGANISATION_UNIT);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOuMode() {
-        return cf.string(Columns.OU_MODE);
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, OrganisationUnitMode> byOuMode() {
+        return cf.enumC(Columns.OU_MODE);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byAssignedUserMode() {
-        return cf.string(Columns.ASSIGNED_USER_MODE);
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, AssignedUserMode> byAssignedUserMode() {
+        return cf.enumC(Columns.ASSIGNED_USER_MODE);
     }
 
     public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrderProperty() {
@@ -101,8 +104,8 @@ public final class TrackedEntityInstanceFilterCollectionRepository
         return cf.string(Columns.DISPLAY_COLUMN_ORDER);
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventStatus() {
-        return cf.string(Columns.EVENT_STATUS);
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EventStatus> byEventStatus() {
+        return cf.enumC(Columns.EVENT_STATUS);
     }
 
     public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventDate() {

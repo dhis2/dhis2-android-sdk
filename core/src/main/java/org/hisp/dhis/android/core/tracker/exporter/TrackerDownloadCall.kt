@@ -92,12 +92,14 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
             for (bundle in bundles) {
                 if (bundle.commonParams().uids.isNotEmpty()) {
-                    val result = queryByUids(bundle, params.overwrite(), relatives)
+                    val observable = Completable.fromCallable {
+                        val result = queryByUids(bundle, params.overwrite(), relatives)
 
-                    result.d2Error?.let {
-                        emitter.onError(it)
-                        return@create
+                        result.d2Error?.let {
+                            emitter.onError(it)
+                        }
                     }
+                    rxCallExecutor.wrapCompletableTransactionally(observable, cleanForeignKeys = true).blockingAwait()
                 } else {
                     val orgunitPrograms = bundle.orgUnits()
                         .associateWith {

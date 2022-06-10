@@ -81,12 +81,52 @@ public final class TrackedEntityInstanceFilterCollectionRepository
         return cf.bool(Columns.FOLLOW_UP);
     }
 
-    public IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byPeriodFrom() {
-        return cf.integer(Columns.PERIOD_FROM);
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrganisationUnit() {
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
-    public IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byPeriodTo() {
-        return cf.integer(Columns.PERIOD_TO);
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOuMode() {
+        return cf.string(Columns.OU_MODE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byAssignedUserMode() {
+        return cf.string(Columns.ASSIGNED_USER_MODE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrderProperty() {
+        return cf.string(Columns.ORDER);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byDisplayColumnOrder() {
+        return cf.string(Columns.DISPLAY_COLUMN_ORDER);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventStatus() {
+        return cf.string(Columns.EVENT_STATUS);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventDate() {
+        return cf.string(Columns.EVENT_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byLastUpdatedDate() {
+        return cf.string(Columns.LAST_UPDATED_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byProgramStage() {
+        return cf.string(Columns.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byTrackedEntityInstances() {
+        return cf.string(Columns.TRACKED_ENTITY_INSTANCES);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentIncidentDate() {
+        return cf.string(Columns.ENROLLMENT_INCIDENT_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentCreatedDate() {
+        return cf.string(Columns.ENROLLMENT_CREATED_DATE);
     }
 
     public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byColor() {

@@ -135,12 +135,6 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         public abstract Builder sortOrder(Integer sortOrder);
 
-        abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
-
-        public abstract Builder followUp(Boolean followUp);
-
-        public abstract Builder enrollmentCreatedPeriod(FilterPeriod enrollmentCreatedPeriod);
-
         public abstract Builder entityQueryCriteria(EntityQueryCriteria entityQueryCriteria);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);

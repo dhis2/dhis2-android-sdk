@@ -95,6 +95,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                         .eventCreatedPeriod(FilterPeriod.create(-5, 2)).build()
                 )
             )
+            .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
         val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
@@ -135,6 +136,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                     TrackedEntityInstanceEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build()
                 )
             )
+            .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
         val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)

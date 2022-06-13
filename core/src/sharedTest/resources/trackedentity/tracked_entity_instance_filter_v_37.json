@@ -28,8 +28,8 @@
     "username": "system"
   },
   "enrollmentCreatedPeriod": {
-    "periodFrom": -15,
-    "periodTo": 15
+    "periodFrom": -5,
+    "periodTo": 5
   },
   "favorites": [
   ],

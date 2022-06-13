@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.junit.Before;
@@ -94,6 +95,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
                 .name("name")
                 .displayName("display_name")
                 .eventFilters(eventFilters)
+                .entityQueryCriteria(EntityQueryCriteria.builder().build())
                 .build();
 
         when(trackedEntityInstanceFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);

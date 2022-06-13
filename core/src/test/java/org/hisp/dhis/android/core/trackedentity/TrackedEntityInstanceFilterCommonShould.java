@@ -56,8 +56,8 @@ public abstract class TrackedEntityInstanceFilterCommonShould extends BaseObject
         assertThat(trackedEntityInstanceFilter.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
         assertThat(trackedEntityInstanceFilter.sortOrder()).isEqualTo(2);
         assertThat(trackedEntityInstanceFilter.program().uid()).isEqualTo("M3xtLkYBlKI");
-        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodFrom()).isEqualTo(-15);
-        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodTo()).isEqualTo(15);
+        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodFrom()).isEqualTo(-5);
+        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodTo()).isEqualTo(5);
 
         TrackedEntityInstanceEventFilter eventFilter = trackedEntityInstanceFilter.eventFilters().get(0);
         assertThat(eventFilter.programStage()).isEqualTo("uvMKOn1oWvd");

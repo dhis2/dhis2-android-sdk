@@ -21,7 +21,7 @@
     "organisationUnit": "orgUnitUid",
     "eventStatus": "ACTIVE",
     "order": "dueDate:asc,createdDate:desc",
-    "followup": false,
+    "followUp": false,
     "programStatus": "ACTIVE",
     "ouMode": "ACCESSIBLE",
     "assignedUsers": [

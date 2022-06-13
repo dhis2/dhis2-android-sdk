@@ -29,7 +29,7 @@
         "organisationUnit": "DiszpKrYNg8",
         "eventStatus": "ACTIVE",
         "order": "dueDate:asc,createdDate:desc",
-        "followup": false,
+        "followUp": false,
         "programStatus": "ACTIVE",
         "ouMode": "ACCESSIBLE",
         "assignedUsers": [

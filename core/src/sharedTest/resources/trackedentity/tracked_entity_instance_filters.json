@@ -57,7 +57,7 @@
       "userAccesses": [
       ],
       "entityQueryCriteria": {
-        "followup": false,
+        "followUp": false,
         "enrollmentStatus": "ACTIVE",
         "eventStatus": "COMPLETED",
         "programStage": "uvMKOn1oWvd",
@@ -187,7 +187,7 @@
 
       ],
       "entityQueryCriteria": {
-        "followup": true,
+        "followUp": true,
         "ouMode": "ACCESSIBLE"
       }
     }

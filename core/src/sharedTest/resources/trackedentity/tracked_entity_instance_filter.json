@@ -55,7 +55,7 @@
     }
   ],
   "entityQueryCriteria": {
-    "followup": false,
+    "followUp": false,
     "enrollmentStatus": "ACTIVE",
     "eventStatus": "COMPLETED",
     "programStage": "uvMKOn1oWvd",

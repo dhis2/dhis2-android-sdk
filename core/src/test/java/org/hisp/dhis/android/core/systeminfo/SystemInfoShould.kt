@@ -41,7 +41,7 @@ class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), Object
 
         assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
         assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
-        assertThat(systemInfo.version()).isEqualTo("2.37")
+        assertThat(systemInfo.version()).isEqualTo("2.38")
         assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }

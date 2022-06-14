@@ -27,22 +27,27 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl.Companion.create
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem?>(
+class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem>(
     create(TestDatabaseAdapterFactory.get()),
-    RelationshipItemTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    RelationshipItemTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
 ) {
+
+    private val relationshipItemStore = store as RelationshipItemStore
+
     override fun buildObject(): RelationshipItem {
         return RelationshipItemSamples.getRelationshipItem()
     }
@@ -51,5 +56,19 @@ class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractInte
         return RelationshipItemSamples.getRelationshipItem().toBuilder()
             .event(RelationshipItemEvent.builder().event("new_event").build())
             .build()
+    }
+
+    @Test
+    fun getByEntityUid() {
+        val sample = RelationshipItemSamples.getRelationshipItem()
+        relationshipItemStore.insert(RelationshipItemSamples.getRelationshipItem())
+
+        val itemsByExistingEntityUid = relationshipItemStore.getByEntityUid(sample.event()!!.event())
+        assertThat(itemsByExistingEntityUid.size).isEqualTo(1)
+
+        val itemsByNonExistingEntityUid = relationshipItemStore.getByEntityUid("other_entity")
+        assertThat(itemsByNonExistingEntityUid).isEmpty()
+
+        relationshipItemStore.delete()
     }
 }

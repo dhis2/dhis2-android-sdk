@@ -109,6 +109,7 @@ class EventHandlerShould {
 
         // verify that delete is invoked once
         verify(eventStore, times(1)).deleteIfExists(event.uid())
+        verify(relationshipHandler, times(1)).deleteLinkedRelationships(any())
 
         // verify that update and insert is never invoked
         verify(eventStore, never()).update(any())
@@ -135,6 +136,7 @@ class EventHandlerShould {
 
         // verify that delete is never invoked
         verify(eventStore, never()).deleteIfExists(any())
+        verify(relationshipHandler, never()).deleteLinkedRelationships(any())
     }
 
     @Test

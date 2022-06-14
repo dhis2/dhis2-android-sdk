@@ -136,6 +136,7 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, times(1)).deleteIfExists(any())
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any())
         verify(trackedEntityAttributeValueHandler, never()).handleMany(any(), any())
+        verify(relationshipHandler, times(1)).deleteLinkedRelationships(any())
         verifyNoMoreInteractions(trackedEntityAttributeValueStore)
 
         // verify that enrollment handler is never called
@@ -157,6 +158,7 @@ class TrackedEntityInstanceHandlerShould {
         // verify that tracked entity instance store is only called with update
         verify(trackedEntityInstanceStore, times(1)).updateOrInsert(any())
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
+        verify(relationshipHandler, never()).deleteLinkedRelationships(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
         verify(trackedEntityAttributeValueStore, times(1))
             .deleteByInstanceAndNotInAccessibleAttributes(any(), any(), any(), any())

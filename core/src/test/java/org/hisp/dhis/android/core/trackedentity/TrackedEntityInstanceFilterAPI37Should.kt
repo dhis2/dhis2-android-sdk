@@ -39,8 +39,10 @@ class TrackedEntityInstanceFilterAPI37Should :
     @Test
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
-        val trackedEntityInstanceFilterAPI37 = objectMapper.readValue(jsonStream,
-            TrackedEntityInstanceFilterAPI37::class.java)
+        val trackedEntityInstanceFilterAPI37 = objectMapper.readValue(
+            jsonStream,
+            TrackedEntityInstanceFilterAPI37::class.java
+        )
 
         teiFilterCommonAsserts(trackedEntityInstanceFilterAPI37.toTrackedEntityInstanceFilter())
     }

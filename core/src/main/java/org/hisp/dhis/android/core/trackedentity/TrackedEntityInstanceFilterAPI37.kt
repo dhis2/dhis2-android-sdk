@@ -64,17 +64,18 @@ internal data class TrackedEntityInstanceFilterAPI37(
                 EntityQueryCriteria.builder()
                     .followUp(followup)
                     .enrollmentStatus(enrollmentStatus)
-                    .enrollmentCreatedDate(enrollmentCreatedPeriod?.let {
-                        DateFilterPeriod.builder()
-                            .startBuffer(it.periodFrom())
-                            .endBuffer(it.periodTo())
-                            .period(RelativePeriod.TODAY)
-                            .type(DatePeriodType.RELATIVE)
-                            .build()
-                    })
+                    .enrollmentCreatedDate(
+                        enrollmentCreatedPeriod?.let {
+                            DateFilterPeriod.builder()
+                                .startBuffer(it.periodFrom())
+                                .endBuffer(it.periodTo())
+                                .period(RelativePeriod.TODAY)
+                                .type(DatePeriodType.RELATIVE)
+                                .build()
+                        }
+                    )
                     .build()
             )
             .eventFilters(eventFilters)
             .build()
 }
-

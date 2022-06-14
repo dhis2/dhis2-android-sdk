@@ -53,9 +53,10 @@ internal class TrackedEntityInstanceFilterHandler @Inject constructor(
 
     override fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
         if (action !== HandleAction.Delete) {
-            trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters()) { ef: TrackedEntityInstanceEventFilter ->
-                ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
-            }
+            trackedEntityInstanceEventFilterHandler
+                .handleMany(o.eventFilters()) { ef: TrackedEntityInstanceEventFilter ->
+                    ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
+                }
             o.entityQueryCriteria().attributeValueFilters()?.let {
                 attributeValueFilterHandler.handleMany(it) { avf: AttributeValueFilter ->
                     avf.toBuilder().trackedEntityInstanceFilter(o.uid()).build()

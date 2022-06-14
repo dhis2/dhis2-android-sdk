@@ -65,7 +65,8 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
-                handler, { partitionUids: Set<String> ->
+                handler,
+                { partitionUids: Set<String> ->
                     service.getTrackedEntityInstanceFiltersAPI37(
                         TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                         accessDataReadFilter,

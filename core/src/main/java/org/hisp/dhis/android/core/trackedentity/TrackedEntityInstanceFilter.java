@@ -96,10 +96,11 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     @Nullable
     public FilterPeriod enrollmentCreatedPeriod() {
         DateFilterPeriod dateFilterPeriod = entityQueryCriteria().enrollmentCreatedDate();
-        return dateFilterPeriod != null ? FilterPeriod.builder()
-                .periodFrom(dateFilterPeriod.startBuffer())
-                .periodTo(dateFilterPeriod.endBuffer())
-                .build() : null;
+        return dateFilterPeriod == null ? null :
+                FilterPeriod.builder()
+                        .periodFrom(dateFilterPeriod.startBuffer())
+                        .periodTo(dateFilterPeriod.endBuffer())
+                        .build();
     }
 
     @NonNull

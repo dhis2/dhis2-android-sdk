@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.data.event
 
+import java.text.ParseException
+import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
@@ -36,8 +38,6 @@ import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import java.text.ParseException
-import java.util.*
 
 internal object EventFilterSamples {
     @JvmStatic

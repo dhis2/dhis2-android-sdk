@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity
 
+import java.util.*
 import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import java.util.*
 
 internal data class TrackedEntityInstanceFilterAPI37(
     val id: String,

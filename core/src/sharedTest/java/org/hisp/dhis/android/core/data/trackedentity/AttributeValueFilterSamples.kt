@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.data.trackedentity
 
+import java.text.ParseException
+import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import java.text.ParseException
-import java.util.*
 
 internal object AttributeValueFilterSamples {
     fun get(): AttributeValueFilter {

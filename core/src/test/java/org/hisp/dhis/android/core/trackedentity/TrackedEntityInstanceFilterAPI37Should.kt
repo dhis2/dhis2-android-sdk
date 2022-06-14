@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
 import java.io.IOException
 import java.text.ParseException
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
 class TrackedEntityInstanceFilterAPI37Should :
     TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),

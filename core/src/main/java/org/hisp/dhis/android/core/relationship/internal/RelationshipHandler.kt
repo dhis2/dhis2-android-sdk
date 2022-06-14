@@ -25,13 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-public interface RelationshipHandler extends HandlerWithTransformer<Relationship> {
-    boolean doesRelationshipExist(Relationship relationship);
-    boolean doesRelationshipItemExist(RelationshipItem item);
+internal interface RelationshipHandler : HandlerWithTransformer<Relationship> {
+    fun doesRelationshipExist(relationship: Relationship): Boolean
+    fun doesRelationshipItemExist(item: RelationshipItem): Boolean
+    fun deleteLinkedRelationships(entityUid: String)
 }

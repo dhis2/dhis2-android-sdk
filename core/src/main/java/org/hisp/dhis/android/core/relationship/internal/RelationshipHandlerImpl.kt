@@ -66,6 +66,13 @@ internal class RelationshipHandlerImpl @Inject constructor(
         return storeSelector.getElementStore(item).exists(item.elementUid())
     }
 
+    override fun deleteLinkedRelationships(entityUid: String) {
+        relationshipItemStore.getByEntityUid(entityUid)
+            .mapNotNull { it.relationship()?.uid() }
+            .distinct()
+            .forEach { store.deleteIfExists(it) }
+    }
+
     private fun getExistingRelationshipUid(relationship: Relationship): String? {
         val existingRelationshipUidsForPair = relationshipItemStore.getRelationshipUidsForItems(
             relationship.from()!!, relationship.to()!!

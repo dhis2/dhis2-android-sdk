@@ -25,11 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
-
-public enum DHISPatchVersion {
+enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String, val smsVersion: SMSVersion?) {
     V2_29(DHISVersion.V2_29, "2.29", null),
+
     V2_30(DHISVersion.V2_30, "2.30", null),
 
     V2_31_0(DHISVersion.V2_31, "2.31.0", null),
@@ -64,34 +64,10 @@ public enum DHISPatchVersion {
 
     V2_38_0(DHISVersion.V2_38, "2.38.0", SMSVersion.V2);
 
-    private String strValue;
-    private DHISVersion majorVersion;
-    private SMSVersion smsVersion;
-
-    DHISPatchVersion(DHISVersion majorVersion, String strValue, SMSVersion smsVersion) {
-        this.majorVersion = majorVersion;
-        this.strValue = strValue;
-        this.smsVersion = smsVersion;
-    }
-
-    public String getStrValue() {
-        return strValue;
-    }
-
-    public DHISVersion getMajorVersion() {
-        return majorVersion;
-    }
-
-    public SMSVersion getSmsVersion() {
-        return smsVersion;
-    }
-
-    public static DHISPatchVersion getValue(String versionStr) {
-        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
-            if (versionStr.equals(patchVersion.strValue) || versionStr.startsWith(patchVersion.strValue + "-")) {
-                return patchVersion;
-            }
+    companion object {
+        @JvmStatic
+        fun getValue(versionStr: String): DHISPatchVersion? {
+            return values().find { versionStr == it.strValue || versionStr.startsWith(it.strValue + "-") }
         }
-        return null;
     }
 }

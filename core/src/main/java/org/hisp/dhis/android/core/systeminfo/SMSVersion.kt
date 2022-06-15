@@ -25,46 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
-
-public enum SMSVersion {
+enum class SMSVersion(val intValue: Int) {
     V1(1),
     V2(2);
 
-    private final static SMSVersion latestVersion = SMSVersion.V2;
+    companion object {
+        private val latestVersion = V2
 
-    private Integer intValue;
+        @JvmStatic
+        fun getValue(versionStr: String): SMSVersion? {
+            val patchVersion = DHISPatchVersion.getValue(versionStr)
 
-    SMSVersion(Integer intValue) {
-        this.intValue = intValue;
-    }
-
-    public Integer getIntValue() {
-        return intValue;
-    }
-
-    public static SMSVersion getValue(String versionStr) {
-        DHISPatchVersion patchVersion = DHISPatchVersion.getValue(versionStr);
-        if (patchVersion == null) {
-            DHISVersion dhisVersion = DHISVersion.getValue(versionStr);
-            return getLatestInDHISVersion(dhisVersion);
-        } else {
-            return patchVersion.getSmsVersion();
-        }
-    }
-
-    private static SMSVersion getLatestInDHISVersion(DHISVersion dhisVersion) {
-        SMSVersion latest = null;
-        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
-            if (patchVersion.getMajorVersion().equals(dhisVersion) && patchVersion.getSmsVersion() != null) {
-                SMSVersion smsVersion = patchVersion.getSmsVersion();
-
-                if (latest == null || latest.intValue <  smsVersion.intValue) {
-                    latest = smsVersion;
-                }
+            return if (patchVersion == null) {
+                DHISVersion.getValue(versionStr)?.let { getLatestInDHISVersion(it) }
+            } else {
+                patchVersion.smsVersion
             }
         }
-        return latest;
+
+        private fun getLatestInDHISVersion(dhisVersion: DHISVersion): SMSVersion? {
+            return DHISPatchVersion.values()
+                .filter { it.majorVersion == dhisVersion && it.smsVersion != null }
+                .fold(null) { latest: SMSVersion?, version ->
+                    if (latest == null || latest.intValue < version.smsVersion!!.intValue) {
+                        version.smsVersion
+                    } else {
+                        latest
+                    }
+                }
+        }
     }
 }

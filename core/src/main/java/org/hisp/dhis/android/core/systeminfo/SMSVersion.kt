@@ -32,8 +32,6 @@ enum class SMSVersion(val intValue: Int) {
     V2(2);
 
     companion object {
-        private val latestVersion = V2
-
         @JvmStatic
         fun getValue(versionStr: String): SMSVersion? {
             val patchVersion = DHISPatchVersion.getValue(versionStr)

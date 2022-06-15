@@ -27,33 +27,43 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.systeminfo.SMSVersion.Companion.getValue
-import org.hisp.dhis.android.core.systeminfo.SMSVersion
-import com.google.common.truth.Truth
 import org.junit.Test
 
 class SMSVersionShould {
+
     @Test
     fun return_sms_version_if_patch_version_exists() {
         val smsVersion = getValue("2.33.2")
-        Truth.assertThat(smsVersion).isEqualTo(SMSVersion.V1)
+        assertThat(smsVersion).isEqualTo(SMSVersion.V1)
     }
 
     @Test
     fun return_latest_sms_version_if_patch_does_not_exist() {
         val smsVersion = getValue("2.33.100")
-        Truth.assertThat(smsVersion).isEqualTo(SMSVersion.V2)
+        assertThat(smsVersion).isEqualTo(SMSVersion.V2)
     }
 
     @Test
     fun return_null_if_patch_version_has_no_support() {
         val smsVersion = getValue("2.32.1")
-        Truth.assertThat(smsVersion).isNull()
+        assertThat(smsVersion).isNull()
     }
 
     @Test
     fun return_null_if_patch_does_not_exist() {
         val smsVersion = getValue("2.32.100")
-        Truth.assertThat(smsVersion).isNull()
+        assertThat(smsVersion).isNull()
+    }
+
+    @Test
+    fun return_non_null_for_any_version_greater_than_2_32() {
+        DHISVersion.values()
+            .filter { it > DHISVersion.V2_32 }
+            .forEach {
+                assertThat(getValue(it.prefix + ".0")).isNotNull()
+                assertThat(getValue(it.prefix + ".9")).isNotNull()
+            }
     }
 }

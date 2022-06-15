@@ -58,6 +58,7 @@ public final class TrackedEntityAttributeTableInfo {
         public static final String VALUE_TYPE = "valueType";
         public static final String EXPRESSION = "expression";
         public static final String PROGRAM_SCOPE = "programScope";
+        public static final String AGGREGATION_TYPE = "aggregationType";
         public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
         public static final String GENERATED = "generated";
         public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
@@ -84,7 +85,8 @@ public final class TrackedEntityAttributeTableInfo {
                     INHERIT,
                     FORM_NAME,
                     DISPLAY_FORM_NAME,
-                    FIELD_MASK
+                    FIELD_MASK,
+                    AGGREGATION_TYPE
             );
         }
     }

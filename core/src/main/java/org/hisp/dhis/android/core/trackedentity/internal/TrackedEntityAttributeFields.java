@@ -62,6 +62,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<ValueType>field(Columns.VALUE_TYPE),
                     fh.<String>field(Columns.EXPRESSION),
                     fh.<Boolean>field(Columns.PROGRAM_SCOPE),
+                    fh.<String>field(Columns.AGGREGATION_TYPE),
                     fh.<Boolean>field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
                     fh.<Boolean>field(Columns.GENERATED),
                     fh.<Boolean>field(Columns.DISPLAY_ON_VISIT_SCHEDULE),

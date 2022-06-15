@@ -25,36 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class RelationshipItemStoreIntegrationShould extends
-        ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem> {
-
-    public RelationshipItemStoreIntegrationShould() {
-        super(RelationshipItemStoreImpl.create(TestDatabaseAdapterFactory.get()),
-                RelationshipItemTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected RelationshipItem buildObject() {
-        return RelationshipItemSamples.getRelationshipItem();
-    }
-
-    @Override
-    protected RelationshipItem buildObjectToUpdate() {
-        return RelationshipItemSamples.getRelationshipItem().toBuilder()
-                .event(RelationshipItemEvent.builder().event("new_event").build())
-                .build();
-    }
+internal interface RelationshipHandler : HandlerWithTransformer<Relationship> {
+    fun doesRelationshipExist(relationship: Relationship): Boolean
+    fun doesRelationshipItemExist(item: RelationshipItem): Boolean
+    fun deleteLinkedRelationships(entityUid: String)
 }

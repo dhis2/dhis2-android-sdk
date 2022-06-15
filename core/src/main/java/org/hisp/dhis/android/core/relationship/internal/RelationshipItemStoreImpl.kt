@@ -137,6 +137,16 @@ internal class RelationshipItemStoreImpl private constructor(
         return selectWhere(clauseBuilder.build())
     }
 
+    override fun getByEntityUid(entityUid: String): List<RelationshipItem> {
+        val clauseBuilder = WhereClauseBuilder().apply {
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE, entityUid)
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.ENROLLMENT, entityUid)
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.EVENT, entityUid)
+        }
+
+        return selectWhere(clauseBuilder.build())
+    }
+
     private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
         val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +

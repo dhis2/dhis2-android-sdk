@@ -25,36 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.systeminfo.SMSVersion.Companion.getValue
+import org.junit.Test
 
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SMSVersionShould {
+class SMSVersionShould {
 
     @Test
-    public void return_sms_version_if_patch_version_exists() {
-        SMSVersion smsVersion = SMSVersion.getValue("2.33.2");
-        assertThat(smsVersion).isEqualTo(SMSVersion.V1);
+    fun return_sms_version_if_patch_version_exists() {
+        val smsVersion = getValue("2.33.2")
+        assertThat(smsVersion).isEqualTo(SMSVersion.V1)
     }
 
     @Test
-    public void return_latest_sms_version_if_patch_does_not_exist() {
-        SMSVersion smsVersion = SMSVersion.getValue("2.33.100");
-        assertThat(smsVersion).isEqualTo(SMSVersion.V2);
+    fun return_latest_sms_version_if_patch_does_not_exist() {
+        val smsVersion = getValue("2.33.100")
+        assertThat(smsVersion).isEqualTo(SMSVersion.V2)
     }
 
     @Test
-    public void return_null_if_patch_version_has_no_support() {
-        SMSVersion smsVersion = SMSVersion.getValue("2.32.1");
-        assertThat(smsVersion).isNull();
+    fun return_null_if_patch_version_has_no_support() {
+        val smsVersion = getValue("2.32.1")
+        assertThat(smsVersion).isNull()
     }
 
     @Test
-    public void return_null_if_patch_does_not_exist() {
-        SMSVersion smsVersion = SMSVersion.getValue("2.32.100");
-        assertThat(smsVersion).isNull();
+    fun return_null_if_patch_does_not_exist() {
+        val smsVersion = getValue("2.32.100")
+        assertThat(smsVersion).isNull()
+    }
+
+    @Test
+    fun return_non_null_for_any_version_greater_than_2_32() {
+        DHISVersion.values()
+            .filter { it > DHISVersion.V2_32 }
+            .forEach {
+                assertThat(getValue(it.prefix + ".0")).isNotNull()
+                assertThat(getValue(it.prefix + ".9")).isNotNull()
+            }
     }
 }

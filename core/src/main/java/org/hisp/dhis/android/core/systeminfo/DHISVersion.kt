@@ -25,46 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+enum class DHISVersion(internal val prefix: String) {
+    V2_29("2.29"),
+    V2_30("2.30"),
+    V2_31("2.31"),
+    V2_32("2.32"),
+    V2_33("2.33"),
+    V2_34("2.34"),
+    V2_35("2.35"),
+    V2_36("2.36"),
+    V2_37("2.37"),
+    V2_38("2.38");
 
-public enum SMSVersion {
-    V1(1),
-    V2(2);
-
-    private final static SMSVersion latestVersion = SMSVersion.V2;
-
-    private Integer intValue;
-
-    SMSVersion(Integer intValue) {
-        this.intValue = intValue;
-    }
-
-    public Integer getIntValue() {
-        return intValue;
-    }
-
-    public static SMSVersion getValue(String versionStr) {
-        DHISPatchVersion patchVersion = DHISPatchVersion.getValue(versionStr);
-        if (patchVersion == null) {
-            DHISVersion dhisVersion = DHISVersion.getValue(versionStr);
-            return getLatestInDHISVersion(dhisVersion);
-        } else {
-            return patchVersion.getSmsVersion();
+    companion object {
+        @JvmStatic
+        fun getValue(versionStr: String): DHISVersion? {
+            return values().find { versionStr.startsWith(it.prefix) }
         }
-    }
 
-    private static SMSVersion getLatestInDHISVersion(DHISVersion dhisVersion) {
-        SMSVersion latest = null;
-        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
-            if (patchVersion.getMajorVersion().equals(dhisVersion) && patchVersion.getSmsVersion() != null) {
-                SMSVersion smsVersion = patchVersion.getSmsVersion();
-
-                if (latest == null || latest.intValue <  smsVersion.intValue) {
-                    latest = smsVersion;
-                }
-            }
+        @JvmStatic
+        fun isAllowedVersion(versionStr: String): Boolean {
+            return getValue(versionStr) != null
         }
-        return latest;
+
+        @JvmStatic
+        fun allowedVersionsAsStr(): Array<String> {
+            return listOf(V2_30, V2_31, V2_32, V2_33, V2_34, V2_35, V2_36, V2_37, V2_38)
+                .map { it.prefix }
+                .toTypedArray()
+        }
     }
 }

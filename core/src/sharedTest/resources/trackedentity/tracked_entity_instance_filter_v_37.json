@@ -1,0 +1,57 @@
+{
+  "code": "assigned_none",
+  "lastUpdated": "2019-09-27T00:19:06.590",
+  "id": "klhzVgls081",
+  "created": "2019-09-27T00:19:06.590",
+  "name": "Ongoing foci responses",
+  "displayName": "Ongoing foci responses",
+  "description": "Foci response assigned to someone, and the enrollment is still active",
+  "externalAccess": false,
+  "followup": false,
+  "enrollmentStatus": "ACTIVE",
+  "sortOrder": 2,
+  "favorite": false,
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "program": {
+    "id": "M3xtLkYBlKI"
+  },
+  "lastUpdatedBy": {
+    "displayName": "Tom Wakiki",
+    "id": "GOLswS44mh8",
+    "username": "system"
+  },
+  "enrollmentCreatedPeriod": {
+    "periodFrom": -5,
+    "periodTo": 5
+  },
+  "favorites": [
+  ],
+  "translations": [
+  ],
+  "userGroupAccesses": [
+  ],
+  "attributeValues": [
+  ],
+  "eventFilters": [
+    {
+      "assignedUserMode": "ANY",
+      "programStage": "uvMKOn1oWvd",
+      "eventStatus": "OVERDUE",
+      "eventCreatedPeriod": {
+        "periodFrom": -11,
+        "periodTo": 11
+      },
+      "assignedUsers": [
+      ]
+    }
+  ],
+  "userAccesses": [
+  ]
+}

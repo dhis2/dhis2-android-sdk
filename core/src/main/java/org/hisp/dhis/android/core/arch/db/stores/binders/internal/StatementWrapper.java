@@ -32,6 +32,13 @@ import java.util.Date;
 
 public interface StatementWrapper {
     /**
+     * Bind an index using .bindNull().
+     * A helper function to abstract/clean up boilerplate if/else bloat...
+     * @param index
+     */
+    void bindNull(int index);
+
+    /**
      * Handle if String argument is null and bind it using .bindNull() if so.
      * A helper function to abstract/clean up boilerplate if/else bloat...
      * @param index

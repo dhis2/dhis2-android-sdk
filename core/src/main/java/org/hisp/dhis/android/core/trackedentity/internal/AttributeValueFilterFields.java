@@ -28,40 +28,33 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.FilterPeriod;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
 
-public final class TrackedEntityInstanceFilterFields {
 
-    public final static String ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod";
-    public final static String FOLLOW_UP = "followup";
-    public final static String EVENT_FILTERS = "eventFilters";
+public final class AttributeValueFilterFields {
 
-    private static final FieldsHelper<TrackedEntityInstanceFilter> fh = new FieldsHelper<>();
+    private static final String API_IN = "in";
 
-    public static final Field<TrackedEntityInstanceFilter, String> programUid =
-            Field.create(Columns.PROGRAM + "." + BaseIdentifiableObject.UID);
+    private static final FieldsHelper<AttributeValueFilter> fh = new FieldsHelper<>();
 
-    public static final Fields<TrackedEntityInstanceFilter> allFields = Fields.<TrackedEntityInstanceFilter>builder()
-            .fields(fh.getIdentifiableFields())
+    public static final Fields<AttributeValueFilter> allFields = Fields.<AttributeValueFilter>builder()
             .fields(
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.<EnrollmentStatus>field(Columns.ENROLLMENT_STATUS),
-                    fh.<Boolean>field(FOLLOW_UP),
-                    fh.<FilterPeriod>field(ENROLLMENT_CREATED_PERIOD),
-                    fh.<TrackedEntityInstanceEventFilter>nestedField(EVENT_FILTERS)
-                            .with(TrackedEntityInstanceEventFilterFields.allFields)
+                    fh.<String>field(Columns.ATTRIBUTE),
+                    fh.<String>field(Columns.SW),
+                    fh.<String>field(Columns.EW),
+                    fh.<String>field(Columns.LE),
+                    fh.<String>field(Columns.GE),
+                    fh.<String>field(Columns.GT),
+                    fh.<String>field(Columns.LT),
+                    fh.<String>field(Columns.EQ),
+                    fh.<String>field(API_IN),
+                    fh.<String>field(Columns.LIKE),
+                    fh.<String>field(Columns.DATE_FILTER)
             ).build();
 
-    private TrackedEntityInstanceFilterFields() {
+    private AttributeValueFilterFields() {
     }
 }

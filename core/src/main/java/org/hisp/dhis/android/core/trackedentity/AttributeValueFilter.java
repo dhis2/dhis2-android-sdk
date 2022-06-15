@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
@@ -41,29 +41,43 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterOperators;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventDataFilter.Builder.class)
-public abstract class EventDataFilter extends FilterOperators implements CoreObject {
+@JsonDeserialize(builder = $$AutoValue_AttributeValueFilter.Builder.class)
+public abstract class AttributeValueFilter extends FilterOperators implements CoreObject {
 
     /**
-     * The related event filter
+     * The related trackedEntityInstance filter
      */
     @Nullable
     @JsonProperty()
-    public abstract String eventFilter();
+    public abstract String trackedEntityInstanceFilter();
 
     /**
-     * The data element id or data item
+     * The attribute id
      */
     @Nullable
     @JsonProperty()
-    public abstract String dataItem();
+    public abstract String attribute();
+
+    /**
+     * Starts with
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String ew();
+
+    /**
+     * Ends with
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String sw();
 
     public static Builder builder() {
-        return new $$AutoValue_EventDataFilter.Builder();
+        return new $$AutoValue_AttributeValueFilter.Builder();
     }
 
-    public static EventDataFilter create(Cursor cursor) {
-        return $AutoValue_EventDataFilter.createFromCursor(cursor);
+    public static AttributeValueFilter create(Cursor cursor) {
+        return $AutoValue_AttributeValueFilter.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -73,10 +87,14 @@ public abstract class EventDataFilter extends FilterOperators implements CoreObj
     public static abstract class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder eventFilter(String eventFilter);
+        public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
 
-        public abstract Builder dataItem(String dataItem);
+        public abstract Builder attribute(String attribute);
 
-        public abstract EventDataFilter build();
+        public abstract Builder ew(String ew);
+
+        public abstract Builder sw(String sw);
+
+        public abstract AttributeValueFilter build();
     }
 }

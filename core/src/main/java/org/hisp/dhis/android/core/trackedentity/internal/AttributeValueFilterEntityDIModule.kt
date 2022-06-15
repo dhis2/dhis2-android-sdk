@@ -25,45 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.data.systeminfo;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore.create
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-
-import java.text.ParseException;
-import java.util.Date;
-
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.38")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
+@Module
+internal class AttributeValueFilterEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AttributeValueFilter> {
+        return create(databaseAdapter)
     }
 
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<AttributeValueFilter>): HandlerWithTransformer<AttributeValueFilter> {
+        return ObjectWithoutUidHandlerImpl(store)
     }
 }

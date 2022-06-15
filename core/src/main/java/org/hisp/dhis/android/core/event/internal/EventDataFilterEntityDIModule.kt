@@ -25,35 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.internal.EventDataFilterStore.create
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceFilterStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter> {
-
-    public TrackedEntityInstanceFilterStoreIntegrationShould() {
-        super(TrackedEntityInstanceFilterStore.create(TestDatabaseAdapterFactory.get()),
-                TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@Module
+internal class EventDataFilterEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<EventDataFilter> {
+        return create(databaseAdapter)
     }
 
-    @Override
-    protected TrackedEntityInstanceFilter buildObject() {
-        return TrackedEntityInstanceFilterSamples.get();
-    }
-
-    @Override
-    protected TrackedEntityInstanceFilter buildObjectToUpdate() {
-        return TrackedEntityInstanceFilterSamples.get().toBuilder()
-                .description("new_description")
-                .build();
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<EventDataFilter>): HandlerWithTransformer<EventDataFilter> {
+        return ObjectWithoutUidHandlerImpl(store)
     }
 }

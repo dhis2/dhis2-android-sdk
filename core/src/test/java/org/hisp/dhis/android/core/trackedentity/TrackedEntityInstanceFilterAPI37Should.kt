@@ -25,45 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.data.systeminfo;
+import java.io.IOException
+import java.text.ParseException
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+class TrackedEntityInstanceFilterAPI37Should :
+    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
+    ObjectShould {
 
-import java.text.ParseException;
-import java.util.Date;
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val trackedEntityInstanceFilterAPI37 = objectMapper.readValue(
+            jsonStream,
+            TrackedEntityInstanceFilterAPI37::class.java
+        )
 
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.38")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
-    }
-
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        teiFilterCommonAsserts(trackedEntityInstanceFilterAPI37.toTrackedEntityInstanceFilter())
     }
 }

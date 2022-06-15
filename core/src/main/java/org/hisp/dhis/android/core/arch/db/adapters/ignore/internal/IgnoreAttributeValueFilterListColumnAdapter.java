@@ -26,30 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.event.EventDataFilter;
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public final class EventDataFilterEntityDIModule {
-
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<EventDataFilter> store(DatabaseAdapter databaseAdapter) {
-        return EventDataFilterStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    HandlerWithTransformer<EventDataFilter> handler(ObjectWithoutUidStore<EventDataFilter> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
-    }
+public final class IgnoreAttributeValueFilterListColumnAdapter extends IgnoreColumnAdapter<List<AttributeValueFilter>> {
 }

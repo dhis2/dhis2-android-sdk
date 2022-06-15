@@ -25,45 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.data.systeminfo;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-
-import java.text.ParseException;
-import java.util.Date;
-
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.38")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
+@RunWith(D2JunitRunner::class)
+class TrackedEntityInstanceFilterStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter>(
+        create(TestDatabaseAdapterFactory.get()),
+        TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun buildObject(): TrackedEntityInstanceFilter {
+        return TrackedEntityInstanceFilterSamples.get()
     }
 
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .id(1L)
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    override fun buildObjectToUpdate(): TrackedEntityInstanceFilter {
+        return TrackedEntityInstanceFilterSamples.get().toBuilder()
+            .description("new_description")
+            .build()
     }
 }

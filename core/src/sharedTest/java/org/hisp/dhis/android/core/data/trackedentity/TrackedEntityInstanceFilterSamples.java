@@ -25,17 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.FilterPeriod;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.DatePeriodType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.RelativePeriod;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 
 import java.text.ParseException;
@@ -53,14 +56,47 @@ public class TrackedEntityInstanceFilterSamples {
                 .created(getDate("2019-09-27T00:19:06.590"))
                 .lastUpdated(getDate("2019-09-27T00:19:06.590"))
                 .description("Foci response assigned to someone, and the enrollment is still active")
-                .followUp(Boolean.FALSE)
-                .enrollmentStatus(EnrollmentStatus.ACTIVE)
                 .sortOrder(2)
                 .program(ObjectWithUid.create("M3xtLkYBlKI"))
-                .enrollmentCreatedPeriod(FilterPeriod.create(-20,20))
-                .eventFilters(Lists.newArrayList(TrackedEntityInstanceEventFilter.builder()
-                        .trackedEntityInstanceFilter("klhzVgls081")
-                        .eventStatus(EventStatus.ACTIVE).build()))
+                .entityQueryCriteria(EntityQueryCriteria.builder()
+                        .followUp(Boolean.FALSE)
+                        .enrollmentStatus(EnrollmentStatus.ACTIVE)
+                        .eventStatus(EventStatus.COMPLETED)
+                        .programStage("uvMKOn1oWvd")
+                        .enrollmentCreatedDate(DateFilterPeriod.builder()
+                                .period(RelativePeriod.TODAY)
+                                .startDate(getDate("2014-05-01T00:00:00.000"))
+                                .startBuffer(-5)
+                                .endBuffer(5)
+                                .type(DatePeriodType.RELATIVE)
+                                .endDate(getDate("2019-03-20T00:00:00.000"))
+                                .build())
+                        .enrollmentIncidentDate(DateFilterPeriod.builder()
+                                .period(RelativePeriod.TODAY)
+                                .startDate(getDate("2014-05-01T00:00:00.000"))
+                                .startBuffer(-5)
+                                .endBuffer(5)
+                                .type(DatePeriodType.RELATIVE)
+                                .endDate(getDate("2019-03-20T00:00:00.000"))
+                                .build())
+                        .ouMode(OrganisationUnitMode.SELECTED)
+                        .trackedEntityType("trackedEntityTypeUid")
+                        .assignedUserMode(AssignedUserMode.PROVIDED)
+                        .trackedEntityInstances(Lists.newArrayList("a3kGcGDCuk7", "a3kGcGDCuk8"))
+                        .displayColumnOrder(Lists.newArrayList("eventDate", "status"))
+                        .order("dueDate:asc,createdDate:desc")
+                        .organisationUnit("orgUnitUid")
+                        .eventDate(DateFilterPeriod.builder()
+                                .startBuffer(-5)
+                                .endBuffer(5)
+                                .type(DatePeriodType.RELATIVE)
+                                .build())
+                        .lastUpdatedDate(DateFilterPeriod.builder()
+                                .startBuffer(-5)
+                                .endBuffer(5)
+                                .type(DatePeriodType.RELATIVE)
+                                .build())
+                        .build())
                 .build();
     }
 

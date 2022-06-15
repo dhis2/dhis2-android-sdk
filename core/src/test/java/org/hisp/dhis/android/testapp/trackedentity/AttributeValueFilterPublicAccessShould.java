@@ -26,26 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.testapp.trackedentity;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.event.EventDataFilterSamples;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-@RunWith(D2JunitRunner.class)
-public class EventDataFilterStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<EventDataFilter> {
+public class AttributeValueFilterPublicAccessShould extends BasePublicAccessShould<AttributeValueFilter> {
 
-    public EventDataFilterStoreIntegrationShould() {
-        super(EventDataFilterStore.create(TestDatabaseAdapterFactory.get()),
-                EventDataFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    @Mock
+    private AttributeValueFilter object;
+
+    @Override
+    public AttributeValueFilter object() {
+        return object;
     }
 
     @Override
-    protected EventDataFilter buildObject() {
-        return EventDataFilterSamples.get();
+    public void has_public_create_method() {
+        AttributeValueFilter.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        AttributeValueFilter.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

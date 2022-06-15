@@ -26,74 +26,89 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
-
-import android.database.Cursor;
+package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventDataFilterListColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.FilterQueryCriteria;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AssignedUserModeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.OrganisationUnitModeColumnAdapter;
+import org.hisp.dhis.android.core.event.EventFilterTableInfo;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.List;
 
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventQueryCriteria.Builder.class)
-public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
+public abstract class FilterQueryCriteria {
+
+    @Nullable
+    public abstract Boolean followUp();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEventDataFilterListColumnAdapter.class)
-    public abstract List<EventDataFilter> dataFilters();
+    public abstract String organisationUnit();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(OrganisationUnitModeColumnAdapter.class)
+    public abstract OrganisationUnitMode ouMode();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AssignedUserModeColumnAdapter.class)
+    public abstract AssignedUserMode assignedUserMode();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnName(EventFilterTableInfo.Columns.ORDER)
+    public abstract String order();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> events();
+    public abstract List<String> displayColumnOrder();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(EventStatusColumnAdapter.class)
+    public abstract EventStatus eventStatus();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod dueDate();
+    public abstract DateFilterPeriod eventDate();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod completedDate();
+    public abstract DateFilterPeriod lastUpdatedDate();
 
-    public static Builder builder() {
-        return new $$AutoValue_EventQueryCriteria.Builder();
-    }
-
-    public static EventQueryCriteria create(Cursor cursor) {
-        return $AutoValue_EventQueryCriteria.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends FilterQueryCriteria.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public static abstract class Builder<T extends Builder> {
 
-        public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
+        public abstract T followUp(Boolean followUp);
 
-        public abstract Builder events(List<String> events);
+        public abstract T organisationUnit(String organisationUnit);
 
-        public abstract Builder dueDate(DateFilterPeriod dueDate);
+        public abstract T ouMode(OrganisationUnitMode ouMode);
 
-        public abstract Builder completedDate(DateFilterPeriod completedDate);
+        public abstract T assignedUserMode(AssignedUserMode assignedUserMode);
 
-        public abstract EventQueryCriteria build();
+        public abstract T order(String order);
+
+        public abstract T displayColumnOrder(List<String> displayColumnOrder);
+
+        public abstract T eventStatus(EventStatus  eventStatus);
+
+        public abstract T eventDate(DateFilterPeriod eventDate);
+
+        public abstract T lastUpdatedDate(DateFilterPeriod lastUpdatedDate);
     }
 }

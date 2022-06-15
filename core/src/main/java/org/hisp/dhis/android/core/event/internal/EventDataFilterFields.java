@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo.Columns;
 
 
 public final class EventDataFilterFields {

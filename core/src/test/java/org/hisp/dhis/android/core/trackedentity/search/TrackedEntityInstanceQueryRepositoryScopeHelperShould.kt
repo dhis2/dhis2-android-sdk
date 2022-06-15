@@ -29,10 +29,12 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.FilterPeriod
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.junit.Assert.fail
@@ -57,9 +59,18 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
         val filter = TrackedEntityInstanceFilter.builder()
             .uid(filterUid)
             .program(ObjectWithUid.create(programId))
-            .enrollmentStatus(enrollmentStatus)
-            .followUp(followUp)
-            .enrollmentCreatedPeriod(FilterPeriod.create(-2, 5))
+            .entityQueryCriteria(
+                EntityQueryCriteria.builder()
+                    .enrollmentStatus(enrollmentStatus)
+                    .followUp(followUp)
+                    .enrollmentCreatedDate(
+                        DateFilterPeriod.builder()
+                            .startBuffer(-2)
+                            .endBuffer(5)
+                            .build()
+                    )
+                    .build()
+            )
             .build()
 
         val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
@@ -88,6 +99,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                         .eventCreatedPeriod(FilterPeriod.create(-5, 2)).build()
                 )
             )
+            .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
         val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
@@ -128,6 +140,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                     TrackedEntityInstanceEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build()
                 )
             )
+            .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
         val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)

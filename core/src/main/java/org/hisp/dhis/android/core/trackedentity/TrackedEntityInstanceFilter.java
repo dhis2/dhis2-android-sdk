@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,18 +39,17 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EntityQueryCriteriaColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityInstanceEventFilterListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
 import java.util.List;
 
@@ -71,19 +71,42 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     @JsonProperty()
     public abstract Integer sortOrder();
 
+    /**
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().enrollmentStatus()} instead.
+     */
+    @Deprecated
     @Nullable
-    @JsonProperty()
-    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
-    public abstract EnrollmentStatus enrollmentStatus();
+    public EnrollmentStatus enrollmentStatus() {
+        return entityQueryCriteria().enrollmentStatus();
+    }
 
+    /**
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().followUp()} instead.
+     */
+    @Deprecated
     @Nullable
-    @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
-    public abstract Boolean followUp();
+    public Boolean followUp() {
+        return entityQueryCriteria().followUp();
+    }
 
+    /**
+     * @deprecated since 2.37. Use {@link #entityQueryCriteria().enrollmentCreatedDate()} instead.
+     */
+    @Deprecated
     @Nullable
+    public FilterPeriod enrollmentCreatedPeriod() {
+        DateFilterPeriod dateFilterPeriod = entityQueryCriteria().enrollmentCreatedDate();
+        return dateFilterPeriod == null ? null :
+                FilterPeriod.builder()
+                        .periodFrom(dateFilterPeriod.startBuffer())
+                        .periodTo(dateFilterPeriod.endBuffer())
+                        .build();
+    }
+
+    @NonNull
     @JsonProperty()
-    @ColumnAdapter(FilterPeriodColumnAdapter.class)
-    public abstract FilterPeriod enrollmentCreatedPeriod();
+    @ColumnAdapter(EntityQueryCriteriaColumnAdapter.class)
+    public abstract EntityQueryCriteria entityQueryCriteria();
 
     @Nullable
     @JsonProperty()
@@ -113,12 +136,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         public abstract Builder sortOrder(Integer sortOrder);
 
-        public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
-
-        @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
-        public abstract Builder followUp(Boolean followUp);
-
-        public abstract Builder enrollmentCreatedPeriod(FilterPeriod enrollmentCreatedPeriod);
+        public abstract Builder entityQueryCriteria(EntityQueryCriteria entityQueryCriteria);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);
 
@@ -126,12 +144,21 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         // Auxiliary fields
         abstract ObjectStyle style();
+        abstract EntityQueryCriteria entityQueryCriteria();
 
         public TrackedEntityInstanceFilter build() {
             try {
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
+            }
+
+            try {
+                if (entityQueryCriteria() == null) {
+                    entityQueryCriteria(EntityQueryCriteria.builder().build());
+                }
+            } catch (IllegalStateException e) {
+                entityQueryCriteria(EntityQueryCriteria.builder().build());
             }
 
             return autoBuild();

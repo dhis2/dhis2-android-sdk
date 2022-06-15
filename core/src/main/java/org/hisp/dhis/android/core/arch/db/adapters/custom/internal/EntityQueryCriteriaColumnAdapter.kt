@@ -25,35 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.event.EventFilterSamples;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class EventFilterStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<EventFilter> {
-
-    public EventFilterStoreIntegrationShould() {
-        super(EventFilterStore.create(TestDatabaseAdapterFactory.get()),
-                EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+class EntityQueryCriteriaColumnAdapter : ColumnTypeAdapter<EntityQueryCriteria> {
+    override fun fromCursor(cursor: Cursor, columnName: String): EntityQueryCriteria? {
+        return EntityQueryCriteria.create(cursor)
     }
 
-    @Override
-    protected EventFilter buildObject() {
-        return EventFilterSamples.get();
-    }
-
-    @Override
-    protected EventFilter buildObjectToUpdate() {
-        return EventFilterSamples.get().toBuilder()
-                .description("new_description")
-                .build();
+    override fun toContentValues(values: ContentValues, columnName: String, value: EntityQueryCriteria?) {
+        value?.toContentValues()
     }
 }

@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -37,8 +41,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShould
@@ -87,7 +89,7 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
     public void filter_by_enrollment_status() {
         List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
                 d2.trackedEntityModule().trackedEntityInstanceFilters()
-                        .byEnrollmentStatus().eq(EnrollmentStatus.COMPLETED)
+                        .byEnrollmentStatus().eq(EnrollmentStatus.ACTIVE)
                         .blockingGet();
 
         assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
@@ -100,24 +102,124 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
                         .byFollowUp().eq(Boolean.TRUE)
                         .blockingGet();
 
-        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(0);
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
     }
 
     @Test
-    public void filter_by_period_from() {
+    public void filter_by_organization_unit() {
         List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
                 d2.trackedEntityModule().trackedEntityInstanceFilters()
-                        .byPeriodFrom().eq(-20)
+                        .byOrganisationUnit().eq("orgUnitUid")
                         .blockingGet();
 
         assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
     }
 
     @Test
-    public void filter_by_period_to() {
+    public void filter_by_ou_mode() {
         List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
                 d2.trackedEntityModule().trackedEntityInstanceFilters()
-                        .byPeriodTo().eq(20)
+                        .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_order_property() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byOrderProperty().eq("dueDate:asc,createdDate:desc")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_display_column_order() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byDisplayColumnOrder().like("eventDate")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_assigned_user_mode() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byAssignedUserMode().eq(AssignedUserMode.PROVIDED)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_event_status() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byEventStatus().eq(EventStatus.COMPLETED)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_event_date() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byEventDate().like("-5")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_last_updated_date() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byLastUpdatedDate().like("RELATIVE")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_program_stage() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byProgramStage().eq("uvMKOn1oWvd")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_teis() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byTrackedEntityInstances().like("a3kGcGDCuk7")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_enrollment_incident_date() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byEnrollmentIncidentDate().like("2014-05-01")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_enrollment_created_date() {
+        List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .byEnrollmentCreatedDate().like("TODAY")
                         .blockingGet();
 
         assertThat(trackedEntityInstanceFilters.size()).isEqualTo(1);

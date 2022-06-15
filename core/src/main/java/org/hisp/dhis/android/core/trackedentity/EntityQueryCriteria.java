@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
@@ -40,60 +40,81 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventDataFilterListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValueFilterListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterQueryCriteria;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventQueryCriteria.Builder.class)
-public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
+@JsonDeserialize(builder = $$AutoValue_EntityQueryCriteria.Builder.class)
+public abstract class EntityQueryCriteria extends FilterQueryCriteria implements CoreObject {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEventDataFilterListColumnAdapter.class)
-    public abstract List<EventDataFilter> dataFilters();
+    public abstract String programStage();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> events();
+    public abstract List<String> trackedEntityInstances();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String trackedEntityType();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
+    public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod dueDate();
+    public abstract DateFilterPeriod enrollmentIncidentDate();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod completedDate();
+    public abstract DateFilterPeriod enrollmentCreatedDate();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAttributeValueFilterListColumnAdapter.class)
+    public abstract List<AttributeValueFilter> attributeValueFilters();
 
     public static Builder builder() {
-        return new $$AutoValue_EventQueryCriteria.Builder();
-    }
-
-    public static EventQueryCriteria create(Cursor cursor) {
-        return $AutoValue_EventQueryCriteria.createFromCursor(cursor);
+        return new $$AutoValue_EntityQueryCriteria.Builder();
     }
 
     public abstract Builder toBuilder();
+
+    public static EntityQueryCriteria create(Cursor cursor) {
+        return $AutoValue_EntityQueryCriteria.createFromCursor(cursor);
+    }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends FilterQueryCriteria.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
+        public abstract Builder programStage(String programStage);
 
-        public abstract Builder events(List<String> events);
+        public abstract Builder trackedEntityInstances(List<String> trackedEntityInstances);
 
-        public abstract Builder dueDate(DateFilterPeriod dueDate);
+        public abstract Builder trackedEntityType(String trackedEntityType);
 
-        public abstract Builder completedDate(DateFilterPeriod completedDate);
+        public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
 
-        public abstract EventQueryCriteria build();
+        public abstract Builder enrollmentIncidentDate(DateFilterPeriod enrollmentIncidentDate);
+
+        public abstract Builder enrollmentCreatedDate(DateFilterPeriod enrollmentCreatedDate);
+
+        public abstract Builder attributeValueFilters(List<AttributeValueFilter> attributeValueFilters);
+
+        public abstract EntityQueryCriteria build();
     }
 }

@@ -26,74 +26,99 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
-
-import android.database.Cursor;
+package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventDataFilterListColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.FilterQueryCriteria;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter;
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
 
-import java.util.List;
+import java.util.Set;
 
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventQueryCriteria.Builder.class)
-public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
+public abstract class FilterOperators {
 
+    /**
+     * Less than or equal to
+     */
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEventDataFilterListColumnAdapter.class)
-    public abstract List<EventDataFilter> dataFilters();
+    public abstract String le();
 
+    /**
+     * Greater than or equal to
+     */
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> events();
+    public abstract String ge();
 
+    /**
+     * Greater than
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String gt();
+
+    /**
+     * Lesser than
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String lt();
+
+    /**
+     * Equal to
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String eq();
+
+    /**
+     * In a list
+     */
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(StringSetColumnAdapter.class)
+    @ColumnName(ItemFilterTableInfo.Columns.IN)
+    public abstract Set<String> in();
+
+    /**
+     * Like
+     */
+    @Nullable
+    @JsonProperty()
+    public abstract String like();
+
+    /**
+     * If the dataItem is of type date, then date filtering parameters are specified using this.
+     */
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod dueDate();
+    public abstract DateFilterPeriod dateFilter();
 
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod completedDate();
-
-    public static Builder builder() {
-        return new $$AutoValue_EventQueryCriteria.Builder();
-    }
-
-    public static EventQueryCriteria create(Cursor cursor) {
-        return $AutoValue_EventQueryCriteria.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends FilterQueryCriteria.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public static abstract class Builder<T extends Builder> {
 
-        public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
+        public abstract T le(String le);
 
-        public abstract Builder events(List<String> events);
+        public abstract T ge(String ge);
 
-        public abstract Builder dueDate(DateFilterPeriod dueDate);
+        public abstract T gt(String gt);
 
-        public abstract Builder completedDate(DateFilterPeriod completedDate);
+        public abstract T lt(String lt);
 
-        public abstract EventQueryCriteria build();
+        public abstract T eq(String eq);
+
+        public abstract T in(Set<String> in);
+
+        public abstract T like(String like);
+
+        public abstract T dateFilter(DateFilterPeriod dateFilter);
     }
 }

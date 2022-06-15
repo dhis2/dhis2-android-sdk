@@ -25,57 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.event.EventFilterSamples
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-
-public final class EventDataFilterTableInfo {
-
-    private EventDataFilterTableInfo() {
+@RunWith(D2JunitRunner::class)
+internal class EventFilterStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<EventFilter>(
+    EventFilterStore.create(TestDatabaseAdapterFactory.get()),
+    EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): EventFilter {
+        return EventFilterSamples.get()
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "EventDataFilter";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public final static String EVENT_FILTER = "eventFilter";
-        public final static String DATA_ITEM = "dataItem";
-        public final static String LE = "le";
-        public static final String GE = "ge";
-        public static final String GT = "gt";
-        public static final String LT = "lt";
-        public static final String EQ = "eq";
-        public static final String IN = "inProperty";
-        public static final String LIKE = "like";
-        public static final String DATE_FILTER = "dateFilter";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    EVENT_FILTER,
-                    DATA_ITEM,
-                    LE,
-                    GE,
-                    GT,
-                    LT,
-                    EQ,
-                    IN,
-                    LIKE,
-                    DATE_FILTER
-            );
-        }
+    override fun buildObjectToUpdate(): EventFilter {
+        return EventFilterSamples.get().toBuilder()
+            .description("new_description")
+            .build()
     }
 }

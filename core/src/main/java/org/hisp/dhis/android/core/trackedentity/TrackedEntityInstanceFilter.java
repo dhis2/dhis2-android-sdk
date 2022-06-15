@@ -144,12 +144,21 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         // Auxiliary fields
         abstract ObjectStyle style();
+        abstract EntityQueryCriteria entityQueryCriteria();
 
         public TrackedEntityInstanceFilter build() {
             try {
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
+            }
+
+            try {
+                if (entityQueryCriteria() == null) {
+                    entityQueryCriteria(EntityQueryCriteria.builder().build());
+                }
+            } catch (IllegalStateException e) {
+                entityQueryCriteria(EntityQueryCriteria.builder().build());
             }
 
             return autoBuild();

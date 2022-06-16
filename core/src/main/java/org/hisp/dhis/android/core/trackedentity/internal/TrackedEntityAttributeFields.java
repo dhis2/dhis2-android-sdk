@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public final class TrackedEntityAttributeFields {
@@ -62,7 +64,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<ValueType>field(Columns.VALUE_TYPE),
                     fh.<String>field(Columns.EXPRESSION),
                     fh.<Boolean>field(Columns.PROGRAM_SCOPE),
-                    fh.<String>field(Columns.AGGREGATION_TYPE),
+                    fh.<AggregationType>field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
                     fh.<Boolean>field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
                     fh.<Boolean>field(Columns.GENERATED),
                     fh.<Boolean>field(Columns.DISPLAY_ON_VISIT_SCHEDULE),

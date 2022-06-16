@@ -25,46 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+package org.hisp.dhis.android.core.trackedentity.ownership;
 
-@Module
-internal class OwnershipEntityDIModule {
+import android.database.Cursor;
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramOwner.Builder.class)
+public abstract class ProgramOwner implements CoreObject {
+
+    @JsonProperty()
+    public abstract String program();
+
+    @JsonProperty()
+    public abstract String trackedEntityInstance();
+
+    @JsonProperty()
+    public abstract String ownerOrgUnit();
+
+    public static Builder builder() {
+        return new $$AutoValue_ProgramOwner.Builder();
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
+    public static ProgramOwner create(Cursor cursor) {
+        return $AutoValue_ProgramOwner.createFromCursor(cursor);
     }
 
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
 
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
+        public abstract Builder program(String event);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder ownerOrgUnit(String ownerOrgUnit);
+
+        public abstract ProgramOwner build();
     }
 }

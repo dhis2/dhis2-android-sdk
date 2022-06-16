@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Reusable
 internal class TrackedEntityInstanceHandler @Inject constructor(
@@ -51,6 +52,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue>,
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment>,
+    private val programOwnerHandler: HandlerWithTransformer<ProgramOwner>,
     private val enrollmentOrphanCleaner: TrackedEntityEnrollmentOrphanCleaner,
     private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
@@ -87,6 +89,8 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
             }
 
             deleteOrphanAttributes(o, params)
+
+            programOwnerHandler.handleMany(o.programOwners())
 
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
             if (enrollments != null) {

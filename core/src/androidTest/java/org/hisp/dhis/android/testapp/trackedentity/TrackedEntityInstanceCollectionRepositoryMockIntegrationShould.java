@@ -69,13 +69,24 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
                 .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
 
-        List<TrackedEntityAttributeValue> tea = d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
-
         assertThat(tei.trackedEntityAttributeValues().size()).isEqualTo(2);
 
 
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("aejWyOfXge6");
         assertThat(tei.trackedEntityAttributeValues().get(0).value()).isEqualTo("123456");
+    }
+
+    @Test
+    public void include_program_owners_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
+                .withProgramOwners().uid("nWrB0TfWlvD").blockingGet();
+
+        assertThat(tei.programOwners().size()).isEqualTo(1);
+
+
+        assertThat(tei.programOwners().get(0).program()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(tei.programOwners().get(0).trackedEntityInstance()).isEqualTo("nWrB0TfWlvD");
+        assertThat(tei.programOwners().get(0).ownerOrgUnit()).isEqualTo("DiszpKrYNg8");
     }
 
     @Test

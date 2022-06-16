@@ -25,46 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.data.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
-@Module
-internal class OwnershipEntityDIModule {
+object ProgramOwnerSamples {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
-    }
+    val programOwner: ProgramOwner
+        get() = ProgramOwner.builder()
+            .id(1L)
+            .program("lxAQ7Zs9VYR")
+            .trackedEntityInstance("nWrB0TfWlvh")
+            .ownerOrgUnit("DiszpKrYNg8")
+            .build()
 }

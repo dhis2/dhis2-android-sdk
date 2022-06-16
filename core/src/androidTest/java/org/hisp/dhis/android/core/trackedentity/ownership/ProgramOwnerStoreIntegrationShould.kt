@@ -27,44 +27,26 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramOwnerSamples
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Module
-internal class OwnershipEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+@RunWith(D2JunitRunner::class)
+class ProgramOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOwner>(
+    create(TestDatabaseAdapterFactory.get()),
+    ProgramOwnerTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): ProgramOwner {
+        return ProgramOwnerSamples.programOwner
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
+    override fun buildObjectToUpdate(): ProgramOwner {
+        return ProgramOwnerSamples.programOwner.toBuilder()
+            .ownerOrgUnit("Other orgunit")
+            .build()
     }
 }

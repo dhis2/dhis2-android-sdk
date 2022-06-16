@@ -25,46 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
-@Module
-internal class OwnershipEntityDIModule {
+internal class ProgramOwnerChildrenAppender constructor(
+    private val childStore: ObjectWithoutUidStore<ProgramOwner>
+) : ChildrenAppender<TrackedEntityInstance>() {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
+    override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
+        val builder = tei.toBuilder()
+        val programOwners = childStore.selectWhere(WhereClauseBuilder()
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
+            .build())
+        return builder.programOwners(programOwners).build()
     }
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
-    }
 }

@@ -27,44 +27,20 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-@Module
-internal class OwnershipEntityDIModule {
+class ProgramOwnerShould : BaseObjectShould("trackedentity/ownership/program_owner.json"), ObjectShould {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
-    }
+    @Test
+    override fun map_from_json_string() {
+        val programOwner = objectMapper.readValue(jsonStream, ProgramOwner::class.java)
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
+        assertThat(programOwner.program()).isEqualTo("lxAQ7Zs9VYR")
+        assertThat(programOwner.trackedEntityInstance()).isEqualTo("PgmUFEQYZdt")
+        assertThat(programOwner.ownerOrgUnit()).isEqualTo("DiszpKrYNg8")
 
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
     }
 }

@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.relationship.RelationshipService;
+import org.hisp.dhis.android.core.relationship.RelationshipServiceImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 
 import javax.inject.Inject;
@@ -41,12 +43,16 @@ public final class RelationshipModuleImpl implements RelationshipModule {
     private final RelationshipTypeCollectionRepository relationshipTypes;
 
     private final RelationshipCollectionRepository relationships;
+    private final RelationshipService relationshipService;
 
     @Inject
-    RelationshipModuleImpl(RelationshipTypeCollectionRepository relationshipTypeRepository,
-                           RelationshipCollectionRepository relationshipRepository) {
+    RelationshipModuleImpl(
+            RelationshipTypeCollectionRepository relationshipTypeRepository,
+            RelationshipCollectionRepository relationshipRepository,
+            RelationshipServiceImpl relationshipService) {
         this.relationshipTypes = relationshipTypeRepository;
         this.relationships = relationshipRepository;
+        this.relationshipService = relationshipService;
     }
 
     @Override
@@ -57,5 +63,10 @@ public final class RelationshipModuleImpl implements RelationshipModule {
     @Override
     public RelationshipCollectionRepository relationships() {
         return relationships;
+    }
+
+    @Override
+    public RelationshipService relationshipService() {
+        return relationshipService;
     }
 }

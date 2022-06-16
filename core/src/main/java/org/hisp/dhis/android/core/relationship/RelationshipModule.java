@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.relationship;
 
 public interface RelationshipModule {
     RelationshipTypeCollectionRepository relationshipTypes();
-
     RelationshipCollectionRepository relationships();
+    RelationshipService relationshipService();
 }

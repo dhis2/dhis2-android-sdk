@@ -14,8 +14,8 @@ internal class RelationshipServiceImpl @Inject constructor(
 ) : RelationshipService {
     override fun hasAccessPermission(relationshipType: RelationshipType): Boolean {
 
-        val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess (it) } ?: false
-        val toAccess = relationshipType.toConstraint()?.let { constraintAccess (it) } ?: false
+        val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess(it) } ?: false
+        val toAccess = relationshipType.toConstraint()?.let { constraintAccess(it) } ?: false
 
         val writeAccess = if (relationshipType.bidirectional() == true) {
             fromAccess && toAccess
@@ -43,5 +43,4 @@ internal class RelationshipServiceImpl @Inject constructor(
         }
         else -> false
     }
-
 }

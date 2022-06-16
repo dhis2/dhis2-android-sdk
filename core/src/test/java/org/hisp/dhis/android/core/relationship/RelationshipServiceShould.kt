@@ -47,8 +47,6 @@ class RelationshipServiceShould {
         )
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = true)
-
-
         assertTrue(relationshipService.hasAccessPermission(bidirectionalRelationship))
     }
 
@@ -65,7 +63,6 @@ class RelationshipServiceShould {
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = false)
         assertTrue(!relationshipService.hasAccessPermission(bidirectionalRelationship))
-
     }
 
     @Test
@@ -99,7 +96,6 @@ class RelationshipServiceShould {
         mockProgramStageAccessResponse(fromAccess = true, toAccess = true)
         relationshipService.hasAccessPermission(programStageRelationship)
         verify(programStageRepository, times(2)).uid(any())
-
     }
 
     @Test

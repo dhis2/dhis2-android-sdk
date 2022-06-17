@@ -41,10 +41,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DefaultAccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -81,6 +83,11 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @Nullable
     @JsonProperty()
     public abstract String expression();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AggregationTypeColumnAdapter.class)
+    public abstract AggregationType aggregationType();
 
     @Nullable
     @JsonProperty()
@@ -159,6 +166,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder valueType(ValueType valueType);
 
         public abstract Builder expression(String expression);
+
+        public abstract Builder aggregationType(AggregationType aggregationType);
 
         public abstract Builder programScope(Boolean programScope);
 

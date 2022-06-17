@@ -204,14 +204,12 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val metadataItem = metadata[item.id]
 
-        val aggregationType = when (metadataItem) {
+        val aggregationType = when (val metadataItem = metadata[item.id]) {
             is MetadataItem.EventDataElementItem ->
                 metadataItem.item.aggregationType()
             is MetadataItem.EventAttributeItem ->
-                // TODO ANDROSDK-1547
-                null
+                metadataItem.item.aggregationType()?.name
             else ->
                 throw AnalyticsException.InvalidArguments("Invalid arguments: invalid event data item ${item.id}.")
         }

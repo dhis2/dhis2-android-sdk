@@ -65,6 +65,7 @@ public final class TrackedEntityAttributeStore {
             w.bind(25, o.formName());
             w.bind(26, o.displayFormName());
             w.bind(27, o.fieldMask());
+            w.bind(28, o.aggregationType());
         }
     };
 

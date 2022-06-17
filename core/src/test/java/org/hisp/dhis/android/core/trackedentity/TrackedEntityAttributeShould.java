@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
@@ -66,6 +67,7 @@ public class TrackedEntityAttributeShould extends BaseObjectShould implements Ob
         assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse();
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse();
         assertThat(trackedEntityAttribute.generated()).isFalse();
+        assertThat(trackedEntityAttribute.aggregationType()).isEqualTo(AggregationType.DEFAULT);
         assertThat(trackedEntityAttribute.inherit()).isFalse();
         assertThat(trackedEntityAttribute.fieldMask()).isEqualTo("XXXXX");
         assertThat(trackedEntityAttribute.optionSet().uid()).isEqualTo("xjA5E9MimMU");

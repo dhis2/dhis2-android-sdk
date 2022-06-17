@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -126,6 +127,12 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             if (bidirectional) {
                 propagateRelationshipUpdate(relationship.to())
             }
+        }
+    }
+
+    override fun propagateOwnershipUpdate(programOwner: ProgramOwner) {
+        programOwner.trackedEntityInstance()?.let {
+            setTeiSyncState(it, getStateForUpdate)
         }
     }
 

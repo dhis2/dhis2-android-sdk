@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DataColumns.SYNC_STATE
 
 internal object ProgramOwnerTableInfo {
 
@@ -49,7 +50,8 @@ internal object ProgramOwnerTableInfo {
                 super.all(),
                 PROGRAM,
                 TRACKED_ENTITY_INSTANCE,
-                OWNER_ORGUNIT
+                OWNER_ORGUNIT,
+                SYNC_STATE
             )
         }
 

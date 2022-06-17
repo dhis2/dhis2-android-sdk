@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.data.trackedentity.ownership
 
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 object ProgramOwnerSamples {
@@ -37,5 +38,6 @@ object ProgramOwnerSamples {
             .program("lxAQ7Zs9VYR")
             .trackedEntityInstance("nWrB0TfWlvh")
             .ownerOrgUnit("DiszpKrYNg8")
+            .syncState(State.SYNCED)
             .build()
 }

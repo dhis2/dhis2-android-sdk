@@ -39,12 +39,13 @@ internal object ProgramOwnerStore {
         w.bind(1, o.program())
         w.bind(2, o.trackedEntityInstance())
         w.bind(3, o.ownerOrgUnit())
+        w.bind(4, o.syncState())
     }
 
     private val WHERE_UPDATE_BINDER =
         WhereStatementBinder<ProgramOwner> { o, w ->
-            w.bind(4, o.program())
-            w.bind(5, o.trackedEntityInstance())
+            w.bind(5, o.program())
+            w.bind(6, o.trackedEntityInstance())
         }
 
     private val WHERE_DELETE_BINDER =

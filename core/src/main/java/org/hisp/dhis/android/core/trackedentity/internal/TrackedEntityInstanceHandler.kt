@@ -90,7 +90,9 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
 
             deleteOrphanAttributes(o, params)
 
-            programOwnerHandler.handleMany(o.programOwners())
+            programOwnerHandler.handleMany(o.programOwners()) { p ->
+                p.toBuilder().syncState(State.SYNCED).build()
+            }
 
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
             if (enrollments != null) {

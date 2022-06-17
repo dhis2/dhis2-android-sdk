@@ -35,11 +35,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.BaseDataObject;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramOwner.Builder.class)
-public abstract class ProgramOwner implements CoreObject {
+public abstract class ProgramOwner extends BaseDataObject {
 
     @JsonProperty()
     public abstract String program();
@@ -62,7 +62,7 @@ public abstract class ProgramOwner implements CoreObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder program(String event);

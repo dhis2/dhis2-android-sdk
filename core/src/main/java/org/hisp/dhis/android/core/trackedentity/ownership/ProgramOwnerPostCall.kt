@@ -27,34 +27,44 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.Call
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.maintenance.D2Error
+import javax.inject.Inject
 
-internal interface OwnershipService {
+@Reusable
+internal class ProgramOwnerPostCall @Inject constructor(
+    private val ownershipService: OwnershipService,
+    private val apiCallExecutor: APICallExecutor,
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>,
+    private val dataStatePropagator: DataStatePropagator
+) {
 
-    @POST("$OWNERSHIP_URL/override")
-    fun breakGlass(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String
-    ): Call<HttpMessageResponse>
+    fun uploadProgramOwner(programOwner: ProgramOwner): Boolean {
+        return try {
+            val response = apiCallExecutor.executeObjectCall(ownershipService.transfer(
+                programOwner.trackedEntityInstance(),
+                programOwner.program(),
+                programOwner.ownerOrgUnit())
+            )
 
-    @PUT("$OWNERSHIP_URL/transfer")
-    fun transfer(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(PROGRAM) program: String,
-        @Query(ORG_UNIT) ou: String
-    ): Call<HttpMessageResponse>
+            @Suppress("MagicNumber")
+            val isSuccessful = response.httpStatusCode() == 200
 
-    companion object {
-        const val OWNERSHIP_URL = "tracker/ownership"
-
-        const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
-        const val PROGRAM = "program"
-        const val REASON = "reason"
-        const val ORG_UNIT = "ou"
+            if (isSuccessful) {
+                val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
+                programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
+                dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(
+                    programOwner.trackedEntityInstance()
+                )
+            }
+            isSuccessful
+        } catch (e: D2Error) {
+            // TODO Create a record in TEI
+            false
+        }
     }
 }

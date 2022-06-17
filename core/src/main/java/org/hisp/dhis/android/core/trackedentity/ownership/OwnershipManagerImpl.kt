@@ -90,11 +90,11 @@ internal class OwnershipManagerImpl @Inject constructor(
             .trackedEntityInstance(trackedEntityInstance)
             .program(program)
             .ownerOrgUnit(ownerOrgUnit)
-            .syncState(State.TO_POST)
+            .syncState(State.TO_UPDATE)
             .build()
 
         programOwnerStore.updateOrInsertWhere(programOwner)
-        dataStatePropagator.propagateOwnershipUpdate(programOwner)
+        dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstance)
     }
 
     internal fun fakeBreakGlass(trackedEntityInstance: String, program: String) {

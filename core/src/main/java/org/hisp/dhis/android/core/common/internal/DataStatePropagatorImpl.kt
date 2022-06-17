@@ -32,6 +32,7 @@ import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -57,7 +59,8 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>
+    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
+    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {
@@ -264,8 +267,17 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             val relationships = getRelationshipsByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid))
             val relationshipStates = relationships.map { it.syncState()!! }
 
-            val teiAggregatedSyncState =
-                getAggregatedSyncState(enrollmentStates + relationshipStates + instance.syncState()!!)
+            val programOwnerWhere = WhereClauseBuilder()
+                .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
+                .build()
+            val programOwnerStates = programOwner.selectWhere(programOwnerWhere).map { it.syncState()!! }
+
+            val teiAggregatedSyncState = getAggregatedSyncState(
+                enrollmentStates +
+                        relationshipStates +
+                        programOwnerStates +
+                        instance.syncState()!!)
+
             trackedEntityInstanceStore.setAggregatedSyncState(trackedEntityInstanceUid, teiAggregatedSyncState)
         }
     }

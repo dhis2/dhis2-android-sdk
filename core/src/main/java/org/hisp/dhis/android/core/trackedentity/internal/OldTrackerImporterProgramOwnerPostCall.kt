@@ -25,36 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.Call
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
+import javax.inject.Inject
 
-internal interface OwnershipService {
+@Reusable
+internal class OldTrackerImporterProgramOwnerPostCall @Inject constructor(
+    private val programOwnerPostCall: ProgramOwnerPostCall
+) {
 
-    @POST("$OWNERSHIP_URL/override")
-    fun breakGlass(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String
-    ): Call<HttpMessageResponse>
+    fun uploadProgramOwners(
+        payload: OldTrackerImporterPayload
+    ): Single<OldTrackerImporterPayload> {
+        return Single.fromCallable {
+            val failedTeis = payload.programOwners.map { (tei, programOwners) ->
+                val successful = programOwners.all { programOwnerPostCall.uploadProgramOwner(it) }
+                Pair(tei, successful)
+            }
+                .filter { (_, successful) -> !successful }
+                .map { (tei, _) -> tei }
 
-    @PUT("$OWNERSHIP_URL/transfer")
-    fun transfer(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(PROGRAM) program: String,
-        @Query(ORG_UNIT) ou: String
-    ): Call<HttpMessageResponse>
-
-    companion object {
-        const val OWNERSHIP_URL = "tracker/ownership"
-
-        const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
-        const val PROGRAM = "program"
-        const val REASON = "reason"
-        const val ORG_UNIT = "ou"
+            payload.copy(
+                trackedEntityInstances = payload.trackedEntityInstances.filter { !failedTeis.contains(it.uid()) }
+            )
+        }
     }
 }

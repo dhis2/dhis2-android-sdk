@@ -61,6 +61,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
     private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
+    private val programOwnerPostCall: OldTrackerImporterProgramOwnerPostCall,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
 ) {
 
@@ -82,14 +83,17 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         payload: OldTrackerImporterPayload
     ): Observable<D2Progress> {
         return Observable.defer {
-            val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
 
-            Observable.concat(
-                relationshipPostCall.deleteRelationships(partitionedRelationships.first),
-                postTrackedEntityInstances(payload.trackedEntityInstances),
-                postEvents(payload.events),
-                relationshipPostCall.postRelationships(partitionedRelationships.second)
-            )
+            programOwnerPostCall.uploadProgramOwners(payload).flatMapObservable { payload ->
+                val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
+
+                Observable.concat(
+                    relationshipPostCall.deleteRelationships(partitionedRelationships.first),
+                    postTrackedEntityInstances(payload.trackedEntityInstances),
+                    postEvents(payload.events),
+                    relationshipPostCall.postRelationships(partitionedRelationships.second)
+                )
+            }
         }
     }
 

@@ -101,6 +101,6 @@ class OwnershipManagerShould {
         ownershipManager.blockingTransfer("tei_uid", "program_uid", "orgunit")
 
         verify(programOwnerStore).updateOrInsertWhere(any())
-        verify(dataStatePropagator).propagateOwnershipUpdate(any())
+        verify(dataStatePropagator).refreshTrackedEntityInstanceAggregatedSyncState(any())
     }
 }

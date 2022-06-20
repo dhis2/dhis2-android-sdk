@@ -54,6 +54,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
     private val service: TrackerImporterService,
     private val fileResourcesPostCall: TrackerImporterFileResourcesPostCall,
+    private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
     private val jobObjectHandler: Handler<TrackerJobObject>,
@@ -80,8 +81,10 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return fileResourcesPostCall.uploadFileResources(payloadWrapper).flatMapObservable { payload ->
             Observable.concat(
+                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true),
                 doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE),
-                doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+                doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE),
+                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false)
             )
         }
     }

@@ -27,7 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+
 internal data class NewTrackerImporterPayloadWrapper(
     val deleted: NewTrackerImporterPayload = NewTrackerImporterPayload(),
-    val updated: NewTrackerImporterPayload = NewTrackerImporterPayload()
+    val updated: NewTrackerImporterPayload = NewTrackerImporterPayload(),
+
+    val programOwners: Map<String, List<ProgramOwner>> = emptyMap()
 )

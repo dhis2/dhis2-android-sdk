@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -47,9 +45,12 @@ import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -62,7 +63,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val orgunitAlias = "ou"
     private val teavAlias = "teav"
     private val programAlias = "pr"
-    private val ownAlias = "own"
+    private val ownerAlias = "po"
+    private val tempOwnerAlias = "tpo"
 
     private val teiUid = dot(teiAlias, "uid")
     private val teiAll = dot(teiAlias, "*")
@@ -103,7 +105,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
             queryStr += " JOIN ${ProgramTableInfo.TABLE_INFO.name()} $programAlias"
             queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
-                dot(programAlias, IdentifiableColumns.UID)
+                    dot(programAlias, IdentifiableColumns.UID)
+
+            queryStr += " JOIN ${ProgramOwnerTableInfo.TABLE_INFO.name()} $ownerAlias"
+            queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+                    dot(ownerAlias, ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE) +
+                    " AND " +
+                    "${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
+                    dot(ownerAlias, ProgramOwnerTableInfo.Columns.PROGRAM)
 
             appendProgramWhere(where, scope)
             if (hasEvent(scope)) {
@@ -118,10 +127,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
 
         if (hasOrgunits(scope)) {
+            val joinOrgunitColum =
+                if (hasProgram(scope)) dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT)
+                else dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
+
             queryStr += String.format(
                 " JOIN %s %s ON %s = %s",
                 OrganisationUnitTableInfo.TABLE_INFO.name(), orgunitAlias,
-                dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT),
+                joinOrgunitColum,
                 dot(orgunitAlias, IdentifiableColumns.UID)
             )
             appendOrgunitWhere(where, scope)
@@ -198,12 +211,12 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyNumberValue(dot(enrollmentAlias, EnrollmentTableInfo.Columns.FOLLOW_UP), value)
         }
 
-        val tempOwnershipSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $ownAlias " +
-            "WHERE ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
-            dot(teiAlias, IdentifiableColumns.UID) +
-            " AND " +
-            "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
-            dot(programAlias, IdentifiableColumns.UID)
+        val tempOwnerSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $tempOwnerAlias " +
+                "WHERE ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+                dot(teiAlias, IdentifiableColumns.UID) +
+                " AND " +
+                "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
+                dot(programAlias, IdentifiableColumns.UID)
 
         /* Break the glass query. The condition is:
          * - Not to have a record: this applies to CAPTURE teis and SEARCH teis that didn't need a ownership request.
@@ -213,9 +226,9 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             "CASE " +
                 "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
                 "THEN (" +
-                "NOT EXISTS($tempOwnershipSubQuery) " +
+                "NOT EXISTS($tempOwnerSubQuery) " +
                 "OR " +
-                "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
+                "EXISTS($tempOwnerSubQuery AND ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
                 ">= '${DateUtils.DATE_FORMAT.format(Date())}')" +
                 ") ELSE 1 END "
         )

@@ -170,7 +170,7 @@ class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handleMany(any(), any(), any())
-        verify(programOwnerHandler, times(1)).handleMany(any())
+        verify(programOwnerHandler, times(1)).handleMany(any(), any())
     }
 
     @Test

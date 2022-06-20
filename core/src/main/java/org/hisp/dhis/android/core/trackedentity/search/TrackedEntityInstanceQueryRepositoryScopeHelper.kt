@@ -80,20 +80,9 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
         val builder = scope.toBuilder()
 
         filter.program()?.let { builder.program(it.uid()) }
-        filter.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
-        filter.enrollmentCreatedPeriod()?.let { createPeriod ->
-            createPeriod.periodFrom()?.let { periodFrom ->
-                val fromFilter = DateFilterPeriod.builder().startBuffer(periodFrom).build()
-                val newFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(builder.build().programDate(), fromFilter)
-                builder.programDate(newFilter)
-            }
-            createPeriod.periodTo()?. let { periodTo ->
-                val toFilter = DateFilterPeriod.builder().endBuffer(periodTo).build()
-                val newFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(builder.build().programDate(), toFilter)
-                builder.programDate(newFilter)
-            }
-        }
-        filter.followUp()?.let { builder.followUp(it) }
+        filter.entityQueryCriteria().enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
+        filter.entityQueryCriteria().enrollmentCreatedDate()?.let { builder.programDate(it) }
+        filter.entityQueryCriteria().followUp()?.let { builder.followUp(it) }
         filter.eventFilters()?.let { eventFilters ->
             val filters = eventFilters.map { eventFilter ->
                 val eventBuilder = TrackedEntityInstanceQueryEventFilter.builder()

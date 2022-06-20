@@ -297,7 +297,7 @@ Properties included in the `GridDimensionalResponse` object:
 | **Data:**                 | Indicators                        | Yes*      |
 |                           | DataElements                      | Yes       |
 |                           | DataElements details              | Yes       |
-|                           | Event data items                  | No        |
+|                           | Event data items                  | Yes       |
 |                           | Program indicators                | Yes**     |
 |                           | DataSets: Reporting rate          | No        |
 |                           | DataSets: Reporting rate on time  | No        |

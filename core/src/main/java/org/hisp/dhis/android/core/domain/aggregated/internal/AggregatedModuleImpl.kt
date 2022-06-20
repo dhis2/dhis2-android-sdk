@@ -25,45 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
 
-import com.google.auto.value.AutoValue;
+@Reusable
+internal class AggregatedModuleImpl @Inject constructor(
+    private val dataDownloader: AggregatedDataDownloader
+) : AggregatedModule {
 
-import org.hisp.dhis.android.core.dataset.DataSet;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-@AutoValue
-public abstract class AggregatedDataCallBundle {
-    public abstract AggregatedDataCallBundleKey key();
-
-    public abstract List<DataSet> dataSets();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrganisationUnitUids();
-
-    public abstract Set<String> allOrganisationUnitUidsSet();
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedDataCallBundle.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder key(AggregatedDataCallBundleKey key);
-
-        public abstract Builder dataSets(List<DataSet> dataSets);
-
-        public abstract Builder periodIds(Collection<String> periodIds);
-
-        public abstract Builder rootOrganisationUnitUids(Collection<String> orgUnitUids);
-
-        public abstract Builder allOrganisationUnitUidsSet(Set<String> allOrganisationUnitUidsSet);
-
-        public abstract AggregatedDataCallBundle build();
+    override fun data(): AggregatedDataDownloader {
+        return dataDownloader
     }
 }

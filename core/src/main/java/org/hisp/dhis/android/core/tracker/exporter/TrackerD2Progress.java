@@ -26,42 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.call.internal;
+package org.hisp.dhis.android.core.tracker.exporter;
+
+import androidx.annotation.NonNull;
+
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
-public class D2ProgressManager {
+@AutoValue
+public abstract class TrackerD2Progress extends D2Progress {
 
-    private D2Progress progress;
+    @NonNull
+    public abstract Map<String, D2ProgressStatus> programs();
 
-    public D2ProgressManager(Integer totalCalls) {
-        this.progress = D2Progress.empty(totalCalls);
+    public static Builder builder() {
+        return new AutoValue_TrackerD2Progress.Builder();
     }
 
-    public D2Progress getProgress() {
-        return progress;
-    }
+    public abstract Builder toBuilder();
 
-    public <T> D2Progress increaseProgress(Class<T> resourceClass, boolean isComplete) {
-        List<String> doneCalls = new ArrayList<>(progress.doneCalls());
-        doneCalls.add(resourceClass.getSimpleName());
-        progress = progress.toBuilder()
-                .doneCalls(doneCalls)
-                .isComplete(isComplete)
-                .build();
-        return progress;
-
-    }
-
-    public <T> D2Progress increaseProgressAndCompleteWithCount(Class<T> resourceClass) {
-        Integer totalCalls = progress.totalCalls();
-        if (totalCalls == null) {
-            throw new IllegalStateException("Can't determine progress, total calls is not set");
-        } else {
-            return increaseProgress(resourceClass, progress.doneCalls().size() +  1 == totalCalls);
+    public static TrackerD2Progress empty(Integer totalCalls) {
+        if (totalCalls != null && totalCalls < 0) {
+            throw new IllegalArgumentException("Negative total calls");
         }
+        return TrackerD2Progress.builder()
+                .isComplete(false)
+                .totalCalls(totalCalls)
+                .doneCalls(Collections.emptyList())
+                .programs(Collections.emptyMap())
+                .build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends D2Progress.Builder<Builder> {
+
+        public abstract Builder programs(Map<String, D2ProgressStatus> programs);
+
+        public abstract TrackerD2Progress build();
     }
 }

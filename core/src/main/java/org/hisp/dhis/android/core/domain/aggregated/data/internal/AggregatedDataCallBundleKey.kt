@@ -25,29 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.PeriodType
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class AggregatedDataSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync> {
-
-    public AggregatedDataSyncStoreIntegrationShould() {
-        super(AggregatedDataSyncStore.create(TestDatabaseAdapterFactory.get()), AggregatedDataSyncTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected AggregatedDataSync buildObject() {
-        return AggregatedDataSyncSamples.get1();
-    }
-
-    @Override
-    protected AggregatedDataSync buildObjectToUpdate() {
-        return AggregatedDataSyncSamples.get2();
+data class AggregatedDataCallBundleKey(
+    val periodType: PeriodType,
+    val pastPeriods: Int,
+    val futurePeriods: Int,
+    val lastUpdated: Date?
+) {
+    fun lastUpdatedStr(): String? {
+        return lastUpdated?.let { DateUtils.DATE_FORMAT.format(it) }
     }
 }

@@ -25,30 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
+import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
-import org.junit.Test;
-
-import io.reactivex.observers.TestObserver;
-
-public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegrationTestMetadataDispatcher {
+class EventDownloadCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
     @Test
-    public void emit_progress() {
+    fun emit_progress() {
+        val testObserver = d2.eventModule().eventDownloader().download().test()
 
-        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
-        testObserver.assertValueCount(5);
+        testObserver.assertValueCount(4)
 
-        testObserver.assertValueAt(0, v -> v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> v.lastCall().equals("DataValue"));
-        testObserver.assertValueAt(2, v -> v.lastCall().equals("DataSetCompleteRegistration"));
-        testObserver.assertValueAt(3, v -> v.lastCall().equals("DataApproval"));
-        testObserver.assertValueAt(4, v -> v.lastCall().equals("AggregatedDataSync"));
+        testObserver.assertValueAt(0) { v: TrackerD2Progress ->
+            !v.isComplete &&
+                v.doneCalls().size == 1 &&
+                v.programs().all { (_, progress) -> !progress.isComplete && progress.syncStatus == null }
+        }
+        testObserver.assertValueAt(1) { v ->
+            !v.isComplete && v.doneCalls().size == 2 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(2) { v ->
+            !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(3) { v ->
+            v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+        }
 
+        testObserver.dispose()
+    }
 
-        testObserver.dispose();
+    private fun allProgramsSucceeded(programs: Map<String, D2ProgressStatus>): Boolean {
+        return programs.all { (_, progress) ->
+            progress.isComplete && progress.syncStatus == D2ProgressSyncStatus.SUCCESS
+        }
     }
 }

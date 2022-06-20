@@ -25,49 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.queries.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.dataset.DataSet;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class AggregatedDataSyncLastUpdatedCalculator {
-
-    private final AggregatedDataSyncHashHelper hashHelper;
-
-    @Inject
-    AggregatedDataSyncLastUpdatedCalculator(AggregatedDataSyncHashHelper hashHelper) {
-        this.hashHelper = hashHelper;
-    }
-
-    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull Integer pastPeriods,
-                        @NonNull Integer futurePeriods, @NonNull Integer organisationUnitHash) {
-        if (syncValue == null ||
-                syncValue.periodType() != dataSet.periodType() ||
-                syncValue.futurePeriods() < futurePeriods ||
-                syncValue.pastPeriods() < pastPeriods ||
-                syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
-                syncValue.organisationUnitsHash().intValue() != organisationUnitHash) {
-            return null;
-        } else {
-            return getDateMinus24Hours(syncValue.lastUpdated());
-        }
-    }
-
-    private Date getDateMinus24Hours(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, -1);
-        return cal.getTime();
+internal open class BaseQueryKt(
+    open val page: Int,
+    open val pageSize: Int,
+    open val paging: Boolean
+) {
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 50
     }
 }

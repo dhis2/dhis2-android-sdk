@@ -25,47 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.arch.call.internal
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.call.BaseD2Progress
+import org.hisp.dhis.android.core.arch.call.D2Progress
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+open class D2ProgressManager(totalCalls: Int?) {
 
-    ): Callable<List<Event>> {
+    private var progress: BaseD2Progress
 
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids
-        )
+    open fun getProgress(): D2Progress? {
+        return progress
+    }
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+    open fun <T> increaseProgress(resourceClass: Class<T>, isComplete: Boolean): D2Progress {
+        return progress.toBuilder()
+            .doneCalls(progress.doneCalls() + resourceClass.simpleName)
+            .isComplete(isComplete)
+            .build()
+            .also { progress = it }
+    }
+
+    init {
+        progress = BaseD2Progress.empty(totalCalls)
     }
 }

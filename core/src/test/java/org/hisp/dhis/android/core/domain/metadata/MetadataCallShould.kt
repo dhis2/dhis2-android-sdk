@@ -32,6 +32,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.BaseD2Progress
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
@@ -93,7 +94,7 @@ class MetadataCallShould : BaseCallShould() {
 
         // Calls
         whenever(systemInfoDownloader.downloadWithProgressManager(any()))
-            .thenReturn(Observable.just(D2Progress.empty(10)))
+            .thenReturn(Observable.just(BaseD2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata(any())).thenReturn(

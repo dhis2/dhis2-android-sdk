@@ -25,46 +25,63 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.event
+package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.capture
+import com.nhaarman.mockitokotlin2.KArgumentCaptor
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.MockitoAnnotations
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-class EventDownloaderShould {
+@RunWith(JUnit4::class)
+class TrackedEntityInstanceDownloaderShould {
+    private val callFactory: TrackedEntityInstanceDownloadCall = mock()
 
-    private val call: EventDownloadCall = mock()
+    private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
-    @Captor
-    private val paramsCapture: ArgumentCaptor<ProgramDataDownloadParams> = ArgumentCaptor.forClass(
-        ProgramDataDownloadParams::class.java
-    )
-
-    private lateinit var downloader: EventDownloader
+    private lateinit var downloader: TrackedEntityInstanceDownloader
 
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
-        downloader = EventDownloader(RepositoryScope.empty(), call)
+        downloader = TrackedEntityInstanceDownloader(RepositoryScope.empty(), callFactory)
+    }
+
+    @Test
+    fun should_create_call_with_parsed_params() {
+        downloader
+            .byProgramUid("program-uid")
+            .limitByOrgunit(true)
+            .limitByProgram(true)
+            .limit(500)
+            .byProgramStatus(EnrollmentScope.ONLY_ACTIVE)
+            .overwrite(true)
+            .download()
+
+        verify(callFactory).download(paramsCapture.capture())
+
+        val params = paramsCapture.firstValue
+        assertThat(params.program()).isEqualTo("program-uid")
+        assertThat(params.limitByOrgunit()).isTrue()
+        assertThat(params.limitByProgram()).isTrue()
+        assertThat(params.limit()).isEqualTo(500)
+        assertThat(params.programStatus()).isEqualTo(EnrollmentScope.ONLY_ACTIVE)
+        assertThat(params.overwrite()).isTrue()
     }
 
     @Test
     fun should_parse_uid_eq_params() {
         downloader.byUid().eq("uid").download()
 
-        verify(call).download(capture(paramsCapture))
-        val params = paramsCapture.value
+        verify(callFactory).download(paramsCapture.capture())
 
+        val params = paramsCapture.firstValue
         assertThat(params.uids().size).isEqualTo(1)
         assertThat(params.uids()[0]).isEqualTo("uid")
     }
@@ -73,9 +90,9 @@ class EventDownloaderShould {
     fun should_parse_uid_in_params() {
         downloader.byUid().`in`("uid0", "uid1", "uid2").download()
 
-        verify(call).download(capture(paramsCapture))
-        val params = paramsCapture.value
+        verify(callFactory).download(paramsCapture.capture())
 
+        val params = paramsCapture.firstValue
         assertThat(params.uids().size).isEqualTo(3)
         assertThat(params.uids()[0]).isEqualTo("uid0")
         assertThat(params.uids()[1]).isEqualTo("uid1")

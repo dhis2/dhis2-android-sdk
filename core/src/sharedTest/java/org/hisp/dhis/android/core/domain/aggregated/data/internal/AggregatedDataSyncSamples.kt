@@ -25,38 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.period.PeriodType
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+internal object AggregatedDataSyncSamples {
 
-final class AggregatedDataSyncStore {
-
-    private static final StatementBinder<AggregatedDataSync> BINDER = (o, w) -> {
-        w.bind(1, o.dataSet());
-        w.bind(2, o.periodType());
-        w.bind(3, o.pastPeriods());
-        w.bind(4, o.futurePeriods());
-        w.bind(5, o.dataElementsHash());
-        w.bind(6, o.organisationUnitsHash());
-        w.bind(7, o.lastUpdated());
-    };
-
-    private static final WhereStatementBinder<AggregatedDataSync> WHERE_UPDATE_BINDER =
-            (o, w) -> w.bind(8, o.dataSet());
-
-    private static final WhereStatementBinder<AggregatedDataSync> DELETE_UPDATE_BINDER =
-            (o, w) -> w.bind(1, o.dataSet());
-
-    private AggregatedDataSyncStore() {
+    fun get1(): AggregatedDataSync {
+        return AggregatedDataSync.builder()
+            .id(1L)
+            .dataSet("dataSet")
+            .periodType(PeriodType.Daily)
+            .pastPeriods(10)
+            .futurePeriods(1)
+            .dataElementsHash(11111111)
+            .organisationUnitsHash(22222222)
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .build()
     }
 
-    static ObjectWithoutUidStore<AggregatedDataSync> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, AggregatedDataSyncTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, AggregatedDataSync::create);
+    fun get2(): AggregatedDataSync {
+        return get1().toBuilder()
+            .dataElementsHash(3333333)
+            .build()
     }
 }

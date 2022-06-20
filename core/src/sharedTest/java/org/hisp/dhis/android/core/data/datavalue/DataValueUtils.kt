@@ -25,54 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.datavalue
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.data.dataset.DataSetSamples
+import org.hisp.dhis.android.core.dataset.DataSet
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+/**
+ * A collection of uids sets for dataValueCalls
+ */
+object DataValueUtils {
 
-import com.google.auto.value.AutoValue;
+    val dataSets: List<DataSet> = listOf(
+        DataSetSamples.getDataSet(),
+        DataSetSamples.getDataSet().toBuilder().uid("TuL8IOPzpHh").build()
+    )
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.PeriodType;
+    val periodIds: List<String> = listOf("201712", "2017")
 
-import java.util.Date;
-
-@AutoValue
-public abstract class AggregatedDataCallBundleKey {
-
-    @NonNull
-    public abstract PeriodType periodType();
-
-    @NonNull
-    public abstract Integer pastPeriods();
-
-    @NonNull
-    public abstract Integer futurePeriods();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public String lastUpdatedStr() {
-        return lastUpdated() == null ? null : BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
-    }
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedDataCallBundleKey.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder pastPeriods(Integer pastPeriods);
-
-        public abstract Builder futurePeriods(Integer futurePeriods);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract AggregatedDataCallBundleKey build();
-    }
+    val orgUnitUids = setOf("DiszpKrYNg8")
 }

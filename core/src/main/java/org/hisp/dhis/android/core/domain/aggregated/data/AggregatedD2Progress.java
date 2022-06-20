@@ -26,21 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import androidx.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class AggregatedDataPackageDIModule {
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
 
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<AggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
-        return AggregatedDataSyncStore.create(databaseAdapter);
+import java.util.Collections;
+import java.util.Map;
+
+@AutoValue
+public abstract class AggregatedD2Progress extends D2Progress {
+
+    @NonNull
+    public abstract Map<String, D2ProgressStatus> dataSets();
+
+    public static Builder builder() {
+        return new AutoValue_AggregatedD2Progress.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static AggregatedD2Progress empty(Integer totalCalls) {
+        if (totalCalls != null && totalCalls < 0) {
+            throw new IllegalArgumentException("Negative total calls");
+        }
+        return AggregatedD2Progress.builder()
+                .isComplete(false)
+                .totalCalls(totalCalls)
+                .doneCalls(Collections.emptyList())
+                .dataSets(Collections.emptyMap())
+                .build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends D2Progress.Builder<Builder> {
+
+        public abstract Builder dataSets(Map<String, D2ProgressStatus> dataSets);
+
+        public abstract AggregatedD2Progress build();
     }
 }

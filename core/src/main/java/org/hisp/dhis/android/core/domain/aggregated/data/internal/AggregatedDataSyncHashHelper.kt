@@ -25,11 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.dataset.DataSet
 
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-
-public interface AggregatedModule {
-    WithProgressDownloader data();
+@Reusable
+internal class AggregatedDataSyncHashHelper @Inject constructor() {
+    fun getDataSetDataElementsHash(dataSet: DataSet): Int {
+        return dataSet.dataSetElements()!!
+            .map { it.dataElement().uid() }
+            .toSet()
+            .hashCode()
+    }
 }

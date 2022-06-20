@@ -25,31 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.dataset.DataSet
 
-import org.hisp.dhis.android.core.period.PeriodType;
+@Reusable
+internal class AggregatedDataSyncLastUpdatedCalculator @Inject constructor(
+    private val hashHelper: AggregatedDataSyncHashHelper
+) {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
-
-public class AggregatedDataSyncSamples {
-
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
-                .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    @Suppress("ComplexCondition")
+    fun getLastUpdated(
+        syncValue: AggregatedDataSync?,
+        dataSet: DataSet,
+        pastPeriods: Int,
+        futurePeriods: Int,
+        organisationUnitHash: Int
+    ): Date? {
+        return if (
+            syncValue == null ||
+            syncValue.periodType() !== dataSet.periodType() ||
+            syncValue.futurePeriods() < futurePeriods ||
+            syncValue.pastPeriods() < pastPeriods ||
+            syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
+            syncValue.organisationUnitsHash() != organisationUnitHash
+        ) {
+            null
+        } else {
+            getDateMinus24Hours(syncValue.lastUpdated())
+        }
     }
 
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
-                .build();
+    private fun getDateMinus24Hours(date: Date): Date {
+        val cal = Calendar.getInstance()
+        cal.time = date
+        cal.add(Calendar.DATE, -1)
+        return cal.time
     }
 }

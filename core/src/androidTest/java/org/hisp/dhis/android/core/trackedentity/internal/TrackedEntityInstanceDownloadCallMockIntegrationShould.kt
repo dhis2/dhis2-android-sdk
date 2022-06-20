@@ -25,49 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.call;
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
+import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.junit.Test
 
-import java.util.List;
+class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    @Test
+    fun emit_progress() {
+        val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().download().test()
 
-public abstract class D2Progress {
+        testObserver.assertValueCount(4)
 
-    @NonNull
-    public abstract Boolean isComplete();
-
-    @Nullable
-    public abstract Integer totalCalls();
-
-    @NonNull
-    public abstract List<String> doneCalls();
-
-    @Nullable
-    public String lastCall() {
-        if (this.doneCalls().size() == 0) {
-            return null;
-        } else {
-            return this.doneCalls().get(this.doneCalls().size() - 1);
+        testObserver.assertValueAt(0) { v: TrackerD2Progress ->
+            !v.isComplete &&
+                v.doneCalls().size == 1 &&
+                v.programs().all { (_, progress) -> !progress.isComplete && progress.syncStatus == null }
         }
+        testObserver.assertValueAt(1) { v ->
+            !v.isComplete && v.doneCalls().size == 2 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(2) { v ->
+            !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(3) { v ->
+            v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+        }
+
+        testObserver.dispose()
     }
 
-    @Nullable
-    public Double percentage() {
-        Integer totalCalls = this.totalCalls();
-        if (totalCalls == null) {
-            return null;
-        } else {
-            return 100.0 * this.doneCalls().size() / totalCalls;
+    private fun allProgramsSucceeded(programs: Map<String, D2ProgressStatus>): Boolean {
+        return programs.all { (_, progress) ->
+            progress.isComplete && progress.syncStatus == D2ProgressSyncStatus.SUCCESS
         }
-    }
-
-    public abstract static class Builder<T extends Builder> {
-        public abstract T isComplete(Boolean isComplete);
-
-        public abstract T totalCalls(Integer totalCalls);
-
-        public abstract T doneCalls(List<String> doneCalls);
     }
 }

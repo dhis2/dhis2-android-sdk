@@ -28,39 +28,28 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.List;
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
 
 @AutoValue
-abstract class TrackerQueryBundle {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    abstract List<String> orgUnits();
+public abstract class TrackerQueryBundle extends BaseTrackerQueryBundle {
 
     @Nullable
-    abstract EnrollmentStatus programStatus();
+    public abstract EnrollmentStatus programStatus();
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_TrackerQueryBundle.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+    public abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
 
-        abstract Builder orgUnits(List<String> orgUnits);
+        public abstract Builder programStatus(EnrollmentStatus programStatus);
 
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        abstract TrackerQueryBundle build();
+        public abstract TrackerQueryBundle build();
     }
 }

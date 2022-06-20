@@ -25,47 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+@Suppress("MagicNumber")
+internal object AggregatedDataSyncStore {
+    private val BINDER = StatementBinder { o: AggregatedDataSync, w: StatementWrapper ->
+        w.bind(1, o.dataSet())
+        w.bind(2, o.periodType())
+        w.bind(3, o.pastPeriods())
+        w.bind(4, o.futurePeriods())
+        w.bind(5, o.dataElementsHash())
+        w.bind(6, o.organisationUnitsHash())
+        w.bind(7, o.lastUpdated())
+    }
+    private val WHERE_UPDATE_BINDER =
+        WhereStatementBinder { o: AggregatedDataSync, w: StatementWrapper -> w.bind(8, o.dataSet()) }
+    private val DELETE_UPDATE_BINDER =
+        WhereStatementBinder { o: AggregatedDataSync, w: StatementWrapper -> w.bind(1, o.dataSet()) }
 
-    ): Callable<List<Event>> {
-
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids
-        )
-
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AggregatedDataSync> {
+        return objectWithoutUidStore(
+            databaseAdapter, AggregatedDataSyncTableInfo.TABLE_INFO,
+            BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER
+        ) { cursor: Cursor -> AggregatedDataSync.create(cursor) }
     }
 }

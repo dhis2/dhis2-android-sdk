@@ -25,29 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
 
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataModuleImpl;
+@Module
+internal class AggregatedDataPackageDIModule {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class AggregatedModuleImpl implements AggregatedModule {
-
-    private final AggregatedDataModuleImpl dataModule;
-
-    @Inject
-    AggregatedModuleImpl(AggregatedDataModuleImpl dataModule) {
-        this.dataModule = dataModule;
+    @Provides
+    @Reusable
+    fun downloader(downloaderImpl: AggregatedDataDownloaderImpl): AggregatedDataDownloader {
+        return downloaderImpl
     }
 
-    @Override
-    public WithProgressDownloader data() {
-        return dataModule;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AggregatedDataSync> {
+        return AggregatedDataSyncStore.create(databaseAdapter)
     }
 }

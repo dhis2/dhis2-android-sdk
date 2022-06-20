@@ -25,47 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
+import android.util.Log
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.Before
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+class TeisCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-    ): Callable<List<Event>> {
+    private lateinit var d2: D2
 
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids
-        )
+    @Before
+    override fun setUp() {
+        super.setUp()
+        d2 = D2Factory.forNewDatabase()
+    }
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+    // @Test
+    fun download_tracked_entity_instances() {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_36)
+        d2.metadataModule().blockingDownload()
+
+        val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).download()
+            .doOnEach { e -> Log.w("EVENT", e.toString()) }
+            .test()
+
+        testObserver.awaitTerminalEvent()
+
+        val count = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
+        assertThat(count >= 5).isTrue()
     }
 }

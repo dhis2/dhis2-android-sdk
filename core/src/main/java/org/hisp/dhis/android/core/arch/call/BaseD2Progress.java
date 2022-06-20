@@ -25,47 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
+package org.hisp.dhis.android.core.arch.call;
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+import com.google.auto.value.AutoValue;
 
-    ): Callable<List<Event>> {
+import java.util.Collections;
 
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids
-        )
+@AutoValue
+public abstract class BaseD2Progress extends D2Progress {
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+    public static Builder builder() {
+        return new AutoValue_BaseD2Progress.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static BaseD2Progress empty(Integer totalCalls) {
+        if (totalCalls != null && totalCalls < 0) {
+            throw new IllegalArgumentException("Negative total calls");
+        }
+        return BaseD2Progress.builder()
+            .isComplete(totalCalls != null && totalCalls == 0)
+            .totalCalls(totalCalls)
+            .doneCalls(Collections.emptyList())
+            .build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends D2Progress.Builder<Builder> {
+
+        public abstract BaseD2Progress build();
     }
 }

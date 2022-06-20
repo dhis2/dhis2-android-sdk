@@ -25,47 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.junit.Test
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+class AggregatedDataCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
-    ): Callable<List<Event>> {
+    @Test
+    fun emit_progress() {
+        val testObserver = d2.aggregatedModule().data().download().test()
 
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids
-        )
+        testObserver.assertValueCount(3)
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+        testObserver.assertValueAt(0) { v: AggregatedD2Progress ->
+            !v.isComplete && v.dataSets().all { (_, progress) -> !progress.isComplete }
+        }
+        testObserver.assertValueAt(1) { v: AggregatedD2Progress ->
+            !v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+        }
+        testObserver.assertValueAt(2) { v: AggregatedD2Progress ->
+            v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+        }
+
+        testObserver.dispose()
     }
 }

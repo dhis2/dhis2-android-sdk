@@ -25,34 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.exporter
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-@Reusable
-public final class AggregatedDataModuleImpl implements WithProgressDownloader {
-
-    private final AggregatedDataCall aggregatedDataCall;
-
-    @Inject
-    AggregatedDataModuleImpl(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
-    }
-
-    @Override
-    public Observable<D2Progress> download() {
-        return aggregatedDataCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        aggregatedDataCall.blockingDownload();
-    }
-}
+internal data class TrackerAPIQuery(
+    val commonParams: TrackerQueryCommonParams,
+    val orgUnit: String? = null,
+    val uids: Collection<String> = emptyList(),
+    val programStatus: EnrollmentStatus? = null,
+    val lastUpdatedStr: String? = null,
+    override val page: Int = 1,
+    override val pageSize: Int = DEFAULT_PAGE_SIZE,
+    override val paging: Boolean = true
+) : BaseQueryKt(
+    page,
+    pageSize,
+    paging
+)

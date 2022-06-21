@@ -25,15 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity.ownership
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
-import io.reactivex.Completable
+object ProgramOwnerSamples {
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
-
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    val programOwner: ProgramOwner
+        get() = ProgramOwner.builder()
+            .id(1L)
+            .program("lxAQ7Zs9VYR")
+            .trackedEntityInstance("nWrB0TfWlvh")
+            .ownerOrgUnit("DiszpKrYNg8")
+            .syncState(State.SYNCED)
+            .build()
 }

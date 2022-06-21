@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramOwnerListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
@@ -56,6 +57,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner;
 
 import java.util.Date;
 import java.util.List;
@@ -126,6 +128,11 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     abstract List<Enrollment> enrollments();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramOwnerListAdapter.class)
+    public abstract List<ProgramOwner> programOwners();
+
+    @Nullable
     @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
@@ -182,6 +189,8 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+
+        public abstract Builder programOwners(List<ProgramOwner> programOwners);
 
         public abstract Builder aggregatedSyncState(State state);
 

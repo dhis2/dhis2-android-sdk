@@ -25,15 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import io.reactivex.Completable
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+class ProgramOwnerShould : BaseObjectShould("trackedentity/ownership/program_owner.json"), ObjectShould {
 
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    @Test
+    override fun map_from_json_string() {
+        val programOwner = objectMapper.readValue(jsonStream, ProgramOwner::class.java)
+
+        assertThat(programOwner.program()).isEqualTo("lxAQ7Zs9VYR")
+        assertThat(programOwner.trackedEntityInstance()).isEqualTo("PgmUFEQYZdt")
+        assertThat(programOwner.ownerOrgUnit()).isEqualTo("DiszpKrYNg8")
+    }
 }

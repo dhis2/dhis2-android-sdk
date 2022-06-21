@@ -31,6 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -47,6 +48,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -61,7 +64,8 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val noteStore: IdentifiableObjectStore<Note>,
     private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
     private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
-    private val programStore: ProgramStoreInterface
+    private val programStore: ProgramStoreInterface,
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
 ) {
 
     private data class ExtraData(
@@ -109,6 +113,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     ): OldTrackerImporterPayload {
         return payload
             .run { addRelationships(this, extraData) }
+            .run { addProgramOwners(this) }
             .run { pruneNonWritableData(this) }
     }
 
@@ -336,6 +341,26 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
 
     private fun getEnrollmentNotes(notes: List<Note>, enrollment: Enrollment): List<Note> {
         return notes.filter { it.enrollment() == enrollment.uid() }
+    }
+
+    private fun addProgramOwners(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
+        return if (payload.trackedEntityInstances.isNotEmpty()) {
+            val programOwnerWhere = WhereClauseBuilder()
+                .appendInKeyStringValues(
+                    ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                    payload.trackedEntityInstances.map { it.uid() }
+                )
+                .appendInKeyEnumValues(
+                    DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().toList()
+                )
+                .build()
+
+            val programOwnerToPost = programOwnerStore.selectWhere(programOwnerWhere)
+
+            payload.copy(programOwners = programOwnerToPost.groupBy { it.trackedEntityInstance() })
+        } else {
+            payload
+        }
     }
 
     private fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {

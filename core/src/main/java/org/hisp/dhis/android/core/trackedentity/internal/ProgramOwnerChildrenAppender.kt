@@ -25,15 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.ownership
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
-import io.reactivex.Completable
+internal class ProgramOwnerChildrenAppender constructor(
+    private val childStore: ObjectWithoutUidStore<ProgramOwner>
+) : ChildrenAppender<TrackedEntityInstance>() {
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
-
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
+        val builder = tei.toBuilder()
+        val programOwners = childStore.selectWhere(
+            WhereClauseBuilder()
+                .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
+                .build()
+        )
+        return builder.programOwners(programOwners).build()
+    }
 }

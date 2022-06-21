@@ -26,14 +26,51 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.trackedentity.ownership;
 
-import io.reactivex.Completable
+import android.database.Cursor;
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+import org.hisp.dhis.android.core.common.BaseDataObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramOwner.Builder.class)
+public abstract class ProgramOwner extends BaseDataObject {
+
+    @JsonProperty()
+    public abstract String program();
+
+    @JsonProperty()
+    public abstract String trackedEntityInstance();
+
+    @JsonProperty()
+    public abstract String ownerOrgUnit();
+
+    public static Builder builder() {
+        return new $$AutoValue_ProgramOwner.Builder();
+    }
+
+    public static ProgramOwner create(Cursor cursor) {
+        return $AutoValue_ProgramOwner.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder program(String event);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder ownerOrgUnit(String ownerOrgUnit);
+
+        public abstract ProgramOwner build();
+    }
 }

@@ -200,4 +200,8 @@ public final class TrackedEntityInstanceCollectionRepository
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
     }
+
+    public TrackedEntityInstanceCollectionRepository withProgramOwners() {
+        return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS);
+    }
 }

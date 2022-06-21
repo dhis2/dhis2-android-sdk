@@ -25,15 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import io.reactivex.Completable
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramOwnerSamples
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+@RunWith(D2JunitRunner::class)
+class ProgramOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOwner>(
+    create(TestDatabaseAdapterFactory.get()),
+    ProgramOwnerTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): ProgramOwner {
+        return ProgramOwnerSamples.programOwner
+    }
 
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    override fun buildObjectToUpdate(): ProgramOwner {
+        return ProgramOwnerSamples.programOwner.toBuilder()
+            .ownerOrgUnit("Other orgunit")
+            .build()
+    }
 }

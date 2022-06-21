@@ -27,44 +27,46 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-@Module
-internal class OwnershipEntityDIModule {
+@Reusable
+internal class ProgramOwnerPostCall @Inject constructor(
+    private val ownershipService: OwnershipService,
+    private val apiCallExecutor: APICallExecutor,
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>,
+    private val dataStatePropagator: DataStatePropagator
+) {
 
-    @Provides
-    @Reusable
-    fun empty(impl: OwnershipManagerImpl): OwnershipManager {
-        return impl
-    }
+    fun uploadProgramOwner(programOwner: ProgramOwner): Boolean {
+        return try {
+            val response = apiCallExecutor.executeObjectCall(
+                ownershipService.transfer(
+                    programOwner.trackedEntityInstance(),
+                    programOwner.program(),
+                    programOwner.ownerOrgUnit()
+                )
+            )
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): OwnershipService {
-        return retrofit.create(OwnershipService::class.java)
-    }
+            @Suppress("MagicNumber")
+            val isSuccessful = response.httpStatusCode() == 200
 
-    @Provides
-    @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
+            if (isSuccessful) {
+                val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
+                programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
+                dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(
+                    programOwner.trackedEntityInstance()
+                )
+            }
+            isSuccessful
+        } catch (e: D2Error) {
+            // TODO Create a record in TEI
+            false
+        }
     }
 }

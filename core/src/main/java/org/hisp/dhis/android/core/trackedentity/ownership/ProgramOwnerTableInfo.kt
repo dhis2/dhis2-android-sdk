@@ -25,15 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DataColumns
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+internal object ProgramOwnerTableInfo {
 
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "ProgramOwner"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
+
+    class Columns : DataColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM,
+                TRACKED_ENTITY_INSTANCE,
+                OWNER_ORGUNIT,
+                SYNC_STATE
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM,
+                TRACKED_ENTITY_INSTANCE
+            )
+        }
+
+        companion object {
+            const val PROGRAM = "program"
+            const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+            const val OWNER_ORGUNIT = "ownerOrgUnit"
+        }
+    }
 }

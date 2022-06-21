@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,6 +57,7 @@ class TrackedEntityInstanceHandlerShould {
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
     private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue> = mock()
     private val enrollmentHandler: IdentifiableDataHandler<Enrollment> = mock()
+    private val programOwnerHandler: HandlerWithTransformer<ProgramOwner> = mock()
 
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val enrollment: Enrollment = mock()
@@ -107,6 +109,7 @@ class TrackedEntityInstanceHandlerShould {
             trackedEntityAttributeValueStore,
             trackedEntityAttributeValueHandler,
             enrollmentHandler,
+            programOwnerHandler,
             enrollmentCleaner,
             relationshipCleaner
         )
@@ -123,6 +126,7 @@ class TrackedEntityInstanceHandlerShould {
         verifyNoMoreInteractions(trackedEntityAttributeValueStore)
         verify(enrollmentHandler, never()).handleMany(any(), any(), any())
         verify(enrollmentCleaner, never()).deleteOrphan(any(), any(), anyOrNull())
+        verify(programOwnerHandler, never()).handleMany(any())
         verify(relationshipCleaner, never()).deleteOrphan(any(), any())
     }
 
@@ -141,6 +145,7 @@ class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handleMany(any(), any(), any())
+        verify(programOwnerHandler, never()).handleMany(any())
     }
 
     @Test
@@ -165,6 +170,7 @@ class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handleMany(any(), any(), any())
+        verify(programOwnerHandler, times(1)).handleMany(any(), any())
     }
 
     @Test

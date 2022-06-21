@@ -26,14 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import io.reactivex.Completable
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner;
 
-interface OwnershipManager {
-    fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
-    fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+import java.util.List;
 
-    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
-    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+public final class IgnoreProgramOwnerListAdapter extends IgnoreColumnAdapter<List<ProgramOwner>> {
 }

@@ -404,6 +404,25 @@ d2.trackedEntityModule().trackedEntityInstanceFilters()
     .get();
 ```
 
+### Ownership
+
+The concept of ownership is supported in the SDK. In short, each pair trackedEntityInstance - program is owned by an organisationUnit. This ownership is used in the trackedEntityInstance search to determine the owner organisationUnit the TEI belongs to.
+
+You can get the program owners for each trackedEntityInstance using the repository:
+
+```java
+d2.trackedEntityModule().trackedEntityInstances()
+        .withProgramOwners()
+        .get();
+```
+
+Also, you can permanently transferred the ownership by using the OwnershipManager. This referral will be automatically upload to the server in the next synchronization. 
+
+```java
+d2.trackedEntityModule().ownershipManager()
+        .transfer(teiUid, programUid, ownerOrgunit);
+```
+
 ### Break the glass
 
 The "Break the glass" concept is based on the ownership of the pair trackedEntityInstance - enrollment. If the program is **PROTECTED** and the user does not have **DATA CAPTURE** to the organisation unit, it is required to break the glass in order to read and modify the data. The workflow would be:

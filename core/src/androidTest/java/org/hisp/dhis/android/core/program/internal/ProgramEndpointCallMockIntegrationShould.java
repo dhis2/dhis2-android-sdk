@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
@@ -35,21 +37,13 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.data.legendset.LegendSamples;
-import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
-import org.hisp.dhis.android.core.data.program.ProgramIndicatorSamples;
 import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples;
 import org.hisp.dhis.android.core.data.program.ProgramSamples;
 import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetStore;
-import org.hisp.dhis.android.core.legendset.internal.LegendStore;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
@@ -62,7 +56,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
@@ -71,9 +64,6 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@Ignore("Must be fix later")
 @RunWith(D2JunitRunner.class)
 public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
@@ -140,27 +130,6 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         IdentifiableObjectStore<ProgramTrackedEntityAttribute> store = ProgramTrackedEntityAttributeStore.create(databaseAdapter);
         assertThat(store.count()).isEqualTo(2);
         assertThat(store.selectByUid("YhqgQ6Iy4c4")).isEqualTo(ProgramTrackedEntityAttributeSamples.getChildProgrammeGender());
-    }
-
-    @Test
-    public void persist_program_indicators_when_call() {
-        IdentifiableObjectStore<ProgramIndicator> store = ProgramIndicatorStore.create(databaseAdapter);
-        assertThat(store.count()).isEqualTo(2);
-        assertThat(store.selectByUid("GSae40Fyppf")).isEqualTo(ProgramIndicatorSamples.getAgeAtVisit());
-    }
-
-    @Test
-    public void persist_legend_sets_when_call() {
-        IdentifiableObjectStore<LegendSet> store = LegendSetStore.create(databaseAdapter);
-        assertThat(store.count()).isEqualTo(1);
-        assertThat(store.selectByUid("TiOkbpGEud4")).isEqualTo(LegendSetSamples.getAge15yInterval());
-    }
-
-    @Test
-    public void persist_legends_when_call() {
-        IdentifiableObjectStore<Legend> store = LegendStore.create(databaseAdapter);
-        assertThat(store.count()).isEqualTo(3);
-        assertThat(store.selectByUid("BzQkRWHS7lu")).isEqualTo(LegendSamples.get45To60());
     }
 
     @Test

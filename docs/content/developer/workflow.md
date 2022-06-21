@@ -416,7 +416,7 @@ d2.trackedEntityModule().trackedEntityInstances()
         .get();
 ```
 
-Also, you can permanently transferred the ownership by using the OwnershipManager. This referral will be automatically upload to the server in the next synchronization. 
+Also, you can permanently transfer the ownership by using the OwnershipManager. This referral will be automatically upload to the server in the next synchronization. 
 
 ```java
 d2.trackedEntityModule().ownershipManager()

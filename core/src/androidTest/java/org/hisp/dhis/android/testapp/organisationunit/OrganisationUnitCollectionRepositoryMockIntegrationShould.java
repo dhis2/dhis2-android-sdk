@@ -117,7 +117,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byProgramUids(Collections.singletonList("lxAQ7Zs9VYR"))
                 .blockingGet();
-        assertThat(organisationUnits.size()).isEqualTo(2);
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test

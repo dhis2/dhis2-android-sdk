@@ -274,9 +274,10 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 
             val teiAggregatedSyncState = getAggregatedSyncState(
                 enrollmentStates +
-                        relationshipStates +
-                        programOwnerStates +
-                        instance.syncState()!!)
+                    relationshipStates +
+                    programOwnerStates +
+                    instance.syncState()!!
+            )
 
             trackedEntityInstanceStore.setAggregatedSyncState(trackedEntityInstanceUid, teiAggregatedSyncState)
         }

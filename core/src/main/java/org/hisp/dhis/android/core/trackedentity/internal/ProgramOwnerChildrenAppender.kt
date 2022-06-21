@@ -40,10 +40,11 @@ internal class ProgramOwnerChildrenAppender constructor(
 
     override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
         val builder = tei.toBuilder()
-        val programOwners = childStore.selectWhere(WhereClauseBuilder()
-            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
-            .build())
+        val programOwners = childStore.selectWhere(
+            WhereClauseBuilder()
+                .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
+                .build()
+        )
         return builder.programOwners(programOwners).build()
     }
-
 }

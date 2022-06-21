@@ -60,8 +60,10 @@ class OwnershipManagerShould {
         whenever(ownershipService.breakGlass(any(), any(), any())).doReturn(call)
         whenever(apiCallExecutor.executeObjectCall(any<Call<HttpMessageResponse>>())).doReturn(httpResponse)
 
-        ownershipManager = OwnershipManagerImpl(apiCallExecutor, ownershipService, dataStatePropagator,
-            programTempOwnerStore, programOwnerStore)
+        ownershipManager = OwnershipManagerImpl(
+            apiCallExecutor, ownershipService, dataStatePropagator,
+            programTempOwnerStore, programOwnerStore
+        )
     }
 
     @Test

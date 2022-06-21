@@ -91,9 +91,9 @@ internal class TrackedEntityInstanceEntityDIModule {
     ): Map<String, ChildrenAppender<TrackedEntityInstance>> {
         return mapOf(
             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES to
-                    TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter),
+                TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter),
             TrackedEntityInstanceFields.PROGRAM_OWNERS to
-                    ProgramOwnerChildrenAppender(programOwnerStore)
+                ProgramOwnerChildrenAppender(programOwnerStore)
         )
     }
 }

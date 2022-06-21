@@ -41,6 +41,5 @@ class ProgramOwnerShould : BaseObjectShould("trackedentity/ownership/program_own
         assertThat(programOwner.program()).isEqualTo("lxAQ7Zs9VYR")
         assertThat(programOwner.trackedEntityInstance()).isEqualTo("PgmUFEQYZdt")
         assertThat(programOwner.ownerOrgUnit()).isEqualTo("DiszpKrYNg8")
-
     }
 }

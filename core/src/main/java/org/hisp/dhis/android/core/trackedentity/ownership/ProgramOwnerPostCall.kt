@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.maintenance.D2Error
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramOwnerPostCall @Inject constructor(
@@ -45,10 +45,12 @@ internal class ProgramOwnerPostCall @Inject constructor(
 
     fun uploadProgramOwner(programOwner: ProgramOwner): Boolean {
         return try {
-            val response = apiCallExecutor.executeObjectCall(ownershipService.transfer(
-                programOwner.trackedEntityInstance(),
-                programOwner.program(),
-                programOwner.ownerOrgUnit())
+            val response = apiCallExecutor.executeObjectCall(
+                ownershipService.transfer(
+                    programOwner.trackedEntityInstance(),
+                    programOwner.program(),
+                    programOwner.ownerOrgUnit()
+                )
             )
 
             @Suppress("MagicNumber")

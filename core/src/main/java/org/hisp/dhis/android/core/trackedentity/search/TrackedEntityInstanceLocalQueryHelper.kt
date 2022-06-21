@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -49,8 +51,6 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -61,6 +61,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val enrollmentAlias = "en"
     private val eventAlias = "ev"
     private val orgunitAlias = "ou"
+    private val userOrgunitAlias = "uou"
     private val teavAlias = "teav"
     private val programAlias = "pr"
     private val ownerAlias = "po"
@@ -89,6 +90,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             .build()
     }
 
+    @Suppress("LongMethod")
     private fun getSqlQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         excludeList: Set<String>?,
@@ -105,14 +107,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
             queryStr += " JOIN ${ProgramTableInfo.TABLE_INFO.name()} $programAlias"
             queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
-                    dot(programAlias, IdentifiableColumns.UID)
+                dot(programAlias, IdentifiableColumns.UID)
 
             queryStr += " JOIN ${ProgramOwnerTableInfo.TABLE_INFO.name()} $ownerAlias"
             queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
-                    dot(ownerAlias, ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE) +
-                    " AND " +
-                    "${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
-                    dot(ownerAlias, ProgramOwnerTableInfo.Columns.PROGRAM)
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE) +
+                " AND " +
+                "${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.PROGRAM)
 
             appendProgramWhere(where, scope)
             if (hasEvent(scope)) {
@@ -211,25 +213,40 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyNumberValue(dot(enrollmentAlias, EnrollmentTableInfo.Columns.FOLLOW_UP), value)
         }
 
-        val tempOwnerSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $tempOwnerAlias " +
-                "WHERE ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
-                dot(teiAlias, IdentifiableColumns.UID) +
-                " AND " +
-                "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
-                dot(programAlias, IdentifiableColumns.UID)
+        val hasAnyOwnershipRecord = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $tempOwnerAlias " +
+            "WHERE ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+            dot(teiAlias, IdentifiableColumns.UID) +
+            " AND " +
+            "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
+            dot(programAlias, IdentifiableColumns.UID)
 
-        /* Break the glass query. The condition is:
+        val hasAnyNotExpiredOwnershipRecord = hasAnyOwnershipRecord +
+            " AND " +
+            "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
+            ">= '${DateUtils.DATE_FORMAT.format(Date())}'"
+
+        val ownerOrguitIsInCaptureScope =
+            "SELECT 1 FROM ${UserOrganisationUnitLinkTableInfo.TABLE_INFO.name()} $userOrgunitAlias " +
+                "WHERE ${dot(userOrgunitAlias, UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT)} = " +
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT) +
+                " AND " +
+                "${dot(userOrgunitAlias, UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE)} = " +
+                "'${OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name}'"
+
+        /* Break the glass query. The condition is either of:
          * - Not to have a record: this applies to CAPTURE teis and SEARCH teis that didn't need a ownership request.
+         * - Owner orgunit in CAPTURE scope. It could happen that there is record and the ownership is transferred.
          * - To have a record that is not expired.
          */
         where.appendComplexQuery(
             "CASE " +
                 "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
                 "THEN (" +
-                "NOT EXISTS($tempOwnerSubQuery) " +
+                "NOT EXISTS($hasAnyOwnershipRecord) " +
                 "OR " +
-                "EXISTS($tempOwnerSubQuery AND ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
-                ">= '${DateUtils.DATE_FORMAT.format(Date())}')" +
+                "EXISTS($ownerOrguitIsInCaptureScope) " +
+                "OR " +
+                "EXISTS($hasAnyNotExpiredOwnershipRecord)" +
                 ") ELSE 1 END "
         )
     }

@@ -408,7 +408,7 @@ d2.trackedEntityModule().trackedEntityInstanceFilters()
 
 The concept of ownership is supported in the SDK. In short, each pair trackedEntityInstance - program is owned by an organisationUnit. This ownership is used in the trackedEntityInstance search to determine the owner organisationUnit the TEI belongs to.
 
-You can get the program owners for each trackedEntityInstance using the repository:
+You can get the program owners for each trackedEntityInstance by using the repository:
 
 ```java
 d2.trackedEntityModule().trackedEntityInstances()
@@ -416,7 +416,7 @@ d2.trackedEntityModule().trackedEntityInstances()
         .get();
 ```
 
-Also, you can permanently transfer the ownership by using the OwnershipManager. This referral will be automatically upload to the server in the next synchronization. 
+Also, you can permanently transfer the ownership by using the OwnershipManager. This transfer will be automatically uploaded to the server in the next synchronization. 
 
 ```java
 d2.trackedEntityModule().ownershipManager()

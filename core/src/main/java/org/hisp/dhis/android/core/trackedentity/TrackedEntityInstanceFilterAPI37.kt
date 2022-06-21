@@ -69,7 +69,6 @@ internal data class TrackedEntityInstanceFilterAPI37(
                             DateFilterPeriod.builder()
                                 .startBuffer(it.periodFrom())
                                 .endBuffer(it.periodTo())
-                                .period(RelativePeriod.TODAY)
                                 .type(DatePeriodType.RELATIVE)
                                 .build()
                         }

@@ -59,14 +59,14 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     public abstract String attribute();
 
     /**
-     * Starts with
+     * End with
      */
     @Nullable
     @JsonProperty()
     public abstract String ew();
 
     /**
-     * Ends with
+     * Starts with
      */
     @Nullable
     @JsonProperty()

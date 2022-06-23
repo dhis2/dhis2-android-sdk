@@ -103,6 +103,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
+    @Synchronized
     override fun updateOrInsertWhere(o: O): HandleAction {
         return try {
             updateWhere(o)

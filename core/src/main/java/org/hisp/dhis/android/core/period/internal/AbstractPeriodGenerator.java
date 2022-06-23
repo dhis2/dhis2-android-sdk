@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings({"PMD.AvoidSynchronizedAtMethodLevel"})
 abstract class AbstractPeriodGenerator implements PeriodGenerator {
     private final Calendar initialCalendar;
     protected Calendar calendar;
@@ -54,7 +55,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final List<Period> generatePeriods(int start, int end) throws RuntimeException {
+    synchronized public final List<Period> generatePeriods(int start, int end) throws RuntimeException {
         this.calendar = (Calendar) initialCalendar.clone();
 
         if (start >= end) {
@@ -77,7 +78,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final Period generatePeriod(Date date, int periodOffset) {
+    synchronized public final Period generatePeriod(Date date, int periodOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
         moveToStartOfThePeriodOfADayWithOffset(date, periodOffset);
@@ -99,7 +100,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public List<Period> generatePeriodsInYear(int yearOffset) {
+    synchronized public List<Period> generatePeriodsInYear(int yearOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
         int targetYear = calendar.get(Calendar.YEAR) + yearOffset;

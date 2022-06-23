@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings({"PMD.AvoidSynchronizedAtMethodLevel"})
 abstract class AbstractPeriodGenerator implements PeriodGenerator {
     private final Calendar initialCalendar;
     protected Calendar calendar;

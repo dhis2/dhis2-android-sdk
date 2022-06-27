@@ -1,0 +1,503 @@
+{
+  "properties": [
+    {
+      "propertyType": "COLLECTION",
+      "name": "dataElementGroupSetDimension"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "orgUnitField"
+    },
+    {
+      "propertyType": "DATE",
+      "name": "endDate"
+    },
+    {
+      "propertyType": "NUMBER",
+      "name": "baseLineValue"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "userOrganisationUnitChildren"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "publicAccess"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displaySubtitle"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "program"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "type",
+      "constants": [
+        "COLUMN",
+        "STACKED_COLUMN",
+        "BAR",
+        "STACKED_BAR",
+        "LINE",
+        "LINE_LIST",
+        "AREA",
+        "STACKED_AREA",
+        "PIE",
+        "RADAR",
+        "GAUGE",
+        "YEAR_OVER_YEAR_LINE",
+        "YEAR_OVER_YEAR_COLUMN",
+        "SINGLE_VALUE",
+        "PIVOT_TABLE",
+        "SCATTER",
+        "BUBBLE"
+      ]
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayTitle"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "subscribed"
+    },
+    {
+      "propertyType": "DATE",
+      "name": "lastUpdated"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayTargetLineLabel"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "attributeDimension"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "translation"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "yearlySerie"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "userOrganisationUnit"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "filterDimension"
+    },
+    {
+      "propertyType": "IDENTIFIER",
+      "name": "id"
+    },
+    {
+      "propertyType": "URL",
+      "name": "href"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "interpretation"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayDescription"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "attributeValueDimension"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "userGroupAccess"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "domainAxisLabel"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "subscriber"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "cumulativeValues"
+    },
+    {
+      "propertyType": "INTEGER",
+      "name": "sortOrder"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "subtitle"
+    },
+    {
+      "propertyType": "INTEGER",
+      "name": "rangeAxisDecimals"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "shortName"
+    },
+    {
+      "propertyType": "INTEGER",
+      "name": "topLimit"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "favorite"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "collapseDataDimensions"
+    },
+    {
+      "propertyType": "DATE",
+      "name": "startDate"
+    },
+    {
+      "propertyType": "COMPLEX",
+      "name": "access"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "userOrganisationUnitGrandChildren"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "column"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayName"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayShortName"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "percentStackedValues"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "noSpaceBetweenColumns"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "dataElementDimension"
+    },
+    {
+      "propertyType": "INTEGER",
+      "name": "rangeAxisSteps"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "formName"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "period"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "categoryDimension"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayRangeAxisLabel"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "hideTitle"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "rowDimension"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "eventStatus",
+      "constants": [
+        "ACTIVE",
+        "COMPLETED",
+        "VISITED",
+        "SCHEDULE",
+        "OVERDUE",
+        "SKIPPED"
+      ]
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayBaseLineLabel"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "showData"
+    },
+    {
+      "propertyType": "COMPLEX",
+      "name": "parentGraphMap"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "hideNaData"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "itemOrganisationUnitGroup"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "lastUpdatedBy"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayDomainAxisLabel"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "programIndicatorDimension"
+    },
+    {
+      "propertyType": "DATE",
+      "name": "created"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "rangeAxisLabel"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "columnDimension"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "regressionType",
+      "constants": [
+        "NONE",
+        "LINEAR",
+        "POLYNOMIAL",
+        "LOESS"
+      ]
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "attributeValue"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "completedOnly"
+    },
+    {
+      "propertyType": "COMPLEX",
+      "name": "sharing"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "displayFormName"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "userAccess"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "name"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "programStatus",
+      "constants": [
+        "ACTIVE",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "hideEmptyRowItems",
+      "constants": [
+        "NONE",
+        "BEFORE_FIRST",
+        "AFTER_LAST",
+        "BEFORE_FIRST_AFTER_LAST",
+        "ALL"
+      ]
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "favorite"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "aggregationType",
+      "constants": [
+        "SUM",
+        "AVERAGE",
+        "AVERAGE_SUM_ORG_UNIT",
+        "LAST",
+        "LAST_AVERAGE_ORG_UNIT",
+        "LAST_IN_PERIOD",
+        "LAST_IN_PERIOD_AVERAGE_ORG_UNIT",
+        "FIRST",
+        "FIRST_AVERAGE_ORG_UNIT",
+        "COUNT",
+        "STDDEV",
+        "VARIANCE",
+        "MIN",
+        "MAX",
+        "NONE",
+        "CUSTOM",
+        "DEFAULT"
+      ]
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "dataDimensionItem"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "legacy"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "categoryOptionGroupSetDimension"
+    },
+    {
+      "propertyType": "IDENTIFIER",
+      "name": "code"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "hideSubtitle"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "outputType",
+      "constants": [
+        "EVENT",
+        "ENROLLMENT",
+        "TRACKED_ENTITY_INSTANCE"
+      ]
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "description"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "organisationUnitGroupSetDimension"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "title"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "hideLegend"
+    },
+    {
+      "propertyType": "NUMBER",
+      "name": "rangeAxisMinValue"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "organisationUnitLevel"
+    },
+    {
+      "propertyType": "BOOLEAN",
+      "name": "externalAccess"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "legendDisplayStrategy",
+      "constants": [
+        "FIXED",
+        "BY_DATA_ITEM"
+      ]
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "dataElementValueDimension"
+    },
+    {
+      "propertyType": "COMPLEX",
+      "name": "relativePeriods"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "targetLineLabel"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "organisationUnit"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "value"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "programStage"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "timeField"
+    },
+    {
+      "propertyType": "NUMBER",
+      "name": "targetLineValue"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "filter"
+    },
+    {
+      "propertyType": "COLLECTION",
+      "name": "row"
+    },
+    {
+      "propertyType": "TEXT",
+      "name": "baseLineLabel"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "digitGroupSeparator",
+      "constants": [
+        "COMMA",
+        "SPACE",
+        "NONE"
+      ]
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "createdBy"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "legendSet"
+    },
+    {
+      "propertyType": "CONSTANT",
+      "name": "userOrgUnitType",
+      "constants": [
+        "DATA_CAPTURE",
+        "DATA_OUTPUT",
+        "TEI_SEARCH"
+      ]
+    },
+    {
+      "propertyType": "NUMBER",
+      "name": "rangeAxisMaxValue"
+    },
+    {
+      "propertyType": "REFERENCE",
+      "name": "user"
+    }
+  ]
+}

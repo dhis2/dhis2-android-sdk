@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
+import org.hisp.dhis.android.core.common.schema.SchemaCall;
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationPackageDIModule;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
@@ -194,6 +195,8 @@ public interface D2DIComponent {
     PeriodHandler periodHandler();
     @VisibleForTesting
     InterpreterSelector interpreterSelector();
+    @VisibleForTesting
+    SchemaCall schemaCall();
 
     @Component.Builder
     interface Builder {

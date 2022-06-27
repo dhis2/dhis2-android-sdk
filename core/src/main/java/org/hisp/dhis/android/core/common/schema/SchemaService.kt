@@ -28,24 +28,15 @@
 
 package org.hisp.dhis.android.core.common.schema
 
-import dagger.Provides
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 internal interface SchemaService {
-    @GET("schema")
+    @GET("schemas")
     fun getSchema(
         @Query("fields") @Which fields: Fields<Schema>
     ): Single<List<Schema>>
-
-    @Provides
-    @Reusable
-    fun schemaCall(impl: SchemaCall): ListCall<Schema> {
-        return impl
-    }
 }

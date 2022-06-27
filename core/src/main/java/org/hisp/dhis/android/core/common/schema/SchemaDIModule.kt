@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common.schema
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import retrofit2.Retrofit
 
 @Module(includes = [])
@@ -38,5 +39,11 @@ class SchemaDIModule {
     @Reusable
     internal fun schemaService(retrofit: Retrofit): SchemaService {
         return retrofit.create(SchemaService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    internal fun schemaCall(impl: SchemaCall): ListCall<Schema> {
+        return impl
     }
 }

@@ -37,8 +37,6 @@ internal class SchemaCall @Inject internal constructor(
     private val service: SchemaService
 ) : ListCall<Schema> {
     override fun download(): Single<List<Schema>> {
-        return service.getSchema(
-            SchemaFields.allFields
-        )
+        return service.getSchema(SchemaFields.allFields).map { it.items() }
     }
 }

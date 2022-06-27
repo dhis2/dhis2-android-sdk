@@ -27,19 +27,27 @@
  */
 package org.hisp.dhis.android.core.common
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.schema.Schema
-import org.hisp.dhis.android.core.common.schema.SchemaCall
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.Before
 import org.junit.Test
 
-class EnumUpdatesCheckerRealIntegrationShould @Inject internal constructor(
-    private val schemaCall: SchemaCall
-) : BaseRealIntegrationTest() {
+class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
+    private lateinit var d2: D2
+
+    @Before
+    override fun setUp() {
+        super.setUp()
+        d2 = D2Factory.forNewDatabase()
+    }
 
     @Test
-    fun query_and_download_tracked_entity_instances() {
-        val schemas: List<Schema> = schemaCall.download().blockingGet()
+    fun query_and_download_schemas() {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
+        val schemas: List<Schema> = getD2DIComponent(d2).schemaCall().download().blockingGet()
         val filteredSchemas: List<Schema.Companion.SchemaProperty> = schemas.flatMap {
                 schema -> schema.properties.filter { it.propertyType == "CONSTANT" }
         }

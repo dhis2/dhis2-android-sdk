@@ -53,6 +53,7 @@ internal class FileResourceStoreImpl private constructor(
             w.bind(6, o.contentLength())
             w.bind(7, o.path())
             w.bind(8, o.syncState())
+            w.bind(9, o.domain())
         }
 
         @JvmStatic

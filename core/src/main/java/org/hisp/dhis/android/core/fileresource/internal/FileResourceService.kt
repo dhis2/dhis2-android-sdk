@@ -56,7 +56,7 @@ internal interface FileResourceService {
         @Query("dimension") dimension: String
     ): Call<ResponseBody>
 
-    @GET("${DATA_VALUES}/files")
+    @GET("$DATA_VALUES/files")
     fun getFileFromDataValue(
         @Query("de") dataElement: String,
         @Query("pe") period: String,

@@ -35,10 +35,10 @@ interface FileResourceModule {
         "Replace with fileResourceDownloader()",
         replaceWith = ReplaceWith(
             expression = "fileResourceDownloader()\n" +
-                    "            .byDomain().eq(FileResourceDomain.TRACKER)\n" +
-                    "            .byType().eq(FileResourceValueType.IMAGE)\n" +
-                    "            .download()",
-            "org.hisp.dhis.android.core.fileresource.FileResourceDomain",
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .download()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
             "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
         )
     )
@@ -48,10 +48,10 @@ interface FileResourceModule {
         "Replace with fileResourceDownloader()",
         replaceWith = ReplaceWith(
             expression = "fileResourceDownloader()\n" +
-                    "            .byDomain().eq(FileResourceDomain.TRACKER)\n" +
-                    "            .byType().eq(FileResourceValueType.IMAGE)\n" +
-                    "            .blockingDownload()",
-            "org.hisp.dhis.android.core.fileresource.FileResourceDomain",
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .blockingDownload()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
             "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
         )
     )

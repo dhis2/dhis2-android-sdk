@@ -40,6 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FileResourceDomainColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDataObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -80,6 +81,11 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     @JsonProperty
     public abstract String path();
 
+    @Nullable
+    @JsonProperty
+    @ColumnAdapter(FileResourceDomainColumnAdapter.class)
+    public abstract FileResourceDomain domain();
+
     @NonNull
     public static FileResource create(Cursor cursor) {
         return AutoValue_FileResource.createFromCursor(cursor);
@@ -109,6 +115,8 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
         public abstract Builder contentLength(@NonNull Long contentLength);
 
         public abstract Builder path(@NonNull String path);
+
+        public abstract Builder domain(FileResourceDomain domain);
 
         public abstract FileResource build();
     }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
-import javax.inject.Inject
 
 @Reusable
 class FileResourceDownloader @Inject internal constructor(
@@ -60,16 +60,16 @@ class FileResourceDownloader @Inject internal constructor(
         download().blockingSubscribe()
     }
 
-    fun byType(): ListFilterConnector<FileResourceDownloader, FileResourceValueType> {
+    fun byValueType(): ListFilterConnector<FileResourceDownloader, FileResourceValueType> {
         return connectorFactory.listConnector { list -> params.copy(valueTypes = list) }
     }
 
-    fun byElement(): ListFilterConnector<FileResourceDownloader, FileResourceElement> {
-        return connectorFactory.listConnector { list -> params.copy(elements = list) }
+    fun byElementType(): ListFilterConnector<FileResourceDownloader, FileResourceElementType> {
+        return connectorFactory.listConnector { list -> params.copy(elementTypes = list) }
     }
 
-    fun byDomain(): ListFilterConnector<FileResourceDownloader, FileResourceDomain> {
-        return connectorFactory.listConnector { list -> params.copy(domains = list) }
+    fun byDomainType(): ListFilterConnector<FileResourceDownloader, FileResourceDomainType> {
+        return connectorFactory.listConnector { list -> params.copy(domainTypes = list) }
     }
 
     fun byMaxContentLength(): EqFilterConnector<FileResourceDownloader, Int> {

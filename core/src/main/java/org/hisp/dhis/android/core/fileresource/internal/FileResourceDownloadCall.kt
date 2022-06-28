@@ -32,6 +32,7 @@ import android.util.Log
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -42,11 +43,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain
-import org.hisp.dhis.android.core.fileresource.FileResourceElement
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.maintenance.D2Error
 import retrofit2.Call
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCall @Inject constructor(
@@ -78,7 +78,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     }
 
     private fun downloadAggregatedValues(params: FileResourceDownloadParams, existingFileResources: List<String>) {
-        if (params.domains.contains(FileResourceDomain.AGGREGATED)) {
+        if (params.domainTypes.contains(FileResourceDomainType.AGGREGATED)) {
             val dataValues = helper.getMissingAggregatedDataValues(params, existingFileResources)
 
             downloadAndPersistFiles(
@@ -99,8 +99,8 @@ internal class FileResourceDownloadCall @Inject constructor(
     }
 
     private fun downloadTrackerValues(params: FileResourceDownloadParams, existingFileResources: List<String>) {
-        if (params.domains.contains(FileResourceDomain.TRACKER)) {
-            if (params.elements.contains(FileResourceElement.TRACED_ENTITY_ATTRIBUTE)) {
+        if (params.domainTypes.contains(FileResourceDomainType.TRACKER)) {
+            if (params.elementTypes.contains(FileResourceElementType.TRACED_ENTITY_ATTRIBUTE)) {
                 val attributeDataValues = helper.getMissingTrackerAttributeValues(params, existingFileResources)
 
                 downloadAndPersistFiles(
@@ -117,7 +117,7 @@ internal class FileResourceDownloadCall @Inject constructor(
                 )
             }
 
-            if (params.elements.contains(FileResourceElement.DATA_ELEMENT)) {
+            if (params.elementTypes.contains(FileResourceElementType.DATA_ELEMENT)) {
                 val trackerDataValues = helper.getMissingTrackerDataValues(params, existingFileResources)
 
                 downloadAndPersistFiles(
@@ -140,36 +140,44 @@ internal class FileResourceDownloadCall @Inject constructor(
         values: List<V>,
         maxContentLength: Int?,
         download: (V) -> Call<ResponseBody>,
-        getUid: (V) -> String?,
+        getUid: (V) -> String?
     ) {
-        val fileResources: MutableList<FileResource> = ArrayList()
-        for (value in values) {
-            getUid(value)?.let { uid ->
-                try {
-                    val fileResource = apiCallExecutor.executeObjectCall(fileResourceService.getFileResource(uid))
-
-                    if (maxContentLength == null ||
-                        fileResource.contentLength() == null ||
-                        fileResource.contentLength()!! <= maxContentLength
-                    ) {
-                        val responseBody = apiCallExecutor.executeObjectCall(download(value))
-
-                        val file = FileResourceUtil.saveFileFromResponse(responseBody, uid, context)
-                        fileResources.add(fileResource.toBuilder().path(file.absolutePath).build())
-                    } else {
-                        // Ignore
-                    }
-                } catch (d2Error: D2Error) {
-                    fileResourceStore.deleteIfExists(uid)
-                    Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
-                }
-            }
-        }
+        val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
 
         handler.handleMany(fileResources) { fileResource: FileResource ->
             fileResource.toBuilder()
                 .syncState(State.SYNCED)
                 .build()
+        }
+    }
+
+    private fun <V> downloadFile(
+        value: V,
+        maxContentLength: Int?,
+        download: (V) -> Call<ResponseBody>,
+        getUid: (V) -> String?
+    ): FileResource? {
+        return getUid(value)?.let { uid ->
+            try {
+                val fileResource = apiCallExecutor.executeObjectCall(fileResourceService.getFileResource(uid))
+
+                val acceptedContentLength = maxContentLength == null ||
+                    fileResource.contentLength() == null ||
+                    fileResource.contentLength()!! <= maxContentLength
+
+                if (acceptedContentLength) {
+                    val responseBody = apiCallExecutor.executeObjectCall(download(value))
+
+                    val file = FileResourceUtil.saveFileFromResponse(responseBody, uid, context)
+                    fileResource.toBuilder().path(file.absolutePath).build()
+                } else {
+                    null
+                }
+            } catch (d2Error: D2Error) {
+                fileResourceStore.deleteIfExists(uid)
+                Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+                null
+            }
         }
     }
 }

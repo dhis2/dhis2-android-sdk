@@ -34,12 +34,12 @@ enum class FileResourceValueType(internal val valueType: ValueType) {
     IMAGE(ValueType.IMAGE)
 }
 
-enum class FileResourceElement {
+enum class FileResourceElementType {
     DATA_ELEMENT,
     TRACED_ENTITY_ATTRIBUTE
 }
 
-enum class FileResourceDomain {
+enum class FileResourceDomainType {
     AGGREGATED,
     TRACKER
 }

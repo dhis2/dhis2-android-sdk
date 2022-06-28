@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.fileresource.*
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceModuleImpl @Inject internal constructor(
@@ -41,8 +41,8 @@ internal class FileResourceModuleImpl @Inject internal constructor(
 
     override fun download(): Observable<D2Progress> {
         return fileResourceDownloader()
-            .byDomain().eq(FileResourceDomain.TRACKER)
-            .byType().eq(FileResourceValueType.IMAGE)
+            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byValueType().eq(FileResourceValueType.IMAGE)
             .download()
     }
 

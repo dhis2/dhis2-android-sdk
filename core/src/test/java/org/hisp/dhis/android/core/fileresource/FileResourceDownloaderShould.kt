@@ -55,8 +55,8 @@ class FileResourceDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.domains).isNotEmpty()
-        assertThat(params.elements).isNotEmpty()
+        assertThat(params.domainTypes).isNotEmpty()
+        assertThat(params.elementTypes).isNotEmpty()
         assertThat(params.valueTypes).isNotEmpty()
         assertThat(params.maxContentLength).isNotNull()
     }
@@ -64,17 +64,17 @@ class FileResourceDownloaderShould {
     @Test
     fun should_override_default_params() {
         downloader
-            .byDomain().eq(FileResourceDomain.TRACKER)
-            .byElement().eq(FileResourceElement.DATA_ELEMENT)
-            .byType().eq(FileResourceValueType.IMAGE)
+            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+            .byValueType().eq(FileResourceValueType.IMAGE)
             .byMaxContentLength().eq(400)
             .download()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.domains).isEqualTo(listOf(FileResourceDomain.TRACKER))
-        assertThat(params.elements).isEqualTo(listOf(FileResourceElement.DATA_ELEMENT))
+        assertThat(params.domainTypes).isEqualTo(listOf(FileResourceDomainType.TRACKER))
+        assertThat(params.elementTypes).isEqualTo(listOf(FileResourceElementType.DATA_ELEMENT))
         assertThat(params.valueTypes).isEqualTo(listOf(FileResourceValueType.IMAGE))
         assertThat(params.maxContentLength).isEqualTo(400)
     }

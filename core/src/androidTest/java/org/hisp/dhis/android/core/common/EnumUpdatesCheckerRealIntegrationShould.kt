@@ -32,6 +32,9 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.schema.Schema
 import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.visualization.VisualizationType
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -48,8 +51,35 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     fun query_and_download_schemas() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
         val schemas: List<Schema> = getD2DIComponent(d2).schemaCall().download().blockingGet()
-        val filteredSchemas: List<Schema.Companion.SchemaProperty> = schemas.flatMap {
-                schema -> schema.properties.filter { it.propertyType == "CONSTANT" }
+        val constantsMap: Map<String, List<String>?> = schemas.flatMap { schema ->
+            schema.properties.filter { it.propertyType == "CONSTANT" }
+        }.toSet().associate { fullKlassToSimpleKlass(it.klass) to it.constants }
+
+        val errorList = enumsMap.mapNotNull { checkEnum(it, constantsMap[it.key]) }
+        if (errorList.isNotEmpty()) {
+            Assert.fail(errorList.joinToString())
         }
+    }
+
+    private fun checkEnum(sdkEnumEntry: Map.Entry<String, List<String>>, apiConstants: List<String>?): String? {
+        if (apiConstants == null) {
+            return "Enum ${sdkEnumEntry.key} not found on the server"
+        } else if (!sdkEnumEntry.value.containsAll(apiConstants)) {
+            val constantsThatDoesNotExistInTheSdk = apiConstants.filter { !sdkEnumEntry.value.contains(it) }
+            return "Constants ${constantsThatDoesNotExistInTheSdk.joinToString()} " +
+                    "from enum ${sdkEnumEntry.key} does not exist in the SDK"
+        }
+        return null
+    }
+
+    private fun fullKlassToSimpleKlass(fullKlass: String): String {
+        return fullKlass.split(".").last()
+    }
+
+    companion object {
+        val enumsMap: Map<String, List<String>> = mapOf(
+            Pair("VisualizationType", VisualizationType.values().map { it.toString() }),
+            Pair("ProgramStatus", EnrollmentStatus.values().map { it.toString() })
+        )
     }
 }

@@ -50,9 +50,18 @@ internal interface FileResourceService {
     ): Call<ResponseBody>
 
     @GET("$EVENTS/files")
-    fun getFileFromDataElement(
+    fun getFileFromEventValue(
         @Query("eventUid") eventUid: String,
         @Query("dataElementUid") dataElementUid: String,
+        @Query("dimension") dimension: String
+    ): Call<ResponseBody>
+
+    @GET("${DATA_VALUES}/files")
+    fun getFileFromDataValue(
+        @Query("de") dataElement: String,
+        @Query("pe") period: String,
+        @Query("ou") organisationUnit: String,
+        @Query("co") categoryOptionCombo: String,
         @Query("dimension") dimension: String
     ): Call<ResponseBody>
 
@@ -63,5 +72,6 @@ internal interface FileResourceService {
         const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
         const val TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute"
         const val EVENTS = "events"
+        const val DATA_VALUES = "dataValues"
     }
 }

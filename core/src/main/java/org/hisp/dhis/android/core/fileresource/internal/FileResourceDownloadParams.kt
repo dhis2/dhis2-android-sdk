@@ -27,34 +27,14 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.fileresource.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
+import org.hisp.dhis.android.core.fileresource.FileResourceDomain
+import org.hisp.dhis.android.core.fileresource.FileResourceElement
+import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 
-@Reusable
-internal class FileResourceModuleImpl @Inject internal constructor(
-    private val fileResources: FileResourceCollectionRepository,
-    private val fileResourceDownloader: FileResourceDownloader
-) : FileResourceModule {
-
-    override fun download(): Observable<D2Progress> {
-        return fileResourceDownloader()
-            .byDomain().eq(FileResourceDomain.TRACKER)
-            .byType().eq(FileResourceValueType.IMAGE)
-            .download()
-    }
-
-    override fun blockingDownload() {
-        download().blockingSubscribe()
-    }
-
-    override fun fileResources(): FileResourceCollectionRepository {
-        return fileResources
-    }
-
-    override fun fileResourceDownloader(): FileResourceDownloader {
-        return fileResourceDownloader
-    }
-}
+internal data class FileResourceDownloadParams(
+    val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
+    val elements: List<FileResourceElement> = FileResourceElement.values().asList(),
+    val domains: List<FileResourceDomain> = FileResourceDomain.values().asList(),
+    val maxContentLength: Int? = 6000000
+) : BaseScope

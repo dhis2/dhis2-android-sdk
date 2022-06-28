@@ -25,36 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal
+package org.hisp.dhis.android.core.fileresource
 
-import dagger.Reusable
-import io.reactivex.Observable
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.fileresource.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.common.ValueType
 
-@Reusable
-internal class FileResourceModuleImpl @Inject internal constructor(
-    private val fileResources: FileResourceCollectionRepository,
-    private val fileResourceDownloader: FileResourceDownloader
-) : FileResourceModule {
+enum class FileResourceValueType(internal val valueType: ValueType) {
+    FILE_RESOURCE(ValueType.FILE_RESOURCE),
+    IMAGE(ValueType.IMAGE)
+}
 
-    override fun download(): Observable<D2Progress> {
-        return fileResourceDownloader()
-            .byDomain().eq(FileResourceDomain.TRACKER)
-            .byType().eq(FileResourceValueType.IMAGE)
-            .download()
-    }
+enum class FileResourceElement {
+    DATA_ELEMENT,
+    TRACED_ENTITY_ATTRIBUTE
+}
 
-    override fun blockingDownload() {
-        download().blockingSubscribe()
-    }
-
-    override fun fileResources(): FileResourceCollectionRepository {
-        return fileResources
-    }
-
-    override fun fileResourceDownloader(): FileResourceDownloader {
-        return fileResourceDownloader
-    }
+enum class FileResourceDomain {
+    AGGREGATED,
+    TRACKER
 }

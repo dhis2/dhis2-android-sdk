@@ -25,36 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal
+package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
+import javax.inject.Inject
 
 @Reusable
-class FileResourceCall @Inject internal constructor(
-    private val rxCallExecutor: RxAPICallExecutor,
-    private val fileResourceModuleDownloader: FileResourceModuleDownloader
-) {
+class FileResourceDownloader @Inject internal constructor(
+    private val call: FileResourceDownloadCall,
+    private val params: FileResourceDownloadParams
+) : BaseRepository {
 
+    private val connectorFactory: ScopedFilterConnectorFactory<FileResourceDownloader, FileResourceDownloadParams> =
+        ScopedFilterConnectorFactory { params ->
+            FileResourceDownloader(call, params)
+        }
+
+    /**
+     * @return -
+     */
     fun download(): Observable<D2Progress> {
-        val progressManager = D2ProgressManager(1)
-        return rxCallExecutor.wrapObservableTransactionally(
-            Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                fileResourceModuleDownloader.downloadMetadata().call()
-                emitter.onNext(progressManager.increaseProgress(FileResource::class.java, false))
-                emitter.onComplete()
-            },
-            true
-        )
+        return call.download(params)
     }
 
     fun blockingDownload() {
         download().blockingSubscribe()
+    }
+
+    fun byType(): ListFilterConnector<FileResourceDownloader, FileResourceValueType> {
+        return connectorFactory.listConnector { list -> params.copy(valueTypes = list) }
+    }
+
+    fun byElement(): ListFilterConnector<FileResourceDownloader, FileResourceElement> {
+        return connectorFactory.listConnector { list -> params.copy(elements = list) }
+    }
+
+    fun byDomain(): ListFilterConnector<FileResourceDownloader, FileResourceDomain> {
+        return connectorFactory.listConnector { list -> params.copy(domains = list) }
+    }
+
+    fun byMaxContentLength(): EqFilterConnector<FileResourceDownloader, Int> {
+        return connectorFactory.eqConnector { value -> params.copy(maxContentLength = value) }
     }
 }

@@ -109,8 +109,12 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
             updateWhere(o)
             HandleAction.Update
         } catch (e: Exception) {
-            insert(o)
-            HandleAction.Insert
+            try {
+                insert(o)
+                HandleAction.Insert
+            } catch (e: Exception) {
+                HandleAction.Insert
+            }
         }
     }
 }

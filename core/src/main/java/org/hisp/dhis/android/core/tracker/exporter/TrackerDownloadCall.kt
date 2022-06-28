@@ -334,12 +334,15 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives
     ): Observable<TrackerD2Progress> {
-        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
-            Observable.fromCallable {
-                progressManager.increaseProgress(
-                    TrackedEntityInstance::class.java, false
-                )
-            }
+        return rxCallExecutor.wrapObservableTransactionally(
+            relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
+                Observable.fromCallable {
+                    progressManager.increaseProgress(
+                        TrackedEntityInstance::class.java, false
+                    )
+                }
+            ),
+            true
         )
     }
 

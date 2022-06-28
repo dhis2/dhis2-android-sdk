@@ -50,6 +50,9 @@ class FileResourceDownloader @Inject internal constructor(
         }
 
     /**
+     * Download and persist file resources according to the filters specified. It only downloads the files that have
+     * not been previously downloaded. In case a file fails to be downloaded, it is ignored.
+     *
      * @return -
      */
     fun download(): Observable<D2Progress> {

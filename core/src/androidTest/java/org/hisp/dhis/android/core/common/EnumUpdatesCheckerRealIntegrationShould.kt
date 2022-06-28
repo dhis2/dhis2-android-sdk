@@ -33,7 +33,14 @@ import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.schema.Schema
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.visualization.VisualizationType
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
+import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import org.hisp.dhis.android.core.validation.ValidationRuleImportance
+import org.hisp.dhis.android.core.validation.ValidationRuleOperator
+import org.hisp.dhis.android.core.visualization.*
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -48,7 +55,7 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     @Test
-    fun query_and_download_schemas() {
+    fun check_no_enum_have_been_updated_on_server() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
         val schemas: List<Schema> = getD2DIComponent(d2).schemaCall().download().blockingGet()
         val constantsMap: Map<String, List<String>?> = schemas.flatMap { schema ->
@@ -79,7 +86,28 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     companion object {
         val enumsMap: Map<String, List<String>> = mapOf(
             Pair("VisualizationType", VisualizationType.values().map { it.toString() }),
-            Pair("ProgramStatus", EnrollmentStatus.values().map { it.toString() })
+            Pair("ProgramStatus", EnrollmentStatus.values().map { it.toString() }),
+            Pair("FeatureType", FeatureType.values().map { it.toString() }),
+            Pair("FormType", FormType.values().map { it.toString() }),
+            Pair("EventStatus", EventStatus.values().map { it.toString() }),
+            Pair("OrganisationUnitSelectionMode", OrganisationUnitMode.values().map { it.toString() }),
+            Pair("AccessLevel", AccessLevel.values().map { it.toString() }),
+            Pair("ProgramRuleActionType", ProgramRuleActionType.values().map { it.toString() }),
+            Pair("ProgramRuleVariableSourceType", ProgramRuleVariableSourceType.values().map { it.toString() }),
+            Pair("ProgramType", ProgramType.values().map { it.toString() }),
+            Pair("MissingValueStrategy", MissingValueStrategy.values().map { it.toString() }),
+            Pair("Importance", ValidationRuleImportance.values().map { it.toString() }),
+            Pair("Operator", ValidationRuleOperator.values().map { it.toString() }),
+            Pair("DimensionItemType", DimensionalItemType.values().map { it.toString() }),
+            Pair("VisualizationType", VisualizationType.values().map { it.toString() }),
+            Pair("AggregationType", AggregationType.values().map { it.toString() }),
+            Pair("AnalyticsType", AnalyticsType.values().map { it.toString() }),
+            Pair("ValueType", ValueType.values().map { it.toString() }),
+            Pair("AnalyticsPeriodBoundaryType", AnalyticsPeriodBoundaryType.values().map { it.toString() }),
+            Pair("DigitGroupSeparator", DigitGroupSeparator.values().map { it.toString() }),
+            Pair("DisplayDensity", DisplayDensity.values().map { it.toString() }),
+            Pair("LegendDisplayStrategy", LegendStrategy.values().map { it.toString() }),
+            Pair("HideEmptyItemStrategy", HideEmptyItemStrategy.values().map { it.toString() })
         )
     }
 }

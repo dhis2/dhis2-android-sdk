@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 
 internal object SchemaFields {
     private const val PROPERTIES = "properties"
-    private const val NAME = "name"
+    private const val KLASS = "klass"
     private const val PROPERTY_TYPE = "propertyType"
     private const val CONSTANTS = "constants"
     private val SchemaFh = FieldsHelper<Schema>()
@@ -41,7 +41,7 @@ internal object SchemaFields {
     private val propertyFields: Fields<Schema.Companion.SchemaProperty> =
         Fields.builder<Schema.Companion.SchemaProperty>()
         .fields(
-            SchemaPropertyFh.field<String>(NAME),
+            SchemaPropertyFh.field<String>(KLASS),
             SchemaPropertyFh.field<String>(PROPERTY_TYPE),
             SchemaPropertyFh.field<String>(CONSTANTS)
         ).build()

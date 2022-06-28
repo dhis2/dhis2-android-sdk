@@ -34,7 +34,7 @@ internal data class Schema(
     internal companion object {
         internal data class SchemaProperty(
             val propertyType: String,
-            val name: String,
+            val klass: String,
             val constants: List<String>?
         )
     }

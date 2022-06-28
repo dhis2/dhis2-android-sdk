@@ -43,7 +43,7 @@ class SchemaShould : BaseObjectShould("common/schema.json"),
         val schema: Schema = objectMapper.readValue(jsonStream, Schema::class.java)
 
         Truth.assertThat(schema).isNotNull()
-        Truth.assertThat(schema.properties[0].name).isEqualTo("dataElementGroupSetDimension")
-        Truth.assertThat(schema.properties.find { it.name == "eventStatus" }?.constants?.get(0)).isEqualTo("ACTIVE")
+        Truth.assertThat(schema.properties[0].klass).isEqualTo("dataElementGroupSetDimension")
+        Truth.assertThat(schema.properties.find { it.klass == "eventStatus" }?.constants?.get(0)).isEqualTo("ACTIVE")
     }
 }

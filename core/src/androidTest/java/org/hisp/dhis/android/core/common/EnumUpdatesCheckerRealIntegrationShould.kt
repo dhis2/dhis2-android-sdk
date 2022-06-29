@@ -69,14 +69,25 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun checkEnum(sdkEnumEntry: Map.Entry<String, List<String>>, apiConstants: List<String>?): String? {
-        if (apiConstants == null) {
-            return "Enum ${sdkEnumEntry.key} not found on the server"
-        } else if (!sdkEnumEntry.value.containsAll(apiConstants)) {
-            val constantsThatDoesNotExistInTheSdk = apiConstants.filter { !sdkEnumEntry.value.contains(it) }
-            return "Constants ${constantsThatDoesNotExistInTheSdk.joinToString()} " +
-                    "from enum ${sdkEnumEntry.key} does not exist in the SDK"
+        return if (apiConstants == null) {
+            "Enum ${sdkEnumEntry.key} not found on the server"
+        } else {
+            (constantsContained(sdkEnumEntry.value, apiConstants, sdkEnumEntry.key, "SDK") +
+                    constantsContained(apiConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server"))
+                .ifEmpty { null }
         }
-        return null
+    }
+
+    private fun constantsContained(
+        containerList: List<String>,
+        containedList: List<String>,
+        enumKey: String,
+        containerKey: String
+    ): String {
+        val notContainedValues = containedList.filter { !containerList.contains(it) }
+        return if (notContainedValues.isNotEmpty()) {
+            "Constants ${notContainedValues.joinToString()} from enum $enumKey does not exist in the $containerKey. "
+        } else ""
     }
 
     private fun fullKlassToSimpleKlass(fullKlass: String): String {
@@ -85,29 +96,33 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
 
     companion object {
         val enumsMap: Map<String, List<String>> = mapOf(
-            Pair("VisualizationType", VisualizationType.values().map { it.toString() }),
-            Pair("ProgramStatus", EnrollmentStatus.values().map { it.toString() }),
-            Pair("FeatureType", FeatureType.values().map { it.toString() }),
-            Pair("FormType", FormType.values().map { it.toString() }),
-            Pair("EventStatus", EventStatus.values().map { it.toString() }),
-            Pair("OrganisationUnitSelectionMode", OrganisationUnitMode.values().map { it.toString() }),
-            Pair("AccessLevel", AccessLevel.values().map { it.toString() }),
-            Pair("ProgramRuleActionType", ProgramRuleActionType.values().map { it.toString() }),
-            Pair("ProgramRuleVariableSourceType", ProgramRuleVariableSourceType.values().map { it.toString() }),
-            Pair("ProgramType", ProgramType.values().map { it.toString() }),
-            Pair("MissingValueStrategy", MissingValueStrategy.values().map { it.toString() }),
-            Pair("Importance", ValidationRuleImportance.values().map { it.toString() }),
-            Pair("Operator", ValidationRuleOperator.values().map { it.toString() }),
-            Pair("DimensionItemType", DimensionalItemType.values().map { it.toString() }),
-            Pair("VisualizationType", VisualizationType.values().map { it.toString() }),
-            Pair("AggregationType", AggregationType.values().map { it.toString() }),
-            Pair("AnalyticsType", AnalyticsType.values().map { it.toString() }),
-            Pair("ValueType", ValueType.values().map { it.toString() }),
-            Pair("AnalyticsPeriodBoundaryType", AnalyticsPeriodBoundaryType.values().map { it.toString() }),
-            Pair("DigitGroupSeparator", DigitGroupSeparator.values().map { it.toString() }),
-            Pair("DisplayDensity", DisplayDensity.values().map { it.toString() }),
-            Pair("LegendDisplayStrategy", LegendStrategy.values().map { it.toString() }),
-            Pair("HideEmptyItemStrategy", HideEmptyItemStrategy.values().map { it.toString() })
+            entry<VisualizationType>("VisualizationType"),
+            entry<EnrollmentStatus>("ProgramStatus"),
+            entry<FeatureType>("FeatureType"),
+            entry<FormType>("FormType"),
+            entry<EventStatus>("EventStatus"),
+            entry<OrganisationUnitMode>("OrganisationUnitSelectionMode"),
+            entry<AccessLevel>("AccessLevel"),
+            entry<ProgramRuleActionType>("ProgramRuleActionType"),
+            entry<ProgramRuleVariableSourceType>("ProgramRuleVariableSourceType"),
+            entry<ProgramType>("ProgramType"),
+            entry<MissingValueStrategy>("MissingValueStrategy"),
+            entry<ValidationRuleImportance>("Importance"),
+            entry<ValidationRuleOperator>("Operator"),
+            entry<DimensionalItemType>("DimensionItemType"),
+            entry<VisualizationType>("VisualizationType"),
+            entry<AggregationType>("AggregationType"),
+            entry<AnalyticsType>("AnalyticsType"),
+            entry<ValueType>("ValueType"),
+            entry<AnalyticsPeriodBoundaryType>("AnalyticsPeriodBoundaryType"),
+            entry<DigitGroupSeparator>("DigitGroupSeparator"),
+            entry<DisplayDensity>("DisplayDensity"),
+            entry<LegendStrategy>("LegendDisplayStrategy"),
+            entry<HideEmptyItemStrategy>("HideEmptyItemStrategy")
         )
+
+        private inline fun <reified E : Enum<E>> entry(apiKey: String): Pair<String, List<String>> {
+            return Pair(apiKey, enumValues<E>().map { it.toString() })
+        }
     }
 }

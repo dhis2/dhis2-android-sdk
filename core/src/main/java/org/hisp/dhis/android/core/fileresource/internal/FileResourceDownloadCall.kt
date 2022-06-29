@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import retrofit2.Call
 
@@ -165,7 +166,7 @@ internal class FileResourceDownloadCall @Inject constructor(
                     fileResource.contentLength() == null ||
                     fileResource.contentLength()!! <= maxContentLength
 
-                if (acceptedContentLength) {
+                if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = apiCallExecutor.executeObjectCall(download(value))
 
                     val file = FileResourceUtil.saveFileFromResponse(responseBody, uid, context)

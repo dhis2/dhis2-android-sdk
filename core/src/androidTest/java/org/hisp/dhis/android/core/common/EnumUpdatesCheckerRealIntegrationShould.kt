@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.visualization.*
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Test
 
 class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var d2: D2
@@ -54,7 +53,7 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
         d2 = D2Factory.forNewDatabase()
     }
 
-    @Test
+    //@Test
     fun check_no_enum_have_been_updated_on_server() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
         val schemas: List<Schema> = getD2DIComponent(d2).schemaCall().download().blockingGet()

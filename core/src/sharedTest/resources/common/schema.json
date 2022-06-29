@@ -1,40 +1,40 @@
 {
   "properties": [
     {
-      "propertyType": "COLLECTION",
-      "name": "dataElementGroupSetDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "orgUnitField"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "DATE",
-      "name": "endDate"
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
     },
     {
-      "propertyType": "NUMBER",
-      "name": "baseLineValue"
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "userOrganisationUnitChildren"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "TEXT",
-      "name": "publicAccess"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displaySubtitle"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "program"
+      "klass": "org.hisp.dhis.program.Program",
+      "propertyType": "REFERENCE"
     },
     {
+      "klass": "org.hisp.dhis.eventvisualization.EventVisualizationType",
       "propertyType": "CONSTANT",
-      "name": "type",
       "constants": [
         "COLUMN",
         "STACKED_COLUMN",
@@ -56,172 +56,172 @@
       ]
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayTitle"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "subscribed"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "DATE",
-      "name": "lastUpdated"
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayTargetLineLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "attributeDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "translation"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "yearlySerie"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "userOrganisationUnit"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "filterDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "IDENTIFIER",
-      "name": "id"
+      "klass": "java.lang.String",
+      "propertyType": "IDENTIFIER"
     },
     {
-      "propertyType": "URL",
-      "name": "href"
+      "klass": "java.lang.String",
+      "propertyType": "URL"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "interpretation"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayDescription"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "attributeValueDimension"
+      "klass": "org.hisp.dhis.trackedentity.TrackedEntityAttribute",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "userGroupAccess"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "domainAxisLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "subscriber"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "cumulativeValues"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "INTEGER",
-      "name": "sortOrder"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "TEXT",
-      "name": "subtitle"
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
     },
     {
-      "propertyType": "INTEGER",
-      "name": "rangeAxisDecimals"
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
     },
     {
-      "propertyType": "TEXT",
-      "name": "shortName"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "INTEGER",
-      "name": "topLimit"
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "favorite"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "collapseDataDimensions"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "DATE",
-      "name": "startDate"
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
     },
     {
-      "propertyType": "COMPLEX",
-      "name": "access"
+      "klass": "org.hisp.dhis.security.acl.Access",
+      "propertyType": "COMPLEX"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "userOrganisationUnitGrandChildren"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "column"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayName"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayShortName"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "percentStackedValues"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "noSpaceBetweenColumns"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "dataElementDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "INTEGER",
-      "name": "rangeAxisSteps"
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
     },
     {
-      "propertyType": "TEXT",
-      "name": "formName"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "period"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "categoryDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayRangeAxisLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "hideTitle"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "rowDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
+      "klass": "org.hisp.dhis.event.EventStatus",
       "propertyType": "CONSTANT",
-      "name": "eventStatus",
       "constants": [
         "ACTIVE",
         "COMPLETED",
@@ -232,52 +232,52 @@
       ]
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayBaseLineLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "showData"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COMPLEX",
-      "name": "parentGraphMap"
+      "klass": "java.util.Map",
+      "propertyType": "COMPLEX"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "hideNaData"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "itemOrganisationUnitGroup"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "lastUpdatedBy"
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayDomainAxisLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "programIndicatorDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "DATE",
-      "name": "created"
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
     },
     {
-      "propertyType": "TEXT",
-      "name": "rangeAxisLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "columnDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
+      "klass": "org.hisp.dhis.common.RegressionType",
       "propertyType": "CONSTANT",
-      "name": "regressionType",
       "constants": [
         "NONE",
         "LINEAR",
@@ -286,32 +286,32 @@
       ]
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "attributeValue"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "completedOnly"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COMPLEX",
-      "name": "sharing"
+      "klass": "org.hisp.dhis.user.sharing.Sharing",
+      "propertyType": "COMPLEX"
     },
     {
-      "propertyType": "TEXT",
-      "name": "displayFormName"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "userAccess"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "name"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
+      "klass": "org.hisp.dhis.program.ProgramStatus",
       "propertyType": "CONSTANT",
-      "name": "programStatus",
       "constants": [
         "ACTIVE",
         "COMPLETED",
@@ -319,8 +319,8 @@
       ]
     },
     {
+      "klass": "org.hisp.dhis.common.HideEmptyItemStrategy",
       "propertyType": "CONSTANT",
-      "name": "hideEmptyRowItems",
       "constants": [
         "NONE",
         "BEFORE_FIRST",
@@ -330,12 +330,12 @@
       ]
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "favorite"
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
     },
     {
+      "klass": "org.hisp.dhis.analytics.AggregationType",
       "propertyType": "CONSTANT",
-      "name": "aggregationType",
       "constants": [
         "SUM",
         "AVERAGE",
@@ -357,28 +357,28 @@
       ]
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "dataDimensionItem"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "legacy"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "categoryOptionGroupSetDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "IDENTIFIER",
-      "name": "code"
+      "klass": "java.lang.String",
+      "propertyType": "IDENTIFIER"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "hideSubtitle"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
+      "klass": "org.hisp.dhis.analytics.EventOutputType",
       "propertyType": "CONSTANT",
-      "name": "outputType",
       "constants": [
         "EVENT",
         "ENROLLMENT",
@@ -386,88 +386,88 @@
       ]
     },
     {
-      "propertyType": "TEXT",
-      "name": "description"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "organisationUnitGroupSetDimension"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "title"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "hideLegend"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
-      "propertyType": "NUMBER",
-      "name": "rangeAxisMinValue"
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "organisationUnitLevel"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "BOOLEAN",
-      "name": "externalAccess"
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
     },
     {
+      "klass": "org.hisp.dhis.legend.LegendDisplayStrategy",
       "propertyType": "CONSTANT",
-      "name": "legendDisplayStrategy",
       "constants": [
         "FIXED",
         "BY_DATA_ITEM"
       ]
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "dataElementValueDimension"
+      "klass": "org.hisp.dhis.dataelement.DataElement",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "COMPLEX",
-      "name": "relativePeriods"
+      "klass": "org.hisp.dhis.period.RelativePeriods",
+      "propertyType": "COMPLEX"
     },
     {
-      "propertyType": "TEXT",
-      "name": "targetLineLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "organisationUnit"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "value"
+      "klass": "org.hisp.dhis.common.DimensionalItemObject",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "programStage"
+      "klass": "org.hisp.dhis.program.ProgramStage",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "TEXT",
-      "name": "timeField"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
-      "propertyType": "NUMBER",
-      "name": "targetLineValue"
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "filter"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "COLLECTION",
-      "name": "row"
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
     },
     {
-      "propertyType": "TEXT",
-      "name": "baseLineLabel"
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
     },
     {
+      "klass": "org.hisp.dhis.common.DigitGroupSeparator",
       "propertyType": "CONSTANT",
-      "name": "digitGroupSeparator",
       "constants": [
         "COMMA",
         "SPACE",
@@ -475,16 +475,16 @@
       ]
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "createdBy"
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "legendSet"
+      "klass": "org.hisp.dhis.legend.LegendSet",
+      "propertyType": "REFERENCE"
     },
     {
+      "klass": "org.hisp.dhis.analytics.UserOrgUnitType",
       "propertyType": "CONSTANT",
-      "name": "userOrgUnitType",
       "constants": [
         "DATA_CAPTURE",
         "DATA_OUTPUT",
@@ -492,12 +492,12 @@
       ]
     },
     {
-      "propertyType": "NUMBER",
-      "name": "rangeAxisMaxValue"
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
     },
     {
-      "propertyType": "REFERENCE",
-      "name": "user"
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
     }
   ]
 }

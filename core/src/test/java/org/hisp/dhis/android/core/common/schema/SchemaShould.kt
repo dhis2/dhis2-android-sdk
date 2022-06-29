@@ -34,9 +34,7 @@ import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
-class SchemaShould :
-    BaseObjectShould("common/schema.json"),
-    ObjectShould {
+class SchemaShould : BaseObjectShould("common/schema.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
@@ -44,7 +42,8 @@ class SchemaShould :
         val schema: Schema = objectMapper.readValue(jsonStream, Schema::class.java)
 
         Truth.assertThat(schema).isNotNull()
-        Truth.assertThat(schema.properties[0].klass).isEqualTo("dataElementGroupSetDimension")
-        Truth.assertThat(schema.properties.find { it.klass == "eventStatus" }?.constants?.get(0)).isEqualTo("ACTIVE")
+        Truth.assertThat(schema.properties[0].klass).isEqualTo("java.util.List")
+        Truth.assertThat(schema.properties.find { it.klass == "org.hisp.dhis.event.EventStatus" }
+            ?.constants?.get(0)).isEqualTo("ACTIVE")
     }
 }

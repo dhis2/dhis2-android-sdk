@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.common.schema
 
 import dagger.Reusable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 
 @Reusable
 internal class SchemaCall @Inject internal constructor(

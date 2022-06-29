@@ -53,7 +53,7 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
         d2 = D2Factory.forNewDatabase()
     }
 
-    //@Test
+    // @Test
     fun check_no_enum_have_been_updated_on_server() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
         val schemas: List<Schema> = getD2DIComponent(d2).schemaCall().download().blockingGet()
@@ -71,8 +71,10 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
         return if (apiConstants == null) {
             "Enum ${sdkEnumEntry.key} not found on the server"
         } else {
-            (constantsContained(sdkEnumEntry.value, apiConstants, sdkEnumEntry.key, "SDK") +
-                    constantsContained(apiConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server"))
+            (
+                constantsContained(sdkEnumEntry.value, apiConstants, sdkEnumEntry.key, "SDK") +
+                    constantsContained(apiConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server")
+                )
                 .ifEmpty { null }
         }
     }

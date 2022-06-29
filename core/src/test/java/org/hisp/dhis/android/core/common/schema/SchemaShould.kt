@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.common.schema
 
 import com.google.common.truth.Truth
+import java.io.IOException
+import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
-class SchemaShould : BaseObjectShould("common/schema.json"),
+class SchemaShould :
+    BaseObjectShould("common/schema.json"),
     ObjectShould {
 
     @Test

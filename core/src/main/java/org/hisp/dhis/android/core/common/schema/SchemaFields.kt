@@ -40,11 +40,11 @@ internal object SchemaFields {
 
     private val propertyFields: Fields<Schema.Companion.SchemaProperty> =
         Fields.builder<Schema.Companion.SchemaProperty>()
-        .fields(
-            SchemaPropertyFh.field<String>(KLASS),
-            SchemaPropertyFh.field<String>(PROPERTY_TYPE),
-            SchemaPropertyFh.field<String>(CONSTANTS)
-        ).build()
+            .fields(
+                SchemaPropertyFh.field<String>(KLASS),
+                SchemaPropertyFh.field<String>(PROPERTY_TYPE),
+                SchemaPropertyFh.field<String>(CONSTANTS)
+            ).build()
 
     val allFields: Fields<Schema> = Fields.builder<Schema>()
         .fields(

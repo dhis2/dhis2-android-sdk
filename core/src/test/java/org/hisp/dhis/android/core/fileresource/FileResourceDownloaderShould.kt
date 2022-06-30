@@ -26,50 +26,68 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event
+package org.hisp.dhis.android.core.fileresource
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.event.internal.EventDownloadCall
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.junit.Before
 import org.junit.Test
 
-class EventDownloaderShould {
+class FileResourceDownloaderShould {
 
-    private val call: EventDownloadCall = mock()
+    private val call: FileResourceDownloadCall = mock()
 
-    private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
+    private val paramsCapture: KArgumentCaptor<FileResourceDownloadParams> = argumentCaptor()
 
-    private lateinit var downloader: EventDownloader
+    private lateinit var downloader: FileResourceDownloader
 
     @Before
     fun setUp() {
-        downloader = EventDownloader(RepositoryScope.empty(), call)
+        downloader = FileResourceDownloader(call, FileResourceDownloadParams())
     }
 
     @Test
-    fun should_parse_uid_eq_params() {
-        downloader.byUid().eq("uid").download()
+    fun should_use_default_params() {
+        downloader.download()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.uids().size).isEqualTo(1)
-        assertThat(params.uids()[0]).isEqualTo("uid")
+        assertThat(params.domainTypes).isNotEmpty()
+        assertThat(params.elementTypes).isNotEmpty()
+        assertThat(params.valueTypes).isNotEmpty()
+        assertThat(params.maxContentLength).isNotNull()
     }
 
     @Test
-    fun should_parse_uid_in_params() {
-        downloader.byUid().`in`("uid0", "uid1", "uid2").download()
+    fun should_override_default_params() {
+        downloader
+            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+            .byValueType().eq(FileResourceValueType.IMAGE)
+            .byMaxContentLength().eq(400)
+            .download()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.uids().size).isEqualTo(3)
-        assertThat(params.uids()[0]).isEqualTo("uid0")
-        assertThat(params.uids()[1]).isEqualTo("uid1")
-        assertThat(params.uids()[2]).isEqualTo("uid2")
+        assertThat(params.domainTypes).isEqualTo(listOf(FileResourceDomainType.TRACKER))
+        assertThat(params.elementTypes).isEqualTo(listOf(FileResourceElementType.DATA_ELEMENT))
+        assertThat(params.valueTypes).isEqualTo(listOf(FileResourceValueType.IMAGE))
+        assertThat(params.maxContentLength).isEqualTo(400)
+    }
+
+    @Test
+    fun should_accept_null_max_content_length() {
+        downloader
+            .byMaxContentLength().eq(null)
+            .download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.maxContentLength).isNull()
     }
 }

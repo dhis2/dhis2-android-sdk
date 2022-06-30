@@ -25,33 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
-
-import java.io.File;
-import java.net.URLConnection;
-import java.util.Date;
-
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
-
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
-
-        return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
-    }
-}
+internal data class FileResourceDownloadParams(
+    val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
+    val elementTypes: List<FileResourceElementType> = FileResourceElementType.values().asList(),
+    val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.values().asList(),
+    val maxContentLength: Int? = 6000000
+) : BaseScope

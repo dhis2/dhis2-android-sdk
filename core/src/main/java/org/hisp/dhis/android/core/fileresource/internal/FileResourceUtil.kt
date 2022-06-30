@@ -102,7 +102,7 @@ internal object FileResourceUtil {
                 outputStream.write(fileReader, 0, read)
                 fileSizeDownloaded += read.toLong()
                 Log.d(
-                    FileResourceCallFactory::class.java.canonicalName,
+                    FileResourceUtil::class.java.canonicalName,
                     "file download: $fileSizeDownloaded of $fileSize"
                 )
             }

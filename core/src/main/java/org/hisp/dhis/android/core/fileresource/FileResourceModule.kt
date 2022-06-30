@@ -25,33 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
+interface FileResourceModule {
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .download()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
+    fun download(): Observable<D2Progress>
 
-import java.io.File;
-import java.net.URLConnection;
-import java.util.Date;
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .blockingDownload()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
+    fun blockingDownload()
 
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
+    fun fileResources(): FileResourceCollectionRepository
 
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
-
-        return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
-    }
+    fun fileResourceDownloader(): FileResourceDownloader
 }

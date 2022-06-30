@@ -25,33 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource
 
-package org.hisp.dhis.android.core.fileresource.internal;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
-
-import java.io.File;
-import java.net.URLConnection;
-import java.util.Date;
-
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
-
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
-
-        return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
+internal object FileResourceInternalAccessor {
+    fun isStored(fileResource: FileResource): Boolean {
+        return fileResource.storageStatus()?.let { it == FileResourceStorageStatus.STORED } ?: true
     }
 }

@@ -25,33 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import org.hisp.dhis.android.core.common.ValueType
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
+enum class FileResourceValueType(internal val valueType: ValueType) {
+    FILE_RESOURCE(ValueType.FILE_RESOURCE),
+    IMAGE(ValueType.IMAGE)
+}
 
-import java.io.File;
-import java.net.URLConnection;
-import java.util.Date;
+enum class FileResourceElementType {
+    DATA_ELEMENT,
+    TRACED_ENTITY_ATTRIBUTE
+}
 
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
-
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
-
-        return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(URLConnection.guessContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
-    }
+enum class FileResourceDomainType {
+    AGGREGATED,
+    TRACKER
 }

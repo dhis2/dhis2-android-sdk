@@ -25,19 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests.schema.tests
 
-package org.hisp.dhis.android.realservertests.schema
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.realservertests.schema.ApiSchema
+import org.junit.Test
+import java.io.InputStream
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import retrofit2.http.GET
-import retrofit2.http.Query
+class ApiSchemaShould {
+    private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
+    private var jsonStream: InputStream = this.javaClass.classLoader!!.getResourceAsStream("common/api_schema.json")
 
-internal interface SchemaService {
-    @GET("schemas")
-    fun getSchema(
-        @Query("fields") @Which fields: Fields<Schema>
-    ): Single<Payload<Schema>>
+    @Test
+    fun map_from_json_string() {
+        val apiSchema: ApiSchema = objectMapper.readValue(jsonStream, ApiSchema::class.java)
+
+        Truth.assertThat(apiSchema).isNotNull()
+        Truth.assertThat(apiSchema.properties[0].klass).isEqualTo("java.util.List")
+        Truth.assertThat(apiSchema.properties
+            .find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0))
+            .isEqualTo("ACTIVE")
+    }
 }

@@ -25,16 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.realservertests.schema
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-internal class SchemaCall internal constructor(
-    private val retrofit: Retrofit
-) : ListCall<Schema> {
-    override fun download(): Single<List<Schema>> {
-        return retrofit.create(SchemaService::class.java).getSchema(SchemaFields.allFields).map { it.items() }
-    }
+internal interface ApiSchemaService {
+    @GET("schemas")
+    fun getSchema(
+        @Query("fields") @Which fields: Fields<ApiSchema>
+    ): Single<Payload<ApiSchema>>
 }

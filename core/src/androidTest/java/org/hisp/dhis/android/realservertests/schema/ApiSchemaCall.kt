@@ -25,26 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.realservertests.schema.tests
+package org.hisp.dhis.android.realservertests.schema
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.realservertests.schema.Schema
-import org.junit.Test
-import java.io.InputStream
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import retrofit2.Retrofit
 
-class SchemaShould {
-    private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
-    private var jsonStream: InputStream = this.javaClass.classLoader!!.getResourceAsStream("common/schema.json")
-
-    @Test
-    fun map_from_json_string() {
-        val schema: Schema = objectMapper.readValue(jsonStream, Schema::class.java)
-
-        Truth.assertThat(schema).isNotNull()
-        Truth.assertThat(schema.properties[0].klass).isEqualTo("java.util.List")
-        Truth.assertThat(schema.properties.find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0))
-            .isEqualTo("ACTIVE")
+internal class ApiSchemaCall internal constructor(
+    private val retrofit: Retrofit
+) : ListCall<ApiSchema> {
+    override fun download(): Single<List<ApiSchema>> {
+        return retrofit.create(ApiSchemaService::class.java).getSchema(ApiSchemaFields.allFields).map { it.items() }
     }
 }

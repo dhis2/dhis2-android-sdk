@@ -41,13 +41,13 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.visualization.*
-import org.hisp.dhis.android.realservertests.schema.Schema
-import org.hisp.dhis.android.realservertests.schema.SchemaCall
+import org.hisp.dhis.android.realservertests.schema.ApiSchema
+import org.hisp.dhis.android.realservertests.schema.ApiSchemaCall
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
+class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var d2: D2
 
     @Before
@@ -59,9 +59,9 @@ class EnumUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
     @Test
     fun check_no_enum_have_been_updated_on_server() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
-        val schemas: List<Schema> = SchemaCall(d2.retrofit()).download().blockingGet()
-        val constantsMap: Map<String, List<String>?> = schemas.flatMap { schema ->
-            schema.properties.filter { it.propertyType == "CONSTANT" }
+        val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.retrofit()).download().blockingGet()
+        val constantsMap: Map<String, List<String>?> = apiSchemas.flatMap { apiSchema ->
+            apiSchema.properties.filter { it.propertyType == "CONSTANT" }
         }.toSet().associate { fullKlassToSimpleKlass(it.klass) to it.constants }
 
         val errorList = enumsMap.mapNotNull { checkEnum(it, constantsMap[it.key]) }

@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.schema
+package org.hisp.dhis.android.realservertests.schema
 
 internal data class Schema(
     val properties: List<SchemaProperty>

@@ -25,30 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.schema
+package org.hisp.dhis.android.realservertests.schema.tests
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.realservertests.schema.Schema
+import org.junit.Test
+import java.io.InputStream
 
-internal object SchemaFields {
-    private const val PROPERTIES = "properties"
-    private const val KLASS = "klass"
-    private const val PROPERTY_TYPE = "propertyType"
-    private const val CONSTANTS = "constants"
-    private val SchemaFh = FieldsHelper<Schema>()
-    private val SchemaPropertyFh = FieldsHelper<Schema.Companion.SchemaProperty>()
+class SchemaShould {
+    private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
+    private var jsonStream: InputStream = this.javaClass.classLoader!!.getResourceAsStream("common/schema.json")
 
-    private val propertyFields: Fields<Schema.Companion.SchemaProperty> =
-        Fields.builder<Schema.Companion.SchemaProperty>()
-            .fields(
-                SchemaPropertyFh.field<String>(KLASS),
-                SchemaPropertyFh.field<String>(PROPERTY_TYPE),
-                SchemaPropertyFh.field<String>(CONSTANTS)
-            ).build()
+    @Test
+    fun map_from_json_string() {
+        val schema: Schema = objectMapper.readValue(jsonStream, Schema::class.java)
 
-    val allFields: Fields<Schema> = Fields.builder<Schema>()
-        .fields(
-            SchemaFh.nestedField<Schema.Companion.SchemaProperty>(PROPERTIES)
-                .with(propertyFields)
-        ).build()
+        Truth.assertThat(schema).isNotNull()
+        Truth.assertThat(schema.properties[0].klass).isEqualTo("java.util.List")
+        Truth.assertThat(schema.properties.find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0))
+            .isEqualTo("ACTIVE")
+    }
 }

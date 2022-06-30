@@ -25,25 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.schema
+package org.hisp.dhis.android.realservertests.schema
 
-import com.google.common.truth.Truth
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import retrofit2.Retrofit
 
-class SchemaShould : BaseObjectShould("common/schema.json"), ObjectShould {
-
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val schema: Schema = objectMapper.readValue(jsonStream, Schema::class.java)
-
-        Truth.assertThat(schema).isNotNull()
-        Truth.assertThat(schema.properties[0].klass).isEqualTo("java.util.List")
-        Truth.assertThat(schema.properties.find { it.klass == "org.hisp.dhis.event.EventStatus" }
-            ?.constants?.get(0)).isEqualTo("ACTIVE")
+internal class SchemaCall internal constructor(
+    private val retrofit: Retrofit
+) : ListCall<Schema> {
+    override fun download(): Single<List<Schema>> {
+        return retrofit.create(SchemaService::class.java).getSchema(SchemaFields.allFields).map { it.items() }
     }
 }

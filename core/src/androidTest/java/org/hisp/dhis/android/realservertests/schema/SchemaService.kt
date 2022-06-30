@@ -25,25 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.schema
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
-import retrofit2.Retrofit
+package org.hisp.dhis.android.realservertests.schema
 
-@Module(includes = [])
-class SchemaDIModule {
-    @Provides
-    @Reusable
-    internal fun schemaService(retrofit: Retrofit): SchemaService {
-        return retrofit.create(SchemaService::class.java)
-    }
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-    @Provides
-    @Reusable
-    internal fun schemaCall(impl: SchemaCall): ListCall<Schema> {
-        return impl
-    }
+internal interface SchemaService {
+    @GET("schemas")
+    fun getSchema(
+        @Query("fields") @Which fields: Fields<Schema>
+    ): Single<Payload<Schema>>
 }

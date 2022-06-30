@@ -43,12 +43,13 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.PingCall
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 
@@ -56,6 +57,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 internal class FileResourcePostCall @Inject constructor(
     private val fileResourceService: FileResourceService,
     private val apiCallExecutor: APICallExecutor,
+    private val dataValueStore: DataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
@@ -66,7 +68,7 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResource(fileResource: FileResource): String? {
+    fun uploadFileResource(fileResource: FileResource, value: FileResourceValue): String? {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
             pingCall.getCompletable(true).blockingAwait()
@@ -78,9 +80,9 @@ internal class FileResourcePostCall @Inject constructor(
         return if (file != null) {
             val filePart = getFilePart(file)
             val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
-            handleResponse(responseBody.string(), fileResource, file)
+            handleResponse(responseBody.string(), fileResource, file, value)
         } else {
-            handleMissingFile(fileResource)
+            handleMissingFile(fileResource, value)
             null
         }
     }
@@ -96,11 +98,12 @@ internal class FileResourcePostCall @Inject constructor(
     private fun handleResponse(
         responseBody: String,
         fileResource: FileResource,
-        file: File
+        file: File,
+        value: FileResourceValue
     ): String {
         try {
             val downloadedFileResource = getDownloadedFileResource(responseBody)
-            updateValue(fileResource, downloadedFileResource)
+            updateValue(fileResource, downloadedFileResource.uid(), value)
 
             val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
             updateFileResource(fileResource, downloadedFileResource, downloadedFile)
@@ -115,12 +118,10 @@ internal class FileResourcePostCall @Inject constructor(
         }
     }
 
-    private fun handleMissingFile(fileResource: FileResource) {
-        fileResource.uid()?.let {
-            if (!updateTrackedEntityAttributeValue(fileResource, null)) {
-                updateTrackedEntityDataValue(fileResource, null)
-            }
-            fileResourceStore.deleteIfExists(it)
+    private fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
+        if (fileResource.uid() != null) {
+            updateValue(fileResource, null, value)
+            fileResourceStore.deleteIfExists(fileResource.uid()!!)
         }
     }
 
@@ -130,15 +131,43 @@ internal class FileResourcePostCall @Inject constructor(
         return fileResourceResponse.response()!!.fileResource()!!
     }
 
-    private fun updateValue(fileResource: FileResource, downloadedFileResource: FileResource) {
-        if (!updateTrackedEntityAttributeValue(fileResource, downloadedFileResource.uid())) {
-            updateTrackedEntityDataValue(fileResource, downloadedFileResource.uid())
+    private fun updateValue(
+        fileResource: FileResource,
+        newUid: String?,
+        value: FileResourceValue
+    ) {
+        val updateValueMethod = when (value) {
+            is FileResourceValue.DataValue -> ::updateAggregatedDataValue
+            is FileResourceValue.EventValue -> ::updateTrackedEntityDataValue
+            is FileResourceValue.AttributeValue -> ::updateTrackedEntityAttributeValue
+        }
+
+        updateValueMethod(fileResource, newUid, value.uid)
+    }
+
+    private fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
+            .build()
+
+        dataValueStore.selectOneWhere(whereClause)?.let { dataValue ->
+            val newValue =
+                if (newUid == null) dataValue.toBuilder().deleted(true).build()
+                else dataValue.toBuilder().value(newUid).build()
+
+            dataValueStore.updateWhere(newValue)
         }
     }
 
-    private fun updateTrackedEntityAttributeValue(fileResource: FileResource, newUid: String?): Boolean {
+    private fun updateTrackedEntityAttributeValue(
+        fileResource: FileResource,
+        newUid: String?,
+        elementUid: String
+    ): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, elementUid)
             .build()
 
         return trackedEntityAttributeValueStore.selectOneWhere(whereClause)?.let { attributeValue ->
@@ -151,9 +180,10 @@ internal class FileResourcePostCall @Inject constructor(
         } ?: false
     }
 
-    private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?) {
+    private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
             .build()
 
         trackedEntityDataValueStore.selectOneWhere(whereClause)?.let { dataValue ->

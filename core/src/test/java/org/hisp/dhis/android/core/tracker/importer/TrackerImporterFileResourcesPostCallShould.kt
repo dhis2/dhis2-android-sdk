@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
@@ -88,13 +89,15 @@ class TrackerImporterFileResourcesPostCallShould {
             )
         )
 
+        val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
         whenever(fileResourceStore.getUploadableSyncStatesIncludingError()).doReturn(fileResources)
         whenever(fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)).doReturn(fileResource)
-        whenever(fileResourcesPostCall.uploadFileResource(fileResource)).doReturn(Math.random().toString())
+        whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
+            .doReturn(Math.random().toString())
 
         val result = fileResourcePostCall.uploadFileResources(payloadWrapper).blockingGet()
 
-        verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource)
+        verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource, fValue)
 
         val entityValue = result.updated.trackedEntities.first().trackedEntityAttributeValues()!!.first().value()!!
         val enrollmentValue = result.updated.enrollments.first().attributes()!!.first().value()!!

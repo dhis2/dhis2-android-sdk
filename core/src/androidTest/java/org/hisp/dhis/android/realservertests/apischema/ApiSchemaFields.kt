@@ -25,17 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests.apischema
 
-package org.hisp.dhis.android.realservertests.schema
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 
-internal data class ApiSchema(
-    val properties: List<SchemaProperty>
-) {
-    internal companion object {
-        internal data class SchemaProperty(
-            val propertyType: String,
-            val klass: String,
-            val constants: List<String>?
-        )
-    }
+internal object ApiSchemaFields {
+    private const val PROPERTIES = "properties"
+    private const val KLASS = "klass"
+    private const val PROPERTY_TYPE = "propertyType"
+    private const val CONSTANTS = "constants"
+    private val ApiSchemaFh = FieldsHelper<ApiSchema>()
+    private val ApiSchemaPropertyFh = FieldsHelper<ApiSchema.Companion.SchemaProperty>()
+
+    private val propertyFields: Fields<ApiSchema.Companion.SchemaProperty> =
+        Fields.builder<ApiSchema.Companion.SchemaProperty>()
+            .fields(
+                ApiSchemaPropertyFh.field<String>(KLASS),
+                ApiSchemaPropertyFh.field<String>(PROPERTY_TYPE),
+                ApiSchemaPropertyFh.field<String>(CONSTANTS)
+            ).build()
+
+    val allFields: Fields<ApiSchema> = Fields.builder<ApiSchema>()
+        .fields(
+            ApiSchemaFh.nestedField<ApiSchema.Companion.SchemaProperty>(
+                PROPERTIES
+            )
+                .with(propertyFields)
+        ).build()
 }

@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.realservertests.schema.tests
+package org.hisp.dhis.android.realservertests.apischema.tests
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2
@@ -41,8 +41,8 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.visualization.*
-import org.hisp.dhis.android.realservertests.schema.ApiSchema
-import org.hisp.dhis.android.realservertests.schema.ApiSchemaCall
+import org.hisp.dhis.android.realservertests.apischema.ApiSchema
+import org.hisp.dhis.android.realservertests.apischema.ApiSchemaCall
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

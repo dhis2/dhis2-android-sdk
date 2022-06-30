@@ -25,32 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.realservertests.schema
 
+package org.hisp.dhis.android.realservertests.apischema
+
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-internal object ApiSchemaFields {
-    private const val PROPERTIES = "properties"
-    private const val KLASS = "klass"
-    private const val PROPERTY_TYPE = "propertyType"
-    private const val CONSTANTS = "constants"
-    private val ApiSchemaFh = FieldsHelper<ApiSchema>()
-    private val ApiSchemaPropertyFh = FieldsHelper<ApiSchema.Companion.SchemaProperty>()
-
-    private val propertyFields: Fields<ApiSchema.Companion.SchemaProperty> =
-        Fields.builder<ApiSchema.Companion.SchemaProperty>()
-            .fields(
-                ApiSchemaPropertyFh.field<String>(KLASS),
-                ApiSchemaPropertyFh.field<String>(PROPERTY_TYPE),
-                ApiSchemaPropertyFh.field<String>(CONSTANTS)
-            ).build()
-
-    val allFields: Fields<ApiSchema> = Fields.builder<ApiSchema>()
-        .fields(
-            ApiSchemaFh.nestedField<ApiSchema.Companion.SchemaProperty>(
-                PROPERTIES
-            )
-                .with(propertyFields)
-        ).build()
+internal interface ApiSchemaService {
+    @GET("schemas")
+    fun getSchema(
+        @Query("fields") @Which fields: Fields<ApiSchema>
+    ): Single<Payload<ApiSchema>>
 }

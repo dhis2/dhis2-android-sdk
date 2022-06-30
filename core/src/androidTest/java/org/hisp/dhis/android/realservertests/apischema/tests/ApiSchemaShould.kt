@@ -25,12 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.realservertests.schema.tests
+package org.hisp.dhis.android.realservertests.apischema.tests
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.realservertests.schema.ApiSchema
+import org.hisp.dhis.android.realservertests.apischema.ApiSchema
 import org.junit.Test
 import java.io.InputStream
 

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.*
@@ -100,7 +101,8 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
             entry<DigitGroupSeparator>("DigitGroupSeparator"),
             entry<DisplayDensity>("DisplayDensity"),
             entry<LegendStrategy>("LegendDisplayStrategy"),
-            entry<HideEmptyItemStrategy>("HideEmptyItemStrategy")
+            entry<HideEmptyItemStrategy>("HideEmptyItemStrategy"),
+            entry<FileResourceStorageStatus>("FileResourceStorageStatus")
         )
     }
 }

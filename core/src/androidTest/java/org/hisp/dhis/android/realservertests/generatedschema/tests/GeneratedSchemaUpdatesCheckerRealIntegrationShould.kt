@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
@@ -98,7 +99,8 @@ class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
             entry<DigitGroupSeparator>("digitGroupSeparator"),
             entry<DisplayDensity>("displayDensity"),
             entry<LegendStrategy>("legendDisplayStrategy"),
-            entry<HideEmptyItemStrategy>("hideEmptyItemStrategy")
+            entry<HideEmptyItemStrategy>("hideEmptyItemStrategy"),
+            entry<FileResourceStorageStatus>("fileResourceStorageStatus")
         )
     }
 }

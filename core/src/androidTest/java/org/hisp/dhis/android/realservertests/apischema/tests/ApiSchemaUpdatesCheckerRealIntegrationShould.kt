@@ -58,7 +58,7 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
         d2 = D2Factory.forNewDatabase()
     }
 
-    //@Test
+    // @Test
     fun check_no_enum_have_been_updated_on_server() {
         d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
         val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.retrofit()).download().blockingGet()

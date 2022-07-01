@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.realservertests.generatedschema.tests
 
 import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.*
@@ -41,66 +40,42 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.realservertests.EnumTestHelper
+import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.entry
 import org.hisp.dhis.android.realservertests.OutsideRetrofitFactory
 import org.hisp.dhis.android.realservertests.generatedschema.GeneratedSchemaCall
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 
-class GeneratedSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
-    private lateinit var d2: D2
+class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
     private val baseUrl = "https://raw.githubusercontent.com/dhis2/dhis2-json-schema-generator/json-schemas/schemas/"
     private val instanceVersion = "v2.37.6"
 
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
-
     @Test
-    fun check_no_enum_have_been_updated_on_server() {
+    fun check_no_enum_have_been_updated_on_generated_schemas() {
         val retrofit = OutsideRetrofitFactory.retrofit(baseUrl, OkHttpClient())
         val generatedSchemaCall = GeneratedSchemaCall(retrofit, instanceVersion)
         val constantsMap: Map<String, List<String>?> = enumsMap.mapValues {
             generatedSchemaCall.download(it.key).blockingGet().enum
         }
 
-        val errorList = enumsMap.mapNotNull { checkEnum(it, constantsMap[it.key]) }
+        val errorList = enumsMap.mapNotNull { EnumTestHelper.checkEnum(it, constantsMap[it.key]) }
         if (errorList.isNotEmpty()) {
-            Assert.fail(errorList.joinToString())
+            Assert.fail(errorList.joinToString(".\n"))
         }
     }
 
-    private fun checkEnum(sdkEnumEntry: Map.Entry<String, List<String>>, generateConstants: List<String>?): String? {
-        return if (generateConstants == null) {
-            "Enum ${sdkEnumEntry.key} not found on the server"
-        } else {
-            (
-                constantsContained(sdkEnumEntry.value, generateConstants, sdkEnumEntry.key, "SDK") +
-                    constantsContained(generateConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server")
-                )
-                .ifEmpty { null }
-        }
-    }
-
-    private fun constantsContained(
-        containerList: List<String>,
-        containedList: List<String>,
-        enumKey: String,
-        containerKey: String
-    ): String {
-        val notContainedValues = containedList.filter { !containerList.contains(it) }
-        return if (notContainedValues.isNotEmpty()) {
-            "Constants ${notContainedValues.joinToString()} from enum $enumKey does not exist in the $containerKey. "
-        } else ""
-    }
 
     companion object {
         val enumsMap: Map<String, List<String>> = mapOf(
             entry<DatePeriodType>("datePeriodType"),
-
-
+            entry<AssignedUserMode>("assignedUserSelectionMode"),
+            entry<ValueTypeRenderingType>("valueTypeRenderingType"),
+            entry<DataApprovalState>("dataApprovalState"),
+            entry<ImportStatus>("importStatus"),
+            entry<SectionRenderingType>("sectionRenderingType"),
+            entry<RelativePeriod>("relativePeriodEnum"),
+            entry<LegendStyle>("legendDisplayStyle"),
             entry<VisualizationType>("visualizationType"),
             entry<EnrollmentStatus>("programStatus"),
             entry<FeatureType>("featureType"),
@@ -125,9 +100,5 @@ class GeneratedSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTe
             entry<LegendStrategy>("legendDisplayStrategy"),
             entry<HideEmptyItemStrategy>("hideEmptyItemStrategy")
         )
-
-        private inline fun <reified E : Enum<E>> entry(generateKey: String): Pair<String, List<String>> {
-            return Pair(generateKey, enumValues<E>().map { it.toString() })
-        }
     }
 }

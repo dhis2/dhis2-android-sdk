@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.checkEnum
+import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.entry
 import org.hisp.dhis.android.realservertests.apischema.ApiSchema
 import org.hisp.dhis.android.realservertests.apischema.ApiSchemaCall
 import org.junit.Assert
@@ -66,32 +68,8 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
 
         val errorList = enumsMap.mapNotNull { checkEnum(it, constantsMap[it.key]) }
         if (errorList.isNotEmpty()) {
-            Assert.fail(errorList.joinToString())
+            Assert.fail(errorList.joinToString(".\n"))
         }
-    }
-
-    private fun checkEnum(sdkEnumEntry: Map.Entry<String, List<String>>, apiConstants: List<String>?): String? {
-        return if (apiConstants == null) {
-            "Enum ${sdkEnumEntry.key} not found on the server"
-        } else {
-            (
-                constantsContained(sdkEnumEntry.value, apiConstants, sdkEnumEntry.key, "SDK") +
-                    constantsContained(apiConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server")
-                )
-                .ifEmpty { null }
-        }
-    }
-
-    private fun constantsContained(
-        containerList: List<String>,
-        containedList: List<String>,
-        enumKey: String,
-        containerKey: String
-    ): String {
-        val notContainedValues = containedList.filter { !containerList.contains(it) }
-        return if (notContainedValues.isNotEmpty()) {
-            "Constants ${notContainedValues.joinToString()} from enum $enumKey does not exist in the $containerKey. "
-        } else ""
     }
 
     private fun fullKlassToSimpleKlass(fullKlass: String): String {
@@ -124,9 +102,5 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
             entry<LegendStrategy>("LegendDisplayStrategy"),
             entry<HideEmptyItemStrategy>("HideEmptyItemStrategy")
         )
-
-        private inline fun <reified E : Enum<E>> entry(apiKey: String): Pair<String, List<String>> {
-            return Pair(apiKey, enumValues<E>().map { it.toString() })
-        }
     }
 }

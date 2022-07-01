@@ -66,7 +66,6 @@ class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
         }
     }
 
-
     companion object {
         val enumsMap: Map<String, List<String>> = mapOf(
             entry<DatePeriodType>("datePeriodType"),

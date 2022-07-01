@@ -29,10 +29,10 @@ package org.hisp.dhis.android.realservertests.apischema.tests
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth
+import java.io.InputStream
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.realservertests.apischema.ApiSchema
 import org.junit.Test
-import java.io.InputStream
 
 class ApiSchemaShould {
     private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
@@ -44,8 +44,10 @@ class ApiSchemaShould {
 
         Truth.assertThat(apiSchema).isNotNull()
         Truth.assertThat(apiSchema.properties[0].klass).isEqualTo("java.util.List")
-        Truth.assertThat(apiSchema.properties
-            .find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0))
+        Truth.assertThat(
+            apiSchema.properties
+                .find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0)
+        )
             .isEqualTo("ACTIVE")
     }
 }

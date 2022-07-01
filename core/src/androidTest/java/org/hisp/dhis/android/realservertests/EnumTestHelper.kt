@@ -51,7 +51,7 @@ internal class EnumTestHelper {
             val notContainedValues = containedList.filter { !containerList.contains(it) }
             return if (notContainedValues.isNotEmpty()) {
                 "Constants ${notContainedValues.joinToString()} from enum " +
-                        "$enumKey does not exist in the $containerKey"
+                    "$enumKey does not exist in the $containerKey"
             } else null
         }
 
@@ -60,4 +60,3 @@ internal class EnumTestHelper {
         }
     }
 }
-

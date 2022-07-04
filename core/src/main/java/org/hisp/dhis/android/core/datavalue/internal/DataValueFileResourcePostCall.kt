@@ -28,10 +28,7 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
@@ -40,35 +37,34 @@ import javax.inject.Inject
 
 @Reusable
 internal class DataValueFileResourcePostCall @Inject constructor(
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val fileResourceHelper: FileResourceHelper,
     private val fileResourcePostCall: FileResourcePostCall
 ) {
     fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
-        val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
-        val uploadedFileResources = mutableListOf<String>()
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-        val validDataValues = dataValues.map { dataValue ->
-            // TODO Add cache
-            fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
-                val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
-                    uploadedFileResources.add(it)
-                }
-                newUid?.let { dataValue.toBuilder().value(newUid).build() }
-            } ?: dataValue
+        return if (fileResources.isEmpty()) {
+            DataValueFileResourcePostCallResult(dataValues, emptyList())
+        } else {
+            val uploadedFileResources = mutableListOf<String>()
+
+            val validDataValues = dataValues.map { dataValue ->
+                // TODO Add cache
+                fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                    val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
+                    val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
+                        uploadedFileResources.add(it)
+                    }
+                    newUid?.let { dataValue.toBuilder().value(newUid).build() }
+                } ?: dataValue
+            }
+
+            DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
         }
-
-        return DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
     }
 
-    // TODO Move to helper
     fun updateFileResourceStates(fileResources: List<String>) {
-        fileResources.forEach { fr ->
-            val relatedState = fileResourceHelper.getRelatedResourceState(fr, FileResourceDomainType.AGGREGATED)
-            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
-            fileResourceStore.setSyncStateIfUploading(fr, state)
-        }
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.AGGREGATED)
     }
 }
 

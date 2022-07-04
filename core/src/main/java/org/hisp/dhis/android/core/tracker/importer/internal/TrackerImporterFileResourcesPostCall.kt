@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPaylo
 
 @Reusable
 internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val fileResourcePostCall: FileResourcePostCall,
     private val fileResourceHelper: FileResourceHelper
 ) {
@@ -54,7 +53,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         payloadWrapper: NewTrackerImporterPayloadWrapper
     ): Single<NewTrackerImporterPayloadWrapper> {
         return Single.create { emitter ->
-            val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
+            val fileResources = fileResourceHelper.getUploadableFileResources()
 
             if (fileResources.isEmpty()) {
                 emitter.onSuccess(payloadWrapper)

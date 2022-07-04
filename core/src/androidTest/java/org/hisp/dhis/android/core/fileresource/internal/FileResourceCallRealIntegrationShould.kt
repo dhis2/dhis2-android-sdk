@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.junit.Before
-import org.junit.Test
 import java.io.File
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {

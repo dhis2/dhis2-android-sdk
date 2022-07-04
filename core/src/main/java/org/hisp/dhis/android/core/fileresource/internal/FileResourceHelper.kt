@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -52,8 +53,13 @@ internal class FileResourceHelper @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val eventStore: EventStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    private val dataValueStore: DataValueStore
+    private val dataValueStore: DataValueStore,
+    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
 ) {
+
+    fun getUploadableFileResources(): List<FileResource> {
+        return fileResourceStore.getUploadableSyncStatesIncludingError()
+    }
 
     fun isPresentInDataValues(fileResourceUid: String, dataValues: Collection<TrackedEntityDataValue>?): Boolean {
         return dataValues?.any {
@@ -115,7 +121,15 @@ internal class FileResourceHelper @Inject constructor(
         }
     }
 
-    fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDomainType): State {
+    fun updateFileResourceStates(fileResources: List<String>, domainType: FileResourceDomainType) {
+        fileResources.forEach { fr ->
+            val relatedState = getRelatedResourceState(fr, domainType)
+            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+            fileResourceStore.setSyncStateIfUploading(fr, state)
+        }
+    }
+
+    private fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDomainType): State {
         return when (domain) {
             FileResourceDomainType.TRACKER ->
                 getRelatedEvent(fileResourceUid)?.syncState()

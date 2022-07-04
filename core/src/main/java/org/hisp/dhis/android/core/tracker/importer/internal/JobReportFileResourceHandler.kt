@@ -29,18 +29,15 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportFileResourceHandler @Inject internal constructor(
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val fileResourceHelper: FileResourceHelper
 ) {
     fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
@@ -49,11 +46,8 @@ internal class JobReportFileResourceHandler @Inject internal constructor(
 
             val fileResources = jobObjects.flatMap { it.fileResources() }
 
-            fileResources.forEach { fr ->
-                val relatedState = fileResourceHelper.getRelatedResourceState(fr, FileResourceDomainType.TRACKER)
-                val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
-                fileResourceStore.setSyncStateIfUploading(fr, state)
-            }
+            fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
+
             progress.increaseProgress(FileResource::class.java, false)
         }
     }

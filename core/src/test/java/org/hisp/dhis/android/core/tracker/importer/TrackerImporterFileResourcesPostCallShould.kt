@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
@@ -45,7 +44,6 @@ import org.junit.Test
 
 class TrackerImporterFileResourcesPostCallShould {
 
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource> = mock()
     private val fileResourcesPostCall: FileResourcePostCall = mock()
     private val fileResourceHelper: FileResourceHelper = mock()
 
@@ -54,7 +52,7 @@ class TrackerImporterFileResourcesPostCallShould {
     @Before
     fun setUp() {
         fileResourcePostCall = TrackerImporterFileResourcesPostCall(
-            fileResourceStore, fileResourcesPostCall,
+            fileResourcesPostCall,
             fileResourceHelper
         )
     }
@@ -90,7 +88,7 @@ class TrackerImporterFileResourcesPostCallShould {
         )
 
         val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
-        whenever(fileResourceStore.getUploadableSyncStatesIncludingError()).doReturn(fileResources)
+        whenever(fileResourceHelper.getUploadableFileResources()).doReturn(fileResources)
         whenever(fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)).doReturn(fileResource)
         whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
             .doReturn(Math.random().toString())

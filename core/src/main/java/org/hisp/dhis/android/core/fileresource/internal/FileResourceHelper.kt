@@ -32,9 +32,13 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -47,7 +51,8 @@ internal class FileResourceHelper @Inject constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val eventStore: EventStore,
-    private val trackedEntityInstanceStore: TrackedEntityInstanceStore
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val dataValueStore: DataValueStore
 ) {
 
     fun isPresentInDataValues(fileResourceUid: String, dataValues: Collection<TrackedEntityDataValue>?): Boolean {
@@ -101,10 +106,25 @@ internal class FileResourceHelper @Inject constructor(
         }
     }
 
-    fun getRelatedResourceState(fileResourceUid: String): State {
-        return getRelatedEvent(fileResourceUid)?.syncState()
-            ?: getRelatedTei(fileResourceUid)?.syncState()
-            ?: State.TO_POST
+    fun findDataValueFileResource(
+        dataValue: DataValue,
+        fileResource: List<FileResource>
+    ): FileResource? {
+        return fileResource.find {
+            it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
+        }
+    }
+
+    fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDomainType): State {
+        return when (domain) {
+            FileResourceDomainType.TRACKER ->
+                getRelatedEvent(fileResourceUid)?.syncState()
+                    ?: getRelatedTei(fileResourceUid)?.syncState()
+                    ?: State.TO_POST
+            FileResourceDomainType.AGGREGATED ->
+                getRelatedDataValue(fileResourceUid)?.syncState()
+                    ?:State.TO_POST
+        }
     }
 
     private fun getRelatedEvent(fileResourceUid: String): Event? {
@@ -127,6 +147,15 @@ internal class FileResourceHelper @Inject constructor(
         val attributeValue = candidates.find { isFileAttribute(it.trackedEntityAttribute()) }
 
         return attributeValue?.trackedEntityInstance()?.let { trackedEntityInstanceStore.selectByUid(it) }
+    }
+
+    private fun getRelatedDataValue(fileResourceUid: String): DataValue? {
+        val candidates = dataValueStore.selectWhere(
+            WhereClauseBuilder()
+                .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResourceUid)
+                .build()
+        )
+        return candidates.find { isFileDataElement(it.dataElement()) }
     }
 
     private fun isFileDataElement(dataElementUid: String?): Boolean {

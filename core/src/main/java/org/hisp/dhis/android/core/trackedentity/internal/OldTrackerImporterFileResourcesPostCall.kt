@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
@@ -161,7 +162,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
     fun updateFileResourceStates(fileResources: List<String>) {
         fileResources.forEach { fr ->
-            val relatedState = fileResourceHelper.getRelatedResourceState(fr)
+            val relatedState = fileResourceHelper.getRelatedResourceState(fr, FileResourceDomainType.TRACKER)
             val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
             fileResourceStore.setSyncStateIfUploading(fr, state)
         }

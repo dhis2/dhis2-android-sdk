@@ -25,36 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
+import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
+import javax.inject.Inject
 
 @Reusable
-internal class JobReportFileResourceHandler @Inject internal constructor(
+internal class DataValueFileResourcePostCall @Inject constructor(
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourceHelper: FileResourceHelper
+    private val fileResourceHelper: FileResourceHelper,
+    private val fileResourcePostCall: FileResourcePostCall
 ) {
-    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
-        return Observable.fromCallable {
-            val progress = D2ProgressManager(null)
+    fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
+        val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
+        val uploadedFileResources = mutableListOf<String>()
 
-            val fileResources = jobObjects.flatMap { it.fileResources() }
+        val validDataValues = dataValues.map { dataValue ->
+            // TODO Add cache
+            fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
+                val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
+                    uploadedFileResources.add(it)
+                }
+                newUid?.let { dataValue.toBuilder().value(newUid).build() }
+            } ?: dataValue
+        }
 
-            fileResources.forEach { fr ->
-                val relatedState = fileResourceHelper.getRelatedResourceState(fr, FileResourceDomainType.TRACKER)
-                val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
-                fileResourceStore.setSyncStateIfUploading(fr, state)
-            }
-            progress.increaseProgress(FileResource::class.java, false)
+        return DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
+    }
+
+    // TODO Move to helper
+    fun updateFileResourceStates(fileResources: List<String>) {
+        fileResources.forEach { fr ->
+            val relatedState = fileResourceHelper.getRelatedResourceState(fr, FileResourceDomainType.AGGREGATED)
+            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
+            fileResourceStore.setSyncStateIfUploading(fr, state)
         }
     }
 }
+
+internal data class DataValueFileResourcePostCallResult(val dataValues: List<DataValue>,
+                                                        val fileResources: List<String>)

@@ -28,14 +28,18 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
+import java.io.File
+import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.event.EventCreateProjection
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.junit.Before
-import java.io.File
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var d2: D2
@@ -46,9 +50,12 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2 = D2Factory.forNewDatabase()
     }
 
-    //@Test
+    // @Test
     fun download_and_write_files_successfully() {
-        syncDataAndMetadata()
+        loginAndSyncMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload()
+
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
@@ -58,9 +65,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(file.exists()).isTrue()
     }
 
-    //@Test
+    // @Test
     fun write_tracked_entity_attribute_related_files_and_upload() {
-        syncDataAndMetadata()
+        loginAndSyncMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload()
 
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
@@ -87,9 +96,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(trackedEntityInstance2.syncState()).isEqualTo(State.SYNCED)
     }
 
-    //@Test
-    fun write_data_element_related_files_and_upload() {
-        syncDataAndMetadata()
+    // @Test
+    fun write_data_element_related_images_and_upload() {
+        loginAndSyncMetadata()
+        d2.eventModule().eventDownloader()
+            .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload()
 
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
@@ -108,9 +119,47 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(file2.exists()).isTrue()
     }
 
-    //@Test
+    // @Test
+    fun write_data_element_related_files_and_upload() {
+        loginAndSyncMetadata()
+        d2.eventModule().eventDownloader()
+            .byProgramUid("eBAyeGv0exc").limit(5).blockingDownload()
+
+        d2.fileResourceModule().fileResourceDownloader()
+            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+            .blockingDownload()
+
+        val fileResource = d2.fileResourceModule().fileResources().one().blockingGet()!!
+        val file = File(fileResource.path()!!)
+        assertThat(file.exists()).isTrue()
+
+        val existingValue = d2.trackedEntityModule().trackedEntityDataValues()
+            .byValue().eq(fileResource.uid())
+            .one().blockingGet()!!
+
+        val existingEvent = d2.eventModule().events().uid(existingValue.event()).blockingGet()
+
+        val newEventUid = d2.eventModule().events().blockingAdd(
+            EventCreateProjection.create(
+                existingEvent.enrollment(), existingEvent.program(),
+                existingEvent.programStage(), existingEvent.organisationUnit(), existingEvent.attributeOptionCombo()
+            )
+        )
+        d2.eventModule().events().uid(newEventUid).setEventDate(Date())
+
+        val newValueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
+        d2.trackedEntityModule().trackedEntityDataValues().value(newEventUid, existingValue.dataElement())
+            .blockingSet(newValueUid)
+
+        d2.eventModule().events().blockingUpload()
+    }
+
+    // @Test
     fun not_download_existing_resources() {
-        syncDataAndMetadata()
+        loginAndSyncMetadata()
+        d2.eventModule().eventDownloader()
+            .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload()
 
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
@@ -122,9 +171,10 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(fileResources.size).isEqualTo(fileResources2.size)
     }
 
-    //@Test
+    // @Test
     fun write_aggregated_value_files() {
-        syncDataAndMetadata()
+        loginAndSyncMetadata()
+        d2.aggregatedModule().data().blockingDownload()
 
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
@@ -147,23 +197,20 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         val file = File(fileResource!!.path()!!)
         assertThat(file.exists()).isTrue()
 
-        val uid = d2.fileResourceModule().fileResources().blockingAdd(file);
+        val uid = d2.fileResourceModule().fileResources().blockingAdd(file)
 
         d2.dataValueModule().dataValues()
-            .value(nextPeriod.periodId()!!, dataValue.organisationUnit(), dataValue.dataElement(),
-                dataValue.categoryOptionCombo(), dataValue.attributeOptionCombo())
+            .value(
+                nextPeriod.periodId()!!, dataValue.organisationUnit(), dataValue.dataElement(),
+                dataValue.categoryOptionCombo(), dataValue.attributeOptionCombo()
+            )
             .blockingSet(uid)
 
         d2.dataValueModule().dataValues().blockingUpload()
     }
 
-    private fun syncDataAndMetadata() {
-        d2.userModule().logIn(username, password, RealServerMother.url2_37).blockingGet()
+    private fun loginAndSyncMetadata() {
+        d2.userModule().logIn(username, password, RealServerMother.url2_36).blockingGet()
         d2.metadataModule().blockingDownload()
-        d2.trackedEntityModule().trackedEntityInstanceDownloader()
-            .byProgramUid("uy2gU8kT1jF").limit(20).blockingDownload()
-        d2.eventModule().eventDownloader()
-            .byProgramUid("VBqh0ynB2wv").limit(40).blockingDownload()
-        d2.aggregatedModule().data().blockingDownload()
     }
 }

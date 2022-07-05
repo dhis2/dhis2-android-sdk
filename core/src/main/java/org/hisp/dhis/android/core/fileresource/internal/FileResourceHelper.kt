@@ -137,7 +137,7 @@ internal class FileResourceHelper @Inject constructor(
                     ?: State.TO_POST
             FileResourceDomainType.AGGREGATED ->
                 getRelatedDataValue(fileResourceUid)?.syncState()
-                    ?:State.TO_POST
+                    ?: State.TO_POST
         }
     }
 

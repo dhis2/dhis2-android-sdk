@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource

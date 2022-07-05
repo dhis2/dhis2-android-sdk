@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.common
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.event.EventDataFilter
 import java.util.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.CalendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator

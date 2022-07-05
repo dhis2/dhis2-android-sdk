@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedRepositoryFilterFactory
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
 
+@Suppress("TooManyFunctions")
 class EventDataFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
     private val repositoryFactory: ScopedRepositoryFilterFactory<R, EventDataFilter>
@@ -67,6 +71,36 @@ class EventDataFilterConnector<R : BaseRepository> internal constructor(
 
     fun like(value: String): R {
         val filter = EventDataFilter.builder().dataItem(key).like(value).build()
+        return repositoryFactory.updated(filter)
+    }
+
+    fun inRelativePeriod(period: RelativePeriod): R {
+        val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.RELATIVE).period(period).build()
+        val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()
+        return repositoryFactory.updated(filter)
+    }
+
+    fun after(date: Date): R {
+        val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.ABSOLUTE).startDate(date).build()
+        val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()
+        return repositoryFactory.updated(filter)
+    }
+
+    fun before(date: Date): R {
+        val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.ABSOLUTE).endDate(date).build()
+        val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()
+        return repositoryFactory.updated(filter)
+    }
+
+    fun fromDays(days: Int): R {
+        val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.RELATIVE).startBuffer(days).build()
+        val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()
+        return repositoryFactory.updated(filter)
+    }
+
+    fun toDays(days: Int): R {
+        val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.RELATIVE).endBuffer(days).build()
+        val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()
         return repositoryFactory.updated(filter)
     }
 }

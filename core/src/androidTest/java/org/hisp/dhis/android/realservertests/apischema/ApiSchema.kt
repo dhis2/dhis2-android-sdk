@@ -26,8 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.realservertests.apischema
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+internal data class ApiSchema(
+    val properties: List<SchemaProperty>
+) {
+    internal companion object {
+        internal data class SchemaProperty(
+            val propertyType: String,
+            val klass: String,
+            val constants: List<String>?
+        )
+    }
 }

@@ -26,8 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.realservertests.apischema
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+internal interface ApiSchemaService {
+    @GET("schemas")
+    fun getSchema(
+        @Query("fields") @Which fields: Fields<ApiSchema>
+    ): Single<Payload<ApiSchema>>
 }

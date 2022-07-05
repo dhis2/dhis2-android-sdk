@@ -26,8 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.realservertests.generatedschema
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+import io.reactivex.Single
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+internal interface GeneratedSchemaService {
+
+    @GET("{instanceVersion}/{schemaName}.json")
+    fun getSchema(
+        @Path("instanceVersion") instanceVersion: String,
+        @Path("schemaName") schemaName: String
+    ): Single<GeneratedSchema>
 }

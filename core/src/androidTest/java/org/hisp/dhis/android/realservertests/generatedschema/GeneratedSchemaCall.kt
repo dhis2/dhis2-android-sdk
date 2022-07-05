@@ -25,9 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests.generatedschema
 
-package org.hisp.dhis.android.core.event;
+import io.reactivex.Single
+import retrofit2.Retrofit
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+internal class GeneratedSchemaCall internal constructor(
+    private val retrofit: Retrofit,
+    private val instanceVersion: String
+) {
+    fun download(schemaId: String): Single<GeneratedSchema> {
+        return retrofit.create(GeneratedSchemaService::class.java).getSchema(instanceVersion, schemaId)
+    }
 }

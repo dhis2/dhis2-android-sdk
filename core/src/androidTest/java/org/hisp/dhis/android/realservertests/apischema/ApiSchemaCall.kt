@@ -25,9 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests.apischema
 
-package org.hisp.dhis.android.core.event;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import retrofit2.Retrofit
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+internal class ApiSchemaCall internal constructor(
+    private val retrofit: Retrofit
+) : ListCall<ApiSchema> {
+    override fun download(): Single<List<ApiSchema>> {
+        return retrofit.create(ApiSchemaService::class.java).getSchema(ApiSchemaFields.allFields).map { it.items() }
+    }
 }

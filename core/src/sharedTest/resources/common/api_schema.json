@@ -1,0 +1,503 @@
+{
+  "properties": [
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
+    },
+    {
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "org.hisp.dhis.program.Program",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "org.hisp.dhis.eventvisualization.EventVisualizationType",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "COLUMN",
+        "STACKED_COLUMN",
+        "BAR",
+        "STACKED_BAR",
+        "LINE",
+        "LINE_LIST",
+        "AREA",
+        "STACKED_AREA",
+        "PIE",
+        "RADAR",
+        "GAUGE",
+        "YEAR_OVER_YEAR_LINE",
+        "YEAR_OVER_YEAR_COLUMN",
+        "SINGLE_VALUE",
+        "PIVOT_TABLE",
+        "SCATTER",
+        "BUBBLE"
+      ]
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "IDENTIFIER"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "URL"
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "org.hisp.dhis.trackedentity.TrackedEntityAttribute",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
+    },
+    {
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
+    },
+    {
+      "klass": "org.hisp.dhis.security.acl.Access",
+      "propertyType": "COMPLEX"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Integer",
+      "propertyType": "INTEGER"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "org.hisp.dhis.event.EventStatus",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "ACTIVE",
+        "COMPLETED",
+        "VISITED",
+        "SCHEDULE",
+        "OVERDUE",
+        "SKIPPED"
+      ]
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.Map",
+      "propertyType": "COMPLEX"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.util.Date",
+      "propertyType": "DATE"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "org.hisp.dhis.common.RegressionType",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "NONE",
+        "LINEAR",
+        "POLYNOMIAL",
+        "LOESS"
+      ]
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "org.hisp.dhis.user.sharing.Sharing",
+      "propertyType": "COMPLEX"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "org.hisp.dhis.program.ProgramStatus",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "ACTIVE",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    {
+      "klass": "org.hisp.dhis.common.HideEmptyItemStrategy",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "NONE",
+        "BEFORE_FIRST",
+        "AFTER_LAST",
+        "BEFORE_FIRST_AFTER_LAST",
+        "ALL"
+      ]
+    },
+    {
+      "klass": "java.util.Set",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "org.hisp.dhis.analytics.AggregationType",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "SUM",
+        "AVERAGE",
+        "AVERAGE_SUM_ORG_UNIT",
+        "LAST",
+        "LAST_AVERAGE_ORG_UNIT",
+        "LAST_IN_PERIOD",
+        "LAST_IN_PERIOD_AVERAGE_ORG_UNIT",
+        "FIRST",
+        "FIRST_AVERAGE_ORG_UNIT",
+        "COUNT",
+        "STDDEV",
+        "VARIANCE",
+        "MIN",
+        "MAX",
+        "NONE",
+        "CUSTOM",
+        "DEFAULT"
+      ]
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "IDENTIFIER"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "org.hisp.dhis.analytics.EventOutputType",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "EVENT",
+        "ENROLLMENT",
+        "TRACKED_ENTITY_INSTANCE"
+      ]
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.Boolean",
+      "propertyType": "BOOLEAN"
+    },
+    {
+      "klass": "org.hisp.dhis.legend.LegendDisplayStrategy",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "FIXED",
+        "BY_DATA_ITEM"
+      ]
+    },
+    {
+      "klass": "org.hisp.dhis.dataelement.DataElement",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "org.hisp.dhis.period.RelativePeriods",
+      "propertyType": "COMPLEX"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "org.hisp.dhis.common.DimensionalItemObject",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "org.hisp.dhis.program.ProgramStage",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.util.List",
+      "propertyType": "COLLECTION"
+    },
+    {
+      "klass": "java.lang.String",
+      "propertyType": "TEXT"
+    },
+    {
+      "klass": "org.hisp.dhis.common.DigitGroupSeparator",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "COMMA",
+        "SPACE",
+        "NONE"
+      ]
+    },
+    {
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "org.hisp.dhis.legend.LegendSet",
+      "propertyType": "REFERENCE"
+    },
+    {
+      "klass": "org.hisp.dhis.analytics.UserOrgUnitType",
+      "propertyType": "CONSTANT",
+      "constants": [
+        "DATA_CAPTURE",
+        "DATA_OUTPUT",
+        "TEI_SEARCH"
+      ]
+    },
+    {
+      "klass": "java.lang.Double",
+      "propertyType": "NUMBER"
+    },
+    {
+      "klass": "org.hisp.dhis.user.User",
+      "propertyType": "REFERENCE"
+    }
+  ]
+}

@@ -25,9 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests.apischema.tests
 
-package org.hisp.dhis.android.core.event;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.truth.Truth
+import java.io.InputStream
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.realservertests.apischema.ApiSchema
+import org.junit.Test
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+class ApiSchemaShould {
+    private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
+    private var jsonStream: InputStream = this.javaClass.classLoader!!.getResourceAsStream("common/api_schema.json")
+
+    @Test
+    fun map_from_json_string() {
+        val apiSchema: ApiSchema = objectMapper.readValue(jsonStream, ApiSchema::class.java)
+
+        Truth.assertThat(apiSchema).isNotNull()
+        Truth.assertThat(apiSchema.properties[0].klass).isEqualTo("java.util.List")
+        Truth.assertThat(
+            apiSchema.properties
+                .find { it.klass == "org.hisp.dhis.event.EventStatus" }?.constants?.get(0)
+        )
+            .isEqualTo("ACTIVE")
+    }
 }

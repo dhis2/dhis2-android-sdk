@@ -25,9 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests
 
-package org.hisp.dhis.android.core.event;
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+class OutsideRetrofitFactory {
+
+    companion object {
+        fun retrofit(baseUrl: String, okHttpClient: OkHttpClient): Retrofit {
+            return Retrofit.Builder()
+                .baseUrl(HttpUrl.parse(baseUrl)!!)
+                .client(okHttpClient)
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .validateEagerly(true)
+                .build()
+        }
+    }
 }

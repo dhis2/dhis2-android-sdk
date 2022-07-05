@@ -25,9 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.realservertests
 
-package org.hisp.dhis.android.core.event;
+internal class EnumTestHelper {
 
-public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, @Deprecated VISITED, OVERDUE
+    companion object {
+        fun checkEnum(sdkEnumEntry: Map.Entry<String, List<String>>, generateConstants: List<String>?): String? {
+            return if (generateConstants == null) {
+                "Enum ${sdkEnumEntry.key} not found on the server"
+            } else {
+                val errorList = listOfNotNull(
+                    constantsContained(sdkEnumEntry.value, generateConstants, sdkEnumEntry.key, "SDK"),
+                    constantsContained(generateConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server")
+                )
+                if (errorList.isNotEmpty()) errorList.joinToString() else null
+            }
+        }
+
+        private fun constantsContained(
+            containerList: List<String>,
+            containedList: List<String>,
+            enumKey: String,
+            containerKey: String
+        ): String? {
+            val notContainedValues = containedList.filter { !containerList.contains(it) }
+            return if (notContainedValues.isNotEmpty()) {
+                "Constants ${notContainedValues.joinToString()} from enum " +
+                    "$enumKey does not exist in the $containerKey"
+            } else null
+        }
+
+        inline fun <reified E : Enum<E>> entry(apiKey: String): Pair<String, List<String>> {
+            return Pair(apiKey, enumValues<E>().map { it.toString() })
+        }
+    }
 }

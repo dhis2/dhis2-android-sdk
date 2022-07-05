@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.event.EventDataFilter
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.period.Period
@@ -76,6 +77,11 @@ internal class DateFilterPeriodHelper @Inject constructor(
                 }
                 else -> null
             }
+        }
+
+        @JvmStatic
+        fun mergeEventDataFilters(list: List<EventDataFilter>, item: EventDataFilter): List<EventDataFilter> {
+            return list + item
         }
     }
 

@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 internal class DataValuePostCall @Inject constructor(
     private val dataValueService: DataValueService,
     private val dataValueImportHandler: DataValueImportHandler,
+    private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val apiCallExecutor: APICallExecutor,
     private val dataValueStore: DataValueStore,
     private val versionManager: DHISVersionManager
@@ -60,13 +61,18 @@ internal class DataValuePostCall @Inject constructor(
             } else {
                 val progressManager = D2ProgressManager(1)
                 return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                    markObjectsAs(dataValues, State.UPLOADING)
+                    val result = fileResourcePostCall.uploadFileResource(dataValues)
+                    val validDataValues = result.dataValues
+
+                    markObjectsAs(validDataValues, State.UPLOADING)
                     try {
-                        val dataValueSet = DataValueSet(dataValues)
+                        val dataValueSet = DataValueSet(validDataValues)
                         val dataValueImportSummary = executePostCall(dataValueSet)
                         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
+                        fileResourcePostCall.updateFileResourceStates(result.fileResources)
                     } catch (e: D2Error) {
-                        markObjectsAs(dataValues, errorIfOnline(e))
+                        markObjectsAs(validDataValues, errorIfOnline(e))
+                        fileResourcePostCall.updateFileResourceStates(result.fileResources)
                         throw e
                     }
                     emitter.onNext(progressManager.increaseProgress(DataValue::class.java, true))

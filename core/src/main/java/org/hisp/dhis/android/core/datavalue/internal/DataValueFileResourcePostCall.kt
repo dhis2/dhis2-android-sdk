@@ -25,30 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
+import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
 
 @Reusable
-internal class JobReportFileResourceHandler @Inject internal constructor(
-    private val fileResourceHelper: FileResourceHelper
+internal class DataValueFileResourcePostCall @Inject constructor(
+    private val fileResourceHelper: FileResourceHelper,
+    private val fileResourcePostCall: FileResourcePostCall
 ) {
-    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
-        return Observable.fromCallable {
-            val progress = D2ProgressManager(null)
+    fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            val fileResources = jobObjects.flatMap { it.fileResources() }
+        return if (fileResources.isEmpty()) {
+            DataValueFileResourcePostCallResult(dataValues, emptyList())
+        } else {
+            val uploadedFileResources = mutableListOf<String>()
 
-            fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
+            val validDataValues = dataValues.map { dataValue ->
+                fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                    val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
+                    val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
+                        uploadedFileResources.add(it)
+                    }
+                    newUid?.let { dataValue.toBuilder().value(newUid).build() }
+                } ?: dataValue
+            }
 
-            progress.increaseProgress(FileResource::class.java, false)
+            DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
         }
     }
+
+    fun updateFileResourceStates(fileResources: List<String>) {
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.AGGREGATED)
+    }
 }
+
+internal data class DataValueFileResourcePostCallResult(
+    val dataValues: List<DataValue>,
+    val fileResources: List<String>
+)

@@ -25,30 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.fileresource.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
-
-@Reusable
-internal class JobReportFileResourceHandler @Inject internal constructor(
-    private val fileResourceHelper: FileResourceHelper
-) {
-    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
-        return Observable.fromCallable {
-            val progress = D2ProgressManager(null)
-
-            val fileResources = jobObjects.flatMap { it.fileResources() }
-
-            fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
-
-            progress.increaseProgress(FileResource::class.java, false)
-        }
-    }
+internal sealed class FileResourceValue(val uid: String) {
+    internal data class DataValue(val dataElementUid: String) : FileResourceValue(dataElementUid)
+    internal data class AttributeValue(val trackedAttributeUid: String) : FileResourceValue(trackedAttributeUid)
+    internal data class EventValue(val dataElementUid: String) : FileResourceValue(dataElementUid)
 }

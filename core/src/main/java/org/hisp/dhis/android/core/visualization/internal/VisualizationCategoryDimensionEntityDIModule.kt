@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 
 @Module
@@ -49,7 +48,7 @@ internal class VisualizationCategoryDimensionEntityDIModule {
     @Provides
     @Reusable
     fun handler(store: LinkStore<VisualizationCategoryDimensionLink>):
-        LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink> {
+        LinkHandler<String?, VisualizationCategoryDimensionLink> {
             return LinkHandlerImpl(store)
         }
 }

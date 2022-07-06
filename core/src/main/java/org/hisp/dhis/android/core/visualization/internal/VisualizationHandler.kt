@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -48,7 +47,7 @@ internal class VisualizationHandler @Inject constructor(
     private val visualizationCategoryDimensionLinkStore: LinkStore<VisualizationCategoryDimensionLink>,
     private val dataDimensionItemStore: LinkStore<DataDimensionItem>,
     private val visualizationCategoryDimensionLinkHandler:
-        LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>,
+        LinkHandler<String?, VisualizationCategoryDimensionLink>,
     private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem>
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
@@ -62,14 +61,18 @@ internal class VisualizationHandler @Inject constructor(
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
         o.categoryDimensions()?.forEach { categoryDimension: CategoryDimension ->
-            categoryDimension.category()?.let {
+            categoryDimension.category()?.let { category ->
+                val categoryOptions =
+                    if (categoryDimension.categoryOptions().isNullOrEmpty()) listOf(null)
+                    else categoryDimension.categoryOptions()!!.map { it.uid() }
+
                 visualizationCategoryDimensionLinkHandler.handleMany(
-                    it.uid(), categoryDimension.categoryOptions()
-                ) { categoryOption: ObjectWithUid ->
+                    o.uid(), categoryOptions
+                ) { categoryOption: String? ->
                     VisualizationCategoryDimensionLink.builder()
                         .visualization(o.uid())
-                        .category(categoryDimension.category()?.uid())
-                        .categoryOption(categoryOption.uid())
+                        .category(category.uid())
+                        .categoryOption(categoryOption)
                         .build()
                 }
             }

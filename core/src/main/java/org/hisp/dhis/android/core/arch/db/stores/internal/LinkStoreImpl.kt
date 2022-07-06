@@ -53,4 +53,8 @@ internal open class LinkStoreImpl<O : CoreObject>(
         val cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn))
         return mapStringColumnSetFromCursor(cursor)
     }
+
+    override fun selectLinksForMasterUid(masterUid: String): List<O> {
+        return selectWhere("$masterColumn='$masterUid'")
+    }
 }

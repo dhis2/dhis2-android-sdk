@@ -58,5 +58,10 @@ class VisualizationShould : BaseObjectShould("visualization/visualization.json")
             .isEqualTo("U5KybNCtA3E")
         assertThat(visualization.dataDimensionItems()!![5].programAttribute()!!.attribute()!!.uid())
             .isEqualTo("iggSfNDnsCw")
+
+        assertThat(visualization.categoryDimensions()!![0].category()!!.uid()).isEqualTo("fMZEcRHuamy")
+        assertThat(visualization.categoryDimensions()!![0].categoryOptions()!!.size).isEqualTo(2)
+        assertThat(visualization.categoryDimensions()!![1].category()!!.uid()).isEqualTo("fkAkrdC7eJF")
+        assertThat(visualization.categoryDimensions()!![1].categoryOptions()!!.size).isEqualTo(0)
     }
 }

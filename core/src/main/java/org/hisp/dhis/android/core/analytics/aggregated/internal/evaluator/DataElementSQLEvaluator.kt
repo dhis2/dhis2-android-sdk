@@ -67,7 +67,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     is Dimension.Data -> appendDataWhereClause(entry.value, this)
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
-                    is Dimension.Category -> appendCategoryWhereClause(entry.value, this)
+                    is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
             }
             appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
@@ -138,12 +138,15 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     private fun appendCategoryWhereClause(
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
-            columnName = DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            attributeColumnName = DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
+            disaggregationColumnName = DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
             items = items,
-            builder = builder
+            builder = builder,
+            metadata = metadata
         )
     }
 

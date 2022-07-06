@@ -28,7 +28,14 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeComboLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionComboAttributeOptionLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryComboLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryOptionLink
@@ -142,7 +149,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         RelativePeriod.LAST_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.LAST_MONTH,
             listOf(periodNov)
-        )
+        ),
+        category.uid() to MetadataItem.CategoryItem(category),
+        categoryOption.uid() to MetadataItem.CategoryOptionItem(categoryOption),
+        attribute.uid() to MetadataItem.CategoryItem(attribute),
+        attributeOption.uid() to MetadataItem.CategoryOptionItem(attributeOption)
     )
 
     @Before
@@ -163,6 +174,14 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         categoryOptionComboStore.insert(categoryOptionCombo)
         categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
         categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
+
+        categoryStore.insert(attribute)
+        categoryOptionStore.insert(attributeOption)
+        categoryCategoryOptionStore.insert(attributeAttributeOptionLink)
+        categoryComboStore.insert(attributeCombo)
+        categoryOptionComboStore.insert(attributeOptionCombo)
+        categoryCategoryComboLinkStore.insert(attributeAttributeComboLink)
+        categoryOptionComboCategoryOptionLinkStore.insert(attributeOptionComboAttributeOptionLink)
 
         dataElementStore.insert(dataElement1)
         dataElementStore.insert(dataElement2)

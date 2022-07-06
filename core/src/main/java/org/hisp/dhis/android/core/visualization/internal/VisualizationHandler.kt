@@ -47,7 +47,7 @@ internal class VisualizationHandler @Inject constructor(
     private val visualizationCategoryDimensionLinkStore: LinkStore<VisualizationCategoryDimensionLink>,
     private val dataDimensionItemStore: LinkStore<DataDimensionItem>,
     private val visualizationCategoryDimensionLinkHandler:
-        LinkHandler<String?, VisualizationCategoryDimensionLink>,
+        LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink>,
     private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem>
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
@@ -60,23 +60,23 @@ internal class VisualizationHandler @Inject constructor(
     }
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
-        o.categoryDimensions()?.forEach { categoryDimension: CategoryDimension ->
+        val links = o.categoryDimensions()?.flatMap { categoryDimension: CategoryDimension ->
             categoryDimension.category()?.let { category ->
                 val categoryOptions =
                     if (categoryDimension.categoryOptions().isNullOrEmpty()) listOf(null)
                     else categoryDimension.categoryOptions()!!.map { it.uid() }
 
-                visualizationCategoryDimensionLinkHandler.handleMany(
-                    o.uid(), categoryOptions
-                ) { categoryOption: String? ->
+                categoryOptions.map {
                     VisualizationCategoryDimensionLink.builder()
                         .visualization(o.uid())
                         .category(category.uid())
-                        .categoryOption(categoryOption)
+                        .categoryOption(it)
                         .build()
                 }
-            }
+            } ?: emptyList()
         }
+
+        visualizationCategoryDimensionLinkHandler.handleMany(o.uid(), links) { i -> i }
 
         dataDimensionItemHandler.handleMany(o.uid(), o.dataDimensionItems()) {
             it.toBuilder().visualization(o.uid()).build()

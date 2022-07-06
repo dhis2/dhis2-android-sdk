@@ -34,7 +34,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -50,6 +52,7 @@ import org.mockito.ArgumentMatchers.anyString
 class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     private val categoryStore: IdentifiableObjectStore<Category> = mock()
+    private val categoryOptionLinkStore: LinkStore<CategoryCategoryOptionLink> = mock()
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val category: Category = mock()
     private val visualization: Visualization = mock()
@@ -59,7 +62,11 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     private val uid2 = "AC6H8zCDb3B"
     private val uid3 = "eEIN8RQWxWp"
 
-    private val helper = AnalyticsVisualizationsServiceDimensionHelper(categoryStore, organisationUnitLevelStore)
+    private val helper = AnalyticsVisualizationsServiceDimensionHelper(
+        categoryStore,
+        categoryOptionLinkStore,
+        organisationUnitLevelStore
+    )
 
     @Test
     fun `Should parse dataElement dimension items`() {

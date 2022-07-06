@@ -25,30 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.category
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
-
-@Module
-internal class VisualizationCategoryDimensionEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
-        return VisualizationCategoryDimensionLinkStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: LinkStore<VisualizationCategoryDimensionLink>):
-        LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink> {
-            return LinkHandlerImpl(store)
-        }
+enum class CategoryDataDimensionType {
+    ATTRIBUTE,
+    DISAGGREGATION
 }

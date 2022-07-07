@@ -69,5 +69,6 @@ public class MockIntegrationTestObjects {
     public void tearDown() throws IOException {
         Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
         dhis2MockServer.shutdown();
+        D2Factory.clear();
     }
 }

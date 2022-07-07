@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isDatabaseEmpty;
+import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isTableEmpty;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
@@ -38,26 +40,18 @@ import org.hisp.dhis.android.core.event.internal.EventCallFactory;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isDatabaseEmpty;
-import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.isTableEmpty;
-
 public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
-    private D2 d2;
 
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
 
         authenticatedUserStore = AuthenticatedUserStore.create(d2.databaseAdapter());
     }

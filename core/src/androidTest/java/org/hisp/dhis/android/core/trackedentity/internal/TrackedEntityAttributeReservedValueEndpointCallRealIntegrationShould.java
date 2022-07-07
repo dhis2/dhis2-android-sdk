@@ -28,34 +28,22 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
-import org.junit.Before;
 
-import java.io.IOException;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
     private Integer numberToReserve = 5;
     private String orgunitUid = "DiszpKrYNg8";
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-        d2 = D2Factory.forNewDatabase();
-    }
 
     private void reserveValues() {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve);

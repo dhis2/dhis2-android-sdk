@@ -30,11 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.junit.Before;
-
-
-import java.io.IOException;
-
 import io.reactivex.schedulers.Schedulers;
 
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
@@ -43,15 +38,6 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
      * the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-        d2 = D2Factory.forNewDatabase();
-    }
-
 
    /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)

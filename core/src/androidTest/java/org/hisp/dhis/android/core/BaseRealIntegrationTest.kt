@@ -25,29 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.junit.After
+import org.junit.Before
 
-/**
- * A collection of convenience functions/abstractions to be used by the tests.
- */
-public class AndroidTestUtils {
+abstract class BaseRealIntegrationTest {
+    @JvmField
+    protected var username: String = RealServerMother.username
+    @JvmField
+    protected var password: String = RealServerMother.password
+    @JvmField
+    protected var url: String = RealServerMother.url
 
-    /* A helper method to convert an integer to Boolean, where 1 is true and 0 is false*/
-    public static Boolean toBoolean(Integer i) {
-        if (i == 0) {
-            return false;
-        } else {
-            return true;
-        }
+    protected lateinit var d2: D2
+
+    @Before
+    open fun setUp() {
+        d2 = D2Factory.forNewDatabase()
     }
 
-    /* A helper method to convert a Boolean to an Integer, where true is 1 and false is 0 */
-    public static Integer toInteger(Boolean b) {
-        if (b) {
-            return 1;
-        } else {
-            return 0;
-        }
+    @After
+    open fun tearDown() {
+        D2Factory.clear()
+    }
+
+    protected fun getGenericCallData(d2: D2): GenericCallData {
+        return GenericCallData.create(
+            d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
+            d2.systemInfoModule().versionManager()
+        )
+    }
+
+    protected fun getD2DIComponent(d2: D2): D2DIComponent {
+        return d2.d2DIComponent
     }
 }

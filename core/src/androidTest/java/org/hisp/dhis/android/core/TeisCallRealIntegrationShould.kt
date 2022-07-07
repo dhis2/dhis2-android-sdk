@@ -30,17 +30,8 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.junit.Before
 
 class TeisCallRealIntegrationShould : BaseRealIntegrationTest() {
-
-    private lateinit var d2: D2
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     // @Test
     fun download_tracked_entity_instances() {

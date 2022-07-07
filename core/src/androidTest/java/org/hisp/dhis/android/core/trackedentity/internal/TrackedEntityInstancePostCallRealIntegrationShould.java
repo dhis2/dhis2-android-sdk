@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import static com.google.common.truth.Truth.assertThat;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
@@ -68,7 +66,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProje
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -79,7 +76,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
     private UidGenerator uidGenerator;
 
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -108,10 +104,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2= D2Factory.forNewDatabase();
 
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter());
         enrollmentStore = EnrollmentStoreImpl.create(d2.databaseAdapter());

@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -40,7 +38,6 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey
 import org.hisp.dhis.android.core.period.PeriodType
-import org.junit.Before
 
 class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -48,12 +45,6 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private lateinit var d2: D2
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     private fun download(): Single<List<DataValue>> {
         val dataValueHandler: Handler<DataValue> = ObjectWithoutUidHandlerImpl(

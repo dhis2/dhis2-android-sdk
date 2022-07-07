@@ -112,6 +112,7 @@ class EnrollmentHandlerShould {
         // verify that enrollment store is only invoked with delete
         verify(enrollmentStore, times(1)).deleteIfExists(any())
         verify(enrollmentStore, never()).updateOrInsert(any())
+        verify(relationshipHandler, times(1)).deleteLinkedRelationships(any())
 
         // event handler should not be invoked
         verify(eventHandler, never()).handleMany(any(), any(), any())
@@ -130,6 +131,7 @@ class EnrollmentHandlerShould {
         // verify that enrollment store is only invoked with update
         verify(enrollmentStore, times(1)).updateOrInsert(any())
         verify(enrollmentStore, never()).deleteIfExists(any())
+        verify(relationshipHandler, never()).deleteLinkedRelationships(any())
 
         // event handler should be invoked once
         verify(eventHandler, times(1)).handleMany(any(), any(), any())

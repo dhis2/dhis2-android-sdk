@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
@@ -60,7 +59,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val items = getItemsByDimension(evaluationItem)
+        val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
@@ -148,43 +147,30 @@ internal class DataElementSQLEvaluator @Inject constructor(
         )
     }
 
-    @Suppress("ThrowsCount")
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val dimensionDataItem = evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>()
+        val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
-        val dataItemList = when (dimensionDataItem.size) {
-            0 -> evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
-            1 -> dimensionDataItem
-            else ->
-                throw AnalyticsException.InvalidArguments("Invalid arguments: more than one data item as dimension.")
-        }
+        return if (itemList.size > 1) {
+            AnalyticsEvaluatorHelper.getElementAggregator(AggregationType.SUM.name)
+        } else {
+            val item = itemList[0]
+            val metadataItem = metadata[item.id]
+                ?: throw AnalyticsException.InvalidArguments("Invalid arguments: ${item.id} not found in metadata.")
 
-        return when (dataItemList.size) {
-            0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no data dimension is specified.")
-            1 -> {
-                val item = metadata[dataItemList.first().id]
-                val aggregationType = when (item) {
-                    is MetadataItem.DataElementItem -> item.item.aggregationType()
-                    is MetadataItem.DataElementOperandItem ->
-                        metadata[item.item.dataElement()?.uid()]?.let {
-                            (it as MetadataItem.DataElementItem).item.aggregationType()
-                        }
-                    else -> throw AnalyticsException.InvalidArguments(
-                        "Invalid arguments: dimension is not " +
-                            "dataelement or operand."
-                    )
-                }
-                getDataElementAggregator(aggregationType)
+            val aggregationType = when (metadataItem) {
+                is MetadataItem.DataElementItem -> metadataItem.item.aggregationType()
+                is MetadataItem.DataElementOperandItem ->
+                    metadata[metadataItem.item.dataElement()?.uid()]?.let {
+                        (it as MetadataItem.DataElementItem).item.aggregationType()
+                    }
+                else ->
+                    throw AnalyticsException.InvalidArguments("Invalid arguments: invalid dataElement item ${item.id}.")
             }
-            else -> getDataElementAggregator(AggregationType.SUM.name)
-        }
-    }
 
-    private fun getDataElementAggregator(aggregationType: String?): String {
-        return aggregationType?.let { AggregationType.valueOf(it).sql }
-            ?: AggregationType.SUM.sql!!
+            AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
+        }
     }
 }

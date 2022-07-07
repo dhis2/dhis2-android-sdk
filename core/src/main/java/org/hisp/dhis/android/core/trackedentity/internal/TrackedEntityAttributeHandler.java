@@ -28,9 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink;
 
 import javax.inject.Inject;
 
@@ -39,9 +45,17 @@ import dagger.Reusable;
 @Reusable
 final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<TrackedEntityAttribute> {
 
+    private final OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink>
+            trackedEntityAttributeLegendSetLinkHandler;
+
     @Inject
-    TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
+    TrackedEntityAttributeHandler(
+            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
+            OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink>
+                    trackedEntityAttributeLegendSetLinkHandler
+    ) {
         super(trackedEntityAttributeStore);
+        this.trackedEntityAttributeLegendSetLinkHandler = trackedEntityAttributeLegendSetLinkHandler;
     }
 
     @Override
@@ -57,6 +71,18 @@ final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<Tracke
         }
 
         return builder.build();
+    }
+
+    @Override
+    protected void afterObjectHandled(TrackedEntityAttribute o, @NonNull HandleAction action) {
+        if (o.legendSets() != null) {
+            trackedEntityAttributeLegendSetLinkHandler.handleMany(o.uid(), o.legendSets(),
+                (legendSet, sortOrder) -> TrackedEntityAttributeLegendSetLink.builder()
+                    .legendSet(legendSet.uid())
+                    .sortOrder(sortOrder)
+                    .trackedEntityAttribute(o.uid())
+                    .build());
+        }
     }
 
     @Override

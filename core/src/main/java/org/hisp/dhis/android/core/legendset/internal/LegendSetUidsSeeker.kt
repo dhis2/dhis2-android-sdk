@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQu
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Reusable
@@ -45,6 +46,7 @@ internal class LegendSetUidsSeeker @Inject constructor(private val databaseAdapt
             ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
             IndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
             DataElementLegendSetLinkTableInfo.TABLE_INFO.name(),
+            TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO.name(),
         )
         val query = MultipleTableQueryBuilder()
             .generateQuery(ProgramIndicatorLegendSetLinkTableInfo.Columns.LEGEND_SET, tableNames)

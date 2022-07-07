@@ -127,4 +127,8 @@ public final class TrackedEntityAttributeCollectionRepository
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byIcon() {
         return cf.string(Columns.ICON);
     }
+
+    public TrackedEntityAttributeCollectionRepository withLegendSets() {
+        return cf.withChild(TrackedEntityAttributeFields.LEGEND_SETS);
+    }
 }

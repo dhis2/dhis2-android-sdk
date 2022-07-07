@@ -39,10 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.visualization.CategoryDimension
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemType
-import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.*
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -149,6 +146,62 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         when (val item = dimensionItems.first()) {
             is DimensionItem.DataItem.ProgramIndicatorItem ->
                 assertThat(item.uid).isEqualTo(uid1)
+            else ->
+                fail("Unexpected dimension item type")
+        }
+    }
+
+    @Test
+    fun `Should parse event dataElements dimension items`() {
+        val dataDimensionItems = listOf(
+            DataDimensionItem.builder()
+                .programDataElement(
+                    DataDimensionItemProgramDataElement.builder()
+                        .uid("$uid1.$uid2")
+                        .build()
+                )
+                .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
+                .build()
+        )
+
+        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
+
+        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+
+        assertThat(dimensionItems).hasSize(1)
+        when (val item = dimensionItems.first()) {
+            is DimensionItem.DataItem.EventDataItem.DataElement -> {
+                assertThat(item.program).isEqualTo(uid1)
+                assertThat(item.dataElement).isEqualTo(uid2)
+            }
+            else ->
+                fail("Unexpected dimension item type")
+        }
+    }
+
+    @Test
+    fun `Should parse event attribute dimension items`() {
+        val dataDimensionItems = listOf(
+            DataDimensionItem.builder()
+                .programAttribute(
+                    DataDimensionItemProgramAttribute.builder()
+                        .uid("$uid1.$uid2")
+                        .build()
+                )
+                .dataDimensionItemType(DataDimensionItemType.PROGRAM_ATTRIBUTE)
+                .build()
+        )
+
+        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
+
+        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+
+        assertThat(dimensionItems).hasSize(1)
+        when (val item = dimensionItems.first()) {
+            is DimensionItem.DataItem.EventDataItem.Attribute -> {
+                assertThat(item.program).isEqualTo(uid1)
+                assertThat(item.attribute).isEqualTo(uid2)
+            }
             else ->
                 fail("Unexpected dimension item type")
         }

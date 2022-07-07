@@ -32,15 +32,20 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public final class TrackedEntityAttributeFields {
     public static final String UNIQUE = "unique";
+    public static final String LEGEND_SETS = "legendSets";
     private static final String STYLE = "style";
     private static final String ACCESS = "access";
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
@@ -59,6 +64,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<ValueType>field(Columns.VALUE_TYPE),
                     fh.<String>field(Columns.EXPRESSION),
                     fh.<Boolean>field(Columns.PROGRAM_SCOPE),
+                    fh.<AggregationType>field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
                     fh.<Boolean>field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
                     fh.<Boolean>field(Columns.GENERATED),
                     fh.<Boolean>field(Columns.DISPLAY_ON_VISIT_SCHEDULE),
@@ -66,6 +72,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(UNIQUE),
                     fh.<Boolean>field(Columns.INHERIT),
                     fh.<String>field(Columns.FIELD_MASK),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.read),

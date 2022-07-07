@@ -28,11 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,14 +49,14 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+
+    @Mock
+    private OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> trackedEntityAttributeLegendSetLinkHandler;
 
     @Mock
     private ObjectStyle objectStyle;
@@ -67,7 +73,10 @@ public class TrackedEntityAttributeHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(
+                trackedEntityAttributeStore,
+                trackedEntityAttributeLegendSetLinkHandler
+        );
 
         trackedEntityAttribute = TrackedEntityAttribute.builder()
                 .uid("test_tracked_entity_attribute_uid")
@@ -87,7 +96,7 @@ public class TrackedEntityAttributeHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityAttribute> genericHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore, trackedEntityAttributeLegendSetLinkHandler);
     }
 
     @Test

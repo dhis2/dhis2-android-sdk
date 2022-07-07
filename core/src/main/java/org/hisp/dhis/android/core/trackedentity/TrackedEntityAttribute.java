@@ -41,9 +41,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DefaultAccessColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -51,6 +54,8 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
@@ -78,6 +83,11 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @Nullable
     @JsonProperty()
     public abstract String expression();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AggregationTypeColumnAdapter.class)
+    public abstract AggregationType aggregationType();
 
     @Nullable
     @JsonProperty()
@@ -112,6 +122,11 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @Nullable
     @JsonProperty()
     public abstract String fieldMask();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> legendSets();
 
     @JsonProperty()
     @ColumnAdapter(DefaultAccessColumnAdapter.class)
@@ -152,6 +167,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder expression(String expression);
 
+        public abstract Builder aggregationType(AggregationType aggregationType);
+
         public abstract Builder programScope(Boolean programScope);
 
         public abstract Builder displayInListNoProgram(Boolean displayInListNoProgram);
@@ -172,6 +189,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder style(ObjectStyle style);
 
         public abstract Builder access(Access access);
+
+        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
 
         public abstract Builder formName(String formName);
 

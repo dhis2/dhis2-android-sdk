@@ -36,22 +36,26 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo
 
 @Suppress("MagicNumber")
 internal object EventDataFilterStore {
     private val BINDER = StatementBinder { o: EventDataFilter, w: StatementWrapper ->
         w.bind(1, o.eventFilter())
         w.bind(2, o.dataItem())
-        w.bind(3, o.le())
-        w.bind(4, o.ge())
-        w.bind(5, o.gt())
-        w.bind(6, o.lt())
-        w.bind(7, o.eq())
-        w.bind(8, StringSetColumnAdapter.serialize(o.`in`()))
-        w.bind(9, o.like())
-        w.bind(10, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
+        w.bindNull(3)
+        w.bindNull(4)
+        w.bindNull(5)
+        w.bindNull(6)
+        w.bind(7, o.le())
+        w.bind(8, o.ge())
+        w.bind(9, o.gt())
+        w.bind(10, o.lt())
+        w.bind(11, o.eq())
+        w.bind(12, StringSetColumnAdapter.serialize(o.`in`()))
+        w.bind(13, o.like())
+        w.bind(14, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }
@@ -59,15 +63,15 @@ internal object EventDataFilterStore {
 
     @JvmField
     val CHILD_PROJECTION = SingleParentChildProjection(
-        EventDataFilterTableInfo.TABLE_INFO,
-        EventDataFilterTableInfo.Columns.EVENT_FILTER
+        ItemFilterTableInfo.TABLE_INFO,
+        ItemFilterTableInfo.Columns.EVENT_FILTER
     )
 
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<EventDataFilter> {
         return objectWithoutUidStore(
             databaseAdapter,
-            EventDataFilterTableInfo.TABLE_INFO,
+            ItemFilterTableInfo.TABLE_INFO,
             BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
         ) { EventDataFilter.create(it) }
     }

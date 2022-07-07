@@ -37,7 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
@@ -81,12 +84,52 @@ public final class TrackedEntityInstanceFilterCollectionRepository
         return cf.bool(Columns.FOLLOW_UP);
     }
 
-    public IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byPeriodFrom() {
-        return cf.integer(Columns.PERIOD_FROM);
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrganisationUnit() {
+        return cf.string(Columns.ORGANISATION_UNIT);
     }
 
-    public IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byPeriodTo() {
-        return cf.integer(Columns.PERIOD_TO);
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, OrganisationUnitMode> byOuMode() {
+        return cf.enumC(Columns.OU_MODE);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, AssignedUserMode> byAssignedUserMode() {
+        return cf.enumC(Columns.ASSIGNED_USER_MODE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrderProperty() {
+        return cf.string(Columns.ORDER);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byDisplayColumnOrder() {
+        return cf.string(Columns.DISPLAY_COLUMN_ORDER);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EventStatus> byEventStatus() {
+        return cf.enumC(Columns.EVENT_STATUS);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventDate() {
+        return cf.string(Columns.EVENT_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byLastUpdatedDate() {
+        return cf.string(Columns.LAST_UPDATED_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byProgramStage() {
+        return cf.string(Columns.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byTrackedEntityInstances() {
+        return cf.string(Columns.TRACKED_ENTITY_INSTANCES);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentIncidentDate() {
+        return cf.string(Columns.ENROLLMENT_INCIDENT_DATE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentCreatedDate() {
+        return cf.string(Columns.ENROLLMENT_CREATED_DATE);
     }
 
     public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byColor() {

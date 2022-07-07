@@ -45,4 +45,6 @@ internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipIte
     fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
 
     fun getByItem(item: RelationshipItem): List<RelationshipItem>
+
+    fun getByEntityUid(entityUid: String): List<RelationshipItem>
 }

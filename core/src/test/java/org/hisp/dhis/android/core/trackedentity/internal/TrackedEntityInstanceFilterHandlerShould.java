@@ -28,6 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -36,6 +41,8 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.junit.Before;
@@ -47,11 +54,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceFilterHandlerShould {
@@ -66,6 +68,9 @@ public class TrackedEntityInstanceFilterHandlerShould {
     private HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
 
     @Mock
+    private HandlerWithTransformer<AttributeValueFilter> attributeValueFilterHandler;
+
+    @Mock
     private TrackedEntityInstanceEventFilter eventFilter;
 
     // object to test
@@ -78,7 +83,8 @@ public class TrackedEntityInstanceFilterHandlerShould {
         MockitoAnnotations.initMocks(this);
         trackedEntityInstanceFilterHandler = new TrackedEntityInstanceFilterHandler(
                 trackedEntityInstanceFilterStore,
-                trackedEntityInstanceEventFilterHandler);
+                trackedEntityInstanceEventFilterHandler,
+                attributeValueFilterHandler);
 
         eventFilters = Lists.newArrayList(eventFilter);
 
@@ -89,6 +95,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
                 .name("name")
                 .displayName("display_name")
                 .eventFilters(eventFilters)
+                .entityQueryCriteria(EntityQueryCriteria.builder().build())
                 .build();
 
         when(trackedEntityInstanceFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
@@ -101,7 +108,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityInstanceFilter> genericHandler =
                 new TrackedEntityInstanceFilterHandler(trackedEntityInstanceFilterStore,
-                        trackedEntityInstanceEventFilterHandler);
+                        trackedEntityInstanceEventFilterHandler, attributeValueFilterHandler);
     }
 
     @Test

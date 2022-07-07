@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
@@ -52,10 +51,9 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
  */
 internal object AnalyticsEvaluatorHelper {
 
-    fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
-        return (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
-            .groupBy { it.dimension }
+    fun getElementAggregator(aggregationType: String?): String {
+        return aggregationType?.let { AggregationType.valueOf(it).sql }
+            ?: AggregationType.SUM.sql!!
     }
 
     fun appendOrgunitWhereClause(

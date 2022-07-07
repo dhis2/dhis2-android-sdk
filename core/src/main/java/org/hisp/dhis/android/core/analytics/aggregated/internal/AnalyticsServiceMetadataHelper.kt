@@ -47,6 +47,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
@@ -59,6 +61,8 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
+    private val programStore: ProgramStoreInterface,
+    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val parentPeriodGenerator: ParentPeriodGenerator,
@@ -99,7 +103,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         is DimensionItem.OrganisationUnitItem -> getOrganisationUnitItems(item)
                         is DimensionItem.CategoryItem -> getCategoryItems(item)
                     }
-                    val metadataItemsMap = metadataItems.map { it.id to it }.toMap()
+                    val metadataItemsMap = metadataItems.associateBy { it.id }
 
                     metadata += metadataItemsMap
                 }
@@ -108,7 +112,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return metadata
     }
 
-    @SuppressWarnings("ThrowsCount")
+    @SuppressWarnings("ThrowsCount", "ComplexMethod")
     private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {
@@ -145,6 +149,24 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     programIndicatorRepository.withAnalyticsPeriodBoundaries().uid(item.uid).blockingGet()
                         ?.let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
                         ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
+
+                is DimensionItem.DataItem.EventDataItem.DataElement -> {
+                    val dataElement = dataElementStore.selectByUid(item.dataElement)
+                        ?: throw AnalyticsException.InvalidDataElement(item.id)
+                    val program = programStore.selectByUid(item.program)
+                        ?: throw AnalyticsException.InvalidProgram(item.id)
+
+                    MetadataItem.EventDataElementItem(dataElement, program)
+                }
+
+                is DimensionItem.DataItem.EventDataItem.Attribute -> {
+                    val attribute = trackedEntityAttributeStore.selectByUid(item.attribute)
+                        ?: throw AnalyticsException.InvalidTrackedEntityAttribute(item.id)
+                    val program = programStore.selectByUid(item.program)
+                        ?: throw AnalyticsException.InvalidProgram(item.id)
+
+                    MetadataItem.EventAttributeItem(attribute, program)
+                }
             }
         )
     }

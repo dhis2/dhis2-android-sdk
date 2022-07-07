@@ -112,6 +112,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
+    @Synchronized
     override fun updateOrInsert(o: O): HandleAction {
         return try {
             update(o)

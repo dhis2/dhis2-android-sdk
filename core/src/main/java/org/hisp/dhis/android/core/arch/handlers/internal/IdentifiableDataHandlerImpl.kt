@@ -151,11 +151,16 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
+    protected fun deleteLinkedRelationships(o: O) {
+        o.uid()?.let { relationshipHandler.deleteLinkedRelationships(it) }
+    }
+
     protected abstract fun addRelationshipState(o: O): O
     protected abstract fun addSyncedState(o: O): O
     protected fun deleteOrPersist(o: O): HandleAction {
         val modelUid = o.uid()
         return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
+            deleteLinkedRelationships(o)
             store.deleteIfExists(modelUid)
             HandleAction.Delete
         } else {

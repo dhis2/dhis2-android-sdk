@@ -25,31 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.BeforeClass
 
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Manager;
-import org.hisp.dhis.android.core.MockIntegrationTestObjects;
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
+abstract class BaseMockIntegrationTestMetadataDispatcher : BaseMockIntegrationTest() {
 
-public abstract class BaseMockIntegrationTest {
-
-    protected static MockIntegrationTestObjects objects;
-    protected static D2 d2;
-    protected static Dhis2MockServer dhis2MockServer;
-    protected static DatabaseAdapter databaseAdapter;
-
-    public static boolean setUpClass(MockIntegrationTestDatabaseContent content) throws Exception {
-        MockIntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = MockIntegrationTestObjectsFactory.getObjects(content);
-        objects = tuple.objects;
-        d2 = objects.d2;
-        D2Manager.setD2$core_debug(d2);
-        databaseAdapter = objects.databaseAdapter;
-        dhis2MockServer = objects.dhis2MockServer;
-        ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint());
-        return tuple.isNewInstance;
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher)
+            if (isNewInstance) {
+                objects!!.dhis2MockServer.setRequestDispatcher()
+                objects!!.d2.userModule().blockingLogIn(
+                    RealServerMother.username, RealServerMother.password,
+                    objects!!.dhis2MockServer.baseEndpoint
+                )
+                objects!!.d2.metadataModule().blockingDownload()
+            }
+        }
     }
 }

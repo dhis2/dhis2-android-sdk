@@ -25,21 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.MockIntegrationTestObjects
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.junit.BeforeClass;
+internal object MockIntegrationTestObjectsFactory {
+    private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
 
-public abstract class BaseMockIntegrationTestEmptyEnqueable extends BaseMockIntegrationTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable);
-        if (isNewInstance) {
-            dhis2MockServer.enqueueLoginResponses();
-            objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.getBaseEndpoint());
+    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
+        val instance = instances[content]
+        return if (instance != null) {
+            IntegrationTestObjectsWithIsNewInstance(instance, false)
+        } else {
+            val newInstance = MockIntegrationTestObjects(content)
+            instances[content] = newInstance
+            IntegrationTestObjectsWithIsNewInstance(newInstance, true)
         }
     }
+
+    @JvmStatic
+    fun tearDown() {
+        if (instances.isNotEmpty()) {
+            for (objects in instances.values) {
+                objects.tearDown()
+            }
+            instances.clear()
+        }
+    }
+
+    internal class IntegrationTestObjectsWithIsNewInstance(
+        val objects: MockIntegrationTestObjects,
+        val isNewInstance: Boolean
+    )
 }

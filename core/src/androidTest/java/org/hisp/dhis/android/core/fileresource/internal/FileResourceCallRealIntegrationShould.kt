@@ -31,24 +31,14 @@ import com.google.common.truth.Truth.assertThat
 import java.io.File
 import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
-import org.junit.Before
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
-    private lateinit var d2: D2
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     // @Test
     fun download_and_write_files_successfully() {

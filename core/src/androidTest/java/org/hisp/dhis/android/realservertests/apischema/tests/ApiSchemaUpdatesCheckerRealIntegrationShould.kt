@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.realservertests.apischema.tests
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -47,16 +45,8 @@ import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.entry
 import org.hisp.dhis.android.realservertests.apischema.ApiSchema
 import org.hisp.dhis.android.realservertests.apischema.ApiSchemaCall
 import org.junit.Assert
-import org.junit.Before
 
 class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
-    private lateinit var d2: D2
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     // @Test
     fun check_no_enum_have_been_updated_on_server() {

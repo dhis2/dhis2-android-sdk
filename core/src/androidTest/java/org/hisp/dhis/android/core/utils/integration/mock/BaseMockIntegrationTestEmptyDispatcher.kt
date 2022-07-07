@@ -25,34 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.BeforeClass
 
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.junit.Before;
-
-import java.io.IOException;
-
-public abstract class BaseRealIntegrationTest {
-
-    protected String username = RealServerMother.username;
-    protected String password = RealServerMother.password;
-    protected String url = RealServerMother.url;
-
-    @Before
-    public void setUp() throws IOException {
-    }
-
-    protected GenericCallData getGenericCallData(D2 d2) {
-        return GenericCallData.create(
-                d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
-                d2.systemInfoModule().versionManager());
-    }
-
-    protected D2DIComponent getD2DIComponent(D2 d2) {
-        return d2.d2DIComponent;
+abstract class BaseMockIntegrationTestEmptyDispatcher : BaseMockIntegrationTest() {
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyDispatcher)
+            if (isNewInstance) {
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(
+                    RealServerMother.username, RealServerMother.password,
+                    objects.dhis2MockServer.baseEndpoint
+                )
+            }
+        }
     }
 }

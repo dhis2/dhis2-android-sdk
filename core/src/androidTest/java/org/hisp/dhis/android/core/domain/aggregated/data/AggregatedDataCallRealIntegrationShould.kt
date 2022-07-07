@@ -29,9 +29,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data
 
 import android.util.Log
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
-import org.junit.Before
 
 class AggregatedDataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -40,13 +37,6 @@ class AggregatedDataCallRealIntegrationShould : BaseRealIntegrationTest() {
      * the
      * metadataSyncCall. It works against the demo server.
      */
-    private lateinit var d2: D2
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)

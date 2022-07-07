@@ -28,34 +28,25 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private D2 d2;
-
     private DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
     @Before
-    public void setUp() throws IOException {
-
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-
         dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(d2.databaseAdapter());
     }
 

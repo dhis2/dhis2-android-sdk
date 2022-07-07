@@ -25,22 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.junit.After
+import org.junit.Before
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.junit.BeforeClass;
+abstract class BaseRealIntegrationTest {
+    @JvmField
+    protected var username: String = RealServerMother.username
+    @JvmField
+    protected var password: String = RealServerMother.password
+    @JvmField
+    protected var url: String = RealServerMother.url
 
-public abstract class BaseMockIntegrationTestMetadataDispatcher extends BaseMockIntegrationTest {
+    protected lateinit var d2: D2
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher);
-        if (isNewInstance) {
-            objects.dhis2MockServer.setRequestDispatcher();
-            objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.getBaseEndpoint());
-            objects.d2.metadataModule().blockingDownload();
-        }
+    @Before
+    open fun setUp() {
+        d2 = D2Factory.forNewDatabase()
+    }
+
+    @After
+    open fun tearDown() {
+        D2Factory.clear()
+    }
+
+    protected fun getGenericCallData(d2: D2): GenericCallData {
+        return GenericCallData.create(
+            d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
+            d2.systemInfoModule().versionManager()
+        )
+    }
+
+    protected fun getD2DIComponent(d2: D2): D2DIComponent {
+        return d2.d2DIComponent
     }
 }

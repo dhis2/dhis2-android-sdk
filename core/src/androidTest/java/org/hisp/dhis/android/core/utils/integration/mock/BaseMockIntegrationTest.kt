@@ -25,49 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Manager
+import org.hisp.dhis.android.core.MockIntegrationTestObjects
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper.setServerUrl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
-import android.util.Log;
+abstract class BaseMockIntegrationTest {
+    companion object {
+        @JvmStatic
+        lateinit var objects: MockIntegrationTestObjects
+        @JvmStatic
+        lateinit var d2: D2
+        @JvmStatic
+        lateinit var dhis2MockServer: Dhis2MockServer
+        @JvmStatic
+        lateinit var databaseAdapter: DatabaseAdapter
 
-import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent;
-
-import java.io.IOException;
-import java.util.Date;
-
-public class MockIntegrationTestObjects {
-    public final DatabaseAdapter databaseAdapter;
-
-    public Date serverDate = new Date();
-    public ResourceHandler resourceHandler;
-
-    public final D2DIComponent d2DIComponent;
-    public final D2 d2;
-    public final Dhis2MockServer dhis2MockServer;
-    public final MockIntegrationTestDatabaseContent content;
-
-    public MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
-        this.content = content;
-
-        dhis2MockServer = new Dhis2MockServer(0);
-        CalendarProviderFactory.setFixed();
-
-        d2 = D2Factory.forNewDatabase();
-
-        databaseAdapter = d2.databaseAdapter();
-        d2DIComponent = d2.d2DIComponent;
-
-        resourceHandler = ResourceHandler.create(databaseAdapter);
-        resourceHandler.setServerDate(serverDate);
-    }
-
-    public void tearDown() throws IOException {
-        Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
-        dhis2MockServer.shutdown();
+        @JvmStatic
+        fun setUpClass(content: MockIntegrationTestDatabaseContent): Boolean {
+            val tuple = MockIntegrationTestObjectsFactory.getObjects(content)
+            tuple.objects.let { objs ->
+                objects = objs
+                d2 = objs.d2
+                D2Manager.setD2(objs.d2)
+                databaseAdapter = objs.databaseAdapter
+                dhis2MockServer = objs.dhis2MockServer
+                setServerUrl(dhis2MockServer.baseEndpoint)
+            }
+            return tuple.isNewInstance
+        }
     }
 }

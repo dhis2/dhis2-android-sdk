@@ -25,45 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import android.util.Log
+import java.io.IOException
+import java.util.*
+import kotlin.Throws
+import org.hisp.dhis.android.core.D2Factory.clear
+import org.hisp.dhis.android.core.D2Factory.forNewDatabase
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 
-import org.hisp.dhis.android.core.MockIntegrationTestObjects;
+class MockIntegrationTestObjects(val content: MockIntegrationTestDatabaseContent) {
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+    val d2: D2 = forNewDatabase()
+    val databaseAdapter: DatabaseAdapter = d2.databaseAdapter()
+    var serverDate = Date()
+    var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
 
-public class MockIntegrationTestObjectsFactory {
+    @JvmField
+    val d2DIComponent: D2DIComponent = d2.d2DIComponent
+    val dhis2MockServer: Dhis2MockServer = Dhis2MockServer(0)
 
-    private static Map<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> instances = new HashMap<>();
-
-    static IntegrationTestObjectsWithIsNewInstance getObjects(MockIntegrationTestDatabaseContent content) throws Exception {
-        if (instances.containsKey(content)) {
-            return new IntegrationTestObjectsWithIsNewInstance(instances.get(content), false);
-        } else {
-            MockIntegrationTestObjects instance = new MockIntegrationTestObjects(content);
-            instances.put(content, instance);
-            return new IntegrationTestObjectsWithIsNewInstance(instance, true);
-        }
+    @Throws(IOException::class)
+    fun tearDown() {
+        Log.i("MockIntegrationTestObjects", "Objects teardown: $content")
+        dhis2MockServer.shutdown()
+        clear()
     }
 
-    public static void tearDown() throws IOException {
-        if (!instances.isEmpty()) {
-            for (MockIntegrationTestObjects objects : instances.values()) {
-                objects.tearDown();
-            }
-            instances.clear();
-        }
-    }
-
-    static class IntegrationTestObjectsWithIsNewInstance {
-        public final MockIntegrationTestObjects objects;
-        public final boolean isNewInstance;
-
-        IntegrationTestObjectsWithIsNewInstance(MockIntegrationTestObjects objects, boolean isNewInstance) {
-            this.objects = objects;
-            this.isNewInstance = isNewInstance;
-        }
+    init {
+        CalendarProviderFactory.setFixed()
+        resourceHandler.serverDate = serverDate
     }
 }

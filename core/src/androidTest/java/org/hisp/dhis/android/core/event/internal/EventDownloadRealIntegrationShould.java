@@ -28,26 +28,11 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
-
-import java.io.IOException;
-
 import static com.google.common.truth.Truth.assertThat;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+
 public class EventDownloadRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //@Test
     public void download_events() {

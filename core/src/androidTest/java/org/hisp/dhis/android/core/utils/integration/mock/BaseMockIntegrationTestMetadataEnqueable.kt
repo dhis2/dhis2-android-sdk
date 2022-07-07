@@ -25,29 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core;
+import org.junit.BeforeClass
 
-/**
- * A collection of convenience functions/abstractions to be used by the tests.
- */
-public class AndroidTestUtils {
-
-    /* A helper method to convert an integer to Boolean, where 1 is true and 0 is false*/
-    public static Boolean toBoolean(Integer i) {
-        if (i == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /* A helper method to convert a Boolean to an Integer, where true is 1 and false is 0 */
-    public static Integer toInteger(Boolean b) {
-        if (b) {
-            return 1;
-        } else {
-            return 0;
+abstract class BaseMockIntegrationTestMetadataEnqueable : BaseMockIntegrationTest() {
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable)
+            if (isNewInstance) {
+                objects!!.dhis2MockServer.enqueueLoginResponses()
+                objects!!.d2.userModule().blockingLogIn(
+                    "android", "Android123",
+                    objects!!.dhis2MockServer.baseEndpoint
+                )
+                objects!!.dhis2MockServer.enqueueMetadataResponses()
+                objects!!.d2.metadataModule().blockingDownload()
+            }
         }
     }
 }

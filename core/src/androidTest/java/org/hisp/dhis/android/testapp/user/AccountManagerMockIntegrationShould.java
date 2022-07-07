@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.testapp.user;
 
 import static com.google.common.truth.Truth.assertThat;
-
 import static org.junit.Assert.fail;
 
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
@@ -48,7 +47,7 @@ import java.util.List;
 public class AccountManagerMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpTestClass() {
         BaseMockIntegrationTestEmptyEnqueable.setUpClass();
     }
 

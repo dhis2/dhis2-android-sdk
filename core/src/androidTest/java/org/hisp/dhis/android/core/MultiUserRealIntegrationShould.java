@@ -29,19 +29,8 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.junit.Before;
-
-import java.io.IOException;
 
 public class MultiUserRealIntegrationShould extends BaseRealIntegrationTest {
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //@Test
     public void connect_to_server_with_2_different_users() {

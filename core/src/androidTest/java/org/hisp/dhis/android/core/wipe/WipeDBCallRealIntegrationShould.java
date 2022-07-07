@@ -28,33 +28,20 @@
 
 package org.hisp.dhis.android.core.wipe;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventCallFactory;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
-import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {

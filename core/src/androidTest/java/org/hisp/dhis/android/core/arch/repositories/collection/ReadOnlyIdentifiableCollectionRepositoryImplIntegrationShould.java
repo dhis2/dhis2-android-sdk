@@ -59,7 +59,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     private static RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpTestClass() {
         BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         Handler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();

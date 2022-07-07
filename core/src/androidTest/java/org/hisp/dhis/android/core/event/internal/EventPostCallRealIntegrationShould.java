@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
@@ -44,17 +44,12 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
 
     private EventStore eventStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
@@ -69,10 +64,8 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
     @Override
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-        d2 = D2Factory.forNewDatabase();
-
         eventStore = EventStoreImpl.create(d2.databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 

@@ -54,7 +54,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends BaseMockI
     private static RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpTestClass() {
         BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         typeMap = RelationshipTypeSamples.typeMap();

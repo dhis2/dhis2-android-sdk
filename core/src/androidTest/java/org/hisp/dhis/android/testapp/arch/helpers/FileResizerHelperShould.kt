@@ -33,15 +33,15 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.util.*
 
 @RunWith(D2JunitRunner::class)
 class FileResizerHelperShould {
@@ -115,8 +115,9 @@ class FileResizerHelperShould {
         private fun getFile(compressFormat: CompressFormat, bitmap: Bitmap): File {
             val context = InstrumentationRegistry.getInstrumentation().context
             val imageFile = File(
-                FileResourceDirectoryHelper.getRootFileResourceDirectory(context), "image." +
-                        compressFormat.name.lowercase(Locale.getDefault())
+                FileResourceDirectoryHelper.getRootFileResourceDirectory(context),
+                "image." +
+                    compressFormat.name.lowercase(Locale.getDefault())
             )
             val os: OutputStream
             try {

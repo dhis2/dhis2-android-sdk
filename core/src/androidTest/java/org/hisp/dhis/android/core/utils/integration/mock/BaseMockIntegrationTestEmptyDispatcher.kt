@@ -25,21 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.junit.BeforeClass
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.junit.BeforeClass;
-
-public abstract class BaseMockIntegrationTestEmptyEnqueable extends BaseMockIntegrationTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable);
-        if (isNewInstance) {
-            dhis2MockServer.enqueueLoginResponses();
-            objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.getBaseEndpoint());
+abstract class BaseMockIntegrationTestEmptyDispatcher : BaseMockIntegrationTest() {
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyDispatcher)
+            if (isNewInstance) {
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(
+                    RealServerMother.username, RealServerMother.password,
+                    objects.dhis2MockServer.baseEndpoint
+                )
+            }
         }
     }
 }

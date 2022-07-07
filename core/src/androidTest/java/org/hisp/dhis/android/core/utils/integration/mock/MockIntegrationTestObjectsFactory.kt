@@ -25,23 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.MockIntegrationTestObjects
 
-import org.junit.BeforeClass;
+internal object MockIntegrationTestObjectsFactory {
+    private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
 
-public abstract class BaseMockIntegrationTestMetadataEnqueable extends BaseMockIntegrationTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        boolean isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable);
-        if (isNewInstance) {
-            objects.dhis2MockServer.enqueueLoginResponses();
-            objects.d2.userModule().blockingLogIn("android", "Android123",
-                    objects.dhis2MockServer.getBaseEndpoint());
-
-            objects.dhis2MockServer.enqueueMetadataResponses();
-            objects.d2.metadataModule().blockingDownload();
+    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
+        val instance = instances[content]
+        return if (instance != null) {
+            IntegrationTestObjectsWithIsNewInstance(instance, false)
+        } else {
+            val newInstance = MockIntegrationTestObjects(content)
+            instances[content] = newInstance
+            IntegrationTestObjectsWithIsNewInstance(newInstance, true)
         }
     }
+
+    @JvmStatic
+    fun tearDown() {
+        if (instances.isNotEmpty()) {
+            for (objects in instances.values) {
+                objects.tearDown()
+            }
+            instances.clear()
+        }
+    }
+
+    internal class IntegrationTestObjectsWithIsNewInstance(
+        val objects: MockIntegrationTestObjects,
+        val isNewInstance: Boolean
+    )
 }

@@ -34,4 +34,5 @@ internal interface LinkStore<O : CoreObject> : ObjectStore<O> {
     fun deleteLinksForMasterUid(masterUid: String)
     fun deleteAllLinks(): Int
     fun selectDistinctSlaves(slaveColumn: String): List<String>
+    fun selectLinksForMasterUid(masterUid: String): List<O>
 }

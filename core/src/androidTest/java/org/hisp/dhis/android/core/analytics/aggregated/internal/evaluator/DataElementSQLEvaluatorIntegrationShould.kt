@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
@@ -160,7 +163,8 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_disaggregate_by_category_option() {
-        createDataValue("2")
+        createDataValue("2", categoryOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("5", categoryOptionComboUid = attributeOptionCombo.uid())
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -176,6 +180,27 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
 
         assertThat(value).isEqualTo("2")
+    }
+
+    @Test
+    fun should_disaggregate_by_attribute_option() {
+        createDataValue("2", attributeOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("5", attributeOptionComboUid = attributeOptionCombo.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.CategoryItem(attribute.uid(), attributeOption.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
     }
 
     @Test
@@ -301,15 +326,17 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         value: String,
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
-        periodId: String = periodDec.periodId()!!
+        periodId: String = periodDec.periodId()!!,
+        categoryOptionComboUid: String = categoryOptionCombo.uid(),
+        attributeOptionComboUid: String = attributeOptionCombo.uid()
     ) {
         val dataValue = DataValue.builder()
             .value(value)
             .dataElement(dataElementUid)
             .period(periodId)
             .organisationUnit(orgunitUid)
-            .categoryOptionCombo(categoryOptionCombo.uid())
-            .attributeOptionCombo(categoryOptionCombo.uid())
+            .categoryOptionCombo(categoryOptionComboUid)
+            .attributeOptionCombo(attributeOptionComboUid)
             .build()
 
         dataValueStore.insert(dataValue)

@@ -103,10 +103,13 @@ object BaseEvaluatorSamples {
 
     val category: Category = Category.builder()
         .uid(generator.generate())
+        .displayName("Category 1")
+        .dataDimensionType(CategoryDataDimensionType.DISAGGREGATION.name)
         .build()
 
     val categoryOption: CategoryOption = CategoryOption.builder()
         .uid(generator.generate())
+        .displayName("Category Option 1")
         .build()
 
     val categoryCategoryOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
@@ -132,6 +135,42 @@ object BaseEvaluatorSamples {
     val categoryOptionComboCategoryOptionLink = CategoryOptionComboCategoryOptionLink.builder()
         .categoryOption(categoryOption.uid())
         .categoryOptionCombo(categoryOptionCombo.uid())
+        .build()
+
+    val attribute: Category = Category.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 1")
+        .dataDimensionType(CategoryDataDimensionType.ATTRIBUTE.name)
+        .build()
+
+    val attributeOption: CategoryOption = CategoryOption.builder()
+        .uid(generator.generate())
+        .displayName("Attribute Option 1")
+        .build()
+
+    val attributeAttributeOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+        .category(attribute.uid())
+        .categoryOption(attributeOption.uid())
+        .build()
+
+    val attributeCombo: CategoryCombo = CategoryCombo.builder()
+        .uid(generator.generate())
+        .build()
+
+    val attributeOptionCombo: CategoryOptionCombo = CategoryOptionCombo.builder()
+        .uid(generator.generate())
+        .displayName("Coc")
+        .categoryCombo(ObjectWithUid.fromIdentifiable(attributeCombo))
+        .build()
+
+    val attributeAttributeComboLink: CategoryCategoryComboLink = CategoryCategoryComboLink.builder()
+        .category(attribute.uid())
+        .categoryCombo(attributeCombo.uid())
+        .build()
+
+    val attributeOptionComboAttributeOptionLink = CategoryOptionComboCategoryOptionLink.builder()
+        .categoryOption(attributeOption.uid())
+        .categoryOptionCombo(attributeOptionCombo.uid())
         .build()
 
     val dataElement1 = DataElement.builder()

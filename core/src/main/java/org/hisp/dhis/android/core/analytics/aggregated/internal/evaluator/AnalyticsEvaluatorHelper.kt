@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
+import org.hisp.dhis.android.core.category.CategoryDataDimensionType
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
@@ -110,9 +111,17 @@ internal object AnalyticsEvaluatorHelper {
     fun getInPeriodsClause(periods: List<Period>): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
             "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${periods.joinToString(" OR ") {
-                "(${getPeriodWhereClause(PeriodTableInfo.Columns.START_DATE, PeriodTableInfo.Columns.END_DATE, it)})"
-            }}"
+            "WHERE ${
+            periods.joinToString(" OR ") {
+                "(${
+                getPeriodWhereClause(
+                    PeriodTableInfo.Columns.START_DATE,
+                    PeriodTableInfo.Columns.END_DATE,
+                    it
+                )
+                })"
+            }
+            }"
     }
 
     fun getPeriodWhereClause(columnStart: String, columnEnd: String, period: Period): String {
@@ -136,13 +145,23 @@ internal object AnalyticsEvaluatorHelper {
     }
 
     fun appendCategoryWhereClause(
-        columnName: String,
+        attributeColumnName: String?,
+        disaggregationColumnName: String?,
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
         val innerClause = WhereClauseBuilder().apply {
             items.map { it as DimensionItem.CategoryItem }.map { item ->
-                appendOrInSubQuery(columnName, getCategoryOptionClause(item.uid, item.categoryOption))
+                metadata[item.uid]?.let { it as MetadataItem.CategoryItem }.let { category ->
+                    val columnName =
+                        if (category?.item?.dataDimensionType() == CategoryDataDimensionType.ATTRIBUTE.name) {
+                            attributeColumnName
+                        } else {
+                            disaggregationColumnName
+                        }
+                    columnName?.let { appendOrInSubQuery(it, getCategoryOptionClause(item.uid, item.categoryOption)) }
+                }
             }
         }.build()
 

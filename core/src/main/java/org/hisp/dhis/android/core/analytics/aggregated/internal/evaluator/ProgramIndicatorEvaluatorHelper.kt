@@ -134,16 +134,18 @@ internal object ProgramIndicatorEvaluatorHelper {
                     }
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
-                            EventTableInfo.Columns.ORGANISATION_UNIT,
-                            entry.value,
-                            this,
-                            metadata
+                            columnName = EventTableInfo.Columns.ORGANISATION_UNIT,
+                            items = entry.value,
+                            builder = this,
+                            metadata = metadata
                         )
                     is Dimension.Category ->
                         AnalyticsEvaluatorHelper.appendCategoryWhereClause(
-                            EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                            entry.value,
-                            this
+                            attributeColumnName = EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
+                            disaggregationColumnName = null,
+                            items = entry.value,
+                            builder = this,
+                            metadata = metadata
                         )
                     else -> {
                     }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.helpers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLConnection;
 
 import okhttp3.MediaType;
 
@@ -113,10 +113,9 @@ public final class FileResizerHelper {
     }
 
     private static Bitmap.CompressFormat getCompressFormat(File file) {
-        String contentType = URLConnection.guessContentTypeFromName(file.getName());
-        MediaType mediaType = MediaType.get(contentType);
-        return mediaType.subtype().equals("jpeg") ? Bitmap.CompressFormat.JPEG :
-                Bitmap.CompressFormat.PNG;
+        String extension = FileResourceUtil.getExtension(file.getName());
+        boolean isJpeg = extension != null && (extension.equals("jpeg") || extension.equals("jpg"));
+        return isJpeg ? Bitmap.CompressFormat.JPEG : Bitmap.CompressFormat.PNG;
     }
 
     private static D2Error buildD2Error(Exception e) {

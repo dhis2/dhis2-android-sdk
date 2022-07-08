@@ -29,21 +29,18 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import java.io.*
-import java.net.URLConnection
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
+import java.io.*
+import java.net.URLConnection
 
 internal object FileResourceUtil {
 
-    fun getFile(context: Context, fileResource: FileResource): File? {
-        val file = File(
-            FileResourceDirectoryHelper.getFileResourceDirectory(context),
-            generateFileName(MediaType.get(fileResource.contentType()!!), fileResource.uid()!!)
-        )
-        return if (file.exists()) {
+    fun getFile(fileResource: FileResource): File? {
+        val file = fileResource.path()?.let { File(it) }
+        return if (file != null && file.exists()) {
             file
         } else {
             null
@@ -51,12 +48,12 @@ internal object FileResourceUtil {
     }
 
     fun renameFile(file: File, newFileName: String, context: Context): File {
-        val contentType = URLConnection.guessContentTypeFromName(file.name)
-        val generatedName = generateFileName(MediaType.get(contentType), newFileName)
-        val newFile = File(
-            FileResourceDirectoryHelper.getFileResourceDirectory(context),
-            generatedName
-        )
+        val generatedName = generateFileName(newFileName, getExtension(file.name))
+
+        val parentPath = file.parentFile?.absolutePath
+            ?: FileResourceDirectoryHelper.getFileResourceDirectory(context).absolutePath
+
+        val newFile = File(parentPath, generatedName)
 
         if (!file.renameTo(newFile)) {
             Log.d(FileResourceUtil::class.java.canonicalName, "Fail renaming " + file.name + " to " + generatedName)
@@ -69,17 +66,16 @@ internal object FileResourceUtil {
     @Throws(IOException::class)
     fun saveFile(sourceFile: File, fileResourceUid: String, context: Context): File {
         val inputStream: InputStream = FileInputStream(sourceFile)
-        val contentType = URLConnection.guessContentTypeFromName(sourceFile.name)
-        val generatedName = generateFileName(MediaType.get(contentType), fileResourceUid)
+        val generatedName = generateFileName(fileResourceUid, getExtension(sourceFile.name))
         val destinationFile = File(FileResourceDirectoryHelper.getFileResourceDirectory(context), generatedName)
 
         return writeInputStream(inputStream, destinationFile, sourceFile.length())
     }
 
-    fun saveFileFromResponse(body: ResponseBody, generatedFileName: String, context: Context): File {
+    fun saveFileFromResponse(body: ResponseBody, fileResource: FileResource, context: Context): File {
         val destinationFile = File(
             FileResourceDirectoryHelper.getFileResourceDirectory(context),
-            generateFileName(body.contentType()!!, generatedFileName)
+            generateFileName(fileResource.uid()!!, getExtension(fileResource.name()!!))
         )
         writeInputStream(body.byteStream(), destinationFile, body.contentLength())
         return destinationFile
@@ -127,8 +123,25 @@ internal object FileResourceUtil {
         return file
     }
 
-    private fun generateFileName(mediaType: MediaType, fileName: String): String {
-        return String.format("%s.%s", fileName, mediaType.subtype())
+    @JvmStatic
+    fun getContentTypeFromName(name: String): String {
+        return URLConnection.guessContentTypeFromName(name) ?: "application/octet-stream"
+    }
+
+    private fun generateFileName(fileName: String, extension: String?): String {
+        return if (extension != null) {
+            "$fileName.$extension"
+        } else {
+            fileName
+        }
+    }
+
+    @JvmStatic
+    fun getExtension(fileName: String): String? {
+        return fileName.split(".").let { tokens ->
+            if (tokens.size > 1) tokens.last()
+            else null
+        }
     }
 
     private fun logMessage(e: Exception) {

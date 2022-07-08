@@ -75,7 +75,7 @@ internal class FileResourcePostCall @Inject constructor(
             alreadyPinged = true
         }
 
-        val file = FileResourceUtil.getFile(context, fileResource)
+        val file = FileResourceUtil.getFile(fileResource)
 
         return if (file != null) {
             val filePart = getFilePart(file)

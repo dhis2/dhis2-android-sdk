@@ -78,6 +78,7 @@ object FileResizerHelper {
     }
 
     @Throws(D2Error::class)
+    @Suppress("MagicNumber")
     private fun resize(fileToResize: File, bitmap: Bitmap, dstWidth: Int, dstHeight: Int, dimension: Dimension): File {
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false)
         val resizedFile = File(fileToResize.parent, "resized-${dimension.name}-${fileToResize.name}")

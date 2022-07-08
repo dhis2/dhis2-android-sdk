@@ -52,6 +52,8 @@ class FileResourceUtilShould {
         assertThat(getExtension("image.png")).isEqualTo("png")
         assertThat(getExtension("file.pak")).isEqualTo("pak")
 
+        assertThat(getExtension("file.name.pdf")).isEqualTo("pdf")
+
         assertThat(getExtension("file")).isNull()
     }
 }

@@ -355,8 +355,8 @@ This table shows the functionality supported by the Indicator dimension item com
 |                   |Log10                  | Yes       | No            |
 |**Dimensions:**    |Constant               | Yes       | Yes           |
 |                   |DataElement            | Yes       | Yes           |
-|                   |ProgramAttribute       | Yes       | No            |
-|                   |ProgramDataElement     | Yes       | No            |
+|                   |ProgramAttribute       | Yes       | Yes           |
+|                   |ProgramDataElement     | Yes       | Yes           |
 |                   |ProgramIndicator       | Yes       | Yes           |
 |                   |OrgUnitGroup           | Yes       | No            |
 |                   |ReportingRate          | Yes       | No            |

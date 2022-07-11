@@ -81,6 +81,7 @@ internal interface IndicatorDataItem : ExpressionItem {
         }
     }
 
+    @Suppress("ThrowsCount")
     private fun getMetadataEntry(
         evaluationItem: AnalyticsServiceEvaluationItem,
         visitor: CommonExpressionVisitor

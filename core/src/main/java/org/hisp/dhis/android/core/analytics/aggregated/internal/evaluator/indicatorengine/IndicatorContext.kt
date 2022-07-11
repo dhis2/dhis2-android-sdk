@@ -35,13 +35,18 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 internal data class IndicatorContext(
     val dataElementStore: IdentifiableObjectStore<DataElement>,
+    val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     val categoryOptionComboStore: CategoryOptionComboStore,
+    val programStore: ProgramStoreInterface,
     val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     val dataElementEvaluator: AnalyticsEvaluator,
     val programIndicatorEvaluator: AnalyticsEvaluator,
+    val eventDataItemEvaluator: AnalyticsEvaluator,
     val evaluationItem: AnalyticsServiceEvaluationItem,
     val contextMetadata: Map<String, MetadataItem>
 )

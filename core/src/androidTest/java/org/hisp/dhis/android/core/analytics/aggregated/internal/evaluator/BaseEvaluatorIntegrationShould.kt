@@ -68,6 +68,8 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
@@ -76,16 +78,22 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.core.trackedentity.internal.*
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
 import org.junit.Before
 
 internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
-    // Stores
+    // Data stores
     protected val dataValueStore = DataValueStore.create(databaseAdapter)
+    protected val eventStore = EventStoreImpl.create(databaseAdapter)
+    protected val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
+    protected val trackedEntityStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
+    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter)
+
+    // Metadata stores
     protected val categoryStore = CategoryStore.create(databaseAdapter)
     protected val categoryOptionStore = CategoryOptionStore.create(databaseAdapter)
     protected val categoryCategoryOptionStore = CategoryCategoryOptionLinkStore.create(databaseAdapter)

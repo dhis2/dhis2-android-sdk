@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.DataElementItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramAttributeItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramDataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
@@ -95,10 +97,13 @@ internal object IndicatorParserUtils {
             ExpressionParser.D2_COUNT_IF_CONDITION to D2CountIfCondition(),
             ExpressionParser.D2_COUNT_IF_VALUE to D2CountIfValue(),
             ExpressionParser.D2_HAS_VALUE to D2HasValue(),
-            ExpressionParser.D2_CONDITION to D2Condition(), // Data items
+            ExpressionParser.D2_CONDITION to D2Condition(),
 
+            // Data items
             ExpressionParser.HASH_BRACE to DataElementItem(),
-            ExpressionParser.I_BRACE to ProgramIndicatorItem()
+            ExpressionParser.I_BRACE to ProgramIndicatorItem(),
+            ExpressionParser.D_BRACE to ProgramDataElementItem(),
+            ExpressionParser.A_BRACE to ProgramAttributeItem()
         )
 
     fun getDays(

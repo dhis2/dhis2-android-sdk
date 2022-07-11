@@ -25,32 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
+class FileResourceUtilShould {
 
-import java.io.File;
-import java.util.Date;
+    @Test
+    fun should_guess_content_type_by_name() {
+        assertThat(getContentTypeFromName("document.pdf")).isEqualTo("application/pdf")
+        assertThat(getContentTypeFromName("image.jpg")).isEqualTo("image/jpeg")
+        assertThat(getContentTypeFromName("image.jpeg")).isEqualTo("image/jpeg")
+        assertThat(getContentTypeFromName("image.png")).isEqualTo("image/png")
 
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
+        assertThat(getContentTypeFromName("file.pak")).isEqualTo("application/octet-stream")
+    }
 
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
+    @Test
+    fun should_guess_extension_by_name() {
+        assertThat(getExtension("document.pdf")).isEqualTo("pdf")
+        assertThat(getExtension("image.jpg")).isEqualTo("jpg")
+        assertThat(getExtension("image.jpeg")).isEqualTo("jpeg")
+        assertThat(getExtension("image.png")).isEqualTo("png")
+        assertThat(getExtension("file.pak")).isEqualTo("pak")
 
-        return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(FileResourceUtil.getContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
+        assertThat(getExtension("file.name.pdf")).isEqualTo("pdf")
+
+        assertThat(getExtension("file")).isNull()
     }
 }

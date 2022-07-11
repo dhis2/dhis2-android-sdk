@@ -169,7 +169,7 @@ internal class FileResourceDownloadCall @Inject constructor(
                 if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = apiCallExecutor.executeObjectCall(download(value))
 
-                    val file = FileResourceUtil.saveFileFromResponse(responseBody, uid, context)
+                    val file = FileResourceUtil.saveFileFromResponse(responseBody, fileResource, context)
                     fileResource.toBuilder().path(file.absolutePath).build()
                 } else {
                     null

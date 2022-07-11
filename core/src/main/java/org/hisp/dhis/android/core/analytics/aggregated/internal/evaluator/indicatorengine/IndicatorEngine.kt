@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
+@Suppress("LongParameterList")
 internal class IndicatorEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,

@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indica
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -49,14 +50,18 @@ internal class IndicatorSQLEvaluatorIntegrationShould : IndicatorEvaluatorIntegr
     private val programIndicatorEvaluator = ProgramIndicatorSQLEvaluator(
         programIndicatorExecutor
     )
+    private val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
 
     private val indicatorEngine = IndicatorSQLEngine(
         indicatorTypeStore,
         DataElementStore.create(databaseAdapter),
+        TrackedEntityAttributeStore.create(databaseAdapter),
         CategoryOptionComboStoreImpl.create(databaseAdapter),
+        ProgramStore.create(databaseAdapter),
         d2.programModule().programIndicators(),
         dataElementEvaluator,
         programIndicatorEvaluator,
+        eventDataItemEvaluator,
         ConstantStore.create(databaseAdapter),
         databaseAdapter
     )

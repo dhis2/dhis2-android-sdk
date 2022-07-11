@@ -33,23 +33,20 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class DataElementItem : IndicatorDataItem {
+internal class ProgramAttributeItem : IndicatorDataItem {
 
     override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
-        val dataElementUid = ctx.uid0?.text
-        val categoryOptionComboUid = ctx.uid1?.text
+        val programUid = ctx.uid0?.text
+        val attributeUid = ctx.uid1?.text
 
-        return when {
-            dataElementUid != null && categoryOptionComboUid != null ->
-                DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
-            dataElementUid != null ->
-                DimensionItem.DataItem.DataElementItem(dataElementUid)
-            else ->
-                null
+        return if (programUid != null && attributeUid != null) {
+            DimensionItem.DataItem.EventDataItem.Attribute(programUid, attributeUid)
+        } else {
+            null
         }
     }
 
     override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+        return visitor.indicatorContext.eventDataItemEvaluator
     }
 }

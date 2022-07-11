@@ -53,7 +53,7 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class ProgramIndicatorItem(val item: ProgramIndicator) : MetadataItem(item.uid(), item.displayName()!!)
     class EventDataElementItem(val item: DataElement, val program: Program) :
         MetadataItem("${program.uid()}.${item.uid()}", "${program.displayName()} ${item.displayName()}")
-    class EventAttributeItem(val item: TrackedEntityAttribute, program: Program) :
+    class EventAttributeItem(val item: TrackedEntityAttribute, val program: Program) :
         MetadataItem("${program.uid()}.${item.uid()}", "${program.displayName()} ${item.displayName()}")
 
     class CategoryItem(val item: Category) : MetadataItem(item.uid(), item.displayName()!!)

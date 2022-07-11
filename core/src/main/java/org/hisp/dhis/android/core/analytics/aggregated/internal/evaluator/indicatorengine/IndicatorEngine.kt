@@ -31,6 +31,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
@@ -44,14 +45,19 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 internal class IndicatorEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     private val categoryOptionComboStore: CategoryOptionComboStore,
+    private val programStore: ProgramStoreInterface,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
+    private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
     private val constantStore: IdentifiableObjectStore<Constant>,
     private val expressionService: ExpressionService
 ) {
@@ -63,10 +69,13 @@ internal class IndicatorEngine @Inject constructor(
     ): String? {
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
+            trackedEntityAttributeStore = trackedEntityAttributeStore,
             categoryOptionComboStore = categoryOptionComboStore,
+            programStore = programStore,
             programIndicatorRepository = programIndicatorRepository,
             dataElementEvaluator = dataElementEvaluator,
             programIndicatorEvaluator = programIndicatorEvaluator,
+            eventDataItemEvaluator = eventDataItemEvaluator,
             evaluationItem = contextEvaluationItem,
             contextMetadata = contextMetadata
         )

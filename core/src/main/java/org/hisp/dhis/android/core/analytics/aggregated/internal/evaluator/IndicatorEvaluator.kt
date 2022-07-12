@@ -68,8 +68,7 @@ internal class IndicatorEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): Indicator {
-        val indicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
+        val indicatorItem = evaluationItem.allDimensionItems
             .find { it is DimensionItem.DataItem.IndicatorItem }
             ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no indicator dimension provided.")
 

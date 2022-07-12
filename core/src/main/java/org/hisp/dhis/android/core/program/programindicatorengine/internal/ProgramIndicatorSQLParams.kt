@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
-internal data class ProgramIndicatorSQLContext(
+internal data class ProgramIndicatorSQLParams(
     val programIndicator: ProgramIndicator,
-    val periods: List<Period>?
+    val contextWhereClause: String? = null,
+    val periods: List<Period>? = null
 )

@@ -45,8 +45,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): ProgramIndicator {
-        val programIndicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
+        val programIndicatorItem = evaluationItem.allDimensionItems
             .find { it is DimensionItem.DataItem.ProgramIndicatorItem }
             ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no program indicator dimension provided.")
 

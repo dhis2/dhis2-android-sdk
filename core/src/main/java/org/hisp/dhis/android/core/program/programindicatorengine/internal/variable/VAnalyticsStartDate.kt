@@ -25,12 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.programindicatorengine.internal
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal data class ProgramIndicatorSQLContext(
-    val programIndicator: ProgramIndicator,
-    val periods: List<Period>?
-)
+internal class VAnalyticsStartDate : ExpressionItem {
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val startDate = visitor.programIndicatorSQLContext.periods
+            ?.mapNotNull { it.startDate() }
+            ?.minByOrNull { it.time }
+
+        return startDate?.let { "'${DateUtils.SIMPLE_DATE_FORMAT.format(it)}'" } ?: "date('now')"
+    }
+}

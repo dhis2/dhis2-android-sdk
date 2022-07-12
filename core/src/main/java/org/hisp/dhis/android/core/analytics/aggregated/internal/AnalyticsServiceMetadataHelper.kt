@@ -93,8 +93,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
-        (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
+        evaluationItem.allDimensionItems
             .forEach { item ->
                 if (!metadata.containsKey(item.id)) {
                     val metadataItems = when (item) {

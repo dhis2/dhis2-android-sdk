@@ -67,11 +67,13 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         enrollmentDate: Date? = null,
         incidentDate: Date? = null,
+        created: Date? = null,
+        lastUpdated: Date? = null,
         status: EnrollmentStatus? = EnrollmentStatus.ACTIVE
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
-            .status(status).build()
+            .created(created).lastUpdated(lastUpdated).status(status).build()
         EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
     }
 
@@ -83,10 +85,11 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date?,
+        created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE
     ) {
-        val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
+        val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
             .eventDate(eventDate).deleted(deleted).status(status).build()
         EventStoreImpl.create(databaseAdapter).insert(event)
@@ -100,6 +103,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
+        created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE
     ) {
@@ -110,8 +114,9 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             enrollmentUid = enrollmentUid,
             orgunitUid = orgunitUid,
             deleted = deleted,
-            eventDate = eventDate,
+            created = created,
             lastUpdated = lastUpdated,
+            eventDate = eventDate,
             status = status
         )
     }

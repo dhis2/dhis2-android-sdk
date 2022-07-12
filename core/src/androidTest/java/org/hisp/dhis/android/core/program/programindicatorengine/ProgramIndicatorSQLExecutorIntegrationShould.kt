@@ -353,7 +353,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:monthsBetween(${`var`("enrollment_date")}, " +
-                        "PS_EVENTDATE:${programStage2.uid()})",
+                            "PS_EVENTDATE:${programStage2.uid()})",
                     analyticsType = AnalyticsType.ENROLLMENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -442,7 +442,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:countIfCondition(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "'< ${de(programStage1.uid(), dataElement2.uid())}')",
+                            "'< ${de(programStage1.uid(), dataElement2.uid())}')",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -523,7 +523,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "firstNonNull(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "${de(programStage1.uid(), dataElement2.uid())})",
+                            "${de(programStage1.uid(), dataElement2.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -646,7 +646,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "-3")
 
         val expression = "${de(programStage1.uid(), dataElement1.uid())} + " +
-            "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
+                "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
 
         assertThat(
             programIndicatorEvaluator.getProgramIndicatorValue(
@@ -748,7 +748,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:zpvc(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
+                            "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -988,24 +988,32 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             eventDate = tenthNovember2019
         )
 
-        assertThat(evaluateTeiCount(
-            filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 15",
-            listOf(periodNov))
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 15",
+                listOf(periodNov)
+            )
         ).isEqualTo("1")
 
-        assertThat(evaluateTeiCount(
-            filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 5",
-            listOf(periodNov))
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 5",
+                listOf(periodNov)
+            )
         ).isEqualTo("0")
 
-        assertThat(evaluateTeiCount(
-            filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 5",
-            listOf(periodNov))
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 5",
+                listOf(periodNov)
+            )
         ).isEqualTo("0")
 
-        assertThat(evaluateTeiCount(
-            filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 24",
-            listOf(periodNov))
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 24",
+                listOf(periodNov)
+            )
         ).isEqualTo("1")
     }
 
@@ -1025,19 +1033,60 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             eventDate = firstNovember2019
         )
 
-        assertThat(programIndicatorEvaluator.getProgramIndicatorValue(
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = `var`("org_unit_count"),
                     analyticsType = AnalyticsType.ENROLLMENT,
                     aggregationType = AggregationType.COUNT
-        ))).isEqualTo("1")
+                )
+            )
+        ).isEqualTo("1")
 
-        assertThat(programIndicatorEvaluator.getProgramIndicatorValue(
-            setProgramIndicator(
-                expression = `var`("org_unit_count"),
-                analyticsType = AnalyticsType.EVENT,
-                aggregationType = AggregationType.COUNT
-            ))).isEqualTo("2")
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("org_unit_count"),
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("2")
+    }
+
+    @Test
+    fun should_evaluate_creation_and_sync_date_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            created = firstNovember2019, lastUpdated = secondNovember2019
+        )
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            created = firstNovember2019, lastUpdated = tenthNovember2019
+        )
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:daysBetween(${`var`("creation_date")}, ${`var`("sync_date")})",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:daysBetween(${`var`("creation_date")}, ${`var`("sync_date")})",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("9")
     }
 
     private fun evaluateTeiCount(filter: String, periods: List<Period>? = null): String? {

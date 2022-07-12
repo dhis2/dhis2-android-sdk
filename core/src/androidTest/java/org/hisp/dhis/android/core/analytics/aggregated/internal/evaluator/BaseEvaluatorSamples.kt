@@ -275,6 +275,8 @@ object BaseEvaluatorSamples {
 
     val secondNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
 
+    val tenthNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-10T00:00:00.000")
+
     val secondDecember2020 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
 
     val constant1 = Constant.builder()

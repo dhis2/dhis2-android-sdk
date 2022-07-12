@@ -38,11 +38,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondDecember2020
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondNovember2019
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.tenthNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -53,12 +55,14 @@ import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.cons
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -972,12 +976,57 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         ).isEqualTo("1")
     }
 
+    @Test
+    fun should_evaluate_analytics_period_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = tenthNovember2019
+        )
+
+        assertThat(evaluateTeiCount(
+            filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 15",
+            listOf(periodNov))
+        ).isEqualTo("1")
+
+        assertThat(evaluateTeiCount(
+            filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 5",
+            listOf(periodNov))
+        ).isEqualTo("0")
+
+        assertThat(evaluateTeiCount(
+            filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 5",
+            listOf(periodNov))
+        ).isEqualTo("0")
+
+        assertThat(evaluateTeiCount(
+            filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 24",
+            listOf(periodNov))
+        ).isEqualTo("1")
+    }
+
+    private fun evaluateTeiCount(filter: String, periods: List<Period>? = null): String? {
+        return programIndicatorEvaluator.getProgramIndicatorValue(
+            setProgramIndicator(
+                expression = `var`("tei_count"),
+                filter = filter,
+                analyticsType = AnalyticsType.ENROLLMENT,
+                aggregationType = AggregationType.COUNT,
+                periods = periods
+            )
+        )
+    }
+
     private fun setProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,
-        aggregationType: AggregationType? = AggregationType.SUM
-    ): ProgramIndicator {
+        aggregationType: AggregationType? = AggregationType.SUM,
+        periods: List<Period>? = null
+    ): ProgramIndicatorSQLParams {
         val programIndicator = ProgramIndicator.builder()
             .uid(generator.generate())
             .displayName("Program indicator")
@@ -989,6 +1038,9 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             .build()
 
         helper.setProgramIndicator(programIndicator)
-        return programIndicator
+        return ProgramIndicatorSQLParams(
+            programIndicator = programIndicator,
+            periods = periods
+        )
     }
 }

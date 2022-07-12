@@ -452,8 +452,8 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |stddevSamp             | Yes       | No            |
 |                           |sum                    | Yes       | No            |
 |                           |variance               | Yes       | No            |
-|**Variables:**             |AnalyticsPeriodEnd     | Yes       | No            |
-|                           |AnalyticsPeriodStart   | Yes       | No            |
+|**Variables:**             |AnalyticsPeriodEnd     | Yes       | Yes           |
+|                           |AnalyticsPeriodStart   | Yes       | Yes           |
 |                           |CreationDate           | Yes       | Yes           |
 |                           |CurrentDate            | Yes       | Yes           |
 |                           |CompletedDate          | Yes       | Yes           |

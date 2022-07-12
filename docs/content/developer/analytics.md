@@ -466,10 +466,10 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |ExecutionDate          | Yes       | Yes           |
 |                           |EventDate              | Yes       | Yes           |
 |                           |IncidentDate           | Yes       | Yes           |
-|                           |OrgunitCount           | Yes       | No            |
+|                           |OrgunitCount           | Yes       | Yes           |
 |                           |ProgramStageId         | Yes       | Yes           |
 |                           |ProgramStageName       | Yes       | Yes           |
-|                           |SyncDate               | Yes       | No            |
+|                           |SyncDate               | Yes       | Yes           |
 |                           |TeiCount               | Yes       | Yes           |
 |                           |ValueCount             | Yes       | Yes           |
 |                           |ZeroPosValueCount      | Yes       | Yes           |

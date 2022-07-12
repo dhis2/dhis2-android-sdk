@@ -40,9 +40,9 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEnrollmentDate : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val enrollment = visitor.programIndicatorContext.enrollment
-
-        return if (enrollment == null) null else ParserUtils.getMediumDateString(enrollment.enrollmentDate())
+        return visitor.programIndicatorContext.enrollment?.let {
+            ParserUtils.getMediumDateString(it.enrollmentDate())
+        }
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

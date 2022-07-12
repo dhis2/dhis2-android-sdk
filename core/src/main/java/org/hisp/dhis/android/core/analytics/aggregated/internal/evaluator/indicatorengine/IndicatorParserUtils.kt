@@ -110,8 +110,7 @@ internal object IndicatorParserUtils {
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>
     ): Int? {
-        val periods = (contextEvaluationItem.dimensionItems + contextEvaluationItem.filters)
-            .map { it as DimensionItem }
+        val periods = contextEvaluationItem.allDimensionItems
             .mapNotNull { item ->
                 when (item) {
                     is DimensionItem.PeriodItem.Absolute -> {

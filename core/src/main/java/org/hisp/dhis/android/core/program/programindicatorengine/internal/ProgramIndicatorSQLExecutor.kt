@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -59,10 +58,9 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 ) {
 
     fun getProgramIndicatorValue(
-        programIndicator: ProgramIndicator,
-        contextWhereClause: String? = null
+        params: ProgramIndicatorSQLParams
     ): String? {
-        val sqlQuery = getProgramIndicatorSQL(programIndicator, contextWhereClause)
+        val sqlQuery = getProgramIndicatorSQL(params)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -71,9 +69,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
     }
 
     fun getProgramIndicatorSQL(
-        programIndicator: ProgramIndicator,
-        contextWhereClause: String? = null
+        params: ProgramIndicatorSQLParams
     ): String {
+        val programIndicator = params.programIndicator
+
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
         }
@@ -86,7 +85,8 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         }
 
         val context = ProgramIndicatorSQLContext(
-            programIndicator = programIndicator
+            programIndicator = params.programIndicator,
+            periods = params.periods
         )
 
         val collector = ProgramIndicatorItemIdsCollector()
@@ -109,7 +109,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             "FROM $targetTable " +
             "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
             "AND $filterExpression " +
-            (contextWhereClause?.let { "AND $it" } ?: "")
+            (params.contextWhereClause?.let { "AND $it" } ?: "")
     }
 
     private fun constantMap(): Map<String, Constant> {

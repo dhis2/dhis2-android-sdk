@@ -75,6 +75,7 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
             ExpressionParser.V_EVENT_DATE to VEventDate(),
             ExpressionParser.V_EXECUTION_DATE to VEventDate(),
             ExpressionParser.V_INCIDENT_DATE to VIncidentDate(),
+            ExpressionParser.V_ORG_UNIT_COUNT to VOrgUnitCount(),
             ExpressionParser.V_TEI_COUNT to VTeiCount(),
             ExpressionParser.V_VALUE_COUNT to VValueCount(),
             ExpressionParser.V_ZERO_POS_VALUE_COUNT to VZeroPosValueCount(),

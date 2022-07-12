@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
@@ -1006,6 +1007,37 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 24",
             listOf(periodNov))
         ).isEqualTo("1")
+    }
+
+    @Test
+    fun should_evaluate_orgunit_count_variable() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = firstNovember2019
+        )
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment1, program.uid(), programStage1.uid(), orgunitChild2.uid(),
+            eventDate = firstNovember2019
+        )
+
+        assertThat(programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("org_unit_count"),
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.COUNT
+        ))).isEqualTo("1")
+
+        assertThat(programIndicatorEvaluator.getProgramIndicatorValue(
+            setProgramIndicator(
+                expression = `var`("org_unit_count"),
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.COUNT
+            ))).isEqualTo("2")
     }
 
     private fun evaluateTeiCount(filter: String, periods: List<Period>? = null): String? {

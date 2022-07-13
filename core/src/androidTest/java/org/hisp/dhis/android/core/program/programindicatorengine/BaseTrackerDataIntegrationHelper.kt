@@ -39,6 +39,9 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -179,6 +182,23 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
         TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
+    }
+
+    fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
+        val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
+
+        RelationshipStoreImpl.create(databaseAdapter).insert(relationship)
+        RelationshipItemStoreImpl.create(databaseAdapter).let {
+            val r = ObjectWithUid.create(relationship.uid())
+            it.insert(relationship.from()!!.toBuilder()
+                .relationshipItemType(RelationshipConstraintType.FROM)
+                .relationship(r)
+                .build())
+            it.insert(relationship.to()!!.toBuilder()
+                .relationshipItemType(RelationshipConstraintType.TO)
+                .relationship(r)
+                .build())
+        }
     }
 
     companion object {

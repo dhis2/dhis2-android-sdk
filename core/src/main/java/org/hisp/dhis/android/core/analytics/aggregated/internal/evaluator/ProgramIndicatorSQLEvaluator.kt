@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.common.AnalyticsType
@@ -60,7 +61,8 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
     ): ProgramIndicatorSQLParams {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
         val contextWhereClause = getContextWhereClause(programIndicator, evaluationItem, metadata)
-        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(evaluationItem.allDimensionItems, metadata)
+        val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata)
 
         return ProgramIndicatorSQLParams(
             programIndicator = programIndicator,

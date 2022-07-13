@@ -110,7 +110,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
 
     fun blockingIsExpired(dataSet: DataSet, periodId: String): Boolean {
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
-        val expiryDays = dataSet.expiryDays() ?: return false
+        val expiryDays = dataSet.expiryDays() ?: 0
         val generatedPeriod = periodGenerator.generatePeriod(
             periodType = PeriodType.Daily,
             date = period.endDate() ?: return true,

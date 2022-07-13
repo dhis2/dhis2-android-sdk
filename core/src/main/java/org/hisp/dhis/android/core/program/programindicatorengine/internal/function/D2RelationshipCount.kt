@@ -51,18 +51,18 @@ internal class D2RelationshipCount : ExpressionItem {
         val queries = getQueries(visitor.programIndicatorSQLContext.programIndicator)
 
         return "(SELECT COUNT(*) " +
-                "FROM ${RelationshipItemTableInfo.TABLE_INFO.name()} $riAlias " +
-                "INNER JOIN ${RelationshipTableInfo.TABLE_INFO.name()} $rAlias " +
-                "ON $riAlias.${RelationshipItemTableInfo.Columns.RELATIONSHIP} = " +
-                "$rAlias.${RelationshipTableInfo.Columns.UID} " +
-                "WHERE " +
-                "($riAlias.${RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE} ${queries.teiQuery} " +
-                "OR $riAlias.${RelationshipItemTableInfo.Columns.ENROLLMENT} ${queries.enrollmentQuery} " +
-                "OR $riAlias.${RelationshipItemTableInfo.Columns.EVENT} ${queries.eventQuery}) " +
-                "AND ($rAlias.${RelationshipTableInfo.Columns.DELETED} = 0 OR " +
-                "$rAlias.${RelationshipTableInfo.Columns.DELETED} IS NULL) " +
-                (rTypeUid?.let { "AND $rAlias.${RelationshipTableInfo.Columns.RELATIONSHIP_TYPE} = $it" } ?: "") +
-                ")"
+            "FROM ${RelationshipItemTableInfo.TABLE_INFO.name()} $riAlias " +
+            "INNER JOIN ${RelationshipTableInfo.TABLE_INFO.name()} $rAlias " +
+            "ON $riAlias.${RelationshipItemTableInfo.Columns.RELATIONSHIP} = " +
+            "$rAlias.${RelationshipTableInfo.Columns.UID} " +
+            "WHERE " +
+            "($riAlias.${RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE} ${queries.teiQuery} " +
+            "OR $riAlias.${RelationshipItemTableInfo.Columns.ENROLLMENT} ${queries.enrollmentQuery} " +
+            "OR $riAlias.${RelationshipItemTableInfo.Columns.EVENT} ${queries.eventQuery}) " +
+            "AND ($rAlias.${RelationshipTableInfo.Columns.DELETED} = 0 OR " +
+            "$rAlias.${RelationshipTableInfo.Columns.DELETED} IS NULL) " +
+            (rTypeUid?.let { "AND $rAlias.${RelationshipTableInfo.Columns.RELATIONSHIP_TYPE} = $it" } ?: "") +
+            ")"
     }
 
     private fun getQueries(programIndicator: ProgramIndicator): RelationshipCountQueries {
@@ -70,8 +70,8 @@ internal class D2RelationshipCount : ExpressionItem {
             AnalyticsType.EVENT ->
                 RelationshipCountQueries(
                     teiQuery = "IN (SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                            "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                            "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT})",
+                        "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT})",
                     enrollmentQuery = "= $event.${EventTableInfo.Columns.ENROLLMENT}",
                     eventQuery = "= $event.${EventTableInfo.Columns.UID}"
                 )
@@ -80,9 +80,9 @@ internal class D2RelationshipCount : ExpressionItem {
                     teiQuery = "= $enrollment.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}",
                     enrollmentQuery = "= $enrollment.${EnrollmentTableInfo.Columns.UID}",
                     eventQuery = "IN (SELECT ${EventTableInfo.Columns.UID} " +
-                            "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-                            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = " +
-                            "$enrollment.${EnrollmentTableInfo.Columns.UID})"
+                        "FROM ${EventTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${EventTableInfo.Columns.ENROLLMENT} = " +
+                        "$enrollment.${EnrollmentTableInfo.Columns.UID})"
                 )
         }
     }
@@ -93,4 +93,3 @@ internal class D2RelationshipCount : ExpressionItem {
         val eventQuery: String
     )
 }
-

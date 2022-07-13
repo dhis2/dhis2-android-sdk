@@ -190,14 +190,18 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         RelationshipStoreImpl.create(databaseAdapter).insert(relationship)
         RelationshipItemStoreImpl.create(databaseAdapter).let {
             val r = ObjectWithUid.create(relationship.uid())
-            it.insert(relationship.from()!!.toBuilder()
-                .relationshipItemType(RelationshipConstraintType.FROM)
-                .relationship(r)
-                .build())
-            it.insert(relationship.to()!!.toBuilder()
-                .relationshipItemType(RelationshipConstraintType.TO)
-                .relationship(r)
-                .build())
+            it.insert(
+                relationship.from()!!.toBuilder()
+                    .relationshipItemType(RelationshipConstraintType.FROM)
+                    .relationship(r)
+                    .build()
+            )
+            it.insert(
+                relationship.to()!!.toBuilder()
+                    .relationshipItemType(RelationshipConstraintType.TO)
+                    .relationship(r)
+                    .build()
+            )
         }
     }
 

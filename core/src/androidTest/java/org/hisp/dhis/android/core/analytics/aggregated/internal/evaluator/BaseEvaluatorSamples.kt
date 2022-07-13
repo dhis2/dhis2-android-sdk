@@ -44,6 +44,9 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -283,5 +286,21 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .displayName("Five")
         .value(5.0)
+        .build()
+
+    val relationshipType = RelationshipType.builder()
+        .uid(generator.generate())
+        .name("Relationship type")
+        .bidirectional(false)
+        .build()
+
+    val relationshipTypeFrom = RelationshipConstraint.builder()
+        .relationshipType(ObjectWithUid.create(relationshipType.uid()))
+        .constraintType(RelationshipConstraintType.FROM)
+        .trackedEntityType(ObjectWithUid.create(trackedEntityType.uid()))
+        .build()
+
+    val relationshipTypeTo = relationshipTypeFrom.toBuilder()
+        .constraintType(RelationshipConstraintType.TO)
         .build()
 }

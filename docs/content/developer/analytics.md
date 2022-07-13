@@ -424,7 +424,7 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |D2Modulus              | No        | No            |
 |                           |D2MonthsBetween        | Yes       | Yes           |
 |                           |D2Oizp                 | Yes       | Yes           |
-|                           |D2RelationshipCount    | Yes       | No            |
+|                           |D2RelationshipCount    | Yes       | Yes           |
 |                           |D2Right                | No        | No            |
 |                           |D2Round                | No        | No            |
 |                           |D2Split                | No        | No            |

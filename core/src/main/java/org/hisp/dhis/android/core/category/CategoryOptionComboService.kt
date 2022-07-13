@@ -44,8 +44,8 @@ class CategoryOptionComboService @Inject constructor(
 
         val isAssignedToOrgUnit = orgUnitId?.let { blockingIsAssignedToOrgUnit(categoryOptionComboUid, it) }
         return categoryOptions.none { it.access().data().write() == false } &&
-                date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true
-                && isAssignedToOrgUnit == true
+            date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true &&
+            isAssignedToOrgUnit == true
     }
 
     fun blockingIsAssignedToOrgUnit(
@@ -70,6 +70,6 @@ class CategoryOptionComboService @Inject constructor(
 
     private fun isInOptionRange(option: CategoryOption, date: Date): Boolean {
         return option.startDate()?.before(date) ?: true &&
-                option.endDate()?.after(date) ?: true
+            option.endDate()?.after(date) ?: true
     }
 }

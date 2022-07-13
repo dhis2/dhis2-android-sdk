@@ -30,18 +30,18 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
-import org.hisp.dhis.android.core.dataset.DataSetInstanceService
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetEditableStatus
-import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetInstanceService
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import java.util.Date
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetInstanceServiceImpl @Inject constructor(
@@ -134,7 +134,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
     fun blockingHasAttributeOptionComboAccess(periodId: String, attributeOptionComboUid: String): Boolean {
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
         return categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, period.startDate()) &&
-        categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, period.endDate())
+            categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, period.endDate())
     }
 
     override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {

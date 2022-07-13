@@ -48,7 +48,6 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 
-
 class DataSetInstanceServiceShould {
 
     private val dataSetUid: String = "dataSetUid"
@@ -69,14 +68,12 @@ class DataSetInstanceServiceShould {
     private val firstPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val secondPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
-
     private val organisationUnitService: OrganisationUnitService = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val categoryOptionComboService: CategoryOptionComboService = mock()
     private val periodHelper: PeriodHelper = mock(verboseLogging = true, defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val periodGenerator: ParentPeriodGenerator = mock(verboseLogging = true)
     private val dataSetCollectionRepository: DataSetCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-
 
     private val dataSetInstanceService = DataSetInstanceServiceImpl(
         dataSetCollectionRepository = dataSetCollectionRepository,

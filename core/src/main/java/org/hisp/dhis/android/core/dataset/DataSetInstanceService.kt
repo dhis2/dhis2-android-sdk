@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset
 
 import io.reactivex.Single
 
-
 interface DataSetInstanceService {
 
     fun getEditableStatus(

@@ -354,7 +354,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:monthsBetween(${`var`("enrollment_date")}, " +
-                            "PS_EVENTDATE:${programStage2.uid()})",
+                        "PS_EVENTDATE:${programStage2.uid()})",
                     analyticsType = AnalyticsType.ENROLLMENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -443,7 +443,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:countIfCondition(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "'< ${de(programStage1.uid(), dataElement2.uid())}')",
+                        "'< ${de(programStage1.uid(), dataElement2.uid())}')",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -524,7 +524,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "firstNonNull(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "${de(programStage1.uid(), dataElement2.uid())})",
+                        "${de(programStage1.uid(), dataElement2.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -647,7 +647,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "-3")
 
         val expression = "${de(programStage1.uid(), dataElement1.uid())} + " +
-                "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
+            "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
 
         assertThat(
             programIndicatorEvaluator.getProgramIndicatorValue(
@@ -749,7 +749,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:zpvc(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
+                        "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )

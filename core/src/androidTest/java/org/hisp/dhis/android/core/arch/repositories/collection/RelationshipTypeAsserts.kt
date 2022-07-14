@@ -25,31 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
-internal class DataElementItem : IndicatorDataItem {
+internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
 
-    override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
-        val dataElementUid = ctx.uid0?.text
-        val categoryOptionComboUid = ctx.uid1?.text
+    fun assertTypesWithoutConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
 
-        return when {
-            dataElementUid != null && categoryOptionComboUid != null ->
-                DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
-            dataElementUid != null ->
-                DimensionItem.DataItem.DataElementItem(dataElementUid)
-            else ->
-                null
-        }
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
+
+        assertThat(prunedTarget).isEqualTo(prunedReference)
     }
 
-    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+    fun assertTypeWithConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(target.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(target.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(reference.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(reference.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        assertThat(prunedTarget).isEqualTo(prunedReference)
     }
 }

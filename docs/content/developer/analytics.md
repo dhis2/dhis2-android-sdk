@@ -355,8 +355,8 @@ This table shows the functionality supported by the Indicator dimension item com
 |                   |Log10                  | Yes       | No            |
 |**Dimensions:**    |Constant               | Yes       | Yes           |
 |                   |DataElement            | Yes       | Yes           |
-|                   |ProgramAttribute       | Yes       | No            |
-|                   |ProgramDataElement     | Yes       | No            |
+|                   |ProgramAttribute       | Yes       | Yes           |
+|                   |ProgramDataElement     | Yes       | Yes           |
 |                   |ProgramIndicator       | Yes       | Yes           |
 |                   |OrgUnitGroup           | Yes       | No            |
 |                   |ReportingRate          | Yes       | No            |
@@ -424,7 +424,7 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |D2Modulus              | No        | No            |
 |                           |D2MonthsBetween        | Yes       | Yes           |
 |                           |D2Oizp                 | Yes       | Yes           |
-|                           |D2RelationshipCount    | Yes       | No            |
+|                           |D2RelationshipCount    | Yes       | Yes           |
 |                           |D2Right                | No        | No            |
 |                           |D2Round                | No        | No            |
 |                           |D2Split                | No        | No            |
@@ -452,8 +452,8 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |stddevSamp             | Yes       | No            |
 |                           |sum                    | Yes       | No            |
 |                           |variance               | Yes       | No            |
-|**Variables:**             |AnalyticsPeriodEnd     | Yes       | No            |
-|                           |AnalyticsPeriodStart   | Yes       | No            |
+|**Variables:**             |AnalyticsPeriodEnd     | Yes       | Yes           |
+|                           |AnalyticsPeriodStart   | Yes       | Yes           |
 |                           |CreationDate           | Yes       | Yes           |
 |                           |CurrentDate            | Yes       | Yes           |
 |                           |CompletedDate          | Yes       | Yes           |
@@ -466,10 +466,10 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |ExecutionDate          | Yes       | Yes           |
 |                           |EventDate              | Yes       | Yes           |
 |                           |IncidentDate           | Yes       | Yes           |
-|                           |OrgunitCount           | Yes       | No            |
+|                           |OrgunitCount           | Yes       | Yes           |
 |                           |ProgramStageId         | Yes       | Yes           |
 |                           |ProgramStageName       | Yes       | Yes           |
-|                           |SyncDate               | Yes       | No            |
+|                           |SyncDate               | Yes       | Yes           |
 |                           |TeiCount               | Yes       | Yes           |
 |                           |ValueCount             | Yes       | Yes           |
 |                           |ZeroPosValueCount      | Yes       | Yes           |

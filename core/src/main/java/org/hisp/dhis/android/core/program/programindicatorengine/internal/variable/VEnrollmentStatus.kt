@@ -39,9 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEnrollmentStatus : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val enrollment = visitor.programIndicatorContext.enrollment
-
-        return enrollment?.status()?.name
+        return visitor.programIndicatorContext.enrollment?.status()?.name
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

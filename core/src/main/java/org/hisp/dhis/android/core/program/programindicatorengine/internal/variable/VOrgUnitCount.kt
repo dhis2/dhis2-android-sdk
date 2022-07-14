@@ -25,31 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class DataElementItem : IndicatorDataItem {
+internal class VOrgUnitCount : ExpressionItem {
 
-    override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
-        val dataElementUid = ctx.uid0?.text
-        val categoryOptionComboUid = ctx.uid1?.text
-
-        return when {
-            dataElementUid != null && categoryOptionComboUid != null ->
-                DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
-            dataElementUid != null ->
-                DimensionItem.DataItem.DataElementItem(dataElementUid)
-            else ->
-                null
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val orgUnits = when (visitor.programIndicatorContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                visitor.programIndicatorContext.events.values.flatMap { it.map { it.organisationUnit() } }
+            AnalyticsType.ENROLLMENT ->
+                visitor.programIndicatorContext.enrollment?.organisationUnit()?.let { listOf(it) } ?: listOf()
+            null -> listOf()
         }
+        return orgUnits.filterNotNull().distinct()
     }
 
-    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val eventSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                "$event.${EventTableInfo.Columns.ORGANISATION_UNIT}"
+            AnalyticsType.ENROLLMENT, null ->
+                "$enrollment.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT}"
+        }
+
+        return "DISTINCT $eventSelector"
     }
 }

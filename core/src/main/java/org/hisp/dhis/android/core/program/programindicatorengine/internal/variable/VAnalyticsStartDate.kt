@@ -25,31 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class DataElementItem : IndicatorDataItem {
+internal class VAnalyticsStartDate : ExpressionItem {
 
-    override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
-        val dataElementUid = ctx.uid0?.text
-        val categoryOptionComboUid = ctx.uid1?.text
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val startDate = visitor.programIndicatorSQLContext.periods
+            ?.mapNotNull { it.startDate() }
+            ?.minByOrNull { it.time }
 
-        return when {
-            dataElementUid != null && categoryOptionComboUid != null ->
-                DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
-            dataElementUid != null ->
-                DimensionItem.DataItem.DataElementItem(dataElementUid)
-            else ->
-                null
-        }
-    }
-
-    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+        return startDate?.let { "'${DateUtils.SIMPLE_DATE_FORMAT.format(it)}'" } ?: "date('now')"
     }
 }

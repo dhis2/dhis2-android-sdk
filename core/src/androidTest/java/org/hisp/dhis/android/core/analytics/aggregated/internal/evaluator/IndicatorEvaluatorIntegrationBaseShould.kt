@@ -31,19 +31,29 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -121,9 +131,36 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(value).isEqualTo("2.0")
     }
 
+    @Test
+    fun should_evaluate_event_data_elements() {
+        createEventAndValue("5", dataElement1.uid())
+        createEventAndValue("15", dataElement1.uid())
+
+        val indicator = createIndicator(
+            numerator = eventDE(program.uid(), dataElement1.uid())
+        )
+
+        val value = evaluateForThisMonth(indicator)
+
+        assertThat(value).isEqualTo("20.0")
+    }
+
+    @Test
+    fun should_evaluate_event_attributes() {
+        createTEIAndAttribute("10", attribute1.uid())
+        createTEIAndAttribute("5", attribute1.uid())
+
+        val indicator = createIndicator(
+            numerator = eventAtt(program.uid(), attribute1.uid())
+        )
+
+        val value = evaluateForThisMonth(indicator)
+
+        assertThat(value).isEqualTo("15.0")
+    }
+
     private fun evaluateForThisMonth(
-        indicator: Indicator,
-        relativePeriod: RelativePeriod = RelativePeriod.THIS_MONTH
+        indicator: Indicator
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -131,7 +168,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
             ),
             filters = listOf(
-                DimensionItem.PeriodItem.Relative(relativePeriod)
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
             )
         )
 
@@ -184,8 +221,75 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         dataValueStore.insert(dataValue)
     }
 
+    private fun createEventAndValue(
+        value: String,
+        dataElementUid: String,
+        enrollmentUid: String? = null
+    ) {
+        val event = Event.builder()
+            .uid(generator.generate())
+            .eventDate(periodDec.startDate())
+            .enrollment(enrollmentUid)
+            .program(program.uid())
+            .programStage(programStage1.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .deleted(false)
+            .build()
+
+        eventStore.insert(event)
+
+        val dataValue = TrackedEntityDataValue.builder()
+            .event(event.uid())
+            .dataElement(dataElementUid)
+            .value(value)
+            .build()
+
+        trackedEntityDataValueStore.insert(dataValue)
+    }
+
+    private fun createTEIAndAttribute(
+        value: String?,
+        attributeUid: String
+    ) {
+        val tei = TrackedEntityInstance.builder()
+            .uid(generator.generate())
+            .trackedEntityType(trackedEntityType.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .deleted(false)
+            .build()
+
+        trackedEntityStore.insert(tei)
+
+        val enrollment = Enrollment.builder()
+            .uid(generator.generate())
+            .trackedEntityInstance(tei.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .program(program.uid())
+            .deleted(false)
+            .build()
+
+        enrollmentStore.insert(enrollment)
+
+        val attributeValue = TrackedEntityAttributeValue.builder()
+            .trackedEntityInstance(tei.uid())
+            .trackedEntityAttribute(attributeUid)
+            .value(value)
+            .build()
+
+        trackedEntityAttributeValueStore.insert(attributeValue)
+        createEventAndValue("0", dataElement1.uid(), enrollment.uid())
+    }
+
     private fun de(dataElementUid: String): String {
         return "#{$dataElementUid}"
+    }
+
+    private fun eventDE(programUid: String, dataElementUid: String): String {
+        return "D{$programUid.$dataElementUid}"
+    }
+
+    private fun eventAtt(programUid: String, attributeUid: String): String {
+        return "A{$programUid.$attributeUid}"
     }
 
     private fun cons(constantUid: String): String {

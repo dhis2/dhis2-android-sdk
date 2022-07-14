@@ -25,31 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class DataElementItem : IndicatorDataItem {
+internal class VSyncDate : ProgramExpressionItem() {
 
-    override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
-        val dataElementUid = ctx.uid0?.text
-        val categoryOptionComboUid = ctx.uid1?.text
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val enrollment = visitor.programIndicatorContext.enrollment
 
-        return when {
-            dataElementUid != null && categoryOptionComboUid != null ->
-                DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
-            dataElementUid != null ->
-                DimensionItem.DataItem.DataElementItem(dataElementUid)
-            else ->
-                null
+        return if (enrollment == null) {
+            getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.lastUpdated()) }
+        } else {
+            ParserUtils.getMediumDateString(enrollment.lastUpdated())
         }
     }
 
-    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                "$event.${EnrollmentTableInfo.Columns.LAST_UPDATED}"
+            AnalyticsType.ENROLLMENT, null ->
+                "$enrollment.${EnrollmentTableInfo.Columns.LAST_UPDATED}"
+        }
     }
 }

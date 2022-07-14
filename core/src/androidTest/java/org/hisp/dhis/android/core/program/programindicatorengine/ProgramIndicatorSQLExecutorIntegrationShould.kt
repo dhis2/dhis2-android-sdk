@@ -38,11 +38,15 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipType
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondDecember2020
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondNovember2019
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.tenthNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -53,12 +57,14 @@ import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.cons
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -972,12 +978,199 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         ).isEqualTo("1")
     }
 
+    @Test
+    fun should_evaluate_analytics_period_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = tenthNovember2019
+        )
+
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 15",
+                listOf(periodNov)
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("analytics_period_start")}, ${`var`("event_date")}) < 5",
+                listOf(periodNov)
+            )
+        ).isEqualTo("0")
+
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 5",
+                listOf(periodNov)
+            )
+        ).isEqualTo("0")
+
+        assertThat(
+            evaluateTeiCount(
+                filter = "d2:daysBetween(${`var`("event_date")}, ${`var`("analytics_period_end")}) < 24",
+                listOf(periodNov)
+            )
+        ).isEqualTo("1")
+    }
+
+    @Test
+    fun should_evaluate_orgunit_count_variable() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = firstNovember2019
+        )
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment1, program.uid(), programStage1.uid(), orgunitChild2.uid(),
+            eventDate = firstNovember2019
+        )
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("org_unit_count"),
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("org_unit_count"),
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("2")
+    }
+
+    @Test
+    fun should_evaluate_relationship_count() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid()
+        )
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid()
+        )
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
+        helper.createTrackerEvent(
+            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild2.uid()
+        )
+
+        helper.createRelationship(relationshipType.uid(), trackedEntity1.uid(), trackedEntity2.uid())
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:relationshipCount()",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("2")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:relationshipCount('${relationshipType.uid()}')",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("2")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:relationshipCount()",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("3")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:relationshipCount('${relationshipType.uid()}')",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("3")
+    }
+
+    @Test
+    fun should_evaluate_creation_and_sync_date_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            created = firstNovember2019, lastUpdated = secondNovember2019
+        )
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            created = firstNovember2019, lastUpdated = tenthNovember2019
+        )
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:daysBetween(${`var`("creation_date")}, ${`var`("sync_date")})",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = "d2:daysBetween(${`var`("creation_date")}, ${`var`("sync_date")})",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("9")
+    }
+
+    private fun evaluateTeiCount(filter: String, periods: List<Period>? = null): String? {
+        return programIndicatorEvaluator.getProgramIndicatorValue(
+            setProgramIndicator(
+                expression = `var`("tei_count"),
+                filter = filter,
+                analyticsType = AnalyticsType.ENROLLMENT,
+                aggregationType = AggregationType.COUNT,
+                periods = periods
+            )
+        )
+    }
+
     private fun setProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,
-        aggregationType: AggregationType? = AggregationType.SUM
-    ): ProgramIndicator {
+        aggregationType: AggregationType? = AggregationType.SUM,
+        periods: List<Period>? = null
+    ): ProgramIndicatorSQLParams {
         val programIndicator = ProgramIndicator.builder()
             .uid(generator.generate())
             .displayName("Program indicator")
@@ -989,6 +1182,9 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             .build()
 
         helper.setProgramIndicator(programIndicator)
-        return programIndicator
+        return ProgramIndicatorSQLParams(
+            programIndicator = programIndicator,
+            periods = periods
+        )
     }
 }

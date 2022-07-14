@@ -28,28 +28,35 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class VEventDate : ProgramExpressionItem() {
+internal class VOrgUnitCount : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.eventDate()) }
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val orgUnits = when (visitor.programIndicatorContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                visitor.programIndicatorContext.events.values.flatMap { it.map { it.organisationUnit() } }
+            AnalyticsType.ENROLLMENT ->
+                visitor.programIndicatorContext.enrollment?.organisationUnit()?.let { listOf(it) } ?: listOf()
+            null -> listOf()
+        }
+        return orgUnits.filterNotNull().distinct()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        val eventSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.EVENT_DATE}"
+                "$event.${EventTableInfo.Columns.ORGANISATION_UNIT}"
             AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
-                    column = EventTableInfo.Columns.EVENT_DATE
-                )
+                "$enrollment.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT}"
         }
+
+        return "DISTINCT $eventSelector"
     }
 }

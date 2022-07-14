@@ -25,19 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+internal class VAnalyticsEndDate : ExpressionItem {
 
-import static com.google.common.truth.Truth.assertThat;
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val startDate = visitor.programIndicatorSQLContext.periods
+            ?.mapNotNull { it.endDate() }
+            ?.maxByOrNull { it.time }
 
-class RelationshipTypeAsserts extends BaseRealIntegrationTest {
-
-    static void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
-        assertThat(target.uid()).isEqualTo(reference.uid());
-        assertThat(target.fromConstraint()).isNull();
-        assertThat(target.toConstraint()).isNull();
+        return startDate?.let { "'${DateUtils.SIMPLE_DATE_FORMAT.format(it)}'" } ?: "date('now')"
     }
 }

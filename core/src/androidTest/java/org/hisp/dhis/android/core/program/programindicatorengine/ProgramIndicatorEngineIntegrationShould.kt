@@ -318,8 +318,14 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         lastUpdated: Date? = null
     ) {
         helper.createEvent(
-            eventUid, programUid, programStageUid, enrollmentUid, orgunitUid,
-            deleted, eventDate, lastUpdated
+            eventUid = eventUid,
+            programUid = programUid,
+            programStageUid = programStageUid,
+            enrollmentUid = enrollmentUid,
+            orgunitUid = orgunitUid,
+            deleted = deleted,
+            eventDate = eventDate,
+            lastUpdated = lastUpdated
         )
     }
 
@@ -331,8 +337,14 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         lastUpdated: Date? = null
     ) {
         helper.createEvent(
-            eventUid, programUid, programStageUid, null, orgunitUid,
-            deleted, eventDate, lastUpdated
+            eventUid = eventUid,
+            programUid = programUid,
+            programStageUid = programStageUid,
+            enrollmentUid = null,
+            orgunitUid = orgunitUid,
+            deleted = deleted,
+            eventDate = eventDate,
+            lastUpdated = lastUpdated
         )
     }
 

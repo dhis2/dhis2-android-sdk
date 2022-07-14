@@ -44,6 +44,9 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -275,11 +278,29 @@ object BaseEvaluatorSamples {
 
     val secondNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
 
+    val tenthNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-10T00:00:00.000")
+
     val secondDecember2020 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
 
     val constant1 = Constant.builder()
         .uid(generator.generate())
         .displayName("Five")
         .value(5.0)
+        .build()
+
+    val relationshipType = RelationshipType.builder()
+        .uid(generator.generate())
+        .name("Relationship type")
+        .bidirectional(false)
+        .build()
+
+    val relationshipTypeFrom = RelationshipConstraint.builder()
+        .relationshipType(ObjectWithUid.create(relationshipType.uid()))
+        .constraintType(RelationshipConstraintType.FROM)
+        .trackedEntityType(ObjectWithUid.create(trackedEntityType.uid()))
+        .build()
+
+    val relationshipTypeTo = relationshipTypeFrom.toBuilder()
+        .constraintType(RelationshipConstraintType.TO)
         .build()
 }

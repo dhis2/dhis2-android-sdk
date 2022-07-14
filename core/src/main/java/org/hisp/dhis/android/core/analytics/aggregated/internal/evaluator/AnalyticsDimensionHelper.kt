@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 internal object AnalyticsDimensionHelper {
 
     fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
-        return (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
+        return evaluationItem.allDimensionItems
             .groupBy { it.dimension }
     }
 

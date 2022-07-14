@@ -25,31 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
-internal class VEventDate : ProgramExpressionItem() {
+internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.eventDate()) }
+    fun assertTypesWithoutConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
+
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
+
+        assertThat(prunedTarget).isEqualTo(prunedReference)
     }
 
-    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.EVENT_DATE}"
-            AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
-                    column = EventTableInfo.Columns.EVENT_DATE
-                )
-        }
+    fun assertTypeWithConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(target.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(target.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(reference.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(reference.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        assertThat(prunedTarget).isEqualTo(prunedReference)
     }
 }

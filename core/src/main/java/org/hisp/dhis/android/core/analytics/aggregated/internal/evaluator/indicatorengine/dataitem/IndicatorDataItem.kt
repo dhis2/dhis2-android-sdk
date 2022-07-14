@@ -75,8 +75,7 @@ internal interface IndicatorDataItem : ExpressionItem {
         return getDataItem(ctx, visitor)?.let { dataItem ->
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
-                filters = visitor.indicatorContext.evaluationItem.filters +
-                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                filters = visitor.indicatorContext.evaluationItem.allDimensionItems
             )
         }
     }

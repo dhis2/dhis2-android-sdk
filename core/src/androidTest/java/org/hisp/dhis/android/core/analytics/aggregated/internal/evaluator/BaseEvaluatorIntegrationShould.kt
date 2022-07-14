@@ -61,6 +61,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipType
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeFrom
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeTo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.category.internal.*
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
@@ -78,6 +81,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.relationship.internal.*
 import org.hisp.dhis.android.core.trackedentity.internal.*
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
@@ -116,6 +120,9 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     protected val indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter)
     protected val indicatorStore = IndicatorStore.create(databaseAdapter)
+
+    protected val relationshipTypeStore = RelationshipTypeStore.create(databaseAdapter)
+    protected val relationshipConstraintStore = RelationshipConstraintStore.create(databaseAdapter)
 
     protected val constantStore = ConstantStore.create(databaseAdapter)
 
@@ -206,6 +213,10 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         programStageStore.insert(programStage1)
         programStageStore.insert(programStage2)
 
+        relationshipTypeStore.insert(relationshipType)
+        relationshipConstraintStore.insert(relationshipTypeFrom)
+        relationshipConstraintStore.insert(relationshipTypeTo)
+
         constantStore.insert(constant1)
     }
 
@@ -230,6 +241,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         programStore.delete()
         indicatorTypeStore.delete()
         indicatorStore.delete()
+        relationshipTypeStore.delete()
+        relationshipConstraintStore.delete()
         constantStore.delete()
     }
 }

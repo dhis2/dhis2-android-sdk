@@ -34,4 +34,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 internal data class AnalyticsServiceEvaluationItem(
     val dimensionItems: List<AbsoluteDimensionItem>,
     val filters: List<DimensionItem>
-)
+) {
+    val allDimensionItems: List<DimensionItem> by lazy {
+        (dimensionItems + filters).map { it as DimensionItem }
+    }
+}

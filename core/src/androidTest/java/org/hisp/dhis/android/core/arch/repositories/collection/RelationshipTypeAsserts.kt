@@ -25,19 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
 
-import static com.google.common.truth.Truth.assertThat;
+    fun assertTypesWithoutConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
 
-class RelationshipTypeAsserts extends BaseRealIntegrationTest {
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(null)
+            .fromConstraint(null)
+            .build()
 
-    static void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
-        assertThat(target.uid()).isEqualTo(reference.uid());
-        assertThat(target.fromConstraint()).isNull();
-        assertThat(target.toConstraint()).isNull();
+        assertThat(prunedTarget).isEqualTo(prunedReference)
+    }
+
+    fun assertTypeWithConstraints(target: RelationshipType, reference: RelationshipType) {
+        val prunedTarget = target.toBuilder()
+            .id(null)
+            .toConstraint(target.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(target.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        val prunedReference = reference.toBuilder()
+            .id(null)
+            .toConstraint(reference.toConstraint()?.toBuilder()?.id(null)?.build())
+            .fromConstraint(reference.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .build()
+
+        assertThat(prunedTarget).isEqualTo(prunedReference)
     }
 }

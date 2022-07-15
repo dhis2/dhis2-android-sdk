@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 @Reusable
@@ -37,39 +37,49 @@ class CategoryOptionComboService @Inject constructor(
     private val categoryOptionRepository: CategoryOptionCollectionRepository
 ) {
 
-    fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitId: String? = null): Boolean {
+    fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
         val categoryOptions = categoryOptionRepository
             .byCategoryOptionComboUid(categoryOptionComboUid)
             .blockingGet()
 
-        val isAssignedToOrgUnit = orgUnitId?.let { blockingIsAssignedToOrgUnit(categoryOptionComboUid, it) }
-        return categoryOptions.none { it.access().data().write() == false } &&
-            date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true &&
-            isAssignedToOrgUnit == true
+        val isAssignedToOrgUnit = blockingIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid)
+        val isInOptionRange = isInOptionRange(categoryOptions, date)
+        val hasWriteAccess = blockingHasWriteAccess(categoryOptions)
+        return hasWriteAccess && isAssignedToOrgUnit && isInOptionRange
+    }
+
+    fun blockingHasWriteAccess(
+        categoryOptions: List<CategoryOption>,
+    ): Boolean {
+        return categoryOptions.none { it.access().data().write() == false }
     }
 
     fun blockingIsAssignedToOrgUnit(
         categoryOptionComboUid: String,
-        orgUnitUid: String
+        orgUnitUid: String?
     ): Boolean {
-        val categoryOptions = categoryOptionRepository
-            .byCategoryOptionComboUid(categoryOptionComboUid)
-            .withOrganisationUnits()
-            .blockingGet()
+        return orgUnitUid?.let {
+            val categoryOptions = categoryOptionRepository
+                .byCategoryOptionComboUid(categoryOptionComboUid)
+                .withOrganisationUnits()
+                .blockingGet()
 
-        return categoryOptions.all { categoryOption ->
-            categoryOption.organisationUnits()?.any {
-                it.uid() == orgUnitUid
-            } ?: true
-        }
+            categoryOptions.all { categoryOption ->
+                categoryOption.organisationUnits()?.any {
+                    it.uid() == orgUnitUid
+                } ?: true
+            }
+        } ?: true
     }
 
     fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
         return Single.fromCallable { blockingHasAccess(categoryOptionComboUid, date) }
     }
 
-    private fun isInOptionRange(option: CategoryOption, date: Date): Boolean {
-        return option.startDate()?.before(date) ?: true &&
-            option.endDate()?.after(date) ?: true
+    private fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {
+        return options.all { option ->
+            option.startDate()?.before(date) ?: true &&
+                option.endDate()?.after(date) ?: true
+        }
     }
 }

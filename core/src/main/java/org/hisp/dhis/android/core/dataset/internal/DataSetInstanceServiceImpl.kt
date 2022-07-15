@@ -64,7 +64,9 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
             organisationUnitUid = organisationUnitUid,
             attributeOptionComboUid = attributeOptionComboUid
         )
-        return Single.just(editableStatus)
+        return Single.defer {
+            Single.just(editableStatus)
+        }
     }
 
     @Suppress("ComplexMethod")
@@ -78,7 +80,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         return when {
             !blockingHasDataWriteAccess(dataSetUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_DATA_WRITE_ACCESS)
-            !blockingHasAttributeOptionComboAccess(periodId, attributeOptionComboUid) ->
+            !blockingHasAttributeOptionComboAccess(periodId, attributeOptionComboUid, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_ATTRIBUTE_OPTION_COMBO_ACCESS)
             !blockingIsOrgUnitInCaptureScope(organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
@@ -110,12 +112,14 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
 
     fun blockingIsExpired(dataSet: DataSet, periodId: String): Boolean {
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
-        val expiryDays = dataSet.expiryDays() ?: 0
-        val generatedPeriod = periodGenerator.generatePeriod(
-            periodType = PeriodType.Daily,
-            date = period.endDate() ?: return true,
-            offset = expiryDays - 1
-        )
+        val expiryDays = dataSet.expiryDays() ?: return false
+        val generatedPeriod = period.endDate()?.let { endDate ->
+            periodGenerator.generatePeriod(
+                periodType = PeriodType.Daily,
+                date = endDate,
+                offset = expiryDays - 1
+            )
+        }
         return Date().after(generatedPeriod?.endDate())
     }
 
@@ -131,10 +135,16 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         return period.endDate()?.before(generatedPeriod?.endDate()) ?: true
     }
 
-    fun blockingHasAttributeOptionComboAccess(periodId: String, attributeOptionComboUid: String): Boolean {
+    fun blockingHasAttributeOptionComboAccess(
+        periodId: String,
+        attributeOptionComboUid: String,
+        orgUnitUid: String
+    ): Boolean {
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
-        return categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, period.startDate()) &&
-            categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, period.endDate())
+        val dates = listOf(period.startDate(), period.endDate())
+        return dates.all { date ->
+            categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, date, orgUnitUid)
+        }
     }
 
     override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {

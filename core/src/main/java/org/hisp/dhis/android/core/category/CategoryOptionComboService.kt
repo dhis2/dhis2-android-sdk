@@ -77,9 +77,10 @@ class CategoryOptionComboService @Inject constructor(
     }
 
     private fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {
-        return options.all { option ->
-            option.startDate()?.before(date) ?: true &&
-                option.endDate()?.after(date) ?: true
-        }
+        return date?.let {
+            options.all { option ->
+                option.startDate()?.before(date) ?: true && option.endDate()?.after(date) ?: true
+            }
+        } ?: true
     }
 }

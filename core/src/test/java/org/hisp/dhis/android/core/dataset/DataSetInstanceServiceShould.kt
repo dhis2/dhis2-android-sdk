@@ -34,6 +34,8 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceServiceImpl
@@ -51,7 +53,7 @@ import org.mockito.Mockito
 class DataSetInstanceServiceShould {
 
     private val dataSetUid: String = "dataSetUid"
-    private val attributeOptionComboUid: String = "attOptionComboUid"
+    private val attOptionComboUid: String = "attOptionComboUid"
     private val orgUnitUid: String = "orgUnitUid"
     private val firstPeriodId: String = "firstPeriodId"
     private val secondPeriodId: String = "secondPeriodId"
@@ -69,23 +71,30 @@ class DataSetInstanceServiceShould {
     private val secondPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val organisationUnitService: OrganisationUnitService = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val categoryOptionComboService: CategoryOptionComboService = mock()
+    private val categoryOptionComboService: CategoryOptionComboService =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val categoryOptionRepository: CategoryOptionCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val periodHelper: PeriodHelper = mock(verboseLogging = true, defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val periodGenerator: ParentPeriodGenerator = mock(verboseLogging = true)
     private val dataSetCollectionRepository: DataSetCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+
+    private val categories: List<CategoryOption> = mock()
 
     private val dataSetInstanceService = DataSetInstanceServiceImpl(
         dataSetCollectionRepository = dataSetCollectionRepository,
         organisationUnitService = organisationUnitService,
         periodHelper = periodHelper,
         categoryOptionComboService = categoryOptionComboService,
-        periodGenerator = periodGenerator
+        periodGenerator = periodGenerator,
+        categoryOptionRepository = categoryOptionRepository
     )
 
     @Before
     fun setUp() {
         whenever(dataSet.uid()) doReturn dataSetUid
+        whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).blockingGet()) doReturn categories
         whenever(dataSetCollectionRepository.uid(any()).blockingGet()) doReturn dataSet
         whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn firstPeriod
         whenever(firstPeriod.startDate()) doReturn firstJanuary
@@ -110,12 +119,12 @@ class DataSetInstanceServiceShould {
     fun `Should return true if has access to attributeOptionCombo`() {
         val end = firstPeriod.endDate()
         val start = firstPeriod.startDate()
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, start, orgUnitUid)) doReturn true
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, end, orgUnitUid)) doReturn true
+        whenever(categoryOptionComboService.blockingHasAccess(attOptionComboUid, start, orgUnitUid)) doReturn true
+        whenever(categoryOptionComboService.blockingHasAccess(attOptionComboUid, end, orgUnitUid)) doReturn true
 
         val hasAttributeOptionComboAccess = dataSetInstanceService.blockingHasAttributeOptionComboAccess(
             periodId = firstPeriodId,
-            attributeOptionComboUid = attributeOptionComboUid,
+            attributeOptionComboUid = attOptionComboUid,
             orgUnitUid = orgUnitUid
         )
         assertThat(hasAttributeOptionComboAccess).isTrue()
@@ -129,21 +138,32 @@ class DataSetInstanceServiceShould {
         whenever(organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, start)) doReturn true
 
         val isPeriodInOrgUnitRange = dataSetInstanceService.blockingIsPeriodInOrgUnitRange(
-            periodId = firstPeriodId,
+            period = firstPeriod,
             orgUnitUid = orgUnitUid
         )
         assertThat(isPeriodInOrgUnitRange).isTrue()
     }
 
     @Test
-    fun `Should return true if attributeOptionCombo Assign To OrgUnit`() {
-        whenever(categoryOptionComboService.blockingIsAssignedToOrgUnit(attributeOptionComboUid, orgUnitUid))
-            .doReturn(true)
+    fun `Should return true if CategoryOption Has data write access`() {
+        whenever(categoryOptionComboService.blockingHasWriteAccess(categories)) doReturn true
+        assertThat(dataSetInstanceService.blockingIsCategoryOptionHasDataWriteAccess(attOptionComboUid)).isTrue()
+    }
+
+    @Test
+    fun `Should return true if Period is in Category Option Range`() {
+        whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.startDate())) doReturn true
+        whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.endDate())) doReturn true
         assertThat(
-            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(
-                attributeOptionComboUid,
-                orgUnitUid
-            )
+            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid)
+        ).isTrue()
+    }
+
+    @Test
+    fun `Should return true if attributeOptionCombo Assign To OrgUnit`() {
+        whenever(categoryOptionComboService.blockingIsAssignedToOrgUnit(attOptionComboUid, orgUnitUid)).doReturn(true)
+        assertThat(
+            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid)
         ).isTrue()
     }
 
@@ -153,7 +173,7 @@ class DataSetInstanceServiceShould {
         whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn secondPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriodId)).isFalse()
+        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isFalse()
     }
 
     @Test
@@ -162,7 +182,7 @@ class DataSetInstanceServiceShould {
         whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriodId)).isTrue()
+        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isTrue()
     }
 
     @Test
@@ -172,7 +192,7 @@ class DataSetInstanceServiceShould {
         whenever(periodHelper.getPeriodForPeriodId(any()).blockingGet()) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriodId)).isTrue()
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isTrue()
     }
 
     @Test
@@ -185,6 +205,6 @@ class DataSetInstanceServiceShould {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriodId)).isFalse()
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
     }
 }

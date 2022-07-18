@@ -42,10 +42,9 @@ class CategoryOptionComboService @Inject constructor(
             .byCategoryOptionComboUid(categoryOptionComboUid)
             .blockingGet()
 
-        val isAssignedToOrgUnit = blockingIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid)
-        val isInOptionRange = isInOptionRange(categoryOptions, date)
-        val hasWriteAccess = blockingHasWriteAccess(categoryOptions)
-        return hasWriteAccess && isAssignedToOrgUnit && isInOptionRange
+        return blockingIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) &&
+            blockingHasWriteAccess(categoryOptions) &&
+            isInOptionRange(categoryOptions, date)
     }
 
     fun blockingHasWriteAccess(
@@ -76,7 +75,7 @@ class CategoryOptionComboService @Inject constructor(
         return Single.fromCallable { blockingHasAccess(categoryOptionComboUid, date) }
     }
 
-    private fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {
+    fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {
         return date?.let {
             options.all { option ->
                 option.startDate()?.before(date) ?: true && option.endDate()?.after(date) ?: true

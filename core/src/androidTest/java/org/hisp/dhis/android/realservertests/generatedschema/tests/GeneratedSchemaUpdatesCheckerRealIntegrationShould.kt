@@ -49,7 +49,7 @@ import org.junit.Assert
 
 class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
     private val baseUrl = "https://raw.githubusercontent.com/dhis2/dhis2-json-schema-generator/json-schemas/schemas/"
-    private val instanceVersion = "v2.37.6"
+    private val instanceVersion = "v2.38.1"
 
     // @Test
     fun check_no_enum_have_been_updated_on_generated_schemas() {

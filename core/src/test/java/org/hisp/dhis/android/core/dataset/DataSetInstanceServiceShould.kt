@@ -116,21 +116,6 @@ class DataSetInstanceServiceShould {
     }
 
     @Test
-    fun `Should return true if has access to attributeOptionCombo`() {
-        val end = firstPeriod.endDate()
-        val start = firstPeriod.startDate()
-        whenever(categoryOptionComboService.blockingHasAccess(attOptionComboUid, start, orgUnitUid)) doReturn true
-        whenever(categoryOptionComboService.blockingHasAccess(attOptionComboUid, end, orgUnitUid)) doReturn true
-
-        val hasAttributeOptionComboAccess = dataSetInstanceService.blockingHasAttributeOptionComboAccess(
-            periodId = firstPeriodId,
-            attributeOptionComboUid = attOptionComboUid,
-            orgUnitUid = orgUnitUid
-        )
-        assertThat(hasAttributeOptionComboAccess).isTrue()
-    }
-
-    @Test
     fun `Should return true if period is in OrgUnit`() {
         val end = firstPeriod.endDate()!!
         val start = firstPeriod.startDate()!!

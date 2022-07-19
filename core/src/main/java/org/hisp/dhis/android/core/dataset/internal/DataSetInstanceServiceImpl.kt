@@ -86,7 +86,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
             !blockingHasDataWriteAccess(dataSetUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_DATASET_DATA_WRITE_ACCESS)
             !blockingIsCategoryOptionHasDataWriteAccess(attributeOptionComboUid) ->
-                DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_DATASET_DATA_WRITE_ACCESS)
+                DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_ATTRIBUTE_OPTION_COMBO_ACCESS)
             !blockingIsPeriodInCategoryOptionRange(period, attributeOptionComboUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ATTRIBUTE_OPTION_RANGE)
             !blockingIsOrgUnitInCaptureScope(organisationUnitUid) ->
@@ -151,18 +151,6 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
             offset = openFuturePeriods - 1
         )
         return period.endDate()?.before(generatedPeriod?.endDate()) ?: true
-    }
-
-    fun blockingHasAttributeOptionComboAccess(
-        periodId: String,
-        attributeOptionComboUid: String,
-        orgUnitUid: String
-    ): Boolean {
-        val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
-        val dates = listOf(period.startDate(), period.endDate())
-        return dates.all { date ->
-            categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, date, orgUnitUid)
-        }
     }
 
     override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {

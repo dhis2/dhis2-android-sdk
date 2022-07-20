@@ -357,6 +357,6 @@ internal object ProgramIndicatorEvaluatorHelper {
             else -> endDate
         }
 
-        return "$column $operator '${DateUtils.DATE_FORMAT.format(date)}'"
+        return "julianday($column) $operator julianday('${DateUtils.DATE_FORMAT.format(date)}')"
     }
 }

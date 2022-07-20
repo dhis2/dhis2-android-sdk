@@ -166,8 +166,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
             eventDate = day20191201
         )
 
-        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "2020-12-03T00:00:00.000")
-        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "2020-11-14T00:00:00.000")
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "2020-12-03")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "2020-11-14")
 
         assertThat(
             evaluateProgramIndicator(
@@ -223,7 +223,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
             eventDate = day20191110
         )
 
-        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "2020-12-03T00:00:00.000")
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "2020-12-03")
 
         assertThat(
             evaluateProgramIndicator(

@@ -101,6 +101,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, value, AND, EQ_NUMBER, "");
     }
 
+    public WhereClauseBuilder appendOrKeyNumberValue(String column, int value) {
+        return appendKeyValue(column, value, OR, EQ_NUMBER, "");
+    }
+
     public WhereClauseBuilder appendKeyOperatorValue(String column, String operator, String value) {
         return appendKeyValue(column, value, AND,  " " + operator + " ", "");
     }
@@ -135,6 +139,10 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendIsNullValue(String column) {
         return appendKeyValue(column, "", AND, IS_NULL, "");
+    }
+
+    public WhereClauseBuilder appendOrIsNullValue(String column) {
+        return appendKeyValue(column, "", OR, IS_NULL, "");
     }
 
     public WhereClauseBuilder appendIsNotNullValue(String column) {

@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLParams
+import javax.inject.Inject
 
 internal class ProgramIndicatorSQLEvaluator @Inject constructor(
     private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor
@@ -45,42 +41,13 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        return programIndicatorSQLExecutor.getProgramIndicatorValue(getParams(evaluationItem, metadata))
+        return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata)
     }
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        return programIndicatorSQLExecutor.getProgramIndicatorSQL(getParams(evaluationItem, metadata))
-    }
-
-    private fun getParams(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): ProgramIndicatorSQLParams {
-        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
-        val contextWhereClause = getContextWhereClause(programIndicator, evaluationItem, metadata)
-        val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
-        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata)
-
-        return ProgramIndicatorSQLParams(
-            programIndicator = programIndicator,
-            contextWhereClause = contextWhereClause,
-            periods = periods
-        )
-    }
-
-    private fun getContextWhereClause(
-        programIndicator: ProgramIndicator,
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String {
-        return when (programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
-            AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
-        }
+        return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata)
     }
 }

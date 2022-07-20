@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalIt
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.assumeProgramAttributeSyntax
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getAttributeValueTEIWhereClause
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
@@ -70,11 +70,11 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
             attribute.valueType()
         )
 
-        val selectExpression = "(SELECT $valueCastExpression " +
-            "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
-            "AND ${getAttributeValueTEIWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-            ")"
+        val selectExpression = ProgramIndicatorSQLUtils.getAttributeWhereClause(
+            column = valueCastExpression,
+            attributeUid = attributeUid,
+            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+        )
 
         return if (visitor.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(attribute.valueType())}))"

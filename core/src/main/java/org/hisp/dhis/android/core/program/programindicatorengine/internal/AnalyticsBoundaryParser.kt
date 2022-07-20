@@ -30,12 +30,14 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 internal object AnalyticsBoundaryParser {
 
-    private val dataElementRegex = "^#\\{(\\w{11})\\.(\\w{11})}\$".toRegex()
-    private val attributeRegex = "^A\\{(\\w{11})}\$".toRegex()
-    private val psEventDateRegex = "^PS_EVENTDATE:(\\w{11})".toRegex()
+    private val dataElementRegex = "^#\\{(\\w{11})\\.(\\w{11})\\}$".toRegex()
+    private val attributeRegex = "^A\\{(\\w{11})\\}$".toRegex()
+    private val psEventDateRegex = "^PS_EVENTDATE:(\\w{11})$".toRegex()
 
-    fun parseBoundaryTarget(target: String): AnalyticsBoundaryTarget? {
-        return if (target == "EVENT_DATE") {
+    fun parseBoundaryTarget(target: String?): AnalyticsBoundaryTarget? {
+        return if (target == null) {
+            null
+        } else if (target == "EVENT_DATE") {
             AnalyticsBoundaryTarget.EventDate
         } else if (target == "ENROLLMENT_DATE") {
             AnalyticsBoundaryTarget.EnrollmentDate

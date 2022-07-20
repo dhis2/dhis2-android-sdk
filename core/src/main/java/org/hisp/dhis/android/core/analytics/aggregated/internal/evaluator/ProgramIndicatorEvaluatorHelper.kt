@@ -34,10 +34,19 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryParser
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryTarget
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import java.util.*
 
 internal object ProgramIndicatorEvaluatorHelper {
 
@@ -51,9 +60,9 @@ internal object ProgramIndicatorEvaluatorHelper {
 
         val programIndicator = (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
 
-        if (!hasDefaultBoundaries(programIndicator)) {
+        /*if (!hasDefaultBoundaries(programIndicator)) {
             throw AnalyticsException.ProgramIndicatorCustomBoundaries(programIndicator)
-        }
+        }*/
 
         return programIndicator
     }
@@ -61,18 +70,18 @@ internal object ProgramIndicatorEvaluatorHelper {
     private fun hasDefaultBoundaries(programIndicator: ProgramIndicator): Boolean {
         return programIndicator.analyticsPeriodBoundaries()?.let { boundaries ->
             boundaries.size == 2 &&
-                (
-                    hasDefaultTargetBoundaries(
-                        programIndicator,
-                        AnalyticsType.EVENT,
-                        BoundaryTargetType.EventDate
-                    ) ||
-                        hasDefaultTargetBoundaries(
-                            programIndicator,
-                            AnalyticsType.ENROLLMENT,
-                            BoundaryTargetType.EnrollmentDate
-                        )
-                    )
+                    (
+                            hasDefaultTargetBoundaries(
+                                programIndicator,
+                                AnalyticsType.EVENT,
+                                BoundaryTargetType.EventDate
+                            ) ||
+                                    hasDefaultTargetBoundaries(
+                                        programIndicator,
+                                        AnalyticsType.ENROLLMENT,
+                                        BoundaryTargetType.EnrollmentDate
+                                    )
+                            )
         } ?: false
     }
 
@@ -84,13 +93,13 @@ internal object ProgramIndicatorEvaluatorHelper {
         val hasStartBoundary by lazy {
             programIndicator.analyticsPeriodBoundaries()!!.any {
                 it.boundaryTargetType() == targetType &&
-                    it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
+                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
             }
         }
         val hasEndBoundary by lazy {
             programIndicator.analyticsPeriodBoundaries()!!.any {
                 it.boundaryTargetType() == targetType &&
-                    it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
+                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
             }
         }
 
@@ -105,31 +114,35 @@ internal object ProgramIndicatorEvaluatorHelper {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         return WhereClauseBuilder().apply {
-            appendKeyNumberValue(EventTableInfo.Columns.DELETED, 0)
+            appendComplexQuery(
+                WhereClauseBuilder().apply {
+                    appendOrKeyNumberValue(EventTableInfo.Columns.DELETED, 0)
+                    appendOrIsNullValue(EventTableInfo.Columns.DELETED)
+                }.build()
+            )
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
-                    "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                        "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
             )
 
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Period -> {
-                        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(
-                            WhereClauseBuilder().apply {
-                                reportingPeriods.forEach { period ->
-                                    appendOrComplexQuery(
-                                        AnalyticsEvaluatorHelper.getPeriodWhereClause(
-                                            columnStart = EventTableInfo.Columns.EVENT_DATE,
-                                            columnEnd = EventTableInfo.Columns.EVENT_DATE,
-                                            period = period
-                                        )
-                                    )
-                                }
-                            }.build()
-                        )
+                        if (hasDefaultBoundaries(programIndicator)) {
+                            appendComplexQuery(
+                                buildDefaultBoundariesClause(
+                                    column = "$event.${EventTableInfo.Columns.EVENT_DATE}",
+                                    dimensions = entry.value,
+                                    metadata = metadata
+                                )
+                            )
+                        } else {
+                            buildNonDefaultBoundariesClauses(programIndicator, entry.value, metadata).forEach {
+                                appendComplexQuery(it)
+                            }
+                        }
                     }
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
@@ -161,26 +174,30 @@ internal object ProgramIndicatorEvaluatorHelper {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         return WhereClauseBuilder().apply {
+            appendComplexQuery(
+                WhereClauseBuilder().apply {
+                    appendOrKeyNumberValue(EnrollmentTableInfo.Columns.DELETED, 0)
+                    appendOrIsNullValue(EnrollmentTableInfo.Columns.DELETED)
+                }.build()
+            )
             appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, programIndicator.program()?.uid())
-            appendKeyNumberValue(EnrollmentTableInfo.Columns.DELETED, 0)
 
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Period -> {
-                        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(
-                            WhereClauseBuilder().apply {
-                                reportingPeriods.forEach { period ->
-                                    appendOrComplexQuery(
-                                        AnalyticsEvaluatorHelper.getPeriodWhereClause(
-                                            columnStart = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                            columnEnd = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                            period = period
-                                        )
-                                    )
-                                }
-                            }.build()
-                        )
+                        if (hasDefaultBoundaries(programIndicator)) {
+                            appendComplexQuery(
+                                buildDefaultBoundariesClause(
+                                    column = "$enrollment.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}",
+                                    dimensions = entry.value,
+                                    metadata = metadata
+                                )
+                            )
+                        } else {
+                            buildNonDefaultBoundariesClauses(programIndicator, entry.value, metadata).forEach {
+                                appendComplexQuery(it)
+                            }
+                        }
                     }
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
@@ -193,5 +210,153 @@ internal object ProgramIndicatorEvaluatorHelper {
                 }
             }
         }.build()
+    }
+
+    private fun buildDefaultBoundariesClause(
+        column: String,
+        dimensions: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): String {
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata)
+
+        return WhereClauseBuilder().apply {
+            reportingPeriods.forEach { period ->
+                appendOrComplexQuery(
+                    AnalyticsEvaluatorHelper.getPeriodWhereClause(
+                        columnStart = column,
+                        columnEnd = column,
+                        period = period
+                    )
+                )
+            }
+        }.build()
+    }
+
+    private fun buildNonDefaultBoundariesClauses(
+        programIndicator: ProgramIndicator,
+        dimensions: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): List<String> {
+        val startDate: Date? = AnalyticsEvaluatorHelper.getStartDate(dimensions, metadata)
+        val endDate: Date? = AnalyticsEvaluatorHelper.getEndDate(dimensions, metadata)
+
+        return if (startDate != null && endDate != null) {
+            val boundariesByTarget = programIndicator.analyticsPeriodBoundaries()?.groupBy {
+                AnalyticsBoundaryParser.parseBoundaryTarget(it.boundaryTarget())
+            }
+
+            boundariesByTarget?.mapNotNull { (target, list) ->
+                target?.let {
+                    getBoundaryTargetClauses(target, list, programIndicator, startDate, endDate)
+                }
+            }?.flatten() ?: emptyList()
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun getBoundaryTargetClauses(
+        target: AnalyticsBoundaryTarget,
+        boundaries: List<AnalyticsPeriodBoundary>,
+        programIndicator: ProgramIndicator,
+        startDate: Date,
+        endDate: Date
+    ): List<String> {
+        val analyticsType = programIndicator.analyticsType() ?: AnalyticsType.ENROLLMENT
+
+        return when (target) {
+            AnalyticsBoundaryTarget.EventDate -> {
+                val column = EventTableInfo.Columns.EVENT_DATE
+                val targetColumn = when (analyticsType) {
+                    AnalyticsType.EVENT -> "$event.$column"
+                    AnalyticsType.ENROLLMENT -> ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(column)
+                }
+                boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
+            }
+
+            AnalyticsBoundaryTarget.EnrollmentDate -> {
+                val column = EnrollmentTableInfo.Columns.ENROLLMENT_DATE
+                val targetColumn = when (analyticsType) {
+                    AnalyticsType.EVENT -> ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(column)
+                    AnalyticsType.ENROLLMENT -> "$enrollment.$column"
+                }
+                boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
+            }
+
+            AnalyticsBoundaryTarget.IncidentDate -> {
+                val column = EnrollmentTableInfo.Columns.INCIDENT_DATE
+                val targetColumn = when (analyticsType) {
+                    AnalyticsType.EVENT -> ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(column)
+                    AnalyticsType.ENROLLMENT -> "$enrollment.$column"
+                }
+                boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
+            }
+
+            is AnalyticsBoundaryTarget.Custom.DataElement -> {
+                val targetColumn = ProgramIndicatorSQLUtils.getTrackerDataValueWhereClause(
+                    column = TrackedEntityDataValueTableInfo.Columns.VALUE,
+                    programStageUid = target.programStageUid,
+                    dataElementUid = target.dataElementUid,
+                    programIndicator = programIndicator
+                )
+                boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
+            }
+
+            is AnalyticsBoundaryTarget.Custom.Attribute -> {
+                val targetColumn = ProgramIndicatorSQLUtils.getAttributeWhereClause(
+                    column = TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+                    attributeUid = target.attributeUid,
+                    programIndicator = programIndicator
+                )
+                boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
+            }
+
+            is AnalyticsBoundaryTarget.Custom.PSEventDate ->
+                when (analyticsType) {
+                    AnalyticsType.EVENT ->
+                        throw AnalyticsException.InvalidArguments("PS_EVENTDATE not supported for EVENT analytics")
+                    AnalyticsType.ENROLLMENT -> {
+                        val whereClauses = boundaries.map {
+                            getBoundaryCondition(
+                                column = EventTableInfo.Columns.EVENT_DATE,
+                                boundary = it,
+                                startDate = startDate,
+                                endDate = endDate
+                            )
+                        }
+
+                        val whereClause = ProgramIndicatorSQLUtils.getExistsEventForEnrollmentWhere(
+                            programStageUid = target.programStageUid,
+                            whereClause = WhereClauseBuilder().apply {
+                                whereClauses.forEach { appendComplexQuery(it) }
+                            }.build()
+                        )
+
+                        listOf(whereClause)
+                    }
+                }
+        }
+    }
+
+    private fun getBoundaryCondition(
+        column: String,
+        boundary: AnalyticsPeriodBoundary,
+        startDate: Date,
+        endDate: Date
+    ): String {
+        val operator = when (boundary.analyticsPeriodBoundaryType()) {
+            AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
+            AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD -> ">="
+            else -> "<="
+        }
+
+        // TODO Offsets
+        val date = when (boundary.analyticsPeriodBoundaryType()) {
+            AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
+            AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD -> startDate
+            else -> endDate
+        }
+
+        return "$column $operator '${DateUtils.DATE_FORMAT.format(date)}'"
     }
 }

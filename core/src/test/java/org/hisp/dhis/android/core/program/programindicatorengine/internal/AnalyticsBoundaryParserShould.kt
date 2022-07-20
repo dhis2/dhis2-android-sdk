@@ -32,9 +32,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
-/**
- * Unit test for in-memory program indicator executor.
- */
 @RunWith(MockitoJUnitRunner::class)
 class AnalyticsBoundaryParserShould {
 

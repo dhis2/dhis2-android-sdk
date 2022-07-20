@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
+import java.util.*
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
@@ -106,6 +107,28 @@ internal object AnalyticsEvaluatorHelper {
                 }
             }
         }
+    }
+
+    fun getStartDate(
+        items: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): Date? {
+        return items.asSequence().map { it as DimensionItem.PeriodItem }
+            .mapNotNull { metadata[it.id] }
+            .map { it as MetadataItem.PeriodItem }
+            .mapNotNull { it.item.startDate() }
+            .minByOrNull { it.time }
+    }
+
+    fun getEndDate(
+        items: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): Date? {
+        return items.asSequence().map { it as DimensionItem.PeriodItem }
+            .mapNotNull { metadata[it.id] }
+            .map { it as MetadataItem.PeriodItem }
+            .mapNotNull { it.item.endDate() }
+            .maxByOrNull { it.time }
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {

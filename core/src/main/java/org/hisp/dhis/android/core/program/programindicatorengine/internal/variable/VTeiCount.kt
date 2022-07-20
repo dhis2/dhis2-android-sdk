@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
@@ -47,10 +48,9 @@ internal class VTeiCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val teiSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "(SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                    "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT}" +
-                    ")"
+                ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
+                    column = EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+                )
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}"
         }

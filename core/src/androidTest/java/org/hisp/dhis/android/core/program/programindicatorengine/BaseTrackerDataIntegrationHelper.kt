@@ -222,6 +222,10 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             return "V{$variable}"
         }
 
+        fun psEventDate(programStageUid: String): String {
+            return "PS_EVENTDATE:$programStageUid"
+        }
+
         fun today(): Date {
             return Date()
         }

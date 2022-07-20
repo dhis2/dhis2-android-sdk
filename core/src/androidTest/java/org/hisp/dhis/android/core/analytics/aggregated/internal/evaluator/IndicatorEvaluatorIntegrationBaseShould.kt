@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -207,7 +207,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         value: String,
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
-        periodId: String = periodDec.periodId()!!
+        periodId: String = period201912.periodId()!!
     ) {
         val dataValue = DataValue.builder()
             .value(value)
@@ -228,7 +228,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     ) {
         val event = Event.builder()
             .uid(generator.generate())
-            .eventDate(periodDec.startDate())
+            .eventDate(period201912.startDate())
             .enrollment(enrollmentUid)
             .program(program.uid())
             .programStage(programStage1.uid())

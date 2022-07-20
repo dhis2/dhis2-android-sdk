@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
@@ -48,10 +49,9 @@ internal class VIncidentDate : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "(SELECT ${EnrollmentTableInfo.Columns.INCIDENT_DATE} " +
-                    "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT}" +
-                    ")"
+                ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
+                    column = EnrollmentTableInfo.Columns.INCIDENT_DATE
+                )
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.INCIDENT_DATE}"
         }

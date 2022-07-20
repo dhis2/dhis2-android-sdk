@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     protected val programIndicatorEvaluator = ProgramIndicatorSQLExecutor(
@@ -60,13 +59,33 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
 
     protected val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
 
-    protected fun evaluateTeiCount(filter: String, periods: List<Period>? = null): String? {
+    protected fun evaluateTeiCount(
+        filter: String? = null,
+        periods: List<Period>? = null,
+        boundaries: List<AnalyticsPeriodBoundary>? = null
+    ): String? {
         return evaluateProgramIndicator(
             expression = `var`("tei_count"),
             filter = filter,
             analyticsType = AnalyticsType.ENROLLMENT,
             aggregationType = AggregationType.COUNT,
-            periods = periods
+            periods = periods,
+            boundaries = boundaries
+        )
+    }
+
+    protected fun evaluateEventCount(
+        filter: String? = null,
+        periods: List<Period>? = null,
+        boundaries: List<AnalyticsPeriodBoundary>? = null
+    ): String? {
+        return evaluateProgramIndicator(
+            expression = `var`("event_count"),
+            filter = filter,
+            analyticsType = AnalyticsType.EVENT,
+            aggregationType = AggregationType.COUNT,
+            periods = periods,
+            boundaries = boundaries
         )
     }
 

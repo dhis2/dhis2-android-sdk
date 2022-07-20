@@ -848,7 +848,8 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     fun should_evaluate_analytics_period_variables() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102)
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),

@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191110
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191201
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
@@ -344,5 +344,119 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         ).isEqualTo("1")
     }
 
+    @Test
+    fun should_evaluate_offsets() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191101)
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191201
+        )
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20201202
+        )
 
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191201)
+        helper.createTrackerEvent(
+            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191201
+        )
+        helper.createTrackerEvent(
+            generator.generate(), enrollment2, program.uid(), programStage2.uid(), orgunitChild1.uid(),
+            eventDate = day20191110
+        )
+
+        // Test moving a period backwards
+        val previousMonthEventBoundaries = onePeriodBackwardsBoundaries("EVENT_DATE")
+
+        assertThat(
+            evaluateEventCount(
+                periods = listOf(period201911),
+                boundaries = previousMonthEventBoundaries
+            )
+        ).isEqualTo("0")
+
+        assertThat(
+            evaluateEventCount(
+                periods = listOf(period201912),
+                boundaries = previousMonthEventBoundaries
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            evaluateEventCount(
+                periods = listOf(period202001),
+                boundaries = previousMonthEventBoundaries
+            )
+        ).isEqualTo("2")
+
+        // Test moving a period backwards
+        val previousMonthEnrollmentBoundaries = onePeriodBackwardsBoundaries("ENROLLMENT_DATE")
+        assertThat(
+            evaluateTeiCount(
+                periods = listOf(period201911),
+                boundaries = previousMonthEnrollmentBoundaries
+            )
+        ).isEqualTo("0")
+
+        assertThat(
+            evaluateTeiCount(
+                periods = listOf(period201912),
+                boundaries = previousMonthEnrollmentBoundaries
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            evaluateTeiCount(
+                periods = listOf(period202001),
+                boundaries = previousMonthEnrollmentBoundaries
+            )
+        ).isEqualTo("1")
+
+        // Test adding periods before the start and after the end
+        val wideRangeBoundaries = listOf(
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget("EVENT_DATE")
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
+                .offsetPeriods(-5)
+                .offsetPeriodType(PeriodType.Monthly)
+                .build(),
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget("EVENT_DATE")
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
+                .offsetPeriods(15)
+                .offsetPeriodType(PeriodType.Monthly)
+                .build()
+        )
+
+        assertThat(
+            evaluateEventCount(
+                periods = listOf(period201912),
+                boundaries = wideRangeBoundaries
+            )
+        ).isEqualTo("4")
+    }
+
+    fun onePeriodBackwardsBoundaries(column: String): List<AnalyticsPeriodBoundary> {
+        return listOf(
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget(column)
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
+                .offsetPeriods(-1)
+                .offsetPeriodType(PeriodType.Monthly)
+                .build(),
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget(column)
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
+                .offsetPeriods(-1)
+                .offsetPeriodType(PeriodType.Monthly)
+                .build()
+        )
+    }
 }

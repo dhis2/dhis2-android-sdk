@@ -90,20 +90,24 @@ internal object ProgramIndicatorEvaluatorHelper {
         type: AnalyticsType,
         targetType: BoundaryTargetType
     ): Boolean {
-        val hasStartBoundary by lazy {
-            programIndicator.analyticsPeriodBoundaries()!!.any {
-                it.boundaryTargetType() == targetType &&
-                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
-            }
+        val hasTargetTypeAndNoOffset = programIndicator.analyticsPeriodBoundaries()!!.all {
+            it.boundaryTargetType() == targetType &&
+                    (it.offsetPeriods() == null || it.offsetPeriods() == 0 || it.offsetPeriodType() == null)
         }
-        val hasEndBoundary by lazy {
+        val hasStartBoundary =
             programIndicator.analyticsPeriodBoundaries()!!.any {
-                it.boundaryTargetType() == targetType &&
-                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
+                it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
             }
-        }
 
-        return programIndicator.analyticsType() == type && hasStartBoundary && hasEndBoundary
+        val hasEndBoundary =
+            programIndicator.analyticsPeriodBoundaries()!!.any {
+                it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
+            }
+
+        return programIndicator.analyticsType() == type &&
+                hasTargetTypeAndNoOffset &&
+                hasStartBoundary &&
+                hasEndBoundary
     }
 
     fun getEventWhereClause(
@@ -350,13 +354,18 @@ internal object ProgramIndicatorEvaluatorHelper {
             else -> "<="
         }
 
-        // TODO Offsets
         val date = when (boundary.analyticsPeriodBoundaryType()) {
             AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
             AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD -> startDate
             else -> endDate
         }
 
-        return "julianday($column) $operator julianday('${DateUtils.DATE_FORMAT.format(date)}')"
+        val dateWithOffset = if (boundary.offsetPeriods() != null && boundary.offsetPeriodType() != null) {
+            DateUtils.dateWithOffset(date, boundary.offsetPeriods()!!, boundary.offsetPeriodType()!!)
+        } else {
+            date
+        }
+
+        return "julianday($column) $operator julianday('${DateUtils.DATE_FORMAT.format(dateWithOffset)}')"
     }
 }

@@ -220,21 +220,35 @@ object BaseEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .build()
 
-    val periodNov: Period = Period.builder()
+    val period201911: Period = Period.builder()
         .periodId("201911")
         .periodType(PeriodType.Monthly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000"))
         .endDate(DateUtils.DATE_FORMAT.parse("2019-11-30T23:59:59.999"))
         .build()
 
-    val periodDec: Period = Period.builder()
+    val period201912: Period = Period.builder()
         .periodId("201912")
         .periodType(PeriodType.Monthly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-12-01T00:00:00.000"))
         .endDate(DateUtils.DATE_FORMAT.parse("2019-12-31T23:59:59.999"))
         .build()
 
-    val periodQ4: Period = Period.builder()
+    val period202001: Period = Period.builder()
+        .periodId("202001")
+        .periodType(PeriodType.Monthly)
+        .startDate(DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2020-01-31T23:59:59.999"))
+        .build()
+
+    val period202012: Period = Period.builder()
+        .periodId("202012")
+        .periodType(PeriodType.Monthly)
+        .startDate(DateUtils.DATE_FORMAT.parse("2020-12-01T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2020-12-31T23:59:59.999"))
+        .build()
+
+    val period2019Q4: Period = Period.builder()
         .periodId("2019Q4")
         .periodType(PeriodType.Quarterly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-10-01T00:00:00.000"))
@@ -274,13 +288,12 @@ object BaseEvaluatorSamples {
         .trackedEntityType(trackedEntityType.uid())
         .build()
 
-    val firstNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
-
-    val secondNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
-
-    val tenthNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-10T00:00:00.000")
-
-    val secondDecember2020 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
+    val day20191101 = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
+    val day20191102 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
+    val day20191110 = DateUtils.DATE_FORMAT.parse("2019-11-10T00:00:00.000")
+    val day20191201 = DateUtils.DATE_FORMAT.parse("2019-12-01T00:00:00.000")
+    val day20200101 = DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+    val day20201202 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
 
     val constant1 = Constant.builder()
         .uid(generator.generate())

@@ -26,28 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
+package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-
-internal class ProgramIndicatorSQLEvaluator @Inject constructor(
-    private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor
-) : AnalyticsEvaluator {
-
-    override fun evaluate(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String? {
-        return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata)
-    }
-
-    override fun getSql(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String {
-        return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata)
+internal sealed class AnalyticsBoundaryTarget {
+    object EventDate : AnalyticsBoundaryTarget()
+    object EnrollmentDate : AnalyticsBoundaryTarget()
+    object IncidentDate : AnalyticsBoundaryTarget()
+    sealed class Custom : AnalyticsBoundaryTarget() {
+        data class DataElement(val programStageUid: String, val dataElementUid: String) : Custom()
+        data class Attribute(val attributeUid: String) : Custom()
+        data class PSEventDate(val programStageUid: String) : Custom()
     }
 }

@@ -43,9 +43,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodQ4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -67,7 +67,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodDec.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201912.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
@@ -81,13 +81,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_aggregate_value_in_time() {
-        createDataValue("2", periodId = periodNov.periodId()!!)
-        createDataValue("3", periodId = periodDec.periodId()!!)
+        createDataValue("2", periodId = period201911.periodId()!!)
+        createDataValue("3", periodId = period201912.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodQ4.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period2019Q4.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
@@ -101,8 +101,8 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_aggregate_relative_periods() {
-        createDataValue("2", periodId = periodNov.periodId()!!)
-        createDataValue("3", periodId = periodDec.periodId()!!)
+        createDataValue("2", periodId = period201911.periodId()!!)
+        createDataValue("3", periodId = period201912.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -284,13 +284,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_use_organisation_unit_levels() {
-        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
-        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Level(level1.uid())
@@ -304,13 +304,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_use_organisation_unit_groups() {
-        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
-        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Group(organisationUnitGroup.uid())
@@ -326,7 +326,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         value: String,
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
-        periodId: String = periodDec.periodId()!!,
+        periodId: String = period201912.periodId()!!,
         categoryOptionComboUid: String = categoryOptionCombo.uid(),
         attributeOptionComboUid: String = attributeOptionCombo.uid()
     ) {

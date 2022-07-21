@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import java.util.*
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -50,6 +51,7 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
  *
  * This logic applies for all the dimensions.
  */
+@Suppress("TooManyFunctions")
 internal object AnalyticsEvaluatorHelper {
 
     fun getElementAggregator(aggregationType: String?): String {
@@ -106,6 +108,28 @@ internal object AnalyticsEvaluatorHelper {
                 }
             }
         }
+    }
+
+    fun getStartDate(
+        items: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): Date? {
+        return items.asSequence().map { it as DimensionItem.PeriodItem }
+            .mapNotNull { metadata[it.id] }
+            .map { it as MetadataItem.PeriodItem }
+            .mapNotNull { it.item.startDate() }
+            .minByOrNull { it.time }
+    }
+
+    fun getEndDate(
+        items: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>
+    ): Date? {
+        return items.asSequence().map { it as DimensionItem.PeriodItem }
+            .mapNotNull { metadata[it.id] }
+            .map { it as MetadataItem.PeriodItem }
+            .mapNotNull { it.item.endDate() }
+            .maxByOrNull { it.time }
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {

@@ -27,11 +27,31 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-internal data class ProgramIndicatorSQLParams(
-    val programIndicator: ProgramIndicator,
-    val contextWhereClause: String? = null,
-    val periods: List<Period>? = null
-)
+@RunWith(MockitoJUnitRunner::class)
+class AnalyticsBoundaryParserShould {
+
+    @Test
+    fun should_parse_targets() {
+        mapOf(
+            "EVENT_DATE" to AnalyticsBoundaryTarget.EventDate,
+            "ENROLLMENT_DATE" to AnalyticsBoundaryTarget.EnrollmentDate,
+            "INCIDENT_DATE" to AnalyticsBoundaryTarget.IncidentDate,
+            "#{A03MvHHogjR.a3kGcGDCuk6}" to AnalyticsBoundaryTarget.Custom.DataElement("A03MvHHogjR", "a3kGcGDCuk6"),
+            "A{GPkGfbmArby}" to AnalyticsBoundaryTarget.Custom.Attribute("GPkGfbmArby"),
+            "PS_EVENTDATE:A03MvHHogjR" to AnalyticsBoundaryTarget.Custom.PSEventDate("A03MvHHogjR"),
+
+            "INVALID_STRING" to null,
+            "#{a3kGcGDCuk6}" to null,
+            "A{GPkGfbmy}" to null,
+            "PS_EVENTDATE:3MvHHogjR" to null
+        )
+            .forEach {
+                assertThat(AnalyticsBoundaryParser.parseBoundaryTarget(it.key)).isEqualTo(it.value)
+            }
+    }
+}

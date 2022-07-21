@@ -44,6 +44,8 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
     class InvalidTrackedEntityAttribute(val uid: String) : AnalyticsException("Missing tracked entity attribute $uid")
+
+    @Deprecated("Boundaries are supported since version 1.7.0. This exception is not thrown anymore.")
     class ProgramIndicatorCustomBoundaries(val programIndicator: ProgramIndicator) :
         AnalyticsException(
             "Custom boundaries are not supported for program indicators: " +

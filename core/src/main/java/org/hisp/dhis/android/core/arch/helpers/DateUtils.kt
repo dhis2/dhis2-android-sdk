@@ -27,7 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 
 object DateUtils {
 
@@ -39,4 +42,35 @@ object DateUtils {
 
     @JvmField
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
+
+    @JvmStatic
+    @Suppress("MagicNumber")
+    fun dateWithOffset(date: Date, periods: Int, periodType: PeriodType): Date {
+        val calendar = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
+
+        calendar.time = date
+
+        when (periodType) {
+            PeriodType.Daily -> calendar.add(Calendar.DATE, periods)
+            PeriodType.Weekly,
+            PeriodType.WeeklySaturday,
+            PeriodType.WeeklySunday,
+            PeriodType.WeeklyThursday,
+            PeriodType.WeeklyWednesday -> calendar.add(Calendar.WEEK_OF_YEAR, periods)
+            PeriodType.BiWeekly -> calendar.add(Calendar.WEEK_OF_YEAR, 2 * periods)
+            PeriodType.Monthly -> calendar.add(Calendar.MONTH, periods)
+            PeriodType.BiMonthly -> calendar.add(Calendar.MONTH, 2 * periods)
+            PeriodType.Quarterly -> calendar.add(Calendar.MONTH, 3 * periods)
+            PeriodType.SixMonthly,
+            PeriodType.SixMonthlyApril,
+            PeriodType.SixMonthlyNov -> calendar.add(Calendar.MONTH, 6 * periods)
+            PeriodType.Yearly,
+            PeriodType.FinancialApril,
+            PeriodType.FinancialJuly,
+            PeriodType.FinancialOct,
+            PeriodType.FinancialNov -> calendar.add(Calendar.YEAR, periods)
+        }
+
+        return calendar.time
+    }
 }

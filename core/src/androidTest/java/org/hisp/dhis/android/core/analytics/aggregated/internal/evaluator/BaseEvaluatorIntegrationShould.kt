@@ -55,9 +55,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodQ4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
@@ -146,9 +148,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             dataElement1.displayName()!!,
             categoryOptionCombo.displayName()
         ),
-        periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
-        periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
-        periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4),
+        period201911.periodId()!! to MetadataItem.PeriodItem(period201911),
+        period201912.periodId()!! to MetadataItem.PeriodItem(period201912),
+        period202001.periodId()!! to MetadataItem.PeriodItem(period202001),
+        period202012.periodId()!! to MetadataItem.PeriodItem(period202012),
+        period2019Q4.periodId()!! to MetadataItem.PeriodItem(period2019Q4),
         RelativeOrganisationUnit.USER_ORGUNIT.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT,
             listOf(orgunitParent.uid())
@@ -159,11 +163,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         ),
         RelativePeriod.THIS_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.THIS_MONTH,
-            listOf(periodDec)
+            listOf(period201912)
         ),
         RelativePeriod.LAST_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.LAST_MONTH,
-            listOf(periodNov)
+            listOf(period201911)
         ),
         category.uid() to MetadataItem.CategoryItem(category),
         categoryOption.uid() to MetadataItem.CategoryOptionItem(categoryOption),
@@ -203,9 +207,9 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         dataElementStore.insert(dataElement3)
         dataElementStore.insert(dataElement4)
 
-        periodStore.insert(periodNov)
-        periodStore.insert(periodDec)
-        periodStore.insert(periodQ4)
+        periodStore.insert(period201911)
+        periodStore.insert(period201912)
+        periodStore.insert(period2019Q4)
 
         trackedEntityTypeStore.insert(trackedEntityType)
         trackedEntityAttributeStore.insert(attribute1)

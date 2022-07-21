@@ -26,28 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
+package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+internal object AnalyticsBoundaryParser {
 
-internal class ProgramIndicatorSQLEvaluator @Inject constructor(
-    private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor
-) : AnalyticsEvaluator {
+    private val dataElementRegex = "^#\\{(\\w{11})\\.(\\w{11})\\}$".toRegex()
+    private val attributeRegex = "^A\\{(\\w{11})\\}$".toRegex()
+    private val psEventDateRegex = "^PS_EVENTDATE:(\\w{11})$".toRegex()
 
-    override fun evaluate(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String? {
-        return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata)
-    }
-
-    override fun getSql(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String {
-        return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata)
+    fun parseBoundaryTarget(target: String?): AnalyticsBoundaryTarget? {
+        return if (target == null) {
+            null
+        } else if (target == "EVENT_DATE") {
+            AnalyticsBoundaryTarget.EventDate
+        } else if (target == "ENROLLMENT_DATE") {
+            AnalyticsBoundaryTarget.EnrollmentDate
+        } else if (target == "INCIDENT_DATE") {
+            AnalyticsBoundaryTarget.IncidentDate
+        } else {
+            dataElementRegex.find(target)?.let { match ->
+                val (programStageUid, dataElementUid) = match.destructured
+                AnalyticsBoundaryTarget.Custom.DataElement(programStageUid, dataElementUid)
+            } ?: attributeRegex.find(target)?.let { match ->
+                val (attributeUid) = match.destructured
+                AnalyticsBoundaryTarget.Custom.Attribute(attributeUid)
+            } ?: psEventDateRegex.find(target)?.let { match ->
+                val (programStageUid) = match.destructured
+                AnalyticsBoundaryTarget.Custom.PSEventDate(programStageUid)
+            }
+        }
     }
 }

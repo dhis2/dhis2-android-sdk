@@ -367,15 +367,6 @@ This table shows the functionality supported by the Indicator dimension item com
 
 This table shows the functionality supported by the ProgramIndicator dimension item compared to the backend analytics.
 
-ProgramIndicator analytic boundaries are not supported at the moment. ProgramIndicators with non-default boundaries are not evaluated (the exception `AnalyticsException.ProgramIndicatorCustomBoundaries` is thrown). The boundaries that are considered as "default" are the following ones:
-
-- EVENT programIndicator: 
-    - EventDate: After start of reporting period.
-    - EventDate: Before end of reporting period.
-- ENROLLMENT programIndicator:
-    - EnrollmentDate: After start of reporting period.
-    - EnrollmentDate: Before end of reporting period.
-
 | Type                      | Element               | Backend   | Android SDK   |
 |---------------------------|-----------------------|-----------|---------------|
 |**Mathematical:**          |Parenthesis            | Yes       | Yes           |     

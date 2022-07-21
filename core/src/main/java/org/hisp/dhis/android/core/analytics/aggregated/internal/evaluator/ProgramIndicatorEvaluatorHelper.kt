@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import java.util.*
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -46,7 +47,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import java.util.*
 
 internal object ProgramIndicatorEvaluatorHelper {
 
@@ -58,30 +58,24 @@ internal object ProgramIndicatorEvaluatorHelper {
             .find { it is DimensionItem.DataItem.ProgramIndicatorItem }
             ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no program indicator dimension provided.")
 
-        val programIndicator = (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
-
-        /*if (!hasDefaultBoundaries(programIndicator)) {
-            throw AnalyticsException.ProgramIndicatorCustomBoundaries(programIndicator)
-        }*/
-
-        return programIndicator
+        return (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
     }
 
     private fun hasDefaultBoundaries(programIndicator: ProgramIndicator): Boolean {
         return programIndicator.analyticsPeriodBoundaries()?.let { boundaries ->
             boundaries.size == 2 &&
-                    (
-                            hasDefaultTargetBoundaries(
-                                programIndicator,
-                                AnalyticsType.EVENT,
-                                BoundaryTargetType.EventDate
-                            ) ||
-                                    hasDefaultTargetBoundaries(
-                                        programIndicator,
-                                        AnalyticsType.ENROLLMENT,
-                                        BoundaryTargetType.EnrollmentDate
-                                    )
-                            )
+                (
+                    hasDefaultTargetBoundaries(
+                        programIndicator,
+                        AnalyticsType.EVENT,
+                        BoundaryTargetType.EventDate
+                    ) ||
+                        hasDefaultTargetBoundaries(
+                            programIndicator,
+                            AnalyticsType.ENROLLMENT,
+                            BoundaryTargetType.EnrollmentDate
+                        )
+                    )
         } ?: false
     }
 
@@ -92,7 +86,7 @@ internal object ProgramIndicatorEvaluatorHelper {
     ): Boolean {
         val hasTargetTypeAndNoOffset = programIndicator.analyticsPeriodBoundaries()!!.all {
             it.boundaryTargetType() == targetType &&
-                    (it.offsetPeriods() == null || it.offsetPeriods() == 0 || it.offsetPeriodType() == null)
+                (it.offsetPeriods() == null || it.offsetPeriods() == 0 || it.offsetPeriodType() == null)
         }
         val hasStartBoundary =
             programIndicator.analyticsPeriodBoundaries()!!.any {
@@ -105,9 +99,9 @@ internal object ProgramIndicatorEvaluatorHelper {
             }
 
         return programIndicator.analyticsType() == type &&
-                hasTargetTypeAndNoOffset &&
-                hasStartBoundary &&
-                hasEndBoundary
+            hasTargetTypeAndNoOffset &&
+            hasStartBoundary &&
+            hasEndBoundary
     }
 
     fun getEventWhereClause(
@@ -127,26 +121,20 @@ internal object ProgramIndicatorEvaluatorHelper {
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
-                        "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                    "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
             )
 
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Period -> {
-                        if (hasDefaultBoundaries(programIndicator)) {
-                            appendComplexQuery(
-                                buildDefaultBoundariesClause(
-                                    column = "$event.${EventTableInfo.Columns.EVENT_DATE}",
-                                    dimensions = entry.value,
-                                    metadata = metadata
-                                )
-                            )
-                        } else {
-                            buildNonDefaultBoundariesClauses(programIndicator, entry.value, metadata).forEach {
-                                appendComplexQuery(it)
-                            }
-                        }
+                        appendProgramIndicatorPeriodClauses(
+                            defaultColumn = "$event.${EventTableInfo.Columns.EVENT_DATE}",
+                            programIndicator = programIndicator,
+                            dimensions = entry.value,
+                            builder = this,
+                            metadata = metadata
+                        )
                     }
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
@@ -188,25 +176,20 @@ internal object ProgramIndicatorEvaluatorHelper {
 
             items.entries.forEach { entry ->
                 when (entry.key) {
-                    is Dimension.Period -> {
-                        if (hasDefaultBoundaries(programIndicator)) {
-                            appendComplexQuery(
-                                buildDefaultBoundariesClause(
-                                    column = "$enrollment.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}",
-                                    dimensions = entry.value,
-                                    metadata = metadata
-                                )
-                            )
-                        } else {
-                            buildNonDefaultBoundariesClauses(programIndicator, entry.value, metadata).forEach {
-                                appendComplexQuery(it)
-                            }
-                        }
-                    }
+                    is Dimension.Period ->
+                        appendProgramIndicatorPeriodClauses(
+                            defaultColumn = "$enrollment.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}",
+                            programIndicator = programIndicator,
+                            dimensions = entry.value,
+                            builder = this,
+                            metadata = metadata
+                        )
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
-                            EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
-                            entry.value, this, metadata
+                            columnName = EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
+                            items = entry.value,
+                            builder = this,
+                            metadata = metadata
                         )
                     is Dimension.Category -> TODO()
                     else -> {
@@ -214,6 +197,28 @@ internal object ProgramIndicatorEvaluatorHelper {
                 }
             }
         }.build()
+    }
+
+    private fun appendProgramIndicatorPeriodClauses(
+        dimensions: List<DimensionItem>,
+        metadata: Map<String, MetadataItem>,
+        programIndicator: ProgramIndicator,
+        defaultColumn: String,
+        builder: WhereClauseBuilder,
+    ) {
+        if (hasDefaultBoundaries(programIndicator)) {
+            builder.appendComplexQuery(
+                buildDefaultBoundariesClause(
+                    column = defaultColumn,
+                    dimensions = dimensions,
+                    metadata = metadata
+                )
+            )
+        } else {
+            buildNonDefaultBoundariesClauses(programIndicator, dimensions, metadata).forEach {
+                builder.appendComplexQuery(it)
+            }
+        }
     }
 
     private fun buildDefaultBoundariesClause(
@@ -259,6 +264,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
     }
 
+    @Suppress("LongMethod", "ComplexMethod")
     private fun getBoundaryTargetClauses(
         target: AnalyticsBoundaryTarget,
         boundaries: List<AnalyticsPeriodBoundary>,

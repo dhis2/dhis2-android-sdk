@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import java.util.*
 
 object DateUtils {
 
@@ -44,6 +44,7 @@ object DateUtils {
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
 
     @JvmStatic
+    @Suppress("MagicNumber")
     fun dateWithOffset(date: Date, periods: Int, periodType: PeriodType): Date {
         val calendar = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
 

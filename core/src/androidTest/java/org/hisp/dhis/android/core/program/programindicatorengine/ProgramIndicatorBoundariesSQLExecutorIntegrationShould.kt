@@ -31,18 +31,18 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20201202
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191102
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191110
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191201
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20201202
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
@@ -68,8 +68,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun should_evaluate_static_boundaries() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
@@ -78,8 +80,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
-        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         val event2 = generator.generate()
         helper.createTrackerEvent(
             event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
@@ -153,8 +157,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun should_evaluate_data_element_boundaries() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
@@ -212,8 +218,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun should_evaluate_attribute_boundaries() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
             eventDate = day20191201
@@ -268,8 +276,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun should_evaluate_ps_event_boundaries() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191101)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191101
+        )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
             eventDate = day20191201
@@ -281,8 +291,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
-        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         helper.createTrackerEvent(
             generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
             eventDate = day20191201
@@ -348,8 +360,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun should_evaluate_offsets() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191101)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191101
+        )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
             eventDate = day20191201
@@ -361,8 +375,10 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
-        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191201)
+        helper.createEnrollment(
+            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191201
+        )
         helper.createTrackerEvent(
             generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
             eventDate = day20191201

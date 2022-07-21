@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import java.util.*
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
-import java.util.*
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
@@ -51,6 +51,7 @@ import java.util.*
  *
  * This logic applies for all the dimensions.
  */
+@Suppress("TooManyFunctions")
 internal object AnalyticsEvaluatorHelper {
 
     fun getElementAggregator(aggregationType: String?): String {

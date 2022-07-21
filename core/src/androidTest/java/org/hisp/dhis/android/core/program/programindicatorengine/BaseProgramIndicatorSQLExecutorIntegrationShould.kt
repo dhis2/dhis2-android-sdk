@@ -45,8 +45,6 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
 
 internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
@@ -113,8 +111,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         return programIndicatorEvaluator.getProgramIndicatorValue(
             evaluationItem = evaluationItem,
             metadata = metadata +
-                    (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)) +
-                    (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap())
+                (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)) +
+                (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap())
         )
     }
 

@@ -35,6 +35,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement4
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191102
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191110
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20201202
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
@@ -43,9 +46,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipType
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20201202
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191102
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191110
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -299,7 +299,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
         assertThat(
             evaluateProgramIndicator(
                 expression = "d2:monthsBetween(${`var`("enrollment_date")}, " +
-                        "PS_EVENTDATE:${programStage2.uid()})",
+                    "PS_EVENTDATE:${programStage2.uid()})",
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.SUM
             )
@@ -376,7 +376,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
         assertThat(
             evaluateProgramIndicator(
                 expression = "d2:countIfCondition(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "'< ${de(programStage1.uid(), dataElement2.uid())}')",
+                    "'< ${de(programStage1.uid(), dataElement2.uid())}')",
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.SUM
             )
@@ -447,7 +447,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
         assertThat(
             evaluateProgramIndicator(
                 expression = "firstNonNull(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "${de(programStage1.uid(), dataElement2.uid())})",
+                    "${de(programStage1.uid(), dataElement2.uid())})",
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.SUM
             )
@@ -557,7 +557,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "-3")
 
         val expression = "${de(programStage1.uid(), dataElement1.uid())} + " +
-                "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
+            "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
 
         assertThat(
             evaluateProgramIndicator(
@@ -642,7 +642,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
         assertThat(
             evaluateProgramIndicator(
                 expression = "d2:zpvc(${de(programStage1.uid(), dataElement1.uid())}, " +
-                        "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
+                    "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.SUM
             )
@@ -848,8 +848,10 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     fun should_evaluate_analytics_period_variables() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            enrollmentDate = day20191102
+        )
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),

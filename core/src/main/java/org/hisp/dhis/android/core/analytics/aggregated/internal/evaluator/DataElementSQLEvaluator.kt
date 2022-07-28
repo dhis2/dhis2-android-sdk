@@ -88,9 +88,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
             AggregationType.SUM,
             AggregationType.COUNT,
             AggregationType.MIN,
-            AggregationType.MAX,
-            AggregationType.DEFAULT,
-            AggregationType.NONE -> {
+            AggregationType.MAX -> {
                 "SELECT ${aggregator.sql}(${dvColumns.VALUE}) " +
                         "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
                         "WHERE $whereClause"
@@ -132,7 +130,9 @@ internal class DataElementSQLEvaluator @Inject constructor(
             }
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
-            AggregationType.VARIANCE -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
+            AggregationType.VARIANCE,
+            AggregationType.DEFAULT,
+            AggregationType.NONE -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
         }
     }
 

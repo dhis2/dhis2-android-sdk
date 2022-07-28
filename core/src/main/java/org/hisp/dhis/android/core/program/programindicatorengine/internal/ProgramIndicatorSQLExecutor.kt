@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -111,7 +113,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         sqlVisitor.itemIds = collector.itemIds.toSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
-        val agg = programIndicator.aggregationType()?.sql ?: AggregationType.SUM.sql!!
+        val aggregator = getAggregator(programIndicator)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"
@@ -120,10 +122,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
-        return "SELECT $agg($selectExpression) " +
-            "FROM $targetTable " +
-            "WHERE $filterExpression " +
-            "AND $contextWhereClause"
+        return "SELECT ${aggregator.sql}($selectExpression) " +
+                "FROM $targetTable " +
+                "WHERE $filterExpression " +
+                "AND $contextWhereClause"
     }
 
     private fun constantMap(): Map<String, Constant> {
@@ -143,5 +145,35 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             .withDataElementStore(dataElementStore)
             .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
             .buildForProgramSQLIndicator()
+    }
+
+    private fun getAggregator(
+        programIndicator: ProgramIndicator
+    ): AggregationType {
+        return when (programIndicator.aggregationType()) {
+            null -> AggregationType.AVERAGE
+
+            AggregationType.AVERAGE,
+            AggregationType.SUM,
+            AggregationType.COUNT,
+            AggregationType.MIN,
+            AggregationType.MAX -> programIndicator.aggregationType()!!
+
+            AggregationType.AVERAGE_SUM_ORG_UNIT,
+            AggregationType.FIRST,
+            AggregationType.LAST,
+            AggregationType.LAST_IN_PERIOD -> AggregationType.SUM
+
+            AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            AggregationType.DEFAULT -> AggregationType.AVERAGE
+
+            AggregationType.VARIANCE,
+            AggregationType.STDDEV,
+            AggregationType.CUSTOM,
+            AggregationType.NONE ->
+                throw AnalyticsException.UnsupportedAggregationType(programIndicator.aggregationType()!!)
+        }
     }
 }

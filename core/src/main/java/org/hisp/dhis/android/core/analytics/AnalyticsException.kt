@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics
 
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 sealed class AnalyticsException(message: String) : Throwable(message) {
@@ -44,6 +45,8 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
     class InvalidTrackedEntityAttribute(val uid: String) : AnalyticsException("Missing tracked entity attribute $uid")
+    class UnsupportedAggregationType(val aggregationType: AggregationType) :
+        AnalyticsException("Unsupported aggregation type ${aggregationType.name}")
 
     @Deprecated("Boundaries are supported since version 1.7.0. This exception is not thrown anymore.")
     class ProgramIndicatorCustomBoundaries(val programIndicator: ProgramIndicator) :

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
@@ -80,7 +81,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
         return when (eventDataItem) {
             is DimensionItem.DataItem.EventDataItem.DataElement ->
-                "SELECT $aggregator(${TrackedEntityDataValueTableInfo.Columns.VALUE}) " +
+                "SELECT ${aggregator.sql}(${TrackedEntityDataValueTableInfo.Columns.VALUE}) " +
                     "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
                     "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
                     "ON $dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.EVENT} = " +
@@ -88,7 +89,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                     "WHERE $whereClause"
 
             is DimensionItem.DataItem.EventDataItem.Attribute ->
-                "SELECT $aggregator(${TrackedEntityAttributeValueTableInfo.Columns.VALUE}) " +
+                "SELECT ${aggregator.sql}(${TrackedEntityAttributeValueTableInfo.Columns.VALUE}) " +
                     "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
                     "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
                     "ON $attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
@@ -206,7 +207,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     private fun getAggregator(
         item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>
-    ): String {
+    ): AggregationType {
 
         val aggregationType = when (val metadataItem = metadata[item.id]) {
             is MetadataItem.EventDataElementItem ->

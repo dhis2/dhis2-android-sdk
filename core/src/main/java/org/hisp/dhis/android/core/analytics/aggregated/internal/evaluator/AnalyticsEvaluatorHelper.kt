@@ -54,9 +54,9 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
 @Suppress("TooManyFunctions")
 internal object AnalyticsEvaluatorHelper {
 
-    fun getElementAggregator(aggregationType: String?): String {
-        return aggregationType?.let { AggregationType.valueOf(it).sql }
-            ?: AggregationType.SUM.sql!!
+    fun getElementAggregator(aggregationType: String?): AggregationType {
+        return aggregationType?.let { AggregationType.valueOf(it) }
+            ?: AggregationType.SUM
     }
 
     fun appendOrgunitWhereClause(
@@ -114,22 +114,20 @@ internal object AnalyticsEvaluatorHelper {
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>
     ): Date? {
-        return items.asSequence().map { it as DimensionItem.PeriodItem }
-            .mapNotNull { metadata[it.id] }
-            .map { it as MetadataItem.PeriodItem }
-            .mapNotNull { it.item.startDate() }
-            .minByOrNull { it.time }
+        return items.map { it as DimensionItem.PeriodItem }
+            .map { metadata[it.id] as MetadataItem.PeriodItem }
+            .map { it.item }
+            .let { DateUtils.getStartDate(it) }
     }
 
     fun getEndDate(
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>
     ): Date? {
-        return items.asSequence().map { it as DimensionItem.PeriodItem }
-            .mapNotNull { metadata[it.id] }
-            .map { it as MetadataItem.PeriodItem }
-            .mapNotNull { it.item.endDate() }
-            .maxByOrNull { it.time }
+        return items.map { it as DimensionItem.PeriodItem }
+            .map { metadata[it.id] as MetadataItem.PeriodItem }
+            .map { it.item }
+            .let { DateUtils.getEndDate(it) }
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {

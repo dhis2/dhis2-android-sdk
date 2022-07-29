@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import java.util.*
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 
@@ -72,5 +73,15 @@ object DateUtils {
         }
 
         return calendar.time
+    }
+
+    @JvmStatic
+    fun getStartDate(periods: List<Period>): Date? {
+        return periods.mapNotNull { it.startDate() }.minByOrNull { it.time }
+    }
+
+    @JvmStatic
+    fun getEndDate(periods: List<Period>): Date? {
+        return periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
     }
 }

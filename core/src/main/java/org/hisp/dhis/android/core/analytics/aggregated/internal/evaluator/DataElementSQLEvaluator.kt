@@ -38,6 +38,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
+import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
 internal class DataElementSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
@@ -61,11 +64,13 @@ internal class DataElementSQLEvaluator @Inject constructor(
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
+        val aggregator = getAggregator(evaluationItem, metadata)
+
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, this)
-                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
@@ -73,11 +78,70 @@ internal class DataElementSQLEvaluator @Inject constructor(
             appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
         }.build()
 
-        val aggregator = getAggregator(evaluationItem, metadata)
+        return when (aggregator) {
+            AggregationType.AVERAGE,
+            AggregationType.SUM,
+            AggregationType.COUNT,
+            AggregationType.MIN,
+            AggregationType.MAX -> {
+                "SELECT ${aggregator.sql}(${dvColumns.VALUE}) " +
+                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE $whereClause"
+            }
+            AggregationType.AVERAGE_SUM_ORG_UNIT -> {
+                "SELECT SUM(${dvColumns.VALUE}) " +
+                    "FROM (" +
+                    "SELECT AVG(${dvColumns.VALUE}) AS ${dvColumns.VALUE} " +
+                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE $whereClause " +
+                    "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
+                    ")"
+            }
+            AggregationType.FIRST -> {
+                "SELECT SUM(${dvColumns.VALUE}) " +
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
+            }
+            AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
+                "SELECT AVG(${dvColumns.VALUE}) " +
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
+            }
+            AggregationType.LAST,
+            AggregationType.LAST_IN_PERIOD -> {
+                "SELECT SUM(${dvColumns.VALUE}) " +
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
+            }
+            AggregationType.LAST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT -> {
+                "SELECT AVG(${dvColumns.VALUE}) " +
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
+            }
+            AggregationType.CUSTOM,
+            AggregationType.STDDEV,
+            AggregationType.VARIANCE,
+            AggregationType.DEFAULT,
+            AggregationType.NONE -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
+        }
+    }
 
-        return "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
+    private fun firstOrLastValueClauseByOrgunit(whereClause: String, minOrMax: String): String {
+        val orderColumn = "SELECT ${peColumns.START_DATE} || ${peColumns.END_DATE} " +
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} pe " +
+            "WHERE pe.${peColumns.PERIOD_ID} = ${dvColumns.PERIOD}"
+
+        val firstOrLastValueClause = "SELECT " +
+            "${dvColumns.VALUE}, " +
+            "${dvColumns.ORGANISATION_UNIT}, " +
+            "$minOrMax(($orderColumn)) " +
             "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-            "WHERE $whereClause"
+            "WHERE $whereClause " +
+            "GROUP BY ${dvColumns.ORGANISATION_UNIT}, " +
+            "${dvColumns.DATA_ELEMENT}, " +
+            "${dvColumns.CATEGORY_OPTION_COMBO}, " +
+            "${dvColumns.ATTRIBUTE_OPTION_COMBO} "
+
+        return "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
+            "FROM ($firstOrLastValueClause)" +
+            "GROUP BY ${dvColumns.ORGANISATION_UNIT}"
     }
 
     private fun appendDataWhereClause(
@@ -113,13 +177,15 @@ internal class DataElementSQLEvaluator @Inject constructor(
     private fun appendPeriodWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        aggregationType: AggregationType
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
 
         return builder.appendInSubQuery(
             DataValueTableInfo.Columns.PERIOD,
-            AnalyticsEvaluatorHelper.getInPeriodsClause(reportingPeriods)
+            AnalyticsEvaluatorHelper.getInPeriodsClause(periods)
         )
     }
 
@@ -153,11 +219,11 @@ internal class DataElementSQLEvaluator @Inject constructor(
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
-    ): String {
+    ): AggregationType {
         val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
         return if (itemList.size > 1) {
-            AnalyticsEvaluatorHelper.getElementAggregator(AggregationType.SUM.name)
+            AggregationType.SUM
         } else {
             val item = itemList[0]
             val metadataItem = metadata[item.id]

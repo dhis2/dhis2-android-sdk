@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.core.period.PeriodType
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
@@ -54,9 +55,11 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
 @Suppress("TooManyFunctions")
 internal object AnalyticsEvaluatorHelper {
 
-    fun getElementAggregator(aggregationType: String?): String {
-        return aggregationType?.let { AggregationType.valueOf(it).sql }
-            ?: AggregationType.SUM.sql!!
+    private const val firstLastAggrYearOffset = -10
+
+    fun getElementAggregator(aggregationType: String?): AggregationType {
+        return aggregationType?.let { AggregationType.valueOf(it) }
+            ?: AggregationType.SUM
     }
 
     fun appendOrgunitWhereClause(
@@ -110,26 +113,44 @@ internal object AnalyticsEvaluatorHelper {
         }
     }
 
+    fun getReportingPeriodsForAggregationType(
+        periods: List<Period>,
+        aggregationType: AggregationType
+    ): List<Period> {
+        return when (aggregationType) {
+            AggregationType.FIRST,
+            AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST,
+            AggregationType.LAST_AVERAGE_ORG_UNIT -> {
+                val startDate = DateUtils.getStartDate(periods)
+                val endDate = DateUtils.getEndDate(periods)
+                startDate?.let {
+                    val earliest = DateUtils.dateWithOffset(startDate, firstLastAggrYearOffset, PeriodType.Yearly)
+                    listOf(Period.builder().startDate(earliest).endDate(endDate).build())
+                } ?: periods
+            }
+            else -> periods
+        }
+    }
+
     fun getStartDate(
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>
     ): Date? {
-        return items.asSequence().map { it as DimensionItem.PeriodItem }
-            .mapNotNull { metadata[it.id] }
-            .map { it as MetadataItem.PeriodItem }
-            .mapNotNull { it.item.startDate() }
-            .minByOrNull { it.time }
+        return items.map { it as DimensionItem.PeriodItem }
+            .map { metadata[it.id] as MetadataItem.PeriodItem }
+            .map { it.item }
+            .let { DateUtils.getStartDate(it) }
     }
 
     fun getEndDate(
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>
     ): Date? {
-        return items.asSequence().map { it as DimensionItem.PeriodItem }
-            .mapNotNull { metadata[it.id] }
-            .map { it as MetadataItem.PeriodItem }
-            .mapNotNull { it.item.endDate() }
-            .maxByOrNull { it.time }
+        return items.map { it as DimensionItem.PeriodItem }
+            .map { metadata[it.id] as MetadataItem.PeriodItem }
+            .map { it.item }
+            .let { DateUtils.getEndDate(it) }
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {

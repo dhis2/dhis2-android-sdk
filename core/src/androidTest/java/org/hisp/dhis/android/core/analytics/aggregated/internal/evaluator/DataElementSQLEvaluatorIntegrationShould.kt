@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
@@ -46,6 +47,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -322,6 +325,104 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         assertThat(value).isEqualTo("5")
     }
 
+    @Test
+    fun should_aggregate_by_avg_sum_in_hierarchy() {
+        createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("5", orgunitUid = orgunitChild1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT
+            )
+        ).isEqualTo("12")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST
+            )
+        ).isEqualTo("11")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST
+            )
+        ).isEqualTo("11")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("5.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("5.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD
+            )
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo(null)
+    }
+
     private fun createDataValue(
         value: String,
         dataElementUid: String = dataElement1.uid(),
@@ -340,5 +441,25 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
             .build()
 
         dataValueStore.insert(dataValue)
+    }
+
+    private fun evaluateAggregation(
+        periodId: String,
+        aggregator: AggregationType
+    ): String? {
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(periodId)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            )
+        )
+
+        val updatedDataElement = dataElement1.toBuilder().aggregationType(aggregator.name).build()
+        val updatedMetadata = metadata + (dataElement1.uid() to MetadataItem.DataElementItem(updatedDataElement))
+
+        return dataElementEvaluator.evaluate(evaluationItem, updatedMetadata)
     }
 }

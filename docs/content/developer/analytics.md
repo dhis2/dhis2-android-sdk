@@ -353,6 +353,10 @@ This table shows the functionality supported by the Indicator dimension item com
 |                   |Least                  | Yes       | Yes           |
 |                   |Log                    | Yes       | No            |
 |                   |Log10                  | Yes       | No            |
+|                   |.aggregationType       | Yes       | No            |
+|                   |.maxDate               | Yes       | No            |
+|                   |.minDate               | Yes       | No            |
+|                   |.periodOffset          | Yes       | No            |
 |**Dimensions:**    |Constant               | Yes       | Yes           |
 |                   |DataElement            | Yes       | Yes           |
 |                   |ProgramAttribute       | Yes       | Yes           |
@@ -468,6 +472,28 @@ This table shows the functionality supported by the ProgramIndicator dimension i
 |                           |ProgramStageElement    | Yes       | Yes           |
 |                           |ProgramAttribute       | Yes       | Yes           |
 |                           |PS_EVENTDATE           | Yes       | Yes           |
+
+### Aggregation type support { #android_sdk_analytics_aggregation_type_support }
+
+| Type                            | Android SDK |
+|---------------------------------|-------------|
+| SUM                             | Yes         |
+| AVERAGE                         | Yes         |
+| AVERAGE_SUM_ORG_UNIT            | Yes         |
+| LAST                            | Yes         |
+| LAST_AVERAGE_ORG_UNIT           | Yes         |
+| LAST_IN_PERIOD                  | Yes         |
+| LAST_IN_PERIOD_AVERAGE_ORG_UNIT | Yes         |
+| FIRST                           | Yes         |
+| FIRST_AVERAGE_ORG_UNIT          | Yes         |
+| COUNT                           | Yes         |
+| STDDEV                          | No          |
+| VARIANCE                        | No          |
+| MIN                             | Yes         |
+| MAX                             | Yes         |
+| NONE                            | No          |
+| CUSTOM                          | No          |
+| DEFAULT                         | No          |
 
 ## Event line list { #android_sdk_event_line_list }
 

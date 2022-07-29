@@ -68,6 +68,45 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_aggregate_data_from_multiple_teis() {
+        createSampleData()
+
+        val valueSum = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            )
+        )
+        assertThat(valueSum).isEqualTo("30.0")
+
+        val valueAvg = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid()),
+                aggregationType = AggregationType.AVERAGE
+            )
+        )
+        assertThat(valueAvg).isEqualTo("15.0")
+    }
+
+    @Test
+    fun should_override_aggregation_type() {
+        createSampleData()
+
+        val defaultValue = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            )
+        )
+        assertThat(defaultValue).isEqualTo("30.0")
+
+        val overrideValue = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            ),
+            overrideAggregationType = AggregationType.AVERAGE
+        )
+        assertThat(overrideValue).isEqualTo("15.0")
+    }
+
+    private fun createSampleData() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -88,24 +127,12 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
-
-        val valueSum = evaluateIndicator(
-            setProgramIndicator(
-                expression = de(programStage1.uid(), dataElement1.uid())
-            )
-        )
-        assertThat(valueSum).isEqualTo("30.0")
-
-        val valueAvg = evaluateIndicator(
-            setProgramIndicator(
-                expression = de(programStage1.uid(), dataElement1.uid()),
-                aggregationType = AggregationType.AVERAGE
-            )
-        )
-        assertThat(valueAvg).isEqualTo("15.0")
     }
 
-    private fun evaluateIndicator(programIndicator: ProgramIndicator): String? {
+    private fun evaluateIndicator(
+        programIndicator: ProgramIndicator,
+        overrideAggregationType: AggregationType = AggregationType.DEFAULT
+    ): String? {
         val evaluationItemSum = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
@@ -113,7 +140,8 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
                 DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH)
-            )
+            ),
+            aggregationType = overrideAggregationType
         )
 
         return programIndicatorEvaluator.evaluate(

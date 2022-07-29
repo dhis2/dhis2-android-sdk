@@ -115,7 +115,7 @@ public class CommonExpressionVisitor
     /**
      * Expression state
      */
-    private ExpressionState state = new ExpressionState();
+    private final ExpressionState state = new ExpressionState();
 
     /**
      * Default value for data type double.

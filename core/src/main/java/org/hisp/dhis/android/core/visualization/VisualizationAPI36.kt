@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.common.AggregationType
 import java.util.*
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 

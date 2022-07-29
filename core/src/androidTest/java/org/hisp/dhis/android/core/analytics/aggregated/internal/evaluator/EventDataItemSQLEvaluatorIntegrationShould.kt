@@ -118,43 +118,43 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         // Event data values
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.FIRST)
+            evaluateEventDataElement(deAggregation = AggregationType.FIRST)
         ).isEqualTo("30")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
+            evaluateEventDataElement(deAggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
         ).isEqualTo("15")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST, pe = period2019Q4)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST, pe = period2019Q4)
         ).isEqualTo("30")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST, pe = period202001)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST, pe = period202001)
         ).isEqualTo("30")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
         ).isEqualTo("15")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
         ).isEqualTo("15")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
         ).isEqualTo("30")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
         ).isEqualTo(null)
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
         ).isEqualTo("15")
 
         assertThat(
-            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
+            evaluateEventDataElement(deAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
         ).isEqualTo(null)
     }
 
@@ -183,51 +183,87 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         // Event data values
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.FIRST)
+            evaluateEventAttribute(atAggregation = AggregationType.FIRST)
         ).isEqualTo("8")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
+            evaluateEventAttribute(atAggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
         ).isEqualTo("4")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST, pe = period2019Q4)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST, pe = period2019Q4)
         ).isEqualTo("8")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST, pe = period202001)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST, pe = period202001)
         ).isEqualTo("8")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
         ).isEqualTo("4")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
         ).isEqualTo("4")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
         ).isEqualTo("8")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
         ).isEqualTo(null)
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
         ).isEqualTo("4")
 
         assertThat(
-            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
+            evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
         ).isEqualTo(null)
+    }
+
+    @Test
+    fun should_override_aggregation_type() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
+
+        assertThat(evaluateEventDataElement(program, dataElement1)).isEqualTo("30")
+        assertThat(evaluateEventDataElement(program, dataElement1, overrideAggregationType = AggregationType.AVERAGE))
+            .isEqualTo("15")
+
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "5")
+        helper.insertTrackedEntityAttributeValue(trackedEntity2.uid(), attribute1.uid(), "3")
+
+        assertThat(evaluateEventAttribute(program, attribute1)).isEqualTo("8")
+        assertThat(evaluateEventAttribute(program, attribute1, overrideAggregationType = AggregationType.AVERAGE))
+            .isEqualTo("4")
     }
 
     private fun evaluateEventDataElement(
         program: Program = BaseEvaluatorSamples.program,
         dataElement: DataElement = dataElement1,
-        aggregation: AggregationType = AggregationType.SUM,
-        pe: Period = period2019Q4
+        deAggregation: AggregationType = AggregationType.SUM,
+        pe: Period = period2019Q4,
+        overrideAggregationType: AggregationType = AggregationType.DEFAULT
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -236,10 +272,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
                 DimensionItem.PeriodItem.Absolute(pe.periodId()!!)
-            )
+            ),
+            aggregationType = overrideAggregationType
         )
 
-        val aggDataElement = dataElement.toBuilder().aggregationType(aggregation.name).build()
+        val aggDataElement = dataElement.toBuilder().aggregationType(deAggregation.name).build()
         val metadataItem = MetadataItem.EventDataElementItem(aggDataElement, program)
 
         return eventDataItemEvaluator.evaluate(
@@ -251,8 +288,9 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private fun evaluateEventAttribute(
         program: Program = BaseEvaluatorSamples.program,
         attribute: TrackedEntityAttribute = attribute1,
-        aggregation: AggregationType = AggregationType.SUM,
-        pe: Period = period2019Q4
+        atAggregation: AggregationType = AggregationType.SUM,
+        pe: Period = period2019Q4,
+        overrideAggregationType: AggregationType = AggregationType.DEFAULT
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -261,10 +299,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
                 DimensionItem.PeriodItem.Absolute(pe.periodId()!!)
-            )
+            ),
+            aggregationType = overrideAggregationType
         )
 
-        val aggAttribute = attribute.toBuilder().aggregationType(aggregation).build()
+        val aggAttribute = attribute.toBuilder().aggregationType(atAggregation).build()
         val metadataItem = MetadataItem.EventAttributeItem(aggAttribute, program)
 
         return eventDataItemEvaluator.evaluate(

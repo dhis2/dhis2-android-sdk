@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
+@Suppress("TooManyFunctions")
 internal object ProgramIndicatorEvaluatorHelper {
 
     fun getProgramIndicator(
@@ -394,7 +395,7 @@ internal object ProgramIndicatorEvaluatorHelper {
             AggregationType.SUM,
             AggregationType.COUNT,
             AggregationType.MIN,
-            AggregationType.MAX -> programIndicator.aggregationType()!!
+            AggregationType.MAX -> aggregationType
 
             AggregationType.AVERAGE_SUM_ORG_UNIT,
             AggregationType.FIRST,

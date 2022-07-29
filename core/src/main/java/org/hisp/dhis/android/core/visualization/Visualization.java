@@ -43,12 +43,14 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListCo
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSeparatorColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataDimensionItemListColumnAdapter;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -228,6 +230,11 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> periods();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AggregationTypeColumnAdapter.class)
+    public abstract AggregationType aggregationType();
+
     public static Builder builder() {
         return new $$AutoValue_Visualization.Builder();
     }
@@ -319,6 +326,8 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
         public abstract Builder organisationUnits(List<ObjectWithUid> organisationUnits);
 
         public abstract Builder periods(List<ObjectWithUid> periods);
+
+        public abstract Builder aggregationType(AggregationType aggregationType);
 
         public abstract Visualization build();
     }

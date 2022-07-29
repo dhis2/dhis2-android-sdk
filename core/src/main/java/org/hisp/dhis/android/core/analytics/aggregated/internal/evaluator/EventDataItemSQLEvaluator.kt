@@ -60,6 +60,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         }
     }
 
+    @Suppress("LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
@@ -68,6 +69,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
         val eventDataItem = getEventDataItems(evaluationItem)[0]
         val aggregator = getAggregator(eventDataItem, metadata)
+        val (valueColumn, fromClause) = getEventDataItemSQLItems(eventDataItem)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
@@ -81,14 +83,6 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
             appendKeyNumberValue("$eventAlias.${EventTableInfo.Columns.DELETED}", 0)
         }.build()
 
-        val (valueColumn, fromClause) = when (eventDataItem) {
-            is DimensionItem.DataItem.EventDataItem.DataElement ->
-                Pair(dvColumns.VALUE, dataValueFromClauseWithJoins)
-
-            is DimensionItem.DataItem.EventDataItem.Attribute ->
-                Pair(tavColumns.VALUE, attributeValueFromClauseWithJoins)
-        }
-
         return when (aggregator) {
             AggregationType.AVERAGE,
             AggregationType.SUM,
@@ -96,35 +90,35 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
             AggregationType.MIN,
             AggregationType.MAX -> {
                 "SELECT ${aggregator.sql}($valueColumn) " +
-                        "FROM $fromClause " +
-                        "WHERE $whereClause"
+                    "FROM $fromClause " +
+                    "WHERE $whereClause"
             }
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
                 "SELECT SUM($valueColumn) " +
-                        "FROM (" +
-                        "SELECT AVG($valueColumn) as $valueColumn " +
-                        "FROM $fromClause " +
-                        "WHERE $whereClause " +
-                        "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
-                        ")"
+                    "FROM (" +
+                    "SELECT AVG($valueColumn) as $valueColumn " +
+                    "FROM $fromClause " +
+                    "WHERE $whereClause " +
+                    "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
+                    ")"
             }
             AggregationType.FIRST -> {
                 "SELECT SUM($valueColumn) " +
-                        "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
             }
             AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                        "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
             }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                        "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                        "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -134,20 +128,32 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         }
     }
 
+    private fun getEventDataItemSQLItems(
+        eventDataItem: DimensionItem.DataItem.EventDataItem
+    ): Pair<String, String> {
+        return when (eventDataItem) {
+            is DimensionItem.DataItem.EventDataItem.DataElement ->
+                Pair(dvColumns.VALUE, dataValueFromClauseWithJoins)
+
+            is DimensionItem.DataItem.EventDataItem.Attribute ->
+                Pair(tavColumns.VALUE, attributeValueFromClauseWithJoins)
+        }
+    }
+
     private val dataValueFromClauseWithJoins =
         "${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
-                "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-                "ON $dataValueAlias.${dvColumns.EVENT} = " +
-                "$eventAlias.${EventTableInfo.Columns.UID} "
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+            "ON $dataValueAlias.${dvColumns.EVENT} = " +
+            "$eventAlias.${EventTableInfo.Columns.UID} "
 
     private val attributeValueFromClauseWithJoins =
         "${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
-                "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
-                "ON $attAlias.${tavColumns.TRACKED_ENTITY_INSTANCE} = " +
-                "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-                "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
-                "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} "
+            "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
+            "ON $attAlias.${tavColumns.TRACKED_ENTITY_INSTANCE} = " +
+            "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
+            "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
+            "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} "
 
     private fun firstOrLastValueClauseByOrunit(
         valueColumn: String,
@@ -156,18 +162,18 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         minOrMax: String
     ): String {
         val firstOrLastValueClause = "SELECT " +
-                "$valueColumn, " +
-                "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-                "$minOrMax($eventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
-                "FROM $fromClause " +
-                "WHERE $whereClause " +
-                "AND $eventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
-                "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-                "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}"
+            "$valueColumn, " +
+            "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
+            "$minOrMax($eventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "FROM $fromClause " +
+            "WHERE $whereClause " +
+            "AND $eventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
+            "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
+            "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}"
 
         return "SELECT SUM($valueColumn) AS $valueColumn " +
-                "FROM ($firstOrLastValueClause) " +
-                "GROUP BY ${EventTableInfo.Columns.ORGANISATION_UNIT}"
+            "FROM ($firstOrLastValueClause) " +
+            "GROUP BY ${EventTableInfo.Columns.ORGANISATION_UNIT}"
     }
 
     private fun appendDataWhereClause(
@@ -206,7 +212,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                    "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
+                                "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
                         )
                 }
             }.build()
@@ -230,11 +236,11 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
             val innerClause = periods.joinToString(" OR ") {
                 "(${
-                    AnalyticsEvaluatorHelper.getPeriodWhereClause(
-                        columnStart = eventDateColumn,
-                        columnEnd = eventDateColumn,
-                        period = it
-                    )
+                AnalyticsEvaluatorHelper.getPeriodWhereClause(
+                    columnStart = eventDateColumn,
+                    columnEnd = eventDateColumn,
+                    period = it
+                )
                 })"
             }
 

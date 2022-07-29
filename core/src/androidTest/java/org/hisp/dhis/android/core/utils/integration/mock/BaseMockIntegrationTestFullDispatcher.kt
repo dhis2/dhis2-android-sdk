@@ -50,7 +50,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher)
             if (isNewInstance) {
-                dhis2MockServer!!.setRequestDispatcher()
+                dhis2MockServer.setRequestDispatcher()
                 freshLogin()
                 downloadMetadata()
                 downloadTrackedEntityInstances()
@@ -65,33 +65,33 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         @AfterClass
         @JvmStatic
         fun tearDownClass() {
-            dhis2MockServer!!.shutdown()
+            dhis2MockServer.shutdown()
         }
 
         private fun freshLogin() {
             try {
-                d2!!.userModule().logOut().blockingAwait()
+                d2.userModule().logOut().blockingAwait()
             } catch (e: RuntimeException) {
                 // Do nothing
             } finally {
-                d2!!.userModule().blockingLogIn("android", "Android123", dhis2MockServer!!.baseEndpoint)
+                d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
             }
         }
 
         private fun downloadMetadata() {
-            d2!!.metadataModule().blockingDownload()
+            d2.metadataModule().blockingDownload()
         }
 
         private fun downloadTrackedEntityInstances() {
-            d2!!.trackedEntityModule().trackedEntityInstanceDownloader().limit(2).blockingDownload()
+            d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(2).blockingDownload()
         }
 
         private fun downloadEvents() {
-            d2!!.eventModule().eventDownloader().limit(2).blockingDownload()
+            d2.eventModule().eventDownloader().limit(2).blockingDownload()
         }
 
         private fun downloadAggregatedData() {
-            d2!!.aggregatedModule().data().blockingDownload()
+            d2.aggregatedModule().data().blockingDownload()
         }
 
         private fun storeSomeD2Errors() {
@@ -133,7 +133,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
 
         private fun storeSomeKeyValuesInLocalDataStore() {
             val dataStore = create(
-                databaseAdapter!!
+                databaseAdapter
             )
             dataStore.insert(
                 KeyValuePair.builder()

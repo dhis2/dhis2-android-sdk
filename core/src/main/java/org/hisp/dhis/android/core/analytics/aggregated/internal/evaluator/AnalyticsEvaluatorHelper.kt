@@ -117,7 +117,7 @@ internal object AnalyticsEvaluatorHelper {
         periods: List<Period>,
         aggregationType: AggregationType
     ): List<Period> {
-        return when(aggregationType) {
+        return when (aggregationType) {
             AggregationType.FIRST,
             AggregationType.FIRST_AVERAGE_ORG_UNIT,
             AggregationType.LAST,

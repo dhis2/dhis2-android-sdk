@@ -221,7 +221,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(
             evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
         ).isEqualTo(null)
-
     }
 
     private fun evaluateEventDataElement(

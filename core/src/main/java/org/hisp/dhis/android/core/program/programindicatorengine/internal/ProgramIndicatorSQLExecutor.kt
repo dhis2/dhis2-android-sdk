@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.AnalyticsException
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -123,9 +123,9 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         }
 
         return "SELECT ${aggregator.sql}($selectExpression) " +
-                "FROM $targetTable " +
-                "WHERE $filterExpression " +
-                "AND $contextWhereClause"
+            "FROM $targetTable " +
+            "WHERE $filterExpression " +
+            "AND $contextWhereClause"
     }
 
     private fun constantMap(): Map<String, Constant> {

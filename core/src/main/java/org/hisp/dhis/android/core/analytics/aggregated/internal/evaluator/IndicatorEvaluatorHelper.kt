@@ -52,7 +52,8 @@ internal object IndicatorEvaluatorHelper {
     ): AnalyticsServiceEvaluationItem {
         return AnalyticsServiceEvaluationItem(
             dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != indicator.uid() },
-            filters = evaluationItem.filters.filter { it.id != indicator.uid() }
+            filters = evaluationItem.filters.filter { it.id != indicator.uid() },
+            aggregationType = evaluationItem.aggregationType
         )
     }
 }

@@ -103,7 +103,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             programIndicator = visitor.programIndicatorSQLContext.programIndicator
         )
 
-        return if (visitor.replaceNulls) {
+        return if (visitor.state.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(dataElement.valueType())}))"
         } else {
             selectExpression

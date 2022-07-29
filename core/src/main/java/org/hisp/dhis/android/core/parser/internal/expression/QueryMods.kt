@@ -25,36 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
+package org.hisp.dhis.android.core.parser.internal.expression
 
-internal class IndicatorEvaluator @Inject constructor(
-    private val indicatorEngine: IndicatorEngine
-) : AnalyticsEvaluator {
+import org.hisp.dhis.android.core.common.AggregationType
 
-    override fun evaluate(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String? {
-        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
-        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
-
-        return indicatorEngine.evaluateIndicator(
-            indicator = indicator,
-            contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
-        )
-    }
-
-    override fun getSql(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String? {
-        throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
-    }
+internal class QueryMods {
+    var aggregationType: AggregationType? = null
 }

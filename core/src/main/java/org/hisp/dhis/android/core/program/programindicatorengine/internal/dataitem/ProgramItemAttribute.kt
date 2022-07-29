@@ -76,7 +76,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
             programIndicator = visitor.programIndicatorSQLContext.programIndicator
         )
 
-        return if (visitor.replaceNulls) {
+        return if (visitor.state.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(attribute.valueType())}))"
         } else {
             selectExpression

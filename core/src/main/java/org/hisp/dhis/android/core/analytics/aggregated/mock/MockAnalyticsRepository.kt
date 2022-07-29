@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.AggregationType
 
 @Reusable
 class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
@@ -46,6 +47,8 @@ class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
     override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository = this
 
     override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepository = this
+
+    override fun withAggregationType(aggregationType: AggregationType): AnalyticsRepository = this
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }

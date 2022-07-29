@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -373,5 +374,43 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
 
         return "julianday($column) $operator julianday('${DateUtils.DATE_FORMAT.format(dateWithOffset)}')"
+    }
+
+    fun getAggregator(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        programIndicator: ProgramIndicator
+    ): AggregationType {
+        val aggregationType =
+            if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+                evaluationItem.aggregationType
+            } else {
+                programIndicator.aggregationType()
+            }
+
+        return when (aggregationType) {
+            null -> AggregationType.AVERAGE
+
+            AggregationType.AVERAGE,
+            AggregationType.SUM,
+            AggregationType.COUNT,
+            AggregationType.MIN,
+            AggregationType.MAX -> programIndicator.aggregationType()!!
+
+            AggregationType.AVERAGE_SUM_ORG_UNIT,
+            AggregationType.FIRST,
+            AggregationType.LAST,
+            AggregationType.LAST_IN_PERIOD -> AggregationType.SUM
+
+            AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            AggregationType.DEFAULT -> AggregationType.AVERAGE
+
+            AggregationType.VARIANCE,
+            AggregationType.STDDEV,
+            AggregationType.CUSTOM,
+            AggregationType.NONE ->
+                throw AnalyticsException.UnsupportedAggregationType(programIndicator.aggregationType()!!)
+        }
     }
 }

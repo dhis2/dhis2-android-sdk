@@ -36,12 +36,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
-import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
@@ -83,7 +80,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
             appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
         }.build()
 
-        return when(aggregator) {
+        return when (aggregator) {
             AggregationType.AVERAGE,
             AggregationType.SUM,
             AggregationType.COUNT,
@@ -104,29 +101,21 @@ internal class DataElementSQLEvaluator @Inject constructor(
             }
             AggregationType.FIRST -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                        "FROM (${firstOrLastValueClause(whereClause, "MIN")})"
+                        "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
             }
             AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                        "FROM (" +
-                        "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
-                        "FROM (${firstOrLastValueClause(whereClause, "MIN")}) " +
-                        "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
-                        ")"
+                        "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
             }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                        "FROM (${firstOrLastValueClause(whereClause, "MAX")})"
+                        "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                        "FROM (" +
-                        "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
-                        "FROM (${firstOrLastValueClause(whereClause, "MAX")}) " +
-                        "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
-                        ")"
+                        "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -136,12 +125,12 @@ internal class DataElementSQLEvaluator @Inject constructor(
         }
     }
 
-    private fun firstOrLastValueClause(whereClause: String, minOrMax: String): String {
+    private fun firstOrLastValueClauseByOrgunit(whereClause: String, minOrMax: String): String {
         val orderColumn = "SELECT ${peColumns.START_DATE} || ${peColumns.END_DATE} " +
                 "FROM ${PeriodTableInfo.TABLE_INFO.name()} pe " +
                 "WHERE pe.${peColumns.PERIOD_ID} = ${dvColumns.PERIOD}"
 
-        return "SELECT " +
+        val firstOrLastValueClause = "SELECT " +
                 "${dvColumns.VALUE}, " +
                 "${dvColumns.ORGANISATION_UNIT}, " +
                 "$minOrMax(($orderColumn)) " +
@@ -151,6 +140,10 @@ internal class DataElementSQLEvaluator @Inject constructor(
                 "${dvColumns.DATA_ELEMENT}, " +
                 "${dvColumns.CATEGORY_OPTION_COMBO}, " +
                 "${dvColumns.ATTRIBUTE_OPTION_COMBO} "
+
+        return "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
+                "FROM ($firstOrLastValueClause)" +
+                "GROUP BY ${dvColumns.ORGANISATION_UNIT}"
     }
 
     private fun appendDataWhereClause(
@@ -175,7 +168,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                    "dataItem ${item.javaClass.name} in DataElement Evaluator."
                         )
                 }
             }.build()
@@ -190,21 +183,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         aggregationType: AggregationType
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
-
-        val periods = when(aggregationType) {
-            AggregationType.FIRST,
-            AggregationType.FIRST_AVERAGE_ORG_UNIT,
-            AggregationType.LAST,
-            AggregationType.LAST_AVERAGE_ORG_UNIT -> {
-                val startDate = DateUtils.getStartDate(reportingPeriods)
-                val endDate = DateUtils.getEndDate(reportingPeriods)
-                startDate?.let {
-                    val earliest = DateUtils.dateWithOffset(startDate, yearsOffset, PeriodType.Yearly)
-                    listOf(Period.builder().startDate(earliest).endDate(endDate).build())
-                } ?: reportingPeriods
-            }
-            else -> reportingPeriods
-        }
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
 
         return builder.appendInSubQuery(
             DataValueTableInfo.Columns.PERIOD,

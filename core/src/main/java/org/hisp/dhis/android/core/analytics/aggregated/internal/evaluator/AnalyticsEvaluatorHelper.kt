@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.core.period.PeriodType
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
@@ -53,6 +54,8 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
  */
 @Suppress("TooManyFunctions")
 internal object AnalyticsEvaluatorHelper {
+
+    private const val firstLastAggrYearOffset = -10
 
     fun getElementAggregator(aggregationType: String?): AggregationType {
         return aggregationType?.let { AggregationType.valueOf(it) }
@@ -107,6 +110,26 @@ internal object AnalyticsEvaluatorHelper {
                     }
                 }
             }
+        }
+    }
+
+    fun getReportingPeriodsForAggregationType(
+        periods: List<Period>,
+        aggregationType: AggregationType
+    ): List<Period> {
+        return when(aggregationType) {
+            AggregationType.FIRST,
+            AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            AggregationType.LAST,
+            AggregationType.LAST_AVERAGE_ORG_UNIT -> {
+                val startDate = DateUtils.getStartDate(periods)
+                val endDate = DateUtils.getEndDate(periods)
+                startDate?.let {
+                    val earliest = DateUtils.dateWithOffset(startDate, firstLastAggrYearOffset, PeriodType.Yearly)
+                    listOf(Period.builder().startDate(earliest).endDate(endDate).build())
+                } ?: periods
+            }
+            else -> periods
         }
     }
 

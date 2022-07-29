@@ -34,15 +34,20 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191102
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
-import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -80,28 +85,163 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
 
-        val eventDataValue = evaluateEventDataElement(program, dataElement1)
-        assertThat(eventDataValue).isEqualTo("30")
+        assertThat(evaluateEventDataElement(program, dataElement1)).isEqualTo("30")
 
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "5")
         helper.insertTrackedEntityAttributeValue(trackedEntity2.uid(), attribute1.uid(), "3")
 
-        val attributeValue = evaluateEventAttribute(program, attribute1)
-        assertThat(attributeValue).isEqualTo("8")
+        assertThat(evaluateEventAttribute(program, attribute1)).isEqualTo("8")
     }
 
-    private fun evaluateEventDataElement(program: Program, dataElement: DataElement): String? {
+    @Test
+    fun should_evaluate_event_data_values_aggregation_types() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild2.uid(),
+            eventDate = day20191102
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
+
+        // Event data values
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.FIRST)
+        ).isEqualTo("30")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
+        ).isEqualTo("15")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST, pe = period2019Q4)
+        ).isEqualTo("30")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST, pe = period202001)
+        ).isEqualTo("30")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
+        ).isEqualTo("15")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
+        ).isEqualTo("15")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
+        ).isEqualTo("30")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
+        ).isEqualTo("15")
+
+        assertThat(
+            evaluateEventDataElement(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
+        ).isEqualTo(null)
+    }
+
+    @Test
+    fun should_evaluate_event_attribute_values_aggregation_types() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild2.uid(),
+            eventDate = day20191102
+        )
+
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "5")
+        helper.insertTrackedEntityAttributeValue(trackedEntity2.uid(), attribute1.uid(), "3")
+
+        // Event data values
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.FIRST)
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT)
+        ).isEqualTo("4")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST, pe = period2019Q4)
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST, pe = period202001)
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4)
+        ).isEqualTo("4")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001)
+        ).isEqualTo("4")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4)
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD, pe = period202001)
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4)
+        ).isEqualTo("4")
+
+        assertThat(
+            evaluateEventAttribute(aggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001)
+        ).isEqualTo(null)
+
+    }
+
+    private fun evaluateEventDataElement(
+        program: Program = BaseEvaluatorSamples.program,
+        dataElement: DataElement = dataElement1,
+        aggregation: AggregationType = AggregationType.SUM,
+        pe: Period = period2019Q4
+    ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.EventDataItem.DataElement(program.uid(), dataElement.uid())
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH)
+                DimensionItem.PeriodItem.Absolute(pe.periodId()!!)
             )
         )
 
-        val metadataItem = MetadataItem.EventDataElementItem(dataElement, program)
+        val aggDataElement = dataElement.toBuilder().aggregationType(aggregation.name).build()
+        val metadataItem = MetadataItem.EventDataElementItem(aggDataElement, program)
 
         return eventDataItemEvaluator.evaluate(
             evaluationItem,
@@ -109,18 +249,24 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun evaluateEventAttribute(program: Program, attribute: TrackedEntityAttribute): String? {
+    private fun evaluateEventAttribute(
+        program: Program = BaseEvaluatorSamples.program,
+        attribute: TrackedEntityAttribute = attribute1,
+        aggregation: AggregationType = AggregationType.SUM,
+        pe: Period = period2019Q4
+    ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.EventDataItem.Attribute(program.uid(), attribute.uid())
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH)
+                DimensionItem.PeriodItem.Absolute(pe.periodId()!!)
             )
         )
 
-        val metadataItem = MetadataItem.EventAttributeItem(attribute, program)
+        val aggAttribute = attribute.toBuilder().aggregationType(aggregation).build()
+        val metadataItem = MetadataItem.EventAttributeItem(aggAttribute, program)
 
         return eventDataItemEvaluator.evaluate(
             evaluationItem,

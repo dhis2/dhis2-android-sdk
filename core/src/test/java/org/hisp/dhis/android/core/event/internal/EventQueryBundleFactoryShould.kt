@@ -168,10 +168,12 @@ class EventQueryBundleFactoryShould {
 
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.PER_ORG_UNIT).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
-        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(listOf(
-            OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
-            OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
-        ))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
+            listOf(
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
+            )
+        )
 
         val bundles = bundleFactory.getQueries(params)
 

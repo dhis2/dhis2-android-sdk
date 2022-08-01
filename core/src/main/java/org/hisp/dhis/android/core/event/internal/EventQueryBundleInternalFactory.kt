@@ -34,28 +34,12 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryComm
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
 
 internal class EventQueryBundleInternalFactory constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?
-) : TrackerQueryInternalFactory<EventQueryBundle>(params, programSettings) {
+) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryPerProgram(
-        programUid: String?
-    ): List<EventQueryBundle> {
-        return queryInternal(listOf(programUid!!), programUid) {
-            commonHelper.getLinkedCaptureOrgUnitUids(programUid)
-        }
-    }
-
-    override fun queryGlobal(
-        programs: List<String>
-    ): List<EventQueryBundle> {
-        return queryInternal(programs, null) {
-            commonHelper.getCaptureOrgUnitUids()
-        }
-    }
-
-    private fun queryInternal(
+    override fun queryInternal(
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>

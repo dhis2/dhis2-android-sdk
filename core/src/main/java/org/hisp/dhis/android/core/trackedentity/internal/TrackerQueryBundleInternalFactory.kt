@@ -33,28 +33,12 @@ import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
 internal class TrackerQueryBundleInternalFactory constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?
-) : TrackerQueryInternalFactory<TrackerQueryBundle>(params, programSettings) {
+) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryGlobal(
-        programs: List<String>
-    ): List<TrackerQueryBundle> {
-        return queryInternal(programs, null) {
-            commonHelper.getCaptureOrgUnitUids()
-        }
-    }
-
-    override fun queryPerProgram(
-        programUid: String?
-    ): List<TrackerQueryBundle> {
-        return queryInternal(listOf(programUid!!), programUid) {
-            commonHelper.getLinkedCaptureOrgUnitUids(programUid)
-        }
-    }
-
-    private fun queryInternal(
+    override fun queryInternal(
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>

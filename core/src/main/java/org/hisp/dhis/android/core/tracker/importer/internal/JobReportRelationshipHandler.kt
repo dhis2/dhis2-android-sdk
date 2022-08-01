@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,14 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 @Reusable
 internal class JobReportRelationshipHandler @Inject internal constructor(
-    relationshipStore: RelationshipStore,
-    fileResourceStore: IdentifiableDataObjectStore<FileResource>
-) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
         val handledState =
@@ -54,6 +51,11 @@ internal class JobReportRelationshipHandler @Inject internal constructor(
 
     @Suppress("EmptyFunctionBlock")
     override fun storeConflict(errorReport: JobValidationError) {
+        val relationship by lazy { relationshipStore.selectByUid(errorReport.uid) }
+
+        if (errorReport.errorCode == ImporterError.E4005.name && relationship?.deleted() == true) {
+            relationshipStore.delete(errorReport.uid)
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

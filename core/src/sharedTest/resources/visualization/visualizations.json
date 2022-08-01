@@ -31,6 +31,14 @@
       "skipRounding": false,
       "displayDensity": "NORMAL",
       "digitGroupSeparator": "COMMA",
+      "legend": {
+        "showKey": false,
+        "style": "FILL",
+        "strategy": "FIXED",
+        "set": {
+          "id": "Yf6UHoPkd57"
+        }
+      },
       "relativePeriods": {
         "thisYear": false,
         "last12Months": true
@@ -75,6 +83,12 @@
           "dataDimensionItemType": "DATA_ELEMENT",
           "dataElement": {
             "id": "cYeuwXTCPkU"
+          }
+        },
+        {
+          "dataDimensionItemType": "PROGRAM_INDICATOR",
+          "programIndicator": {
+            "id": "p2Zxg0wcPQ3"
           }
         }
       ],
@@ -131,6 +145,14 @@
       "skipRounding": false,
       "displayDensity": "NORMAL",
       "digitGroupSeparator": "COMMA",
+      "legend": {
+        "showKey": false,
+        "style": "TEXT",
+        "strategy": "FIXED",
+        "set": {
+          "id": "TiOkbpGEud4"
+        }
+      },
       "relativePeriods": {
       },
       "categoryDimensions": [
@@ -149,6 +171,12 @@
           "dataDimensionItemType": "DATA_ELEMENT",
           "dataElement": {
             "id": "g9eOBujte1U"
+          }
+        },
+        {
+          "dataDimensionItemType": "PROGRAM_INDICATOR",
+          "programIndicator": {
+            "id": "GSae40Fyppf"
           }
         }
       ],

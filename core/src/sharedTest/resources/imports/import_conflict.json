@@ -1,4 +1,14 @@
 {
-  "object": "Attribute.attribute",
-  "value": "Invalid attribute zDhUuAYrxNCx1"
+  "object": "UOlfIjgN8X6",
+  "objects": {
+    "dataElement": "UOlfIjgN8X6",
+    "value": "value_not_numeric"
+  },
+  "value": "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
+  "errorCode": "E7619",
+  "property": "value",
+  "indexes": [
+    2,
+    7
+  ]
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,11 @@ public class ImportConflictShould extends BaseObjectShould implements ObjectShou
     public void map_from_json_string() throws IOException, ParseException {
         ImportConflict importConflict = objectMapper.readValue(jsonStream, ImportConflict.class);
 
-        assertThat(importConflict.object()).isEqualTo("Attribute.attribute");
-        assertThat(importConflict.value()).isEqualTo("Invalid attribute zDhUuAYrxNCx1");
+        assertThat(importConflict.object()).isEqualTo("UOlfIjgN8X6");
+        assertThat(importConflict.value()).isEqualTo("Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric");
+        assertThat(importConflict.errorCode()).isEqualTo("E7619");
+        assertThat(importConflict.property()).isEqualTo("value");
+        assertThat(importConflict.indexes().get(0)).isEqualTo(2);
+        assertThat(importConflict.indexes().get(1)).isEqualTo(7);
     }
 }

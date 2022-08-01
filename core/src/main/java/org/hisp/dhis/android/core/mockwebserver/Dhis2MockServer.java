@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -62,10 +62,11 @@ public class Dhis2MockServer {
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
-    private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings.json";
+    private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings_v2.json";
     private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
+    private static final String PROGRAMS_INDICATORS_JSON = "program/program_indicators.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
     private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
@@ -92,12 +93,14 @@ public class Dhis2MockServer {
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
     private static final String EVENTS_JSON = "event/events.json";
+    private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
     private static final String RESERVE_VALUES_JSON = "trackedentity/tracked_entity_attribute_reserved_values.json";
+    private static final String SMS_METADATA = "sms/metadata_ids.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
@@ -137,14 +140,19 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(int code) {
-        enqueueMockResponse(code, "{}");
+        enqueueMockResponseText(code, "{}");
     }
 
-    public void enqueueMockResponse(int code, String response) {
+    public void enqueueMockResponseText(int code, String response) {
         MockResponse mockResponse = new MockResponse();
         mockResponse.setResponseCode(code);
         mockResponse.setBody(response);
         server.enqueue(mockResponse);
+    }
+
+    public void enqueueMockResponse(int code, String fileName) {
+        MockResponse response = createMockResponse(fileName, code);
+        server.enqueue(response);
     }
 
     public void enqueueMockResponse(String fileName) {
@@ -152,7 +160,7 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
-    public void setDhis2Dispatcher(){
+    public void setDhis2Dispatcher() {
         server.setDispatcher(dhis2Dispatcher);
     }
 
@@ -193,6 +201,8 @@ public class Dhis2MockServer {
                     return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
+                } else if (path.startsWith("/api/programIndicators?")) {
+                    return createMockResponse(PROGRAMS_INDICATORS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
                     return createMockResponse(PROGRAM_STAGES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
@@ -251,8 +261,12 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
+                } else if (path.startsWith("/api/legendSets?")) {
+                    return createMockResponse(LEGEND_SETS_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
+                } else if (path.startsWith("/api/metadata")) {
+                    return createMockResponse(SMS_METADATA);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)
@@ -312,16 +326,23 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
         enqueueMockResponse(VISUALIZATIONS_JSON);
+        enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
+        enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
+        enqueueMockResponse(LEGEND_SETS_JSON);
+    }
+
+    private MockResponse createMockResponse(String fileName) {
+        return createMockResponse(fileName, OK_CODE);
     }
 
     @NonNull
-    private MockResponse createMockResponse(String fileName) {
+    private MockResponse createMockResponse(String fileName, int code) {
         try {
             String body = fileReader.getStringFromFile(fileName);
             MockResponse response = new MockResponse();
-            response.setResponseCode(OK_CODE);
+            response.setResponseCode(code);
             response.setBody(body);
             return response;
         } catch (IOException e) {

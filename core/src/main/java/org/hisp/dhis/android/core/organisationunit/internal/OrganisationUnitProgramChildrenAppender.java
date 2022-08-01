@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<Org
     }
 
     @Override
-    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+    public OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.programs(childStore.getChildren(organisationUnit));
         return builder.build();

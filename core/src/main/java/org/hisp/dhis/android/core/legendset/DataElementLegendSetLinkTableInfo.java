@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -60,12 +60,14 @@ public final class DataElementLegendSetLinkTableInfo {
 
         public static final String DATA_ELEMENT = "dataElement";
         public static final String LEGEND_SET = "legendSet";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_ELEMENT,
-                    LEGEND_SET
+                    LEGEND_SET,
+                    SORT_ORDER
             );
         }
 
@@ -73,7 +75,8 @@ public final class DataElementLegendSetLinkTableInfo {
         public String[] whereUpdate() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_ELEMENT,
-                    LEGEND_SET
+                    LEGEND_SET,
+                    SORT_ORDER
             );
         }
     }

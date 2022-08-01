@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -89,6 +89,16 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .byEventDate().afterOrEqual(refDate)
                         .byEventDate().beforeOrEqual(refDate)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void exclude_uids() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .excludeUids().in("nWrB0TfWlvh")
                         .blockingGet();
 
         assertThat(trackedEntityInstances.size()).isEqualTo(1);

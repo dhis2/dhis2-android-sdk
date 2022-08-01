@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -54,34 +55,39 @@ public class LogInCallErrorCatcherShould {
     public void return_bad_credentials_error_for_expected_error_response() {
         String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Unauthorized\"}";
         Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+        String errorBody = new APIErrorMapper().getErrorBody(response);
+        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test
     public void return_bad_credentials_error_for_other_messages() {
         String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Something new\"}";
         Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+        String errorBody = new APIErrorMapper().getErrorBody(response);
+        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test
     public void return_account_locked() {
         String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Account locked\"}";
         Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED);
+        String errorBody = new APIErrorMapper().getErrorBody(response);
+        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED);
     }
 
     @Test
     public void return_no_dhis_server_for_another_json() {
         String responseError = "{\"other\":\"JSON\"}";
         Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
+        String errorBody = new APIErrorMapper().getErrorBody(response);
+        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
     }
 
     @Test
     public void return_no_dhis_server_for_non_json() {
         String responseError = "<html>ERROR</html>";
         Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
+        String errorBody = new APIErrorMapper().getErrorBody(response);
+        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
     }
 }

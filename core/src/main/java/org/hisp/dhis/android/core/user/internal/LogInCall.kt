@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import net.openid.appauth.AuthState
-import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -40,16 +39,16 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.core.wipe.internal.WipeModule
 
 @Reusable
 @Suppress("LongParameterList")
@@ -57,16 +56,16 @@ internal class LogInCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,
     private val userService: UserService,
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val userHandler: Handler<User>,
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val userStore: IdentifiableObjectStore<User>,
-    private val wipeModule: WipeModule,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
-    private val exceptions: LogInExceptions
+    private val exceptions: LogInExceptions,
+    private val accountManager: AccountManagerImpl
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -80,7 +79,9 @@ internal class LogInCall @Inject internal constructor(
         exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
 
-        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
+
+        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
@@ -88,24 +89,31 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
 
-        val credentials = Credentials(username, password, null)
+        val credentials = Credentials(username, trimmedServerUrl!!, password, null)
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            loginOnline(parsedServerUrl, user, credentials)
+            loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
-                tryLoginOffline(parsedServerUrl, credentials, d2Error)
+                tryLoginOffline(credentials, d2Error)
             } else {
-                throw handleOnlineException(d2Error)
+                throw handleOnlineException(d2Error, credentials)
             }
         }
     }
 
-    private fun handleOnlineException(d2Error: D2Error): D2Error {
+    @Suppress("TooGenericExceptionCaught")
+    private fun handleOnlineException(d2Error: D2Error, credentials: Credentials?): D2Error {
         return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-            wipeModule.wipeEverything()
-            d2Error
+            try {
+                if (credentials != null) {
+                    accountManager.deleteAccountAndEmit(credentials, AccountDeletionReason.ACCOUNT_DISABLED)
+                }
+                d2Error
+            } catch (e: Exception) {
+                d2Error
+            }
         } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
             d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
         ) {
@@ -116,10 +124,10 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun loginOnline(serverUrl: HttpUrl, user: User, credentials: Credentials): User {
+    private fun loginOnline(user: User, credentials: Credentials): User {
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
-        databaseManager.loadDatabaseOnline(serverUrl, credentials.username).blockingAwait()
+        databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
             val authenticatedUser = AuthenticatedUser.builder()
@@ -144,8 +152,9 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private fun tryLoginOffline(serverUrl: HttpUrl, credentials: Credentials, originalError: D2Error): User {
-        val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, credentials.username)
+    private fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
+        val existingDatabase =
+            databaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
         if (!existingDatabase) {
             throw originalError
         }
@@ -161,7 +170,9 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
-        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
+
+        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
@@ -169,17 +180,18 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
 
+        var credentials: Credentials? = null
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, openIDConnectState)
-            loginOnline(parsedServerUrl, user, credentials)
+            credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
+            loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
-            throw handleOnlineException(d2Error)
+            throw handleOnlineException(d2Error, credentials)
         }
     }
 
-    private fun getOpenIdConnectCredentials(user: User, openIDConnectState: AuthState): Credentials {
+    private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
         val username = UserInternalAccessor.accessUserCredentials(user).username()!!
-        return Credentials(username, null, openIDConnectState)
+        return Credentials(username, serverUrl, null, openIDConnectState)
     }
 }

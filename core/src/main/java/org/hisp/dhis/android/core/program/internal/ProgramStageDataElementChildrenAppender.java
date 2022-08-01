@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<Pro
     }
 
     @Override
-    protected ProgramStage appendChildren(ProgramStage programStage) {
+    public ProgramStage appendChildren(ProgramStage programStage) {
         return ProgramStageInternalAccessor.insertProgramStageDataElements(programStage.toBuilder(),
                 childStore.getChildren(programStage)).build();
     }

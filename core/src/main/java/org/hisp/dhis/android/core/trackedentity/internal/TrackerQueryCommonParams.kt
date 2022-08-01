@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
 internal data class TrackerQueryCommonParams(
+    val uids: List<String>,
     val programs: List<String>,
     val program: String?,
     val startDate: String?,

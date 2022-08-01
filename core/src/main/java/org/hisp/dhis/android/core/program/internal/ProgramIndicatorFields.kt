@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
@@ -43,9 +43,11 @@ object ProgramIndicatorFields {
     const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
     const val LEGEND_SETS = "legendSets"
     private val fh = FieldsHelper<ProgramIndicator>()
-    val uid = fh.field<Boolean>(BaseIdentifiableObject.UID)
+    val uid = fh.uid()
+    val displayInForm: Field<ProgramIndicator, Boolean> = Field.create("displayInForm")
+
     @JvmField
-    val allFields = Fields.builder<ProgramIndicator>()
+    val allFields: Fields<ProgramIndicator> = Fields.builder<ProgramIndicator>()
         .fields(fh.getNameableFields())
         .fields(
             fh.field<Boolean>(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM),
@@ -58,6 +60,6 @@ object ProgramIndicatorFields {
             fh.field<AnalyticsType>(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE),
             fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
                 .with(AnalyticsPeriodBoundaryFields.allFields),
-            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.allFields)
+            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid)
         ).build()
 }

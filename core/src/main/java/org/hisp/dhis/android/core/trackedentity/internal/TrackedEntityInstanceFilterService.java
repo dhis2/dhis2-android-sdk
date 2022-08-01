@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,20 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface TrackedEntityInstanceFilterService {
+    @GET("trackedEntityInstanceFilters")
+    Single<Payload<TrackedEntityInstanceFilterAPI37>> getTrackedEntityInstanceFiltersAPI37(
+            @Query("filter") @Where Filter<TrackedEntityInstanceFilter, String> uids,
+            @Query("filter") String accessDataReadFilter,
+            @Query("fields") @Which Fields<TrackedEntityInstanceFilter> fields,
+            @Query("paging") Boolean paging);
+
     @GET("trackedEntityInstanceFilters")
     Single<Payload<TrackedEntityInstanceFilter>> getTrackedEntityInstanceFilters(
             @Query("filter") @Where Filter<TrackedEntityInstanceFilter, String> uids,

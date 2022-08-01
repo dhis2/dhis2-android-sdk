@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<Pro
     }
 
     @Override
-    protected ProgramSection appendChildren(ProgramSection programSection) {
+    public ProgramSection appendChildren(ProgramSection programSection) {
         ProgramSection.Builder builder = programSection.toBuilder();
         builder.attributes(linkChildStore.getChildren(programSection));
         return builder.build();

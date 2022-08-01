@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
@@ -43,6 +44,8 @@ class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
     override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepository = this
 
     override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository = this
+
+    override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepository = this
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }

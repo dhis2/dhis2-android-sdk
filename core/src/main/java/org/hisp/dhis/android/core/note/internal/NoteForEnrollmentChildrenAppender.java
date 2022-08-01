@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ public final class NoteForEnrollmentChildrenAppender extends ChildrenAppender<En
     }
 
     @Override
-    protected Enrollment appendChildren(Enrollment enrollment) {
+    public Enrollment appendChildren(Enrollment enrollment) {
         Enrollment.Builder builder = enrollment.toBuilder();
         builder.notes(childStore.getChildren(enrollment));
         return builder.build();

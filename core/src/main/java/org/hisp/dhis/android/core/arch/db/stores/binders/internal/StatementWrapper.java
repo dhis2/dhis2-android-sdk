@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,13 @@ package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 import java.util.Date;
 
 public interface StatementWrapper {
+    /**
+     * Bind an index using .bindNull().
+     * A helper function to abstract/clean up boilerplate if/else bloat...
+     * @param index
+     */
+    void bindNull(int index);
+
     /**
      * Handle if String argument is null and bind it using .bindNull() if so.
      * A helper function to abstract/clean up boilerplate if/else bloat...

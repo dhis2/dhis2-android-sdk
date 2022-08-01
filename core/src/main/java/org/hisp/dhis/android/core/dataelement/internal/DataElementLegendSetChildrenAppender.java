@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,24 +28,23 @@
 package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendSet;
 
 final class DataElementLegendSetChildrenAppender extends ChildrenAppender<DataElement> {
 
-    private final LinkChildStore<DataElement, LegendSet> linkChildStore;
+    private final ObjectWithUidChildStore<DataElement> linkChildStore;
 
     private DataElementLegendSetChildrenAppender(
-            LinkChildStore<DataElement, LegendSet> linkChildStore) {
+            ObjectWithUidChildStore<DataElement> linkChildStore) {
         this.linkChildStore = linkChildStore;
     }
 
     @Override
-    protected DataElement appendChildren(DataElement dataElement) {
+    public DataElement appendChildren(DataElement dataElement) {
         DataElement.Builder builder = dataElement.toBuilder();
         builder.legendSets(linkChildStore.getChildren(dataElement));
         return builder.build();
@@ -53,11 +52,10 @@ final class DataElementLegendSetChildrenAppender extends ChildrenAppender<DataEl
 
     static ChildrenAppender<DataElement> create(DatabaseAdapter databaseAdapter) {
         return new DataElementLegendSetChildrenAppender(
-                StoreFactory.linkChildStore(
+                StoreFactory.objectWithUidChildStore(
                         databaseAdapter,
                         DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                        DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
-                        LegendSet::create
+                        DataElementLegendSetLinkTableInfo.CHILD_PROJECTION
                 )
         );
     }

@@ -1,0 +1,137 @@
+{
+  "legendSets": [
+    {
+      "code": "AGE10YINT2",
+      "created": "2017-06-02T11:40:33.452",
+      "lastUpdated": "2017-06-02T11:41:01.999",
+      "name": "Age 15y interval",
+      "id": "QiOkbpGEud4",
+      "displayName": "Age 15y interval",
+      "symbolizer": "color",
+      "legends": [
+        {
+          "id": "AzQkRWHS7lu",
+          "name": "45 - 60",
+          "startValue": 25,
+          "endValue": 40,
+          "color": "#G38026"
+        },
+        {
+          "id": "TEf6QhFVMab",
+          "name": "15 - 30",
+          "startValue": 10,
+          "endValue": 25,
+          "color": "#A6AE5E"
+        }
+      ]
+    },
+    {
+      "code": "AGE40YINT2",
+      "created": "2017-06-02T11:40:33.452",
+      "lastUpdated": "2017-06-02T11:41:01.999",
+      "name": "Age 40y interval",
+      "id": "rtOkbpGEud4",
+      "displayName": "Age 40y interval",
+      "symbolizer": "color",
+      "legends": [
+        {
+          "id": "bzQkRWHS7lu",
+          "name": "0 - 40",
+          "startValue": 0,
+          "endValue": 40,
+          "color": "#G38026"
+        },
+        {
+          "id": "qEf6QhFVMab",
+          "name": "40 - 999",
+          "startValue": 40,
+          "endValue": 999,
+          "color": "#A6AE5E"
+        }
+      ]
+    },
+    {
+      "code": "AGE15YINT",
+      "created": "2017-06-02T11:40:33.452",
+      "lastUpdated": "2017-06-02T11:41:01.999",
+      "name": "Age 15y interval",
+      "id": "TiOkbpGEud4",
+      "displayName": "Age 15y interval",
+      "symbolizer": "color",
+      "legends": [
+        {
+          "id": "BzQkRWHS7lu",
+          "name": "45 - 60",
+          "startValue": 45,
+          "endValue": 60,
+          "color": "#F38026"
+        },
+        {
+          "id": "rlXteEDaTpt",
+          "name": "0 - 15",
+          "startValue": 0,
+          "endValue": 15,
+          "color": "#F7A629",
+          "displayName": "0 - 15"
+        },
+        {
+          "id": "kEf6QhFVMab",
+          "name": "15 - 30",
+          "startValue": 15,
+          "endValue": 30,
+          "color": "#E6AE5E"
+        }
+      ]
+    },
+    {
+      "code": "AGE15YIOMM",
+      "created": "2017-06-02T11:40:33.452",
+      "lastUpdated": "2017-06-02T11:41:01.999",
+      "name": "Age 15y interval",
+      "id": "Yf6UHoPkd57",
+      "displayName": "Age 15y interval",
+      "symbolizer": "color",
+      "legends": [
+        {
+          "id": "BzQkRWHS7lu",
+          "name": "45 - 60",
+          "startValue": 45,
+          "endValue": 60,
+          "color": "#F38026"
+        },
+        {
+          "id": "kEf6QhFVMab",
+          "name": "15 - 30",
+          "startValue": 15,
+          "endValue": 30,
+          "color": "#E6AE5E"
+        }
+      ]
+    },
+    {
+      "code": "AGE23YIO",
+      "created": "2017-06-02T11:40:33.452",
+      "lastUpdated": "2017-06-02T11:41:01.999",
+      "name": "Age 15y interval",
+      "id": "Yf6UHoPkd56",
+      "displayName": "Age 15y interval",
+      "symbolizer": "color",
+      "legends": [
+        {
+          "id": "BzQkRWHS7lu",
+          "name": "45 - 60",
+          "startValue": 45,
+          "endValue": 60,
+          "color": "#F38026"
+        },
+        {
+          "id": "kEf6QhFVMab",
+          "name": "15 - 30",
+          "startValue": 15,
+          "endValue": 30,
+          "color": "#E6AE5E"
+        }
+      ]
+    }
+  ]
+}

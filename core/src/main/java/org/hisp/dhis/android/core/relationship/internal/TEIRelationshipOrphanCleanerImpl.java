@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,16 +42,12 @@ import dagger.Reusable;
 
 @Reusable
 public class TEIRelationshipOrphanCleanerImpl
-        extends RelationshipOrphanCleanerImpl<TrackedEntityInstance, Relationship229Compatible> {
-
-    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
+        extends RelationshipOrphanCleanerImpl<TrackedEntityInstance, Relationship> {
 
     @Inject
     TEIRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                     RelationshipCollectionRepository relationshipRepository,
-                                     RelationshipDHISVersionManager relationshipDHISVersionManager) {
+                                     RelationshipCollectionRepository relationshipRepository) {
         super(relationshipStore, relationshipRepository);
-        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
     }
 
     @Override
@@ -60,7 +56,7 @@ public class TEIRelationshipOrphanCleanerImpl
     }
 
     @Override
-    public Collection<Relationship> relationships(Collection<Relationship229Compatible> relationships) {
-        return relationshipDHISVersionManager.from229Compatible(relationships);
+    public Collection<Relationship> relationships(Collection<Relationship> relationships) {
+        return relationships;
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.NewTrackerImporterUserInfoColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter;
@@ -55,6 +56,7 @@ import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -135,7 +137,8 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
     @Nullable
     @JsonProperty()
-    public abstract String assignedUser();
+    @ColumnAdapter(NewTrackerImporterUserInfoColumnAdapter.class)
+    public abstract NewTrackerImporterUserInfo assignedUser();
 
     @Nullable
     @JsonProperty()
@@ -204,7 +207,7 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
-        public abstract Builder assignedUser(String assignedUser);
+        public abstract Builder assignedUser(NewTrackerImporterUserInfo assignedUser);
 
         public abstract Builder notes(List<NewTrackerImporterNote> notes);
 

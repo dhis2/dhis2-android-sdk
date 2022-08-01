@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
-import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore;
 
 import dagger.Module;
@@ -51,8 +51,8 @@ public final class DataElementLegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkHandler<LegendSet, DataElementLegendSetLink> handler(
+    public OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink> handler(
             LinkStore<DataElementLegendSetLink> store) {
-        return new LinkHandlerImpl<>(store);
+        return new OrderedLinkHandlerImpl<>(store);
     }
 }

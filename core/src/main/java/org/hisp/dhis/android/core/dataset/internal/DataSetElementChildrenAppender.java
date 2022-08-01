@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
     }
 
     @Override
-    protected DataSet appendChildren(DataSet dataSet) {
+    public DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
         builder.dataSetElements(childStore.getChildren(dataSet));
         return builder.build();

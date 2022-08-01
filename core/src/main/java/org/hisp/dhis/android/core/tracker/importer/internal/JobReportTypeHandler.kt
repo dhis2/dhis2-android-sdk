@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,20 +27,16 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 internal abstract class JobReportTypeHandler constructor(
-    protected val relationshipStore: RelationshipStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
+    protected val relationshipStore: RelationshipStore
 ) {
 
     fun handleSuccess(jo: TrackerJobObject) {
         val handleAction = handleObject(jo.objectUid(), State.SYNCED)
-        setFileResourceState(jo, State.SYNCED)
 
         if (handleAction === HandleAction.Delete) {
             getRelatedRelationships(jo.objectUid()).forEach { relationshipStore.delete(it) }
@@ -49,19 +45,11 @@ internal abstract class JobReportTypeHandler constructor(
 
     fun handleError(jo: TrackerJobObject, errorReport: JobValidationError) {
         handleObject(jo.objectUid(), State.ERROR)
-        setFileResourceState(jo, State.TO_POST)
         storeConflict(errorReport)
     }
 
     fun handleNotPresent(jo: TrackerJobObject) {
         handleObject(jo.objectUid(), State.TO_UPDATE)
-        setFileResourceState(jo, State.TO_POST)
-    }
-
-    private fun setFileResourceState(jobObject: TrackerJobObject, state: State) {
-        jobObject.fileResources().forEach {
-            fileResourceStore.setSyncStateIfUploading(it, state)
-        }
     }
 
     protected abstract fun handleObject(uid: String, state: State): HandleAction

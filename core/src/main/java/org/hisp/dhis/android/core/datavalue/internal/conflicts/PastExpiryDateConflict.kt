@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal class PastExpiryDateConflict(
     private val dataValueStore: DataValueStore,
     private val dataSetStore: IdentifiableObjectStore<DataSet>
-) : DataValueImportConflictItem {
+) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,35 +29,35 @@ package org.hisp.dhis.android.core.common
 
 import java.util.*
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) {
-    TEXT(String::class.java, TextValidator),
-    LONG_TEXT(String::class.java, LongTextValidator),
-    LETTER(String::class.java, LetterValidator),
-    BOOLEAN(Boolean::class.java, BooleanValidator),
-    TRUE_ONLY(Boolean::class.java, TrueOnlyValidator),
-    DATE(Date::class.java, DateValidator),
-    DATETIME(Date::class.java, DateTimeValidator),
-    TIME(String::class.java, TimeValidator),
-    NUMBER(Double::class.java, NumberValidator),
-    UNIT_INTERVAL(Double::class.java, UnitIntervalValidator),
-    PERCENTAGE(Double::class.java, PercentageValidator),
-    INTEGER(Int::class.java, IntegerValidator),
-    INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),
-    INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
-    INTEGER_ZERO_OR_POSITIVE(Int::class.java, IntegerZeroOrPositiveValidator),
-    FILE_RESOURCE(String::class.java, UidValidator),
-    COORDINATE(String::class.java, CoordinateValidator),
-    PHONE_NUMBER(String::class.java, PhoneNumberValidator),
-    EMAIL(String::class.java, EmailValidator),
-    USERNAME(String::class.java, TextValidator),
-    ORGANISATION_UNIT(OrganisationUnit::class.java, UidValidator),
-    TRACKER_ASSOCIATE(TrackedEntityInstance::class.java, UidValidator),
-    AGE(Date::class.java, DateValidator),
-    URL(String::class.java, TextValidator),
-    IMAGE(String::class.java, UidValidator);
+enum class ValueType(val validator: ValueTypeValidator<*>) {
+    TEXT(TextValidator),
+    LONG_TEXT(LongTextValidator),
+    LETTER(LetterValidator),
+    PHONE_NUMBER(PhoneNumberValidator),
+    EMAIL(EmailValidator),
+    BOOLEAN(BooleanValidator),
+    TRUE_ONLY(TrueOnlyValidator),
+    DATE(DateValidator),
+    DATETIME(DateTimeValidator),
+    TIME(TimeValidator),
+    NUMBER(NumberValidator),
+    UNIT_INTERVAL(UnitIntervalValidator),
+    PERCENTAGE(PercentageValidator),
+    INTEGER(IntegerValidator),
+    INTEGER_POSITIVE(IntegerPositiveValidator),
+    INTEGER_NEGATIVE(IntegerNegativeValidator),
+    INTEGER_ZERO_OR_POSITIVE(IntegerZeroOrPositiveValidator),
+    TRACKER_ASSOCIATE(UidValidator),
+    USERNAME(TextValidator),
+    COORDINATE(CoordinateValidator),
+    ORGANISATION_UNIT(UidValidator),
+    REFERENCE(TextValidator),
+    AGE(DateValidator),
+    URL(TextValidator),
+    FILE_RESOURCE(UidValidator),
+    IMAGE(UidValidator),
+    GEOJSON(TextValidator);
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)
@@ -87,6 +87,8 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) 
         private val BOOLEAN_TYPES: Set<ValueType> = HashSet(listOf(BOOLEAN, TRUE_ONLY))
         private val TEXT_TYPES: Set<ValueType> = HashSet(listOf(TEXT, LONG_TEXT, LETTER, COORDINATE, TIME))
         private val DATE_TYPES: Set<ValueType> = HashSet(listOf(DATE, DATETIME))
-        private val FILE_TYPES: Set<ValueType> = HashSet(listOf(FILE_RESOURCE, IMAGE))
+
+        // FILE_RESOURCE is not supported yet ANDROSDK-1531
+        private val FILE_TYPES: Set<ValueType> = HashSet(listOf(IMAGE))
     }
 }

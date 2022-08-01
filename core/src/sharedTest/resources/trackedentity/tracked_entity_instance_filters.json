@@ -15,8 +15,6 @@
       "displayName": "Ongoing foci responses",
       "description": "Foci response assigned to someone, and the enrollment is still active",
       "externalAccess": false,
-      "followup": false,
-      "enrollmentStatus": "ACTIVE",
       "sortOrder": 2,
       "favorite": false,
       "access": {
@@ -34,10 +32,6 @@
         "displayName": "Tom Wakiki",
         "id": "GOLswS44mh8",
         "username": "system"
-      },
-      "enrollmentCreatedPeriod": {
-        "periodFrom": -15,
-        "periodTo": 15
       },
       "favorites": [
       ],
@@ -61,7 +55,76 @@
         }
       ],
       "userAccesses": [
-      ]
+      ],
+      "entityQueryCriteria": {
+        "followUp": false,
+        "enrollmentStatus": "ACTIVE",
+        "eventStatus": "COMPLETED",
+        "programStage": "uvMKOn1oWvd",
+        "enrollmentCreatedDate": {
+          "period": "TODAY",
+          "endDate": "2019-03-20T00:00:00.000",
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE",
+          "startDate": "2014-05-01T00:00:00.000"
+        },
+        "enrollmentIncidentDate": {
+          "period": "TODAY",
+          "endDate": "2019-03-20T00:00:00.000",
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE",
+          "startDate": "2014-05-01T00:00:00.000"
+        },
+        "eventDate": {
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE"
+        },
+        "lastUpdatedDate": {
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE"
+        },
+        "ouMode": "SELECTED",
+        "organisationUnit": "orgUnitUid",
+        "trackedEntityType": "trackedEntityTypeUid",
+        "assignedUserMode": "PROVIDED",
+        "trackedEntityInstances": [
+          "a3kGcGDCuk7",
+          "a3kGcGDCuk8"
+        ],
+        "displayColumnOrder": [
+          "eventDate",
+          "status"
+        ],
+        "order": "dueDate:asc,createdDate:desc",
+        "attributeValueFilters": [
+          {
+            "ew": "aa",
+            "sw": "ac",
+            "like": "abc",
+            "lt": "20",
+            "le": "20",
+            "attribute": "w75KJ2mc4zz",
+            "gt": "10",
+            "ge": "10",
+            "dateFilter": {
+              "period": "LAST_WEEK",
+              "endDate": "2019-03-20T00:00:00.000",
+              "startBuffer": -5,
+              "endBuffer": 5,
+              "type": "RELATIVE",
+              "startDate": "2014-05-01T00:00:00.000"
+            },
+            "in": [
+              "Norway",
+              "India"
+            ]
+          }
+        ]
+      }
     },
     {
       "code": "assigned_to_me",
@@ -72,8 +135,6 @@
       "displayName": "Events assigned to me",
       "description": "All actve enrollmetns with events assigned to me",
       "externalAccess": false,
-      "followup": false,
-      "enrollmentStatus": "COMPLETED",
       "sortOrder": 1,
       "favorite": false,
       "access": {
@@ -91,10 +152,6 @@
         "displayName": "Tom Wakiki",
         "id": "GOLswS44mh8",
         "username": "system"
-      },
-      "enrollmentCreatedPeriod": {
-        "periodFrom": -20,
-        "periodTo": 20
       },
       "favorites": [
 
@@ -128,7 +185,11 @@
       ],
       "userAccesses": [
 
-      ]
+      ],
+      "entityQueryCriteria": {
+        "followUp": true,
+        "ouMode": "ACCESSIBLE"
+      }
     }
   ]
 }

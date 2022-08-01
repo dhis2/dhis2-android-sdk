@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,12 @@ package org.hisp.dhis.android.core.arch.storage.internal
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 
-data class Credentials(val username: String, val password: String?, val openIDConnectState: AuthState?) {
+data class Credentials(
+    val username: String,
+    val serverUrl: String,
+    val password: String?,
+    val openIDConnectState: AuthState?
+) {
     fun getHash(): String? {
         return password.let { UserHelper.md5(username, it) }
     }
@@ -39,10 +44,12 @@ data class Credentials(val username: String, val password: String?, val openIDCo
         (other is Credentials) &&
             username == other.username &&
             password == other.password &&
+            serverUrl == other.serverUrl &&
             openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString()
 
     override fun hashCode(): Int {
         var result = username.hashCode()
+        result = 31 * result + serverUrl.hashCode()
         result = 31 * result + (password?.hashCode() ?: 0)
         result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
         return result

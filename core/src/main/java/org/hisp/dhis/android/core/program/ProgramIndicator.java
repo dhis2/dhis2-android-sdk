@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,13 +42,12 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTyp
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsPeriodBoundaryListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import java.util.List;
 
@@ -97,8 +96,8 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
-    public abstract List<LegendSet> legendSets();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> legendSets();
 
     public static ProgramIndicator create(Cursor cursor) {
         return $AutoValue_ProgramIndicator.createFromCursor(cursor);
@@ -134,7 +133,7 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
 
         public abstract Builder analyticsPeriodBoundaries(List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries);
 
-        public abstract Builder legendSets(List<LegendSet> legendSets);
+        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
 
         public abstract ProgramIndicator build();
     }

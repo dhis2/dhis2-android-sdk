@@ -31,6 +31,7 @@ It gives additional information about app settings:
 - Mobile configuration: gateway number, result sender number. They must be consumed by the application and used to configure the SMS module in the SDK.
 - Matomo configuration: if you have your own Matomo instance, you can expose this information to the app in order to configure its Matomo client.
 - AllowScreenCapture: parameter to determine if the application should allow screen capture or not.
+- MessageOfTheDay: a message to show to the users.
 
 ### Synchronization settings { #android_sdk_synchronization_settings }
 
@@ -54,7 +55,9 @@ d2.settingModule().appearanceSettings()
 These settings give control over the appearance of the data entry form. 
 
 - FilterSorting: it defines the filters that must be enabled in the different app menus.
-- CompletionSpinner: it turn on/off the completion spinner that shows the progress in the data entry form.
+- ProgramConfiguration: it defines two properties for programs.
+    - CompletionSpinner: show/hide the completion spinner.
+    - OptionalSearch: it defines if searching is mandatory or not before creating data.
 
 These settings refer to visual components so they must be consumed by the app.
 

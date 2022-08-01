@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,15 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
+import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 
 @Reusable
 internal class RxAPICallExecutorImpl @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val errorStore: ObjectStore<D2Error>,
     private val errorMapper: APIErrorMapper,
-    private val foreignKeyCleaner: ForeignKeyCleaner
+    private val foreignKeyCleaner: ForeignKeyCleaner,
+    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher
 ) : RxAPICallExecutor {
 
     override fun <P> wrapSingle(single: Single<P>, storeError: Boolean): Single<P> {
@@ -86,9 +88,13 @@ internal class RxAPICallExecutorImpl @Inject constructor(
     }
 
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {
-        val d2Error =
+        var d2Error =
             if (throwable is D2Error) throwable
             else errorMapper.mapRetrofitException(throwable, errorMapper.rxObjectErrorBuilder)
+        if (userAccountDisabledErrorCatcher.isUserAccountLocked(throwable)) {
+            val errorCode = userAccountDisabledErrorCatcher.catchError(throwable)
+            d2Error = d2Error.toBuilder().errorCode(errorCode).build()
+        }
         if (storeError) {
             errorStore.insert(d2Error)
         }

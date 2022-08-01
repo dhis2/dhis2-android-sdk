@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,11 @@ public class EncryptedStatementWrapper implements StatementWrapper {
 
     EncryptedStatementWrapper(SQLiteStatement s) {
         this.s = s;
+    }
+
+    @Override
+    public void bindNull(int index) {
+        s.bindNull(index);
     }
 
     @Override

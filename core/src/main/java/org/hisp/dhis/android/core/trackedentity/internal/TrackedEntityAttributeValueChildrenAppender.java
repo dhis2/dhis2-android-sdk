@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ public final class TrackedEntityAttributeValueChildrenAppender extends ChildrenA
     }
 
     @Override
-    protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
+    public TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
         TrackedEntityInstance.Builder builder = tei.toBuilder();
         builder.trackedEntityAttributeValues(childStore.getChildren(tei));
         return builder.build();

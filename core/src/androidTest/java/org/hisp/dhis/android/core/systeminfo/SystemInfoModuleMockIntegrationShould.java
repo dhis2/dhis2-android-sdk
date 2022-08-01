@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class SystemInfoModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -41,7 +41,7 @@ public class SystemInfoModuleMockIntegrationShould extends BaseMockIntegrationTe
     @Test
     public void allow_access_to_system_info_user() {
         SystemInfo systemInfo = d2.systemInfoModule().systemInfo().blockingGet();
-        assertThat(systemInfo.version()).isEqualTo("2.37");
+        assertThat(systemInfo.version()).isEqualTo("2.38");
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone");
     }
 }

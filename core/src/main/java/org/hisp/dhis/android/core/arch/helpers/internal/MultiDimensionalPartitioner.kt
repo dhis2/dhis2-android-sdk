@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ internal class MultiDimensionalPartitioner @Inject constructor() {
             if (count <= maxValues) {
                 listOf(part)
             } else {
-                val largerDimension = part.maxBy { it.size }!!
+                val largerDimension = part.maxByOrNull { it.size }!!
                 val lds = largerDimension.size
                 val largerDimensionPart1 = largerDimension.subList(0, lds / 2)
                 val largerDimensionPart2 = largerDimension.subList(lds / 2, lds)

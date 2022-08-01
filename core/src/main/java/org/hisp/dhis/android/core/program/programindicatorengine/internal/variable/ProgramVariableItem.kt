@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,9 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
             ExpressionParser.V_INCIDENT_DATE to VIncidentDate(),
             ExpressionParser.V_TEI_COUNT to VTeiCount(),
             ExpressionParser.V_VALUE_COUNT to VValueCount(),
-            ExpressionParser.V_ZERO_POS_VALUE_COUNT to VZeroPosValueCount()
+            ExpressionParser.V_ZERO_POS_VALUE_COUNT to VZeroPosValueCount(),
+            ExpressionParser.V_PROGRAM_STAGE_ID to VProgramStageId(),
+            ExpressionParser.V_PROGRAM_STAGE_NAME to VProgramStageName()
         )
     }
 }

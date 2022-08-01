@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,12 @@ internal class TEIWebResponseHandler @Inject constructor(
 
     fun handleWebResponse(
         webResponse: TEIWebResponse?,
-        instances: List<TrackedEntityInstance>,
-        fileResources: List<String>
-    ) {
-        webResponse?.response()?.let { response ->
+        instances: List<TrackedEntityInstance>
+    ): TEIWebResponseHandlerSummary {
+        return webResponse?.response()?.let { response ->
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(), instances, fileResources
+                response.importSummaries(), instances
             )
-        }
+        } ?: TEIWebResponseHandlerSummary()
     }
 }

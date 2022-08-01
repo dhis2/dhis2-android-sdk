@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.helpers.Result
 
 interface AnalyticsRepository {
@@ -37,6 +38,8 @@ interface AnalyticsRepository {
     fun withDimension(dimensionItem: DimensionItem): AnalyticsRepository
 
     fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository
+
+    fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepository
 
     fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
 

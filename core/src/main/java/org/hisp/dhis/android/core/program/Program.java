@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColu
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
@@ -165,11 +164,6 @@ public abstract class Program extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
-    abstract List<ProgramIndicator> programIndicators();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
     abstract List<ProgramRuleVariable> programRuleVariables();
 
@@ -273,8 +267,6 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 
         public abstract Builder access(Access access);
-
-        abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
         abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
 

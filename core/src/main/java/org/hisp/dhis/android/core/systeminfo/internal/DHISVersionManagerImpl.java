@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,11 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
     @Override
     public boolean is2_37() {
         return getVersion() == DHISVersion.V2_37;
+    }
+
+    @Override
+    public boolean is2_38() {
+        return getVersion() == DHISVersion.V2_38;
     }
 
     @Override

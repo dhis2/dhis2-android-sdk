@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,12 @@ package org.hisp.dhis.android.core.data.relationship;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-
 
 public class RelationshipSamples {
 
@@ -59,14 +57,6 @@ public class RelationshipSamples {
 
     protected static Boolean DELETED = false;
 
-    private Relationship229Compatible.Builder commonCompatibleBuilder = Relationship229Compatible
-            .builder()
-            .created(CREATED)
-            .lastUpdated(LAST_UPDATED)
-            .name(NAME)
-            .syncState(STATE)
-            .deleted(DELETED);
-
     private static Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
@@ -74,23 +64,6 @@ public class RelationshipSamples {
             .name(NAME)
             .syncState(STATE)
             .deleted(DELETED);
-
-    public Relationship229Compatible get229Compatible() {
-        return commonCompatibleBuilder
-                .uid(TYPE)
-                .trackedEntityInstanceA(FROM_UID)
-                .trackedEntityInstanceB(TO_UID)
-                .build();
-    }
-
-    public Relationship229Compatible get230Compatible() {
-        return commonCompatibleBuilder
-                .uid(UID)
-                .relationshipType(TYPE)
-                .from(fromItem)
-                .to(toItem)
-                .build();
-    }
 
     protected Relationship get230() {
         return commonBuilder

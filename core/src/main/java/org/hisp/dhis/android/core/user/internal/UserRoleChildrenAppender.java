@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ final class UserRoleChildrenAppender extends ChildrenAppender<UserCredentials> {
     }
 
     @Override
-    protected UserCredentials appendChildren(UserCredentials userCredentials) {
+    public UserCredentials appendChildren(UserCredentials userCredentials) {
         UserCredentials.Builder builder = userCredentials.toBuilder();
         builder.userRoles(store.selectAll());
         return builder.build();

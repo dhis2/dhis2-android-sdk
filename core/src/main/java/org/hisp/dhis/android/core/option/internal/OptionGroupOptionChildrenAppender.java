@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGro
     }
 
     @Override
-    protected OptionGroup appendChildren(OptionGroup optionGroup) {
+    public OptionGroup appendChildren(OptionGroup optionGroup) {
         OptionGroup.Builder builder = optionGroup.toBuilder();
         builder.options(childStore.getChildren(optionGroup));
         return builder.build();

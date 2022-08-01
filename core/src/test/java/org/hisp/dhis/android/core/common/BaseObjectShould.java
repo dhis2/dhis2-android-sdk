@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.Inject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.util.Date;
 
 public abstract class BaseObjectShould {
 
@@ -55,5 +57,14 @@ public abstract class BaseObjectShould {
 
     protected <O> String serialize(O object) throws IOException {
         return objectMapper.writeValueAsString(object);
+    }
+
+    protected static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,12 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
 
+@Suppress("MagicNumber")
 internal object CategoryOptionOrganisationUnitLinkStore {
     private val BINDER = StatementBinder { o: CategoryOptionOrganisationUnitLink, w: StatementWrapper ->
         w.bind(1, o.categoryOption())
         w.bind(2, o.organisationUnit())
+        w.bind(3, o.restriction())
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionOrganisationUnitLink> {

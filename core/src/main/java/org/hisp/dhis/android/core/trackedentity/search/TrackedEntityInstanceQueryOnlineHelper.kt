@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,15 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
@@ -58,6 +61,26 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
 
                 baseBuilder.build()
             }
+        }
+    }
+
+    @Throws(D2Error::class, Exception::class)
+    fun queryOnlineBlocking(
+        onlineCallFactory: TrackedEntityInstanceQueryCallFactory,
+        scope: TrackedEntityInstanceQueryRepositoryScope
+    ): List<TrackedEntityInstance> {
+        return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
+            val noPagingQuery = queryOnline.toBuilder().paging(false).build()
+            val pageInstances = onlineCallFactory.getCall(noPagingQuery).call()
+
+            val validInstances = pageInstances.filter { tei ->
+                val isExcluded = scope.excludedUids()?.contains(tei.uid()) ?: false
+                val isAlreadyReturned = acc.any { it.uid() == tei.uid() }
+
+                !isExcluded && !isAlreadyReturned
+            }
+
+            acc + validInstances
         }
     }
 
@@ -119,7 +142,11 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         return itemList
     }
 
-    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String {
-        return orders.mapNotNull { it.toAPIString() }.joinToString(",")
+    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
+        return if (orders.isNotEmpty()) {
+            orders.mapNotNull { it.toAPIString() }.joinToString(",")
+        } else {
+            null
+        }
     }
 }

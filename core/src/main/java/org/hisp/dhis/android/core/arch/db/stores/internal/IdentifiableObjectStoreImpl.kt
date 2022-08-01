@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -112,6 +112,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
+    @Synchronized
     override fun updateOrInsert(o: O): HandleAction {
         return try {
             update(o)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section
     }
 
     @Override
-    protected Section appendChildren(Section section) {
+    public Section appendChildren(Section section) {
         Section.Builder builder = section.toBuilder();
         builder.greyedFields(linkChildStore.getChildren(section));
         return builder.build();

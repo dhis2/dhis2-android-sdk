@@ -1,0 +1,134 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 3,
+    "pageSize": 50
+  },
+  "trackedEntityInstanceFilters": [
+    {
+      "code": "assigned_none",
+      "lastUpdated": "2019-09-27T00:19:06.590",
+      "id": "klhzVgls081",
+      "created": "2019-09-27T00:19:06.590",
+      "name": "Ongoing foci responses",
+      "displayName": "Ongoing foci responses",
+      "description": "Foci response assigned to someone, and the enrollment is still active",
+      "externalAccess": false,
+      "followup": false,
+      "enrollmentStatus": "ACTIVE",
+      "sortOrder": 2,
+      "favorite": false,
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "lastUpdatedBy": {
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8",
+        "username": "system"
+      },
+      "enrollmentCreatedPeriod": {
+        "periodFrom": -15,
+        "periodTo": 15
+      },
+      "favorites": [
+      ],
+      "translations": [
+      ],
+      "userGroupAccesses": [
+      ],
+      "attributeValues": [
+      ],
+      "eventFilters": [
+        {
+          "assignedUserMode": "ANY",
+          "programStage": "dBwrot7S420",
+          "eventStatus": "OVERDUE",
+          "eventCreatedPeriod": {
+            "periodFrom": -11,
+            "periodTo": 11
+          },
+          "assignedUsers": [
+          ]
+        }
+      ],
+      "userAccesses": [
+      ]
+    },
+    {
+      "code": "assigned_to_me",
+      "lastUpdated": "2019-09-27T00:16:03.400",
+      "id": "PpGINOT00UX",
+      "created": "2019-09-27T00:16:03.400",
+      "name": "Events assigned to me",
+      "displayName": "Events assigned to me",
+      "description": "All actve enrollmetns with events assigned to me",
+      "externalAccess": false,
+      "followup": false,
+      "enrollmentStatus": "COMPLETED",
+      "sortOrder": 1,
+      "favorite": false,
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "program": {
+        "id": "IpHINAT79UW"
+      },
+      "lastUpdatedBy": {
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8",
+        "username": "system"
+      },
+      "enrollmentCreatedPeriod": {
+        "periodFrom": -20,
+        "periodTo": 20
+      },
+      "favorites": [
+
+      ],
+      "translations": [
+
+      ],
+      "userGroupAccesses": [
+
+      ],
+      "attributeValues": [
+
+      ],
+      "eventFilters": [
+        {
+          "assignedUserMode": "CURRENT",
+          "assignedUsers": [
+
+          ]
+        },
+        {
+          "assignedUserMode": "ANY",
+          "eventStatus": "OVERDUE",
+          "eventCreatedPeriod": {
+            "periodFrom": -20,
+            "periodTo": 2
+          },
+          "assignedUsers": [
+          ]
+        }
+      ],
+      "userAccesses": [
+
+      ]
+    }
+  ]
+}

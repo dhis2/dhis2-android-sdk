@@ -18,6 +18,14 @@
   "hideEmptyRows": false,
   "hideEmptyRowItems": "NONE",
   "hideLegend": false,
+  "legend": {
+    "showKey": false,
+    "style": "FILL",
+    "strategy": "FIXED",
+    "set": {
+      "id": "Yf6UHoPkd57"
+    }
+  },
   "showHierarchy": false,
   "rowTotals": true,
   "rowSubTotals": false,

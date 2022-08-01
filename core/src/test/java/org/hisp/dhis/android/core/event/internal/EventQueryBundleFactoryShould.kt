@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
@@ -37,10 +38,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import org.hisp.dhis.android.core.settings.DownloadPeriod
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import org.hisp.dhis.android.core.settings.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
@@ -72,7 +70,7 @@ class EventQueryBundleFactoryShould {
     private val params = ProgramDataDownloadParams.builder().build()
 
     // Object to test
-    private var bundleFactory: EventQueryBundleFactory? = null
+    private lateinit var bundleFactory: EventQueryBundleFactory
 
     @Before
     @Throws(Exception::class)
@@ -98,7 +96,7 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun create_a_single_bundle_when_global() {
-        val bundles = bundleFactory!!.getQueries(params)
+        val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
         assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
@@ -111,7 +109,7 @@ class EventQueryBundleFactoryShould {
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
-        val bundles = bundleFactory!!.getQueries(params)
+        val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             when (bundle.commonParams().programs.size) {
@@ -135,7 +133,7 @@ class EventQueryBundleFactoryShould {
         val settings = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
-        val bundles = bundleFactory!!.getQueries(params)
+        val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
@@ -150,9 +148,9 @@ class EventQueryBundleFactoryShould {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
 
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
-        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+        whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
 
-        val bundles = bundleFactory!!.getQueries(params)
+        val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
@@ -162,5 +160,23 @@ class EventQueryBundleFactoryShould {
                 assertThat(bundle.commonParams().limit).isEqualTo(4800)
             }
         }
+    }
+
+    @Test
+    fun should_create_different_queries_if_per_orgunit_in_specific() {
+        val params = ProgramDataDownloadParams.builder().build()
+
+        val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.PER_ORG_UNIT).build()
+        whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(listOf(
+            OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
+            OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
+        ))
+
+        val bundles = bundleFactory.getQueries(params)
+
+        assertThat(bundles.size).isEqualTo(3)
+        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams().program == null }.size).isEqualTo(1)
     }
 }

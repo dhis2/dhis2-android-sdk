@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
@@ -38,7 +37,7 @@ internal class EventQueryBundleInternalFactory constructor(
     private val commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?
-) : TrackerQueryInternalFactory<EventQueryBundle>(params, programSettings, LimitScope.ALL_ORG_UNITS) {
+) : TrackerQueryInternalFactory<EventQueryBundle>(params, programSettings) {
 
     override fun queryPerProgram(
         programUid: String?
@@ -62,14 +61,14 @@ internal class EventQueryBundleInternalFactory constructor(
         orgUnitByLimitExtractor: () -> List<String>
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(
-            params, programSettings, specificSettingScope, programUid
+            params, programSettings, programUid
         ) { it?.eventsDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
             params, programSettings,
-            programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor
+            programs, programUid, limit, orgUnitByLimitExtractor
         ) { it?.eventDateDownload() }
 
         val builder = EventQueryBundle.builder()

@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.common.AggregationType
 
 internal data class AnalyticsServiceEvaluationItem(
     val dimensionItems: List<AbsoluteDimensionItem>,
-    val filters: List<DimensionItem>
+    val filters: List<DimensionItem>,
+    val aggregationType: AggregationType = AggregationType.DEFAULT
 ) {
     val allDimensionItems: List<DimensionItem> by lazy {
         (dimensionItems + filters).map { it as DimensionItem }

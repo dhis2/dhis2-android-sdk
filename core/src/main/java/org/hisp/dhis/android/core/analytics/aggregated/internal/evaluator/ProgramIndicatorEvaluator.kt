@@ -56,6 +56,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
+        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+
         val values: List<String?> = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
@@ -63,7 +65,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
         }
 
-        return aggregateValues(programIndicator.aggregationType(), values)
+        return aggregateValues(aggregationType, values)
     }
 
     override fun getSql(

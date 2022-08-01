@@ -38,12 +38,12 @@ abstract class BaseMockIntegrationTestMetadataDispatcher : BaseMockIntegrationTe
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataDispatcher)
             if (isNewInstance) {
-                objects!!.dhis2MockServer.setRequestDispatcher()
-                objects!!.d2.userModule().blockingLogIn(
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(
                     RealServerMother.username, RealServerMother.password,
-                    objects!!.dhis2MockServer.baseEndpoint
+                    objects.dhis2MockServer.baseEndpoint
                 )
-                objects!!.d2.metadataModule().blockingDownload()
+                objects.d2.metadataModule().blockingDownload()
             }
         }
     }

@@ -222,7 +222,9 @@ internal class DataElementSQLEvaluator @Inject constructor(
     ): AggregationType {
         val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
-        return if (itemList.size > 1) {
+        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+            evaluationItem.aggregationType
+        } else if (itemList.size > 1) {
             AggregationType.SUM
         } else {
             val item = itemList[0]

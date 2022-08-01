@@ -94,11 +94,11 @@ internal class ProgramIndicatorExecutor constructor(
     }
 
     fun getValueCount(expression: String): Int {
-        return getCountVisitor(expression).itemValuesFound
+        return getCountVisitor(expression).state.itemValuesFound
     }
 
     fun getZeroPosValueCount(expression: String): Int {
-        return getCountVisitor(expression).itemZeroPosValuesFound
+        return getCountVisitor(expression).state.itemZeroPosValuesFound
     }
 
     private fun getCountVisitor(expression: String): CommonExpressionVisitor {

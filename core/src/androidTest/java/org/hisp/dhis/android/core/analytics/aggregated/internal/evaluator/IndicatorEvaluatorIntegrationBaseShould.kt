@@ -40,10 +40,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -159,8 +162,47 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(value).isEqualTo("15.0")
     }
 
+    @Test
+    fun should_override_aggregation_type() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val indicator = createIndicator(numerator = de(dataElement1.uid()))
+
+        val defaultValue = evaluateForAbsolute(indicator, period2019Q4.periodId()!!)
+        assertThat(defaultValue).isEqualTo("5.0")
+
+        val overrideValue = evaluateForAbsolute(indicator, period2019Q4.periodId()!!, AggregationType.AVERAGE)
+        assertThat(overrideValue).isEqualTo("2.5")
+    }
+
     private fun evaluateForThisMonth(
-        indicator: Indicator
+        indicator: Indicator,
+        aggregationType: AggregationType = AggregationType.DEFAULT
+    ): String? {
+        return evaluateFor(
+            indicator = indicator,
+            aggregationType = aggregationType,
+            periodItem = DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+        )
+    }
+
+    private fun evaluateForAbsolute(
+        indicator: Indicator,
+        periodId: String,
+        aggregationType: AggregationType = AggregationType.DEFAULT
+    ): String? {
+        return evaluateFor(
+            indicator = indicator,
+            aggregationType = aggregationType,
+            periodItem = DimensionItem.PeriodItem.Absolute(periodId)
+        )
+    }
+
+    private fun evaluateFor(
+        indicator: Indicator,
+        aggregationType: AggregationType = AggregationType.DEFAULT,
+        periodItem: DimensionItem.PeriodItem
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -168,8 +210,9 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
             ),
             filters = listOf(
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                periodItem
+            ),
+            aggregationType = aggregationType
         )
 
         return indicatorEvaluator.evaluate(

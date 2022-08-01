@@ -68,7 +68,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val eventDataItem = getEventDataItems(evaluationItem)[0]
-        val aggregator = getAggregator(eventDataItem, metadata)
+        val aggregator = getAggregator(evaluationItem, eventDataItem, metadata)
         val (valueColumn, fromClause) = getEventDataItemSQLItems(eventDataItem)
 
         val whereClause = WhereClauseBuilder().apply {
@@ -282,20 +282,24 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     }
 
     private fun getAggregator(
+        evaluationItem: AnalyticsServiceEvaluationItem,
         item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>
     ): AggregationType {
+        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+            evaluationItem.aggregationType
+        } else {
+            val aggregationType = when (val metadataItem = metadata[item.id]) {
+                is MetadataItem.EventDataElementItem ->
+                    metadataItem.item.aggregationType()
+                is MetadataItem.EventAttributeItem ->
+                    metadataItem.item.aggregationType()?.name
+                else ->
+                    throw AnalyticsException.InvalidArguments("Invalid arguments: invalid event data item ${item.id}.")
+            }
 
-        val aggregationType = when (val metadataItem = metadata[item.id]) {
-            is MetadataItem.EventDataElementItem ->
-                metadataItem.item.aggregationType()
-            is MetadataItem.EventAttributeItem ->
-                metadataItem.item.aggregationType()?.name
-            else ->
-                throw AnalyticsException.InvalidArguments("Invalid arguments: invalid event data item ${item.id}.")
+            AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
         }
-
-        return AnalyticsEvaluatorHelper.getElementAggregator(aggregationType)
     }
 
     companion object {

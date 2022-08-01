@@ -326,7 +326,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_by_avg_sum_in_hierarchy() {
+    fun should_aggregate_by_aggregation_types() {
         createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
         createDataValue("5", orgunitUid = orgunitChild1.uid(), periodId = period201912.periodId()!!)
         createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
@@ -421,6 +421,37 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
                 aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
             )
         ).isEqualTo(null)
+    }
+
+    @Test
+    fun should_override_aggregation_types() {
+        createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
+
+        val defaultEvaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            )
+        )
+
+        assertThat(dataElementEvaluator.evaluate(defaultEvaluationItem, metadata)).isEqualTo("11")
+
+        val overrideEvaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            ),
+            aggregationType = AggregationType.AVERAGE
+        )
+
+        assertThat(dataElementEvaluator.evaluate(overrideEvaluationItem, metadata)).isEqualTo("5.5")
     }
 
     private fun createDataValue(

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
@@ -41,6 +42,7 @@ class VisualizationShould : BaseObjectShould("visualization/visualization.json")
         assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC")
         assertThat(visualization.type()).isEqualTo(VisualizationType.PIVOT_TABLE)
         assertThat(visualization.digitGroupSeparator()).isEqualTo(DigitGroupSeparator.COMMA)
+        assertThat(visualization.aggregationType()).isEqualTo(AggregationType.SUM)
         assertThat(visualization.dataDimensionItems()!![0].indicator()!!.uid()).isEqualTo("Uvn6LCg7dVU")
         assertThat(visualization.dataDimensionItems()!![1].dataElement()!!.uid()).isEqualTo("cYeuwXTCPkU")
         assertThat(visualization.dataDimensionItems()!![2].dataElementOperand()!!.uid())

@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
 
-interface OrganisationUnitHandler : HandlerWithTransformer<OrganisationUnit> {
+internal interface OrganisationUnitHandler : HandlerWithTransformer<OrganisationUnit> {
     fun resetLinks()
     fun setData(user: User, scope: OrganisationUnit.Scope)
     fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>)

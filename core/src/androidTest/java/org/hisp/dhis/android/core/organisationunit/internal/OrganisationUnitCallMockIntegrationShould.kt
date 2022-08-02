@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
+import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -55,7 +55,7 @@ import java.io.IOException
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     //The return of the organisationUnitCall to be tested:
-    private lateinit var organisationUnitCall: Single<List<OrganisationUnit>>
+    private lateinit var organisationUnitCall: Completable
     private val expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic()
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
@@ -89,7 +89,11 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val pathTransformer = OrganisationUnitDisplayPathTransformer()
         organisationUnitCall = OrganisationUnitCall(
             organisationUnitService,
-            organisationUnitHandler, pathTransformer, organisationUnitCollectionCleaner
+            organisationUnitHandler,
+            pathTransformer,
+            UserOrganisationUnitLinkStoreImpl.create(databaseAdapter),
+            OrganisationUnitStore.create(databaseAdapter),
+            organisationUnitCollectionCleaner
         )
             .download(user)
     }

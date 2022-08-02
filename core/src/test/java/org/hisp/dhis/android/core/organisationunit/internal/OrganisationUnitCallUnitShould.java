@@ -27,13 +27,22 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,13 +59,6 @@ import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitCallUnitShould {
@@ -103,6 +105,12 @@ public class OrganisationUnitCallUnitShould {
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
+
+    @Mock
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
+    @Mock
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitIdentifiableObjectStore;
 
     @Mock
     private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
@@ -154,8 +162,13 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
-        organisationUnitCall = new OrganisationUnitCall(organisationUnitService, organisationUnitHandler,
-                organisationUnitDisplayPathTransformer, collectionCleaner)
+        organisationUnitCall = new OrganisationUnitCall(
+                organisationUnitService,
+                organisationUnitHandler,
+                organisationUnitDisplayPathTransformer,
+                userOrganisationUnitLinkStore,
+                organisationUnitIdentifiableObjectStore,
+                collectionCleaner)
                 .download(user);
 
         //Return only one organisationUnit.

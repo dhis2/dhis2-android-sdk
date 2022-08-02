@@ -29,11 +29,13 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -105,6 +107,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Mock
     private UidsCall<OptionGroup> optionGroupCall;
 
+    @Mock
+    private LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkStore;
+
     // object to test
     private ProgramModuleDownloader programModuleDownloader;
 
@@ -141,7 +146,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 relationshipTypeCall,
                 optionSetCall,
                 optionCall,
-                optionGroupCall);
+                optionGroupCall,
+                organisationUnitProgramLinkLinkStore);
     }
 
     private void returnEmptyList(UidsCall<?> call) {
@@ -158,12 +164,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Test
     public void succeed_when_endpoint_calls_succeed() {
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test
     public void return_programs() {
-        List<Program> programs = programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        List<Program> programs = programModuleDownloader.downloadMetadata().blockingGet();
         assertThat(!programs.isEmpty()).isTrue();
         assertThat(programs.get(0)).isEqualTo(program);
     }
@@ -171,54 +177,54 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_program_call_fails() {
         returnError(programCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_program_stage_call_fails() {
         returnError(programStageCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_program_rule_call_fails() {
         returnError(programRuleCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fails() {
         returnError(trackedEntityTypeCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_attributes_call_fails() {
         returnError(trackedEntityAttributeCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_instance_filters_call_fails() {
         returnError(trackedEntityInstanceFilterCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_event_filters_call_fails() {
         returnError(eventFilterCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_relationship_type_call_fails() {
         when(relationshipTypeCall.download()).thenReturn(Single.error(new RuntimeException()));
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_option_call_fails() {
         returnError(optionCall);
-        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+        programModuleDownloader.downloadMetadata().blockingGet();
     }
 }

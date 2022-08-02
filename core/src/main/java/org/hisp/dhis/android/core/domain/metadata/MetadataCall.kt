@@ -128,20 +128,17 @@ internal class MetadataCall @Inject constructor(
     }
 
     private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return userModuleDownloader.downloadMetadata().flatMapObservable { user: User ->
-            organisationUnitModuleDownloader.downloadMetadata(user).flatMapObservable {
-                orgUnits: List<OrganisationUnit> ->
+        return userModuleDownloader.downloadMetadata()
+            .flatMapCompletable { user: User ->
+                organisationUnitModuleDownloader.downloadMetadata(user)
+            }.andThen(
                 Single.concatArray(
                     Single.just(progressManager.increaseProgress(User::class.java, false)),
                     Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
-                    programDownloader.downloadMetadata(
-                        UidsHelper.getChildrenUids(orgUnits) { it.programs()!! }
-                    ).map {
+                    programDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Program::class.java, false)
                     },
-                    dataSetDownloader.downloadMetadata(
-                        MetadataHelper.getOrgUnitsDataSetUids(user, orgUnits)
-                    ).map {
+                    dataSetDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(DataSet::class.java, false)
                     },
                     categoryDownloader.downloadMetadata().toSingle {
@@ -160,8 +157,7 @@ internal class MetadataCall @Inject constructor(
                         progressManager.increaseProgress(LegendSet::class.java, false)
                     }
                 ).toObservable()
-            }
-        }
+            )
     }
 
     private fun changeEncryptionIfRequired(): Completable {

@@ -28,16 +28,18 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import dagger.Reusable
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import java.util.*
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -46,26 +48,33 @@ internal class OrganisationUnitCall @Inject constructor(
     private val organisationUnitService: OrganisationUnitService,
     private val handler: OrganisationUnitHandler,
     private val pathTransformer: OrganisationUnitDisplayPathTransformer,
+    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val collectionCleaner: CollectionCleaner<OrganisationUnit>
 ) {
-    fun download(user: User): Single<List<OrganisationUnit>> {
-        return Single.defer {
+    fun download(user: User): Completable {
+        return Completable.defer {
             handler.resetLinks()
             val rootSearchOrgUnits =
                 OrganisationUnitTree.findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user))
 
             downloadSearchOrgUnits(rootSearchOrgUnits, user)
-                .flatMap { searchOrgUnits ->
-                    println("AAA Downloaded " + searchOrgUnits.size)
+                .andThen {
+                    val searchOrgUnitIds = userOrganisationUnitLinkStore
+                        .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                    val searchOrgUnits = organisationUnitStore.selectByUids(searchOrgUnitIds)
                     downloadDataCaptureOrgUnits(
                         rootSearchOrgUnits,
                         searchOrgUnits,
                         user
-                    ).map { dataCaptureOrgUnits ->
-                        val allOrgunits = searchOrgUnits + dataCaptureOrgUnits
-                        collectionCleaner.deleteNotPresent(allOrgunits)
-                        allOrgunits
-                    }
+                    )
+                }.doOnComplete {
+                    val assignedOrgunitIds = userOrganisationUnitLinkStore
+                        .selectStringColumnsWhereClause(
+                            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                            "1"
+                        )
+                    collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
                 }
         }
     }
@@ -73,7 +82,7 @@ internal class OrganisationUnitCall @Inject constructor(
     private fun downloadSearchOrgUnits(
         rootSearchOrgUnits: Set<OrganisationUnit>,
         user: User
-    ): Single<List<OrganisationUnit>> {
+    ): Completable {
         return downloadOrgUnits(getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
     }
 
@@ -81,7 +90,7 @@ internal class OrganisationUnitCall @Inject constructor(
         rootSearchOrgUnits: Set<OrganisationUnit>,
         searchOrgUnits: List<OrganisationUnit>,
         user: User
-    ): Single<List<OrganisationUnit>> {
+    ): Completable {
         val allRootCaptureOrgUnits = OrganisationUnitTree.findRoots(UserInternalAccessor.accessOrganisationUnits(user))
         val rootCaptureOrgUnitsOutsideSearchScope =
             OrganisationUnitTree.findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits)
@@ -102,14 +111,10 @@ internal class OrganisationUnitCall @Inject constructor(
         orgUnits: Set<String>,
         user: User,
         scope: OrganisationUnit.Scope
-    ): Single<List<OrganisationUnit>> {
+    ): Completable {
         handler.setData(user, scope)
-        println("AAA Downloading for " + orgUnits.joinToString() )
         return Flowable.fromIterable(orgUnits)
-            .flatMap { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
-            .reduce(emptyList()) { items, items2 ->
-                items + items2
-            }
+            .flatMapCompletable { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
     }
 
     private fun linkCaptureOrgUnitsInSearchScope(orgUnits: Set<OrganisationUnit>, user: User) {
@@ -117,37 +122,22 @@ internal class OrganisationUnitCall @Inject constructor(
         handler.addUserOrganisationUnitLinks(orgUnits)
     }
 
-    private fun downloadOrganisationUnitAndDescendants(orgUnit: String): Flowable<List<OrganisationUnit>> {
+    private fun downloadOrganisationUnitAndDescendants(orgUnit: String): Completable {
         val page = AtomicInteger(1)
         return downloadPage(orgUnit, page)
             .repeat()
-            .takeUntil { organisationUnits: List<OrganisationUnit> -> organisationUnits.size < PAGE_SIZE }
+            .takeUntil { organisationUnits -> organisationUnits.size < PAGE_SIZE }
+            .ignoreElements()
     }
 
     private fun downloadPage(orgUnit: String, page: AtomicInteger): Single<List<OrganisationUnit>> {
-        var start: Long? = null
-        var download: Long? = null
-        var parse: Long? = null
-        var handling: Long? = null
         return Single.defer {
-            start = Date().time
             organisationUnitService.getOrganisationUnits(
                 OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(orgUnit),
                 OrganisationUnitFields.ASC_ORDER, true, PAGE_SIZE, page.getAndIncrement()
             )
-                .map { obj ->
-                    download = Date().time
-                    obj.items().also {
-                        parse = Date().time
-                    }
-                }
-                .doOnSuccess { items ->
-                    handler.handleMany(items, pathTransformer).also {
-                        handling = Date().time
-
-                        println("AAA;${download!! - start!!};${parse!! - download!!};${handling!! - parse!!};${handling!! - start!!}")
-                    }
-                }
+                .map { obj -> obj.items() }
+                .doOnSuccess { items -> handler.handleMany(items, pathTransformer) }
         }
     }
 

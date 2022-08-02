@@ -36,13 +36,19 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import java.io.File
-import java.util.*
+import java.util.Date
+import java.util.Calendar
 import javax.inject.Inject
 
 @Reusable
-internal class FileResourceRoutineClean @Inject constructor(
+internal class FileResourceRoutine @Inject constructor(
     private val dataValueCollectionRepository: DataValueCollectionRepository,
     private val dataElementCollectionRepository: DataElementCollectionRepository,
     private val fileResourceCollectionRepository: FileResourceCollectionRepository,
@@ -88,7 +94,7 @@ internal class FileResourceRoutineClean @Inject constructor(
         val fileResources = fileResourceCollectionRepository
             .byUid().notIn(fileResourceUids)
             .byDomain().eq(FileResourceDomain.DATA_VALUE)
-            .byLastUpdated().`in`(Date(), after ?: calendar.time)
+            .byLastUpdated().before(after ?: calendar.time)
             .blockingGet()
 
         blockingDeleteFileResources(fileResources)

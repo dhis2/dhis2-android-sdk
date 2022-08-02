@@ -48,7 +48,7 @@ internal class OrganisationUnitModuleDownloader @Inject constructor(
     private val dataSetLinkCleaner: LinkCleaner<DataSet>,
     private val programLinkCleaner: LinkCleaner<Program>
 ) {
-    fun downloadMetadata(user: User?): Single<List<OrganisationUnit>> {
+    fun downloadMetadata(user: User): Single<List<OrganisationUnit>> {
         return organisationUnitLevelEndpointCall.download()
             .flatMap { organisationUnitCall.download(user) }
     }

@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import dagger.Reusable
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-@Reusable
-internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
+@Reusable class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
 
     override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {
         val path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit)

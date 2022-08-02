@@ -25,18 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.organisationunit.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.user.User
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
-
-import java.util.Collection;
-
-interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
-    void resetLinks();
-    void setData(User user, OrganisationUnit.Scope scope);
-    void addUserOrganisationUnitLinks(@NonNull Collection<OrganisationUnit> organisationUnits);
+interface OrganisationUnitHandler : HandlerWithTransformer<OrganisationUnit> {
+    fun resetLinks()
+    fun setData(user: User, scope: OrganisationUnit.Scope)
+    fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>)
 }

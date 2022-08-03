@@ -28,13 +28,16 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.util.Log
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.*
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
-import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
@@ -42,16 +45,16 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
 
-internal class OrganisationUnitHandlerImpl(
+@Reusable
+internal class OrganisationUnitHandlerImpl @Inject constructor(
     organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val userOrganisationUnitLinkHandler: LinkHandler<OrganisationUnit, UserOrganisationUnitLink>,
     private val organisationUnitProgramLinkHandler: LinkHandler<ObjectWithUid, OrganisationUnitProgramLink>,
     private val dataSetOrganisationUnitLinkHandler: LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink>,
     private val organisationUnitGroupHandler: Handler<OrganisationUnitGroup>,
     private val organisationUnitGroupLinkHandler:
-    LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
+        LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
 ) : IdentifiableHandlerImpl<OrganisationUnit>(organisationUnitStore), OrganisationUnitHandler {
     private var user: User? = null
     private var scope: OrganisationUnit.Scope? = null
@@ -69,7 +72,6 @@ internal class OrganisationUnitHandlerImpl(
     }
 
     override fun beforeCollectionHandled(oCollection: Collection<OrganisationUnit>): Collection<OrganisationUnit> {
-        println("BBB;userorgunit;program;dataset;groups;groupLinks;total")
         return oCollection
     }
 
@@ -93,7 +95,7 @@ internal class OrganisationUnitHandlerImpl(
     }
 
     override fun afterCollectionHandled(oCollection: Collection<OrganisationUnit>?) {
-        oCollection?.let { addUserOrganisationUnitsLink(it) }
+        oCollection?.let { addUserOrganisationUnitLinks(it) }
     }
 
     private fun addOrganisationUnitProgramLink(organisationUnit: OrganisationUnit) {
@@ -137,7 +139,7 @@ internal class OrganisationUnitHandlerImpl(
         }
     }
 
-    private fun addUserOrganisationUnitsLink(organisationUnits: Collection<OrganisationUnit>) {
+    override fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
         val builder = UserOrganisationUnitLink.builder()
             .organisationUnitScope(scope!!.name)
             .user(user!!.uid())
@@ -152,23 +154,6 @@ internal class OrganisationUnitHandlerImpl(
                 .root(UserOrganisationUnitLinkHelper.isRoot(scope!!, user!!, orgUnit))
                 .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope, user, orgUnit))
                 .build()
-        }
-    }
-
-    override fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
-        addUserOrganisationUnitsLink(organisationUnits)
-    }
-
-    companion object {
-        fun create(databaseAdapter: DatabaseAdapter): OrganisationUnitHandler {
-            return OrganisationUnitHandlerImpl(
-                OrganisationUnitStore.create(databaseAdapter),
-                LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
-                LinkHandlerImpl(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-                LinkHandlerImpl(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                IdentifiableHandlerImpl(OrganisationUnitGroupStore.create(databaseAdapter)),
-                LinkHandlerImpl(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter))
-            )
         }
     }
 }

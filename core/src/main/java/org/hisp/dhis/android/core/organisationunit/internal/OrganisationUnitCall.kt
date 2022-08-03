@@ -31,6 +31,8 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
@@ -40,8 +42,6 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
 @Reusable
 internal class OrganisationUnitCall @Inject constructor(
@@ -59,16 +59,18 @@ internal class OrganisationUnitCall @Inject constructor(
                 OrganisationUnitTree.findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user))
 
             downloadSearchOrgUnits(rootSearchOrgUnits, user)
-                .andThen {
-                    val searchOrgUnitIds = userOrganisationUnitLinkStore
-                        .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
-                    val searchOrgUnits = organisationUnitStore.selectByUids(searchOrgUnitIds)
-                    downloadDataCaptureOrgUnits(
-                        rootSearchOrgUnits,
-                        searchOrgUnits,
-                        user
-                    )
-                }.doOnComplete {
+                .andThen(
+                    Completable.defer {
+                        val searchOrgUnitIds = userOrganisationUnitLinkStore
+                            .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                        val searchOrgUnits = organisationUnitStore.selectByUids(searchOrgUnitIds)
+                        downloadDataCaptureOrgUnits(
+                            rootSearchOrgUnits,
+                            searchOrgUnits,
+                            user
+                        )
+                    }
+                ).doOnComplete {
                     val assignedOrgunitIds = userOrganisationUnitLinkStore
                         .selectStringColumnsWhereClause(
                             UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
@@ -99,7 +101,8 @@ internal class OrganisationUnitCall @Inject constructor(
                 searchOrgUnits,
                 allRootCaptureOrgUnits,
                 rootCaptureOrgUnitsOutsideSearchScope
-            ), user
+            ),
+            user
         )
         return downloadOrgUnits(
             getUids(rootCaptureOrgUnitsOutsideSearchScope),
@@ -112,9 +115,13 @@ internal class OrganisationUnitCall @Inject constructor(
         user: User,
         scope: OrganisationUnit.Scope
     ): Completable {
-        handler.setData(user, scope)
-        return Flowable.fromIterable(orgUnits)
-            .flatMapCompletable { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
+        return if (orgUnits.isEmpty()) {
+            Completable.complete()
+        } else {
+            handler.setData(user, scope)
+            Flowable.fromIterable(orgUnits)
+                .flatMapCompletable { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
+        }
     }
 
     private fun linkCaptureOrgUnitsInSearchScope(orgUnits: Set<OrganisationUnit>, user: User) {

@@ -57,7 +57,7 @@ internal class OrganisationUnitModuleDownloader @Inject constructor(
             Single
                 .fromCallable { userCall.call() }
                 .flatMapCompletable { user -> downloadMetadata(user) }
-                .andThen { cleanLinksFromDB() },
+                .andThen(cleanLinksFromDB()),
             cleanForeignKeys = true
         )
     }

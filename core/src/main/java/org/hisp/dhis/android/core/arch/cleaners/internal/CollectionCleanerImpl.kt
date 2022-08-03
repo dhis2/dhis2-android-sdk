@@ -45,7 +45,7 @@ internal class CollectionCleanerImpl<P : ObjectWithUidInterface>(
     }
 
     override fun deleteNotPresentByUid(uids: Collection<String>): Boolean {
-        val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'${it}'" })
+        val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'$it'" })
         val clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");"
         return databaseAdapter.delete(tableName, clause, null) > 0
     }

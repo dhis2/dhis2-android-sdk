@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
@@ -48,9 +49,9 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList")
 class ProgramModuleDownloader @Inject internal constructor(
     private val programCall: UidsCall<Program>,
     private val programStageCall: UidsCall<ProgramStage>,

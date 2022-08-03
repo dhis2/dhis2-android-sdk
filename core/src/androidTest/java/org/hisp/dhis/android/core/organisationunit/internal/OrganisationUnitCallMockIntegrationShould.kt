@@ -30,13 +30,17 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Completable
+import java.io.IOException
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
@@ -50,11 +54,10 @@ import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
-    //The return of the organisationUnitCall to be tested:
+    // The return of the organisationUnitCall to be tested:
     private lateinit var organisationUnitCall: Completable
     private val expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic()
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
@@ -66,7 +69,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
         val organisationUnits = listOf(orgUnit)
 
-        //dependencies for the OrganisationUnitCall:
+        // dependencies for the OrganisationUnitCall:
         val organisationUnitService = d2.retrofit().create(OrganisationUnitService::class.java)
 
         // Create a user with the root as assigned organisation unit (for the test):
@@ -83,7 +86,14 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         // inserting dataSets for creating OrgUnitDataSetLinks
         insertDataSet()
-        val organisationUnitHandler = OrganisationUnitHandlerImpl.create(databaseAdapter)
+        val organisationUnitHandler = OrganisationUnitHandlerImpl(
+            OrganisationUnitStore.create(databaseAdapter),
+            LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
+            LinkHandlerImpl(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
+            LinkHandlerImpl(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
+            IdentifiableHandlerImpl(OrganisationUnitGroupStore.create(databaseAdapter)),
+            LinkHandlerImpl(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter))
+        )
         val organisationUnitCollectionCleaner: CollectionCleaner<OrganisationUnit> =
             CollectionCleanerImpl(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter)
         val pathTransformer = OrganisationUnitDisplayPathTransformer()
@@ -116,7 +126,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
     @Test
     fun persist_organisation_unit_tree() {
-        organisationUnitCall.blockingGet()
+        organisationUnitCall.blockingAwait()
         val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
@@ -127,7 +137,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
     @Test
     fun persist_organisation_unit_user_links() {
-        organisationUnitCall.blockingGet()
+        organisationUnitCall.blockingAwait()
         val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
         val userOrganisationUnitLinks = userOrganisationUnitStore.selectAll()
         val linkOrganisationUnits: MutableSet<String> = HashSet(2)
@@ -142,6 +152,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
     companion object {
         @AfterClass
+        @JvmStatic
         fun tearDown() {
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())

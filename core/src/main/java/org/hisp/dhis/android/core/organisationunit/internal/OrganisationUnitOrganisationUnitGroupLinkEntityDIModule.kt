@@ -25,23 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore.create
 
 @Module
-public final class DataSetOrganisationUnitLinkEntityDIModule {
+internal class OrganisationUnitOrganisationUnitGroupLinkEntityDIModule {
 
     @Provides
     @Reusable
-    LinkStore<DataSetOrganisationUnitLink> store(DatabaseAdapter databaseAdapter) {
-        return DataSetOrganisationUnitLinkStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<OrganisationUnitOrganisationUnitGroupLink> {
+        return create(databaseAdapter)
     }
+
+    @Provides
+    @Reusable
+    fun handler(store: LinkStore<OrganisationUnitOrganisationUnitGroupLink>):
+        LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink> {
+            return LinkHandlerImpl(store)
+        }
 }

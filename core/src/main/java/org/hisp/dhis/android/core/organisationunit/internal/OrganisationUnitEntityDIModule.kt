@@ -49,8 +49,8 @@ internal class OrganisationUnitEntityDIModule : IdentifiableStoreProvider<Organi
 
     @Provides
     @Reusable
-    fun handler(databaseAdapter: DatabaseAdapter): OrganisationUnitHandler {
-        return OrganisationUnitHandlerImpl.create(databaseAdapter)
+    fun handler(impl: OrganisationUnitHandlerImpl): OrganisationUnitHandler {
+        return impl
     }
 
     @Provides
@@ -72,7 +72,7 @@ internal class OrganisationUnitEntityDIModule : IdentifiableStoreProvider<Organi
             OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
-                    OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter)
+                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter)
         )
     }
 }

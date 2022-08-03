@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import java.util.*
 
 internal open class IdentifiableHandlerImpl<O>(protected val store: IdentifiableObjectStore<O>) :
     HandlerBaseImpl<O>() where O : ObjectWithUidInterface, O : ObjectWithDeleteInterface {
@@ -42,11 +41,7 @@ internal open class IdentifiableHandlerImpl<O>(protected val store: Identifiable
             store.deleteIfExists(modelUid)
             HandleAction.Delete
         } else {
-            val start = Date().time
-            store.updateOrInsert(o).also {
-                val end = Date().time
-                println("DDD;${end - start}")
-            }
+            store.updateOrInsert(o)
         }
     }
 

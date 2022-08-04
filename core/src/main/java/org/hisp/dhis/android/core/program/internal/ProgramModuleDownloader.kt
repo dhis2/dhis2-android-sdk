@@ -52,7 +52,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
 @Reusable
 @Suppress("LongParameterList")
-class ProgramModuleDownloader @Inject internal constructor(
+internal class ProgramModuleDownloader @Inject constructor(
     private val programCall: UidsCall<Program>,
     private val programStageCall: UidsCall<ProgramStage>,
     private val programRuleCall: UidsCall<ProgramRule>,

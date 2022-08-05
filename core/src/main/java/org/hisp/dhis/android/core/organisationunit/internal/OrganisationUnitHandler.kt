@@ -25,23 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.user.User
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class OrganisationUnitProgramLinkEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkStore<OrganisationUnitProgramLink> store(DatabaseAdapter databaseAdapter) {
-        return OrganisationUnitProgramLinkStore.create(databaseAdapter);
-    }
+internal interface OrganisationUnitHandler : HandlerWithTransformer<OrganisationUnit> {
+    fun resetLinks()
+    fun setData(user: User, scope: OrganisationUnit.Scope)
+    fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>)
 }

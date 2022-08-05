@@ -25,18 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.organisationunit.internal
 
-import androidx.annotation.NonNull;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
+@Module
+internal class OrganisationUnitProgramLinkEntityDIModule {
 
-import java.util.Collection;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<OrganisationUnitProgramLink> {
+        return OrganisationUnitProgramLinkStore.create(databaseAdapter)
+    }
 
-interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
-    void resetLinks();
-    void setData(User user, OrganisationUnit.Scope scope);
-    void addUserOrganisationUnitLinks(@NonNull Collection<OrganisationUnit> organisationUnits);
+    @Provides
+    @Reusable
+    fun handler(store: LinkStore<OrganisationUnitProgramLink>):
+        LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> {
+            return LinkHandlerImpl(store)
+        }
 }

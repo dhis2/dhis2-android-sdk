@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
@@ -45,7 +44,6 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
-import org.hisp.dhis.android.core.domain.metadata.internal.MetadataHelper
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
@@ -128,20 +126,17 @@ internal class MetadataCall @Inject constructor(
     }
 
     private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return userModuleDownloader.downloadMetadata().flatMapObservable { user: User ->
-            organisationUnitModuleDownloader.downloadMetadata(user).flatMapObservable {
-                orgUnits: List<OrganisationUnit> ->
+        return userModuleDownloader.downloadMetadata()
+            .flatMapCompletable { user: User ->
+                organisationUnitModuleDownloader.downloadMetadata(user)
+            }.andThen(
                 Single.concatArray(
                     Single.just(progressManager.increaseProgress(User::class.java, false)),
                     Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
-                    programDownloader.downloadMetadata(
-                        UidsHelper.getChildrenUids(orgUnits) { it.programs()!! }
-                    ).map {
+                    programDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Program::class.java, false)
                     },
-                    dataSetDownloader.downloadMetadata(
-                        MetadataHelper.getOrgUnitsDataSetUids(user, orgUnits)
-                    ).map {
+                    dataSetDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(DataSet::class.java, false)
                     },
                     categoryDownloader.downloadMetadata().toSingle {
@@ -160,8 +155,7 @@ internal class MetadataCall @Inject constructor(
                         progressManager.increaseProgress(LegendSet::class.java, false)
                     }
                 ).toObservable()
-            }
-        }
+            )
     }
 
     private fun changeEncryptionIfRequired(): Completable {

@@ -31,4 +31,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface CollectionCleaner<P : ObjectWithUidInterface> {
     fun deleteNotPresent(objects: Collection<P>?): Boolean
+    fun deleteNotPresentByUid(uids: Collection<String>): Boolean
 }

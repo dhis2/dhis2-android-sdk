@@ -49,9 +49,9 @@ internal open class LinkStoreImpl<O : CoreObject>(
         return delete()
     }
 
-    override fun selectDistinctSlaves(slaveColumn: String): List<String> {
+    override fun selectDistinctSlaves(slaveColumn: String): Set<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn))
-        return mapStringColumnSetFromCursor(cursor)
+        return mapStringColumnSetFromCursor(cursor).toSet()
     }
 
     override fun selectLinksForMasterUid(masterUid: String): List<O> {

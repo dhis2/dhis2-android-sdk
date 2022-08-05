@@ -33,6 +33,6 @@ internal interface LinkStore<O : CoreObject> : ObjectStore<O> {
     @Throws(RuntimeException::class)
     fun deleteLinksForMasterUid(masterUid: String)
     fun deleteAllLinks(): Int
-    fun selectDistinctSlaves(slaveColumn: String): List<String>
+    fun selectDistinctSlaves(slaveColumn: String): Set<String>
     fun selectLinksForMasterUid(masterUid: String): List<O>
 }

@@ -4,16 +4,16 @@ import io.reactivex.Single
 
 interface OptionService {
     fun blockingSearchForOptions(
-        optionSetUid:String,
-        searchText: String,
-        optionToHideUids: List<String>,
-        optionToShowUids: List<String>,
-    ):List<Option>
+        optionSetUid: String,
+        searchText: String? = null,
+        optionToHideUids: List<String>? = null,
+        optionToShowUids: List<String>? = null,
+    ): List<Option>
 
     fun searchForOptions(
-        optionSetUid:String,
-        searchText: String,
-        optionToHideUids: List<String>,
-        optionToShowUids: List<String>,
+        optionSetUid: String,
+        searchText: String? = null,
+        optionToHideUids: List<String>? = null,
+        optionToShowUids: List<String>? = null,
     ): Single<List<Option>>
 }

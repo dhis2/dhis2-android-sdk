@@ -63,6 +63,7 @@ internal class FileResourceRoutine @Inject constructor(
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     fun blockingDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)

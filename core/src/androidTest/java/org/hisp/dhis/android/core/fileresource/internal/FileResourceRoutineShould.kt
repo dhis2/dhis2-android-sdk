@@ -28,42 +28,15 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import androidx.test.platform.app.InstrumentationRegistry
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain
+import com.google.common.truth.Truth.assertThat
+import java.io.File
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
-import org.hisp.dhis.android.core.trackedentity.*
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
-import java.util.*
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
-import org.junit.After
-
 
 @RunWith(D2JunitRunner::class)
-class FileResourceRoutineShould : BaseMockIntegrationTestMetadataDispatcher() {
-
-    private val firstFileResourceUid = "firstFileResourceUid"
-    private val secondFileResourceUid = "secondFileResourceUid"
-    private val thirdFileResourceUid = "thirdFileResourceUid"
-
-    private val trackedEntityDataValueStore by lazy {
-        TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter())
-    }
-    private val trackedEntityAttributeValueStore by lazy {
-        TrackedEntityAttributeValueStoreImpl.create(d2.databaseAdapter())
-    }
-
-    private val fileResourceStore by lazy {
-        FileResourceStoreImpl.create(d2.databaseAdapter())
-    }
+internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationShould() {
 
     private val fileResourceRoutine by lazy {
         FileResourceRoutine(
@@ -77,89 +50,15 @@ class FileResourceRoutineShould : BaseMockIntegrationTestMetadataDispatcher() {
         )
     }
 
-
-
-    // 1. - Create file
-    // 2. - Add File FSRepo
-    // 3. Get the Id of the FR
-    // 4. Create a DATAValue
-    // 5. Delete the value
-    // 6. Modifier the last update of the FR
-    // 7. Call the the routine
-
-    @Before
-    fun setup() {
-        fileResourceStore.insert(getFileResources())
-        val trackedEntityDataValue = TrackedEntityDataValue.builder()
-            .value(firstFileResourceUid)
-            .event("event")
-            .dataElement("data-element")
-            .build()
-
-//        val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
-//            .trackedEntityAttribute("tracked_entity_attribute")
-//            .trackedEntityInstance("tracked_entity_instance")
-//            .value(secondFileResourceUid)
-//            .build()
-//        trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue)
-        trackedEntityDataValueStore.insert(trackedEntityDataValue)
-    }
-
     @Test
     fun delete_outdated_file_resources_if_present() {
         trackedEntityDataValueStore.delete()
         trackedEntityAttributeValueStore.delete()
-        fileResourceRoutine.deleteOutdatedFileResources()
-        val fileResources = d2.fileResourceModule().fileResources()
-            .blockingGet()
-
-        val (firstFile, secondFile, thirdFile) = getFileResources()
+        fileResourceRoutine.blockingDeleteOutdatedFileResources()
+        val fileResources = d2.fileResourceModule().fileResources().blockingGet()
         assertThat(fileResources.size).isEqualTo(1)
-        assertThat(File(firstFile.path()!!).exists()).isFalse()
-        assertThat(File(secondFile.path()!!).exists()).isFalse()
-        assertThat(File(thirdFile.path()!!).exists()).isTrue()
-    }
-
-    @After
-    fun tearDown() {
-        fileResourceStore.delete()
-    }
-
-    private fun getFileResources(): List<FileResource> {
-        val twoHoursAgo = Calendar.getInstance().apply {
-            add(Calendar.HOUR_OF_DAY, -2)
-        }
-        val threeHoursAgo = Calendar.getInstance().apply {
-            add(Calendar.HOUR_OF_DAY, -3)
-        }
-        val firstFileResource = FileResource.builder()
-            .uid(firstFileResourceUid)
-            .lastUpdated(twoHoursAgo.time)
-            .domain(FileResourceDomain.DATA_VALUE)
-            .path(getFile("first-file").path)
-            .build()
-
-        val secondFileResource = FileResource.builder()
-            .uid(secondFileResourceUid)
-            .lastUpdated(threeHoursAgo.time)
-            .domain(FileResourceDomain.DATA_VALUE)
-            .path(getFile("second-file").path)
-            .build()
-
-        val thirdFileResource = FileResource.builder()
-            .uid(thirdFileResourceUid)
-            .lastUpdated(Date())
-            .domain(FileResourceDomain.DATA_VALUE)
-            .path(getFile("third-file").path)
-            .build()
-        return listOf(firstFileResource, secondFileResource, thirdFileResource)
-    }
-
-    private fun getFile(fileName: String): File {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val root = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
-        return File(root, fileName).apply {
-            createNewFile()
-        }
+        assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isFalse()
+        assertThat(File(FileResourceRoutineSamples.fileResource2.path()!!).exists()).isFalse()
+        assertThat(File(FileResourceRoutineSamples.fileResource3.path()!!).exists()).isTrue()
     }
 }

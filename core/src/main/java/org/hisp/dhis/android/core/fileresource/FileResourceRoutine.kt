@@ -30,22 +30,22 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.io.File
+import java.util.Calendar
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import java.io.File
-import java.util.Date
-import java.util.Calendar
-import javax.inject.Inject
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 
 @Reusable
 internal class FileResourceRoutine @Inject constructor(
@@ -85,8 +85,8 @@ internal class FileResourceRoutine @Inject constructor(
             .blockingGet()
 
         val fileResourceUids = dataValues.map(DataValue::value) +
-                trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
-                trackedEntityDataValues.map(TrackedEntityDataValue::value)
+            trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
+            trackedEntityDataValues.map(TrackedEntityDataValue::value)
 
         val calendar = Calendar.getInstance().apply {
             add(Calendar.HOUR_OF_DAY, -2)

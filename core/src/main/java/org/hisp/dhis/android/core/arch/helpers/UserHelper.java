@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
-import com.google.android.gms.common.util.Hex;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -78,11 +77,22 @@ public final class UserHelper {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.reset();
             md.update(credentials.getBytes(StandardCharsets.ISO_8859_1));
-            return Hex.bytesToStringUppercase(md.digest()).toLowerCase();
+            return bytesToHex(md.digest()).toUpperCase();
         } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
             // noop. Every implementation of Java is required to support MD5
             throw new AssertionError(noSuchAlgorithmException);
         }
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 
     private static String usernameAndPassword(String username, String password) {

@@ -34,7 +34,7 @@ import java.util.Calendar
 import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid

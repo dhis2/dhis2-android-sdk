@@ -42,10 +42,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
-import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
+import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.maintenance.D2Error
 import retrofit2.Call
 
@@ -56,6 +55,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private val helper: FileResourceDownloadCallHelper,
     private val fileResourceService: FileResourceService,
     private val handler: HandlerWithTransformer<FileResource>,
+    private val fileResourceRoutine: FileResourceRoutine,
     private val apiCallExecutor: APICallExecutor,
     private val context: Context
 ) {
@@ -71,7 +71,7 @@ internal class FileResourceDownloadCall @Inject constructor(
 
                 downloadTrackerValues(params, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
-
+                fileResourceRoutine.blockingDeleteOutdatedFileResources()
                 emitter.onComplete()
             },
             true

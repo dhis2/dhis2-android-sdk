@@ -36,7 +36,11 @@ import org.hisp.dhis.android.core.option.internal.OptionSetStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.internal.*
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before
@@ -84,20 +88,20 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
 
     @After
     fun tearDown() {
-        organisationUnitStore.delete()
-        fileResourceStore.delete()
-        fileResourceStore.delete()
-        fileResourceStore.delete()
-        categoryComboStore.delete()
-        dataElementStore.delete()
-        programStore.delete()
-        programStageStore.delete()
-        eventStore.delete()
-        trackedEntityDataValueStore.delete()
-        optionSetStore.delete()
-        trackedEntityAttributeStore.delete()
-        trackedEntityTypeStore.delete()
-        trackedEntityInstanceStore.delete()
-        trackedEntityAttributeValueStore.delete()
+        organisationUnitStore.deleteById(FileResourceRoutineSamples.orgUnit1)
+        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource1)
+        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource2)
+        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource3)
+        categoryComboStore.deleteById(FileResourceRoutineSamples.categoryCombo)
+        dataElementStore.deleteById(FileResourceRoutineSamples.dataElement1)
+        trackedEntityTypeStore.deleteById(FileResourceRoutineSamples.trackedEntityType)
+        programStore.deleteById(FileResourceRoutineSamples.program)
+        programStageStore.deleteById(FileResourceRoutineSamples.programStage1)
+        eventStore.deleteById(FileResourceRoutineSamples.event1)
+        trackedEntityDataValueStore.deleteById(FileResourceRoutineSamples.trackedEntityDataValue)
+        optionSetStore.deleteById(FileResourceRoutineSamples.optionSet)
+        trackedEntityAttributeStore.deleteById(FileResourceRoutineSamples.trackedEntityAttribute)
+        trackedEntityInstanceStore.deleteById(FileResourceRoutineSamples.trackedEntityInstance)
+        trackedEntityAttributeValueStore.deleteById(FileResourceRoutineSamples.trackedEntityAttributeValue)
     }
 }

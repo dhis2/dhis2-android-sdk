@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
-import io.reactivex.Single
+import io.reactivex.Completable
 import java.io.File
 import java.util.Calendar
 import java.util.Date
@@ -57,8 +57,8 @@ internal class FileResourceRoutine @Inject constructor(
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository
 ) {
-    fun deleteOutdatedFileResources(after: Date? = null): Single<Unit> {
-        return Single.fromCallable {
+    fun deleteOutdatedFileResources(after: Date? = null): Completable {
+        return Completable.fromCallable {
             blockingDeleteOutdatedFileResources(after)
         }
     }

@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
-import java.util.*
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples
+import java.util.Calendar
+import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.*
@@ -47,7 +47,11 @@ import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
 object FileResourceRoutineSamples {
     private val generator = UidGeneratorImpl()
@@ -100,7 +104,7 @@ object FileResourceRoutineSamples {
     }
 
     val categoryCombo: CategoryCombo = CategoryCombo.builder()
-        .uid(BaseEvaluatorSamples.generator.generate())
+        .uid(generator.generate())
         .build()
 
     val dataElement1: DataElement = DataElement.builder()
@@ -112,7 +116,7 @@ object FileResourceRoutineSamples {
         .build()
 
     val trackedEntityType: TrackedEntityType = TrackedEntityType.builder()
-        .uid(BaseEvaluatorSamples.generator.generate())
+        .uid(generator.generate())
         .build()
 
     val program: Program = Program.builder()

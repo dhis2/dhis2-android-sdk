@@ -92,6 +92,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceFilterCollectionRepository filtersRepository;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
+    private final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper;
 
     private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache;
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
@@ -103,6 +104,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
+            final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper,
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
             final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache,
@@ -112,14 +114,15 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
+        this.scopeHelper = scopeHelper;
         this.versionManager = versionManager;
         this.filtersRepository = filtersRepository;
         this.onlineCache = onlineCache;
         this.onlineHelper = onlineHelper;
         this.localQueryHelper = localQueryHelper;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager, filtersRepository, onlineCache, onlineHelper, localQueryHelper));
+                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s,
+                        scopeHelper, versionManager, filtersRepository, onlineCache, onlineHelper, localQueryHelper));
     }
 
     /**
@@ -305,8 +308,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byEventDate() {
-        return connectorFactory.periodConnector(dateFilter ->
-                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventDateFilter(scope, dateFilter));
+        return connectorFactory.periodConnector(dateFilter -> scopeHelper.setEventDateFilter(scope, dateFilter));
     }
 
     /**
@@ -317,8 +319,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EventStatus> byEventStatus() {
-        return connectorFactory.listConnector(statusList ->
-                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStatus(scope, statusList));
+        return connectorFactory.listConnector(statusList -> scopeHelper.setEventStatus(scope, statusList));
     }
 
     /**
@@ -368,7 +369,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, AssignedUserMode> byAssignedUserMode() {
         return connectorFactory.eqConnector(mode -> {
             if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-                return TrackedEntityInstanceQueryRepositoryScopeHelper.setAssignedUserMode(scope, mode);
+                return scopeHelper.setAssignedUserMode(scope, mode);
             } else {
                 return scope;
             }
@@ -398,7 +399,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return connectorFactory.eqConnector(id -> {
             TrackedEntityInstanceFilter filter =
                     filtersRepository.withTrackedEntityInstanceEventFilters().uid(id).blockingGet();
-            return TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter);
+            return scopeHelper.addTrackedEntityInstanceFilter(scope, filter);
         });
     }
 

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderB
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.FilterOperatorsHelper.strToList
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -336,17 +337,23 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
         for (item in items) {
-            val valueStr =
-                if (item.operator() == FilterItemOperator.LIKE) "%${escapeQuotes(item.value())}%"
-                else escapeQuotes(item.value())
+            val valueStr = when(item.operator()) {
+                FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
+                FilterItemOperator.IN -> {
+                    val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
+                    "($value)"
+                }
+                else -> "'${escapeQuotes(item.value())}'"
+            }
 
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
                 dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
                 dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator, valueStr
+                item.operator().sqlOperator,
+                valueStr
             )
 
             where.appendExistsSubQuery(sub)

@@ -28,16 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.FilterPeriod
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import com.nhaarman.mockitokotlin2.mock
+import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -51,6 +50,15 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
     private val programStage2 = "programStage2"
     private val enrollmentStatus = EnrollmentStatus.COMPLETED
     private val followUp = true
+
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper = mock()
+
+    private lateinit var scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper
+
+    @Before
+    fun setUp() {
+        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(dateFilterPeriodHelper)
+    }
 
     @Test
     fun `Should parse first level properties`() {
@@ -73,7 +81,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             )
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.program()).isEqualTo(programId)
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(enrollmentStatus))
@@ -102,7 +110,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.eventFilters().size).isEqualTo(2)
         updatedScope.eventFilters().forEach {
@@ -143,7 +151,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.program()).isEqualTo(programId)
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(EnrollmentStatus.ACTIVE))

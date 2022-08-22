@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -128,18 +129,22 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     }
 
     private fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>): List<String>? {
-        val itemMap: MutableMap<String, String> = HashMap()
-        for (item in items) {
-            val filterClause = ":" + item.operator().apiUpperOperator + ":" + item.value()
-            val existingClause = itemMap[item.key()]
-            val newClause = (existingClause ?: "") + filterClause
-            itemMap[item.key()] = newClause
+        return items
+            .groupBy { it.key() }
+            .map { (key, items) ->
+                val clause = items.map { item -> ":" + item.operator().apiUpperOperator + ":" + getAPIValue(item) }
+
+                key + clause.joinToString(separator = "")
+            }
+    }
+
+    private fun getAPIValue(item: RepositoryScopeFilterItem): String {
+        return if (item.operator() == FilterItemOperator.IN) {
+            val list = FilterOperatorsHelper.strToList(item.value())
+            list.joinToString(";")
+        } else {
+            item.value()
         }
-        val itemList: MutableList<String> = ArrayList()
-        for ((key, value) in itemMap) {
-            itemList.add(key + value)
-        }
-        return itemList
     }
 
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {

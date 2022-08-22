@@ -25,42 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
-
-public enum FilterItemOperator {
+enum class FilterItemOperator(val sqlOperator: String, val apiOperator: String, val apiUpperOperator: String) {
     LIKE("LIKE", "like", "LIKE"),
     EQ("=", "eq", "EQ"),
     NOT_EQ("!=", "!eq", "NE"),
     IN("IN", "in", "IN"),
-    NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
+    NOT_IN("NOT IN", "!in", "!in"),  //No upper API version for this
     LT("<", "lt", "LT"),
     LE("<=", "le", "LE"),
     GT(">", "gt", "GT"),
     GE(">=", "ge", "GE"),
-    VOID("", "", "");
-
-    private String sqlOperator;
-
-    private String apiOperator;
-
-    private String apiUpperOperator;
-
-    FilterItemOperator(String sqlOperator, String apiOperator, String apiUpperOperator) {
-        this.sqlOperator = sqlOperator;
-        this.apiOperator = apiOperator;
-        this.apiUpperOperator = apiUpperOperator;
-    }
-
-    public String getSqlOperator() {
-        return this.sqlOperator;
-    }
-
-    public String getApiOperator() {
-        return this.apiOperator;
-    }
-
-    public String getApiUpperOperator() {
-        return this.apiUpperOperator;
-    }
+    VOID("", "", "")
 }

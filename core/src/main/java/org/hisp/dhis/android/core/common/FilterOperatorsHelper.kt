@@ -26,32 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+object FilterOperatorsHelper {
 
-public final class EqLikeItemFilterConnector<R extends BaseRepository> {
+    private const val strListSeparator = "%%%<>%%%"
 
-    private final ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory;
-    private final String key;
-
-    EqLikeItemFilterConnector(String key,
-                              ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-        this.key = key;
+    fun listToStr(list: Collection<String>): String {
+        return list.joinToString(separator = strListSeparator)
     }
 
-    public R eq(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.EQ).value(value).build();
-        return repositoryFactory.updated(item);
-    }
-
-    public R like(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.LIKE).value(value).build();
-        return repositoryFactory.updated(item);
+    fun strToList(string: String): Collection<String> {
+        return string.split(strListSeparator)
     }
 }

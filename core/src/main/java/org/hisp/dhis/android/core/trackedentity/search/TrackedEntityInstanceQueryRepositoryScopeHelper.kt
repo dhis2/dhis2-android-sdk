@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import javax.inject.Inject
 
@@ -93,36 +94,41 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         filter.entityQueryCriteria().organisationUnit()?.let { builder.orgUnits(listOf(it)) }
         filter.entityQueryCriteria().ouMode()?.let { builder.orgUnitMode(it) }
         filter.entityQueryCriteria().attributeValueFilters()?.forEach { applyAttributeValueFilter(builder, it) }
-        filter.eventFilters()?.let { eventFilters ->
-            val filters = eventFilters.map { eventFilter ->
-                val eventBuilder = TrackedEntityInstanceQueryEventFilter.builder()
-
-                eventFilter.programStage()?.let { eventBuilder.programStage(it) }
-                eventFilter.eventStatus()?.let { eventBuilder.eventStatus(listOf(it)) }
-                eventFilter.eventCreatedPeriod()?.let { createPeriod ->
-                    createPeriod.periodFrom()?.let { periodFrom ->
-                        val fromFilter = DateFilterPeriod.builder().startBuffer(periodFrom).build()
-                        val newFilter =
-                            DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), fromFilter)
-                        eventBuilder.eventDate(newFilter)
-                    }
-                    createPeriod.periodTo()?.let { periodTo ->
-                        val toFilter = DateFilterPeriod.builder().endBuffer(periodTo).build()
-                        val newFilter =
-                            DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), toFilter)
-                        eventBuilder.eventDate(newFilter)
-                    }
-                }
-                eventFilter.assignedUserMode()?.let { eventBuilder.assignedUserMode(it) }
-
-                eventBuilder.build()
-            }
-            if (filters.isNotEmpty()) {
-                builder.eventFilters(filters)
-            }
-        }
+        filter.eventFilters()?.let { applyEventFilters(builder, it)}
 
         return builder.build()
+    }
+
+    private fun applyEventFilters(
+        builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
+        eventFilters: List<TrackedEntityInstanceEventFilter>
+    ) {
+        val filters = eventFilters.map { eventFilter ->
+            val eventBuilder = TrackedEntityInstanceQueryEventFilter.builder()
+
+            eventFilter.programStage()?.let { eventBuilder.programStage(it) }
+            eventFilter.eventStatus()?.let { eventBuilder.eventStatus(listOf(it)) }
+            eventFilter.eventCreatedPeriod()?.let { createPeriod ->
+                createPeriod.periodFrom()?.let { periodFrom ->
+                    val fromFilter = DateFilterPeriod.builder().startBuffer(periodFrom).build()
+                    val newFilter =
+                        DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), fromFilter)
+                    eventBuilder.eventDate(newFilter)
+                }
+                createPeriod.periodTo()?.let { periodTo ->
+                    val toFilter = DateFilterPeriod.builder().endBuffer(periodTo).build()
+                    val newFilter =
+                        DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), toFilter)
+                    eventBuilder.eventDate(newFilter)
+                }
+            }
+            eventFilter.assignedUserMode()?.let { eventBuilder.assignedUserMode(it) }
+
+            eventBuilder.build()
+        }
+        if (filters.isNotEmpty()) {
+            builder.eventFilters(filters)
+        }
     }
 
     private fun applyAttributeValueFilter(
@@ -147,6 +153,10 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
                     listOf(filterBuilder.operator(FilterItemOperator.GE).value(filter.ge()).build())
                 filter.gt() != null ->
                     listOf(filterBuilder.operator(FilterItemOperator.GT).value(filter.gt()).build())
+                filter.sw() != null ->
+                    listOf(filterBuilder.operator(FilterItemOperator.SW).value(filter.sw()).build())
+                filter.ew() != null ->
+                    listOf(filterBuilder.operator(FilterItemOperator.EW).value(filter.ew()).build())
                 filter.`in`() != null ->
                     listOf(
                         filterBuilder.operator(FilterItemOperator.IN)

@@ -37,5 +37,7 @@ enum class FilterItemOperator(val sqlOperator: String, val apiOperator: String, 
     LE("<=", "le", "LE"),
     GT(">", "gt", "GT"),
     GE(">=", "ge", "GE"),
+    SW("LIKE", "sw", "SW"),
+    EW("LIKE", "ew", "EW"),
     VOID("", "", "")
 }

@@ -339,6 +339,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         for (item in items) {
             val valueStr = when(item.operator()) {
                 FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
+                FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
+                FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
                 FilterItemOperator.IN -> {
                     val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
                     "($value)"

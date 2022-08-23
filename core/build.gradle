@@ -51,6 +51,7 @@ ext {
             // android
             annotation      : '1.4.0',
             paging          : '2.1.2',
+            kotlinxmetadata : '0.5.0',
 
             // java
             apacheCommons   : "3.8.1",
@@ -169,6 +170,7 @@ dependencies {
     // Dagger
     api "com.google.dagger:dagger:${libraries.dagger}"
     kapt "com.google.dagger:dagger-compiler:${libraries.dagger}"
+    kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${libraries.kotlinxmetadata}"
 
     // Jackson
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"

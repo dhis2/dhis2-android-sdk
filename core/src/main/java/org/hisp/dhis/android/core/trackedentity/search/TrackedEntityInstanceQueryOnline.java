@@ -74,6 +74,12 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
+    abstract Date incidentStartDate();
+
+    @Nullable
+    abstract Date incidentEndDate();
+
+    @Nullable
     abstract Boolean followUp();
 
     @Nullable
@@ -104,6 +110,14 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     String formattedProgramEndDate() {
         return formatDate(programEndDate());
+    }
+
+    String formattedIncidentStartDate() {
+        return formatDate(incidentStartDate());
+    }
+
+    String formattedIncidentEndDate() {
+        return formatDate(incidentEndDate());
     }
 
     String formattedEventStartDate() {
@@ -143,6 +157,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+
+        abstract Builder incidentStartDate(Date incidentStartDate);
+
+        abstract Builder incidentEndDate(Date incidentEndDate);
 
         abstract Builder followUp(Boolean followUp);
 

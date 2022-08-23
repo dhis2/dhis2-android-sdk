@@ -269,6 +269,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Define an incident date filter. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
+    public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byIncidentDate() {
+        return connectorFactory.periodConnector(filter -> {
+            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.incidentDate(), filter);
+            return scope.toBuilder().incidentDate(mergedFilter).build();
+        });
+    }
+
+    /**
      * @deprecated use {@link #byEnrollmentStatus()} instead.
      */
     @Deprecated

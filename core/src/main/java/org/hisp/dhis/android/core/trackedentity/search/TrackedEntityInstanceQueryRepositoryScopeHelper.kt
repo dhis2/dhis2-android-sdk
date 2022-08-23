@@ -90,6 +90,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         filter.entityQueryCriteria().trackedEntityType()?.let { builder.trackedEntityType(it) }
         filter.entityQueryCriteria().enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
         filter.entityQueryCriteria().enrollmentCreatedDate()?.let { builder.programDate(it) }
+        filter.entityQueryCriteria().enrollmentIncidentDate()?.let { builder.incidentDate(it) }
         filter.entityQueryCriteria().followUp()?.let { builder.followUp(it) }
         filter.entityQueryCriteria().organisationUnit()?.let { builder.orgUnits(listOf(it)) }
         filter.entityQueryCriteria().ouMode()?.let { builder.orgUnitMode(it) }

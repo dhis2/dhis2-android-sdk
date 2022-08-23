@@ -100,6 +100,8 @@ internal interface TrackedEntityInstanceService {
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(PROGRAM_END_DATE) programEndDate: String?,
         @Query(PROGRAM_STATUS) enrollmentStatus: String?,
+        @Query(INCIDENT_START_DATE) incidentStartDate: String?,
+        @Query(INCIDENT_END_DATE) incidentEndDate: String?,
         @Query(FOLLOW_UP) followUp: Boolean?,
         @Query(EVENT_START_DATE) eventStartDate: String?,
         @Query(EVENT_END_DATE) eventEndDate: String?,
@@ -130,6 +132,8 @@ internal interface TrackedEntityInstanceService {
         const val PROGRAM_START_DATE = "programStartDate"
         const val PROGRAM_END_DATE = "programEndDate"
         const val PROGRAM_STATUS = "programStatus"
+        const val INCIDENT_START_DATE = "programIncidentStartDate"
+        const val INCIDENT_END_DATE = "programIncidentEndDate"
         const val FOLLOW_UP = "followUp"
         const val EVENT_STATUS = "eventStatus"
         const val EVENT_START_DATE = "eventStartDate"

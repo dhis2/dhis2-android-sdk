@@ -110,9 +110,15 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             .pageSize(BaseQuery.DEFAULT_PAGE_SIZE)
             .paging(true)
 
-        if (scope.programDate() != null) {
-            builder.programStartDate(dateFilterPeriodHelper.getStartDate(scope.programDate()!!))
-            builder.programEndDate(dateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+        if (scope.program() != null) {
+            if (scope.programDate() != null) {
+                builder.programStartDate(dateFilterPeriodHelper.getStartDate(scope.programDate()!!))
+                builder.programEndDate(dateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+            }
+            if (scope.incidentDate() != null) {
+                builder.incidentStartDate(dateFilterPeriodHelper.getStartDate(scope.incidentDate()!!))
+                builder.incidentEndDate(dateFilterPeriodHelper.getEndDate(scope.incidentDate()!!))
+            }
         }
 
         return builder

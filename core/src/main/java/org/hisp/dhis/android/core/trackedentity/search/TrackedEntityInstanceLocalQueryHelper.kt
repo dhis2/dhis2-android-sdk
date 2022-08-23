@@ -72,6 +72,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val teiAll = dot(teiAlias, "*")
     private val teiLastUpdated = dot(teiAlias, "lastUpdated")
     private val enrollmentDate = EnrollmentTableInfo.Columns.ENROLLMENT_DATE
+    private val incidentDate = EnrollmentTableInfo.Columns.INCIDENT_DATE
     private val program = EnrollmentTableInfo.Columns.PROGRAM
     private val trackedEntityAttribute = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE
     private val trackedEntityInstance = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
@@ -188,17 +189,18 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyStringValue(dot(enrollmentAlias, program), escapeQuotes(scope.program()))
         }
         if (scope.programDate() != null) {
-            val enrollmentDateStr = "date(${dot(enrollmentAlias, enrollmentDate)})"
-
-            dateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate ->
-                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(enrollmentDateStr, startDateStr)
-            }
-
-            dateFilterPeriodHelper.getEndDate(scope.programDate()!!)?.let { endDate ->
-                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(enrollmentDateStr, endDateStr)
-            }
+            appendDateFilter(
+                where = where,
+                column = dot(enrollmentAlias, enrollmentDate),
+                dateFilterPeriod = scope.programDate()!!
+            )
+        }
+        if (scope.incidentDate() != null) {
+            appendDateFilter(
+                where = where,
+                column = dot(enrollmentAlias, incidentDate),
+                dateFilterPeriod = scope.incidentDate()!!
+            )
         }
         if (scope.enrollmentStatus() != null) {
             where.appendInKeyEnumValues(
@@ -449,15 +451,29 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         refDate: String
     ) {
         if (eventFilter.eventDate() != null) {
-            val refDateStr = "date(${dot(eventAlias, refDate)})"
-            dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
-                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(refDateStr, startDateStr)
-            }
-            dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
-                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(refDateStr, endDateStr)
-            }
+            appendDateFilter(
+                where = where,
+                column = dot(eventAlias, refDate),
+                dateFilterPeriod = eventFilter.eventDate()!!
+            )
+        }
+    }
+
+    private fun appendDateFilter(
+        where: WhereClauseBuilder,
+        column: String,
+        dateFilterPeriod: DateFilterPeriod
+    ) {
+        val dateColumnStr = "date($column)"
+
+        dateFilterPeriodHelper.getStartDate(dateFilterPeriod)?.let { startDate ->
+            val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+            where.appendKeyGreaterOrEqStringValue(dateColumnStr, startDateStr)
+        }
+
+        dateFilterPeriodHelper.getEndDate(dateFilterPeriod)?.let { endDate ->
+            val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+            where.appendKeyLessThanOrEqStringValue(dateColumnStr, endDateStr)
         }
     }
 

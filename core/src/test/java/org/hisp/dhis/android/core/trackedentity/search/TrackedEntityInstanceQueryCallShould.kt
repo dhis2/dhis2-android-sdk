@@ -79,6 +79,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
         query =
             TrackedEntityInstanceQueryOnline.builder()
+                .uids(listOf("uid1", "uid2"))
                 .orgUnits(orgUnits)
                 .orgUnitMode(OrganisationUnitMode.ACCESSIBLE)
                 .program("program")
@@ -207,7 +208,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         expectedStatus: EventStatus? = query.eventStatus()
     ) {
         Mockito.verify(service).query(
-            eq(query.orgUnits()[0].toString() + ";" + query.orgUnits()[1]),
+            eq(query.uids()!![0] + ";" + query.uids()!![1]),
+            eq(query.orgUnits()[0] + ";" + query.orgUnits()[1]),
             eq(query.orgUnitMode().toString()),
             eq(query.program()),
             eq(query.formattedProgramStartDate()),
@@ -234,6 +236,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
         return whenever(
             service.query(
+                any(),
                 any(),
                 any(),
                 any(),

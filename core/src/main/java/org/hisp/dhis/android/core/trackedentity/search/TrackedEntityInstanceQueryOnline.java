@@ -102,6 +102,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract AssignedUserMode assignedUserMode();
 
     @Nullable
+    abstract List<String> uids();
+
+    @Nullable
     abstract String order();
 
     String formattedProgramStartDate() {
@@ -175,6 +178,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder includeDeleted(Boolean includeDeleted);
 
         abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        abstract Builder uids(List<String> uids);
 
         abstract Builder order(String order);
 

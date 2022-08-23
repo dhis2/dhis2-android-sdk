@@ -102,6 +102,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     @Nullable
     public abstract Set<String> excludedUids();
 
+    @Nullable
+    public abstract List<String> uids();
+
     abstract Builder toBuilder();
 
     static Builder builder() {
@@ -158,6 +161,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder allowOnlineCache(Boolean allowOnlineCache);
 
         public abstract Builder excludedUids(Set<String> excludedUids);
+
+        public abstract Builder uids(List<String> uids);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

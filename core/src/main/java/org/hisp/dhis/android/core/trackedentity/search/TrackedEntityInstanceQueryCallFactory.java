@@ -79,6 +79,7 @@ class TrackedEntityInstanceQueryCallFactory {
     private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQueryOnline query)
             throws D2Error {
 
+        String uidsStr = query.uids() == null ? null : CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";");
         String orgUnitModeStr = query.orgUnitMode() == null ? null : query.orgUnitMode().toString();
 
         String assignedUserModeStr = query.assignedUserMode() == null ? null : query.assignedUserMode().toString();
@@ -87,7 +88,7 @@ class TrackedEntityInstanceQueryCallFactory {
         String orgUnits = query.orgUnits().isEmpty() ? null :
                 CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
 
-        Call<SearchGrid> searchGridCall = service.query(orgUnits, orgUnitModeStr, query.program(),
+        Call<SearchGrid> searchGridCall = service.query(uidsStr, orgUnits, orgUnitModeStr, query.program(),
                 query.formattedProgramStartDate(), query.formattedProgramEndDate(), enrollmentStatus,
                 query.formattedIncidentStartDate(), query.formattedIncidentEndDate(), query.followUp(),
                 query.formattedEventStartDate(), query.formattedEventEndDate(), eventStatus,

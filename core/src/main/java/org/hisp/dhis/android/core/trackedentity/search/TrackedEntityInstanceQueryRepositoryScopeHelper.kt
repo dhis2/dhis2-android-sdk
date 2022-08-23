@@ -87,6 +87,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         val builder = scope.toBuilder()
 
         filter.program()?.let { builder.program(it.uid()) }
+        filter.entityQueryCriteria().trackedEntityInstances()?.let { builder.uids(it) }
         filter.entityQueryCriteria().trackedEntityType()?.let { builder.trackedEntityType(it) }
         filter.entityQueryCriteria().enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
         filter.entityQueryCriteria().enrollmentCreatedDate()?.let { builder.programDate(it) }

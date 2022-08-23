@@ -95,6 +95,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         val enrollmentStatus = scope.enrollmentStatus()?.getOrNull(0)
 
         val builder = TrackedEntityInstanceQueryOnline.builder()
+            .uids(scope.uids())
             .query(query)
             .attribute(toAPIFilterFormat(scope.attribute()))
             .filter(toAPIFilterFormat(scope.filter()))

@@ -151,6 +151,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             )
         }
 
+        if (!scope.uids().isNullOrEmpty()) {
+            where.appendInKeyStringValues(
+                dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.UID),
+                scope.uids()
+            )
+        }
+
         if (scope.states() == null) {
             where.appendNotKeyStringValue(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), State.RELATIONSHIP.name)
         } else {

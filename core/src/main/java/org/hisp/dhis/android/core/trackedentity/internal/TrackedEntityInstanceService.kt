@@ -94,6 +94,7 @@ internal interface TrackedEntityInstanceService {
 
     @GET("$TRACKED_ENTITY_INSTANCES/query")
     fun query(
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,

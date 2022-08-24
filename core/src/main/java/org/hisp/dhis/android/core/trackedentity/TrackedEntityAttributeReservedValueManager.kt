@@ -37,6 +37,10 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import dagger.Reusable
 import io.reactivex.*
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -277,8 +281,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                         organisationUnit,
                         numberOfValuesToFillUp,
                         true
-                    )
-                        .onErrorComplete()
+                    ).onErrorComplete()
                         .toSingle { increaseProgress() }
                 }
         } else {
@@ -331,7 +334,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         pattern: String?,
         storeError: Boolean
     ): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             executor.executeD2Call(
                 reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(
@@ -361,7 +364,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 linkedProgramUids
             ).build()
-        )
+        ).toMutableList()
         val captureOrgunits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
             OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
         )
@@ -375,7 +378,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     }
 
     private val generatedAttributes: List<TrackedEntityAttribute>
-        private get() {
+        get() {
             val whereClause = WhereClauseBuilder()
                 .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build()
             return trackedEntityAttributeStore.selectWhere(whereClause)
@@ -392,9 +395,9 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int? {
         return if (minNumberOfValuesToHave == null) {
             val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
-            if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+            if (reservedValueSetting?.numberOfValuesToReserve() == null) {
                 val generalSettings = generalSettingObjectRepository.blockingGet()
-                if (generalSettings == null || generalSettings.reservedValues() == null) {
+                if (generalSettings?.reservedValues() == null) {
                     FILL_UP_TO
                 } else {
                     generalSettings.reservedValues()

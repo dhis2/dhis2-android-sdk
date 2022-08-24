@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;

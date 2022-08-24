@@ -25,11 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.customprogram
+package org.hisp.dhis.android.core.programtheme
 
-import org.hisp.dhis.android.core.customprogram.stock.StockProgramCollectionRepository
+import org.hisp.dhis.android.core.programtheme.stock.StockThemeCollectionRepository
 
-interface CustomProgramModule {
+interface ProgramThemeModule {
 
-    fun stockPrograms(): StockProgramCollectionRepository
+    fun stockThemes(): StockThemeCollectionRepository
 }

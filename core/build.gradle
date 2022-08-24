@@ -84,7 +84,10 @@ ext {
             safetyNet       : "18.0.1",
 
             // open id
-            appauth         : "0.8.1"
+            appauth         : "0.8.1",
+
+            // kotlin coroutine
+            coroutines      : "1.6.4"
     ]
 }
 
@@ -159,6 +162,10 @@ dependencies {
     // RxJava
     api "io.reactivex.rxjava2:rxjava:${libraries.rxJava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxAndroid}"
+
+    // Kotlin Coroutines
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libraries.coroutines}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${libraries.coroutines}"
 
     // AndroidX
     api "androidx.annotation:annotation:${libraries.annotation}"

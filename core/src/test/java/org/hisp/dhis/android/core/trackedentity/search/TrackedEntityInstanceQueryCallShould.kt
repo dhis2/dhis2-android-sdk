@@ -29,6 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
+import java.text.ParseException
+import java.util.*
+import java.util.concurrent.Callable
+import javax.net.ssl.HttpsURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -49,10 +53,6 @@ import org.junit.runners.JUnit4
 import org.mockito.Mockito
 import org.mockito.stubbing.OngoingStubbing
 import retrofit2.Call
-import java.text.ParseException
-import java.util.*
-import java.util.concurrent.Callable
-import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
@@ -98,6 +98,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                 .attribute(attribute)
                 .filter(filter)
                 .includeDeleted(false)
+                .lastUpdatedStartDate(Date())
+                .lastUpdatedEndDate(Date())
                 .order("lastupdated:desc")
                 .assignedUserMode(AssignedUserMode.ANY)
                 .paging(false)
@@ -228,6 +230,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.attribute()),
             eq(query.filter()),
             eq(query.assignedUserMode().toString()),
+            eq(query.formattedLastUpdatedStartDate()),
+            eq(query.formattedLastUpdatedEndDate()),
             eq(query.order()),
             eq(query.paging()),
             eq(query.page()),
@@ -238,6 +242,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
         return whenever(
             service.query(
+                any(),
+                any(),
                 any(),
                 any(),
                 any(),

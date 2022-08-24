@@ -225,11 +225,15 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     fun build_sql_query_with_in_filer() {
         val scope = queryBuilder
             .program(programUid)
-            .filter(listOf(RepositoryScopeFilterItem.builder()
-                .key("key")
-                .operator(FilterItemOperator.IN)
-                .value(FilterOperatorsHelper.listToStr(listOf("element1", "element2")))
-                .build()))
+            .filter(
+                listOf(
+                    RepositoryScopeFilterItem.builder()
+                        .key("key")
+                        .operator(FilterItemOperator.IN)
+                        .value(FilterOperatorsHelper.listToStr(listOf("element1", "element2")))
+                        .build()
+                )
+            )
             .build()
 
         val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)

@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 @AutoValue
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     @NonNull
@@ -106,6 +107,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     @NonNull
     public abstract List<TrackedEntityInstanceQueryEventFilter> eventFilters();
+
+    @Nullable
+    public abstract DateFilterPeriod lastUpdatedDate();
 
     @NonNull
     public abstract List<TrackedEntityInstanceQueryScopeOrderByItem> order();
@@ -177,6 +181,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceQueryEventFilter> eventFilters);
+
+        public abstract Builder lastUpdatedDate(DateFilterPeriod lastUpdatedDate);
 
         public abstract Builder order(List<TrackedEntityInstanceQueryScopeOrderByItem> order);
 

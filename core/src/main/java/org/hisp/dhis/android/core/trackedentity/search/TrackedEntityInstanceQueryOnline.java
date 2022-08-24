@@ -108,6 +108,12 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract List<String> uids();
 
     @Nullable
+    abstract Date lastUpdatedStartDate();
+
+    @Nullable
+    abstract Date lastUpdatedEndDate();
+
+    @Nullable
     abstract String order();
 
     String formattedProgramStartDate() {
@@ -132,6 +138,14 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     String formattedEventEndDate() {
         return formatDate(eventEndDate());
+    }
+
+    String formattedLastUpdatedStartDate() {
+        return formatDate(lastUpdatedStartDate());
+    }
+
+    String formattedLastUpdatedEndDate() {
+        return formatDate(lastUpdatedEndDate());
     }
 
     private String formatDate(Date date) {
@@ -185,6 +199,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
         abstract Builder uids(List<String> uids);
+
+        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
+
+        abstract Builder lastUpdatedEndDate(Date lastUpdatedEndDate);
 
         abstract Builder order(String order);
 

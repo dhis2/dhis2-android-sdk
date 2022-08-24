@@ -48,7 +48,6 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
 
     private val filterUid = "filterUid"
     private val programId = "programId"
-    private val attributeId = "attributeId"
     private val programStage1 = "programStage1"
     private val programStage2 = "programStage2"
     private val enrollmentStatus = EnrollmentStatus.COMPLETED
@@ -191,11 +190,15 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
 
         val filters = updatedScope.filter()
         assertThat(filters.size).isEqualTo(2)
-        assertThat(filters.any {
-            it.operator() == FilterItemOperator.LIKE && it.key() == "attribute1" && it.value() == "like_str"
-        }).isTrue()
-        assertThat(filters.any {
-            it.operator() == FilterItemOperator.EQ && it.key() == "attribute2" && it.value() == "eq_str"
-        }).isTrue()
+        assertThat(
+            filters.any {
+                it.operator() == FilterItemOperator.LIKE && it.key() == "attribute1" && it.value() == "like_str"
+            }
+        ).isTrue()
+        assertThat(
+            filters.any {
+                it.operator() == FilterItemOperator.EQ && it.key() == "attribute2" && it.value() == "eq_str"
+            }
+        ).isTrue()
     }
 }

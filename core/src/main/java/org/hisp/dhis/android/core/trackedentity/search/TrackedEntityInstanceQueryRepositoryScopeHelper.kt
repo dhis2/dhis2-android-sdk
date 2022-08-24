@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -37,13 +38,13 @@ import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
 ) {
 
+    @Suppress("ComplexMethod")
     fun addTrackedEntityInstanceFilter(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         filter: TrackedEntityInstanceFilter
@@ -64,7 +65,8 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         filter.entityQueryCriteria().organisationUnit()?.let { builder.orgUnits(listOf(it)) }
         filter.entityQueryCriteria().ouMode()?.let { builder.orgUnitMode(it) }
         filter.entityQueryCriteria().attributeValueFilters()?.forEach { applyAttributeValueFilter(builder, it) }
-        filter.eventFilters()?.let { applyEventFilters(builder, it)}
+        filter.entityQueryCriteria().lastUpdatedDate()?.let { builder.lastUpdatedDate(it) }
+        filter.eventFilters()?.let { applyEventFilters(builder, it) }
 
         return builder.build()
     }
@@ -101,6 +103,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         }
     }
 
+    @Suppress("ComplexMethod")
     private fun applyAttributeValueFilter(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
         filter: AttributeValueFilter?

@@ -168,6 +168,10 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyOperatorValue(dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.DELETED), "!=", "1")
         }
 
+        scope.lastUpdatedDate()?.let {
+            appendDateFilter(where, dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED), it)
+        }
+
         appendQueryWhere(where, scope)
         appendFiltersWhere(where, scope)
         appendExcludeList(where, excludeList)
@@ -189,9 +193,10 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
         return scope.eventFilters().isNotEmpty() || scope.programStage() != null ||
-                scope.eventDate() != null || scope.assignedUserMode() != null
+            scope.eventDate() != null || scope.assignedUserMode() != null
     }
 
+    @Suppress("LongMethod")
     private fun appendProgramWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         if (scope.program() != null) {
             where.appendKeyStringValue(dot(enrollmentAlias, program), escapeQuotes(scope.program()))
@@ -347,7 +352,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
         for (item in items) {
-            val valueStr = when(item.operator()) {
+            val valueStr = when (item.operator()) {
                 FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
                 FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
                 FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"

@@ -69,7 +69,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun parse_attributes_in_api_format() {
         val scope = queryBuilder
             .attribute(
-               listOf(
+                listOf(
                     RepositoryScopeFilterItem.builder()
                         .key("attribute1").operator(FilterItemOperator.EQ).value("filter1").build(),
                     RepositoryScopeFilterItem.builder()

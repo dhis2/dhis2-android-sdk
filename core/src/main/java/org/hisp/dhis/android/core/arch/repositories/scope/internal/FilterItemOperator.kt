@@ -32,7 +32,7 @@ enum class FilterItemOperator(val sqlOperator: String, val apiOperator: String, 
     EQ("=", "eq", "EQ"),
     NOT_EQ("!=", "!eq", "NE"),
     IN("IN", "in", "IN"),
-    NOT_IN("NOT IN", "!in", "!in"),  //No upper API version for this
+    NOT_IN("NOT IN", "!in", "!in"), // No upper API version for this
     LT("<", "lt", "LT"),
     LE("<=", "le", "LE"),
     GT(">", "gt", "GT"),

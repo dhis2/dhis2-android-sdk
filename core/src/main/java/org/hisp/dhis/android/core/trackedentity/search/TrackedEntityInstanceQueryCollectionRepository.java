@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import static org.hisp.dhis.android.core.common.DateFilterPeriodHelper.mergeDateFilterPeriods;
+
 import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
@@ -52,7 +54,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -225,6 +226,15 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Filter by event program stage. Only one program can be specified.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byProgramStage() {
+        return connectorFactory.eqConnector(uid -> scope.toBuilder().programStage(uid).build());
+    }
+
+    /**
      * Filter by tracked entity instance organisation unit.
      *
      * @return Repository connector
@@ -263,7 +273,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byProgramDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.programDate(), filter);
+            DateFilterPeriod mergedFilter = mergeDateFilterPeriods(scope.programDate(), filter);
             return scope.toBuilder().programDate(mergedFilter).build();
         });
     }
@@ -275,7 +285,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byIncidentDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.incidentDate(), filter);
+            DateFilterPeriod mergedFilter = mergeDateFilterPeriods(scope.incidentDate(), filter);
             return scope.toBuilder().incidentDate(mergedFilter).build();
         });
     }
@@ -321,7 +331,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byEventDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.eventDate(), filter);
+            DateFilterPeriod mergedFilter = mergeDateFilterPeriods(scope.eventDate(), filter);
             return scope.toBuilder().eventDate(mergedFilter).build();
         });
     }
@@ -388,6 +398,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             } else {
                 return scope;
             }
+        });
+    }
+
+    /**
+     * Define an lastUpdated date filter.
+     *
+     * @return Repository connector
+     */
+    public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byLastUpdatedDate() {
+        return connectorFactory.periodConnector(filter -> {
+            DateFilterPeriod mergedFilter = mergeDateFilterPeriods(scope.lastUpdatedDate(), filter);
+            return scope.toBuilder().lastUpdatedDate(mergedFilter).build();
         });
     }
 

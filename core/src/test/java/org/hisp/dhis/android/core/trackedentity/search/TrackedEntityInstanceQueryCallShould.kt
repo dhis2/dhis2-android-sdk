@@ -83,6 +83,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                 .orgUnits(orgUnits)
                 .orgUnitMode(OrganisationUnitMode.ACCESSIBLE)
                 .program("program")
+                .programStage("progra_stage")
                 .programStartDate(Date())
                 .programEndDate(Date())
                 .enrollmentStatus(EnrollmentStatus.ACTIVE)
@@ -212,6 +213,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.orgUnits()[0] + ";" + query.orgUnits()[1]),
             eq(query.orgUnitMode().toString()),
             eq(query.program()),
+            eq(query.programStage()),
             eq(query.formattedProgramStartDate()),
             eq(query.formattedProgramEndDate()),
             eq(query.enrollmentStatus().toString()),
@@ -236,6 +238,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
         return whenever(
             service.query(
+                any(),
                 any(),
                 any(),
                 any(),

@@ -188,7 +188,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
-        return scope.eventFilters().isNotEmpty()
+        return scope.eventFilters().isNotEmpty() || scope.programStage() != null ||
+                scope.eventDate() != null || scope.assignedUserMode() != null
     }
 
     private fun appendProgramWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
@@ -378,6 +379,12 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun appendEventWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
+        scope.assignedUserMode()?.let { appendAssignedUserMode(where, it) }
+        scope.programStage()?.let { programStage ->
+            where.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
+        }
+        appendEventStatusAndDates(where, scope.eventStatus(), scope.eventDate())
+
         val innerClause = WhereClauseBuilder()
         scope.eventFilters().forEach { eventFilter ->
             getEventFilterClause(eventFilter)?.let { eventFilterClause ->
@@ -386,38 +393,49 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
         if (!innerClause.isEmpty) {
             where.appendComplexQuery(innerClause.build())
-            where.appendKeyOperatorValue(dot(eventAlias, EventTableInfo.Columns.DELETED), "!=", "1")
         }
+
+        where.appendKeyOperatorValue(dot(eventAlias, EventTableInfo.Columns.DELETED), "!=", "1")
     }
 
     private fun getEventFilterClause(eventFilter: TrackedEntityInstanceQueryEventFilter): String? {
         val innerClause = WhereClauseBuilder()
 
         eventFilter.assignedUserMode()?.let { mode -> appendAssignedUserMode(innerClause, mode) }
+        eventFilter.programStage()?.let { programStage ->
+            innerClause.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
+        }
+        appendEventStatusAndDates(innerClause, eventFilter.eventStatus(), eventFilter.eventDate())
 
-        val statusList = eventFilter.eventStatus()
+        return if (innerClause.isEmpty) null else innerClause.build()
+    }
 
-        if (statusList == null) {
-            appendEventDates(innerClause, eventFilter, EventTableInfo.Columns.EVENT_DATE)
-        } else if (statusList.size > 0 && eventFilter.eventDate() != null) {
+    private fun appendEventStatusAndDates(
+        where: WhereClauseBuilder,
+        eventStatus: List<EventStatus>?,
+        eventDate: DateFilterPeriod?
+    ) {
+        if (eventStatus == null) {
+            appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
+        } else if (eventStatus.size > 0 && eventDate != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
-            for (eventStatus in statusList) {
+            for (eventStatus in eventStatus) {
                 val statusWhere = WhereClauseBuilder()
                 when (eventStatus) {
                     EventStatus.ACTIVE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
                             listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                     }
                     EventStatus.COMPLETED, EventStatus.VISITED -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
                     EventStatus.SCHEDULE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -428,7 +446,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         )
                     }
                     EventStatus.OVERDUE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -440,28 +458,27 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     }
                     EventStatus.SKIPPED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                     }
                     else -> {
                     }
                 }
                 statusListWhere.appendOrComplexQuery(statusWhere.build())
             }
-            innerClause.appendComplexQuery(statusListWhere.build())
+            where.appendComplexQuery(statusListWhere.build())
         }
-        return if (innerClause.isEmpty) null else innerClause.build()
     }
 
     private fun appendEventDates(
         where: WhereClauseBuilder,
-        eventFilter: TrackedEntityInstanceQueryEventFilter,
+        eventDate: DateFilterPeriod?,
         refDate: String
     ) {
-        if (eventFilter.eventDate() != null) {
+        if (eventDate != null) {
             appendDateFilter(
                 where = where,
                 column = dot(eventAlias, refDate),
-                dateFilterPeriod = eventFilter.eventDate()!!
+                dateFilterPeriod = eventDate
             )
         }
     }

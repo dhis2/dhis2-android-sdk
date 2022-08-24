@@ -56,6 +56,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract String program();
 
     @Nullable
+    abstract String programStage();
+
+    @Nullable
     abstract String query();
 
     @Nullable
@@ -148,6 +151,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         abstract Builder program(String program);
+
+        abstract Builder programStage(String programStage);
 
         abstract Builder query(String query);
 

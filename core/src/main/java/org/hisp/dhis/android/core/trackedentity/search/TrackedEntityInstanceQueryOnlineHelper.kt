@@ -32,6 +32,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
@@ -49,15 +50,12 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             scope.eventFilters().map { eventFilter ->
                 val baseBuilder = getBaseBuilder(scope)
 
-                val eventStatus = getEventStatus(eventFilter)
-
-                baseBuilder
-                    .eventStatus(eventStatus)
-                    .assignedUserMode(eventFilter.assignedUserMode())
-
-                if (eventFilter.eventDate() != null) {
-                    baseBuilder.eventStartDate(dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!))
-                    baseBuilder.eventEndDate(dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!))
+                eventFilter.eventStatus()?.let { baseBuilder.eventStatus(getEventStatus(it, eventFilter.eventDate())) }
+                eventFilter.assignedUserMode()?.let { baseBuilder.assignedUserMode(it) }
+                eventFilter.programStage()?.let { baseBuilder.programStage(it) }
+                eventFilter.eventDate()?.let {
+                    baseBuilder.eventStartDate(dateFilterPeriodHelper.getStartDate(it))
+                    baseBuilder.eventEndDate(dateFilterPeriodHelper.getEndDate(it))
                 }
 
                 baseBuilder.build()
@@ -102,6 +100,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             .orgUnits(scope.orgUnits())
             .orgUnitMode(scope.orgUnitMode())
             .program(scope.program())
+            .programStage(scope.programStage())
             .enrollmentStatus(enrollmentStatus)
             .followUp(scope.followUp())
             .trackedEntityType(scope.trackedEntityType())
@@ -112,25 +111,31 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             .paging(true)
 
         if (scope.program() != null) {
-            if (scope.programDate() != null) {
-                builder.programStartDate(dateFilterPeriodHelper.getStartDate(scope.programDate()!!))
-                builder.programEndDate(dateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+            scope.programDate()?.let {
+                builder.programStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.programEndDate(dateFilterPeriodHelper.getEndDate(it))
             }
-            if (scope.incidentDate() != null) {
-                builder.incidentStartDate(dateFilterPeriodHelper.getStartDate(scope.incidentDate()!!))
-                builder.incidentEndDate(dateFilterPeriodHelper.getEndDate(scope.incidentDate()!!))
+            scope.incidentDate()?.let {
+                builder.incidentStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.incidentEndDate(dateFilterPeriodHelper.getEndDate(it))
+            }
+            scope.eventStatus()?.let { builder.eventStatus(getEventStatus(it, scope.eventDate())) }
+            scope.assignedUserMode()?.let { builder.assignedUserMode(it) }
+            scope.programStage()?.let { builder.programStage(it) }
+            scope.eventDate()?.let {
+                builder.eventStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.eventEndDate(dateFilterPeriodHelper.getEndDate(it))
             }
         }
 
         return builder
     }
 
-    private fun getEventStatus(eventFilter: TrackedEntityInstanceQueryEventFilter): EventStatus? {
+    private fun getEventStatus(eventStatus: List<EventStatus>, eventDate: DateFilterPeriod?): EventStatus? {
         // EventStatus does not accepts a list of status but a single value in web API.
         // Additionally, it requires that eventStartDate and eventEndDate are defined.
-        val eventStatus = eventFilter.eventStatus()
-        val hasEventDate = eventFilter.eventDate()?.startDate() != null && eventFilter.eventDate()?.endDate() != null
-        return if (!eventStatus.isNullOrEmpty() && hasEventDate) {
+        val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
+        return if (eventStatus.isNotEmpty() && hasEventDate) {
             eventStatus[0]
         } else null
     }

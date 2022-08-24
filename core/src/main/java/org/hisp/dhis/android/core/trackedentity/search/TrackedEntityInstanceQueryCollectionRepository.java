@@ -320,7 +320,10 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byEventDate() {
-        return connectorFactory.periodConnector(dateFilter -> scopeHelper.setEventDateFilter(scope, dateFilter));
+        return connectorFactory.periodConnector(filter -> {
+            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.eventDate(), filter);
+            return scope.toBuilder().eventDate(mergedFilter).build();
+        });
     }
 
     /**
@@ -331,7 +334,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EventStatus> byEventStatus() {
-        return connectorFactory.listConnector(statusList -> scopeHelper.setEventStatus(scope, statusList));
+        return connectorFactory.listConnector(statusList -> scope.toBuilder().eventStatus(statusList).build());
     }
 
     /**
@@ -381,7 +384,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, AssignedUserMode> byAssignedUserMode() {
         return connectorFactory.eqConnector(mode -> {
             if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-                return scopeHelper.setAssignedUserMode(scope, mode);
+                return scope.toBuilder().assignedUserMode(mode).build();
             } else {
                 return scope;
             }

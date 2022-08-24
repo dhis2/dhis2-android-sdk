@@ -36,9 +36,11 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
@@ -61,6 +63,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     public abstract String program();
 
     @Nullable
+    public abstract String programStage();
+
+    @Nullable
     public abstract RepositoryScopeFilterItem query();
 
     @NonNull
@@ -77,6 +82,15 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     @Nullable
     public abstract List<EnrollmentStatus> enrollmentStatus();
+
+    @Nullable
+    public abstract DateFilterPeriod eventDate();
+
+    @Nullable
+    public abstract List<EventStatus> eventStatus();
+
+    @Nullable
+    public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
     public abstract String trackedEntityType();
@@ -134,6 +148,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         public abstract Builder program(String program);
 
+        public abstract Builder programStage(String programStage);
+
         public abstract Builder query(RepositoryScopeFilterItem query);
 
         public abstract Builder attribute(List<RepositoryScopeFilterItem> attribute);
@@ -145,6 +161,12 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder incidentDate(DateFilterPeriod incidentDate);
 
         public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
+
+        public abstract Builder eventDate(DateFilterPeriod eventDate);
+
+        public abstract Builder eventStatus(List<EventStatus> eventStatus);
+
+        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 

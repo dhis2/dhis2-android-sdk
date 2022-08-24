@@ -31,11 +31,9 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -46,40 +44,6 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
 ) {
 
-    fun setEventDateFilter(
-        scope: TrackedEntityInstanceQueryRepositoryScope,
-        dateFilter: DateFilterPeriod
-    ): TrackedEntityInstanceQueryRepositoryScope {
-        val eventFilters = getScopeEventFiltersOrInitial(scope).map { eventFilter ->
-            val eventDateFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(eventFilter.eventDate(), dateFilter)
-            eventFilter.toBuilder().eventDate(eventDateFilter).build()
-        }
-        return scope.toBuilder().eventFilters(eventFilters).build()
-    }
-
-    fun setAssignedUserMode(
-        scope: TrackedEntityInstanceQueryRepositoryScope,
-        assignedUserMode: AssignedUserMode
-    ): TrackedEntityInstanceQueryRepositoryScope {
-
-        val eventFilters = getScopeEventFiltersOrInitial(scope).map {
-            it.toBuilder().assignedUserMode(assignedUserMode).build()
-        }
-        return scope.toBuilder().eventFilters(eventFilters).build()
-    }
-
-    fun setEventStatus(
-        scope: TrackedEntityInstanceQueryRepositoryScope,
-        eventStatus: List<EventStatus>
-    ): TrackedEntityInstanceQueryRepositoryScope {
-
-        val eventFilters = getScopeEventFiltersOrInitial(scope).map {
-            it.toBuilder().eventStatus(eventStatus).build()
-        }
-        return scope.toBuilder().eventFilters(eventFilters).build()
-    }
-
-    @Suppress("ComplexMethod")
     fun addTrackedEntityInstanceFilter(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         filter: TrackedEntityInstanceFilter
@@ -87,11 +51,15 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         val builder = scope.toBuilder()
 
         filter.program()?.let { builder.program(it.uid()) }
+        filter.entityQueryCriteria().programStage()?.let { builder.programStage(it) }
         filter.entityQueryCriteria().trackedEntityInstances()?.let { builder.uids(it) }
         filter.entityQueryCriteria().trackedEntityType()?.let { builder.trackedEntityType(it) }
         filter.entityQueryCriteria().enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
         filter.entityQueryCriteria().enrollmentCreatedDate()?.let { builder.programDate(it) }
         filter.entityQueryCriteria().enrollmentIncidentDate()?.let { builder.incidentDate(it) }
+        filter.entityQueryCriteria().eventStatus()?.let { builder.eventStatus(listOf(it)) }
+        filter.entityQueryCriteria().eventDate()?.let { builder.eventDate(it) }
+        filter.entityQueryCriteria().assignedUserMode()?.let { builder.assignedUserMode(it) }
         filter.entityQueryCriteria().followUp()?.let { builder.followUp(it) }
         filter.entityQueryCriteria().organisationUnit()?.let { builder.orgUnits(listOf(it)) }
         filter.entityQueryCriteria().ouMode()?.let { builder.orgUnitMode(it) }
@@ -178,16 +146,6 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
             }
 
             builder.filter(existingFilters + newFilters)
-        }
-    }
-
-    private fun getScopeEventFiltersOrInitial(
-        scope: TrackedEntityInstanceQueryRepositoryScope
-    ): List<TrackedEntityInstanceQueryEventFilter> {
-        return if (scope.eventFilters().isEmpty()) {
-            listOf(TrackedEntityInstanceQueryEventFilter.builder().build())
-        } else {
-            scope.eventFilters()
         }
     }
 }

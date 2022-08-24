@@ -98,6 +98,7 @@ internal interface TrackedEntityInstanceService {
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,
+        @Query(PROGRAM_STAGE) programStage: String?,
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(PROGRAM_END_DATE) programEndDate: String?,
         @Query(PROGRAM_STATUS) enrollmentStatus: String?,
@@ -130,6 +131,7 @@ internal interface TrackedEntityInstanceService {
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"
         const val PROGRAM = "program"
+        const val PROGRAM_STAGE = "programStage"
         const val PROGRAM_START_DATE = "programStartDate"
         const val PROGRAM_END_DATE = "programEndDate"
         const val PROGRAM_STATUS = "programStatus"

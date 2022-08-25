@@ -435,7 +435,10 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byTrackedEntityInstanceFilter() {
         return connectorFactory.eqConnector(id -> {
             TrackedEntityInstanceFilter filter =
-                    filtersRepository.withTrackedEntityInstanceEventFilters().uid(id).blockingGet();
+                    filtersRepository
+                            .withTrackedEntityInstanceEventFilters()
+                            .withAttributeValueFilters()
+                            .uid(id).blockingGet();
             return scopeHelper.addTrackedEntityInstanceFilter(scope, filter);
         });
     }

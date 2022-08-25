@@ -32,6 +32,7 @@ import androidx.annotation.VisibleForTesting
 import io.reactivex.Single
 import org.hisp.dhis.android.core.D2ConfigurationValidator.validateAndSetDefaultValues
 import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObjectsDetection
+import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
@@ -95,6 +96,10 @@ object D2Manager {
 
             if (isTestMode) {
                 enableNotClosedObjectsDetection()
+            } else {
+                /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+                 when running the StrictMode above. That's why it's in the else clause */
+                SSLContextInitializer.initializeSSLContext()
             }
 
             val multiUserDatabaseManager = d2DIComponent.multiUserDatabaseManagerForD2Manager()

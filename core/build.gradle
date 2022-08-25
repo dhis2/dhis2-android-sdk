@@ -202,6 +202,8 @@ dependencies {
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
 
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
+
     // Java test dependencies
     testImplementation "junit:junit:${libraries.jUnit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"

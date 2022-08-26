@@ -25,33 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, AttributeValueFilter>
+) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
-public final class EqLikeItemFilterConnector<R extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory;
-    private final String key;
-
-    EqLikeItemFilterConnector(String key,
-                              ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-        this.key = key;
+    override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
+        val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(childStore.getChildren(m)).build()
+        return m.toBuilder().entityQueryCriteria(criteria).build()
     }
 
-    public R eq(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.EQ).value(value).build();
-        return repositoryFactory.updated(item);
-    }
-
-    public R like(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.LIKE).value(value).build();
-        return repositoryFactory.updated(item);
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
+            return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    AttributeValueFilterStore.CHILD_PROJECTION,
+                    AttributeValueFilter::create
+                )
+            )
+        }
     }
 }

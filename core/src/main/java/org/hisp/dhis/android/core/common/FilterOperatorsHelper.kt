@@ -26,41 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+package org.hisp.dhis.android.core.common
 
-public enum FilterItemOperator {
-    LIKE("LIKE", "like", "LIKE"),
-    EQ("=", "eq", "EQ"),
-    NOT_EQ("!=", "!eq", "NE"),
-    IN("IN", "in", "IN"),
-    NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
-    LT("<", "lt", "LT"),
-    LE("<=", "le", "LE"),
-    GT(">", "gt", "GT"),
-    GE(">=", "ge", "GE"),
-    VOID("", "", "");
+object FilterOperatorsHelper {
 
-    private String sqlOperator;
+    private const val strListSeparator = "%%%<>%%%"
 
-    private String apiOperator;
-
-    private String apiUpperOperator;
-
-    FilterItemOperator(String sqlOperator, String apiOperator, String apiUpperOperator) {
-        this.sqlOperator = sqlOperator;
-        this.apiOperator = apiOperator;
-        this.apiUpperOperator = apiUpperOperator;
+    fun listToStr(list: Collection<String>): String {
+        return list.joinToString(separator = strListSeparator)
     }
 
-    public String getSqlOperator() {
-        return this.sqlOperator;
-    }
-
-    public String getApiOperator() {
-        return this.apiOperator;
-    }
-
-    public String getApiUpperOperator() {
-        return this.apiUpperOperator;
+    fun strToList(string: String): Collection<String> {
+        return string.split(strListSeparator)
     }
 }

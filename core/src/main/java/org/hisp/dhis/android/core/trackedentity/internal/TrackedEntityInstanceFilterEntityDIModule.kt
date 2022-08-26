@@ -25,46 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore.create
 
 @Module
-public final class TrackedEntityInstanceFilterEntityDIModule
-        implements IdentifiableStoreProvider<TrackedEntityInstanceFilter> {
+internal class TrackedEntityInstanceFilterEntityDIModule : IdentifiableStoreProvider<TrackedEntityInstanceFilter> {
 
     @Provides
     @Reusable
-    public IdentifiableObjectStore<TrackedEntityInstanceFilter> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityInstanceFilterStore.create(databaseAdapter);
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<TrackedEntityInstanceFilter> {
+        return create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    Handler<TrackedEntityInstanceFilter> handler(TrackedEntityInstanceFilterHandler impl) {
-        return impl;
+    fun handler(impl: TrackedEntityInstanceFilterHandler): Handler<TrackedEntityInstanceFilter> {
+        return impl
     }
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>() {{
-            put(TrackedEntityInstanceFilterFields.EVENT_FILTERS,
-                    TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter));
-        }};
+    fun childrenAppenders(
+        databaseAdapter: DatabaseAdapter
+    ): Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> {
+        return mapOf(
+            TrackedEntityInstanceFilterFields.EVENT_FILTERS to
+                TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter),
+            EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
+                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender.create(databaseAdapter)
+        )
     }
 }

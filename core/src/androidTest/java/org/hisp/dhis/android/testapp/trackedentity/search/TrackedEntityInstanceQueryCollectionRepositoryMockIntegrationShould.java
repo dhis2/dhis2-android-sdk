@@ -82,6 +82,20 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
     }
 
     @Test
+    public void find_by_incident_date() throws ParseException {
+        Date refDate = DateUtils.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .byIncidentDate().afterOrEqual(refDate)
+                        .byIncidentDate().beforeOrEqual(refDate)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
     public void find_by_event_date() throws ParseException {
         Date refDate = DateUtils.DATE_FORMAT.parse("2015-05-01T00:00:00.000");
 

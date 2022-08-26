@@ -56,6 +56,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract String program();
 
     @Nullable
+    abstract String programStage();
+
+    @Nullable
     abstract String query();
 
     @Nullable
@@ -72,6 +75,12 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     @Nullable
     abstract EnrollmentStatus enrollmentStatus();
+
+    @Nullable
+    abstract Date incidentStartDate();
+
+    @Nullable
+    abstract Date incidentEndDate();
 
     @Nullable
     abstract Boolean followUp();
@@ -96,6 +105,15 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract AssignedUserMode assignedUserMode();
 
     @Nullable
+    abstract List<String> uids();
+
+    @Nullable
+    abstract Date lastUpdatedStartDate();
+
+    @Nullable
+    abstract Date lastUpdatedEndDate();
+
+    @Nullable
     abstract String order();
 
     String formattedProgramStartDate() {
@@ -106,12 +124,28 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return formatDate(programEndDate());
     }
 
+    String formattedIncidentStartDate() {
+        return formatDate(incidentStartDate());
+    }
+
+    String formattedIncidentEndDate() {
+        return formatDate(incidentEndDate());
+    }
+
     String formattedEventStartDate() {
         return formatDate(eventStartDate());
     }
 
     String formattedEventEndDate() {
         return formatDate(eventEndDate());
+    }
+
+    String formattedLastUpdatedStartDate() {
+        return formatDate(lastUpdatedStartDate());
+    }
+
+    String formattedLastUpdatedEndDate() {
+        return formatDate(lastUpdatedEndDate());
     }
 
     private String formatDate(Date date) {
@@ -132,6 +166,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         abstract Builder program(String program);
 
+        abstract Builder programStage(String programStage);
+
         abstract Builder query(String query);
 
         abstract Builder attribute(List<String> attribute);
@@ -143,6 +179,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+
+        abstract Builder incidentStartDate(Date incidentStartDate);
+
+        abstract Builder incidentEndDate(Date incidentEndDate);
 
         abstract Builder followUp(Boolean followUp);
 
@@ -157,6 +197,12 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder includeDeleted(Boolean includeDeleted);
 
         abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        abstract Builder uids(List<String> uids);
+
+        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
+
+        abstract Builder lastUpdatedEndDate(Date lastUpdatedEndDate);
 
         abstract Builder order(String order);
 

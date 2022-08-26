@@ -82,6 +82,15 @@ public class SmsSubmitCase {
     }
 
     /**
+     * Generate the compressed message of a tracker event.
+     * @param eventUid Event uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressTrackerEvent(String eventUid) {
+        return compress(new TrackerEventConverter(localDbRepository, dhisVersionManager, eventUid));
+    }
+
+    /**
      * Set a simple event to send by SMS.
      * @param eventUid Event uid.
      * @return {@code Single} with the number of SMS to send.
@@ -91,12 +100,30 @@ public class SmsSubmitCase {
     }
 
     /**
+     * Generate the compressed message of a simple event.
+     * @param eventUid Event uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressSimpleEvent(String eventUid) {
+        return compress(new SimpleEventConverter(localDbRepository, dhisVersionManager, eventUid));
+    }
+
+    /**
      * Set an enrollment to send by SMS.
      * @param enrollmentUid Enrollment uid.
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertEnrollment(String enrollmentUid) {
         return convert(new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid));
+    }
+
+    /**
+     * Generate the compressed message of an enrollment.
+     * @param enrollmentUid Enrollment uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressEnrollment(String enrollmentUid) {
+        return compress(new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid));
     }
 
     /**
@@ -121,12 +148,42 @@ public class SmsSubmitCase {
     }
 
     /**
+     * Generate the compressed message of a dataSet.
+     * @param dataSet DataSet uid.
+     * @param orgUnit Organisation unit uid.
+     * @param period Period identifier.
+     * @param attributeOptionComboUid Attribute option combo uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressDataSet(String dataSet,
+                                          String orgUnit,
+                                          String period,
+                                          String attributeOptionComboUid) {
+        return compress(new DatasetConverter(
+                localDbRepository,
+                dhisVersionManager,
+                dataSet,
+                orgUnit,
+                period,
+                attributeOptionComboUid));
+    }
+
+    /**
      * Set a relationship to send by SMS.
      * @param relationshipUid Relationship uid.
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertRelationship(String relationshipUid) {
         return convert(new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid));
+    }
+
+    /**
+     * Generate the compressed message of a relationship.
+     * @param relationshipUid Relationship uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressRelationship(String relationshipUid) {
+        return compress(new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid));
     }
 
     /**
@@ -138,20 +195,43 @@ public class SmsSubmitCase {
         return convert(new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid));
     }
 
+    /**
+     * Generate the compressed message of an event to delete.
+     * @param itemToDeleteUid Event uid.
+     * @return {@code Single} with the compressed message.
+     */
+    public Single<String> compressDeletion(String itemToDeleteUid) {
+        return compress(new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid));
+    }
+
     private Single<Integer> convert(Converter<?> converter) {
+        return setConverter(converter)
+                .andThen(checkAllPreconditions())
+                .andThen(generateMessage(converter))
+                .flatMap(smsRepository::generateSmsParts)
+                .doOnSuccess(parts -> smsParts = parts)
+                .map(List::size);
+    }
+
+    private Single<String> compress(Converter<?> converter) {
+        return setConverter(converter)
+                .andThen(checkConfiguration())
+                .andThen(generateMessage(converter));
+    }
+
+    private Completable setConverter(Converter<?> converter) {
         if (this.converter != null) {
-            return Single.error(new IllegalStateException("SMS submit case should be used once"));
+            return Completable.error(new IllegalStateException("SMS submit case should be used once"));
+        } else {
+            this.converter = converter;
+            return Completable.complete();
         }
-        this.converter = converter;
-        return checkPreconditions()
-                .andThen(localDbRepository.generateNextSubmissionId()
-                        .doOnSuccess(id -> submissionId = id)
-                ).flatMap(converter::readAndConvert
-                ).flatMap(smsRepository::generateSmsParts
-                ).map(parts -> {
-                    smsParts = parts;
-                    return parts.size();
-                });
+    }
+
+    private Single<String> generateMessage(Converter<?> converter) {
+        return localDbRepository.generateNextSubmissionId()
+                .doOnSuccess(id -> submissionId = id)
+                .flatMap(converter::readAndConvert);
     }
 
     /**
@@ -164,7 +244,7 @@ public class SmsSubmitCase {
         if (smsParts == null || smsParts.isEmpty()) {
             return Observable.error(new IllegalStateException("Convert method should be called first"));
         }
-        return checkPreconditions(
+        return checkAllPreconditions(
         ).andThen(
                 localDbRepository.addOngoingSubmission(submissionId, getSubmissionType())
         ).andThen(
@@ -234,7 +314,11 @@ public class SmsSubmitCase {
         );
     }
 
-    private Completable checkPreconditions() {
+    private Completable checkAllPreconditions() {
+        return checkPermissions().andThen(checkConfiguration());
+    }
+
+    private Completable checkPermissions() {
         return Completable.mergeArray(
                 mapFail(deviceStateRepository.hasCheckNetworkPermission(),
                         PreconditionFailed.Type.NO_CHECK_NETWORK_PERMISSION),
@@ -243,7 +327,12 @@ public class SmsSubmitCase {
                 mapFail(deviceStateRepository.hasSendSMSPermission(),
                         PreconditionFailed.Type.NO_SEND_SMS_PERMISSION),
                 mapFail(deviceStateRepository.isNetworkConnected(),
-                        PreconditionFailed.Type.NO_NETWORK),
+                        PreconditionFailed.Type.NO_NETWORK)
+        );
+    }
+
+    private Completable checkConfiguration() {
+        return Completable.mergeArray(
                 mapFail(localDbRepository.getGatewayNumber().map(number -> number.length() > 0),
                         PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET),
                 mapFail(localDbRepository.getUserName().map(username -> username.length() > 0),

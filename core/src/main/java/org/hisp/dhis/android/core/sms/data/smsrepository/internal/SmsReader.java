@@ -157,7 +157,7 @@ class SmsReader {
     }
 
     @SuppressWarnings({"PMD.UnusedFormalParameter"})
-    private boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
+    public boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
                                             int submissionId, SubmissionType submissionType)
             throws SmsRepository.ResultResponseException {
         if (requiredSender != null &&

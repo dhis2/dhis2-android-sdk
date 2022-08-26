@@ -72,6 +72,22 @@ public interface SmsRepository {
                                         SubmissionType submissionType);
 
     /**
+     * Check if a message is the expected one or not
+     *
+     * @param sender                number of the sender
+     * @param message               received message
+     * @param requiredSender        messages from other senders will not be read
+     * @param submissionId          submission ID to recognize message
+     * @param submissionType        submission type to recognize message
+     * @return completed when found
+     */
+    Single<Boolean> checkConfirmationSMS(String sender,
+                                         String message,
+                                         String requiredSender,
+                                         int submissionId,
+                                         SubmissionType submissionType);
+
+    /**
      * Returned when sms sending error is returned from OS.
      */
     class ReceivedErrorException extends Exception {

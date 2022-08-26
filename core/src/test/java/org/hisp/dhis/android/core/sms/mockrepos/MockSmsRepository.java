@@ -57,4 +57,9 @@ public class MockSmsRepository implements SmsRepository {
     public Completable listenToConfirmationSms(Date fromDate, int waitingTimeoutSeconds, String requiredSender, int submissionId, SubmissionType submissionType) {
         return Completable.complete();
     }
+
+    @Override
+    public Single<Boolean> checkConfirmationSMS(String sender, String message, String requiredSender, int submissionId, SubmissionType submissionType) {
+        return Single.just(true);
+    }
 }

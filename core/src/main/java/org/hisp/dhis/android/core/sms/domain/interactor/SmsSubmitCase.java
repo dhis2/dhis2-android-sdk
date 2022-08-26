@@ -314,6 +314,17 @@ public class SmsSubmitCase {
         );
     }
 
+    public Single<Boolean> checkConfirmationMessage(String sender, String message) {
+        return localDbRepository.getConfirmationSenderNumber()
+                .flatMap(requiredSender -> smsRepository.checkConfirmationSMS(
+                        sender,
+                        message,
+                        requiredSender,
+                        submissionId,
+                        getSubmissionType()
+                ));
+    }
+
     private Completable checkAllPreconditions() {
         return checkPermissions().andThen(checkConfiguration());
     }

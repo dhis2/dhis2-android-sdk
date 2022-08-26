@@ -142,6 +142,22 @@ public class SmsRepositoryImpl implements SmsRepository {
         );
     }
 
+    @Override
+    public Single<Boolean> checkConfirmationSMS(String sender,
+                                                String message,
+                                                String requiredSender,
+                                                int submissionId,
+                                                SubmissionType submissionType) {
+        try {
+            SmsReader smsReceiver = new SmsReader(context);
+            return Single.just(
+                    smsReceiver.isAwaitedSuccessMessage(sender, message, requiredSender, submissionId, submissionType)
+            );
+        } catch (ResultResponseException e) {
+            return Single.just(false);
+        }
+    }
+
     /**
      * Sends an SMS
      *

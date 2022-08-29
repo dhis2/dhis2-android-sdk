@@ -25,33 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.CoreObject
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
-import io.reactivex.Single;
-
-public interface ReadOnlyCollectionRepository<M> extends BaseRepository {
-
+interface ReadOnlyWithTransformerCollectionRepository<M : CoreObject, T> : BaseRepository {
     /**
-     * Get the objects in scope in an asynchronous way, returning a {@code Single<List>}.
+     * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
      *
-     * @return A {@code Single} object with the list of objects.
+     * @return A `Single` object with the list of objects.
      */
-    Single<List<M>> get();
+    fun get(): Single<List<T>>
 
     /**
      * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #get()}.
+     * executed in the main thread. Consider the asynchronous version [.get].
      *
      * @return List of objects
      */
-    List<M> blockingGet();
+    fun blockingGet(): List<T>
 
     /**
      * Handy method to use in conjunction with PagedListAdapter to build paged lists.
@@ -59,42 +55,42 @@ public interface ReadOnlyCollectionRepository<M> extends BaseRepository {
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
      */
-    LiveData<PagedList<M>> getPaged(int pageSize);
+    fun getPaged(pageSize: Int): LiveData<PagedList<T>>
 
     /**
-     * Get the count of elements in an asynchronous way, returning a {@code Single}.
-     * @return A {@code Single} object with the element count
+     * Get the count of elements in an asynchronous way, returning a `Single`.
+     * @return A `Single` object with the element count
      */
-    Single<Integer> count();
+    fun count(): Single<Int>
 
     /**
      * Get the count of elements. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #count()}.
+     * executed in the main thread. Consider the asynchronous version [.count].
      *
      * @return Element count
      */
-    int blockingCount();
+    fun blockingCount(): Int
 
     /**
      * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a {@code Single}.
+     * returning a `Single`.
      * @return If selection is empty
      */
-    Single<Boolean> isEmpty();
+    val isEmpty: Single<Boolean>
 
     /**
      * Check if selection of objects with applied filters is empty in a synchronous way.
      * Important: this is a blocking method and it should not be executed in the main thread.
-     * Consider the asynchronous version {@link #isEmpty()}.
+     * Consider the asynchronous version [.isEmpty].
      *
      * @return If selection is empty
      */
-    boolean blockingIsEmpty();
+    fun blockingIsEmpty(): Boolean
 
     /**
-     * Get a {@link ReadOnlyObjectRepository} pointing to the first element in the list.
+     * Get a [ReadOnlyObjectRepository] pointing to the first element in the list.
      *
      * @return Object repository
      */
-    ReadOnlyObjectRepository<M> one();
+    fun one(): ReadOnlyObjectRepository<M>
 }

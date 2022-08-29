@@ -37,7 +37,7 @@ import java.util.Map;
 
 import io.reactivex.Single;
 
-public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R extends ReadOnlyObjectRepository<M>>
+public abstract class ReadOnlyObjectRepositoryImpl<M, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
     protected final Map<String, ChildrenAppender<M>> childrenAppenders;

@@ -88,14 +88,19 @@ public abstract class InternalStockThemeTransaction extends BaseObject {
     public static abstract class Builder extends BaseObject.Builder<Builder> {
 
         @JsonProperty(UID)
-        public abstract Builder uid(String uid);
+        public abstract Builder programUid(String programUid);
 
-        public abstract Builder itemCode(String itemCode);
+        public abstract Builder order(Integer order);
 
-        public abstract Builder itemDescription(String itemDescription);
+        public abstract Builder transactionType(String transactionType);
 
-        public abstract Builder stockOnHand(String stockOnHand);
+        public abstract Builder distributedTo(String distributedTo);
 
+        public abstract Builder stockDistributed(String stockDistributed);
+
+        public abstract Builder stockDiscarded(String stockDiscarded);
+
+        public abstract Builder stockCorrected(String stockCorrected);
 
         public abstract InternalStockThemeTransaction build();
     }

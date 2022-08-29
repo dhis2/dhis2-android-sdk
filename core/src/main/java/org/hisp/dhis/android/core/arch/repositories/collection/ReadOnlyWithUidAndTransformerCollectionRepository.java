@@ -25,26 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programtheme.stock
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-@Reusable
-internal class InternalStockThemeCollectionRepository @Inject internal constructor(
-        store: IdentifiableObjectStore<InternalStockTheme>,
-        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
-        scope: RepositoryScope
-) : ReadOnlyWithUidCollectionRepositoryImpl<InternalStockTheme, InternalStockThemeCollectionRepository>(
-        store,
-        childrenAppenders,
-        scope,
-        FilterConnectorFactory(scope) { s: RepositoryScope ->
-            InternalStockThemeCollectionRepository(store, childrenAppenders, s)
-        }
-)
+import java.util.List;
+
+import io.reactivex.Single;
+
+public interface ReadOnlyWithUidAndTransformerCollectionRepository<M extends CoreObject & ObjectWithUidInterface, T>
+        extends ReadOnlyWithTransformerCollectionRepository<M, T> {
+
+    /**
+     * Returns a new {@link ReadOnlyObjectRepository} whose scope is the one of the current repository plus the
+     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
+     * @param uid to compare
+     * @return the {@link ReadOnlyObjectRepository}
+     */
+    ReadOnlyObjectRepository<M> uid(String uid);
+
+    /**
+     * Get the list of uids of objects in scope in an asynchronous way, returning a {@code Single<List<String>>}.
+     *
+     * @return A {@code Single} object with the list of uids.
+     */
+    Single<List<String>> getUids();
+
+    /**
+     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
+     * not be executed in the main thread. Consider the asynchronous version {@link #getUids()}.
+     *
+     * @return List of uids
+     */
+    List<String> blockingGetUids();
+
+}

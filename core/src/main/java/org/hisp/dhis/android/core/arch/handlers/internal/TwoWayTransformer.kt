@@ -25,35 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programtheme.stock.internal
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransaction
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
-import org.hisp.dhis.android.core.programtheme.stock.StockTheme
-
-@Reusable
-internal class StockThemeTransformer : TwoWayTransformer<InternalStockTheme, StockTheme> {
-    override fun transform(o: InternalStockTheme): StockTheme {
-        return StockTheme(
-                o.uid(),
-                o.itemCode(),
-                o.itemDescription(),
-                o.stockOnHand(),
-                o.transactions().map { StockThemeTransaction.transformFrom(it) }
-        )
-    }
-
-    override fun deTransform(t: StockTheme): InternalStockTheme {
-        return InternalStockTheme.builder()
-                .uid(t.programUid)
-                .itemCode(t.itemCode)
-                .itemDescription(t.itemDescription)
-                .stockOnHand(t.stockOnHand)
-                .transactions(t.transactions.map { StockThemeTransaction.transformTo(t.programUid, it) })
-                .build()
-    }
+interface TwoWayTransformer<O, T> : Transformer<O, T> {
+    fun deTransform(t: T): O
 }

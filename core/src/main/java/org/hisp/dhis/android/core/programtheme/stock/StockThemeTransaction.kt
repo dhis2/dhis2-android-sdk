@@ -57,12 +57,27 @@ sealed class StockThemeTransaction {
             CORRECTED
         }
 
-        internal fun transformFrom(t: InternalStockThemeTransaction) : StockThemeTransaction {
+        internal fun transformFrom(t: InternalStockThemeTransaction): StockThemeTransaction {
             return when (val type = TransactionType.valueOf(t.transactionType())) {
                 TransactionType.DISTRIBUTED -> Distributed(t.order(), type, t.distributedTo()!!, t.stockDistributed()!!)
                 TransactionType.DISCARDED -> Discarded(t.order(), type, t.stockDiscarded()!!)
                 TransactionType.CORRECTED -> Correction(t.order(), type, t.stockCorrected()!!)
             }
+        }
+
+        internal fun transformTo(programUid: String, t: StockThemeTransaction): InternalStockThemeTransaction {
+            val builder = InternalStockThemeTransaction.builder()
+                    .programUid(programUid)
+                    .transactionType(t.transactionType.name)
+                    .order(t.order)
+
+            when (t) {
+                is Distributed -> builder.distributedTo(t.distributedTo).stockDistributed(t.stockDistributed)
+                is Correction -> builder.stockCorrected(t.stockCorrected)
+                is Discarded -> builder.stockDiscarded(t.stockDiscarded)
+            }
+
+            return builder.build()
         }
     }
 }

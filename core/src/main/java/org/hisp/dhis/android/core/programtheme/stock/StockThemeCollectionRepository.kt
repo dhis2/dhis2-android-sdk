@@ -25,35 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programtheme.stock.internal
+package org.hisp.dhis.android.core.programtheme.stock
 
-import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransaction
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
-import org.hisp.dhis.android.core.programtheme.stock.StockTheme
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidAndTransformerCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransformer
+import javax.inject.Inject
 
 @Reusable
-internal class StockThemeTransformer : TwoWayTransformer<InternalStockTheme, StockTheme> {
-    override fun transform(o: InternalStockTheme): StockTheme {
-        return StockTheme(
-                o.uid(),
-                o.itemCode(),
-                o.itemDescription(),
-                o.stockOnHand(),
-                o.transactions().map { StockThemeTransaction.transformFrom(it) }
-        )
-    }
-
-    override fun deTransform(t: StockTheme): InternalStockTheme {
-        return InternalStockTheme.builder()
-                .uid(t.programUid)
-                .itemCode(t.itemCode)
-                .itemDescription(t.itemDescription)
-                .stockOnHand(t.stockOnHand)
-                .transactions(t.transactions.map { StockThemeTransaction.transformTo(t.programUid, it) })
-                .build()
-    }
-}
+class StockThemeCollectionRepository @Inject internal constructor(
+        store: IdentifiableObjectStore<InternalStockTheme>,
+        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
+        scope: RepositoryScope,
+        transformer: StockThemeTransformer
+) : ReadOnlyWithUidAndTransformerCollectionRepository<InternalStockTheme, StockTheme> by
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
+        store,
+        childrenAppenders,
+        scope,
+        FilterConnectorFactory(scope) { s: RepositoryScope ->
+            StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
+        },
+        transformer
+)

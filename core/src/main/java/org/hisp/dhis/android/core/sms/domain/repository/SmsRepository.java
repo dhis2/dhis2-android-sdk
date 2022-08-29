@@ -79,13 +79,14 @@ public interface SmsRepository {
      * @param requiredSender        messages from other senders will not be read
      * @param submissionId          submission ID to recognize message
      * @param submissionType        submission type to recognize message
-     * @return completed when found
+     * @return single with true if the message is the response for the current submit case; false otherwise. Returns
+     * the error RECEIVED_ERROR is the message is the awaited one but it contains an error.
      */
-    Single<Boolean> checkConfirmationSMS(String sender,
-                                         String message,
-                                         String requiredSender,
-                                         int submissionId,
-                                         SubmissionType submissionType);
+    Single<Boolean> isAwaitedSuccessMessage(String sender,
+                                            String message,
+                                            String requiredSender,
+                                            int submissionId,
+                                            SubmissionType submissionType);
 
     /**
      * Returned when sms sending error is returned from OS.

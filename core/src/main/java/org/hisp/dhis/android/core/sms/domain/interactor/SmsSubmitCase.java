@@ -314,15 +314,27 @@ public class SmsSubmitCase {
         );
     }
 
-    public Single<Boolean> checkConfirmationMessage(String sender, String message) {
+    public Single<Boolean> isConfirmationMessage(String sender, String message) {
         return localDbRepository.getConfirmationSenderNumber()
-                .flatMap(requiredSender -> smsRepository.checkConfirmationSMS(
+                .flatMap(requiredSender -> smsRepository.isAwaitedSuccessMessage(
                         sender,
                         message,
                         requiredSender,
                         submissionId,
                         getSubmissionType()
-                ));
+                )).doOnSuccess(isSuccess -> {
+                    if (isSuccess) {
+                        converter.updateSubmissionState(State.SYNCED_VIA_SMS);
+                    }
+                }).onErrorResumeNext(error -> {
+                    if (error instanceof SmsRepository.ResultResponseException &&
+                            ((SmsRepository.ResultResponseException) error).getReason() ==
+                                    SmsRepository.ResultResponseIssue.RECEIVED_ERROR) {
+                        return Single.just(true);
+                    } else {
+                        return Single.error(error);
+                    }
+                });
     }
 
     private Completable checkAllPreconditions() {

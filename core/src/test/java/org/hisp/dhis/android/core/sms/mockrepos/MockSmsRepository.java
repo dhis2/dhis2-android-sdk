@@ -59,7 +59,7 @@ public class MockSmsRepository implements SmsRepository {
     }
 
     @Override
-    public Single<Boolean> checkConfirmationSMS(String sender, String message, String requiredSender, int submissionId, SubmissionType submissionType) {
+    public Single<Boolean> isAwaitedSuccessMessage(String sender, String message, String requiredSender, int submissionId, SubmissionType submissionType) {
         return Single.just(true);
     }
 }

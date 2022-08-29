@@ -220,11 +220,11 @@ public class SmsSubmitCase {
     }
 
     private Completable setConverter(Converter<?> converter) {
-        if (this.converter != null) {
-            return Completable.error(new IllegalStateException("SMS submit case should be used once"));
-        } else {
+        if (this.converter == null) {
             this.converter = converter;
             return Completable.complete();
+        } else {
+            return Completable.error(new IllegalStateException("SMS submit case should be used once"));
         }
     }
 
@@ -335,6 +335,10 @@ public class SmsSubmitCase {
                         return Single.error(error);
                     }
                 });
+    }
+
+    public Completable markAsSentBySMS() {
+        return converter.updateSubmissionState(State.SENT_VIA_SMS);
     }
 
     private Completable checkAllPreconditions() {

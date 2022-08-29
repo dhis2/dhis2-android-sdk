@@ -45,9 +45,6 @@ Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
 
 case.send().blockingSubscribe();
 ```
-> **Important**
->
-> The app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
 ## SMS version { #android_sdk_sms_version }
 
@@ -97,6 +94,10 @@ Use this case to create a new submission and send it. Submission cases are not r
 SmsSubmitCase case = d2.smsModule().smsSubmitCase();
 ```
 
+There are two options to send a SMS: ask for permissions and send the SMS directly inside the application; or get the compressed message and use an external app to send the SMS.
+
+### Sending SMS within the application { #android_sdk_sms_embedded_submit_case }
+
 A submission involve the following steps:
 
 - Specify the data to submit. This means to call a method like `convert*()`.
@@ -111,6 +112,9 @@ Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
 
 case.send().blockingSubscribe();
 ```
+> **Important**
+>
+> The app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
 The next methods can be used to set the *DHIS2* data to send:
 
@@ -160,6 +164,32 @@ conditions are not satisfied. The preconditions errors are:
 - `NO_USER_LOGGED_IN`.
 - `NO_METADATA_DOWNLOADED`.
 - `SMS_MODULE_DISABLED`.
+
+
+### Sending SMS using an external application { #android_sdk_sms_external_submit_case }
+
+A submission using an external application involves the following steps:
+
+- Specify the data to submit and get the compress message. This means to call a method like `compress*()`.
+- Send the message using an external app.
+- Optionally mark as SENT_BY_SMS if you know the message has been sent.
+- Optionally check for confirmation SMS.
+
+As an example, sending a tracker event will be like:
+
+```java
+SmsSubmitCase case = d2.smsModule().smsSubmitCase();
+String message = case.compressTrackerEvent("event-uid").blockingGet();
+
+// Use an external application to send the SMS
+
+// Optionally mark the case as SENT_BY_SMS
+case.markAsSentBySMS();
+
+// If you get a response from the server, you can check if the message corresponds to the case or not.
+boolean isResponseMessage = case.isConfirmationMessage("sender_number", "message").blockingGet();
+```
+
 
 ## QrCodeCase { #android_sdk_sms_qr_code_case }
 

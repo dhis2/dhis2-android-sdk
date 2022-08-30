@@ -68,3 +68,71 @@ The object `D2Configuration` has a lot of fields to configure the behavior of th
 | writeTimeoutInSeconds | false | Write timeout for http queries | 30 seconds
 | interceptors  | false         | Interceptors for OkHttpClient | None
 | networkInterceptors | false   | NetworkInterceptors for OkHttpClient | None
+
+## Google Play Services Support
+
+The Google play services have been completely removed to make the SDK work on devices where the play services are not allowed; the SDK was using the `ProviderInstaller` present in the play service dependency to update the security provider to be protected against SSL exploits
+
+If you're using a SDK version without google play services support, you have two options to update the security provider against SSL exploits, you can use an open-source solution called [conscrypt](https://github.com/google/conscrypt) to target devices without the google play services support or you can use [play-services-safetynet](https://developer.android.com/training/articles/security-gms-provider) dependency that's not open-source and required the google play services.
+
+### 1. Play services Safetynet Dependency
+
+If you're targeting devices that support the google play services, the best option is to use the `ProviderInstaller` included in the play-services-SafetyNet dependency by following steps.
+
+```gradle
+dependencies {
+    implementation "com.google.android.gms:play-services-safetynet:<version>"
+    ...
+}
+```
+
+After adding the `play-services-safetynet` dependency just create a method that you can used to install the security provider
+
+```java
+public static void initialize(Context context){
+    try {
+        // ....
+        SSLContext.getInstance("TLSv1.2");
+        ProviderInstaller.installIfNeeded(context.getApplicationContext());
+        // ....
+    } catch (GooglePlayServicesRepairableException e) {
+        Log.e(TAG, e.toString());
+    } catch (GooglePlayServicesNotAvailableException e) {
+        Log.e(TAG, e.toString());
+    } catch (NoSuchAlgorithmException e) {
+        Log.e(TAG, e.toString());
+    }
+}
+```
+
+For more information about `play-services-safetynet`, check the official documentation [link](https://developer.android.com/training/articles/security-gms-provider)
+
+### 2. Open-source solution
+
+If you're not targeting devices with the google play services, [conscrypt](https://github.com/google/conscrypt) is an alternative to the `play-services-safetynet` dependency that can be used to update security provider against SSL exploits
+
+```gradle
+dependencies {
+    implementation 'org.conscrypt:conscrypt-android:<conscrypt-version>'
+    ...
+}
+```
+
+Setting up conscrypt is similar to the Google’s provider like in the following code :
+
+```java
+public static void initialize(){
+    try {
+        SSLContext.getInstance("TLSv1.2");
+        Security.insertProviderAt(Conscrypt.newProvider(), 1);
+    } catch(Exception e) {
+        Log.e(TAG, e.toString());
+    } catch (NoSuchAlgorithmException e) {
+        Log.e(TAG, e.toString());
+    }
+}
+```
+
+For more information about conscrypt, check the official github repository on this [link](https://github.com/google/conscrypt)
+
+

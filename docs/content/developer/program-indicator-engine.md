@@ -104,8 +104,8 @@ Table: Compatibility
 |                           |EventDate              | Yes       | Yes           |
 |                           |IncidentDate           | Yes       | Yes           |
 |                           |OrgunitCount           | No        | No            |
-|                           |ProgramStageId         | Yes       | No            |
-|                           |ProgramStageName       | Yes       | No            |
+|                           |ProgramStageId         | Yes       | Yes           |
+|                           |ProgramStageName       | Yes       | Yes           |
 |                           |SyncDate               | No        | No            |
 |                           |TeiCount               | Yes       | Yes           |
 |                           |ValueCount             | Yes       | Yes           |

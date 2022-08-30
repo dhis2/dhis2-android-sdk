@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -48,45 +48,46 @@ public class AppearanceSettingsObjectRepository
         implements ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
 
     private final ObjectWithoutUidStore<FilterSetting> filterSettingStore;
-    private final ObjectWithoutUidStore<CompletionSpinner> completionSpinnerStore;
+    private final ObjectWithoutUidStore<ProgramConfigurationSetting> programConfigurationSettingStore;
 
     @Inject
     AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterSetting> filterSettingStore,
-                                       ObjectWithoutUidStore<CompletionSpinner> completionSpinnerStore,
+                                       ObjectWithoutUidStore<ProgramConfigurationSetting>
+                                               programConfigurationSettingStore,
                                        AppearanceSettingCall appearanceSettingCall) {
         super(appearanceSettingCall);
         this.filterSettingStore = filterSettingStore;
-        this.completionSpinnerStore = completionSpinnerStore;
+        this.programConfigurationSettingStore = programConfigurationSettingStore;
     }
 
     @Override
     public AppearanceSettings blockingGet() {
         List<FilterSetting> filters = filterSettingStore.selectAll();
-        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
+        List<ProgramConfigurationSetting> programConfigurationSettingList =
+                programConfigurationSettingStore.selectAll();
 
-        if (filters.isEmpty() && completionSpinnerList.isEmpty()) {
+        if (filters.isEmpty() && programConfigurationSettingList.isEmpty()) {
             return null;
         }
 
         //FilterSorting
-        FilterSorting.Builder filterSortingBuilder = FilterSorting.builder();
-        filterSortingBuilder.home(getHomeFilters(filters));
-        filterSortingBuilder.dataSetSettings(getDataSetFilters(filters));
-        filterSortingBuilder.programSettings(getProgramFilters(filters));
-        FilterSorting filterSorting = filterSortingBuilder.build();
+        FilterSorting filterSorting = FilterSorting.builder()
+                .home(getHomeFilters(filters))
+                .dataSetSettings(getDataSetFilters(filters))
+                .programSettings(getProgramFilters(filters))
+                .build();
 
-        //CompletionSpinner
-        CompletionSpinnerSetting.Builder completionSpinnerSettingBuilder = CompletionSpinnerSetting.builder();
-        completionSpinnerSettingBuilder.globalSettings(getGlobalCompletionSpinner(completionSpinnerList));
-        completionSpinnerSettingBuilder.specificSettings(getSpecificCompletionsSpinners(completionSpinnerList));
-        CompletionSpinnerSetting completionSpinnerSetting = completionSpinnerSettingBuilder.build();
+        //ProgramConfigurationSettings
+        ProgramConfigurationSettings programConfigurationSettings = ProgramConfigurationSettings.builder()
+                .globalSettings(AppearanceSettingsHelper.getGlobal(programConfigurationSettingList))
+                .specificSettings(AppearanceSettingsHelper.getSpecifics(programConfigurationSettingList))
+                .build();
 
-        //Appearance
-        AppearanceSettings.Builder appearanceSettingsBuilder = AppearanceSettings.builder();
-        appearanceSettingsBuilder.filterSorting(filterSorting);
-        appearanceSettingsBuilder.completionSpinner(completionSpinnerSetting);
-
-        return appearanceSettingsBuilder.build();
+        return AppearanceSettings.builder()
+                .filterSorting(filterSorting)
+                .programConfiguration(programConfigurationSettings)
+                .completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfigurationSettings))
+                .build();
     }
 
     public Map<HomeFilter, FilterSetting> getHomeFilters() {
@@ -119,28 +120,6 @@ public class AppearanceSettingsObjectRepository
             filters = blockingGet().filterSorting().programSettings().globalSettings();
         }
         return filters;
-    }
-
-    private Map<String, CompletionSpinner> getSpecificCompletionsSpinners(
-            List<CompletionSpinner> completionSpinnerList
-    ) {
-        Map<String, CompletionSpinner> result = new HashMap<>();
-        for (CompletionSpinner completionSpinner : completionSpinnerList) {
-            if (completionSpinner.uid() != null) {
-                result.put(completionSpinner.uid(), completionSpinner);
-            }
-        }
-
-        return result;
-    }
-
-    private CompletionSpinner getGlobalCompletionSpinner(List<CompletionSpinner> completionSpinnerList) {
-        for (CompletionSpinner completionSpinner : completionSpinnerList) {
-            if (completionSpinner.uid() == null) {
-                return completionSpinner;
-            }
-        }
-        return null;
     }
 
     private Map<HomeFilter, FilterSetting> getHomeFilters(List<FilterSetting> filters) {
@@ -213,17 +192,29 @@ public class AppearanceSettingsObjectRepository
         return programFilters;
     }
 
-    public CompletionSpinner getGlobalCompletionSpinner() {
-        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
-        return getGlobalCompletionSpinner(completionSpinnerList);
+    public ProgramConfigurationSetting getGlobalProgramConfigurationSetting() {
+        List<ProgramConfigurationSetting> programSettingList = programConfigurationSettingStore.selectAll();
+        return AppearanceSettingsHelper.getGlobal(programSettingList);
     }
 
-    public CompletionSpinner getCompletionSpinnerByUid(String uid) {
-        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
-        CompletionSpinner result = getSpecificCompletionsSpinners(completionSpinnerList).get(uid);
+    @Deprecated
+    public CompletionSpinner getGlobalCompletionSpinner() {
+        ProgramConfigurationSetting setting = getGlobalProgramConfigurationSetting();
+        return AppearanceSettingsHelper.toCompletionSpinner(setting);
+    }
+
+    public ProgramConfigurationSetting getProgramConfigurationByUid(String uid) {
+        List<ProgramConfigurationSetting> programSettingList = programConfigurationSettingStore.selectAll();
+        ProgramConfigurationSetting result = AppearanceSettingsHelper.getSpecifics(programSettingList).get(uid);
         if (result == null) {
-            result = getGlobalCompletionSpinner();
+            result = getGlobalProgramConfigurationSetting();
         }
         return result;
+    }
+
+    @Deprecated
+    public CompletionSpinner getCompletionSpinnerByUid(String uid) {
+        ProgramConfigurationSetting setting = getProgramConfigurationByUid(uid);
+        return AppearanceSettingsHelper.toCompletionSpinner(setting);
     }
 }

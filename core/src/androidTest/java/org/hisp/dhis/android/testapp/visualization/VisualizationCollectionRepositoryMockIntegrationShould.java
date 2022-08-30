@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.visualization;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType;
@@ -38,8 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class VisualizationCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -93,6 +93,46 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
                 .blockingGet();
         assertThat(visualizations.size()).isEqualTo(1);
         assertThat(visualizations.get(0).uid()).isEqualTo("PYBH8ZaAQnC");
+    }
+
+    @Test
+    public void filter_by_legend_id() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+            .byLegendUid()
+            .eq("Yf6UHoPkd57")
+            .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_legend_style() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+                .byLegendStyle()
+                .eq("FILL")
+                .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_legend_show_key() {
+        List<Visualization> visualizations = d2.visualizationModule().visualizations()
+            .byLegendShowKey()
+             .isFalse()
+            .blockingGet();
+
+        assertThat(visualizations.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_legend_strategy() {
+        List<Visualization> indicators = d2.visualizationModule().visualizations()
+            .byLegendStrategy()
+            .eq("FIXED")
+            .blockingGet();
+
+        assertThat(indicators.size()).isEqualTo(2);
     }
 
     @Test

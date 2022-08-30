@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -53,7 +54,8 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,
     private val programRepository: ProgramStageCollectionRepository,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val constantStore: IdentifiableObjectStore<Constant>
+    private val constantStore: IdentifiableObjectStore<Constant>,
+    private val programStageStore: IdentifiableObjectStore<ProgramStage>
 ) : ProgramIndicatorEngine {
 
     override fun getProgramIndicatorValue(
@@ -112,7 +114,8 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             constantMap,
             context,
             dataElementStore,
-            trackedEntityAttributeStore
+            trackedEntityAttributeStore,
+            programStageStore
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

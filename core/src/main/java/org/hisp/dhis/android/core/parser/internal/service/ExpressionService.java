@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateL
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 
 import java.util.Collections;
@@ -71,16 +72,19 @@ public class ExpressionService {
     private final IdentifiableObjectStore<DataElement> dataElementStore;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
+    private final IdentifiableObjectStore<ProgramStage> programStageStore;
 
     private final Map<Integer, ExpressionItem> validationRuleExpressionItems;
 
     @Inject
     public ExpressionService(IdentifiableObjectStore<DataElement> dataElementStore,
                              CategoryOptionComboStore categoryOptionComboStore,
-                             IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore) {
+                             IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore,
+                             IdentifiableObjectStore<ProgramStage> programStageStore) {
         this.dataElementStore = dataElementStore;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.organisationUnitGroupStore = organisationUnitGroupStore;
+        this.programStageStore = programStageStore;
         this.validationRuleExpressionItems = getValidationRuleExpressionItems();
     }
 
@@ -257,6 +261,7 @@ public class ExpressionService {
                 .withDataElementStore(dataElementStore)
                 .withCategoryOptionComboStore(categoryOptionComboStore)
                 .withOrganisationUnitGroupStore(organisationUnitGroupStore)
+                .withProgramStageStore(programStageStore)
                 //.withSamplePeriods( samplePeriods )()
                 .buildForExpressions();
     }

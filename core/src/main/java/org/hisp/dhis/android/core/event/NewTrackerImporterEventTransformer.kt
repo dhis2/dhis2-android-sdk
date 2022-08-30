@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
 
 internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrackerImporterEvent> {
     override fun transform(o: Event): NewTrackerImporterEvent {
@@ -51,7 +52,7 @@ internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrack
             .completedAt(o.completedDate())
             .scheduledAt(o.dueDate())
             .attributeOptionCombo(o.attributeOptionCombo())
-            .assignedUser(o.assignedUser())
+            .assignedUser(o.assignedUser()?.let { NewTrackerImporterUserInfo.builder().uid(it).build() })
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
             .trackedEntityDataValues(

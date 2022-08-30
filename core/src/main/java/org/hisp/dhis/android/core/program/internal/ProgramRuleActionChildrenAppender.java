@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRu
     }
 
     @Override
-    protected ProgramRule appendChildren(ProgramRule programRule) {
+    public ProgramRule appendChildren(ProgramRule programRule) {
         ProgramRule.Builder builder = programRule.toBuilder();
         builder.programRuleActions(childStore.getChildren(programRule));
         return builder.build();

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,15 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -57,9 +60,12 @@ class AnalyticsServiceMetadataHelperShould {
     private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
     private val categoryOptionComboStore: CategoryOptionComboStore = mock()
     private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
+    private val legendStore: IdentifiableObjectStore<Legend> = mock()
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
+    private val programStore: ProgramStoreInterface = mock()
+    private val trackedEntityAttribute: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository = mock()
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
     private val parentPeriodGenerator: ParentPeriodGenerator = mock()
@@ -71,9 +77,12 @@ class AnalyticsServiceMetadataHelperShould {
         categoryOptionComboStore,
         dataElementStore,
         indicatorStore,
+        legendStore,
         organisationUnitStore,
         organisationUnitGroupStore,
         organisationUnitLevelStore,
+        programStore,
+        trackedEntityAttribute,
         programIndicatorRepository,
         analyticsOrganisationUnitHelper,
         parentPeriodGenerator,

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
@@ -46,9 +44,8 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore,
-    fileResourceStore: IdentifiableDataObjectStore<FileResource>
-) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)
@@ -61,11 +58,17 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
-        conflictStore.insert(
-            conflictHelper.getConflictBuilder(errorReport)
-                .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-                .trackedEntityInstance(errorReport.uid).build()
-        )
+        trackedEntityStore.selectByUid(errorReport.uid)?.let { trackedEntity ->
+            if (errorReport.errorCode == ImporterError.E1063.name && trackedEntity.deleted() == true) {
+                trackedEntityStore.delete(trackedEntity.uid())
+            } else {
+                conflictStore.insert(
+                    conflictHelper.getConflictBuilder(errorReport)
+                        .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
+                        .trackedEntityInstance(errorReport.uid).build()
+                )
+            }
+        }
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

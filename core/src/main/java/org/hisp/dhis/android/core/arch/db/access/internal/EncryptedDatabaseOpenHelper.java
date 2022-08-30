@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -58,16 +58,16 @@ class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        baseHelper.onOpen(new EncryptedDatabaseAdapter(db));
+        baseHelper.onOpen(new EncryptedDatabaseAdapter(db, getDatabaseName()));
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        baseHelper.onCreate(new EncryptedDatabaseAdapter(db));
+        baseHelper.onCreate(new EncryptedDatabaseAdapter(db, getDatabaseName()));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        baseHelper.onUpgrade(new EncryptedDatabaseAdapter(db), oldVersion, newVersion);
+        baseHelper.onUpgrade(new EncryptedDatabaseAdapter(db, getDatabaseName()), oldVersion, newVersion);
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
@@ -70,6 +72,8 @@ public class SystemInfoCallMockIntegrationShould extends BaseMockIntegrationTest
 
     @Test
     public void update_system_info_when_call() {
+        ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter);
+
         databaseAdapter.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues());
         isSystemInfoInDb(systemInfoFromDB);
 

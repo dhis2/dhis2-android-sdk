@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ final class CategoryCategoryOptionChildrenAppender extends ChildrenAppender<Cate
     }
 
     @Override
-    protected Category appendChildren(Category category) {
+    public Category appendChildren(Category category) {
         Category.Builder builder = category.toBuilder();
         builder.categoryOptions(linkChildStore.getChildren(category));
         return builder.build();

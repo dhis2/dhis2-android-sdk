@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,6 @@ public class ProgramShould extends BaseObjectShould implements ObjectShould {
         assertThat(program.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf");
         assertThat(program.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
         assertThat(program.relatedProgram().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(program.programIndicators()).isEmpty();
 
         assertThat(program.programRuleVariables().get(0).uid()).isEqualTo("varonrw1032");
         assertThat(program.programRuleVariables().get(1).uid()).isEqualTo("idLCptBEOF9");

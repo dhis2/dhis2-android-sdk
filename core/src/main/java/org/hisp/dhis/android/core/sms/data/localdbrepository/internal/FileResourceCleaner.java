@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,7 @@ class FileResourceCleaner {
 
         return trackedEntityModule.trackedEntityAttributes()
                 .byUid().in(attributeUids)
-                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.FILE_RESOURCE)
+                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.IMAGE)
                 .get()
                 .map(fileAttributes -> {
                     if (fileAttributes.isEmpty()) {

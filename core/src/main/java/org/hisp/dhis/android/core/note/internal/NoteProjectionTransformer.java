@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.note.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
@@ -49,7 +50,7 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
     private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
-    NoteProjectionTransformer(ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+    NoteProjectionTransformer(CredentialsSecureStore credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
     }
 

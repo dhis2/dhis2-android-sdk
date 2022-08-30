@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
@@ -38,7 +37,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
@@ -54,9 +52,8 @@ internal class JobReportEventHandler @Inject internal constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore,
-    fileResourceStore: IdentifiableDataObjectStore<FileResource>
-) : JobReportTypeHandler(relationshipStore, fileResourceStore) {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
@@ -83,18 +80,23 @@ internal class JobReportEventHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
-        val event = eventStore.selectByUid(errorReport.uid)
-        val trackedEntityInstanceUid = event?.enrollment()?.let {
-            enrollmentStore.selectByUid(it)?.trackedEntityInstance()
+        eventStore.selectByUid(errorReport.uid)?.let { event ->
+            val trackedEntityInstanceUid = event.enrollment()?.let {
+                enrollmentStore.selectByUid(it)?.trackedEntityInstance()
+            }
+            if (errorReport.errorCode == ImporterError.E1032.name && event.deleted() == true) {
+                eventStore.delete(event.uid())
+            } else {
+                conflictStore.insert(
+                    conflictHelper.getConflictBuilder(errorReport)
+                        .tableReference(EventTableInfo.TABLE_INFO.name())
+                        .trackedEntityInstance(trackedEntityInstanceUid)
+                        .enrollment(event.enrollment())
+                        .event(errorReport.uid)
+                        .build()
+                )
+            }
         }
-        conflictStore.insert(
-            conflictHelper.getConflictBuilder(errorReport)
-                .tableReference(EventTableInfo.TABLE_INFO.name())
-                .trackedEntityInstance(trackedEntityInstanceUid)
-                .enrollment(event?.enrollment())
-                .event(errorReport.uid)
-                .build()
-        )
     }
 
     override fun getRelatedRelationships(uid: String): List<String> {

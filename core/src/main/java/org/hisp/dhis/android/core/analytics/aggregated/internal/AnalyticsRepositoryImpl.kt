@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
@@ -47,6 +48,10 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
 
     override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
         return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
+    }
+
+    override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(analyticsLegendStrategy = analyticsLegendStrategy) }
     }
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {

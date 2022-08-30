@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,9 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
 
 internal const val ATTEMPTS_AFTER_UPLOAD = 90
 internal const val ATTEMPTS_WHEN_QUERYING = 1
@@ -47,7 +50,9 @@ internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
-    private val handler: JobReportHandler
+    private val handler: JobReportHandler,
+    private val fileResourceHandler: JobReportFileResourceHandler,
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager
 ) {
 
     fun queryPendingJobs(): Observable<D2Progress> {
@@ -62,12 +67,19 @@ internal class JobQueryCall @Inject internal constructor(
                     Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
                 }
             }
-            .flatMap { queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
+            .flatMap {
+                queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING)
+                    .flatMap { _ -> updateFileResourceStates(it.second) }
+            }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
         return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
+    }
+
+    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
+        return fileResourceHandler.updateFileResourceStates(jobObjects)
     }
 
     private fun queryJobInternal(
@@ -77,14 +89,19 @@ internal class JobQueryCall @Inject internal constructor(
         attempts: Int
     ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
-        @Suppress("MagicNumber")
+        @Suppress("TooGenericExceptionCaught")
         return Observable.interval(ATTEMPTS_INITIAL_DELAY, ATTEMPTS_INTERVAL, TimeUnit.SECONDS)
             .map {
                 try {
                     downloadAndHandle(jobId, jobObjects)
                     true
-                } catch (_: Throwable) {
-                    false
+                } catch (e: Throwable) {
+                    if (e is D2Error && e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
+                        false
+                    } else {
+                        handlerError(jobId, jobObjects)
+                        true
+                    }
                 }
             }
             .takeUntil { it }
@@ -95,6 +112,7 @@ internal class JobQueryCall @Inject internal constructor(
                     it && isLastJob
                 )
             }
+            .flatMap { updateFileResourceStates(jobObjects) }
     }
 
     private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
@@ -104,6 +122,11 @@ internal class JobQueryCall @Inject internal constructor(
         )
         trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
         handler.handle(jobReport, jobObjects)
+    }
+
+    private fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
+        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        stateManager.restoreStates(jobObjects)
     }
 
     private fun byJobIdClause(jobId: String) = WhereClauseBuilder()

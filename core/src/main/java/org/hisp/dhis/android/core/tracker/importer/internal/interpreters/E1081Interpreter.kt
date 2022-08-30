@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@ import org.hisp.dhis.android.R
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class E1081Interpreter internal constructor(
-    private val interpreterHelper: InterpreterHelper,
     override val regex: Regex
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1081

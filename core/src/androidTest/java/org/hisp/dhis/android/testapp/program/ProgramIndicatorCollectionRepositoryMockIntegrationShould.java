@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
         List<ProgramIndicator> indicators =
                 d2.programModule().programIndicators()
                         .byExpression()
-                        .eq("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
+                        .eq("1")
                         .blockingGet();
 
         assertThat(indicators.size()).isEqualTo(1);
@@ -146,17 +146,17 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withLegendSets().one().blockingGet();
         assertThat(programIndicators.legendSets().size()).isEqualTo(1);
-        assertThat(programIndicators.legendSets().get(0).name()).isEqualTo("Age 15y interval");
+        assertThat(programIndicators.legendSets().get(0).uid()).isEqualTo("TiOkbpGEud4");
     }
 
     @Test
     public void include_analytics_period_boundaries_as_children() {
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withAnalyticsPeriodBoundaries().one().blockingGet();
-        assertThat(programIndicators.analyticsPeriodBoundaries().size()).isEqualTo(3);
+        assertThat(programIndicators.analyticsPeriodBoundaries().size()).isEqualTo(2);
         assertThat(programIndicators.analyticsPeriodBoundaries().get(0).offsetPeriodType()).
                 isEqualTo(PeriodType.SixMonthly);
         assertThat(programIndicators.analyticsPeriodBoundaries().get(1).analyticsPeriodBoundaryType())
-                .isEqualTo(AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD);
+                .isEqualTo(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD);
     }
 }

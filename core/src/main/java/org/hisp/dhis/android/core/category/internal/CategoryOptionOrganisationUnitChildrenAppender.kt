@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,38 +28,43 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_ACCESSIBLE_TO_USER
+import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_RESTRICTED
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-internal class CategoryOptionOrganisationUnitChildrenAppender
-private constructor(private val childStore: ObjectWithUidChildStore<CategoryOption>) :
-    ChildrenAppender<CategoryOption>() {
+internal class CategoryOptionOrganisationUnitChildrenAppender private constructor(
+    private val childStore: LinkStore<CategoryOptionOrganisationUnitLink>
+) : ChildrenAppender<CategoryOption>() {
 
     override fun appendChildren(categoryOption: CategoryOption): CategoryOption {
         val builder = categoryOption.toBuilder()
-        builder.organisationUnits(childStore.getChildren(categoryOption))
+        val whereClause = WhereClauseBuilder().apply {
+            appendKeyStringValue(
+                CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION, categoryOption.uid()
+            )
+        }.build()
+        val links = childStore.selectWhere(whereClause)
+        val organisationUnit = when {
+            links.isEmpty() -> null
+            links.all { it.restriction() == NOT_RESTRICTED } -> null
+            links.all { it.restriction() == NOT_ACCESSIBLE_TO_USER } -> emptyList()
+            else -> links.map { ObjectWithUid.create(it.organisationUnit()) }
+        }
+
+        builder.organisationUnits(organisationUnit)
         return builder.build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            OrganisationUnitTableInfo.TABLE_INFO,
-            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-            CategoryOptionOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOption> {
             return CategoryOptionOrganisationUnitChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                    databaseAdapter,
-                    CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                )
+                CategoryOptionOrganisationUnitLinkStore.create(databaseAdapter)
             )
         }
     }

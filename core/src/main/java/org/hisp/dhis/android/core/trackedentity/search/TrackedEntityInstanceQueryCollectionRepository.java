@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -70,9 +70,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -385,6 +385,10 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return connectorFactory.eqConnector(bool -> scope.toBuilder().allowOnlineCache(bool).build());
     }
 
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> excludeUids() {
+        return connectorFactory.listConnector(list -> scope.toBuilder().excludedUids(new HashSet<>(list)).build());
+    }
+
     /**
      * Apply the filters defined in a {@link TrackedEntityInstanceFilter}. It will overwrite previous filters in case
      * they overlap. In the same way, they could be overwritten by subsequent filters.
@@ -523,30 +527,14 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(),
-                    -1);
+            String sqlQuery = localQueryHelper.getSqlQuery(scope, scope.excludedUids(), -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
                     new ChildrenSelection(Collections.singleton(
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                List<TrackedEntityInstance> instances = new ArrayList<>();
-
-                List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
-
-                for (TrackedEntityInstanceQueryOnline onlineQuery : onlineQueries) {
-                    TrackedEntityInstanceQueryOnline noPagingQuery = onlineQuery.toBuilder().paging(false).build();
-                    List<TrackedEntityInstance> pageInstances = onlineCallFactory.getCall(noPagingQuery).call();
-
-                    Set<String> returnedUids = UidsHelper.getUids(instances);
-                    for (TrackedEntityInstance instance : pageInstances) {
-                        if (!returnedUids.contains(instance.uid())) {
-                            instances.add(instance);
-                        }
-                    }
-                }
-                return instances;
+                return onlineHelper.queryOnlineBlocking(onlineCallFactory, scope);
             } catch (D2Error e) {
                 throw new RuntimeException(e);
             } catch (Exception e) {
@@ -615,8 +603,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<String> blockingGetUids() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = localQueryHelper.getUidsWhereClause(scope, Collections.emptySet(),
-                    -1);
+            String sqlQuery = localQueryHelper.getUidsWhereClause(scope, scope.excludedUids(), -1);
             return store.selectUidsWhere(sqlQuery);
         } else {
             List<TrackedEntityInstance> instances = blockingGet();

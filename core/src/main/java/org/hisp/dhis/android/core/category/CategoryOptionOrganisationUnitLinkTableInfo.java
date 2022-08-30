@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -54,11 +54,12 @@ public final class CategoryOptionOrganisationUnitLinkTableInfo {
 
         public static final String CATEGORY_OPTION = "categoryOption";
         public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String RESTRICTION = "restriction";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    CATEGORY_OPTION, ORGANISATION_UNIT);
+                    CATEGORY_OPTION, ORGANISATION_UNIT, RESTRICTION);
         }
 
         @Override

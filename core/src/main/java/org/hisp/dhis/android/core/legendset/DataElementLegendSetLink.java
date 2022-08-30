@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,9 @@ public abstract class DataElementLegendSetLink implements CoreObject {
     @Nullable
     public abstract String legendSet();
 
+    @Nullable
+    public abstract Integer sortOrder();
+
     public static DataElementLegendSetLink create(Cursor cursor) {
         return AutoValue_DataElementLegendSetLink.createFromCursor(cursor);
     }
@@ -63,6 +66,8 @@ public abstract class DataElementLegendSetLink implements CoreObject {
         public abstract Builder dataElement(String dataElement);
 
         public abstract Builder legendSet(String legendSet);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract DataElementLegendSetLink build();
     }

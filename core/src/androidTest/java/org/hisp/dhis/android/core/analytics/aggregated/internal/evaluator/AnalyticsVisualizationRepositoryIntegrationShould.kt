@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
         assertThat(result.dimensionItems[Dimension.Period]!!.size).isEqualTo(3)
         assertThat(result.metadata).isNotEmpty()
@@ -56,7 +56,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
     }
 
     @Test
-    fun evaluate_visualization_wit_periods() {
+    fun evaluate_visualization_with_periods() {
         val result = d2.analyticsModule().visualizations()
             .withVisualization(visualizationUid)
             .withPeriods(listOf(DimensionItem.PeriodItem.Absolute("2018")))
@@ -65,7 +65,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
         assertThat(result.dimensionItems[Dimension.Period]).isEqualTo(
             listOf(
@@ -77,7 +77,30 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
     }
 
     @Test
-    fun evaluate_visualization_wit_organisation_units() {
+    fun evaluate_visualization_with_unordered_periods() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .withPeriods(
+                listOf(
+                    DimensionItem.PeriodItem.Absolute("2022"),
+                    DimensionItem.PeriodItem.Absolute("2022"),
+                    DimensionItem.PeriodItem.Absolute("2021")
+                )
+            )
+            .blockingEvaluate()
+            .getOrThrow()
+
+        assertThat(result.dimensionItems[Dimension.Period]).isEqualTo(
+            listOf(
+                DimensionItem.PeriodItem.Absolute("2021"),
+                DimensionItem.PeriodItem.Absolute("2022")
+            )
+        )
+        assertThat(result.values.size).isEqualTo(2)
+    }
+
+    @Test
+    fun evaluate_visualization_with_organisation_units() {
         val result = d2.analyticsModule().visualizations()
             .withVisualization(visualizationUid)
             .withOrganisationUnits(
@@ -90,7 +113,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
-        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(2)
         assertThat(result.dimensionItems[Dimension.OrganisationUnit]).isEqualTo(
             listOf(
                 DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT)
@@ -108,5 +131,18 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
             .blockingEvaluate()
 
         assertThat(result.succeeded).isFalse()
+    }
+
+    @Test
+    fun return_data_elements_with_legend_by_DE_if_legend_strategy_is_by_data_item() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .blockingEvaluate()
+            .getOrThrow()
+
+        assertThat(result.values.size).isEqualTo(3)
+        assertThat(result.values[0][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[1][0].legend).isEqualTo("rlXteEDaTpt")
+        assertThat(result.values[2][0].legend).isEqualTo("rlXteEDaTpt")
     }
 }

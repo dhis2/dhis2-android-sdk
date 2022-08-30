@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,12 +36,14 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidDataElement(val uid: String) : AnalyticsException("Missing DataElement $uid")
     class InvalidDataElementOperand(val uid: String) : AnalyticsException("Missing DataElementOperand $uid")
     class InvalidProgramIndicator(val uid: String) : AnalyticsException("Missing ProgramIndicator $uid")
+    class InvalidProgram(val uid: String) : AnalyticsException("Missing Program $uid")
     class InvalidIndicator(val uid: String) : AnalyticsException("Missing Indicator $uid")
     class InvalidOrganisationUnit(val uid: String) : AnalyticsException("Missing organisation unit $uid")
     class InvalidOrganisationUnitGroup(val uid: String) : AnalyticsException("Missing organisation unit group $uid")
     class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
+    class InvalidTrackedEntityAttribute(val uid: String) : AnalyticsException("Missing tracked entity attribute $uid")
     class ProgramIndicatorCustomBoundaries(val programIndicator: ProgramIndicator) :
         AnalyticsException(
             "Custom boundaries are not supported for program indicators: " +

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,9 +51,11 @@ public final class ProgramIndicatorCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository> {
 
     @Inject
-    ProgramIndicatorCollectionRepository(final IdentifiableObjectStore<ProgramIndicator> store,
-                                         final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
-                                         final RepositoryScope scope) {
+    ProgramIndicatorCollectionRepository(
+        final IdentifiableObjectStore<ProgramIndicator> store,
+        final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
+        final RepositoryScope scope
+    ) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, s)));
     }

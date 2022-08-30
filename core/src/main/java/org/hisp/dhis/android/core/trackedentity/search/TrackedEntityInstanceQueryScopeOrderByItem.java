@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,11 +35,16 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 @AutoValue
 public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
 
+    public static TrackedEntityInstanceQueryScopeOrderByItem DEFAULT_TRACKER_ORDER = builder()
+            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
+            .direction(RepositoryScope.OrderByDirection.DESC)
+            .build();
+
     public abstract TrackedEntityInstanceQueryScopeOrderColumn column();
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    String toAPIString() {
+    public String toAPIString() {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,19 +44,19 @@ class CredentialsSecureStorageMockIntegrationShould {
 
     @Test
     fun credentials_are_correctly_stored_for_regular_password() {
-        setAndVerify(Credentials("username", "password", null))
+        setAndVerify(Credentials("username", "serverUrl", "password", null))
     }
 
     @Test
     fun credentials_are_correctly_stored_for_really_log_password() {
         val pw = (0 until 1000).joinToString { it.toString() }
-        setAndVerify(Credentials("username", pw, null))
+        setAndVerify(Credentials("username", "serverUrl", pw, null))
     }
 
     @Test
     fun credentials_are_correctly_stored_for_open_id_connect_config() {
         val authState = AuthState()
-        setAndVerify(Credentials("username", null, authState))
+        setAndVerify(Credentials("username", "serverUrl", null, authState))
     }
 
     private fun setAndVerify(credentials: Credentials) {
@@ -74,7 +74,7 @@ class CredentialsSecureStorageMockIntegrationShould {
     @Test
     fun credentials_are_correctly_removed() {
         val store1 = instantiateStore()
-        val credentials = Credentials("username", "password", null)
+        val credentials = Credentials("username", "serverUrl", "password", null)
         store1.set(credentials)
         store1.remove()
 

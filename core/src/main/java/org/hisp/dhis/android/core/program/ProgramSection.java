@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -79,6 +80,11 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     @JsonProperty()
     public abstract String formName();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(SectionRenderingColumnAdapter.class)
+    public abstract SectionRendering renderType();
+
     public static Builder builder() {
         return new AutoValue_ProgramSection.Builder();
     }
@@ -107,6 +113,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
         public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract Builder formName(String formName);
+
+        public abstract Builder renderType(SectionRendering renderType);
 
         abstract ProgramSection autoBuild();
 

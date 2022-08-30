@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ public class ObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabas
         optionSetCursorAssert(cursor, optionSet);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void throw_exception_for_null_when_inserting() {
         OptionSet optionSet = null;
         store.insert(optionSet);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -107,6 +107,9 @@ public abstract class GeneralSettings implements CoreObject {
     @Nullable
     public abstract Boolean allowScreenCapture();
 
+    @Nullable
+    public abstract String messageOfTheDay();
+
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
@@ -145,6 +148,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder matomoURL(String matomoURL);
 
         public abstract Builder allowScreenCapture(Boolean allowScreenCapture);
+
+        public abstract Builder messageOfTheDay(String messageOfTheDay);
 
         public abstract GeneralSettings build();
     }

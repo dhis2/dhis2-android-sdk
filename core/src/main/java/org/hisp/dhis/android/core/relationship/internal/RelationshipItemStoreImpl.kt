@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -132,6 +132,16 @@ internal class RelationshipItemStoreImpl private constructor(
             item.relationship()?.let {
                 appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, it.uid())
             }
+        }
+
+        return selectWhere(clauseBuilder.build())
+    }
+
+    override fun getByEntityUid(entityUid: String): List<RelationshipItem> {
+        val clauseBuilder = WhereClauseBuilder().apply {
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE, entityUid)
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.ENROLLMENT, entityUid)
+            appendOrKeyStringValue(RelationshipItemTableInfo.Columns.EVENT, entityUid)
         }
 
         return selectWhere(clauseBuilder.build())

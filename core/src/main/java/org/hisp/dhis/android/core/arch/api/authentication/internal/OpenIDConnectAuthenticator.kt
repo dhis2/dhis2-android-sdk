@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 
@@ -42,7 +42,7 @@ private const val UNAUTHORIZED = 401
 
 @Reusable
 internal class OpenIDConnectAuthenticator @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val credentialsSecureStore: CredentialsSecureStore,
     private val tokenRefresher: OpenIDConnectTokenRefresher,
     private val userIdHelper: UserIdAuthenticatorHelper,
     private val logoutHandler: OpenIDConnectLogoutHandler

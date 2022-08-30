@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -54,18 +55,30 @@ internal class AnalyticsService @Inject constructor(
                 throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
             }
 
-            val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
-            val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
+            val queryDimensions = analyticsServiceDimensionHelper.getQueryDimensions(params)
+            val queryAbsoluteDimensions =
+                analyticsServiceDimensionHelper.getQueryAbsoluteDimensionItems(params.dimensions, queryDimensions)
+
+            val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, queryAbsoluteDimensions)
 
             val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
-            val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
+            val values = evaluationItems.map {
+                analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
+            }
+
+            val legends = values.filter { it.legend != null }.map { it.legend!! }
+            val finalMetadata = analyticsServiceMetadataHelper.includeLegendsToMetadata(metadata, legends)
+
+            val dimensionItemsMap =
+                queryAbsoluteDimensions.mapValues { v -> v.value.map { it as DimensionItem } } +
+                    params.filters.groupBy { it.dimension }
 
             Result.Success(
                 DimensionalResponse(
-                    metadata = metadata,
-                    dimensions = dimensions,
-                    dimensionItems = dimensionItems.groupBy { it.dimension },
+                    metadata = finalMetadata,
+                    dimensions = queryDimensions,
+                    dimensionItems = dimensionItemsMap,
                     filters = params.filters.map { it.id },
                     values = values
                 )

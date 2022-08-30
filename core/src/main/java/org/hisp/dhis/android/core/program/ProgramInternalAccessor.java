@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,10 +37,6 @@ public final class ProgramInternalAccessor {
 
     public static List<ProgramTrackedEntityAttribute> accessProgramTrackedEntityAttributes(Program program) {
         return program.programTrackedEntityAttributes();
-    }
-
-    public static List<ProgramIndicator> accessProgramIndicators(Program program) {
-        return program.programIndicators();
     }
 
     public static List<ProgramRuleVariable> accessProgramRuleVariables(Program program) {

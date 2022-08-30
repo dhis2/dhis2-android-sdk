@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import io.reactivex.Completable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -44,11 +45,11 @@ internal class EventPersistenceCallFactory @Inject constructor(
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader
 ) {
     fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {
-        return persistEventsInternal(events, false, relatives)
+        return persistEventsInternal(events, asRelationship = false, relatives)
     }
 
     fun persistAsRelationships(events: List<Event>): Completable {
-        return persistEventsInternal(events, true, null)
+        return persistEventsInternal(events, asRelationship = true, relatives = null)
     }
 
     private fun persistEventsInternal(
@@ -57,7 +58,12 @@ internal class EventPersistenceCallFactory @Inject constructor(
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {
-            eventHandler.handleMany(events, asRelationship, false, false, relatives)
+            val params = IdentifiableDataHandlerParams(
+                hasAllAttributes = false,
+                overwrite = false,
+                asRelationship = asRelationship
+            )
+            eventHandler.handleMany(events, params, relatives)
             if (hasMissingOrganisationUnitUids(events)) {
                 organisationUnitDownloader.refreshOrganisationUnits()
             } else {

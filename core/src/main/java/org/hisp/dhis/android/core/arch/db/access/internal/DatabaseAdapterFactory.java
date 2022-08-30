@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
-import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,12 +85,12 @@ public class DatabaseAdapterFactory {
         createOrOpenDatabase(adapter, databaseName, encrypt, BaseDatabaseOpenHelper.VERSION);
     }
 
-    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration) {
         createOrOpenDatabase(adapter, userConfiguration.databaseName(), userConfiguration.encrypted(),
                 BaseDatabaseOpenHelper.VERSION);
     }
 
-    public void deleteDatabase(DatabaseUserConfiguration userConfiguration) {
+    public void deleteDatabase(DatabaseAccount userConfiguration) {
         context.deleteDatabase(userConfiguration.databaseName());
         if (userConfiguration.encrypted()) {
             encryptedOpenHelpers.remove(userConfiguration.databaseName());
@@ -106,11 +106,11 @@ public class DatabaseAdapterFactory {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
             String password = passwordManager.getPassword(databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password), openHelper.getDatabaseName());
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
-            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
+            return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase(), openHelper.getDatabaseName());
         }
     }
 

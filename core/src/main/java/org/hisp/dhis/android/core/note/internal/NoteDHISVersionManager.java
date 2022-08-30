@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.note.internal;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
 
@@ -42,11 +41,8 @@ import dagger.Reusable;
 @Reusable
 public class NoteDHISVersionManager {
 
-    private final DHISVersionManager versionManager;
-
     @Inject
-    NoteDHISVersionManager(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
+    NoteDHISVersionManager() {
     }
 
     public Note transform(Note.NoteType noteType, String ownerUid, Note note) {
@@ -59,17 +55,10 @@ public class NoteDHISVersionManager {
                 Note.builder().noteType(noteType).event(ownerUid);
 
         try {
-            if (this.versionManager.is2_29()) {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(new UidGeneratorImpl().generate());
-            } else {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                        .uid(note.uid());
-            }
+            builder
+                    .storedDate(BaseIdentifiableObject.dateToDateStr(
+                            BaseIdentifiableObject.parseDate(note.storedDate())))
+                    .uid(note.uid());
         } catch (ParseException ignored) {
             builder
                     .storedDate(null)

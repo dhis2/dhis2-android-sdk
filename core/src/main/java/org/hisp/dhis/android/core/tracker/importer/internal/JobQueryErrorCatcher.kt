@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatche
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
 
-class JobQueryErrorCatcher : APICallErrorCatcher {
+internal class JobQueryErrorCatcher : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean = false
 
-    override fun catchError(response: Response<*>): D2ErrorCode? {
+    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
         return if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
             D2ErrorCode.JOB_REPORT_NOT_AVAILABLE
         } else {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,14 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 class EncryptedDatabaseAdapter implements DatabaseAdapter {
 
     private final SQLiteDatabase database;
+    private final String databaseName;
 
-    EncryptedDatabaseAdapter(@NonNull SQLiteDatabase database) {
+    EncryptedDatabaseAdapter(@NonNull SQLiteDatabase database, @NonNull String databaseName) {
         if (database == null) {
             throw new IllegalArgumentException("database == null");
         }
         this.database = database;
+        this.databaseName = databaseName;
     }
 
     @Override
@@ -139,5 +141,10 @@ class EncryptedDatabaseAdapter implements DatabaseAdapter {
     @Override
     public void close() {
         database.close();
+    }
+
+    @Override
+    public String getDatabaseName() {
+        return databaseName;
     }
 }

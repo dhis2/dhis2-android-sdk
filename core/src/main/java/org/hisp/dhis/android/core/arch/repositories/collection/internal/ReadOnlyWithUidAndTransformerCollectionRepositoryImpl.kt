@@ -31,10 +31,11 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithTransformerCollectionRepository
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidAndTransformerCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
@@ -42,14 +43,14 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
-<M, T: Any, R : ReadOnlyWithTransformerCollectionRepository<M, T>> internal constructor(
-        private val store: IdentifiableObjectStore<M>,
-        childrenAppenders: Map<String, ChildrenAppender<M>>,
-        scope: RepositoryScope,
-        cf: FilterConnectorFactory<R>,
-        override val transformer: TwoWayTransformer<M, T>
+<M, T, R : ReadOnlyCollectionRepository<T>> internal constructor(
+    private val store: IdentifiableObjectStore<M>,
+    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope,
+    cf: FilterConnectorFactory<R>,
+    override val transformer: TwoWayTransformer<M, T>
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
-        ReadOnlyWithUidAndTransformerCollectionRepository<M, T> where M : CoreObject, M : ObjectWithUidInterface {
+    ReadOnlyWithUidCollectionRepository<T> where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
     /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
      *
@@ -66,8 +67,12 @@ class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
      * @return List of uids
      */
     override fun blockingGetUids(): List<String> {
-        return store.selectUidsWhere(whereClause, OrderByClauseBuilder.orderByFromItems(
-                scope.orderBy(), scope.pagingKey()))
+        return store.selectUidsWhere(
+            whereClause,
+            OrderByClauseBuilder.orderByFromItems(
+                scope.orderBy(), scope.pagingKey()
+            )
+        )
     }
 
     /**
@@ -76,8 +81,8 @@ class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
      * @param uid to compare
      * @return the ReadOnlyObjectRepository
      */
-    override fun uid(uid: String): ReadOnlyOneObjectRepositoryFinalImpl<M> {
+    override fun uid(uid: String): ReadOnlyObjectRepository<T> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
+        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, updatedScope, transformer)
     }
 }

@@ -39,24 +39,26 @@ import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransactionTableI
 
 internal object StockThemeTransactionLinkStore {
     private val BINDER: StatementBinder<InternalStockThemeTransaction> =
-            StatementBinder<InternalStockThemeTransaction> { o: InternalStockThemeTransaction, w: StatementWrapper ->
-                w.bind(1, o.programUid())
-                w.bind(2, o.order())
-                w.bind(3, o.transactionType())
-                w.bind(4, o.distributedTo())
-                w.bind(5, o.stockDistributed())
-                w.bind(6, o.stockDiscarded())
-                w.bind(7, o.stockCorrected())
-            }
+        StatementBinder<InternalStockThemeTransaction> { o: InternalStockThemeTransaction, w: StatementWrapper ->
+            w.bind(1, o.programUid())
+            w.bind(2, o.order())
+            w.bind(3, o.transactionType())
+            w.bind(4, o.distributedTo())
+            w.bind(5, o.stockDistributed())
+            w.bind(6, o.stockDiscarded())
+            w.bind(7, o.stockCorrected())
+        }
 
     val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(
-            StockThemeTransactionTableInfo.TABLE_INFO, StockThemeTransactionTableInfo.Columns.PROGRAM_UID)
+        StockThemeTransactionTableInfo.TABLE_INFO, StockThemeTransactionTableInfo.Columns.PROGRAM_UID
+    )
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<InternalStockThemeTransaction> {
         return StoreFactory.linkStore(
-                databaseAdapter,
-                StockThemeTransactionTableInfo.TABLE_INFO,
-                StockThemeTransactionTableInfo.Columns.PROGRAM_UID,
-                BINDER) { cursor: Cursor -> InternalStockThemeTransaction.create(cursor) }
+            databaseAdapter,
+            StockThemeTransactionTableInfo.TABLE_INFO,
+            StockThemeTransactionTableInfo.Columns.PROGRAM_UID,
+            BINDER
+        ) { cursor: Cursor -> InternalStockThemeTransaction.create(cursor) }
     }
 }

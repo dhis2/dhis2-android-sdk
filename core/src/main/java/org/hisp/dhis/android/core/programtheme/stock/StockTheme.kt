@@ -28,10 +28,16 @@
 
 package org.hisp.dhis.android.core.programtheme.stock
 
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
 data class StockTheme(
     val programUid: String,
     val itemCode: String,
     val itemDescription: String,
     val stockOnHand: String,
     val transactions: List<StockThemeTransaction>
-)
+) : ObjectWithUidInterface {
+    override fun uid(): String {
+        return programUid
+    }
+}

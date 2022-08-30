@@ -35,7 +35,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface>
+public interface ReadOnlyWithUidCollectionRepository<M extends ObjectWithUidInterface>
         extends ReadOnlyCollectionRepository<M> {
 
     /**

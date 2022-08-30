@@ -40,7 +40,7 @@ public final class ChildrenAppenderExecutor {
     private ChildrenAppenderExecutor() {
     }
 
-    public static <M extends CoreObject> M appendInObject(
+    public static <M> M appendInObject(
             M m, Map<String, ChildrenAppender<M>> childrenAppenders, ChildrenSelection childrenSelection) {
 
         if (m == null) {
@@ -77,7 +77,7 @@ public final class ChildrenAppenderExecutor {
         return setWithChildren;
     }
 
-    private static <M extends CoreObject> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
+    private static <M> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
             Map<String, ChildrenAppender<M>> appendersMap, ChildrenSelection childrenSelection) {
         List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
         for (String key : childrenSelection.children) {

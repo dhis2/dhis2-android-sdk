@@ -47,14 +47,16 @@ object StockThemeTransactionTableInfo {
 
     class Columns : DeletableDataColumns() {
         override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    PROGRAM_UID,
-                    ORDER,
-                    TRANSACTION_TYPE,
-                    DISTRIBUTED_TO,
-                    STOCK_DISTRIBUTED,
-                    STOCK_DISCARDED,
-                    STOCK_CORRECTED)
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM_UID,
+                ORDER,
+                TRANSACTION_TYPE,
+                DISTRIBUTED_TO,
+                STOCK_DISTRIBUTED,
+                STOCK_DISCARDED,
+                STOCK_CORRECTED
+            )
         }
 
         companion object {

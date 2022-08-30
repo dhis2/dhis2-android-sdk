@@ -36,10 +36,11 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBu
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithTransformerCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSourceWithTransformer
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -47,17 +48,22 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 import org.hisp.dhis.android.core.common.CoreObject
 
 open class ReadOnlyWithTransformerCollectionRepositoryImpl<M : CoreObject, T : Any,
-        R : ReadOnlyWithTransformerCollectionRepository<M, T>> internal constructor(
-        private val store: ReadableStore<M>,
-        val childrenAppenders: Map<String, ChildrenAppender<M>>,
-        scope: RepositoryScope,
-        cf: FilterConnectorFactory<R>,
-        open val transformer: TwoWayTransformer<M, T>
-) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyWithTransformerCollectionRepository<M, T> {
+    R : ReadOnlyCollectionRepository<T>> internal constructor(
+    private val store: ReadableStore<M>,
+    val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope,
+    cf: FilterConnectorFactory<R>,
+    open val transformer: TwoWayTransformer<M, T>
+) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 
     fun blockingGetWithoutChildren(): List<M> {
-        return store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy(),
-                scope.pagingKey()))
+        return store.selectWhere(
+            whereClause,
+            OrderByClauseBuilder.orderByFromItems(
+                scope.orderBy(),
+                scope.pagingKey()
+            )
+        )
     }
 
     /**
@@ -65,8 +71,8 @@ open class ReadOnlyWithTransformerCollectionRepositoryImpl<M : CoreObject, T : A
      *
      * @return Object repository
      */
-    override fun one(): ReadOnlyOneObjectRepositoryFinalImpl<M> {
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, scope)
+    override fun one(): ReadOnlyObjectRepository<T> {
+        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, scope, transformer)
     }
 
     /**
@@ -76,8 +82,10 @@ open class ReadOnlyWithTransformerCollectionRepositoryImpl<M : CoreObject, T : A
      * @return List of objects
      */
     override fun blockingGet(): List<T> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(blockingGetWithoutChildren(),
-                childrenAppenders, scope.children()).map { transformer.transform(it) }
+        return ChildrenAppenderExecutor.appendInObjectCollection(
+            blockingGetWithoutChildren(),
+            childrenAppenders, scope.children()
+        ).map { transformer.transform(it) }
     }
 
     /**
@@ -130,8 +138,9 @@ open class ReadOnlyWithTransformerCollectionRepositoryImpl<M : CoreObject, T : A
      * returning a `Single`.
      * @return If selection is empty
      */
-    override val isEmpty: Single<Boolean>
-        get() = Single.fromCallable { blockingIsEmpty() }
+    override fun isEmpty(): Single<Boolean> {
+        return Single.fromCallable { blockingIsEmpty() }
+    }
 
     /**
      * Check if selection of objects with applied filters is empty in a synchronous way.

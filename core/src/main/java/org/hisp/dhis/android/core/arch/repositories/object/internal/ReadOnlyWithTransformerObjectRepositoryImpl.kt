@@ -25,65 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.paging.internal
+package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import androidx.paging.ItemKeyedDataSource
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
-import org.hisp.dhis.android.core.common.CoreObject
 
-class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any>(
+class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
+internal constructor(
     private val store: ReadableStore<M>,
-    private val scope: RepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    private val scope: RepositoryScope,
     private val transformer: TwoWayTransformer<M, T>
-) : ItemKeyedDataSource<M, T>() {
+) : ReadOnlyObjectRepository<T> {
 
-    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<T>) {
-        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize
+    fun blockingGetWithoutChildren(): M {
+        val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
+        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))!!
+    }
+
+    /**
+     * Returns the object in an asynchronous way, returning a `Single<M>`.
+     * @return A `Single` object with the object
+     */
+    override fun get(): Single<T> {
+        return Single.fromCallable { blockingGet() }
+    }
+
+    /**
+     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.get].
+     * @return the object
+     */
+    override fun blockingGet(): T {
+        return transformer.transform(
+            ChildrenAppenderExecutor.appendInObject(
+                blockingGetWithoutChildren(), childrenAppenders, scope.children()
+            )
         )
-        callback.onResult(appendChildren(withoutChildren))
     }
 
-    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, false)
+    /**
+     * Returns if the object exists in an asynchronous way, returning a `Single<Boolean>`.
+     * @return if the object exists, wrapped in a `Single`
+     */
+    override fun exists(): Single<Boolean> {
+        return Single.fromCallable { blockingExists() }
     }
 
-    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, true)
-    }
-
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
-        val whereClauseBuilder = WhereClauseBuilder()
-        OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder, scope.orderBy(),
-            params.key.toContentValues(), reversed, scope.pagingKey()
-        )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize
-        )
-        callback.onResult(appendChildren(withoutChildren))
-    }
-
-    override fun getKey(item: T): M {
-        return transformer.deTransform(item)
-    }
-
-    private fun appendChildren(withoutChildren: List<M>): List<T> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren, childrenAppenders, scope.children()
-        ).map { transformer.transform(it) }
+    /**
+     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.exists].
+     * @return if the object exists
+     */
+    override fun blockingExists(): Boolean {
+        return blockingGetWithoutChildren() != null
     }
 }

@@ -28,23 +28,23 @@
 package org.hisp.dhis.android.core.programtheme.stock
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidAndTransformerCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransformer
-import javax.inject.Inject
 
 @Reusable
 class StockThemeCollectionRepository @Inject internal constructor(
-        store: IdentifiableObjectStore<InternalStockTheme>,
-        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
-        scope: RepositoryScope,
-        transformer: StockThemeTransformer
-) : ReadOnlyWithUidAndTransformerCollectionRepository<InternalStockTheme, StockTheme> by
-ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
+    store: IdentifiableObjectStore<InternalStockTheme>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
+    scope: RepositoryScope,
+    transformer: StockThemeTransformer
+) : ReadOnlyWithUidCollectionRepository<StockTheme> by
+    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
         store,
         childrenAppenders,
         scope,
@@ -52,4 +52,4 @@ ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockT
             StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
         },
         transformer
-)
+    )

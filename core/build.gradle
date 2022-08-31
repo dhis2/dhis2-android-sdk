@@ -30,8 +30,8 @@ plugins {
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-kapt"
-    id "io.gitlab.arturbosch.detekt" version "1.18.0"
-    id "org.jetbrains.dokka" version "1.4.30" apply false
+    id "io.gitlab.arturbosch.detekt" version "1.21.0"
+    id "org.jetbrains.dokka" version "1.6.10" apply false
 }
 
 apply from: project.file("plugins/android-checkstyle.gradle")
@@ -48,7 +48,7 @@ ext {
 
     libraries = [
             // android
-            annotation      : '1.3.0',
+            annotation      : '1.4.0',
             paging          : '2.1.2',
 
             // java

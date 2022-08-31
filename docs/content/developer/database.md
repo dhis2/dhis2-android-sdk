@@ -1,10 +1,7 @@
 # Database { #android_sdk_database }
 
 ## Database scope
-The SDK keeps the data of a [server, user] pair in an isolated database.
-
-At the moment, just one [server, user] pair is supported, so logging out and logging in in with another [server, user]
-pair will delete the current database and create a new one.
+The SDK keeps the data of a [server, user] pair in an isolated database. As of version 1.6.0, the SDK supports multiple accounts (pairs [server, user]) and the information for each account is stored in an isolated database. The database is deleted only when the account is deleted. Databases are created automatically on a successful login.
 
 ## Encryption
 As of SDK version 1.1.0, it is possible to store the data in an encrypted database. The encryption key is generated randomly

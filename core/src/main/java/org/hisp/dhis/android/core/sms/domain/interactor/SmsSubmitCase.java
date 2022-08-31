@@ -337,7 +337,7 @@ public class SmsSubmitCase {
                 });
     }
 
-    public Completable markAsSentBySMS() {
+    public Completable markAsSentViaSMS() {
         return converter.updateSubmissionState(State.SENT_VIA_SMS);
     }
 

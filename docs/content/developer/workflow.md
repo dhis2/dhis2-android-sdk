@@ -175,8 +175,8 @@ The possible states are:
 - **TO_POST**. Data created locally that does not exist in the server yet.
 - **TO_UPDATE**. Data modified locally that exists in the server.
 - **UPLOADING**. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
-- **SENT_BY_SMS**. Data is sent by sms and there is no server response yet. Some servers do not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
-- **SYNCED_BY_SMS**. Data is sent by sms and there is a successful response from the server.
+- **SENT_VIA_SMS**. Data is sent via sms and there is no server response yet. Some servers do not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
+- **SYNCED_VIA_SMS**. Data is sent via sms and there is a successful response from the server.
 - **ERROR**. Data that received an error from the server after the last upload.
 - **WARNING**. Data that received a warning from the server after the last upload.
 

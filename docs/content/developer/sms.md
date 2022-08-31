@@ -172,7 +172,7 @@ A submission using an external application involves the following steps:
 
 - Specify the data to submit and get the compress message. This means to call a method like `compress*()`.
 - Send the message using an external app.
-- Optionally mark as SENT_BY_SMS if you know the message has been sent.
+- Optionally mark as SENT_VIA_SMS if you know the message has been sent.
 - Optionally check for confirmation SMS.
 
 As an example, sending a tracker event will be like:
@@ -183,8 +183,8 @@ String message = case.compressTrackerEvent("event-uid").blockingGet();
 
 // Use an external application to send the SMS
 
-// Optionally mark the case as SENT_BY_SMS
-case.markAsSentBySMS();
+// Optionally mark the case as SENT_VIA_SMS
+case.markAsSentViaSMS();
 
 // If you get a response from the server, you can check if the message corresponds to the case or not.
 boolean isResponseMessage = case.isConfirmationMessage("sender_number", "message").blockingGet();

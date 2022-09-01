@@ -80,9 +80,6 @@ ext {
             liveDataTesting : "1.2.0",
             commonsLogging  : "1.2",
 
-            // google
-            safetyNet       : "18.0.1",
-
             // open id
             appauth         : "0.8.1"
     ]
@@ -175,9 +172,6 @@ dependencies {
     // Jackson
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:${libraries.jackson}"
-
-    // Google's play services
-    api "com.google.android.gms:play-services-safetynet:${libraries.safetyNet}"
 
     // Square libraries
     api "com.squareup.okhttp3:okhttp:${libraries.okHttp}"

@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.api.ssl.internal;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.security.ProviderInstaller;
+
 
 import java.security.NoSuchAlgorithmException;
 
@@ -43,18 +40,10 @@ public final class SSLContextInitializer {
 
     private SSLContextInitializer(){}
 
-    public static void initializeSSLContext(Context context){
+    public static void  initializeSSLContext(){
         try {
             SSLContext.getInstance("TLSv1.2");
         } catch (NoSuchAlgorithmException e) {
-            Log.e(SSLContextInitializer.class.getSimpleName(), e.toString());
-        }
-
-        try {
-            ProviderInstaller.installIfNeeded(context.getApplicationContext());
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(SSLContextInitializer.class.getSimpleName(), e.toString());
-        } catch (GooglePlayServicesNotAvailableException e) {
             Log.e(SSLContextInitializer.class.getSimpleName(), e.toString());
         }
     }

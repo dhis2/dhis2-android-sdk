@@ -92,7 +92,6 @@ After adding the `play-services-safetynet` dependency just create a method that 
 public static void initialize(Context context){
     try {
         // ....
-        SSLContext.getInstance("TLSv1.2");
         ProviderInstaller.installIfNeeded(context.getApplicationContext());
         // ....
     } catch (GooglePlayServicesRepairableException e) {
@@ -123,7 +122,6 @@ Setting up conscrypt is similar to the Google’s provider like in the following
 ```java
 public static void initialize(){
     try {
-        SSLContext.getInstance("TLSv1.2");
         Security.insertProviderAt(Conscrypt.newProvider(), 1);
     } catch(Exception e) {
         Log.e(TAG, e.toString());

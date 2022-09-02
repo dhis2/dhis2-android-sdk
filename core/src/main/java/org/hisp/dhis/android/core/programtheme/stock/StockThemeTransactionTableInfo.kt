@@ -37,7 +37,7 @@ object StockThemeTransactionTableInfo {
     @JvmField
     val TABLE_INFO: TableInfo = object : TableInfo() {
         override fun name(): String {
-            return "org.hisp.dhis.android.core.programtheme.stock.StockThemeTransaction"
+            return "StockThemeTransaction"
         }
 
         override fun columns(): CoreColumns {

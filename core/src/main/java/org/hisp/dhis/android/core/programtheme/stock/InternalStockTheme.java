@@ -33,7 +33,6 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,19 +40,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreInternalStockThemeTransactionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_InternalStockTheme.Builder.class)
-public abstract class InternalStockTheme extends BaseObject
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class InternalStockTheme extends BaseObject implements ObjectWithUidInterface {
 
     @Override
     @NonNull
@@ -74,6 +69,7 @@ public abstract class InternalStockTheme extends BaseObject
 
     @NonNull
     @JsonProperty()
+    @ColumnAdapter(IgnoreInternalStockThemeTransactionListColumnAdapter.class)
     public abstract List<InternalStockThemeTransaction> transactions();
 
     public static InternalStockTheme create(Cursor cursor) {

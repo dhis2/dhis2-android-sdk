@@ -132,7 +132,7 @@ As an example, let's suppose we have a Visualization with the following paramete
 
 The expected representation of the visualization would be something like this:
 
-[](resources/images/analytics_visualization.png)
+![](resources/images/analytics_visualization.png){ width=50% }
 
 We can get the result of the visualization by calling the "visualizations" repository within the analtyics module. Optionally, we can override the values for Period and OrganisationUnit. This is useful to expose filters in the UI to allow easy modifications of the results.
 

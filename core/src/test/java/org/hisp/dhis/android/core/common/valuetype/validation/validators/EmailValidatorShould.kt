@@ -45,5 +45,6 @@ class EmailValidatorShould : ValidatorShouldHelper<EmailFailure>(EmailValidator)
     fun `Should fail when value is malformed`() {
         valueShouldFail("5fe2", EmailFailure.MalformedEmailException)
         valueShouldFail("test@test", EmailFailure.MalformedEmailException)
+        valueShouldFail("test@test.", EmailFailure.MalformedEmailException)
     }
 }

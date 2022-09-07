@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -107,7 +108,7 @@ public final class NoteCollectionRepository
     }
 
     @Override
-    protected void propagateState(Note note) {
+    protected void propagateState(Note note, HandleAction action) {
         dataStatePropagator.propagateNoteCreation(note);
     }
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
@@ -105,8 +106,8 @@ public final class EventObjectRepository
     }
 
     @Override
-    protected void propagateState(Event event) {
-        trackerDataManager.propagateEventUpdate(event);
+    protected void propagateState(Event event, HandleAction action) {
+        trackerDataManager.propagateEventUpdate(event, action);
     }
 
     @Override

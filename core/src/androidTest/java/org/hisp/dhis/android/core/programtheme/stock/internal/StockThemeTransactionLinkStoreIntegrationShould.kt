@@ -27,38 +27,46 @@
  */
 package org.hisp.dhis.android.core.programtheme.stock.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeTransactionSamples
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
 import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransactionTableInfo
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransactionLinkStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-internal object StockThemeTransactionLinkStore {
-    private val BINDER: StatementBinder<InternalStockThemeTransaction> =
-        StatementBinder<InternalStockThemeTransaction> { o: InternalStockThemeTransaction, w: StatementWrapper ->
-            w.bind(1, o.programUid())
-            w.bind(2, o.sortOrder())
-            w.bind(3, o.transactionType())
-            w.bind(4, o.distributedTo())
-            w.bind(5, o.stockDistributed())
-            w.bind(6, o.stockDiscarded())
-            w.bind(7, o.stockCorrected())
-        }
+@RunWith(D2JunitRunner::class)
+class InternalStockThemeTransactionLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<InternalStockThemeTransaction>(
+    create(TestDatabaseAdapterFactory.get()),
+    StockThemeTransactionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun addMasterUid(): String {
+        return InternalStockThemeTransactionSamples.get().programUid()!!
+    }
 
-    val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(
-        StockThemeTransactionTableInfo.TABLE_INFO, StockThemeTransactionTableInfo.Columns.PROGRAM_UID
-    )
+    override fun buildObject(): InternalStockThemeTransaction {
+        return InternalStockThemeTransactionSamples.get()
+    }
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<InternalStockThemeTransaction> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            StockThemeTransactionTableInfo.TABLE_INFO,
-            StockThemeTransactionTableInfo.Columns.PROGRAM_UID,
-            BINDER
-        ) { cursor: Cursor -> InternalStockThemeTransaction.create(cursor) }
+    override fun buildObjectWithOtherMasterUid(): InternalStockThemeTransaction {
+        return buildObject().toBuilder()
+            .stockDiscarded("new_stock_discarded")
+            .build()
+    }
+
+    @Test
+    fun count_by_master_column() {
+        store.insert(buildObjectWithOtherMasterUid())
+        store.insert(buildObject())
+
+        val count: Map<String, Int> =
+            store.groupAndGetCountBy(StockThemeTransactionTableInfo.Columns.STOCK_DISCARDED)
+
+        assertThat(count.keys.size).isEqualTo(2)
+        assertThat(count[buildObjectWithOtherMasterUid().stockDiscarded()]).isEqualTo(1)
+        assertThat(count[buildObject().stockDiscarded()]).isEqualTo(1)
     }
 }

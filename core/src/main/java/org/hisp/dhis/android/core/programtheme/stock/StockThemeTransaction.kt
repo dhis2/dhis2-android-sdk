@@ -28,26 +28,26 @@
 package org.hisp.dhis.android.core.programtheme.stock
 
 sealed class StockThemeTransaction {
-    abstract val order: Int
+    abstract val sortOrder: Int
     abstract val transactionType: TransactionType
 
     data class Distributed(
-        override val order: Int,
-        override val transactionType: TransactionType,
-        val distributedTo: String,
-        val stockDistributed: String
+            override val sortOrder: Int,
+            override val transactionType: TransactionType,
+            val distributedTo: String,
+            val stockDistributed: String
     ) : StockThemeTransaction()
 
     data class Discarded(
-        override val order: Int,
-        override val transactionType: TransactionType,
-        val stockDiscarded: String
+            override val sortOrder: Int,
+            override val transactionType: TransactionType,
+            val stockDiscarded: String
     ) : StockThemeTransaction()
 
     data class Correction(
-        override val order: Int,
-        override val transactionType: TransactionType,
-        val stockCorrected: String
+            override val sortOrder: Int,
+            override val transactionType: TransactionType,
+            val stockCorrected: String
     ) : StockThemeTransaction()
 
     companion object {
@@ -59,17 +59,17 @@ sealed class StockThemeTransaction {
 
         internal fun transformFrom(t: InternalStockThemeTransaction): StockThemeTransaction {
             return when (val type = TransactionType.valueOf(t.transactionType())) {
-                TransactionType.DISTRIBUTED -> Distributed(t.order(), type, t.distributedTo()!!, t.stockDistributed()!!)
-                TransactionType.DISCARDED -> Discarded(t.order(), type, t.stockDiscarded()!!)
-                TransactionType.CORRECTED -> Correction(t.order(), type, t.stockCorrected()!!)
+                TransactionType.DISTRIBUTED -> Distributed(t.sortOrder(), type, t.distributedTo()!!, t.stockDistributed()!!)
+                TransactionType.DISCARDED -> Discarded(t.sortOrder(), type, t.stockDiscarded()!!)
+                TransactionType.CORRECTED -> Correction(t.sortOrder(), type, t.stockCorrected()!!)
             }
         }
 
         internal fun transformTo(programUid: String, t: StockThemeTransaction): InternalStockThemeTransaction {
             val builder = InternalStockThemeTransaction.builder()
-                .programUid(programUid)
-                .transactionType(t.transactionType.name)
-                .order(t.order)
+                    .programUid(programUid)
+                    .transactionType(t.transactionType.name)
+                    .sortOrder(t.sortOrder)
 
             when (t) {
                 is Distributed -> builder.distributedTo(t.distributedTo).stockDistributed(t.stockDistributed)

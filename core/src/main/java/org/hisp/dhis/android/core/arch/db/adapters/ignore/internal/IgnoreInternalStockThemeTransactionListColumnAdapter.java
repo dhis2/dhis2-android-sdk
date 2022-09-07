@@ -25,8 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
+import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction;
 
-class IgnoreInternalStockThemeTransactionListColumnAdapter : IgnoreColumnAdapter<List<InternalStockThemeTransaction>>()
+import java.util.List;
+
+public final class IgnoreInternalStockThemeTransactionListColumnAdapter extends
+        IgnoreColumnAdapter<List<InternalStockThemeTransaction>> {
+}

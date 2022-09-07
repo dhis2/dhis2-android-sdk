@@ -51,7 +51,7 @@ public abstract class InternalStockThemeTransaction extends BaseObject {
 
     @NonNull
     @JsonProperty()
-    public abstract Integer order();
+    public abstract Integer sortOrder();
 
     @NonNull
     @JsonProperty()
@@ -90,7 +90,7 @@ public abstract class InternalStockThemeTransaction extends BaseObject {
         @JsonProperty(UID)
         public abstract Builder programUid(String programUid);
 
-        public abstract Builder order(Integer order);
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract Builder transactionType(String transactionType);
 

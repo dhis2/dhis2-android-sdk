@@ -25,48 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programtheme.stock
+package org.hisp.dhis.android.core.data.programtheme.stock
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
+import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
 
-object StockThemeTransactionTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "StockThemeTransaction"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
-    }
-
-    class Columns : DeletableDataColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                    super.all(),
-                    PROGRAM_UID,
-                    SORT_ORDER,
-                    TRANSACTION_TYPE,
-                    DISTRIBUTED_TO,
-                    STOCK_DISTRIBUTED,
-                    STOCK_DISCARDED,
-                    STOCK_CORRECTED
-            )
-        }
-
-        companion object {
-            const val PROGRAM_UID = "programUid"
-            const val SORT_ORDER = "sortOrder"
-            const val TRANSACTION_TYPE = "transactionType"
-            const val DISTRIBUTED_TO = "distributedTo"
-            const val STOCK_DISTRIBUTED = "stockDistributed"
-            const val STOCK_DISCARDED = "stockDiscarded"
-            const val STOCK_CORRECTED = "stockCorrected"
-        }
+internal object InternalStockThemeTransactionSamples {
+    fun get(): InternalStockThemeTransaction {
+        return InternalStockThemeTransaction.builder()
+                .id(1L)
+                .programUid("program_uid")
+                .sortOrder(2)
+                .transactionType("CORRECTED")
+                .distributedTo("distributed_to")
+                .stockDistributed("stock_distributed")
+                .stockDiscarded("stock_discarded")
+                .stockCorrected("stock_corrected")
+                .build()
     }
 }

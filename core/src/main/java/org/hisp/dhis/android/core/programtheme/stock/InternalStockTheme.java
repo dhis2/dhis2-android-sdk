@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreInternalStockThemeTransactionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
@@ -71,6 +72,11 @@ public abstract class InternalStockTheme extends BaseObject
 
     @NonNull
     @JsonProperty()
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
+    public abstract Boolean deleted();
+
+    @NonNull
+    @JsonProperty()
     @ColumnAdapter(IgnoreInternalStockThemeTransactionListColumnAdapter.class)
     public abstract List<InternalStockThemeTransaction> transactions();
 
@@ -96,6 +102,8 @@ public abstract class InternalStockTheme extends BaseObject
         public abstract Builder itemDescription(String itemDescription);
 
         public abstract Builder stockOnHand(String stockOnHand);
+
+        public abstract Builder deleted(Boolean deleted);
 
         public abstract Builder transactions(List<InternalStockThemeTransaction> transactions);
 

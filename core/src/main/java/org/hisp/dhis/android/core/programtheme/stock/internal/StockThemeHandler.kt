@@ -27,25 +27,26 @@
  */
 package org.hisp.dhis.android.core.programtheme.stock.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.StockThemeTableInfo
+import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
+import javax.inject.Inject
 
-internal object StockThemeStore {
-    private val BINDER = StatementBinder { o: InternalStockTheme, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.itemCode())
-        w.bind(3, o.itemDescription())
-        w.bind(4, o.stockOnHand())
+internal class StockThemeHandler @Inject constructor(
+        store: IdentifiableObjectStore<InternalStockTheme>,
+        private val transactionLinkHandler: LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction>,
+) : IdentifiableHandlerImpl<InternalStockTheme>(store) {
+
+    override fun beforeCollectionHandled(oCollection: Collection<InternalStockTheme>): Collection<InternalStockTheme> {
+        store.delete()
+        transactionLinkHandler.resetAllLinks()
+        return oCollection
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<InternalStockTheme> {
-        return objectWithUidStore(databaseAdapter, StockThemeTableInfo.TABLE_INFO,
-                BINDER) { cursor: Cursor -> InternalStockTheme.create(cursor) }
+    override fun afterObjectHandled(o: InternalStockTheme, action: HandleAction) {
+        transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it }
     }
 }

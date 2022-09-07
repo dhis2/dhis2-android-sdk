@@ -42,13 +42,15 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreInternalStockThemeTransactionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_InternalStockTheme.Builder.class)
-public abstract class InternalStockTheme extends BaseObject implements ObjectWithUidInterface {
+public abstract class InternalStockTheme extends BaseObject
+        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
     @NonNull

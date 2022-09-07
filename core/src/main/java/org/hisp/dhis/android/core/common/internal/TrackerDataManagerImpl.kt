@@ -194,6 +194,7 @@ internal class TrackerDataManagerImpl @Inject constructor(
                             .trackedEntityInstance(instance)
                             .program(program)
                             .ownerOrgUnit(orgunit)
+                            .syncState(State.TO_POST)
                             .build()
                     )
                 }

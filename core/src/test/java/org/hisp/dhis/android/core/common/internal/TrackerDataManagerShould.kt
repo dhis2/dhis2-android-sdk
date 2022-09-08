@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.common.internal
 
 import com.nhaarman.mockitokotlin2.*
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.junit.Before
 import org.junit.Test
 
@@ -49,6 +52,7 @@ class TrackerDataManagerShould {
     private val relationshipStore: RelationshipStore = mock()
     private val relationshipChildrenAppender: RelationshipItemChildrenAppender = mock()
     private val dataStatePropagator: DataStatePropagator = mock()
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner> = mock()
 
     private val trackedEntity: TrackedEntityInstance = mock()
     private val enrollment: Enrollment = mock()
@@ -70,7 +74,7 @@ class TrackerDataManagerShould {
 
         trackerDataManager = TrackerDataManagerImpl(
             trackedEntityStore, enrollmentStore, eventStore, relationshipStore,
-            relationshipChildrenAppender, dataStatePropagator
+            relationshipChildrenAppender, dataStatePropagator, programOwnerStore
         )
     }
 
@@ -106,5 +110,20 @@ class TrackerDataManagerShould {
         verify(enrollmentStore, times(1)).delete(any())
         verify(eventStore, times(1)).delete(any())
         verify(relationshipStore, times(3)).delete(any())
+    }
+
+    @Test
+    fun create_program_owner_entry_on_new_enrollment() {
+        whenever(enrollment.program()).doReturn("program")
+        whenever(enrollment.trackedEntityInstance()).doReturn("instance")
+        whenever(enrollment.organisationUnit()).doReturn("orgunit")
+
+        trackerDataManager.propagateEnrollmentUpdate(enrollment, HandleAction.Insert)
+        verify(programOwnerStore, times(1)).selectWhere(any())
+        verify(programOwnerStore, times(1)).insert(any<ProgramOwner>())
+
+        trackerDataManager.propagateEnrollmentUpdate(enrollment, HandleAction.Update)
+        verify(programOwnerStore, times(1)).selectWhere(any())
+        verifyNoMoreInteractions(programOwnerStore)
     }
 }

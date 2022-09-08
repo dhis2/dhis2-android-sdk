@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -52,8 +53,8 @@ final class RelationshipObjectRepository
     }
 
     @Override
-    protected void propagateState(Relationship relationship) {
-        trackerDataManager.propagateRelationshipUpdate(relationship);
+    protected void propagateState(Relationship relationship, HandleAction action) {
+        trackerDataManager.propagateRelationshipUpdate(relationship, action);
     }
 
     @Override

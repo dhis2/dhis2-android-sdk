@@ -31,6 +31,8 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
@@ -46,6 +48,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -55,14 +59,17 @@ internal class TrackerDataManagerImpl @Inject constructor(
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val relationshipChildrenAppender: RelationshipItemChildrenAppender,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
+    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
 ) : TrackerDataManager {
 
     override fun deleteTrackedEntity(tei: TrackedEntityInstance?) {
         tei?.let {
             deleteRelationships(tei)
             deleteCascadeItems(tei)
-            internalDelete(tei, trackedEntityStore, this::propagateTrackedEntityUpdate)
+            internalDelete(tei, trackedEntityStore) {
+                propagateTrackedEntityUpdate(tei, HandleAction.Delete)
+            }
         }
     }
 
@@ -70,20 +77,26 @@ internal class TrackerDataManagerImpl @Inject constructor(
         enrollment?.let {
             deleteRelationships(enrollment)
             deleteCascadeItems(enrollment)
-            internalDelete(enrollment, enrollmentStore, this::propagateEnrollmentUpdate)
+            internalDelete(enrollment, enrollmentStore) {
+                propagateEnrollmentUpdate(enrollment, HandleAction.Delete)
+            }
         }
     }
 
     override fun deleteEvent(event: Event?) {
         event?.let {
             deleteRelationships(event)
-            internalDelete(event, eventStore, this::propagateEventUpdate)
+            internalDelete(event, eventStore) {
+                propagateEventUpdate(event, HandleAction.Delete)
+            }
         }
     }
 
     override fun deleteRelationship(relationship: Relationship?) {
         relationship?.let {
-            internalDelete(relationship, relationshipStore, this::propagateRelationshipUpdate)
+            internalDelete(relationship, relationshipStore) {
+                propagateRelationshipUpdate(relationship, HandleAction.Delete)
+            }
         }
     }
 
@@ -101,19 +114,22 @@ internal class TrackerDataManagerImpl @Inject constructor(
         }
     }
 
-    override fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?) {
+    override fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction) {
         dataStatePropagator.propagateTrackedEntityInstanceUpdate(tei)
     }
 
-    override fun propagateEnrollmentUpdate(enrollment: Enrollment?) {
+    override fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction) {
         dataStatePropagator.propagateEnrollmentUpdate(enrollment)
+        if (action == HandleAction.Insert) {
+            createProgramOwnerIfNeeded(enrollment)
+        }
     }
 
-    override fun propagateEventUpdate(event: Event?) {
+    override fun propagateEventUpdate(event: Event?, action: HandleAction) {
         dataStatePropagator.propagateEventUpdate(event)
     }
 
-    override fun propagateRelationshipUpdate(relationship: Relationship) {
+    override fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction) {
         val withChildren =
             if (relationship.from() == null || relationship.to() == null) {
                 relationshipChildrenAppender.appendChildren(relationship)
@@ -155,6 +171,34 @@ internal class TrackerDataManagerImpl @Inject constructor(
 
         eventStore.selectWhere(whereClause).forEach {
             deleteEvent(it)
+        }
+    }
+
+    private fun createProgramOwnerIfNeeded(enrollment: Enrollment?) {
+        enrollment?.let {
+            val program = enrollment.program()
+            val instance = enrollment.trackedEntityInstance()
+            val orgunit = enrollment.organisationUnit()
+
+            if (program != null && instance != null && orgunit != null) {
+                val where = WhereClauseBuilder()
+                    .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
+                    .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, instance)
+                    .build()
+
+                val existingOwnership = programOwner.selectWhere(where)
+
+                if (existingOwnership.isEmpty()) {
+                    programOwner.insert(
+                        ProgramOwner.builder()
+                            .trackedEntityInstance(instance)
+                            .program(program)
+                            .ownerOrgUnit(orgunit)
+                            .syncState(State.TO_POST)
+                            .build()
+                    )
+                }
+            }
         }
     }
 }

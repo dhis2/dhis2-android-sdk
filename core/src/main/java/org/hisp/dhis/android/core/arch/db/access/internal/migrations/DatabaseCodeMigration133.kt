@@ -43,6 +43,7 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
                 "dataElement",
                 "SELECT uid FROM DataElement WHERE valueType IN ($valueTypes)"
             )
+            .build()
 
         val query = "SELECT _id, value FROM DataValue WHERE $whereClause"
 
@@ -67,7 +68,7 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
                         "WHERE _id = ${dataValue.id}"
 
                     databaseAdapter.execSQL(updateQuery)
-                    Log.i("Migration 133:", "value migrated from ${dataValue.value} to $trimmedValue")
+                    Log.i("Migration 133:", "Value migrated from ${dataValue.value} to $trimmedValue")
                 }
             }
         }

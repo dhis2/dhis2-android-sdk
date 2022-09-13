@@ -25,8 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)
+internal object DatabaseCodeMigration133Helper {
+
+    private val LEADING_ZERO_GROUP_REGEX = "^([+\\-]?)0+([0-9].*)$".toRegex()
+
+    @Suppress("TooGenericExceptionCaught")
+    fun removeLeadingZeros(value: String?): String? {
+        return try {
+            value?.let { LEADING_ZERO_GROUP_REGEX.replace(value, "$1$2") }
+        } catch (e: Exception) {
+            value
+        }
+    }
+}

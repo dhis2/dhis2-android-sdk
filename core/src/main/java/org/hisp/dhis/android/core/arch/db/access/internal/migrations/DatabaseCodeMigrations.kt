@@ -25,8 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+
+/**
+ * Code migrations are executed at the same time than sql migrations. It means that the expected structure of the
+ * database at this point is the structure of the database after the sql version migration. The actual models or
+ * table info classes could not represent the structure of the database when the code migration is executed.
+ * For this reason, code migrations should not include any dependency to the actual code (TableInfo, Model clases,...)
+ * but just pure sql statements.
+ */
+internal class DatabaseCodeMigrations(databaseAdapter: DatabaseAdapter) {
+
+    @Suppress("MagicNumber")
+    val map: Map<Int, DatabaseCodeMigration> = mapOf(
+        133 to DatabaseCodeMigration133(databaseAdapter)
+    )
+}

@@ -59,4 +59,11 @@ class IntegerPositiveValidatorShould : ValidatorShouldHelper<IntegerPositiveFail
     fun `Should fail with a number format exception when value is malformed`() {
         valueShouldFail("5fe2", IntegerPositiveFailure.NumberFormatException)
     }
+
+    @Test
+    fun `Should fail with leading zeros`() {
+        valueShouldFail("00034", IntegerPositiveFailure.LeadingZeroException)
+        valueShouldFail("-0047", IntegerPositiveFailure.LeadingZeroException)
+        valueShouldFail("0000", IntegerPositiveFailure.LeadingZeroException)
+    }
 }

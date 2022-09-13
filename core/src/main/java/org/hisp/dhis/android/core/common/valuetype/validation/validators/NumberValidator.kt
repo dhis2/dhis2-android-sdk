@@ -31,20 +31,19 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.NumberFailure
 
-object NumberValidator : ValueTypeValidator<NumberFailure> {
+object NumberValidator : NumberValidatorBase<NumberFailure>() {
 
     val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
 
-    override fun validate(value: String): Result<String, NumberFailure> {
-        return try {
-            value.toDouble()
-            if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
-                Result.Failure(NumberFailure.ScientificNotationException)
-            } else {
-                Result.Success(value)
-            }
-        } catch (e: NumberFormatException) {
-            Result.Failure(NumberFailure.NumberFormatException)
+    override val formatFailure: NumberFailure = NumberFailure.NumberFormatException
+    override val leadingZeroException: NumberFailure = NumberFailure.LeadingZeroException
+
+    override fun internalValidate(value: String): Result<String, NumberFailure> {
+        value.toDouble()
+        return if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
+            Result.Failure(NumberFailure.ScientificNotationException)
+        } else {
+            Result.Success(value)
         }
     }
 }

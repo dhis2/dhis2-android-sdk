@@ -30,16 +30,25 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 
-abstract class IntegerValidatorBase<T : Throwable> : ValueTypeValidator<T> {
-    fun catchOverflowFailure(value: String, overflowFailure: T, formatFailure: T): Result<String, T> {
+abstract class IntegerValidatorBase<T : Throwable> : NumberValidatorBase<T>() {
+
+    override fun internalValidate(value: String): Result<String, T> {
         return try {
-            val convertedValue = value.toLong()
-            if (convertedValue > Integer.MAX_VALUE || convertedValue < Integer.MIN_VALUE) {
-                return Result.Failure(overflowFailure)
-            }
-            Result.Failure(formatFailure)
+            validateInteger(value)
         } catch (e: NumberFormatException) {
-            Result.Failure(formatFailure)
+            try {
+                val convertedValue = value.toLong()
+                if (convertedValue > Integer.MAX_VALUE || convertedValue < Integer.MIN_VALUE) {
+                    return Result.Failure(overflowFailure)
+                }
+                Result.Failure(formatFailure)
+            } catch (e: NumberFormatException) {
+                Result.Failure(formatFailure)
+            }
         }
     }
+
+    protected abstract fun validateInteger(value: String): Result<String, T>
+
+    abstract val overflowFailure: T
 }

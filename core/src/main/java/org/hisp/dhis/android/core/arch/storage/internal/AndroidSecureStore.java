@@ -72,6 +72,9 @@ import javax.security.auth.x500.X500Principal;
 @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports", "PMD.PreserveStackTrace"})
 public final class AndroidSecureStore implements SecureStore {
 
+    private static final String KEY_CIPHER_JELLYBEAN_PROVIDER = "AndroidOpenSSL";
+    private static final String KEY_CIPHER_MARSHMALLOW_PROVIDER = "AndroidKeyStoreBCWorkaround";
+
     private static final String KEY_ALGORITHM_RSA = "RSA";
 
     private static final String KEYSTORE_PROVIDER_ANDROID_KEYSTORE = "AndroidKeyStore";
@@ -190,6 +193,18 @@ public final class AndroidSecureStore implements SecureStore {
                     key,
                     valueToDisplay);
             throw new RuntimeException(errorMessage, e);
+        }
+    }
+
+    private static Cipher getCipherInstance() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER);
+            } else {
+                return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_JELLYBEAN_PROVIDER);
+            }
+        } catch(Exception exception) {
+            throw new RuntimeException("getCipher: Failed to get an instance of Cipher", exception);
         }
     }
 

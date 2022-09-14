@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.storage.internal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -217,7 +218,7 @@ public final class AndroidSecureStore implements SecureStore {
     private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        Cipher cipher = getCipherInstance();
         cipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
         byte[] encrypted = cipher.doFinal(data);
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
@@ -228,7 +229,7 @@ public final class AndroidSecureStore implements SecureStore {
             IllegalBlockSizeException, BadPaddingException {
 
         byte[] encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT);
-        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        Cipher cipher = getCipherInstance();
         cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
         return cipher.doFinal(encryptedBuffer);
     }

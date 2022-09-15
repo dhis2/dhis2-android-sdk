@@ -53,7 +53,7 @@ class InternalStockThemeTransactionLinkStoreIntegrationShould : LinkStoreAbstrac
 
     override fun buildObjectWithOtherMasterUid(): InternalStockThemeTransaction {
         return buildObject().toBuilder()
-            .stockDiscarded("new_stock_discarded")
+            .programUid("new_program_uid")
             .build()
     }
 
@@ -63,10 +63,10 @@ class InternalStockThemeTransactionLinkStoreIntegrationShould : LinkStoreAbstrac
         store.insert(buildObject())
 
         val count: Map<String, Int> =
-            store.groupAndGetCountBy(StockThemeTransactionTableInfo.Columns.STOCK_DISCARDED)
+            store.groupAndGetCountBy(StockThemeTransactionTableInfo.Columns.PROGRAM_UID)
 
         assertThat(count.keys.size).isEqualTo(2)
-        assertThat(count[buildObjectWithOtherMasterUid().stockDiscarded()]).isEqualTo(1)
-        assertThat(count[buildObject().stockDiscarded()]).isEqualTo(1)
+        assertThat(count[buildObjectWithOtherMasterUid().programUid()]).isEqualTo(1)
+        assertThat(count[buildObject().programUid()]).isEqualTo(1)
     }
 }

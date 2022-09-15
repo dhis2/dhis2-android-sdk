@@ -37,21 +37,25 @@ import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransaction
 internal class StockThemeTransformer : TwoWayTransformer<InternalStockTheme, StockTheme> {
     override fun transform(o: InternalStockTheme): StockTheme {
         return StockTheme(
-            o.uid(),
-            o.itemCode(),
-            o.itemDescription(),
-            o.stockOnHand(),
-            o.transactions().map { StockThemeTransaction.transformFrom(it) }
+                o.uid(),
+                o.itemCode(),
+                o.itemDescription(),
+                o.programType(),
+                o.description(),
+                o.stockOnHand(),
+                o.transactions().map { StockThemeTransaction.transformFrom(it) }
         )
     }
 
     override fun deTransform(t: StockTheme): InternalStockTheme {
         return InternalStockTheme.builder()
-            .uid(t.programUid)
-            .itemCode(t.itemCode)
-            .itemDescription(t.itemDescription)
-            .stockOnHand(t.stockOnHand)
-            .transactions(t.transactions.map { StockThemeTransaction.transformTo(t.programUid, it) })
-            .build()
+                .uid(t.programUid)
+                .itemCode(t.itemCode)
+                .itemDescription(t.itemDescription)
+                .programType(t.programType)
+                .description(t.description)
+                .stockOnHand(t.stockOnHand)
+                .transactions(t.transactions.map { StockThemeTransaction.transformTo(t.programUid, it) })
+                .build()
     }
 }

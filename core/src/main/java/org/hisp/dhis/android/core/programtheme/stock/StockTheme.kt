@@ -34,6 +34,8 @@ data class StockTheme(
     val programUid: String,
     val itemCode: String,
     val itemDescription: String,
+    val programType: String,
+    val description: String,
     val stockOnHand: String,
     val transactions: List<StockThemeTransaction>
 ) : ObjectWithUidInterface {

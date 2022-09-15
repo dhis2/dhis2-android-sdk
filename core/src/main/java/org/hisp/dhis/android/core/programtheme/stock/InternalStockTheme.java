@@ -68,6 +68,14 @@ public abstract class InternalStockTheme extends BaseObject
 
     @NonNull
     @JsonProperty()
+    public abstract String programType();
+
+    @NonNull
+    @JsonProperty()
+    public abstract String description();
+
+    @NonNull
+    @JsonProperty()
     public abstract String stockOnHand();
 
     @NonNull
@@ -100,6 +108,10 @@ public abstract class InternalStockTheme extends BaseObject
         public abstract Builder itemCode(String itemCode);
 
         public abstract Builder itemDescription(String itemDescription);
+
+        public abstract Builder programType(String programType);
+
+        public abstract Builder description(String description);
 
         public abstract Builder stockOnHand(String stockOnHand);
 

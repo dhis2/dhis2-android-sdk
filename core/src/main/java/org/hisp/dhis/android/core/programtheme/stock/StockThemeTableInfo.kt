@@ -52,6 +52,8 @@ object StockThemeTableInfo {
                     UID,
                     ITEM_CODE,
                     ITEM_DESCRIPTION,
+                    PROGRAM_TYPE,
+                    DESCRIPTION,
                     STOCK_ON_HAND
             )
         }
@@ -60,6 +62,8 @@ object StockThemeTableInfo {
             const val UID = "uid"
             const val ITEM_CODE = "itemCode"
             const val ITEM_DESCRIPTION = "itemDescription"
+            const val PROGRAM_TYPE = "programType"
+            const val DESCRIPTION = "description"
             const val STOCK_ON_HAND = "stockOnHand"
         }
     }

@@ -41,7 +41,9 @@ internal object StockThemeStore {
         w.bind(1, o.uid())
         w.bind(2, o.itemCode())
         w.bind(3, o.itemDescription())
-        w.bind(4, o.stockOnHand())
+        w.bind(4, o.programType())
+        w.bind(5, o.description())
+        w.bind(6, o.stockOnHand())
     }
 
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<InternalStockTheme> {

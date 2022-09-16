@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.data.user;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.user.UserCredentials;
 
 public class UserCredentialsSamples {
@@ -39,12 +38,6 @@ public class UserCredentialsSamples {
 
         return builder
                 .id(1L)
-                .uid("M0fCOxtkURr")
-                .code("android")
-                .name("John Barnes")
-                .displayName("John Barnes")
-                .created(FillPropertiesTestUtils.parseDate("2015-03-31T13:31:09.206"))
-                .lastUpdated(FillPropertiesTestUtils.parseDate("2017-11-29T11:45:37.250"))
                 .username("android")
                 .user(ObjectWithUid.create("DXyJmlo9rge"))
                 .build();

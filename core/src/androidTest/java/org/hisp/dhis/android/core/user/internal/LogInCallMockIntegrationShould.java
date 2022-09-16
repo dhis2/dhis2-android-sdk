@@ -67,7 +67,6 @@ public class LogInCallMockIntegrationShould extends BaseMockIntegrationTestEmpty
         assertThat(user.name()).isEqualTo("John Barnes");
 
         UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
-        assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
         assertThat(userCredentials.username()).isEqualTo("android");
 
         AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser().blockingGet();

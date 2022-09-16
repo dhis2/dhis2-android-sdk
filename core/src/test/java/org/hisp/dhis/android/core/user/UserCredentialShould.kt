@@ -25,41 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.UserCredentials;
+class UserCredentialShould : BaseObjectShould("user/user_credentials.json"), ObjectShould {
 
-import java.util.Collections;
-import java.util.Map;
+    @Test
+    override fun map_from_json_string() {
+        val userCredentials = objectMapper.readValue(jsonStream, UserCredentials::class.java)
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class UserCredentialsEntityDIModule {
-
-    @Provides
-    @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Handler<UserCredentials> handler(UserCredentialsStore store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders(
-            UserRoleChildrenAppender userRoleChildrenAppender) {
-        return Collections.singletonMap(UserCredentialsFields.USER_ROLES, userRoleChildrenAppender);
+        assertThat(userCredentials.username()).isEqualTo("admin")
+        assertThat(userCredentials.userRoles()!![0].uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(userCredentials.userRoles()!![1].uid()).isEqualTo("UYXOT4A7JMI")
+        assertThat(userCredentials.userRoles()!![2].uid()).isEqualTo("aNk5AyC7ydy")
     }
 }

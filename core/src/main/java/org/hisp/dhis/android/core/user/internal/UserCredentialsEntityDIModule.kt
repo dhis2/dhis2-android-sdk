@@ -25,29 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.user.UserCredentials
+import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl.Companion.create
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserRole;
+@Module
+internal class UserCredentialsEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): UserCredentialsStore {
+        return create(databaseAdapter)
+    }
 
-public final class UserCredentialsFields {
-    public static final String USERNAME = "username";
-    public static final String USER_ROLES = "userRoles";
+    @Provides
+    @Reusable
+    fun handler(store: UserCredentialsStore): Handler<UserCredentials> {
+        return ObjectWithoutUidHandlerImpl(store)
+    }
 
-    private static final FieldsHelper<UserCredentials> fh = new FieldsHelper<>();
-
-    public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(BaseIdentifiableObject.UUID),
-                    fh.<String>field(USERNAME),
-                    fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
-            ).build();
-
-    private UserCredentialsFields() {
+    @Provides
+    @Reusable
+    fun childrenAppenders(
+        userRoleChildrenAppender: UserRoleChildrenAppender
+    ): Map<String, ChildrenAppender<UserCredentials>> {
+        return mapOf(
+            UserCredentialsFields.USER_ROLES to userRoleChildrenAppender
+        )
     }
 }

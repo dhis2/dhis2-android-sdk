@@ -65,7 +65,6 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     private val credentials = UserCredentials.builder()
         .id(1L)
-        .uid("uid")
         .username(username)
         .user(ObjectWithUid.create("user"))
         .build()

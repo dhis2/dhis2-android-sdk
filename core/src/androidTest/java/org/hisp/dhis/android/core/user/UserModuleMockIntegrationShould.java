@@ -50,8 +50,6 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
     public void allow_access_to_user_credentials() {
         UserCredentials credentials = d2.userModule().userCredentials().blockingGet();
         assertThat(credentials.username()).isEqualTo("android");
-        assertThat(credentials.code()).isEqualTo("android");
-        assertThat(credentials.name()).isEqualTo("John Barnes");
     }
 
     @Test

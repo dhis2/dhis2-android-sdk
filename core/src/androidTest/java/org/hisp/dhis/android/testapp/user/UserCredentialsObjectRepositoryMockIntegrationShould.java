@@ -43,7 +43,6 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMo
     public void find_user() {
         UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
         assertThat(userCredentials.username()).isEqualTo("android");
-        assertThat(userCredentials.name()).isEqualTo("John Barnes");
     }
 
     @Test

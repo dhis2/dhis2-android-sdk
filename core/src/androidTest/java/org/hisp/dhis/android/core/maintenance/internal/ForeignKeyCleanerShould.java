@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.maintenance.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -51,8 +53,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(AndroidJUnit4.class)
 public class ForeignKeyCleanerShould extends BaseMockIntegrationTestEmptyDispatcher {
 
@@ -65,7 +65,6 @@ public class ForeignKeyCleanerShould extends BaseMockIntegrationTestEmptyDispatc
     public void remove_rows_that_produce_foreign_key_errors() throws Exception {
         addUserCredentialsForeignKeyViolation();
         UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
-        assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
         assertThat(userCredentials.user().uid()).isEqualTo("DXyJmlo9rge");
     }
 
@@ -139,11 +138,10 @@ public class ForeignKeyCleanerShould extends BaseMockIntegrationTestEmptyDispatc
             ObjectWithUid user = ObjectWithUid.create("no_user_uid");
             UserCredentials userCredentials = UserCredentials.builder()
                     .id(2L)
-                    .uid("user_credential_uid1")
                     .user(user)
                     .build();
 
-            IdentifiableObjectStore<UserCredentials> userCredentialsStore =
+            ObjectWithoutUidStore<UserCredentials> userCredentialsStore =
                     UserCredentialsStoreImpl.create(d2.databaseAdapter());
             userCredentialsStore.insert(userCredentials);
 

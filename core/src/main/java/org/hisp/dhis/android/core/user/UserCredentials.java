@@ -41,15 +41,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_UserCredentials.Builder.class)
-public abstract class UserCredentials extends BaseIdentifiableObject implements CoreObject {
+@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
+public abstract class UserCredentials implements CoreObject {
 
     @Nullable
     @JsonProperty()
@@ -66,18 +65,18 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
     public abstract ObjectWithUid user();
 
     public static UserCredentials create(Cursor cursor) {
-        return $AutoValue_UserCredentials.createFromCursor(cursor);
+        return AutoValue_UserCredentials.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_UserCredentials.Builder();
+        return new AutoValue_UserCredentials.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder {
         public abstract Builder username(String username);
 
         public abstract Builder userRoles(List<UserRole> userRoles);

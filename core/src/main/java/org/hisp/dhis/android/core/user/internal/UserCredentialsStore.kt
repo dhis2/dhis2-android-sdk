@@ -25,13 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.user.UserCredentials
 
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.user.UserCredentials;
-
-public interface UserCredentialsStore extends IdentifiableObjectStore<UserCredentials> {
-    UserCredentials getForUser(String userId);
+internal interface UserCredentialsStore : ObjectWithoutUidStore<UserCredentials> {
+    fun getForUser(userId: String): UserCredentials?
 }

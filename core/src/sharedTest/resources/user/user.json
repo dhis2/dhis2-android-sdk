@@ -8,12 +8,6 @@
   "surname": "Barnes",
   "email": "john@hmail.com",
   "userCredentials": {
-    "lastUpdated": "2017-11-29T11:45:37.250",
-    "code": "android",
-    "created": "2015-03-31T13:31:09.206",
-    "name": "John Barnes",
-    "id": "M0fCOxtkURr",
-    "displayName": "John Barnes",
     "username": "android",
     "userRoles": [
       {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth
 import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.data.user.UserCredentialsSamples
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
@@ -45,7 +46,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     companion object {
         private lateinit var userStore: IdentifiableObjectStore<User>
-        private lateinit var userCredentialsStore: IdentifiableObjectStore<UserCredentials>
+        private lateinit var userCredentialsStore: ObjectWithoutUidStore<UserCredentials>
 
         @BeforeClass
         @JvmStatic

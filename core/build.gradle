@@ -166,6 +166,7 @@ dependencies {
     // Kotlin Coroutines
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libraries.coroutines}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${libraries.coroutines}"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${libraries.coroutines}"
 
     // AndroidX
     api "androidx.annotation:annotation:${libraries.annotation}"

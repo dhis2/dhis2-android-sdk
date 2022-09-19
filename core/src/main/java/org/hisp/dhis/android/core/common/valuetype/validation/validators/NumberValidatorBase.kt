@@ -29,16 +29,27 @@
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerFailure
 
-object IntegerValidator : IntegerValidatorBase<IntegerFailure>() {
+abstract class NumberValidatorBase<T : Throwable> : ValueTypeValidator<T> {
 
-    override fun validateInteger(value: String): Result<String, IntegerFailure> {
-        value.toInt()
-        return Result.Success(value)
+    override fun validate(value: String): Result<String, T> {
+        return try {
+            if (value.matches(HAS_LEADING_ZERO_REGEX)) {
+                Result.Failure(leadingZeroException)
+            } else {
+                internalValidate(value)
+            }
+        } catch (e: NumberFormatException) {
+            Result.Failure(formatFailure)
+        }
     }
 
-    override val formatFailure = IntegerFailure.NumberFormatException
-    override val overflowFailure = IntegerFailure.IntegerOverflow
-    override val leadingZeroException = IntegerFailure.LeadingZeroException
+    abstract val leadingZeroException: T
+    abstract val formatFailure: T
+
+    protected abstract fun internalValidate(value: String): Result<String, T>
+
+    internal companion object {
+        val HAS_LEADING_ZERO_REGEX = "^[+\\-]?(0+[0-9]).*$".toRegex()
+    }
 }

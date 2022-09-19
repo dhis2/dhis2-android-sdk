@@ -34,7 +34,7 @@ import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
 internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAdapter, assetManager: AssetManager) {
-    private val parser = DatabaseMigrationParser(assetManager)
+    private val parser = DatabaseMigrationParser(assetManager, databaseAdapter)
 
     companion object {
         private const val SNAPSHOT_VERSION = BaseDatabaseOpenHelper.VERSION
@@ -49,7 +49,10 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         try {
             val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion, newVersion) else 0
             val migrations = parser.parseMigrations(initialMigrationVersion, newVersion)
-            migrations.forEach { executeMigration(it) }
+            migrations.forEach {
+                executeSQLMigration(it)
+                executeCodeMigration(it)
+            }
             transaction.setSuccessful()
         } catch (e: IOException) {
             Log.e("Database Error:", e.message ?: "")
@@ -68,7 +71,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         }
     }
 
-    private fun executeMigration(migration: DatabaseMigration) {
+    private fun executeSQLMigration(migration: DatabaseMigration) {
         if (MIGRATIONS_ACCEPTING_ERRORS.contains(migration.version)) {
             try {
                 executeFileSQL(migration.sql)
@@ -76,6 +79,10 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         } else {
             executeFileSQL(migration.sql)
         }
+    }
+
+    private fun executeCodeMigration(migration: DatabaseMigration) {
+        migration.code?.migrate()
     }
 
     private fun executeFileSQL(script: List<String>?) {

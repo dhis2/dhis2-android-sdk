@@ -25,8 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration133Helper.removeLeadingZeros
+import org.junit.Test
+
+class DatabaseCodeMigration133HelperShould {
+
+    @Test
+    fun `Should remove leading zeros`() {
+        assertThat(removeLeadingZeros("0")).isEqualTo("0")
+        assertThat(removeLeadingZeros("35")).isEqualTo("35")
+        assertThat(removeLeadingZeros("035")).isEqualTo("35")
+        assertThat(removeLeadingZeros("00035")).isEqualTo("35")
+        assertThat(removeLeadingZeros("-35")).isEqualTo("-35")
+        assertThat(removeLeadingZeros("-035")).isEqualTo("-35")
+        assertThat(removeLeadingZeros("-00035")).isEqualTo("-35")
+
+        assertThat(removeLeadingZeros("0.503")).isEqualTo("0.503")
+        assertThat(removeLeadingZeros("82.503")).isEqualTo("82.503")
+        assertThat(removeLeadingZeros("082.503")).isEqualTo("82.503")
+        assertThat(removeLeadingZeros("00082.503")).isEqualTo("82.503")
+        assertThat(removeLeadingZeros("-0.503")).isEqualTo("-0.503")
+        assertThat(removeLeadingZeros("-82.503")).isEqualTo("-82.503")
+        assertThat(removeLeadingZeros("-082.503")).isEqualTo("-82.503")
+        assertThat(removeLeadingZeros("-00082.503")).isEqualTo("-82.503")
+
+        assertThat(removeLeadingZeros(null)).isNull()
+    }
+}

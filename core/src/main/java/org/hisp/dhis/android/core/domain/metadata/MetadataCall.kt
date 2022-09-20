@@ -55,6 +55,8 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.programtheme.ProgramThemeModuleDownloader
+import org.hisp.dhis.android.core.programtheme.stock.StockTheme
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
@@ -72,6 +74,7 @@ internal class MetadataCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
+    private val programThemeDownloader: ProgramThemeModuleDownloader,
     private val userModuleDownloader: UserModuleDownloader,
     private val categoryDownloader: CategoryModuleDownloader,
     private val programDownloader: ProgramModuleDownloader,
@@ -86,7 +89,7 @@ internal class MetadataCall @Inject constructor(
     private val generalSettingCall: GeneralSettingCall,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
-    private val legendSetModuleDownloader: LegendSetModuleDownloader
+    private val legendSetModuleDownloader: LegendSetModuleDownloader,
 ) {
 
     companion object {
@@ -109,19 +112,24 @@ internal class MetadataCall @Inject constructor(
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Observable<D2Progress> {
         return Single.merge(
-            Single.fromCallable {
-                databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
-                progressManager.increaseProgress(SystemInfo::class.java, false)
-            },
-            systemSettingDownloader.downloadMetadata().toSingle {
-                progressManager.increaseProgress(SystemSetting::class.java, false)
-            },
-            constantModuleDownloader.downloadMetadata().map {
-                progressManager.increaseProgress(Constant::class.java, false)
-            },
-            smsModule.configCase().refreshMetadataIdsCallable().toSingle {
-                progressManager.increaseProgress(SmsModule::class.java, false)
-            }
+                listOf(
+                        Single.fromCallable {
+                            databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+                            progressManager.increaseProgress(SystemInfo::class.java, false)
+                        },
+                        systemSettingDownloader.downloadMetadata().toSingle {
+                            progressManager.increaseProgress(SystemSetting::class.java, false)
+                        },
+                        programThemeDownloader.downloadMetadata().toSingle {
+                            progressManager.increaseProgress(StockTheme::class.java, false)
+                        },
+                        constantModuleDownloader.downloadMetadata().map {
+                            progressManager.increaseProgress(Constant::class.java, false)
+                        },
+                        smsModule.configCase().refreshMetadataIdsCallable().toSingle {
+                            progressManager.increaseProgress(SmsModule::class.java, false)
+                        }
+                )
         ).toObservable()
     }
 

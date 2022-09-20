@@ -81,6 +81,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
+import org.hisp.dhis.android.core.programtheme.internal.ProgramThemePackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
@@ -145,6 +146,7 @@ import retrofit2.Retrofit;
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
         SettingPackageDIModule.class,
+        ProgramThemePackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         TrackerImporterPackageDIModule.class,
         SmsDIModule.class,
@@ -227,6 +229,7 @@ public interface D2DIComponent {
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
         Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
+        Builder programThemePackageDIModule(ProgramThemePackageDIModule programThemePackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder trackerImporterPackageDIModule(TrackerImporterPackageDIModule trackerImporterPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);

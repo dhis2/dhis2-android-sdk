@@ -33,7 +33,9 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -52,6 +54,8 @@ import java.util.List;
 @JsonDeserialize(builder = $$AutoValue_InternalStockTheme.Builder.class)
 public abstract class InternalStockTheme extends BaseObject
         implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+
+    public static final String TRANSACTIONS = "transactions";
 
     @Override
     @NonNull
@@ -78,12 +82,12 @@ public abstract class InternalStockTheme extends BaseObject
     @JsonProperty()
     public abstract String stockOnHand();
 
-    @NonNull
-    @JsonProperty()
+    @Nullable
+    @JsonIgnore()
     @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
-    @NonNull
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreInternalStockThemeTransactionListColumnAdapter.class)
     public abstract List<InternalStockThemeTransaction> transactions();
@@ -102,7 +106,7 @@ public abstract class InternalStockTheme extends BaseObject
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseObject.Builder<Builder> {
 
-        @JsonProperty(UID)
+        @JsonProperty("programUid")
         public abstract Builder uid(String uid);
 
         public abstract Builder itemCode(String itemCode);

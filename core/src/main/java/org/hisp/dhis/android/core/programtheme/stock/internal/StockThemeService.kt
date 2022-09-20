@@ -33,6 +33,6 @@ import retrofit2.http.GET
 
 internal interface StockThemeService {
 
-    @GET("stockThemes")
+    @GET("dataStore/PROGRAM_THEMES/stockThemes")
     fun stockThemes(): Single<List<InternalStockTheme>>
 }

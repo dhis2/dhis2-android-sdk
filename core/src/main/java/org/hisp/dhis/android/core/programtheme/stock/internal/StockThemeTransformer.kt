@@ -43,7 +43,7 @@ internal class StockThemeTransformer : TwoWayTransformer<InternalStockTheme, Sto
                 o.programType(),
                 o.description(),
                 o.stockOnHand(),
-                o.transactions().map { StockThemeTransaction.transformFrom(it) }
+                o.transactions()?.map { StockThemeTransaction.transformFrom(it) } ?: emptyList()
         )
     }
 

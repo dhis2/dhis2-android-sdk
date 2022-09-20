@@ -32,13 +32,14 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
 import org.hisp.dhis.android.core.programtheme.stock.StockTheme
+import java.util.*
 
 @Module
 internal class StockThemeEntityDIModule {
@@ -55,5 +56,20 @@ internal class StockThemeEntityDIModule {
             linkHandler: LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction>
     ): HandlerWithTransformer<InternalStockTheme> {
         return StockThemeHandler(store, linkHandler)
+    }
+
+    @Provides
+    @Reusable
+    fun transformer(): TwoWayTransformer<InternalStockTheme, StockTheme> {
+        return StockThemeTransformer()
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): MutableMap<String, ChildrenAppender<InternalStockTheme>> {
+        val childrenAppender: ChildrenAppender<InternalStockTheme> = StockThemeTransactionChildrenAppender(
+                StockThemeTransactionLinkStore.create(databaseAdapter)
+        )
+        return Collections.singletonMap(InternalStockTheme.TRANSACTIONS, childrenAppender)
     }
 }

@@ -47,6 +47,6 @@ internal class StockThemeHandler @Inject constructor(
     }
 
     override fun afterObjectHandled(o: InternalStockTheme, action: HandleAction) {
-        transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it }
+        transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it.toBuilder().programUid(o.uid()).build() }
     }
 }

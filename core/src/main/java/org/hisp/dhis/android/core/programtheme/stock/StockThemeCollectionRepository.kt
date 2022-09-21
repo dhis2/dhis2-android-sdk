@@ -35,16 +35,18 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCo
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.ProgramStageSectionsCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
 import javax.inject.Inject
 
 @Reusable
 class StockThemeCollectionRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<InternalStockTheme>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
-    scope: RepositoryScope,
-    transformer: TwoWayTransformer<InternalStockTheme, StockTheme>
+        store: IdentifiableObjectStore<InternalStockTheme>,
+        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
+        scope: RepositoryScope,
+        transformer: TwoWayTransformer<InternalStockTheme, StockTheme>,
 ) : ReadOnlyWithUidCollectionRepository<StockTheme> by
-    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
         store,
         childrenAppenders,
         scope,
@@ -52,4 +54,13 @@ class StockThemeCollectionRepository @Inject internal constructor(
             StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
         },
         transformer
-    )
+) {
+    private val cf: FilterConnectorFactory<StockThemeCollectionRepository> =
+            FilterConnectorFactory(scope) { s: RepositoryScope ->
+                StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
+            }
+
+    fun withTransactions(): StockThemeCollectionRepository {
+        return cf.withChild(InternalStockTheme.TRANSACTIONS)
+    }
+}

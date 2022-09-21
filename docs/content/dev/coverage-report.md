@@ -17,3 +17,5 @@ How to generate the report:
 // Generate the combined report
 ./gradlew jacocoReport
 ```
+
+Configuration based on this tutorial: https://proandroiddev.com/android-code-coverage-on-firebase-test-lab-part-1-the-basics-9e1492ec5399.

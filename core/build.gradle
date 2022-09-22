@@ -36,6 +36,7 @@ plugins {
 
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
+apply from: project.file("plugins/jacoco.gradle")
 
 ext {
     configuration = [
@@ -131,7 +132,7 @@ android {
     buildTypes {
         debug {
             // a fix for the debugger not being able to find local scope variables
-            testCoverageEnabled = false
+            testCoverageEnabled = (project.hasProperty('coverage'))
         }
     }
 

@@ -43,8 +43,8 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 262,
-            versionName      : "1.6.2"
+            versionCode      : 270,
+            versionName      : "1.7.0"
     ]
 
     libraries = [

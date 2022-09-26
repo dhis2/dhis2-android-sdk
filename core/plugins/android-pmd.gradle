@@ -25,7 +25,7 @@ afterEvaluate {
 
             reports {
                 html.enabled = true
-                xml.enabled = false
+                xml.enabled = true
             }
 
             ruleSetFiles = project.files(

@@ -55,6 +55,7 @@ public class Dhis2MockServer {
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
+    private static final String STOCK_THEMES_JSON = "programtheme.stock/stock_theme.json";
     private static final String ANDROID_SETTINGS_METADATA_JSON = "settings/app_metadata_list.json";
     private static final String ANDROID_SETTINGS_INFO_JSON = "settings/app_info.json";
     private static final String GENERAL_SETTINGS_V1_JSON = "settings/general_settings_v1.json";
@@ -179,6 +180,8 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
+                }  else if (path.startsWith("/api/dataStore/PROGRAM_THEMES/stockThemes")) {
+                    return createMockResponse(STOCK_THEMES_JSON);
                 } else if (path.startsWith("/api/apps?filter")) {
                     return createMockResponse(ANDROID_SETTINGS_METADATA_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {

@@ -47,8 +47,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
-open class ReadOnlyWithTransformerCollectionRepositoryImpl<M : CoreObject, T : Any,
-    R : ReadOnlyCollectionRepository<T>> internal constructor(
+open class ReadOnlyWithTransformerCollectionRepositoryImpl
+<M : CoreObject, T : Any, R : ReadOnlyCollectionRepository<T>> internal constructor(
     private val store: ReadableStore<M>,
     val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,

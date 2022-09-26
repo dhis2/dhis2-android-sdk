@@ -50,7 +50,8 @@ class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
     cf: FilterConnectorFactory<R>,
     override val transformer: TwoWayTransformer<M, T>
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
-    ReadOnlyWithUidCollectionRepository<T> where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
+    ReadOnlyWithUidCollectionRepository<T>
+        where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
     /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
      *

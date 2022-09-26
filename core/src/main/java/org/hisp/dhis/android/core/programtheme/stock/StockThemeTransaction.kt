@@ -59,7 +59,11 @@ sealed class StockThemeTransaction {
 
         internal fun transformFrom(t: InternalStockThemeTransaction): StockThemeTransaction {
             return when (val type = TransactionType.valueOf(t.transactionType())) {
-                TransactionType.DISTRIBUTED -> Distributed(t.sortOrder(), type, t.distributedTo()!!, t.stockDistributed()!!)
+                TransactionType.DISTRIBUTED ->
+                    Distributed(
+                        t.sortOrder(), type, t.distributedTo()!!,
+                        t.stockDistributed()!!
+                    )
                 TransactionType.DISCARDED -> Discarded(t.sortOrder(), type, t.stockDiscarded()!!)
                 TransactionType.CORRECTED -> Correction(t.sortOrder(), type, t.stockCorrected()!!)
             }

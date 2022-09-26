@@ -44,7 +44,8 @@ class StockThemeCollectionRepository @Inject internal constructor(
     scope: RepositoryScope,
     transformer: TwoWayTransformer<InternalStockTheme, StockTheme>,
 ) : ReadOnlyWithUidCollectionRepository<StockTheme> by
-    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
+    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme,
+        StockThemeCollectionRepository>(
         store,
         childrenAppenders,
         scope,

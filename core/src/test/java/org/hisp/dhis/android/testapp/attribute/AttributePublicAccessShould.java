@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.mockito.Mock;
 
-public class AttributePublicAccessShould extends BasePublicAccessShould<ProgramStageAttributeValueLink> {
+public class AttributePublicAccessShould
+        extends BasePublicAccessShould<ProgramStageAttributeValueLink> {
 
     @Mock
     private ProgramStageAttributeValueLink object;

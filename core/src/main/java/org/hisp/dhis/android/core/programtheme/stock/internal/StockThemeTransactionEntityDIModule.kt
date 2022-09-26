@@ -47,7 +47,7 @@ internal class StockThemeTransactionEntityDIModule {
     @Provides
     @Reusable
     fun handler(store: LinkStore<InternalStockThemeTransaction>):
-            LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction> {
-        return LinkHandlerImpl(store)
-    }
+        LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction> {
+            return LinkHandlerImpl(store)
+        }
 }

@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.programtheme.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.programtheme.stock.StockThemeCollectionRepository
-import org.hisp.dhis.android.core.programtheme.ProgramThemeModule
 import javax.inject.Inject
+import org.hisp.dhis.android.core.programtheme.ProgramThemeModule
+import org.hisp.dhis.android.core.programtheme.stock.StockThemeCollectionRepository
 
 @Reusable
 class ProgramThemeModuleImpl @Inject internal constructor(
-        private val stockThemes: StockThemeCollectionRepository
+    private val stockThemes: StockThemeCollectionRepository
 ) : ProgramThemeModule {
     override fun stockThemes(): StockThemeCollectionRepository {
         return stockThemes

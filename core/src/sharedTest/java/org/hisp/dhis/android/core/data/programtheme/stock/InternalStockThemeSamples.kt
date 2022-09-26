@@ -32,15 +32,15 @@ import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 internal object InternalStockThemeSamples {
     fun get(): InternalStockTheme {
         return InternalStockTheme.builder()
-                .id(1L)
-                .uid("program_uid")
-                .stockOnHand("stock_on_hand")
-                .description("description")
-                .programType("program_type")
-                .itemCode("item_code")
-                .itemDescription("item_description")
-                .deleted(false)
-                .transactions(listOf(InternalStockThemeTransactionSamples.get()))
-                .build()
+            .id(1L)
+            .uid("program_uid")
+            .stockOnHand("stock_on_hand")
+            .description("description")
+            .programType("program_type")
+            .itemCode("item_code")
+            .itemDescription("item_description")
+            .deleted(false)
+            .transactions(listOf(InternalStockThemeTransactionSamples.get()))
+            .build()
     }
 }

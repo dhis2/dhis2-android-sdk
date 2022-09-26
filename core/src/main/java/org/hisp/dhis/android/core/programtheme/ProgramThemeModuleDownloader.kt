@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.programtheme
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeCall
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramThemeModuleDownloader @Inject constructor(
-        private val stockThemeCall: StockThemeCall
+    private val stockThemeCall: StockThemeCall
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

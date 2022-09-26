@@ -27,21 +27,19 @@
  */
 package org.hisp.dhis.android.core.programtheme.stock.internal
 
-import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeStore.create
-import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeSamples.get
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeSamples.get
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeStore
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.programtheme.stock.StockThemeTableInfo
-import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeSamples
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class StockThemeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<InternalStockTheme>(
-        create(TestDatabaseAdapterFactory.get()), StockThemeTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+    create(TestDatabaseAdapterFactory.get()), StockThemeTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
 ) {
     override fun buildObject(): InternalStockTheme {
         return get()
@@ -49,7 +47,7 @@ class StockThemeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrat
 
     override fun buildObjectToUpdate(): InternalStockTheme {
         return get().toBuilder()
-                .stockOnHand("new_stock_on_hand")
-                .build()
+            .stockOnHand("new_stock_on_hand")
+            .build()
     }
 }

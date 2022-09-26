@@ -39,10 +39,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class InternalStockThemeTransactionLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<InternalStockThemeTransaction>(
-    create(TestDatabaseAdapterFactory.get()),
-    StockThemeTransactionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
-) {
+class StockThemeTransactionLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<InternalStockThemeTransaction>(
+        create(TestDatabaseAdapterFactory.get()),
+        StockThemeTransactionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
     override fun addMasterUid(): String {
         return InternalStockThemeTransactionSamples.get().programUid()!!
     }

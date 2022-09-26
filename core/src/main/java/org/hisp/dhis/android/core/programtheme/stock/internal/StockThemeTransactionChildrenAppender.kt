@@ -33,12 +33,12 @@ import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
 
 internal class StockThemeTransactionChildrenAppender(
-        private val transactionLinkStore: LinkStore<InternalStockThemeTransaction>
+    private val transactionLinkStore: LinkStore<InternalStockThemeTransaction>
 ) : ChildrenAppender<InternalStockTheme>() {
 
     override fun appendChildren(internalStockTheme: InternalStockTheme): InternalStockTheme {
         return internalStockTheme.toBuilder()
-                .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockTheme.uid()))
-                .build()
+            .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockTheme.uid()))
+            .build()
     }
 }

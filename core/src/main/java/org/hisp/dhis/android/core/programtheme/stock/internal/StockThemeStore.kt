@@ -47,7 +47,9 @@ internal object StockThemeStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<InternalStockTheme> {
-        return objectWithUidStore(databaseAdapter, StockThemeTableInfo.TABLE_INFO,
-                BINDER) { cursor: Cursor -> InternalStockTheme.create(cursor) }
+        return objectWithUidStore(
+            databaseAdapter, StockThemeTableInfo.TABLE_INFO,
+            BINDER
+        ) { cursor: Cursor -> InternalStockTheme.create(cursor) }
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.programtheme.stock
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -35,18 +36,15 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCo
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.program.ProgramStageSectionsCollectionRepository
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
-import javax.inject.Inject
 
 @Reusable
 class StockThemeCollectionRepository @Inject internal constructor(
-        store: IdentifiableObjectStore<InternalStockTheme>,
-        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
-        scope: RepositoryScope,
-        transformer: TwoWayTransformer<InternalStockTheme, StockTheme>,
+    store: IdentifiableObjectStore<InternalStockTheme>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockTheme>>,
+    scope: RepositoryScope,
+    transformer: TwoWayTransformer<InternalStockTheme, StockTheme>,
 ) : ReadOnlyWithUidCollectionRepository<StockTheme> by
-ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
+    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockTheme, StockThemeCollectionRepository>(
         store,
         childrenAppenders,
         scope,
@@ -54,11 +52,11 @@ ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockTheme, StockT
             StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
         },
         transformer
-) {
+    ) {
     private val cf: FilterConnectorFactory<StockThemeCollectionRepository> =
-            FilterConnectorFactory(scope) { s: RepositoryScope ->
-                StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
-            }
+        FilterConnectorFactory(scope) { s: RepositoryScope ->
+            StockThemeCollectionRepository(store, childrenAppenders, s, transformer)
+        }
 
     fun withTransactions(): StockThemeCollectionRepository {
         return cf.withChild(InternalStockTheme.TRANSACTIONS)

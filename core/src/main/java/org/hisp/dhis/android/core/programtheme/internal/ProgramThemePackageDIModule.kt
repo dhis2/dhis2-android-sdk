@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransact
 import retrofit2.Retrofit
 
 @Module(
-        includes = [
-            StockThemeEntityDIModule::class,
-            StockThemeTransactionEntityDIModule::class,
-        ]
+    includes = [
+        StockThemeEntityDIModule::class,
+        StockThemeTransactionEntityDIModule::class,
+    ]
 )
 internal class ProgramThemePackageDIModule {
 

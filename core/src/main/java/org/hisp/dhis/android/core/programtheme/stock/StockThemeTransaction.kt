@@ -32,22 +32,22 @@ sealed class StockThemeTransaction {
     abstract val transactionType: TransactionType
 
     data class Distributed(
-            override val sortOrder: Int,
-            override val transactionType: TransactionType,
-            val distributedTo: String,
-            val stockDistributed: String
+        override val sortOrder: Int,
+        override val transactionType: TransactionType,
+        val distributedTo: String,
+        val stockDistributed: String
     ) : StockThemeTransaction()
 
     data class Discarded(
-            override val sortOrder: Int,
-            override val transactionType: TransactionType,
-            val stockDiscarded: String
+        override val sortOrder: Int,
+        override val transactionType: TransactionType,
+        val stockDiscarded: String
     ) : StockThemeTransaction()
 
     data class Correction(
-            override val sortOrder: Int,
-            override val transactionType: TransactionType,
-            val stockCorrected: String
+        override val sortOrder: Int,
+        override val transactionType: TransactionType,
+        val stockCorrected: String
     ) : StockThemeTransaction()
 
     companion object {
@@ -67,9 +67,9 @@ sealed class StockThemeTransaction {
 
         internal fun transformTo(programUid: String, t: StockThemeTransaction): InternalStockThemeTransaction {
             val builder = InternalStockThemeTransaction.builder()
-                    .programUid(programUid)
-                    .transactionType(t.transactionType.name)
-                    .sortOrder(t.sortOrder)
+                .programUid(programUid)
+                .transactionType(t.transactionType.name)
+                .sortOrder(t.sortOrder)
 
             when (t) {
                 is Distributed -> builder.distributedTo(t.distributedTo).stockDistributed(t.stockDistributed)

@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransacti
 internal object InternalStockThemeTransactionSamples {
     fun get(): InternalStockThemeTransaction {
         return InternalStockThemeTransaction.builder()
-                .id(1L)
-                .programUid("program_uid")
-                .sortOrder(2)
-                .transactionType("CORRECTED")
-                .distributedTo("distributed_to")
-                .stockDistributed("stock_distributed")
-                .stockDiscarded("stock_discarded")
-                .stockCorrected("stock_corrected")
-                .build()
+            .id(1L)
+            .programUid("program_uid")
+            .sortOrder(2)
+            .transactionType("CORRECTED")
+            .distributedTo("distributed_to")
+            .stockDistributed("stock_distributed")
+            .stockDiscarded("stock_discarded")
+            .stockCorrected("stock_corrected")
+            .build()
     }
 }

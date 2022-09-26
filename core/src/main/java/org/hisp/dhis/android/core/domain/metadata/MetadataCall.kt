@@ -112,24 +112,24 @@ internal class MetadataCall @Inject constructor(
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Observable<D2Progress> {
         return Single.merge(
-                listOf(
-                        Single.fromCallable {
-                            databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
-                            progressManager.increaseProgress(SystemInfo::class.java, false)
-                        },
-                        systemSettingDownloader.downloadMetadata().toSingle {
-                            progressManager.increaseProgress(SystemSetting::class.java, false)
-                        },
-                        programThemeDownloader.downloadMetadata().toSingle {
-                            progressManager.increaseProgress(StockTheme::class.java, false)
-                        },
-                        constantModuleDownloader.downloadMetadata().map {
-                            progressManager.increaseProgress(Constant::class.java, false)
-                        },
-                        smsModule.configCase().refreshMetadataIdsCallable().toSingle {
-                            progressManager.increaseProgress(SmsModule::class.java, false)
-                        }
-                )
+            listOf(
+                Single.fromCallable {
+                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+                    progressManager.increaseProgress(SystemInfo::class.java, false)
+                },
+                systemSettingDownloader.downloadMetadata().toSingle {
+                    progressManager.increaseProgress(SystemSetting::class.java, false)
+                },
+                programThemeDownloader.downloadMetadata().toSingle {
+                    progressManager.increaseProgress(StockTheme::class.java, false)
+                },
+                constantModuleDownloader.downloadMetadata().map {
+                    progressManager.increaseProgress(Constant::class.java, false)
+                },
+                smsModule.configCase().refreshMetadataIdsCallable().toSingle {
+                    progressManager.increaseProgress(SmsModule::class.java, false)
+                }
+            )
         ).toObservable()
     }
 

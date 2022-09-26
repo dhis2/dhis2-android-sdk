@@ -27,17 +27,17 @@
  */
 package org.hisp.dhis.android.core.programtheme.stock.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
-import javax.inject.Inject
 
 internal class StockThemeHandler @Inject constructor(
-        store: IdentifiableObjectStore<InternalStockTheme>,
-        private val transactionLinkHandler: LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction>,
+    store: IdentifiableObjectStore<InternalStockTheme>,
+    private val transactionLinkHandler: LinkHandler<InternalStockThemeTransaction, InternalStockThemeTransaction>,
 ) : IdentifiableHandlerImpl<InternalStockTheme>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<InternalStockTheme>): Collection<InternalStockTheme> {

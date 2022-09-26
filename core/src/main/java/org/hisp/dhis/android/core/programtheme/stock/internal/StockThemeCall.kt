@@ -29,17 +29,17 @@ package org.hisp.dhis.android.core.programtheme.stock.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
-import javax.inject.Inject
 
 @Reusable
 internal class StockThemeCall @Inject constructor(
-        private val stockThemeHandler: HandlerWithTransformer<InternalStockTheme>,
-        private val stockThemeService: StockThemeService,
-        private val apiCallExecutor: RxAPICallExecutor,
+    private val stockThemeHandler: HandlerWithTransformer<InternalStockTheme>,
+    private val stockThemeService: StockThemeService,
+    private val apiCallExecutor: RxAPICallExecutor,
 ) : BaseSettingCall<List<InternalStockTheme>>() {
 
     override fun fetch(storeError: Boolean): Single<List<InternalStockTheme>> {

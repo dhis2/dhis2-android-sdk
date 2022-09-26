@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.programtheme.stock;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;

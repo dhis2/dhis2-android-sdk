@@ -64,5 +64,9 @@ subprojects { project ->
         version = "0.37.2"
         android = true
         outputColorName = "RED"
+        reporters {
+            reporter "plain"
+            reporter "checkstyle"
+        }
     }
 }

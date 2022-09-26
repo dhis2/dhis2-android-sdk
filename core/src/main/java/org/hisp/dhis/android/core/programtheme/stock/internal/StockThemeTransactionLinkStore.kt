@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockThemeTransaction
 import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransactionTableInfo
 
+@Suppress("MagicNumber")
 internal object StockThemeTransactionLinkStore {
     private val BINDER: StatementBinder<InternalStockThemeTransaction> =
         StatementBinder<InternalStockThemeTransaction> { o: InternalStockThemeTransaction, w: StatementWrapper ->

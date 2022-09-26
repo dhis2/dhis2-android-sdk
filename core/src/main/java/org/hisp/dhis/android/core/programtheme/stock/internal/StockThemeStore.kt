@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
 import org.hisp.dhis.android.core.programtheme.stock.StockThemeTableInfo
 
+@Suppress("MagicNumber")
 internal object StockThemeStore {
     private val BINDER = StatementBinder { o: InternalStockTheme, w: StatementWrapper ->
         w.bind(1, o.uid())

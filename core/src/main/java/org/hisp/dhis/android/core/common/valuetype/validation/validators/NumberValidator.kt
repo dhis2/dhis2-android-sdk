@@ -33,7 +33,8 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.NumberFai
 
 object NumberValidator : NumberValidatorBase<NumberFailure>() {
 
-    val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
+    private val STARTS_WITH_DOT = "^\\.\\d*".toRegex()
+    internal val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
 
     override val formatFailure: NumberFailure = NumberFailure.NumberFormatException
     override val leadingZeroException: NumberFailure = NumberFailure.LeadingZeroException
@@ -42,6 +43,8 @@ object NumberValidator : NumberValidatorBase<NumberFailure>() {
         value.toDouble()
         return if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
             Result.Failure(NumberFailure.ScientificNotationException)
+        } else if (value.matches(STARTS_WITH_DOT)) {
+            Result.Failure(formatFailure)
         } else {
             Result.Success(value)
         }

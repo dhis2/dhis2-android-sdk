@@ -37,6 +37,7 @@ plugins {
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
 apply from: project.file("plugins/jacoco.gradle")
+apply from: project.file("plugins/sonarqube.gradle")
 
 ext {
     configuration = [

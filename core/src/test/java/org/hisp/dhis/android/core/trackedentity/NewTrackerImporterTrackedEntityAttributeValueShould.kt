@@ -25,32 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.note;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class NewTrackerImporterTrackedEntityAttributeValueShould :
+    BaseObjectShould("trackedentity/new_tracker_importer_tracked_entity_attribute_value.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note/note_30.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    override fun map_from_json_string() {
+        val dataValue =
+            objectMapper.readValue(jsonStream, NewTrackerImporterTrackedEntityAttributeValue::class.java)
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        assertThat(dataValue.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-05-26T11:46:22.371"))
+        assertThat(dataValue.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-05-26T11:46:22.371"))
+        assertThat(dataValue.value()).isEqualTo("Ryder")
+        assertThat(dataValue.trackedEntityAttribute()).isEqualTo("zDhUuAYrxNC")
     }
 }

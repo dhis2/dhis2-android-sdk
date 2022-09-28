@@ -72,5 +72,6 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("π", NumberFailure.NumberFormatException)
         valueShouldFail("ln(2)", NumberFailure.NumberFormatException)
         valueShouldFail("2/3", NumberFailure.NumberFormatException)
+        valueShouldFail(".5", NumberFailure.NumberFormatException)
     }
 }

@@ -58,7 +58,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
                 emitter.onSuccess(payloadWrapper)
             } else {
                 emitter.onSuccess(
-                    NewTrackerImporterPayloadWrapper(
+                    payloadWrapper.copy(
                         deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
                         updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources)
                     )

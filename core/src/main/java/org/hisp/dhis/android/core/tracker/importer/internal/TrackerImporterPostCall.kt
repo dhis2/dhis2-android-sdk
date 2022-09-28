@@ -113,14 +113,16 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         payload: NewTrackerImporterPayload,
         importStrategy: String
     ): Observable<D2Progress> {
-        stateManager.setStates(payload, State.UPLOADING)
+        return Observable.defer {
+            stateManager.setStates(payload, State.UPLOADING)
 
-        return Single.fromCallable {
-            doPostCallInternal(payload, importStrategy)
-        }.doOnError {
-            stateManager.restoreStates(payload)
-        }.flatMapObservable {
-            jobQueryCall.queryJob(it)
+            Single.fromCallable {
+                doPostCallInternal(payload, importStrategy)
+            }.doOnError {
+                stateManager.restoreStates(payload)
+            }.flatMapObservable {
+                jobQueryCall.queryJob(it)
+            }
         }
     }
 

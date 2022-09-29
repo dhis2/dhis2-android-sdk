@@ -25,32 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.note;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class NewTrackerImporterTrackedEntityShould :
+    BaseObjectShould("trackedentity/new_tracker_importer_tracked_entity.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note/note_30.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    override fun map_from_json_string() {
+        val trackedEntity = objectMapper.readValue(jsonStream, NewTrackerImporterTrackedEntity::class.java)
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        assertThat(trackedEntity.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:02.770"))
+        assertThat(trackedEntity.createdAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:02.770"))
+        assertThat(trackedEntity.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:07:34.455"))
+        assertThat(trackedEntity.updatedAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-05-26T11:46:22.372"))
+
+        assertThat(trackedEntity.uid()).isEqualTo("vOxUH373fy5")
+        assertThat(trackedEntity.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(trackedEntity.trackedEntityType()).isEqualTo("nEenWmSyUEp")
+        assertThat(trackedEntity.geometry()!!.type()).isEqualTo(FeatureType.POINT)
+        assertThat(trackedEntity.geometry()!!.coordinates()).isEqualTo("[-11.49169921875, 9.535667170047729]")
+        assertThat(trackedEntity.deleted()).isFalse()
     }
 }

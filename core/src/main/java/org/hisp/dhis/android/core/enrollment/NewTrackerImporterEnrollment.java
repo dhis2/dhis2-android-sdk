@@ -113,7 +113,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract Date completedAt();
 
     @Nullable
-    @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
+    @JsonProperty()
     @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
@@ -193,7 +193,6 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder completedAt(Date completedAt);
 
-        @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder status(EnrollmentStatus status);

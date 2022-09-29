@@ -25,32 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note
 
-package org.hisp.dhis.android.core.note;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class NewTrackerImporterNoteShould : BaseObjectShould("note/new_tracker_importer_note.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note/note_30.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    override fun map_from_json_string() {
+        val note = objectMapper.readValue(jsonStream, NewTrackerImporterNote::class.java)
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        assertThat(note.uid()).isEqualTo("zCBxfBfjnQZ")
+        assertThat(note.value()).isEqualTo("This is a note")
+        assertThat(note.storedBy()).isEqualTo("admin")
+        assertThat(note.storedAt()).isEqualTo("2022-09-28T14:44:15.320")
     }
 }

@@ -25,47 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant
 
-package org.hisp.dhis.android.core.constant;
-
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+import android.database.Cursor
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder
+import com.google.auto.value.AutoValue
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.CoreObject
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Constant.Builder.class)
-public abstract class Constant extends BaseIdentifiableObject implements CoreObject {
+@JsonDeserialize(builder = `$$AutoValue_Constant`.Builder::class)
+abstract class Constant : BaseIdentifiableObject(), CoreObject {
 
-    @Nullable
-    @JsonProperty()
-    public abstract Double value();
+    @JsonProperty
+    abstract fun value(): Double?
 
-    public static Builder builder() {
-        return new $$AutoValue_Constant.Builder();
-    }
-
-    public static Constant create(Cursor cursor) {
-        return $AutoValue_Constant.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
+    abstract fun toBuilder(): Builder?
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    abstract class Builder : BaseIdentifiableObject.Builder<Builder>() {
 
-        public abstract Builder id(Long id);
+        abstract fun id(id: Long?): Builder
 
-        public abstract Builder value(Double value);
+        abstract fun value(value: Double?): Builder
 
-        public abstract Constant build();
+        abstract fun build(): Constant
+    }
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder {
+            return `$$AutoValue_Constant`.Builder()
+        }
+
+        @JvmStatic
+        fun create(cursor: Cursor): Constant {
+            return `$AutoValue_Constant`.createFromCursor(cursor)
+        }
     }
 }

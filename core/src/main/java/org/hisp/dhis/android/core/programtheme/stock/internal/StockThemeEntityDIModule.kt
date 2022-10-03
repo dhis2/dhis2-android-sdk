@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.programtheme.stock.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
@@ -66,10 +66,9 @@ internal class StockThemeEntityDIModule {
 
     @Provides
     @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): MutableMap<String, ChildrenAppender<InternalStockTheme>> {
-        val childrenAppender: ChildrenAppender<InternalStockTheme> = StockThemeTransactionChildrenAppender(
-            StockThemeTransactionLinkStore.create(databaseAdapter)
-        )
-        return Collections.singletonMap(InternalStockTheme.TRANSACTIONS, childrenAppender)
+    fun childrenAppenders(linkStore: LinkStore<InternalStockThemeTransaction>):
+            Map<String, ChildrenAppender<InternalStockTheme>> {
+        val childrenAppender: ChildrenAppender<InternalStockTheme> = StockThemeTransactionChildrenAppender(linkStore)
+        return mapOf(Pair(InternalStockTheme.TRANSACTIONS, childrenAppender))
     }
 }

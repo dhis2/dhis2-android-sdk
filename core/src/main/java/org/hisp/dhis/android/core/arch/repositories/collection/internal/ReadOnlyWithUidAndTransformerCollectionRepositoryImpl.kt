@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
+internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 <M, T, R : ReadOnlyCollectionRepository<T>> internal constructor(
     private val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,

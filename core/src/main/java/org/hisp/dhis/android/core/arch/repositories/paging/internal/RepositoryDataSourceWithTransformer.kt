@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
-class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
+internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
     private val scope: RepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,

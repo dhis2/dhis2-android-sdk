@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.programtheme.ProgramThemeModule
 import org.hisp.dhis.android.core.programtheme.stock.StockThemeCollectionRepository
 
 @Reusable
-class ProgramThemeModuleImpl @Inject internal constructor(
+internal class ProgramThemeModuleImpl @Inject internal constructor(
     private val stockThemes: StockThemeCollectionRepository
 ) : ProgramThemeModule {
     override fun stockThemes(): StockThemeCollectionRepository {

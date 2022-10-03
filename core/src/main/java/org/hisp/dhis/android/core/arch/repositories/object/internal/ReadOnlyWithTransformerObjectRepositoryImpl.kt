@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 
-class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
+internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
 internal constructor(
     private val store: ReadableStore<M>,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,

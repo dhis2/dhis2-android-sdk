@@ -36,7 +36,7 @@ import org.junit.Test
 class InternalStockThemeShould {
     private var objectMapper: ObjectMapper = Inject.objectMapper()
     private var jsonStream: InputStream = this.javaClass.classLoader!!
-            .getResourceAsStream("programtheme.stock/stock_theme.json")
+        .getResourceAsStream("programtheme.stock/stock_theme.json")
 
     @Test
     fun map_from_json_string() {

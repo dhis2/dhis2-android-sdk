@@ -67,8 +67,8 @@ internal class StockThemeEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(linkStore: LinkStore<InternalStockThemeTransaction>):
-            Map<String, ChildrenAppender<InternalStockTheme>> {
-        val childrenAppender: ChildrenAppender<InternalStockTheme> = StockThemeTransactionChildrenAppender(linkStore)
-        return mapOf(Pair(InternalStockTheme.TRANSACTIONS, childrenAppender))
-    }
+        Map<String, ChildrenAppender<InternalStockTheme>> {
+            val childrenAppender: ChildrenAppender<InternalStockTheme> = StockThemeTransactionChildrenAppender(linkStore)
+            return mapOf(Pair(InternalStockTheme.TRANSACTIONS, childrenAppender))
+        }
 }

@@ -472,6 +472,15 @@ class ProgramIndicatorExecutorShould {
         assertThat(result2).isNull()
     }
 
+    @Test
+    fun evaluate_invalid_expressions() {
+        setExpression("${de(programStage1, dataElementUid1)} && ")
+        whenever(dataValue1.value()) doReturn "4.5"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.constant
 
-import android.database.Cursor
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder
@@ -59,11 +58,6 @@ abstract class Constant : BaseIdentifiableObject(), CoreObject {
         @JvmStatic
         fun builder(): Builder {
             return `$$AutoValue_Constant`.Builder()
-        }
-
-        @JvmStatic
-        fun create(cursor: Cursor): Constant {
-            return `$AutoValue_Constant`.createFromCursor(cursor)
         }
     }
 }

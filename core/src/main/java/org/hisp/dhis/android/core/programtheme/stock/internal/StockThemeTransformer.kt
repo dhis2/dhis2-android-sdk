@@ -25,45 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programtheme.stock.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
+import org.hisp.dhis.android.core.programtheme.stock.StockTheme
+import org.hisp.dhis.android.core.programtheme.stock.StockThemeTransaction
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 134;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@Reusable
+internal class StockThemeTransformer : TwoWayTransformer<InternalStockTheme, StockTheme> {
+    override fun transform(o: InternalStockTheme): StockTheme {
+        return StockTheme(
+            o.uid(),
+            o.itemCode(),
+            o.itemDescription(),
+            o.programType(),
+            o.description(),
+            o.stockOnHand(),
+            o.transactions()?.map { StockThemeTransaction.transformFrom(it) } ?: emptyList()
+        )
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun deTransform(t: StockTheme): InternalStockTheme {
+        return InternalStockTheme.builder()
+            .uid(t.programUid)
+            .itemCode(t.itemCode)
+            .itemDescription(t.itemDescription)
+            .programType(t.programType)
+            .description(t.description)
+            .stockOnHand(t.stockOnHand)
+            .transactions(t.transactions.map { StockThemeTransaction.transformTo(t.programUid, it) })
+            .build()
     }
 }

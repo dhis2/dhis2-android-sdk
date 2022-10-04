@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,44 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.testapp.programtheme.stock;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.programtheme.stock.StockTheme;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-class BaseDatabaseOpenHelper {
+import java.util.List;
 
-    static final int VERSION = 134;
+@RunWith(D2JunitRunner.class)
+public class StockThemeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Test
+    public void find_all() {
+        List<StockTheme> stockThemes = d2.programThemeModule().stockThemes()
+                .blockingGet();
+        assertThat(stockThemes.size()).isEqualTo(1);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Test
+    public void filter_by_uid() {
+        StockTheme stockTheme = d2.programThemeModule().stockThemes()
+                .uid("IpHINAT79UW")
+                .blockingGet();
+        assertThat(stockTheme).isNotNull();
+        assertThat(stockTheme.getStockOnHand()).isEqualTo("ypCQAFr1a5l");
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Test
+    public void filter_by_number() {
+        List<StockTheme> stockThemes = d2.programThemeModule().stockThemes()
+                .withTransactions()
+                .blockingGet();
+        assertThat(stockThemes.size()).isEqualTo(1);
+        assertThat(stockThemes.get(0).getTransactions().size()).isEqualTo(3);
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
 }

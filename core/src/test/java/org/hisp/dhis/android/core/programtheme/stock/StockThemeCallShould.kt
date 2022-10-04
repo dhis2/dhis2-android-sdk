@@ -25,45 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programtheme.stock
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeCall
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeService
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+@RunWith(JUnit4::class)
+class StockThemeCallShould {
+    private val handler: IdentifiableHandlerImpl<InternalStockTheme> = mock()
+    private val service: StockThemeService = mock()
+    private val stockThemeSingle: Single<List<InternalStockTheme>> = mock()
+    private val apiCallExecutor: RxAPICallExecutor = mock()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    private lateinit var stockThemeCall: StockThemeCall
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 134;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Before
+    fun setUp() {
+        whenever(service.stockThemes()) doReturn stockThemeSingle
+        stockThemeCall = StockThemeCall(handler, service, apiCallExecutor)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    @Test
+    fun default_to_empty_collection_if_not_found() {
+        whenever(apiCallExecutor.wrapSingle(stockThemeSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
 
-        databaseAdapter.enableWriteAheadLogging();
-    }
+        stockThemeCall.getCompletable(false).blockingAwait()
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        verify(handler).handleMany(emptyList())
+        verifyNoMoreInteractions(handler)
     }
 }

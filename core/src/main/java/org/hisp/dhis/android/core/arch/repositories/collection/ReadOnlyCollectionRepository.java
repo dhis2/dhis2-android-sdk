@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 import io.reactivex.Single;
 
-public interface ReadOnlyCollectionRepository<M extends CoreObject> extends BaseRepository {
+public interface ReadOnlyCollectionRepository<M> extends BaseRepository {
 
     /**
      * Get the objects in scope in an asynchronous way, returning a {@code Single<List>}.

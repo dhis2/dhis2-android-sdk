@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
+import org.hisp.dhis.android.core.programtheme.ProgramThemeModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
@@ -60,7 +61,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-@SuppressWarnings({"PMD.TooManyFields"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveImports"})
 @Reusable
 public final class D2Modules {
 
@@ -81,6 +82,7 @@ public final class D2Modules {
     public final MaintenanceModule maintenance;
     public final NoteModule note;
     public final ProgramModule program;
+    public final ProgramThemeModule programTheme;
     public final OrganisationUnitModule organisationUnit;
     public final SystemInfoModule systemInfo;
     public final SettingModule settingModule;
@@ -110,6 +112,7 @@ public final class D2Modules {
                      MaintenanceModule maintenance,
                      NoteModule note,
                      ProgramModule program,
+                     ProgramThemeModule programTheme,
                      OrganisationUnitModule organisationUnit,
                      SystemInfoModule systemInfo,
                      SettingModule settingModule,
@@ -137,6 +140,7 @@ public final class D2Modules {
         this.maintenance = maintenance;
         this.note = note;
         this.program = program;
+        this.programTheme = programTheme;
         this.organisationUnit = organisationUnit;
         this.systemInfo = systemInfo;
         this.settingModule = settingModule;

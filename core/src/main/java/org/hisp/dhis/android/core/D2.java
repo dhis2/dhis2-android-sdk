@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
+import org.hisp.dhis.android.core.programtheme.ProgramThemeModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
@@ -187,6 +188,10 @@ public final class D2 {
 
     public ProgramModule programModule() {
         return this.modules.program;
+    }
+
+    public ProgramThemeModule programThemeModule() {
+        return this.modules.programTheme;
     }
 
     public OrganisationUnitModule organisationUnitModule() {

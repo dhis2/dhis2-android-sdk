@@ -25,45 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programtheme.stock
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+object StockThemeTransactionTableInfo {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 134;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "StockThemeTransaction"
         }
 
-        databaseAdapter.enableWriteAheadLogging();
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    class Columns : DeletableDataColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM_UID,
+                SORT_ORDER,
+                TRANSACTION_TYPE,
+                DISTRIBUTED_TO,
+                STOCK_DISTRIBUTED,
+                STOCK_DISCARDED,
+                STOCK_CORRECTED
+            )
+        }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val PROGRAM_UID = "programUid"
+            const val SORT_ORDER = "sortOrder"
+            const val TRANSACTION_TYPE = "transactionType"
+            const val DISTRIBUTED_TO = "distributedTo"
+            const val STOCK_DISTRIBUTED = "stockDistributed"
+            const val STOCK_DISCARDED = "stockDiscarded"
+            const val STOCK_CORRECTED = "stockCorrected"
+        }
     }
 }

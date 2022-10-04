@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.programtheme.ProgramThemeModuleDownloader
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
@@ -68,6 +69,7 @@ class MetadataCallShould : BaseCallShould() {
     private val rxAPICallExecutor: RxAPICallExecutor = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
+    private val programThemeModuleDownloader: ProgramThemeModuleDownloader = mock()
     private val userDownloader: UserModuleDownloader = mock()
     private val categoryDownloader: CategoryModuleDownloader = mock()
     private val programDownloader: ProgramModuleDownloader = mock()
@@ -96,6 +98,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemInfoDownloader.downloadWithProgressManager(any()))
             .thenReturn(Observable.just(BaseD2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(programThemeModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata()).thenReturn(
             Completable.complete()
@@ -129,6 +132,7 @@ class MetadataCallShould : BaseCallShould() {
             rxAPICallExecutor,
             systemInfoDownloader,
             systemSettingDownloader,
+            programThemeModuleDownloader,
             userDownloader,
             categoryDownloader,
             programDownloader,

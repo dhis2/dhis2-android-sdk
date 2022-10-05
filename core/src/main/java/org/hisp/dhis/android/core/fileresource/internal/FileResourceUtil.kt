@@ -86,7 +86,6 @@ internal object FileResourceUtil {
         try {
             @Suppress("MagicNumber")
             val fileReader = ByteArray(1024)
-            var fileSizeDownloaded: Long = 0
             outputStream = FileOutputStream(file)
 
             while (true) {
@@ -95,11 +94,6 @@ internal object FileResourceUtil {
                     break
                 }
                 outputStream.write(fileReader, 0, read)
-                fileSizeDownloaded += read.toLong()
-                Log.d(
-                    FileResourceUtil::class.java.canonicalName,
-                    "file download: $fileSizeDownloaded of $fileSize"
-                )
             }
             outputStream.flush()
         } catch (e: IOException) {
@@ -108,6 +102,10 @@ internal object FileResourceUtil {
             try {
                 inputStream.close()
                 outputStream?.close()
+                Log.d(
+                    FileResourceUtil::class.java.canonicalName,
+                    "file saved. Size: $fileSize"
+                )
             } catch (e: IOException) {
                 logMessage(e)
             }

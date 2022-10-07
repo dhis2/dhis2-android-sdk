@@ -303,7 +303,6 @@ public class Dhis2MockServer {
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
-        enqueueMockResponse(STOCK_THEMES_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);

@@ -277,7 +277,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withDataSetElements()
                 .one().blockingGet();
-        assertThat(dataSet.dataSetElements().size()).isEqualTo(1);
+        assertThat(dataSet.dataSetElements().size()).isEqualTo(2);
     }
 
     @Test
@@ -286,7 +286,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .withDataSetElements()
                 .uid("lyLU2wR22tC")
                 .blockingGet();
-        assertThat(dataSet.dataSetElements().size()).isEqualTo(1);
+        assertThat(dataSet.dataSetElements().size()).isEqualTo(2);
     }
 
     @Test

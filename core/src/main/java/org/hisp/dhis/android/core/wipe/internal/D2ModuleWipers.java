@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.option.internal.OptionModuleWiper;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleWiper;
 import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper;
+import org.hisp.dhis.android.core.programtheme.internal.ProgramThemeModuleWiper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper;
@@ -93,6 +94,7 @@ final class D2ModuleWipers {
             OrganisationUnitModuleWiper organisationUnit,
             PeriodModuleWiper period,
             ProgramModuleWiper program,
+            ProgramThemeModuleWiper programTheme,
             RelationshipModuleWiper relationship,
 
             ResourceModuleWiper resource,
@@ -127,6 +129,7 @@ final class D2ModuleWipers {
                 organisationUnit,
                 period,
                 program,
+                programTheme,
                 relationship,
 
                 resource,

@@ -34,10 +34,10 @@ internal class RelationshipServiceImpl @Inject constructor(
             programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
         }
         RelationshipEntityType.PROGRAM_STAGE_INSTANCE -> {
-            if(constraint.programStage()?.uid() != null){
+            if (constraint.programStage()?.uid() != null) {
                 val programStageUid = constraint.programStage()?.uid()
                 programStageRepository.uid(programStageUid).blockingGet()?.access()!!.data().write()
-            }else{
+            } else {
                 val programUid = constraint.program()?.uid()
                 programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
             }

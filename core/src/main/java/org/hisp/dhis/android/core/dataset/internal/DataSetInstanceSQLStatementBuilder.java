@@ -138,13 +138,16 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             "WHEN " + VALUE_STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +
             "WHEN " + VALUE_STATE + " = '" + State.SENT_VIA_SMS + "' THEN 2 " +
             "WHEN " + VALUE_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
-            "ELSE 4 END)";
+            "WHEN " + VALUE_STATE + " = '" + State.UPLOADING + "' THEN 4 " +
+            "ELSE 5 END)";
 
     private static final String SELECT_STATE = "CASE" +
             WHEN + eq(COMPLETION_STATE, State.ERROR) + OR + eq(VALUE_STATE, State.ERROR) +
                 THEN + quotes(State.ERROR) +
             WHEN + eq(COMPLETION_STATE, State.WARNING) + OR + eq(VALUE_STATE, State.WARNING) +
                 THEN + quotes(State.WARNING) +
+            WHEN + eq(COMPLETION_STATE, State.UPLOADING) + OR + eq(VALUE_STATE, State.UPLOADING) +
+                THEN + quotes(State.UPLOADING) +
             WHEN + eq(COMPLETION_STATE, State.TO_UPDATE) + OR + eq(VALUE_STATE, State.TO_UPDATE) +
                 THEN + quotes(State.TO_UPDATE) +
             WHEN + eq(COMPLETION_STATE, State.TO_POST) + OR + eq(VALUE_STATE, State.TO_POST) +

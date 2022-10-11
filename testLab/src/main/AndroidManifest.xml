@@ -26,7 +26,8 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.hisp.dhis.android">
-    <application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.hisp.dhis.android">
+    <application android:icon="@drawable/ic_2g_negative">
     </application>
 </manifest>

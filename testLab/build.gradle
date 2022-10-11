@@ -39,5 +39,5 @@ android {
     }
 }
 dependencies {
-    implementation fileTree(dir: '../core/build/outputs/aar/', include: ['*.aar'])
+    api project(':core')
 }

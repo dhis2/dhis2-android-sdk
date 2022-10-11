@@ -28,7 +28,7 @@
 #
 
 set -ex
-source config_jenkins.init
+source "$(dirname $0)/config_jenkins.init"
 
 app_apk_path=./testLab/build/outputs/apk/debug/testLab-debug.apk
 test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.apk

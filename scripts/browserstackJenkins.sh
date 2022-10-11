@@ -35,6 +35,7 @@ test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.
 
 # Build apks
 ./gradlew :core:assembleDebug
+./gradlew :core:assembleDebugAndroidTest
 ./gradlew :testLab:assembleDebug
 
 ls core

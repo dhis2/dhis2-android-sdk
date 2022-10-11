@@ -37,6 +37,13 @@ test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.
 ./gradlew :core:assembleDebug
 ./gradlew :testLab:assembleDebug
 
+ls core
+ls core/build
+ls core/build/outputs
+ls core/build/outputs/apk/
+ls core/build/outputs/apk/androidTest
+ls core/build/outputs/apk/androidTest/debug
+
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
 upload_app_response="$(curl -u $BROWSERSTACK_USR:$BROWSERSTACK_PSW -X POST https://api-cloud.browserstack.com/app-automate/upload -F file=@$app_apk_path)"

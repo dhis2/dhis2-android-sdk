@@ -29,9 +29,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.hisp.dhis.android.testLab">
 
-    <application android:icon="@drawable/ic_2g_negative">
-        <activity
-            android:name=".TestLabActivity"
-            android:theme="@style/Theme.Transparent" />
-    </application>
+    <application
+        android:name=".TestLabActivity"
+        android:icon="@drawable/ic_2g_negative"
+        android:label="@string/title_activity_splash_screen"
+        android:theme="@style/Theme.Transparent" />
 </manifest>

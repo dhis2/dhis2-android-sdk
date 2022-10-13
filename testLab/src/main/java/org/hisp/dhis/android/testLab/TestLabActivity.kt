@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testLab
 
-import android.app.Application
+import android.app.Activity
 
-class TestLabActivity : Application() {
+class TestLabActivity : Activity() {
 }

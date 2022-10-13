@@ -31,7 +31,7 @@ android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
     defaultConfig {
-        applicationId "org.hisp.dhis.android.app"
+        applicationId "org.hisp.dhis.android.testLab"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1

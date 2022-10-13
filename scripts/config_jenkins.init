@@ -10,4 +10,4 @@ browserstack_deviceLogs=true
 browserstack_number_of_parallel_executions=2
 browserstack_mock_server=true
 bitrise_max_parallel_builds=3
-browserstack_class="\"org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListIntegrationShould\""
+browserstack_package="\"org.hisp.dhis.android\""

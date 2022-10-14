@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.wipe
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
+import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeSamples
+import org.hisp.dhis.android.core.data.programtheme.stock.InternalStockThemeTransactionSamples
 import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
 import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
@@ -43,6 +45,8 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeStore
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransactionLinkStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
@@ -122,5 +126,8 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
         SMSConfigStoreImpl.create(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
         SMSOngoingSubmissionStore.create(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
+
+        StockThemeStore.create(databaseAdapter).insert(InternalStockThemeSamples.get())
+        StockThemeTransactionLinkStore.create(databaseAdapter).insert(InternalStockThemeTransactionSamples.get())
     }
 }

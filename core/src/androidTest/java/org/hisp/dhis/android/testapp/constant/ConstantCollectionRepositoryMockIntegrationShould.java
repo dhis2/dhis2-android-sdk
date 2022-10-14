@@ -50,7 +50,7 @@ public class ConstantCollectionRepositoryMockIntegrationShould extends BaseMockI
     @Test
     public void filter_by_value() {
         List<Constant> constants = d2.constantModule().constants()
-                .byValue().eq(324234.324)
+                .byValue().eq(3.14)
                 .blockingGet();
         assertThat(constants.size()).isEqualTo(1);
     }

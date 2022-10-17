@@ -50,7 +50,6 @@ android {
             testCoverageEnabled = true
         }
     }
-
 }
 
 dependencies {

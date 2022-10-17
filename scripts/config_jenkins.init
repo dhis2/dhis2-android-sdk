@@ -12,3 +12,4 @@ browserstack_mock_server=true
 bitrise_max_parallel_builds=3
 browserstack_package="\"org.hisp.dhis.android\""
 browserstack_singleRunnerInvocation=true
+browserstack_coverage=true

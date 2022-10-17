@@ -35,7 +35,7 @@ test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.
 
 # Build apks
 ./gradlew :core:assembleDebug
-./gradlew :core:assembleDebugAndroidTest
+./gradlew :core:assembleDebugAndroidTest -Pcoverage
 ./gradlew :testLab:assembleDebug
 
 ls core
@@ -75,7 +75,7 @@ json=$(jq -n \
                 --arg deviceLogs "$browserstack_deviceLogs" \
                 --arg allowDeviceMockServer "$browserstack_mock_server" \
                 --arg singleRunnerInvocation "$browserstack_singleRunnerInvocation" \
-                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, localIdentifier: $locId, gpsLocation: $gpsLocation, language: $language, locale: $locale, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation}')
+                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, localIdentifier: $locId, gpsLocation: $gpsLocation, language: $language, locale: $locale, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: true}')
 
 test_execution_response="$(curl -X POST https://api-cloud.browserstack.com/app-automate/espresso/v2/build -d \ "$json" -H "Content-Type: application/json" -u "$BROWSERSTACK_USR:$BROWSERSTACK_PSW")"
 

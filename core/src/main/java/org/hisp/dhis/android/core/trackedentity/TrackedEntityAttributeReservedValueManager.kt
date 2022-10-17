@@ -27,54 +27,44 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore.selectByUid
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore.selectWhere
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager.increaseProgress
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore.selectStringColumnsWhereClause
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore.updateOrInsert
 import dagger.Reusable
-import io.reactivex.*
+import io.reactivex.Completable
 import io.reactivex.Observable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import io.reactivex.Single
+import io.reactivex.SingleEmitter
+import java.util.Date
+import javax.inject.Inject
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxObservable
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
-import org.hisp.dhis.android.core.settings.GeneralSettings
-import java.util.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
 @Reusable
 class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
@@ -87,7 +77,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val generalSettingObjectRepository: GeneralSettingObjectRepository,
     private val reservedValueSettingStore: IdentifiableObjectStore<ReservedValueSetting>,
     private val executor: D2CallExecutor,
-    private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>
+    private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
+        TrackedEntityAttributeReservedValueQuery>
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
 
@@ -113,22 +104,24 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         val optionalDownload = downloadValuesIfBelowThreshold(
             attributeUid, getOrganisationUnit(organisationUnitUid), null, false
         ).onErrorComplete()
-        return optionalDownload.andThen(Single.create { emitter: SingleEmitter<String?> ->
-            val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!
-                .pattern()
-            val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
-            val reservedValue = store.popOne(attributeUid, attributeOrgunit)
-            if (reservedValue == null) {
-                emitter.onError(
-                    D2Error.builder()
-                        .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
-                        .errorDescription("There are no reserved values")
-                        .errorComponent(D2ErrorComponent.Database).build()
-                )
-            } else {
-                emitter.onSuccess(reservedValue.value()!!)
+        return optionalDownload.andThen(
+            Single.create { emitter: SingleEmitter<String?> ->
+                val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!
+                    .pattern()
+                val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
+                val reservedValue = store.popOne(attributeUid, attributeOrgunit)
+                if (reservedValue == null) {
+                    emitter.onError(
+                        D2Error.builder()
+                            .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
+                            .errorDescription("There are no reserved values")
+                            .errorComponent(D2ErrorComponent.Database).build()
+                    )
+                } else {
+                    emitter.onSuccess(reservedValue.value()!!)
+                }
             }
-        })
+        )
     }
 
     /**
@@ -179,13 +172,15 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @return An Observable that notifies about the progress.
      */
-    fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
-        val observables: MutableList<Observable<D2Progress>> = ArrayList()
-        val generatedAttributes = generatedAttributes
-        for (attribute in generatedAttributes) {
-            observables.add(downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp))
+    private fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
+        return rxObservable {
+            val observables: MutableList<Observable<D2Progress>> = ArrayList()
+            val generatedAttributes = generatedAttributes
+            for (attribute in generatedAttributes) {
+                observables.add(downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp))
+            }
+            Observable.merge(observables)
         }
-        return Observable.merge(observables)
     }
 
     /**
@@ -197,7 +192,9 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
     fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> {
-        return Single.fromCallable { blockingCount(attributeUid, organisationUnitUid) }
+        return rxSingle {
+            blockingCount(attributeUid, organisationUnitUid)
+        }
     }
 
     /**
@@ -216,7 +213,9 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @return Single with a list of the reserved value summaries
      */
     val reservedValueSummaries: Single<List<ReservedValueSummary>>
-        get() = Single.just(blockingGetReservedValueSummaries())
+        get() = rxSingle {
+            getReservedValueSummaries()
+        }
 
     /**
      * @see .getReservedValueSummaries
@@ -261,6 +260,48 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         return reservedValueSummaries
     }
 
+    private suspend fun getReservedValueSummaries(): List<ReservedValueSummary> {
+        return coroutineScope {
+            val whereClause = WhereClauseBuilder()
+                .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build()
+            val orderByClause = OrderByClauseBuilder.orderByFromItems(
+                listOf(
+                    RepositoryScopeOrderByItem.builder()
+                        .column(IdentifiableColumns.DISPLAY_NAME)
+                        .direction(RepositoryScope.OrderByDirection.ASC).build()
+                ),
+                CoreColumns.ID
+            )
+
+            val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(whereClause, orderByClause)
+            val reservedValueSummaries: MutableList<Deferred<ReservedValueSummary>> = ArrayList()
+            for (trackedEntityAttribute in trackedEntityAttributes) {
+                val builder = ReservedValueSummary.builder().trackedEntityAttribute(trackedEntityAttribute)
+
+                if (isOrgunitDependent(trackedEntityAttribute.pattern())) {
+                    val organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid())
+                    for (organisationUnit in organisationUnits) {
+                        val data = async {
+                            builder.organisationUnit(organisationUnit)
+                                .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
+                                .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()))
+                            builder.build()
+                        }
+                        reservedValueSummaries.add(data)
+                    }
+                } else {
+                    val data = async {
+                        builder.count(blockingCount(trackedEntityAttribute.uid(), null))
+                            .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()))
+                        builder.build()
+                    }
+                    reservedValueSummaries.add(data)
+                }
+            }
+            reservedValueSummaries.map { it.await() }
+        }
+    }
+
     private fun increaseProgress(): D2Progress {
         return d2ProgressManager.increaseProgress(
             TrackedEntityAttributeReservedValue::class.java, false
@@ -281,8 +322,9 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                         organisationUnit,
                         numberOfValuesToFillUp,
                         true
-                    ).onErrorComplete()
-                        .toSingle { increaseProgress() }
+                    ).onErrorComplete().toSingle {
+                        increaseProgress()
+                    }
                 }
         } else {
             downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
@@ -338,10 +380,13 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
             executor.executeD2Call(
                 reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(
-                        trackedEntityAttributeUid, numberToReserve,
-                        organisationUnit, pattern
+                        trackedEntityAttributeUid,
+                        numberToReserve,
+                        organisationUnit,
+                        pattern
                     )
-                ), storeError
+                ),
+                storeError
             )
         }.doOnComplete {
             if (pattern != null) {

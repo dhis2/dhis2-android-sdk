@@ -28,6 +28,10 @@
 
 apply plugin: 'jacoco'
 
+jacoco {
+    toolVersion = '0.8.8'
+}
+
 task jacocoReport(type: JacocoReport) {
     group "Coverage"
     description "Generate XML/HTML code coverage reports for coverage.ec"

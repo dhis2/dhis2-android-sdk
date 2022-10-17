@@ -29,11 +29,13 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'jacoco'
 }
 
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
+
     defaultConfig {
         applicationId "org.hisp.dhis.android.testLab"
         minSdkVersion 21
@@ -41,6 +43,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
+
 }
 
 dependencies {

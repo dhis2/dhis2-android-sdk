@@ -29,8 +29,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'jacoco'
 }
+
+apply from: project.file("../core/plugins/jacoco.gradle")
 
 android {
     compileSdkVersion 31

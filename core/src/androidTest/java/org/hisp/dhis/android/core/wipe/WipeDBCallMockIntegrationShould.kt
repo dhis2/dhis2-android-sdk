@@ -48,8 +48,11 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoing
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(D2JunitRunner::class)
 class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test

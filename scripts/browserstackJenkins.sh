@@ -30,6 +30,28 @@
 set -ex
 source "$(dirname $0)/config_jenkins.init"
 
+bs_automate_url="https://api-cloud.browserstack.com/app-automate"
+bs_auth="$BROWSERSTACK_USR:$BROWSERSTACK_PSW"
+
+coverage_result_path="$(dirname $0)/../core/build/outputs/code_coverage"
+
+function get_build_info() {
+  local response
+  local build_id=$1
+  response="$(curl -u "$bs_auth" -X GET "$bs_automate_url/espresso/builds/$build_id")"
+  echo "$response"
+}
+
+function get_build_status() {
+  local response_json=$1
+  echo "$response_json" | jq -r .status
+}
+
+function get_build_session() {
+  local response_json=$1
+  echo "$response_json" | jq -r ".devices.$browserstack_device_list.session_id"
+}
+
 app_apk_path=./testLab/build/outputs/apk/debug/testLab-debug.apk
 test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.apk
 
@@ -40,11 +62,11 @@ test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
-upload_app_response="$(curl -u $BROWSERSTACK_USR:$BROWSERSTACK_PSW -X POST https://api-cloud.browserstack.com/app-automate/upload -F file=@$app_apk_path)"
+upload_app_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/upload -F file=@$app_apk_path)"
 app_url=$(echo "$upload_app_response" | jq .app_url)
 
 echo "Uploading test APK to Browserstack..."
-upload_test_response="$(curl -u $BROWSERSTACK_USR:$BROWSERSTACK_PSW -X POST https://api-cloud.browserstack.com/app-automate/espresso/test-suite -F file=@$test_apk_path)"
+upload_test_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/test-suite -F file=@$test_apk_path)"
 test_url=$(echo "$upload_test_response" | jq .test_url)
 
 # Prepare json and run tests
@@ -68,22 +90,27 @@ json=$(jq -n \
                 --arg coverage "$browserstack_coverage" \
                 '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, localIdentifier: $locId, gpsLocation: $gpsLocation, language: $language, locale: $locale, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: $coverage}')
 
-test_execution_response="$(curl -X POST https://api-cloud.browserstack.com/app-automate/espresso/v2/build -d \ "$json" -H "Content-Type: application/json" -u "$BROWSERSTACK_USR:$BROWSERSTACK_PSW")"
+test_execution_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/v2/build -d \ "$json" -H "Content-Type: application/json")"
 
 # Get build
 build_id=$(echo "$test_execution_response" | jq -r .build_id)
+
+build_status_response="$(get_build_info "$build_id")"
+build_status="$(get_build_status "$build_status_response")"
+build_session_id="$(get_build_session "$build_status_response")"
+
 echo "build id running: $build_id"
+echo "session id: $build_session_id"
 
 # Monitor build status
-build_status="running"
 sleep $build_time_average
 echo "Monitoring build status started...."
 
 while [[ $build_status = "running" ]];
 do
   # Get build status
-  build_status_response="$(curl -u "$BROWSERSTACK_USR:$BROWSERSTACK_PSW" -X GET "https://api-cloud.browserstack.com/app-automate/espresso/builds/$build_id")"
-  build_status=$(echo "$build_status_response" | jq -r .status)
+  build_status_response="$(get_build_info "$build_id")"
+  build_status="$(get_build_status "$build_status_response")"
   echo "current build status: $build_status"
 
   # Sleep until next poll
@@ -92,6 +119,10 @@ done
 
 # Export test reports to bitrise
 test_reports_url="https://app-automate.browserstack.com/dashboard/v2/builds/$build_id"
+
+# Download coverage report
+mkdir -p "$coverage_result_path"
+curl -u "$bs_auth" -X GET "$bs_automate_url/espresso/v2/builds/$build_id/sessions/$build_session_id/coverage" --output "$coverage_result_path/coverage.ec"
 
 # weird behavior from Browserstack api, you can have "done" status with failed tests
 # "devices" only show one device result which is inconsistance
@@ -111,3 +142,7 @@ else
     exit 0
   fi
 fi
+
+./gradlew :core:jacocoReport
+
+ls -a "$(dirname $0)/../build/coverage_report"

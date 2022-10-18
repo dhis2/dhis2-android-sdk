@@ -142,7 +142,3 @@ else
     exit 0
   fi
 fi
-
-./gradlew :core:jacocoReport
-
-ls -a "$(dirname $0)/../build/coverage_report"

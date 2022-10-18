@@ -25,22 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils
 
-package org.hisp.dhis.android.core.utils.runner;
+import androidx.test.platform.app.InstrumentationRegistry
 
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
-
-public class D2JunitRunner extends BlockJUnit4ClassRunner {
-
-    public D2JunitRunner(Class<?> klass) throws InitializationError {
-        super(klass);
-    }
-
-    @Override public void run(RunNotifier notifier){
-        notifier.addListener(new D2JunitTestListener());
-        notifier.fireTestRunStarted(getDescription());
-        super.run(notifier);
+object DatabaseRemover {
+    fun removeAllDatabases() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        for (dbName in context.databaseList()) {
+            context.deleteDatabase(dbName)
+        }
     }
 }

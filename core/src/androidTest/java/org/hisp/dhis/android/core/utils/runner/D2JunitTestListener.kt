@@ -25,20 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.runner
 
-package org.hisp.dhis.android.core.utils;
+import android.util.Log
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setFixed
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setRegular
+import org.hisp.dhis.android.core.utils.DatabaseRemover
+import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory.tearDown
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.junit.runner.Description
+import org.junit.runner.Result
+import org.junit.runner.notification.RunListener
 
-import android.content.Context;
+class D2JunitTestListener : RunListener() {
+    override fun testRunStarted(description: Description) {
+        Log.e("D2JunitTestListener", "Test run started")
+        setFixed()
+    }
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
-public class DatabaseRemover {
-
-    public static void removeAllDatabases() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        for (String dbName : context.databaseList()) {
-            context.deleteDatabase(dbName);
-        }
-
+    override fun testRunFinished(result: Result) {
+        Log.i("D2JunitTestListener", "Test run finished")
+        TestDatabaseAdapterFactory.tearDown()
+        setRegular()
+        tearDown()
+        DatabaseRemover.removeAllDatabases()
     }
 }

@@ -25,34 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.runner
 
-package org.hisp.dhis.android.core.utils.runner;
+import org.junit.Rule
+import org.junit.runner.notification.RunNotifier
+import org.junit.runners.BlockJUnit4ClassRunner
+import androidx.test.rule.GrantPermissionRule
 
-import android.util.Log;
+class D2JunitRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
 
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.utils.DatabaseRemover;
-import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.junit.runner.Description;
-import org.junit.runner.Result;
-import org.junit.runner.notification.RunListener;
+    @get:Rule
+    var permissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
-public class D2JunitTestListener extends RunListener {
-
-
-    @Override
-    public void testRunStarted(Description description) {
-        Log.e("D2JunitTestListener", "Test run started");
-        CalendarProviderFactory.setFixed();
-    }
-
-    @Override
-    public void testRunFinished(Result result) throws Exception {
-        Log.i("D2JunitTestListener", "Test run finished");
-        TestDatabaseAdapterFactory.tearDown();
-        CalendarProviderFactory.setRegular();
-        MockIntegrationTestObjectsFactory.tearDown();
-        DatabaseRemover.removeAllDatabases();
+    override fun run(notifier: RunNotifier) {
+        notifier.addListener(D2JunitTestListener())
+        notifier.fireTestRunStarted(description)
+        super.run(notifier)
     }
 }

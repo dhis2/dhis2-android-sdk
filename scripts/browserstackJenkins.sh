@@ -49,9 +49,6 @@ test_url=$(echo "$upload_test_response" | jq .test_url)
 
 # Prepare json and run tests
 echo "Starting execution of espresso tests..."
-shards=$(jq -n \
-                --arg number_of_shards "$browserstack_number_of_parallel_executions" \
-                '{numberOfShards: $number_of_shards}')
 
 json=$(jq -n \
                 --argjson app_url $app_url \

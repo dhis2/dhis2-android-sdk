@@ -4,11 +4,14 @@
     package="org.hisp.dhis.android.testLab">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <application
         android:icon="@drawable/ic_2g_negative"
         android:label="@string/title_activity_splash_screen"
-        android:theme="@style/Theme.Transparent" >
+        android:theme="@style/Theme.Transparent"
+        android:requestLegacyExternalStorage="true">
         <activity android:name=".TestLabActivity"
             android:exported="true">
             <intent-filter>

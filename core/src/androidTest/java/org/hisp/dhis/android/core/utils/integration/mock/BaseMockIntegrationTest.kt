@@ -27,14 +27,28 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
+import androidx.test.rule.GrantPermissionRule
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.MockIntegrationTestObjects
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper.setServerUrl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.junit.Rule
 
 abstract class BaseMockIntegrationTest {
+
+    @get:Rule
+    var permissionRule = grantRule()
+
+    private fun grantRule() {
+        println("Granting rule in BaseMockIntegrationTest")
+        GrantPermissionRule.grant(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    }
+
     companion object {
         @JvmStatic
         lateinit var objects: MockIntegrationTestObjects

@@ -35,14 +35,19 @@ import androidx.test.rule.GrantPermissionRule
 class D2JunitRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
 
     @get:Rule
-    var permissionRule = GrantPermissionRule.grant(
-        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+    var permissionRule = grantRule()
 
     override fun run(notifier: RunNotifier) {
         notifier.addListener(D2JunitTestListener())
         notifier.fireTestRunStarted(description)
         super.run(notifier)
+    }
+
+    private fun grantRule() {
+        println("Granting rule in Runner")
+        GrantPermissionRule.grant(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 }

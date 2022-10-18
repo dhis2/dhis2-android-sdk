@@ -43,9 +43,9 @@ class D2JunitRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
         super.run(notifier)
     }
 
-    private fun grantRule() {
+    private fun grantRule(): GrantPermissionRule {
         println("Granting rule in Runner")
-        GrantPermissionRule.grant(
+        return GrantPermissionRule.grant(
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         )

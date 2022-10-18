@@ -41,9 +41,9 @@ abstract class BaseMockIntegrationTest {
     @get:Rule
     var permissionRule = grantRule()
 
-    private fun grantRule() {
+    private fun grantRule(): GrantPermissionRule {
         println("Granting rule in BaseMockIntegrationTest")
-        GrantPermissionRule.grant(
+        return GrantPermissionRule.grant(
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         )

@@ -132,7 +132,7 @@ android {
     buildTypes {
         debug {
             // a fix for the debugger not being able to find local scope variables
-            testCoverageEnabled = true
+            testCoverageEnabled = (project.hasProperty('coverage'))
         }
     }
 

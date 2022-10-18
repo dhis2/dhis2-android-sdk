@@ -27,27 +27,14 @@
  */
 package org.hisp.dhis.android.core.utils.runner
 
-import org.junit.Rule
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.BlockJUnit4ClassRunner
-import androidx.test.rule.GrantPermissionRule
 
 class D2JunitRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
-
-    @get:Rule
-    var permissionRule = grantRule()
 
     override fun run(notifier: RunNotifier) {
         notifier.addListener(D2JunitTestListener())
         notifier.fireTestRunStarted(description)
         super.run(notifier)
-    }
-
-    private fun grantRule(): GrantPermissionRule {
-        println("Granting rule in Runner")
-        return GrantPermissionRule.grant(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
     }
 }

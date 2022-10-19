@@ -33,7 +33,7 @@ internal object InternalStockThemeSamples {
     fun get(): InternalStockTheme {
         return InternalStockTheme.builder()
             .id(1L)
-            .uid("program_uid")
+            .uid("IpHINAT79UW")
             .stockOnHand("stock_on_hand")
             .description("description")
             .programType("program_type")

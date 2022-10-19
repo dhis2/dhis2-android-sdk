@@ -33,7 +33,7 @@ internal object InternalStockThemeTransactionSamples {
     fun get(): InternalStockThemeTransaction {
         return InternalStockThemeTransaction.builder()
             .id(1L)
-            .programUid("program_uid")
+            .programUid("IpHINAT79UW")
             .sortOrder(2)
             .transactionType("CORRECTED")
             .distributedTo("distributed_to")

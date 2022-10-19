@@ -57,13 +57,13 @@ function findApkPath() {
   find "$(dirname $0)"/../"$project"/build/outputs/apk/ -iname "*.apk"
 }
 
-app_apk_path=$(findApkPath "core")
-test_apk_path=$(findApkPath "instrumented-test-app")
-
 # Build apks
 ./gradlew :core:assembleDebug
 ./gradlew :core:assembleDebugAndroidTest -Pcoverage
 ./gradlew :instrumented-test-app:assembleDebug
+
+app_apk_path=$(findApkPath "core")
+test_apk_path=$(findApkPath "instrumented-test-app")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."

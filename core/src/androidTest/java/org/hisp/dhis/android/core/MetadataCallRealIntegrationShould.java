@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-
 import io.reactivex.schedulers.Schedulers;
 
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
@@ -61,7 +59,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn(username, password, RealServerMother.url2_38).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
 

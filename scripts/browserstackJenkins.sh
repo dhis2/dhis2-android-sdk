@@ -95,15 +95,10 @@ test_execution_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/
 
 # Get build
 build_id=$(echo "$test_execution_response" | jq -r .build_id)
-
-build_status_response="$(get_build_info "$build_id")"
-build_status="$(get_build_status "$build_status_response")"
-build_session_id="$(get_build_session "$build_status_response")"
-
 echo "build id running: $build_id"
-echo "session id: $build_session_id"
 
 # Monitor build status
+build_status="running"
 sleep $build_time_average
 echo "Monitoring build status started...."
 
@@ -112,6 +107,8 @@ do
   # Get build status
   build_status_response="$(get_build_info "$build_id")"
   build_status="$(get_build_status "$build_status_response")"
+  build_session_id="$(get_build_session "$build_status_response")"
+
   echo "current build status: $build_status"
 
   # Sleep until next poll

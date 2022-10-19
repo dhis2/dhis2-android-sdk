@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2004-2022, University of Oslo
   ~  All rights reserved.
   ~
@@ -28,12 +27,5 @@
   -->
 
 <resources>
-    <style name="Theme.Transparent" parent="android:Theme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
+    <string name="title" translatable="false">DHIS2 Android SDK Test app</string>
 </resources>

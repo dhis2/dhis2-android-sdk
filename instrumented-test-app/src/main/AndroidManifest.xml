@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisp.dhis.android.testLab">
+    package="org.hisp.dhis.android.instrumentedTestApp">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:icon="@drawable/ic_2g_negative"
-        android:label="@string/title_activity_splash_screen"
-        android:theme="@style/Theme.Transparent"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/title"
+        android:theme="@android:style/Theme.DeviceDefault"
         android:requestLegacyExternalStorage="true">
         <activity android:name=".TestLabActivity"
             android:exported="true">

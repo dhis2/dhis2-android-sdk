@@ -12,7 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/testLab" />
+            <option value="$PROJECT_DIR$/instrumented-test-app" />
           </set>
         </option>
       </GradleProjectSettings>

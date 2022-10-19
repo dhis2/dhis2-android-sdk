@@ -38,7 +38,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "org.hisp.dhis.android.testLab"
+        applicationId "org.hisp.dhis.android.instrumentedTestApp"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1

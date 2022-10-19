@@ -54,7 +54,7 @@ function get_build_session() {
 
 function findApkPath() {
   local project=$1
-  find "$project"/build/outputs/apk/ -iname "*.apk"
+  find "$(dirname $0)"/../"$project"/build/outputs/apk/ -iname "*.apk"
 }
 
 app_apk_path=$(findApkPath "core")

@@ -62,8 +62,8 @@ function findApkPath() {
 ./gradlew :core:assembleDebugAndroidTest -Pcoverage
 ./gradlew :instrumented-test-app:assembleDebug
 
-app_apk_path=$(findApkPath "core")
-test_apk_path=$(findApkPath "instrumented-test-app")
+app_apk_path=$(findApkPath "instrumented-test-app")
+test_apk_path=$(findApkPath "core")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."

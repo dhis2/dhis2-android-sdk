@@ -52,13 +52,18 @@ function get_build_session() {
   echo "$response_json" | jq -r ".devices.$browserstack_device_list.session_id"
 }
 
-app_apk_path=./testLab/build/outputs/apk/debug/testLab-debug.apk
-test_apk_path=./core/build/outputs/apk/androidTest/debug/core-debug-androidTest.apk
+function findApkPath() {
+  local project=$1
+  find "$project"/build/outputs/apk/ -iname "*.apk"
+}
+
+app_apk_path=$(findApkPath "core")
+test_apk_path=$(findApkPath "instrumented-test-app")
 
 # Build apks
 ./gradlew :core:assembleDebug
 ./gradlew :core:assembleDebugAndroidTest -Pcoverage
-./gradlew :testLab:assembleDebug
+./gradlew :instrumented-test-app:assembleDebug
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
@@ -80,15 +85,11 @@ json=$(jq -n \
                 --arg logs "$browserstack_device_logs" \
                 --arg video "$browserstack_video" \
                 --arg loc "$browserstack_local" \
-                --arg locId "$browserstack_local_identifier" \
-                --arg gpsLocation "$browserstack_gps_location" \
-                --arg language "$browserstack_language" \
-                --arg locale "$browserstack_locale" \
                 --arg deviceLogs "$browserstack_deviceLogs" \
                 --arg allowDeviceMockServer "$browserstack_mock_server" \
                 --arg singleRunnerInvocation "$browserstack_singleRunnerInvocation" \
                 --arg coverage "$browserstack_coverage" \
-                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, localIdentifier: $locId, gpsLocation: $gpsLocation, language: $language, locale: $locale, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: $coverage}')
+                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: $coverage}')
 
 test_execution_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/v2/build -d \ "$json" -H "Content-Type: application/json")"
 

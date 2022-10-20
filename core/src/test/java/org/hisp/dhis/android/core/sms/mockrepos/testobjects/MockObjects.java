@@ -52,6 +52,7 @@ public class MockObjects {
     private static Date sampleDate = new Date(1585041172000L);
 
     public static String user = "AIK2aQOJIbj";
+    public static String test = "test";
 
     public static String enrollmentUid = "jQK0XnMVFIK";
     public static String enrollmentUidWithNullEvents = "aQr0XnMVyIq";

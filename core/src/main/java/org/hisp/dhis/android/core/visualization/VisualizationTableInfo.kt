@@ -88,7 +88,8 @@ object VisualizationTableInfo {
                 LEGEND_SHOW_KEY,
                 LEGEND_STYLE,
                 LEGEND_SET_ID,
-                LEGEND_STRATEGY
+                LEGEND_STRATEGY,
+                AGGREGATION_TYPE
             )
         }
 
@@ -132,6 +133,7 @@ object VisualizationTableInfo {
             const val LEGEND_STYLE = "legendStyle"
             const val LEGEND_SET_ID = "legendSetId"
             const val LEGEND_STRATEGY = "legendStrategy"
+            const val AGGREGATION_TYPE = "aggregationType"
         }
     }
 }

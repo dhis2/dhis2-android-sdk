@@ -59,6 +59,7 @@ public class FileResourceTableInfo {
         public static final String CONTENT_TYPE = "contentType";
         public static final String CONTENT_LENGTH = "contentLength";
         public static final String PATH = "path";
+        public static final String DOMAIN = "domain";
 
         @Override
         public String[] all() {
@@ -70,7 +71,8 @@ public class FileResourceTableInfo {
                     CONTENT_TYPE,
                     CONTENT_LENGTH,
                     PATH,
-                    SYNC_STATE);
+                    SYNC_STATE,
+                    DOMAIN);
         }
 
         @Override

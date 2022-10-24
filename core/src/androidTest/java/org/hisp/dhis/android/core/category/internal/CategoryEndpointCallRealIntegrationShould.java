@@ -28,32 +28,19 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.category.Category;
-import org.junit.Before;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.Single;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //@Test
     public void call_categories_endpoint() throws Exception {

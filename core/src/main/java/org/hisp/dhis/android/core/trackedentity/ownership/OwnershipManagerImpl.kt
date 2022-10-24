@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -43,7 +45,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 internal class OwnershipManagerImpl @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
     private val ownershipService: OwnershipService,
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>
+    private val dataStatePropagator: DataStatePropagator,
+    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>,
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
@@ -75,6 +79,22 @@ internal class OwnershipManagerImpl @Inject constructor(
                 .httpErrorCode(breakGlassResponse.httpStatusCode())
                 .build()
         }
+    }
+
+    override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
+        return Completable.fromCallable { blockingTransfer(trackedEntityInstance, program, ownerOrgUnit) }
+    }
+
+    override fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
+        val programOwner = ProgramOwner.builder()
+            .trackedEntityInstance(trackedEntityInstance)
+            .program(program)
+            .ownerOrgUnit(ownerOrgUnit)
+            .syncState(State.TO_UPDATE)
+            .build()
+
+        programOwnerStore.updateOrInsertWhere(programOwner)
+        dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstance)
     }
 
     internal fun fakeBreakGlass(trackedEntityInstance: String, program: String) {

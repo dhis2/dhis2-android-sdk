@@ -27,65 +27,24 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
 
-import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class ProgramIndicatorItem : ExpressionItem {
+internal class ProgramIndicatorItem : IndicatorDataItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val programIndicator = getProgramIndicator(ctx, visitor)
-        val dataItem = DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
-        val evaluationItem = getEvaluationItem(dataItem, visitor)
-        val metadataEntry = getMetadataEntry(programIndicator)
-
-        return visitor.indicatorContext.programIndicatorEvaluator.evaluate(
-            evaluationItem = evaluationItem,
-            metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-        ) ?: ParserUtils.DOUBLE_VALUE_IF_NULL
-    }
-
-    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val programIndicator = getProgramIndicator(ctx, visitor)
-        val dataItem = DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
-        val evaluationItem = getEvaluationItem(dataItem, visitor)
-        val metadataEntry = getMetadataEntry(programIndicator)
-
-        return visitor.indicatorContext.programIndicatorEvaluator.getSql(
-            evaluationItem = evaluationItem,
-            metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-        )?.let { "($it)" }
-    }
-
-    private fun getProgramIndicator(ctx: ExprContext, visitor: CommonExpressionVisitor): ProgramIndicator {
-        val programIndicatorId = ctx.uid0.text
-
-        return programIndicatorId?.let {
-            visitor.indicatorContext.programIndicatorRepository
-                .withAnalyticsPeriodBoundaries()
-                .uid(it)
-                .blockingGet()
-        } ?: throw AnalyticsException.InvalidProgramIndicator(programIndicatorId)
-    }
-
-    private fun getEvaluationItem(
-        dataItem: DimensionItem.DataItem,
+    override fun getDataItem(
+        ctx: ExprContext,
         visitor: CommonExpressionVisitor
-    ): AnalyticsServiceEvaluationItem {
-        return AnalyticsServiceEvaluationItem(
-            dimensionItems = listOf(dataItem),
-            filters = visitor.indicatorContext.evaluationItem.filters +
-                visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
-        )
+    ): AbsoluteDimensionItem? {
+        return ctx.uid0?.text?.let { uid ->
+            DimensionItem.DataItem.ProgramIndicatorItem(uid)
+        }
     }
 
-    private fun getMetadataEntry(programIndicator: ProgramIndicator): Pair<String, MetadataItem> {
-        return programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)
+    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
+        return visitor.indicatorContext.programIndicatorEvaluator
     }
 }

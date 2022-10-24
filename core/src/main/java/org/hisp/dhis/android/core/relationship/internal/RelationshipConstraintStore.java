@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo;
 
-final class RelationshipConstraintStore {
+public final class RelationshipConstraintStore {
 
     private static final StatementBinder<RelationshipConstraint> BINDER = (o, w) -> {
         w.bind(1, UidsHelper.getUidOrNull(o.relationshipType()));
@@ -60,7 +60,7 @@ final class RelationshipConstraintStore {
 
     private RelationshipConstraintStore() {}
 
-    static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
+    public static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO,
                 BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, RelationshipConstraint::create);
     }

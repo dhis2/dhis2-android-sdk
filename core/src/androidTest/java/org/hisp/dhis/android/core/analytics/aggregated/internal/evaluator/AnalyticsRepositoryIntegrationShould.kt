@@ -29,8 +29,12 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -83,5 +87,26 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods.size).isEqualTo(2)
         assertThat(valuePeriods[0]).isEqualTo("2021")
         assertThat(valuePeriods[1]).isEqualTo("2022")
+    }
+
+    @Test
+    fun should_fail_if_unsupported_aggregation_type() {
+        val dataElementStore = DataElementStore.create(databaseAdapter)
+        val dataElement = dataElementStore.selectByUid("g9eOBujte1U")!!
+
+        val varianceDataElement = dataElement.toBuilder().aggregationType(AggregationType.VARIANCE.name).build()
+        dataElementStore.updateOrInsert(varianceDataElement)
+
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.DataElementItem("g9eOBujte1U"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+            .blockingEvaluate()
+
+        assertThat(result.succeeded).isFalse()
+
+        assertThat((result as Result.Failure).failure)
+            .isInstanceOf(AnalyticsException.UnsupportedAggregationType::class.java)
+
+        dataElementStore.updateOrInsert(dataElement)
     }
 }

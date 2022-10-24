@@ -39,9 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VProgramStageName : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val event = getLatestEvent(visitor)
-
-        return event?.programStage()?.let {
+        return getLatestEvent(visitor)?.programStage()?.let {
             visitor.programStageStore.selectByUid(it)?.name()
         }
     }

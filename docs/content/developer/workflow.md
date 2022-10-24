@@ -175,8 +175,8 @@ The possible states are:
 - **TO_POST**. Data created locally that does not exist in the server yet.
 - **TO_UPDATE**. Data modified locally that exists in the server.
 - **UPLOADING**. Data is being uploaded. If it is modified before receiving any server response, its state is back to `TO_UPDATE`. When the server response arrives, its state does not change to `SYNCED`, but it remains in `TO_UPDATE` to indicate that there are local changes.
-- **SENT_BY_SMS**. Data is sent by sms and there is no server response yet. Some servers do not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
-- **SYNCED_BY_SMS**. Data is sent by sms and there is a successful response from the server.
+- **SENT_VIA_SMS**. Data is sent via sms and there is no server response yet. Some servers do not have the capability to send a response, so this state means that data has been sent, but we do not know if it has been correctly imported in the server or not.
+- **SYNCED_VIA_SMS**. Data is sent via sms and there is a successful response from the server.
 - **ERROR**. Data that received an error from the server after the last upload.
 - **WARNING**. Data that received a warning from the server after the last upload.
 
@@ -402,6 +402,25 @@ Tracked entity instance filters are a predefined set of search parameters. They 
 d2.trackedEntityModule().trackedEntityInstanceFilters()
     .[ filters ]
     .get();
+```
+
+### Ownership
+
+The concept of ownership is supported in the SDK. In short, each pair trackedEntityInstance - program is owned by an organisationUnit. This ownership is used in the trackedEntityInstance search to determine the owner organisationUnit the TEI belongs to.
+
+You can get the program owners for each trackedEntityInstance by using the repository:
+
+```java
+d2.trackedEntityModule().trackedEntityInstances()
+        .withProgramOwners()
+        .get();
+```
+
+Also, you can permanently transfer the ownership by using the OwnershipManager. This transfer will be automatically uploaded to the server in the next synchronization. 
+
+```java
+d2.trackedEntityModule().ownershipManager()
+        .transfer(teiUid, programUid, ownerOrgunit);
 ```
 
 ### Break the glass
@@ -734,23 +753,34 @@ If you only need a high level overview of the aggregated data status, you can us
 
 The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow to work with files.
 
+In the context of a mobile connection, dealing with fileResources could be high bandwidth consuming. For this reason, fileResources are not downloaded by default when downloading data and they must be explicitly downloaded if wanted. The recommendation is to download to fileResources only if it is important to have them in the device. If they are not downloaded, there is no negative consequence in terms of data integrity; the only consequence is that they are not available in the device.
+
+On the other hand, fileResource upload is not optional: the SDK will upload all the fileResources created in the device when uploading data. This is important in order to have successful synchronizations and keep data integrity.
+
 ### File resources module
 
 This module contains methods to download the file resources associated with the downloaded data and the file resources collection repository of the database.
 
 - **File resources download**.
-The `download()` method will search for the tracked entity attribute values ​​and tracked entity data values ​​whose tracked entity attribute type and data element type are of the image type and whose file resource has not been previously downloaded and the method will download the file resources associated.
+The `fileResourceDownloader()` offers methods to filter the fileResources we want to download. It will search for values that match the filters and whose file resource has not been previously downloaded.
 
   ```java
-  d2.fileResourceModule().download();
+  d2.fileResourceModule().fileResourceDownloader()
+      .byDomainType().eq(FileResourceDomainType.TRACKER)
+      .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+      .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
+      .byMaxContentLength().eq(2000000)
+      .download();
   ```
+
+  The SDK has a default maxContentLength of 6000000.
 
   After downloading the files, you can obtain the different file resources downloaded through the repository.
 
 - **File resource collection repository**.
 Through this repository it is possible to request files, save new ones and upload them to the server. 
 
-  - **Get**. It behaves in a similar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
+  - **Get**. It behaves in a similar fashion to any other SDK repository. It allows to get collections by applying different filters if desired.
   
     ```java
     d2.fileResourceModule().fileResources()
@@ -763,13 +793,6 @@ Through this repository it is possible to request files, save new ones and uploa
     ```java
     d2.fileResourceModule().fileResources()
         .add(file); // Single<String> The fileResource uid
-    ```
-
-  - **Upload**. Calling the `upload()` method will trigger a series of successive calls in which all non-synchronized files will be sent to the server. After each upload, the server response will be processed. The server will provide a new uid to the file resource and the Sdk will automatically rename the file and update the `FileResource` object and the tracked entity attribute values ​​or tracked entity data values ​​associated with it.
-  
-    ```java
-    d2.fileResourceModule().fileResources()
-        .upload()
     ```
 
 ### File resizer helper
@@ -792,6 +815,6 @@ The `resizeFile()` method will return a new file located in the same parent dire
 
 The `FileResourceDirectoryHelper` helper class provides two methods.
 
-- `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the Sdk will save the files associated with the file resources.
+- `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the SDK will save the files associated with the file resources.
 
 - `getFileCacheResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_cache_resources` directory. This should be the place where volatile files are stored, such as camera photos or images to be resized. Since the directory is contained in the cache directory, Android may auto-delete the files in the cache directory once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.

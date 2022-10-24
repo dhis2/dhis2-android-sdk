@@ -234,4 +234,15 @@ public class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShoul
         assertThat(trackedEntityInstanceFilter.eventFilters().size()).isEqualTo(1);
         assertThat(trackedEntityInstanceFilter.eventFilters().get(0).eventStatus()).isEqualTo(EventStatus.OVERDUE);
     }
+
+    @Test
+    public void include_attribute_value_filters_as_children() {
+        TrackedEntityInstanceFilter trackedEntityInstanceFilter =
+                d2.trackedEntityModule().trackedEntityInstanceFilters()
+                        .withAttributeValueFilters()
+                        .uid("klhzVgls081")
+                        .blockingGet();
+
+        assertThat(trackedEntityInstanceFilter.entityQueryCriteria().attributeValueFilters().size()).isEqualTo(1);
+    }
 }

@@ -32,4 +32,5 @@ public interface OptionModule {
     OptionGroupCollectionRepository optionGroups();
     OptionSetCollectionRepository optionSets();
     OptionCollectionRepository options();
+    OptionService optionService();
 }

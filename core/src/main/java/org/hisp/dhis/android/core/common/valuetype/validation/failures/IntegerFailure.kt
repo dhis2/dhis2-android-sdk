@@ -31,4 +31,5 @@ package org.hisp.dhis.android.core.common.valuetype.validation.failures
 sealed class IntegerFailure : Throwable() {
     object NumberFormatException : IntegerFailure()
     object IntegerOverflow : IntegerFailure()
+    object LeadingZeroException : IntegerFailure()
 }

@@ -1,0 +1,1148 @@
+{
+  "schemas": [
+    {
+      "properties": [
+        {
+          "propertyType": "COLLECTION",
+          "name": "dataElementGroupSetDimension"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "orgUnitField"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "endDate"
+        },
+        {
+          "propertyType": "NUMBER",
+          "name": "baseLineValue"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "userOrganisationUnitChildren"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "publicAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displaySubtitle"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "program"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "type",
+          "constants": [
+            "COLUMN",
+            "STACKED_COLUMN",
+            "BAR",
+            "STACKED_BAR",
+            "LINE",
+            "LINE_LIST",
+            "AREA",
+            "STACKED_AREA",
+            "PIE",
+            "RADAR",
+            "GAUGE",
+            "YEAR_OVER_YEAR_LINE",
+            "YEAR_OVER_YEAR_COLUMN",
+            "SINGLE_VALUE",
+            "PIVOT_TABLE",
+            "SCATTER",
+            "BUBBLE"
+          ]
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayTitle"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "subscribed"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "lastUpdated"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayTargetLineLabel"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "attributeDimension"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "translation"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "yearlySerie"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "userOrganisationUnit"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "filterDimension"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "id"
+        },
+        {
+          "propertyType": "URL",
+          "name": "href"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "interpretation"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayDescription"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "attributeValueDimension"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userGroupAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "domainAxisLabel"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "subscriber"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "cumulativeValues"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "sortOrder"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "subtitle"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "rangeAxisDecimals"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "shortName"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "topLimit"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "collapseDataDimensions"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "startDate"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "access"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "userOrganisationUnitGrandChildren"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "column"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayName"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayShortName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "percentStackedValues"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "noSpaceBetweenColumns"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "dataElementDimension"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "rangeAxisSteps"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "formName"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "period"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "categoryDimension"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayRangeAxisLabel"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "hideTitle"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "rowDimension"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "eventStatus",
+          "constants": [
+            "ACTIVE",
+            "COMPLETED",
+            "VISITED",
+            "SCHEDULE",
+            "OVERDUE",
+            "SKIPPED"
+          ]
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayBaseLineLabel"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "showData"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "parentGraphMap"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "hideNaData"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "itemOrganisationUnitGroup"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "lastUpdatedBy"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayDomainAxisLabel"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "programIndicatorDimension"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "created"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "rangeAxisLabel"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "columnDimension"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "regressionType",
+          "constants": [
+            "NONE",
+            "LINEAR",
+            "POLYNOMIAL",
+            "LOESS"
+          ]
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "attributeValue"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "completedOnly"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "sharing"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayFormName"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "name"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "programStatus",
+          "constants": [
+            "ACTIVE",
+            "COMPLETED",
+            "CANCELLED"
+          ]
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "hideEmptyRowItems",
+          "constants": [
+            "NONE",
+            "BEFORE_FIRST",
+            "AFTER_LAST",
+            "BEFORE_FIRST_AFTER_LAST",
+            "ALL"
+          ]
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "aggregationType",
+          "constants": [
+            "SUM",
+            "AVERAGE",
+            "AVERAGE_SUM_ORG_UNIT",
+            "LAST",
+            "LAST_AVERAGE_ORG_UNIT",
+            "LAST_IN_PERIOD",
+            "LAST_IN_PERIOD_AVERAGE_ORG_UNIT",
+            "FIRST",
+            "FIRST_AVERAGE_ORG_UNIT",
+            "COUNT",
+            "STDDEV",
+            "VARIANCE",
+            "MIN",
+            "MAX",
+            "NONE",
+            "CUSTOM",
+            "DEFAULT"
+          ]
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "dataDimensionItem"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "legacy"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "categoryOptionGroupSetDimension"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "code"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "hideSubtitle"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "outputType",
+          "constants": [
+            "EVENT",
+            "ENROLLMENT",
+            "TRACKED_ENTITY_INSTANCE"
+          ]
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "description"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "organisationUnitGroupSetDimension"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "title"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "hideLegend"
+        },
+        {
+          "propertyType": "NUMBER",
+          "name": "rangeAxisMinValue"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "organisationUnitLevel"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "externalAccess"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "legendDisplayStrategy",
+          "constants": [
+            "FIXED",
+            "BY_DATA_ITEM"
+          ]
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "dataElementValueDimension"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "relativePeriods"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "targetLineLabel"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "organisationUnit"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "value"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "programStage"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "timeField"
+        },
+        {
+          "propertyType": "NUMBER",
+          "name": "targetLineValue"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "filter"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "row"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "baseLineLabel"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "digitGroupSeparator",
+          "constants": [
+            "COMMA",
+            "SPACE",
+            "NONE"
+          ]
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "createdBy"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "legendSet"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "userOrgUnitType",
+          "constants": [
+            "DATA_CAPTURE",
+            "DATA_OUTPUT",
+            "TEI_SEARCH"
+          ]
+        },
+        {
+          "propertyType": "NUMBER",
+          "name": "rangeAxisMaxValue"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "user"
+        }
+      ]
+    },
+    {
+      "properties": [
+        {
+          "propertyType": "COLLECTION",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "code"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "access"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayName"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "publicAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "description"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "externalAccess"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "lastUpdated"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "translation"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "id"
+        },
+        {
+          "propertyType": "URL",
+          "name": "href"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "lastUpdatedBy"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userGroupAccess"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "created"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "attributeValue"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "sharing"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "authority"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userObject"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "createdBy"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "name"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "user"
+        }
+      ]
+    },
+    {
+      "properties": [
+        {
+          "propertyType": "BOOLEAN",
+          "name": "indicatorAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "indicatorGroupAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "mapAttribute"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "publicAccess"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "userGroupAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "dataElementAttribute"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "lastUpdated"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "constantAttribute"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "translation"
+        },
+        {
+          "propertyType": "CONSTANT",
+          "name": "valueType",
+          "constants": [
+            "TEXT",
+            "LONG_TEXT",
+            "LETTER",
+            "PHONE_NUMBER",
+            "EMAIL",
+            "BOOLEAN",
+            "TRUE_ONLY",
+            "DATE",
+            "DATETIME",
+            "TIME",
+            "NUMBER",
+            "UNIT_INTERVAL",
+            "PERCENTAGE",
+            "INTEGER",
+            "INTEGER_POSITIVE",
+            "INTEGER_NEGATIVE",
+            "INTEGER_ZERO_OR_POSITIVE",
+            "TRACKER_ASSOCIATE",
+            "USERNAME",
+            "COORDINATE",
+            "ORGANISATION_UNIT",
+            "REFERENCE",
+            "AGE",
+            "URL",
+            "FILE_RESOURCE",
+            "IMAGE",
+            "GEOJSON"
+          ]
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "categoryOptionAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "eventChartAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "optionSetAttribute"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "id"
+        },
+        {
+          "propertyType": "URL",
+          "name": "href"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayDescription"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "lastUpdatedBy"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "sqlViewAttribute"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userGroupAccess"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "visualizationAttribute"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "created"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "legendSetAttribute"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "attributeValue"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "sharing"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayFormName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "organisationUnitAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "trackedEntityAttributeAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "dataSetAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "documentAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "unique"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "sortOrder"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "name"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "validationRuleGroupAttribute"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "shortName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "dataElementGroupAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "sectionAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "trackedEntityTypeAttribute"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "code"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "access"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "userAttribute"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayName"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "description"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "categoryOptionGroupAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "mandatory"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayShortName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "eventReportAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "externalAccess"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "programStageAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "programAttribute"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "optionSet"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "categoryAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "categoryOptionComboAttribute"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "formName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "categoryOptionGroupSetAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "programIndicatorAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "validationRuleAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "organisationUnitGroupAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "dataElementGroupSetAttribute"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "organisationUnitGroupSetAttribute"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "createdBy"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "user"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "optionAttribute"
+        }
+      ]
+    },
+    {
+      "properties": [
+        {
+          "propertyType": "DATE",
+          "name": "lastLogin"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "education"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "publicAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "jobTitle"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "lastUpdated"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "twitter"
+        },
+        {
+          "propertyType": "PASSWORD",
+          "name": "password"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "translation"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "employer"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "id"
+        },
+        {
+          "propertyType": "URL",
+          "name": "href"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "twoFA"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "dataViewOrganisationUnit"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "lastUpdatedBy"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "whatsApp"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userGroupAccess"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "invitation"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "created"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "attributeValue"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "sharing"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "selfRegistered"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userRole"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "firstName"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userGroup"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "phoneNumber"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "nationality"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "userAccess"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "name"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "birthday"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "favorite"
+        },
+        {
+          "propertyType": "IDENTIFIER",
+          "name": "code"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "access"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "gender"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "openId"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "displayName"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "externalAuth"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "cogsDimensionConstraint"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "accountExpiry"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "catDimensionConstraint"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "externalAccess"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "teiSearchOrganisationUnit"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "skype"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "surname"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "ldapId"
+        },
+        {
+          "propertyType": "BOOLEAN",
+          "name": "disabled"
+        },
+        {
+          "propertyType": "COLLECTION",
+          "name": "organisationUnit"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "facebookMessenger"
+        },
+        {
+          "propertyType": "EMAIL",
+          "name": "email"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "introduction"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "passwordLastUpdated"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "languages"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "welcomeMessage"
+        },
+        {
+          "propertyType": "COMPLEX",
+          "name": "userCredentials"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "telegram"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "avatar"
+        },
+        {
+          "propertyType": "INTEGER",
+          "name": "dataViewMaxOrganisationUnitLevel"
+        },
+        {
+          "propertyType": "DATE",
+          "name": "lastCheckedInterpretations"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "createdBy"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "interests"
+        },
+        {
+          "propertyType": "REFERENCE",
+          "name": "user"
+        },
+        {
+          "propertyType": "TEXT",
+          "name": "username"
+        }
+      ]
+    }
+  ]
+}

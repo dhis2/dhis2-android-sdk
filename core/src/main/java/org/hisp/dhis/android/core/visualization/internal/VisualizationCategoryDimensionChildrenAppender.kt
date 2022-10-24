@@ -56,7 +56,7 @@ private constructor(private val childStore: LinkStore<VisualizationCategoryDimen
             .map {
                 CategoryDimension.builder()
                     .category(ObjectWithUid.create(it.key))
-                    .categoryOptions(it.value.map { ObjectWithUid.create(it.categoryOption()) })
+                    .categoryOptions(it.value.mapNotNull { it.categoryOption()?.let { ObjectWithUid.create(it) } })
                     .build()
             }
     }

@@ -61,6 +61,8 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
 
     companion object {
         private val PROGRAM_VARIABLES = mapOf(
+            ExpressionParser.V_ANALYTICS_PERIOD_END to VAnalyticsEndDate(),
+            ExpressionParser.V_ANALYTICS_PERIOD_START to VAnalyticsStartDate(),
             ExpressionParser.V_CREATION_DATE to VCreationDate(),
             ExpressionParser.V_CURRENT_DATE to VCurrentDate(),
             ExpressionParser.V_COMPLETED_DATE to VCompletedDate(),
@@ -73,6 +75,8 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
             ExpressionParser.V_EVENT_DATE to VEventDate(),
             ExpressionParser.V_EXECUTION_DATE to VEventDate(),
             ExpressionParser.V_INCIDENT_DATE to VIncidentDate(),
+            ExpressionParser.V_ORG_UNIT_COUNT to VOrgUnitCount(),
+            ExpressionParser.V_SYNC_DATE to VSyncDate(),
             ExpressionParser.V_TEI_COUNT to VTeiCount(),
             ExpressionParser.V_VALUE_COUNT to VValueCount(),
             ExpressionParser.V_ZERO_POS_VALUE_COUNT to VZeroPosValueCount(),

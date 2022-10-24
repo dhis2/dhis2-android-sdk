@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.event.search;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.search.EventQueryRepositoryScope;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -79,5 +81,33 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
                         .blockingGet();
 
         assertThat(event.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_data_value() {
+        List<Event> events1 =
+                d2.eventModule().eventQuery()
+                        .byDataValue("hB9F8vKFmlk").eq("3842")
+                        .blockingGet();
+
+        assertThat(events1.size()).isEqualTo(1);
+
+        List<Event> events2 =
+                d2.eventModule().eventQuery()
+                        .byDataValue("hB9F8vKFmlk").ge("3842")
+                        .blockingGet();
+
+        assertThat(events2.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_date_data_value() throws ParseException {
+        List<Event> events1 =
+                d2.eventModule().eventQuery()
+                        .byDataValue("uFAQYm3UgBL").after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-02-01"))
+                        .byDataValue("uFAQYm3UgBL").before(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-02-10"))
+                        .blockingGet();
+
+        assertThat(events1.size()).isEqualTo(1);
     }
 }

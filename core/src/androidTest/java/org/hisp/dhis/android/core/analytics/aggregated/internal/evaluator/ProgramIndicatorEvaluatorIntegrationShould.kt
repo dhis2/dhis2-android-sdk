@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
@@ -68,26 +68,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_aggregate_data_from_multiple_teis() {
-        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
-        val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
-        val event1 = generator.generate()
-        helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember2019
-        )
-
-        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
-        val enrollment2 = generator.generate()
-        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
-        val event2 = generator.generate()
-        helper.createTrackerEvent(
-            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember2019
-        )
-
-        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
-        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
+        createSampleData()
 
         val valueSum = evaluateIndicator(
             setProgramIndicator(
@@ -105,7 +86,53 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(valueAvg).isEqualTo("15.0")
     }
 
-    private fun evaluateIndicator(programIndicator: ProgramIndicator): String? {
+    @Test
+    fun should_override_aggregation_type() {
+        createSampleData()
+
+        val defaultValue = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            )
+        )
+        assertThat(defaultValue).isEqualTo("30.0")
+
+        val overrideValue = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            ),
+            overrideAggregationType = AggregationType.AVERAGE
+        )
+        assertThat(overrideValue).isEqualTo("15.0")
+    }
+
+    private fun createSampleData() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = day20191101
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
+    }
+
+    private fun evaluateIndicator(
+        programIndicator: ProgramIndicator,
+        overrideAggregationType: AggregationType = AggregationType.DEFAULT
+    ): String? {
         val evaluationItemSum = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
@@ -113,7 +140,8 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
                 DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH)
-            )
+            ),
+            aggregationType = overrideAggregationType
         )
 
         return programIndicatorEvaluator.evaluate(

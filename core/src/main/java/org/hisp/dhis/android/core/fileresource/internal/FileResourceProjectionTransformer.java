@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.fileresource.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
 
 import java.io.File;
-import java.net.URLConnection;
 import java.util.Date;
 
 final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
@@ -48,8 +48,9 @@ final class FileResourceProjectionTransformer implements Transformer<File, FileR
                 .created(creationDate)
                 .lastUpdated(creationDate)
                 .contentLength(file.length())
-                .contentType(URLConnection.guessContentTypeFromName(file.getName()))
+                .contentType(FileResourceUtil.getContentTypeFromName(file.getName()))
                 .path(file.getAbsolutePath())
+                .domain(FileResourceDomain.DATA_VALUE)
                 .build();
     }
 }

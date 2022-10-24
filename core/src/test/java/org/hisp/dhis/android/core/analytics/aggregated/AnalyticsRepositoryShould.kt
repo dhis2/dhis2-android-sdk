@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryImpl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
+import org.hisp.dhis.android.core.common.AggregationType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -85,5 +86,17 @@ class AnalyticsRepositoryShould {
         val legendStrategy = paramsCaptor.firstValue.analyticsLegendStrategy
 
         assertThat(legendStrategy).isInstanceOf(AnalyticsLegendStrategy.ByDataItem::class.java)
+    }
+
+    @Test
+    fun `Call service with overriden aggregation type`() {
+        repository
+            .withAggregationType(AggregationType.LAST)
+            .blockingEvaluate()
+
+        verify(analyticsService).evaluate(paramsCaptor.capture())
+        val aggregationType = paramsCaptor.firstValue.aggregationType
+
+        assertThat(aggregationType).isEqualTo(AggregationType.LAST)
     }
 }

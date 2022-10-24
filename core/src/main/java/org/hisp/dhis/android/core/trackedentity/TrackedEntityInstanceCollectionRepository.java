@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
@@ -89,8 +90,8 @@ public final class TrackedEntityInstanceCollectionRepository
     }
 
     @Override
-    protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
-        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance);
+    protected void propagateState(TrackedEntityInstance trackedEntityInstance, HandleAction action) {
+        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance, action);
     }
 
     @Override
@@ -199,5 +200,9 @@ public final class TrackedEntityInstanceCollectionRepository
 
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
+    }
+
+    public TrackedEntityInstanceCollectionRepository withProgramOwners() {
+        return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS);
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.storage.internal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -71,6 +72,9 @@ import javax.security.auth.x500.X500Principal;
 
 @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports", "PMD.PreserveStackTrace"})
 public final class AndroidSecureStore implements SecureStore {
+
+    private static final String KEY_CIPHER_JELLYBEAN_PROVIDER = "AndroidOpenSSL";
+    private static final String KEY_CIPHER_MARSHMALLOW_PROVIDER = "AndroidKeyStoreBCWorkaround";
 
     private static final String KEY_ALGORITHM_RSA = "RSA";
 
@@ -193,6 +197,18 @@ public final class AndroidSecureStore implements SecureStore {
         }
     }
 
+    private static Cipher getCipherInstance() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER);
+            } else {
+                return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_JELLYBEAN_PROVIDER);
+            }
+        } catch(Exception exception) {
+            throw new RuntimeException("getCipher: Failed to get an instance of Cipher", exception);
+        }
+    }
+
     public void removeData(String key) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(key);
@@ -202,7 +218,7 @@ public final class AndroidSecureStore implements SecureStore {
     private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        Cipher cipher = getCipherInstance();
         cipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
         byte[] encrypted = cipher.doFinal(data);
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
@@ -213,7 +229,7 @@ public final class AndroidSecureStore implements SecureStore {
             IllegalBlockSizeException, BadPaddingException {
 
         byte[] encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT);
-        Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1_PADDING);
+        Cipher cipher = getCipherInstance();
         cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
         return cipher.doFinal(encryptedBuffer);
     }

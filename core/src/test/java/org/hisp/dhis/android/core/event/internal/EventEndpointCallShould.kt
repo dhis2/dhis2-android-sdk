@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -103,16 +104,16 @@ class EventEndpointCallShould {
     }
 
     private fun givenAEventCallByPagination(page: Int, pageCount: Int): Callable<List<Event>> {
-        val eventQuery = EventQuery.builder()
-            .commonParams(get())
-            .page(page)
-            .pageSize(pageCount)
-            .paging(true)
-            .build()
+        val eventQuery = TrackerAPIQuery(
+            commonParams = get(),
+            page = page,
+            pageSize = pageCount,
+            paging = true
+        )
         return givenACallForQuery(eventQuery)
     }
 
-    private fun givenACallForQuery(eventQuery: EventQuery): Callable<List<Event>> {
+    private fun givenACallForQuery(eventQuery: TrackerAPIQuery): Callable<List<Event>> {
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),
             APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
@@ -124,20 +125,19 @@ class EventEndpointCallShould {
         program: String?,
         startDate: String? = null
     ): Callable<List<Event>> {
-        val eventQuery = EventQuery.builder()
-            .orgUnit(orgUnit)
-            .commonParams(
-                TrackerQueryCommonParams(
-                    listOf(),
-                    listOfNotNull(program),
-                    program,
-                    startDate,
-                    false,
-                    OrganisationUnitMode.SELECTED, listOf(orgUnit),
-                    10
-                )
-            )
-            .build()
+        val eventQuery = TrackerAPIQuery(
+            commonParams = TrackerQueryCommonParams(
+                listOf(),
+                listOfNotNull(program),
+                program,
+                startDate,
+                false,
+                OrganisationUnitMode.SELECTED, listOf(orgUnit),
+                10
+            ),
+            orgUnit = orgUnit
+        )
+
         return givenACallForQuery(eventQuery)
     }
 

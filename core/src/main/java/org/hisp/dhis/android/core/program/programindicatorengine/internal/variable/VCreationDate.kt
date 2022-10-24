@@ -42,8 +42,7 @@ internal class VCreationDate : ProgramExpressionItem() {
         val enrollment = visitor.programIndicatorContext.enrollment
 
         return if (enrollment == null) {
-            val singleEvent = getLatestEvent(visitor)
-            if (singleEvent == null) null else ParserUtils.getMediumDateString(singleEvent.created())
+            getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.created()) }
         } else {
             ParserUtils.getMediumDateString(enrollment.created())
         }

@@ -37,9 +37,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VProgramStageId : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val event = getLatestEvent(visitor)
-
-        return event?.programStage()
+        return getLatestEvent(visitor)?.programStage()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

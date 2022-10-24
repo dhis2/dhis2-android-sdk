@@ -30,25 +30,26 @@ plugins {
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-kapt"
-    id "io.gitlab.arturbosch.detekt" version "1.18.0"
-    id "org.jetbrains.dokka" version "1.4.30" apply false
+    id "io.gitlab.arturbosch.detekt" version "1.21.0"
+    id "org.jetbrains.dokka" version "1.6.10" apply false
 }
 
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
+apply from: project.file("plugins/jacoco.gradle")
 
 ext {
     configuration = [
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 262,
-            versionName      : "1.6.2"
+            versionCode      : 270,
+            versionName      : "1.7.0"
     ]
 
     libraries = [
             // android
-            annotation      : '1.3.0',
+            annotation      : '1.4.0',
             paging          : '2.1.2',
 
             // java
@@ -65,7 +66,7 @@ ext {
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
-            expressionParser: "1.0.25",
+            expressionParser: "1.0.29",
 
             // test dependencies
             coreTesting     : "2.1.0",
@@ -79,9 +80,6 @@ ext {
             soloader        : "0.10.1",
             liveDataTesting : "1.2.0",
             commonsLogging  : "1.2",
-
-            // google
-            safetyNet       : "18.0.1",
 
             // open id
             appauth         : "0.8.1"
@@ -134,7 +132,7 @@ android {
     buildTypes {
         debug {
             // a fix for the debugger not being able to find local scope variables
-            testCoverageEnabled = false
+            testCoverageEnabled = (project.hasProperty('coverage'))
         }
     }
 
@@ -175,9 +173,6 @@ dependencies {
     // Jackson
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:${libraries.jackson}"
-
-    // Google's play services
-    api "com.google.android.gms:play-services-safetynet:${libraries.safetyNet}"
 
     // Square libraries
     api "com.squareup.okhttp3:okhttp:${libraries.okHttp}"

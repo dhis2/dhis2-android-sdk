@@ -31,6 +31,9 @@ import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import retrofit2.Retrofit
 
 object EventCallFactory {
@@ -44,11 +47,21 @@ object EventCallFactory {
 
     ): Callable<List<Event>> {
 
-        val eventQuery = EventQuery.builder()
-            .orgUnit(orgUnit)
-            .pageSize(pageSize)
-            .uids(uids)
-            .build()
+        val eventQuery = TrackerAPIQuery(
+            commonParams = TrackerQueryCommonParams(
+                program = null,
+                uids = uids.toList(),
+                programs = emptyList(),
+                hasLimitByOrgUnit = false,
+                orgUnitsBeforeDivision = emptyList(),
+                limit = 50,
+                ouMode = OrganisationUnitMode.ACCESSIBLE,
+                startDate = null
+            ),
+            orgUnit = orgUnit,
+            pageSize = pageSize,
+            uids = uids
+        )
 
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),

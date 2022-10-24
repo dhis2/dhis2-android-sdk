@@ -50,10 +50,10 @@ internal class DataValueCall @Inject constructor(
             handler,
             service.getDataValues(
                 DataValueFields.allFields,
-                b.key().lastUpdatedStr(),
-                commaSeparatedUids(b.dataSets()),
-                commaSeparatedCollectionValues(b.periodIds()),
-                commaSeparatedCollectionValues(b.rootOrganisationUnitUids()),
+                b.key.lastUpdatedStr(),
+                commaSeparatedUids(b.dataSets),
+                commaSeparatedCollectionValues(b.periodIds),
+                commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
                 true,
                 false,
                 true

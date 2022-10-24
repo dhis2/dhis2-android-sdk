@@ -66,4 +66,10 @@ internal class FileResourceEntityDIModule {
     fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
         return emptyMap()
     }
+
+    @Provides
+    @Reusable
+    fun downloadParams(): FileResourceDownloadParams {
+        return FileResourceDownloadParams()
+    }
 }

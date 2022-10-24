@@ -31,24 +31,10 @@ package org.hisp.dhis.android.core.trackedentity;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
 
-import java.io.IOException;
 import java.util.List;
 
 public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //This test is commented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.

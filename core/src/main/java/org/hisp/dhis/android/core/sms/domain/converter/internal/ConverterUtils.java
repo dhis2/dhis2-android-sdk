@@ -111,7 +111,8 @@ final class ConverterUtils {
             return dataValues;
         }
         for (TrackedEntityDataValue tedv : trackedEntityDataValues) {
-            dataValues.add(new SMSDataValue(catOptionCombo, tedv.dataElement(), tedv.value()));
+            String value = tedv.value() == null ? "" : tedv.value();
+            dataValues.add(new SMSDataValue(catOptionCombo, tedv.dataElement(), value));
         }
         return dataValues;
     }

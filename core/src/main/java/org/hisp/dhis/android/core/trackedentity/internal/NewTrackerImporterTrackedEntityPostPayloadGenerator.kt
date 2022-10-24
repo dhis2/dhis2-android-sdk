@@ -70,7 +70,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     private fun transformPayload(
         oldPayload: OldTrackerImporterPayload
     ): NewTrackerImporterPayloadWrapper {
-        val wrapper = NewTrackerImporterPayloadWrapper()
+        val wrapper = NewTrackerImporterPayloadWrapper(programOwners = oldPayload.programOwners)
 
         val tetAttributeMap = getTrackedEntityTypeAttributeMap()
         val programAttributeMap = getProgramAttributesMap()

@@ -39,6 +39,9 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -67,11 +70,13 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         enrollmentDate: Date? = null,
         incidentDate: Date? = null,
+        created: Date? = null,
+        lastUpdated: Date? = null,
         status: EnrollmentStatus? = EnrollmentStatus.ACTIVE
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
-            .status(status).build()
+            .created(created).lastUpdated(lastUpdated).status(status).build()
         EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
     }
 
@@ -83,10 +88,11 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date?,
+        created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE
     ) {
-        val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
+        val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
             .eventDate(eventDate).deleted(deleted).status(status).build()
         EventStoreImpl.create(databaseAdapter).insert(event)
@@ -100,6 +106,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
+        created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE
     ) {
@@ -110,8 +117,9 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             enrollmentUid = enrollmentUid,
             orgunitUid = orgunitUid,
             deleted = deleted,
-            eventDate = eventDate,
+            created = created,
             lastUpdated = lastUpdated,
+            eventDate = eventDate,
             status = status
         )
     }
@@ -176,6 +184,27 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
+    fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
+        val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
+
+        RelationshipStoreImpl.create(databaseAdapter).insert(relationship)
+        RelationshipItemStoreImpl.create(databaseAdapter).let {
+            val r = ObjectWithUid.create(relationship.uid())
+            it.insert(
+                relationship.from()!!.toBuilder()
+                    .relationshipItemType(RelationshipConstraintType.FROM)
+                    .relationship(r)
+                    .build()
+            )
+            it.insert(
+                relationship.to()!!.toBuilder()
+                    .relationshipItemType(RelationshipConstraintType.TO)
+                    .relationship(r)
+                    .build()
+            )
+        }
+    }
+
     companion object {
         fun cons(constantUid: String): String {
             return "C{$constantUid}"
@@ -191,6 +220,10 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
 
         fun `var`(variable: String): String {
             return "V{$variable}"
+        }
+
+        fun psEventDate(programStageUid: String): String {
+            return "PS_EVENTDATE:$programStageUid"
         }
 
         fun today(): Date {

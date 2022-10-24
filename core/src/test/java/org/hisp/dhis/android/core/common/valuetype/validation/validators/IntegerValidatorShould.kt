@@ -53,4 +53,11 @@ class IntegerValidatorShould : ValidatorShouldHelper<IntegerFailure>(IntegerVali
         valueShouldFail("5fe2", IntegerFailure.NumberFormatException)
         valueShouldFail("15.3", IntegerFailure.NumberFormatException)
     }
+
+    @Test
+    fun `Should fail with leading zeros`() {
+        valueShouldFail("00034", IntegerFailure.LeadingZeroException)
+        valueShouldFail("-0047", IntegerFailure.LeadingZeroException)
+        valueShouldFail("0000", IntegerFailure.LeadingZeroException)
+    }
 }

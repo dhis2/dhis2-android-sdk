@@ -49,7 +49,8 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
             "WHEN " + STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +
             "WHEN " + STATE + " = '" + State.SENT_VIA_SMS + "' THEN 2 " +
             "WHEN " + STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 3 " +
-            "ELSE 4 END)";
+            "WHEN " + STATE + " = '" + State.UPLOADING + "' THEN 4 " +
+            "ELSE 5 END)";
 
     private static final String SELECT_CLAUSE = "SELECT " +
             dot(DS_LIST_TABLE_ALIAS, DeletableDataColumns.ID) + AS + DeletableDataColumns.ID + "," +

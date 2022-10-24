@@ -28,16 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.FilterPeriod
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import com.nhaarman.mockitokotlin2.mock
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -51,6 +52,15 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
     private val programStage2 = "programStage2"
     private val enrollmentStatus = EnrollmentStatus.COMPLETED
     private val followUp = true
+
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper = mock()
+
+    private lateinit var scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper
+
+    @Before
+    fun setUp() {
+        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(dateFilterPeriodHelper)
+    }
 
     @Test
     fun `Should parse first level properties`() {
@@ -73,7 +83,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             )
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.program()).isEqualTo(programId)
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(enrollmentStatus))
@@ -102,7 +112,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.eventFilters().size).isEqualTo(2)
         updatedScope.eventFilters().forEach {
@@ -143,11 +153,52 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
-        val updatedScope = TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
 
         assertThat(updatedScope.program()).isEqualTo(programId)
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(EnrollmentStatus.ACTIVE))
         assertThat(updatedScope.eventFilters().size).isEqualTo(1)
         assertThat(updatedScope.eventFilters()[0].assignedUserMode()).isEqualTo(AssignedUserMode.ANY)
+    }
+
+    @Test
+    fun `Should parse attribute filter values`() {
+        val scope = TrackedEntityInstanceQueryRepositoryScope.empty()
+
+        val filter = TrackedEntityInstanceFilter.builder()
+            .uid(filterUid)
+            .program(ObjectWithUid.create(programId))
+            .entityQueryCriteria(
+                EntityQueryCriteria.builder()
+                    .attributeValueFilters(
+                        listOf(
+                            AttributeValueFilter.builder()
+                                .attribute("attribute1")
+                                .like("like_str")
+                                .build(),
+                            AttributeValueFilter.builder()
+                                .attribute("attribute2")
+                                .eq("eq_str")
+                                .build(),
+                        )
+                    )
+                    .build()
+            )
+            .build()
+
+        val updatedScope = scopeHelper.addTrackedEntityInstanceFilter(scope, filter)
+
+        val filters = updatedScope.filter()
+        assertThat(filters.size).isEqualTo(2)
+        assertThat(
+            filters.any {
+                it.operator() == FilterItemOperator.LIKE && it.key() == "attribute1" && it.value() == "like_str"
+            }
+        ).isTrue()
+        assertThat(
+            filters.any {
+                it.operator() == FilterItemOperator.EQ && it.key() == "attribute2" && it.value() == "eq_str"
+            }
+        ).isTrue()
     }
 }

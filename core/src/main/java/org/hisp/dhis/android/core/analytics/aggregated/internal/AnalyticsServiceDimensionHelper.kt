@@ -77,7 +77,8 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
         return dimensionCartesianProductList.map { dimensionList ->
             AnalyticsServiceEvaluationItem(
                 dimensionItems = dimensionList,
-                filters = params.filters
+                filters = params.filters,
+                aggregationType = params.aggregationType
             )
         }
     }

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
@@ -41,7 +41,11 @@ internal class CollectionCleanerImpl<P : ObjectWithUidInterface>(
         if (objects == null) {
             return false
         }
-        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
+        return deleteNotPresentByUid(objects.map { it.uid() })
+    }
+
+    override fun deleteNotPresentByUid(uids: Collection<String>): Boolean {
+        val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'$it'" })
         val clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");"
         return databaseAdapter.delete(tableName, clause, null) > 0
     }

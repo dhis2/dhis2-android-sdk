@@ -38,7 +38,7 @@ internal object ServerURLWrapper {
     }
 
     private fun extractBeforeAPI(url: String): String {
-        return url.split("/api/").first()
+        return url.split("/api/").first().removeSuffix("/")
     }
 
     fun extractAfterAPI(url: String): String? {

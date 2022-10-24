@@ -11,6 +11,31 @@ buildscript {
         classpath "com.android.tools.build:gradle:7.0.4"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
+        classpath "org.jacoco:org.jacoco.core:0.8.8"
+    }
+}
+
+plugins {
+    id "org.sonarqube" version "3.3"
+}
+
+sonarqube {
+    properties {
+        def branch = System.getenv("BITRISE_GIT_BRANCH")
+        def targetBranch = System.getenv("BITRISEIO_GIT_BRANCH_DEST")
+        def pullRequestId = System.getenv("BITRISE_PULL_REQUEST")
+        property "sonar.projectKey", "dhis2_dhis2-android-sdk"
+        property "sonar.organization", "dhis2"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectName", "dhis2-android-sdk"
+        if (pullRequestId == null) {
+            property "sonar.branch.name", branch
+            property "sonar.branch.target", targetBranch
+        } else {
+            property "sonar.pullrequest.base", targetBranch
+            property "sonar.pullrequest.branch", branch
+            property "sonar.pullrequest.key", pullRequestId
+        }
     }
 }
 
@@ -39,5 +64,9 @@ subprojects { project ->
         version = "0.37.2"
         android = true
         outputColorName = "RED"
+        reporters {
+            reporter "plain"
+            reporter "checkstyle"
+        }
     }
 }

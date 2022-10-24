@@ -34,10 +34,14 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
@@ -52,6 +56,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
+        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+
         val values: List<String?> = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
@@ -59,7 +65,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
         }
 
-        return aggregateValues(programIndicator.aggregationType(), values)
+        return aggregateValues(aggregationType, values)
     }
 
     override fun getSql(
@@ -87,7 +93,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         val whereClause = ProgramIndicatorEvaluatorHelper
             .getEventWhereClause(programIndicator, evaluationItem, metadata)
 
-        return eventStore.selectUidsWhere(whereClause)
+        val rawClause = "SELECT * FROM ${EventTableInfo.TABLE_INFO.name()} $event WHERE $whereClause"
+        return eventStore.selectRawQuery(rawClause).map { it.uid() }
     }
 
     private fun evaluateEnrollmentProgramIndicator(
@@ -108,7 +115,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         val whereClause =
             ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
 
-        return enrollmentStore.selectUidsWhere(whereClause)
+        val rawClause = "SELECT * FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollment WHERE $whereClause"
+        return enrollmentStore.selectRawQuery(rawClause).map { it.uid() }
     }
 
     private fun aggregateValues(aggregationType: AggregationType?, values: List<String?>): String? {

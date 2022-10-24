@@ -71,6 +71,15 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
         assertEqualsIgnoreId(objectFromDb, objectWithOtherMasterUid)
     }
 
+    @Test
+    fun select_links_for_master_should_select_only_objects_with_the_master_key() {
+        store.insert(`object`)
+        store.insert(objectWithOtherMasterUid)
+        val links = store.selectLinksForMasterUid(masterUid)
+        assertThat(links.size).isEqualTo(1)
+        assertEqualsIgnoreId(links.first(), `object`)
+    }
+
     init {
         objectWithOtherMasterUid = buildObjectWithOtherMasterUid()
         masterUid = addMasterUid()

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.AntlrParserUtils
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext
+import org.hisp.dhis.antlr.ParserException
 
 internal class ProgramIndicatorExecutor constructor(
     private val constantMap: Map<String, Constant>,
@@ -72,7 +72,7 @@ internal class ProgramIndicatorExecutor constructor(
             }
         } catch (e: IllegalArgumentException) {
             null
-        } catch (e: ParserExceptionWithoutContext) {
+        } catch (e: ParserException) {
             null
         }
     }
@@ -88,17 +88,17 @@ internal class ProgramIndicatorExecutor constructor(
                 } ?: false
             } catch (e: IllegalArgumentException) {
                 false
-            } catch (e: ParserExceptionWithoutContext) {
+            } catch (e: ParserException) {
                 false
             }
     }
 
     fun getValueCount(expression: String): Int {
-        return getCountVisitor(expression).itemValuesFound
+        return getCountVisitor(expression).state.itemValuesFound
     }
 
     fun getZeroPosValueCount(expression: String): Int {
-        return getCountVisitor(expression).itemZeroPosValuesFound
+        return getCountVisitor(expression).state.itemZeroPosValuesFound
     }
 
     private fun getCountVisitor(expression: String): CommonExpressionVisitor {

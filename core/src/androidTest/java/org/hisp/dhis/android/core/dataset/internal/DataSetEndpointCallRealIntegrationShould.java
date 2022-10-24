@@ -29,13 +29,10 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.junit.Before;
 import org.mockito.internal.util.collections.Sets;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -44,14 +41,12 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
     private Callable<List<DataSet>> dataSetCall;
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-        d2 = D2Factory.forNewDatabase();
         dataSetCall = createCall();
     }
 

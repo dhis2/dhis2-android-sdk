@@ -32,6 +32,7 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.AggregationType
 
 interface AnalyticsRepository {
 
@@ -40,6 +41,8 @@ interface AnalyticsRepository {
     fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository
 
     fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepository
+
+    fun withAggregationType(aggregationType: AggregationType): AnalyticsRepository
 
     fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
 

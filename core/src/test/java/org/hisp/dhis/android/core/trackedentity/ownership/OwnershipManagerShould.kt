@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.junit.Assert.fail
@@ -45,7 +46,9 @@ class OwnershipManagerShould {
 
     private val apiCallExecutor: APICallExecutor = mock()
     private val ownershipService: OwnershipService = mock()
+    private val dataStatePropagator: DataStatePropagator = mock()
     private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
+    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner> = mock()
 
     private val httpResponse: HttpMessageResponse = mock()
     private val call: Call<HttpMessageResponse> = mock()
@@ -57,7 +60,10 @@ class OwnershipManagerShould {
         whenever(ownershipService.breakGlass(any(), any(), any())).doReturn(call)
         whenever(apiCallExecutor.executeObjectCall(any<Call<HttpMessageResponse>>())).doReturn(httpResponse)
 
-        ownershipManager = OwnershipManagerImpl(apiCallExecutor, ownershipService, programTempOwnerStore)
+        ownershipManager = OwnershipManagerImpl(
+            apiCallExecutor, ownershipService, dataStatePropagator,
+            programTempOwnerStore, programOwnerStore
+        )
     }
 
     @Test
@@ -90,5 +96,13 @@ class OwnershipManagerShould {
 
         verify(programTempOwnerStore).selectWhere(any(), any(), any())
         verifyNoMoreInteractions(programTempOwnerStore)
+    }
+
+    @Test
+    fun propagate_program_ownership_update() {
+        ownershipManager.blockingTransfer("tei_uid", "program_uid", "orgunit")
+
+        verify(programOwnerStore).updateOrInsertWhere(any())
+        verify(dataStatePropagator).refreshTrackedEntityInstanceAggregatedSyncState(any())
     }
 }

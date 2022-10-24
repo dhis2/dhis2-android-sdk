@@ -28,32 +28,18 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
-import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
 
     //This test is commented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.

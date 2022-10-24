@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderB
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.FilterOperatorsHelper.strToList
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
@@ -60,14 +62,17 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val enrollmentAlias = "en"
     private val eventAlias = "ev"
     private val orgunitAlias = "ou"
+    private val userOrgunitAlias = "uou"
     private val teavAlias = "teav"
     private val programAlias = "pr"
-    private val ownAlias = "own"
+    private val ownerAlias = "po"
+    private val tempOwnerAlias = "tpo"
 
     private val teiUid = dot(teiAlias, "uid")
     private val teiAll = dot(teiAlias, "*")
     private val teiLastUpdated = dot(teiAlias, "lastUpdated")
     private val enrollmentDate = EnrollmentTableInfo.Columns.ENROLLMENT_DATE
+    private val incidentDate = EnrollmentTableInfo.Columns.INCIDENT_DATE
     private val program = EnrollmentTableInfo.Columns.PROGRAM
     private val trackedEntityAttribute = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE
     private val trackedEntityInstance = TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
@@ -87,6 +92,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             .build()
     }
 
+    @Suppress("LongMethod")
     private fun getSqlQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         excludeList: Set<String>?,
@@ -105,6 +111,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
                 dot(programAlias, IdentifiableColumns.UID)
 
+            queryStr += " JOIN ${ProgramOwnerTableInfo.TABLE_INFO.name()} $ownerAlias"
+            queryStr += " ON ${dot(enrollmentAlias, EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE) +
+                " AND " +
+                "${dot(enrollmentAlias, EnrollmentTableInfo.Columns.PROGRAM)} = " +
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.PROGRAM)
+
             appendProgramWhere(where, scope)
             if (hasEvent(scope)) {
                 queryStr += String.format(
@@ -118,10 +131,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
 
         if (hasOrgunits(scope)) {
+            val joinOrgunitColum =
+                if (hasProgram(scope)) dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT)
+                else dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
+
             queryStr += String.format(
                 " JOIN %s %s ON %s = %s",
                 OrganisationUnitTableInfo.TABLE_INFO.name(), orgunitAlias,
-                dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT),
+                joinOrgunitColum,
                 dot(orgunitAlias, IdentifiableColumns.UID)
             )
             appendOrgunitWhere(where, scope)
@@ -134,6 +151,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             )
         }
 
+        if (!scope.uids().isNullOrEmpty()) {
+            where.appendInKeyStringValues(
+                dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.UID),
+                scope.uids()
+            )
+        }
+
         if (scope.states() == null) {
             where.appendNotKeyStringValue(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), State.RELATIONSHIP.name)
         } else {
@@ -142,6 +166,10 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
         if (!scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.DELETED), "!=", "1")
+        }
+
+        scope.lastUpdatedDate()?.let {
+            appendDateFilter(where, dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED), it)
         }
 
         appendQueryWhere(where, scope)
@@ -164,25 +192,28 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
-        return scope.eventFilters().isNotEmpty()
+        return scope.eventFilters().isNotEmpty() || scope.programStage() != null ||
+            scope.eventDate() != null || scope.assignedUserMode() != null
     }
 
+    @Suppress("LongMethod")
     private fun appendProgramWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         if (scope.program() != null) {
             where.appendKeyStringValue(dot(enrollmentAlias, program), escapeQuotes(scope.program()))
         }
         if (scope.programDate() != null) {
-            val enrollmentDateStr = "date(${dot(enrollmentAlias, enrollmentDate)})"
-
-            dateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate ->
-                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(enrollmentDateStr, startDateStr)
-            }
-
-            dateFilterPeriodHelper.getEndDate(scope.programDate()!!)?.let { endDate ->
-                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(enrollmentDateStr, endDateStr)
-            }
+            appendDateFilter(
+                where = where,
+                column = dot(enrollmentAlias, enrollmentDate),
+                dateFilterPeriod = scope.programDate()!!
+            )
+        }
+        if (scope.incidentDate() != null) {
+            appendDateFilter(
+                where = where,
+                column = dot(enrollmentAlias, incidentDate),
+                dateFilterPeriod = scope.incidentDate()!!
+            )
         }
         if (scope.enrollmentStatus() != null) {
             where.appendInKeyEnumValues(
@@ -198,25 +229,40 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyNumberValue(dot(enrollmentAlias, EnrollmentTableInfo.Columns.FOLLOW_UP), value)
         }
 
-        val tempOwnershipSubQuery = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $ownAlias " +
-            "WHERE ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
+        val hasAnyOwnershipRecord = "SELECT 1 FROM ${ProgramTempOwnerTableInfo.TABLE_INFO.name()} $tempOwnerAlias " +
+            "WHERE ${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE)} = " +
             dot(teiAlias, IdentifiableColumns.UID) +
             " AND " +
-            "${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
+            "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.PROGRAM)} = " +
             dot(programAlias, IdentifiableColumns.UID)
 
-        /* Break the glass query. The condition is:
+        val hasAnyNotExpiredOwnershipRecord = hasAnyOwnershipRecord +
+            " AND " +
+            "${dot(tempOwnerAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
+            ">= '${DateUtils.DATE_FORMAT.format(Date())}'"
+
+        val ownerOrguitIsInCaptureScope =
+            "SELECT 1 FROM ${UserOrganisationUnitLinkTableInfo.TABLE_INFO.name()} $userOrgunitAlias " +
+                "WHERE ${dot(userOrgunitAlias, UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT)} = " +
+                dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT) +
+                " AND " +
+                "${dot(userOrgunitAlias, UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE)} = " +
+                "'${OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name}'"
+
+        /* Break the glass query. The condition is either of:
          * - Not to have a record: this applies to CAPTURE teis and SEARCH teis that didn't need a ownership request.
+         * - Owner orgunit in CAPTURE scope. It could happen that there is record and the ownership is transferred.
          * - To have a record that is not expired.
          */
         where.appendComplexQuery(
             "CASE " +
                 "WHEN ${dot(programAlias, ProgramTableInfo.Columns.ACCESS_LEVEL)} = '${AccessLevel.PROTECTED.name}' " +
                 "THEN (" +
-                "NOT EXISTS($tempOwnershipSubQuery) " +
+                "NOT EXISTS($hasAnyOwnershipRecord) " +
                 "OR " +
-                "EXISTS($tempOwnershipSubQuery AND ${dot(ownAlias, ProgramTempOwnerTableInfo.Columns.VALID_UNTIL)} " +
-                ">= '${DateUtils.DATE_FORMAT.format(Date())}')" +
+                "EXISTS($ownerOrguitIsInCaptureScope) " +
+                "OR " +
+                "EXISTS($hasAnyNotExpiredOwnershipRecord)" +
                 ") ELSE 1 END "
         )
     }
@@ -306,17 +352,25 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
         for (item in items) {
-            val valueStr =
-                if (item.operator() == FilterItemOperator.LIKE) "%${escapeQuotes(item.value())}%"
-                else escapeQuotes(item.value())
+            val valueStr = when (item.operator()) {
+                FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
+                FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
+                FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
+                FilterItemOperator.IN -> {
+                    val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
+                    "($value)"
+                }
+                else -> "'${escapeQuotes(item.value())}'"
+            }
 
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
                 dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
                 dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator, valueStr
+                item.operator().sqlOperator,
+                valueStr
             )
 
             where.appendExistsSubQuery(sub)
@@ -330,6 +384,12 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun appendEventWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
+        scope.assignedUserMode()?.let { appendAssignedUserMode(where, it) }
+        scope.programStage()?.let { programStage ->
+            where.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
+        }
+        appendEventStatusAndDates(where, scope.eventStatus(), scope.eventDate())
+
         val innerClause = WhereClauseBuilder()
         scope.eventFilters().forEach { eventFilter ->
             getEventFilterClause(eventFilter)?.let { eventFilterClause ->
@@ -338,38 +398,49 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
         if (!innerClause.isEmpty) {
             where.appendComplexQuery(innerClause.build())
-            where.appendKeyOperatorValue(dot(eventAlias, EventTableInfo.Columns.DELETED), "!=", "1")
         }
+
+        where.appendKeyOperatorValue(dot(eventAlias, EventTableInfo.Columns.DELETED), "!=", "1")
     }
 
     private fun getEventFilterClause(eventFilter: TrackedEntityInstanceQueryEventFilter): String? {
         val innerClause = WhereClauseBuilder()
 
         eventFilter.assignedUserMode()?.let { mode -> appendAssignedUserMode(innerClause, mode) }
+        eventFilter.programStage()?.let { programStage ->
+            innerClause.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
+        }
+        appendEventStatusAndDates(innerClause, eventFilter.eventStatus(), eventFilter.eventDate())
 
-        val statusList = eventFilter.eventStatus()
+        return if (innerClause.isEmpty) null else innerClause.build()
+    }
 
-        if (statusList == null) {
-            appendEventDates(innerClause, eventFilter, EventTableInfo.Columns.EVENT_DATE)
-        } else if (statusList.size > 0 && eventFilter.eventDate() != null) {
+    private fun appendEventStatusAndDates(
+        where: WhereClauseBuilder,
+        eventStatus: List<EventStatus>?,
+        eventDate: DateFilterPeriod?
+    ) {
+        if (eventStatus == null) {
+            appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
+        } else if (eventStatus.size > 0 && eventDate != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
-            for (eventStatus in statusList) {
+            for (eventStatus in eventStatus) {
                 val statusWhere = WhereClauseBuilder()
                 when (eventStatus) {
                     EventStatus.ACTIVE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
                             listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                     }
                     EventStatus.COMPLETED, EventStatus.VISITED -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
                     EventStatus.SCHEDULE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -380,7 +451,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         )
                     }
                     EventStatus.OVERDUE -> {
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -392,33 +463,46 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     }
                     EventStatus.SKIPPED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
-                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
+                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                     }
                     else -> {
                     }
                 }
                 statusListWhere.appendOrComplexQuery(statusWhere.build())
             }
-            innerClause.appendComplexQuery(statusListWhere.build())
+            where.appendComplexQuery(statusListWhere.build())
         }
-        return if (innerClause.isEmpty) null else innerClause.build()
     }
 
     private fun appendEventDates(
         where: WhereClauseBuilder,
-        eventFilter: TrackedEntityInstanceQueryEventFilter,
+        eventDate: DateFilterPeriod?,
         refDate: String
     ) {
-        if (eventFilter.eventDate() != null) {
-            val refDateStr = "date(${dot(eventAlias, refDate)})"
-            dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
-                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(refDateStr, startDateStr)
-            }
-            dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
-                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(refDateStr, endDateStr)
-            }
+        if (eventDate != null) {
+            appendDateFilter(
+                where = where,
+                column = dot(eventAlias, refDate),
+                dateFilterPeriod = eventDate
+            )
+        }
+    }
+
+    private fun appendDateFilter(
+        where: WhereClauseBuilder,
+        column: String,
+        dateFilterPeriod: DateFilterPeriod
+    ) {
+        val dateColumnStr = "date($column)"
+
+        dateFilterPeriodHelper.getStartDate(dateFilterPeriod)?.let { startDate ->
+            val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+            where.appendKeyGreaterOrEqStringValue(dateColumnStr, startDateStr)
+        }
+
+        dateFilterPeriodHelper.getEndDate(dateFilterPeriod)?.let { endDate ->
+            val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+            where.appendKeyLessThanOrEqStringValue(dateColumnStr, endDateStr)
         }
     }
 

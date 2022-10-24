@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterProgramOwnerPostCall
 
 @Reusable
 @Suppress("LongParameterList")
@@ -61,6 +62,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
     private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
+    private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
 ) {
 
@@ -84,11 +86,13 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         return Observable.defer {
             val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
 
-            Observable.concat(
+            Observable.concatArray(
+                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true),
                 relationshipPostCall.deleteRelationships(partitionedRelationships.first),
                 postTrackedEntityInstances(payload.trackedEntityInstances),
                 postEvents(payload.events),
-                relationshipPostCall.postRelationships(partitionedRelationships.second)
+                relationshipPostCall.postRelationships(partitionedRelationships.second),
+                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false)
             )
         }
     }

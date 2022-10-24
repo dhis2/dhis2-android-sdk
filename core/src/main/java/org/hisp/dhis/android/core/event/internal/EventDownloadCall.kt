@@ -28,287 +28,113 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
-import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
-import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
-import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
 @Reusable
-class EventDownloadCall @Inject internal constructor(
-    private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
+internal class EventDownloadCall @Inject internal constructor(
+    userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
+    systemInfoModuleDownloader: SystemInfoModuleDownloader,
+    relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val d2CallExecutor: D2CallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val endpointCallFactory: EventEndpointCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
-    private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val lastUpdatedManager: EventLastUpdatedManager
+) : TrackerDownloadCall<Event, EventQueryBundle>(
+    rxCallExecutor,
+    userOrganisationUnitLinkStore,
+    systemInfoModuleDownloader,
+    relationshipDownloadAndPersistCallFactory
 ) {
 
-    fun downloadSingleEvents(params: ProgramDataDownloadParams): Observable<D2Progress> {
-        val observable = Observable.defer {
-            val progressManager = D2ProgressManager(null)
-            val relatives = RelationshipItemRelatives()
-            return@defer Observable.concat(
-                systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                downloadEventsInternal(params, progressManager, relatives),
-                downloadRelationships(progressManager, relatives)
-            )
-        }
-
-        return rxCallExecutor.wrapObservableTransactionally(observable, true)
+    override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
+        return eventQueryBundleFactory.getQueries(params)
     }
 
-    private fun downloadEventsInternal(
-        params: ProgramDataDownloadParams,
-        progressManager: D2ProgressManager,
-        relatives: RelationshipItemRelatives
-    ): Observable<D2Progress> {
-
-        return Observable.create { emitter ->
-            val iterables = BundleIterables(
-                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf()
-            )
-            val bundles: List<EventQueryBundle> = eventQueryBundleFactory.getQueries(params)
-
-            for (bundle in bundles) {
-                iterables.eventsCount = 0
-                iterables.bundleOrgUnitPrograms = mutableMapOf()
-                iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
-                bundle.orgUnits()
-                    .ifEmpty { listOf(null) }
-                    .forEach { orgUnit ->
-                        iterables.bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
-                            null -> listOf(EventsByProgramCount(null, 0))
-                            else ->
-                                bundle.commonParams().programs
-                                    .map { EventsByProgramCount(it, 0) }
-                        }.toMutableList()
-                    }
-
-                var iterationCount = 0
-                do {
-                    iterateBundle(bundle, params, iterables, relatives)
-                    iterationCount++
-                } while (iterationNotFinished(bundle, params, iterables, iterationCount))
-
-                if (params.uids().isEmpty()) {
-                    lastUpdatedManager.update(bundle)
-                }
-            }
-            emitter.onNext(progressManager.increaseProgress(Event::class.java, false))
-            emitter.onComplete()
-        }
+    override fun getItems(query: TrackerAPIQuery): List<Event> {
+        return d2CallExecutor.executeD2Call(
+            endpointCallFactory.getCall(query), true
+        )
     }
 
-    private fun iterationNotFinished(
-        bundle: EventQueryBundle,
-        params: ProgramDataDownloadParams,
-        iterables: BundleIterables,
-        iterationCount: Int
-    ): Boolean {
-        return params.limitByProgram() != true &&
-            iterables.eventsCount < bundle.commonParams().limit &&
-            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
-            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
-    }
-
-    private fun iterateBundle(
-        bundle: EventQueryBundle,
-        params: ProgramDataDownloadParams,
-        iterables: BundleIterables,
+    override fun persistItems(
+        items: List<Event>,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives
     ) {
-        val limitPerCombo = getBundleLimit(bundle, params, iterables)
-
-        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
-            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-            val orgunitPrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]
-
-            val pendingEvents = bundle.commonParams().limit - iterables.eventsCount
-            iterables.bundleLimit = min(limitPerCombo, pendingEvents)
-
-            if (iterables.bundleLimit <= 0 || orgunitPrograms.isNullOrEmpty()) {
-                iterables.orgUnitsBundleToDownload = (iterables.orgUnitsBundleToDownload - orgUnitUid).toMutableList()
-                continue
-            }
-
-            iterateBundleProgram(orgUnitUid, bundle, params, iterables, relatives)
-
-            iterables.bundleOrgUnitPrograms[orgUnitUid] = iterables.bundleOrgUnitPrograms[orgUnitUid]!!.filter {
-                !iterables.emptyOrCorruptedPrograms.contains(it.program)
-            }.toMutableList()
-        }
+        persistenceCallFactory.persistEvents(items, relatives).blockingAwait()
     }
 
-    private fun iterateBundleProgram(
-        orgUnitUid: String?,
+    override fun updateLastUpdated(bundle: EventQueryBundle) {
+        lastUpdatedManager.update(bundle)
+    }
+
+    override fun queryByUids(
         bundle: EventQueryBundle,
-        params: ProgramDataDownloadParams,
-        iterables: BundleIterables,
+        overwrite: Boolean,
         relatives: RelationshipItemRelatives
-    ) {
-        for (bundleProgram in iterables.bundleOrgUnitPrograms[orgUnitUid]!!) {
-            if (iterables.eventsCount >= bundle.commonParams().limit) {
-                break
-            }
-            val eventQueryBuilder = EventQuery.builder()
-                .commonParams(
-                    bundle.commonParams().copy(
-                        program = bundleProgram.program,
-                        limit = iterables.bundleLimit
-                    )
-                )
-                .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
-                .orgUnit(orgUnitUid)
-                .uids(params.uids())
+    ): ItemsWithPagingResult {
+        val result = ItemsWithPagingResult(0, true, null, false)
 
-            val result = getEventsForOrgUnitProgramCombination(
-                eventQueryBuilder,
-                iterables.bundleLimit,
-                bundleProgram.eventCount,
-                relatives
-            )
-
-            iterables.eventsCount += result.eventCount
-            bundleProgram.eventCount += result.eventCount
-            iterables.successfulSync = iterables.successfulSync && result.successfulSync
-
-            if (result.emptyProgram || !result.successfulSync) {
-                iterables.emptyOrCorruptedPrograms = (iterables.emptyOrCorruptedPrograms + bundleProgram.program)
-                    .toMutableList()
-            }
-        }
-    }
-
-    private fun getBundleLimit(
-        bundle: EventQueryBundle,
-        params: ProgramDataDownloadParams,
-        iterables: BundleIterables
-    ): Int {
-        return when {
-            params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true -> {
-                val numOfCombinations = iterables.bundleOrgUnitPrograms.values.map { it.size }.sum()
-                val pendingEvents = bundle.commonParams().limit - iterables.eventsCount
-
-                if (numOfCombinations == 0) 0
-                else ceil(pendingEvents.toDouble() / numOfCombinations.toDouble()).roundToInt()
-            }
-            else -> bundle.commonParams().limit - iterables.eventsCount
-        }
-    }
-
-    private fun getEventsForOrgUnitProgramCombination(
-        eventQueryBuilder: EventQuery.Builder,
-        combinationLimit: Int,
-        downloadedEvents: Int,
-        relatives: RelationshipItemRelatives
-    ): EventsWithPagingResult {
-
-        var result = EventsWithPagingResult(0, successfulSync = true, emptyProgram = false)
+        val eventQuery = TrackerAPIQuery(
+            commonParams = bundle.commonParams().copy(
+                program = bundle.commonParams().program,
+                limit = bundle.commonParams().uids.size
+            ),
+            uids = bundle.commonParams().uids
+        )
 
         try {
-            result = getEventsWithPaging(eventQueryBuilder, combinationLimit, downloadedEvents, relatives)
-        } catch (ignored: D2Error) {
+            val items = getItems(eventQuery)
+
+            // TODO Review
+            val persistParams = IdentifiableDataHandlerParams(
+                hasAllAttributes = true,
+                overwrite = overwrite,
+                asRelationship = false,
+                program = eventQuery.commonParams.program
+            )
+
+            persistItems(items, params = persistParams, relatives)
+
+            result.count += items.size
+        } catch (d2Error: D2Error) {
             result.successfulSync = false
+            if (result.d2Error == null) {
+                result.d2Error = d2Error
+            }
         }
 
         return result
     }
 
-    @Throws(D2Error::class)
-    private fun getEventsWithPaging(
-        eventQueryBuilder: EventQuery.Builder,
-        combinationLimit: Int,
-        downloadedEvents: Int,
-        relatives: RelationshipItemRelatives
-    ): EventsWithPagingResult {
-
-        var downloadedEventsForCombination = 0
-        var emptyProgram = false
-        val baseQuery = eventQueryBuilder.build()
-
-        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), combinationLimit, downloadedEvents)
-
-        for (paging in pagingList) {
-            eventQueryBuilder.pageSize(paging.pageSize())
-            eventQueryBuilder.page(paging.page())
-
-            val pageEvents = d2CallExecutor.executeD2Call(
-                endpointCallFactory.getCall(eventQueryBuilder.build()), true
-            )
-
-            val eventsToPersist = getEventsToPersist(paging, pageEvents)
-
-            persistenceCallFactory.persistEvents(eventsToPersist, relatives).blockingAwait()
-
-            downloadedEventsForCombination += eventsToPersist.size
-
-            if (pageEvents.size < paging.pageSize()) {
-                emptyProgram = true
-                break
-            }
-        }
-
-        return EventsWithPagingResult(downloadedEventsForCombination, true, emptyProgram)
-    }
-
-    private fun getEventsToPersist(paging: Paging, pageEvents: List<Event>): List<Event> {
-
-        return if (paging.isFullPage && pageEvents.size > paging.previousItemsToSkipCount()) {
-            val toIndex = min(
-                pageEvents.size,
-                paging.pageSize() - paging.posteriorItemsToSkipCount()
-            )
-            pageEvents.subList(paging.previousItemsToSkipCount(), toIndex)
-        } else {
-            pageEvents
-        }
-    }
-
-    private fun downloadRelationships(
-        progressManager: D2ProgressManager,
-        relatives: RelationshipItemRelatives
-    ): Observable<D2Progress> {
-        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
-            Observable.just(
-                progressManager.increaseProgress(
-                    Event::class.java, true
-                )
-            )
+    override fun getQuery(
+        bundle: EventQueryBundle,
+        program: String?,
+        orgunitUid: String?,
+        limit: Int
+    ): TrackerAPIQuery {
+        return TrackerAPIQuery(
+            commonParams = bundle.commonParams().copy(
+                program = program,
+                limit = limit
+            ),
+            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+            orgUnit = orgunitUid,
+            uids = bundle.commonParams().uids
         )
-    }
-
-    private class EventsWithPagingResult(var eventCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)
-
-    private class EventsByProgramCount(val program: String?, var eventCount: Int)
-
-    private class BundleIterables(
-        var eventsCount: Int,
-        var successfulSync: Boolean,
-        var bundleLimit: Int,
-        var bundleOrgUnitPrograms: MutableMap<String?, MutableList<EventsByProgramCount>>,
-        var orgUnitsBundleToDownload: MutableList<String?>,
-        var emptyOrCorruptedPrograms: MutableList<String?>
-    )
-
-    companion object {
-        const val BUNDLE_ITERATION_LIMIT = 1000
-        const val BUNDLE_SECURITY_FACTOR = 2
     }
 }

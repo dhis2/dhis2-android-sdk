@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
 import java.util.Map;
@@ -142,5 +143,9 @@ public final class TrackedEntityInstanceFilterCollectionRepository
 
     public TrackedEntityInstanceFilterCollectionRepository withTrackedEntityInstanceEventFilters() {
         return cf.withChild(TrackedEntityInstanceFilterFields.EVENT_FILTERS);
+    }
+
+    public TrackedEntityInstanceFilterCollectionRepository withAttributeValueFilters() {
+        return cf.withChild(EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER);
     }
 }

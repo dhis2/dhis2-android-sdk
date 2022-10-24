@@ -40,7 +40,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class Note30Should extends BaseObjectShould implements ObjectShould {
 
     public Note30Should() {
-        super("enrollment/note/note_30.json");
+        super("note/note_30.json");
     }
 
     @Override

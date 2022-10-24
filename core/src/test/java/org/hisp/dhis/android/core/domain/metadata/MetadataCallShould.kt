@@ -32,6 +32,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.BaseD2Progress
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
@@ -93,17 +94,17 @@ class MetadataCallShould : BaseCallShould() {
 
         // Calls
         whenever(systemInfoDownloader.downloadWithProgressManager(any()))
-            .thenReturn(Observable.just(D2Progress.empty(10)))
+            .thenReturn(Observable.just(BaseD2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
-        whenever(programDownloader.downloadMetadata(any())).thenReturn(
-            Single.just(emptyList())
+        whenever(programDownloader.downloadMetadata()).thenReturn(
+            Completable.complete()
         )
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
-            Single.just(emptyList())
+            Completable.complete()
         )
-        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
-            Single.just(emptyList())
+        whenever(dataSetDownloader.downloadMetadata()).thenReturn(
+            Completable.complete()
         )
         whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
@@ -189,19 +190,19 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
+        whenever(programDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_organisation_unit_call_fail() {
-        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Single.error(d2Error))
+        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_dataset_parent_call_fail() {
-        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
+        whenever(dataSetDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 

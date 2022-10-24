@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Suppress("TooManyFunctions")
 internal interface DataStatePropagator {
@@ -51,6 +52,8 @@ internal interface DataStatePropagator {
     fun propagateNoteCreation(note: Note?)
 
     fun propagateRelationshipUpdate(relationship: Relationship?)
+
+    fun propagateOwnershipUpdate(programOwner: ProgramOwner)
 
     fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
 

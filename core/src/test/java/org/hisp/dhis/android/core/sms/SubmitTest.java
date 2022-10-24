@@ -72,37 +72,69 @@ public class SubmitTest {
 
     @Test
     public void submitEnrollment() throws Exception {
-        test(() -> sender.convertEnrollment(MockObjects.enrollmentUid));
+        testConvert(() -> sender.convertEnrollment(MockObjects.enrollmentUid));
+    }
+
+    @Test
+    public void compressEnrollment() throws Exception {
+        testCompress(() -> sender.compressEnrollment(MockObjects.enrollmentUid));
     }
 
     @Test
     public void submitTrackerEvent() throws Exception {
-        test(() -> sender.convertTrackerEvent(MockObjects.eventUid));
+        testConvert(() -> sender.convertTrackerEvent(MockObjects.eventUid));
+    }
+
+    @Test
+    public void compressTrackerEvent() throws Exception {
+        testCompress(() -> sender.compressTrackerEvent(MockObjects.eventUid));
     }
 
     @Test
     public void submitSimpleEvent() throws Exception {
-        test(() -> sender.convertSimpleEvent(MockObjects.eventUid));
+        testConvert(() -> sender.convertSimpleEvent(MockObjects.eventUid));
+    }
+
+    @Test
+    public void compressSimpleEvent() throws Exception {
+        testCompress(() -> sender.compressSimpleEvent(MockObjects.eventUid));
     }
 
     @Test
     public void submitDataSet() throws Exception {
-        test(() -> sender.convertDataSet(
+        testConvert(() -> sender.convertDataSet(
+                MockObjects.dataSetUid, MockObjects.orgUnit,
+                MockObjects.period, MockObjects.attributeOptionCombo));
+    }
+
+    @Test
+    public void compressDataSet() throws Exception {
+        testCompress(() -> sender.compressDataSet(
                 MockObjects.dataSetUid, MockObjects.orgUnit,
                 MockObjects.period, MockObjects.attributeOptionCombo));
     }
 
     @Test
     public void submitRelationShip() throws Exception {
-        test(() -> sender.convertRelationship(MockObjects.relationship));
+        testConvert(() -> sender.convertRelationship(MockObjects.relationship));
+    }
+
+    @Test
+    public void compressRelationShip() throws Exception {
+        testCompress(() -> sender.compressRelationship(MockObjects.relationship));
     }
 
     @Test
     public void submitDeletion() throws Exception {
-        test(() -> sender.convertDeletion(MockObjects.eventUid));
+        testConvert(() -> sender.convertDeletion(MockObjects.eventUid));
     }
 
-    private void test(Callable<Single<Integer>> convertTask) throws Exception {
+    @Test
+    public void compressDeletion() throws Exception {
+        testCompress(() -> sender.compressDeletion(MockObjects.eventUid));
+    }
+
+    private void testConvert(Callable<Single<Integer>> convertTask) throws Exception {
         convertTask.call().test()
                 .assertNoErrors()
                 .assertValueCount(1);
@@ -134,5 +166,11 @@ public class SubmitTest {
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
                         ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.NO_NETWORK);
+    }
+
+    private void testCompress(Callable<Single<String>> compressTask) throws Exception {
+        compressTask.call().test()
+                .assertNoErrors()
+                .assertValueCount(1);
     }
 }

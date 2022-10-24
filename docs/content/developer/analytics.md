@@ -74,7 +74,7 @@ Properties included in the `DimensionalResponse` object:
 - **Filters**: list of ids that act as a filter in the query.
 - **Values**: list of `DimensionalValue`. Each value contains an ordered list of ids that define the value. In the example above, the value "17" corresponds to "ANC 1st visit" ("fbfJHSPpUQD") and "August 2021" ("202108"). You can use the metadata map to get more information from those ids.
 
-DimensionItems can be used either as dimensions or as filters. And multiple items of the same dimension can be combined in the same query. For example, this query gets "ANC 1st visit" (DataElement "fbfJHSPpUQD") and "ANC 1-3 Dropout Rate" (Indicator "ReUHfIn0pTQ") disaggregated by the category "Location: Fixed/Outreach" (Category "fMZEcRHuamy") using the options "Fixed" (CategoryOption "qkPbeWaFsnU") and "Outreach" (CategoryOption "wbrDrL2aYEc") within the last 3 months (Relative Period) in the UserOrganisationUnit (Relative OrganisationUnit) and classifying the values by data item legendSet.
+DimensionItems can be used either as dimensions or as filters. And multiple items of the same dimension can be combined in the same query. For example, this query gets "ANC 1st visit" (DataElement "fbfJHSPpUQD") and "ANC 1-3 Dropout Rate" (Indicator "ReUHfIn0pTQ") disaggregated by the category "Location: Fixed/Outreach" (Category "fMZEcRHuamy") using the options "Fixed" (CategoryOption "qkPbeWaFsnU") and "Outreach" (CategoryOption "wbrDrL2aYEc") within the last 3 months (Relative Period) in the UserOrganisationUnit (Relative OrganisationUnit), classifying the values by data item legendSet and overriding the aggregation type:
 
 ```java
 d2.analyticsModule().analytics()
@@ -87,6 +87,8 @@ d2.analyticsModule().analytics()
         .withFilter(new DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
 
         .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem.INSTANCE)
+        
+        .withAggregationType(AggregationType.LAST)
         
         .evaluate();
 ```
@@ -353,10 +355,14 @@ This table shows the functionality supported by the Indicator dimension item com
 |                   |Least                  | Yes       | Yes           |
 |                   |Log                    | Yes       | No            |
 |                   |Log10                  | Yes       | No            |
+|                   |.aggregationType       | Yes       | No            |
+|                   |.maxDate               | Yes       | No            |
+|                   |.minDate               | Yes       | No            |
+|                   |.periodOffset          | Yes       | No            |
 |**Dimensions:**    |Constant               | Yes       | Yes           |
 |                   |DataElement            | Yes       | Yes           |
-|                   |ProgramAttribute       | Yes       | No            |
-|                   |ProgramDataElement     | Yes       | No            |
+|                   |ProgramAttribute       | Yes       | Yes           |
+|                   |ProgramDataElement     | Yes       | Yes           |
 |                   |ProgramIndicator       | Yes       | Yes           |
 |                   |OrgUnitGroup           | Yes       | No            |
 |                   |ReportingRate          | Yes       | No            |
@@ -366,15 +372,6 @@ This table shows the functionality supported by the Indicator dimension item com
 ### Program indicator support { #android_sdk_analytics_program_indicator_support }
 
 This table shows the functionality supported by the ProgramIndicator dimension item compared to the backend analytics.
-
-ProgramIndicator analytic boundaries are not supported at the moment. ProgramIndicators with non-default boundaries are not evaluated (the exception `AnalyticsException.ProgramIndicatorCustomBoundaries` is thrown). The boundaries that are considered as "default" are the following ones:
-
-- EVENT programIndicator: 
-    - EventDate: After start of reporting period.
-    - EventDate: Before end of reporting period.
-- ENROLLMENT programIndicator:
-    - EnrollmentDate: After start of reporting period.
-    - EnrollmentDate: Before end of reporting period.
 
 | Type                      | Element               | Backend   | Android SDK   |
 |---------------------------|-----------------------|-----------|---------------|
@@ -424,7 +421,7 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |D2Modulus              | No        | No            |
 |                           |D2MonthsBetween        | Yes       | Yes           |
 |                           |D2Oizp                 | Yes       | Yes           |
-|                           |D2RelationshipCount    | Yes       | No            |
+|                           |D2RelationshipCount    | Yes       | Yes           |
 |                           |D2Right                | No        | No            |
 |                           |D2Round                | No        | No            |
 |                           |D2Split                | No        | No            |
@@ -452,8 +449,8 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |stddevSamp             | Yes       | No            |
 |                           |sum                    | Yes       | No            |
 |                           |variance               | Yes       | No            |
-|**Variables:**             |AnalyticsPeriodEnd     | Yes       | No            |
-|                           |AnalyticsPeriodStart   | Yes       | No            |
+|**Variables:**             |AnalyticsPeriodEnd     | Yes       | Yes           |
+|                           |AnalyticsPeriodStart   | Yes       | Yes           |
 |                           |CreationDate           | Yes       | Yes           |
 |                           |CurrentDate            | Yes       | Yes           |
 |                           |CompletedDate          | Yes       | Yes           |
@@ -466,10 +463,10 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |ExecutionDate          | Yes       | Yes           |
 |                           |EventDate              | Yes       | Yes           |
 |                           |IncidentDate           | Yes       | Yes           |
-|                           |OrgunitCount           | Yes       | No            |
+|                           |OrgunitCount           | Yes       | Yes           |
 |                           |ProgramStageId         | Yes       | Yes           |
 |                           |ProgramStageName       | Yes       | Yes           |
-|                           |SyncDate               | Yes       | No            |
+|                           |SyncDate               | Yes       | Yes           |
 |                           |TeiCount               | Yes       | Yes           |
 |                           |ValueCount             | Yes       | Yes           |
 |                           |ZeroPosValueCount      | Yes       | Yes           |
@@ -477,6 +474,28 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |                           |ProgramStageElement    | Yes       | Yes           |
 |                           |ProgramAttribute       | Yes       | Yes           |
 |                           |PS_EVENTDATE           | Yes       | Yes           |
+
+### Aggregation type support { #android_sdk_analytics_aggregation_type_support }
+
+| Type                            | Android SDK |
+|---------------------------------|-------------|
+| SUM                             | Yes         |
+| AVERAGE                         | Yes         |
+| AVERAGE_SUM_ORG_UNIT            | Yes         |
+| LAST                            | Yes         |
+| LAST_AVERAGE_ORG_UNIT           | Yes         |
+| LAST_IN_PERIOD                  | Yes         |
+| LAST_IN_PERIOD_AVERAGE_ORG_UNIT | Yes         |
+| FIRST                           | Yes         |
+| FIRST_AVERAGE_ORG_UNIT          | Yes         |
+| COUNT                           | Yes         |
+| STDDEV                          | No          |
+| VARIANCE                        | No          |
+| MIN                             | Yes         |
+| MAX                             | Yes         |
+| NONE                            | No          |
+| CUSTOM                          | No          |
+| DEFAULT                         | No          |
 
 ## Event line list { #android_sdk_event_line_list }
 

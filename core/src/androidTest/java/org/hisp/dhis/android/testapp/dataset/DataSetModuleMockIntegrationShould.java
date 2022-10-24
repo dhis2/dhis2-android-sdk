@@ -104,12 +104,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
     public void allow_access_data_set_elements() {
         DataSet dataSet = d2.dataSetModule().dataSets().withDataSetElements().uid("lyLU2wR22tC").blockingGet();
         List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-        assertThat(dataSetElements.size()).isEqualTo(1);
-
-        DataSetElement dataSetElement = dataSetElements.get(0);
-        assertThat(dataSetElement.dataSet().uid()).isEqualTo("lyLU2wR22tC");
-        assertThat(dataSetElement.dataElement().uid()).isEqualTo("g9eOBujte1U");
-        assertThat(dataSetElement.categoryCombo().uid()).isEqualTo("m2jTvAj5kkm");
+        assertThat(dataSetElements.size()).isEqualTo(2);
     }
 
     @Test

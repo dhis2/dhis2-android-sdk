@@ -33,6 +33,7 @@ import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EventDataFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory;
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
+import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
@@ -176,6 +178,13 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
 
     public ListFilterConnector<EventQueryCollectionRepository, String> byAttributeOptionCombo() {
         return connectorFactory.listConnector(aoc -> scope.toBuilder().attributeOptionCombos(aoc).build());
+    }
+
+    public EventDataFilterConnector<EventQueryCollectionRepository> byDataValue(String dataElementId) {
+        return connectorFactory.eventDataFilterConnector(dataElementId, filter -> {
+            List<EventDataFilter> filters = DateFilterPeriodHelper.mergeEventDataFilters(scope.dataFilters(), filter);
+            return scope.toBuilder().dataFilters(filters).build();
+        });
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,

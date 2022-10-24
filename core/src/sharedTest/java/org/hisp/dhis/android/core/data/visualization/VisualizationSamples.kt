@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.data.visualization
 
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
@@ -108,5 +109,6 @@ internal object VisualizationSamples {
         .userOrganisationUnitGrandChildren(false)
         .organisationUnits(listOf(ObjectWithUid.create("YuQRtpLP10I"), ObjectWithUid.create("vWbkYPRmKyS")))
         .periods(listOf(ObjectWithUid.create("202102"), ObjectWithUid.create("202103"), ObjectWithUid.create("2021S2")))
+        .aggregationType(AggregationType.SUM)
         .build()
 }

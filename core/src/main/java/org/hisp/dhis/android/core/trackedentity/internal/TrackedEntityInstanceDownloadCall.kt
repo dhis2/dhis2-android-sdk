@@ -28,56 +28,130 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
 @Reusable
 internal class TrackedEntityInstanceDownloadCall @Inject constructor(
+    userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
+    systemInfoModuleDownloader: SystemInfoModuleDownloader,
+    relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val rxCallExecutor: RxAPICallExecutor,
-    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
-    private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val internalCall: TrackedEntityInstanceDownloadInternalCall
+    private val apiCallExecutor: APICallExecutor,
+    private val queryFactory: TrackerQueryBundleFactory,
+    private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
+    private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
+    rxCallExecutor,
+    userOrganisationUnitLinkStore,
+    systemInfoModuleDownloader,
+    relationshipDownloadAndPersistCallFactory
 ) {
-
-    fun download(params: ProgramDataDownloadParams): Observable<D2Progress> {
-        val observable = Observable.defer {
-            val progressManager = D2ProgressManager(null)
-            if (userOrganisationUnitLinkStore.count() == 0) {
-                return@defer Observable.just(
-                    progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
-                )
-            } else {
-                val relatives = RelationshipItemRelatives()
-                return@defer Observable.concat(
-                    systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                    internalCall.downloadTeis(params, progressManager, relatives),
-                    downloadRelationships(progressManager, relatives)
-                )
-            }
-        }
-        return rxCallExecutor.wrapObservableTransactionally(observable, true)
+    override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
+        return queryFactory.getQueries(params)
     }
 
-    private fun downloadRelationships(
-        progressManager: D2ProgressManager,
+    override fun getItems(query: TrackerAPIQuery): List<TrackedEntityInstance> {
+        return rxCallExecutor.wrapSingle(
+            endpointCallFactory.getCollectionCall(query), true
+        ).blockingGet().items()
+    }
+
+    override fun persistItems(
+        items: List<TrackedEntityInstance>,
+        params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives
-    ): Observable<D2Progress> {
-        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
-            Observable.just(
-                progressManager.increaseProgress(
-                    TrackedEntityInstance::class.java, true
-                )
+    ) {
+        persistenceCallFactory.persistTEIs(items, params, relatives).blockingAwait()
+    }
+
+    override fun updateLastUpdated(bundle: TrackerQueryBundle) {
+        lastUpdatedManager.update(bundle)
+    }
+
+    override fun queryByUids(
+        bundle: TrackerQueryBundle,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives
+    ): ItemsWithPagingResult {
+        val result = ItemsWithPagingResult(0, true, null, false)
+
+        val teiQuery = TrackerAPIQuery(
+            commonParams = bundle.commonParams(),
+            programStatus = bundle.programStatus()
+        )
+
+        for (uid in bundle.commonParams().uids) {
+            try {
+                val useEntityEndpoint = teiQuery.commonParams.program != null
+
+                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery)
+
+                if (tei != null) {
+                    val persistParams = IdentifiableDataHandlerParams(
+                        hasAllAttributes = !useEntityEndpoint,
+                        overwrite = overwrite,
+                        asRelationship = false,
+                        program = teiQuery.commonParams.program
+                    )
+
+                    persistItems(listOf(tei), persistParams, relatives)
+
+                    result.count++
+                }
+            } catch (d2Error: D2Error) {
+                result.successfulSync = false
+                if (result.d2Error == null) {
+                    result.d2Error = d2Error
+                }
+            }
+        }
+        return result
+    }
+
+    private fun querySingleTei(
+        uid: String,
+        useEntityEndpoint: Boolean,
+        query: TrackerAPIQuery
+    ): TrackedEntityInstance? {
+        return if (useEntityEndpoint) {
+            apiCallExecutor.executeObjectCallWithErrorCatcher(
+                endpointCallFactory.getEntityCall(uid, query), TrackedEntityInstanceCallErrorCatcher()
             )
+        } else {
+            val collectionQuery = query.copy(uids = listOf(uid))
+            rxCallExecutor.wrapSingle(
+                endpointCallFactory.getCollectionCall(collectionQuery), true
+            ).blockingGet().items().firstOrNull()
+        }
+    }
+
+    override fun getQuery(
+        bundle: TrackerQueryBundle,
+        program: String?,
+        orgunitUid: String?,
+        limit: Int
+    ): TrackerAPIQuery {
+        return TrackerAPIQuery(
+            commonParams = bundle.commonParams().copy(
+                program = program,
+                limit = limit
+            ),
+            programStatus = bundle.programStatus(),
+            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+            orgUnit = orgunitUid
         )
     }
 }

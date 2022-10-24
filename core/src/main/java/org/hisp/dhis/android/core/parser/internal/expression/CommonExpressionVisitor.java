@@ -83,11 +83,6 @@ public class CommonExpressionVisitor
     private ExpressionItemMethod itemMethod;
 
     /**
-     * By default, replace nulls with 0 or ''.
-     */
-    private boolean replaceNulls = true;
-
-    /**
      * Used to collect the string replacements to build a description.
      */
     private final Map<String, String> itemDescriptions = new HashMap<>();
@@ -118,19 +113,9 @@ public class CommonExpressionVisitor
     private Map<String, Double> itemValueMap = new HashMap<>();
 
     /**
-     * Count of dimension items found.
+     * Expression state
      */
-    private int itemsFound;
-
-    /**
-     * Count of dimension item values found.
-     */
-    private int itemValuesFound;
-
-    /**
-     * Count of zero or positive dimension item values found.
-     */
-    private int itemZeroPosValuesFound;
+    private final ExpressionState state = new ExpressionState();
 
     /**
      * Default value for data type double.
@@ -204,13 +189,13 @@ public class CommonExpressionVisitor
      * @return the value while allowing nulls
      */
     public Object visitAllowingNulls(ParserRuleContext ctx) {
-        boolean savedReplaceNulls = replaceNulls;
+        boolean savedReplaceNulls = state.getReplaceNulls();
 
-        replaceNulls = false;
+        state.setReplaceNulls(false);
 
         Object result = visit(ctx);
 
-        replaceNulls = savedReplaceNulls;
+        state.setReplaceNulls(savedReplaceNulls);
 
         return result;
     }
@@ -230,15 +215,15 @@ public class CommonExpressionVisitor
      * @return the value we should return.
      */
     public Object handleNulls(Object value) {
-        if (replaceNulls) {
-            itemsFound++;
+        if (state.getReplaceNulls()) {
+            state.setItemsFound(state.getItemsFound() + 1);
 
             if (value == null) {
                 return DOUBLE_VALUE_IF_NULL;
             } else {
-                itemValuesFound++;
+                state.setItemValuesFound(state.getItemValuesFound() + 1);
                 if (ParserUtils.isZeroOrPositive(value.toString())) {
-                    itemZeroPosValuesFound++;
+                    state.setItemZeroPosValuesFound(state.getItemZeroPosValuesFound() + 1);
                 }
             }
         }
@@ -264,14 +249,6 @@ public class CommonExpressionVisitor
     // -------------------------------------------------------------------------
     // Getters and setters
     // -------------------------------------------------------------------------
-
-    public void setReplaceNulls(boolean replaceNulls) {
-        this.replaceNulls = replaceNulls;
-    }
-
-    public boolean getReplaceNulls() {
-        return this.replaceNulls;
-    }
 
     public IdentifiableObjectStore<DataElement> getDataElementStore() {
         return dataElementStore;
@@ -333,16 +310,8 @@ public class CommonExpressionVisitor
         this.days = days;
     }
 
-    public int getItemsFound() {
-        return itemsFound;
-    }
-
-    public int getItemValuesFound() {
-        return itemValuesFound;
-    }
-
-    public int getItemZeroPosValuesFound() {
-        return itemZeroPosValuesFound;
+    public ExpressionState getState() {
+        return state;
     }
 
     public ProgramIndicatorContext getProgramIndicatorContext() {

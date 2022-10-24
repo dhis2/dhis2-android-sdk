@@ -142,6 +142,19 @@ public class SmsRepositoryImpl implements SmsRepository {
         );
     }
 
+    @Override
+    public Single<Boolean> isAwaitedSuccessMessage(String sender,
+                                                   String message,
+                                                   String requiredSender,
+                                                   int submissionId,
+                                                   SubmissionType submissionType) {
+        SmsReader smsReceiver = new SmsReader(context);
+        return Single.defer(() ->
+                Single.just(smsReceiver.isAwaitedSuccessMessage(sender, message, requiredSender,
+                        submissionId, submissionType))
+        );
+    }
+
     /**
      * Sends an SMS
      *

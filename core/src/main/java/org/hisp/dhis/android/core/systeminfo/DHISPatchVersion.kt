@@ -62,7 +62,9 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
 
     V2_37_0(DHISVersion.V2_37, "2.37.0", SMSVersion.V2),
 
-    V2_38_0(DHISVersion.V2_38, "2.38.0", SMSVersion.V2);
+    V2_38_0(DHISVersion.V2_38, "2.38.0", SMSVersion.V2),
+
+    V2_39_0(DHISVersion.V2_39, "2.39.0", SMSVersion.V2);
 
     companion object {
         @JvmStatic

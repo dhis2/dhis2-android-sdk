@@ -29,36 +29,22 @@
 package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.junit.Before;
-
-import java.io.IOException;
 
 public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-    }
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_29() throws Exception {
-        d2 = D2Factory.forNewDatabase();
         downloadUpdateAndSyncTei(RealServerMother.url2_29);
     }
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
-        d2 = D2Factory.forNewDatabase();
         downloadUpdateAndSyncTei(RealServerMother.url2_31);
     }
 

@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.option.internal;
 import org.hisp.dhis.android.core.option.OptionCollectionRepository;
 import org.hisp.dhis.android.core.option.OptionGroupCollectionRepository;
 import org.hisp.dhis.android.core.option.OptionModule;
+import org.hisp.dhis.android.core.option.OptionService;
+import org.hisp.dhis.android.core.option.OptionServiceImpl;
 import org.hisp.dhis.android.core.option.OptionSetCollectionRepository;
 
 import javax.inject.Inject;
@@ -43,14 +45,17 @@ public final class OptionModuleImpl implements OptionModule {
     private final OptionGroupCollectionRepository optionGroups;
     private final OptionSetCollectionRepository optionSets;
     private final OptionCollectionRepository options;
+    private final OptionServiceImpl optionService;
 
     @Inject
     OptionModuleImpl(OptionGroupCollectionRepository optionGroups,
                      OptionSetCollectionRepository optionSets,
-                     OptionCollectionRepository options) {
+                     OptionCollectionRepository options,
+                     OptionServiceImpl optionService) {
         this.optionGroups = optionGroups;
         this.optionSets = optionSets;
         this.options = options;
+        this.optionService = optionService;
     }
 
     @Override
@@ -66,5 +71,10 @@ public final class OptionModuleImpl implements OptionModule {
     @Override
     public OptionCollectionRepository options() {
         return options;
+    }
+
+    @Override
+    public OptionService optionService(){
+        return optionService;
     }
 }

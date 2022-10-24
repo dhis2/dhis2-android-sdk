@@ -1,10 +1,11 @@
 [main]
-host = https://www.transifex.com
-lang_map = fa_AF: prs, uz@Cyrl: uz, uz@Latn: b+uz+Latn, zh_CN: zh-rCN, pt_BR: pt-rBR
+host     = https://www.transifex.com
+lang_map = fa_AF: prs, uz@Cyrl: uz, uz@Latn: uz_Latn
 
-[dhis2-android-sdk.strings-xml]
-file_filter = core/src/main/res/values-<lang>/strings.xml
+[o:hisp-uio:p:dhis2-android-sdk:r:strings-xml]
+file_filter  = core/src/main/res/values-<lang>/strings.xml
+source_file  = core/src/main/res/values/strings.xml
+source_lang  = en
+type         = ANDROID
 minimum_perc = 0
-source_file = core/src/main/res/values/strings.xml
-source_lang = en
-type = ANDROID
+

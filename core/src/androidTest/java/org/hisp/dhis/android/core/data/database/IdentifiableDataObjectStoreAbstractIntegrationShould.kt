@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
 import java.io.IOException
-import java.lang.Boolean
 import kotlin.Throws
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -65,14 +64,14 @@ abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal 
     fun return_a_deleted_object_if_state_set_as_to_delete() {
         store.insert(objectWithToDeleteState)
         val obj = store.selectFirst()
-        assertThat(obj!!.deleted()).isEqualTo(Boolean.TRUE)
+        assertThat(obj!!.deleted()).isEqualTo(true)
     }
 
     @Test
     fun return_a_not_deleted_object_if_state_set_as_synced() {
         store.insert(objectWithSyncedState)
         val obj = store.selectFirst()
-        assertThat(obj!!.deleted()).isEqualTo(Boolean.FALSE)
+        assertThat(obj!!.deleted()).isEqualTo(false)
     }
 
     init {

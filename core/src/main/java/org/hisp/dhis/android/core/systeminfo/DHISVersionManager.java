@@ -55,6 +55,8 @@ public interface DHISVersionManager {
 
     boolean is2_38();
 
+    boolean is2_39();
+
     /**
      * Check if the current version is strictly greater than the parameter.
      *

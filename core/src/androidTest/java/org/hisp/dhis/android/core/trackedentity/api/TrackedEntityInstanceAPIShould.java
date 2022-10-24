@@ -28,9 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
+import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
+import static org.hisp.dhis.android.core.imports.ImportStatus.WARNING;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEnrollments;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEvents;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertTei;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceAndTwoActiveEnrollment;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithCompletedEnrollmentAndEvent;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithEnrollmentAndFutureEvent;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidAttribute;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidDataElement;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidOrgunit;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithValidAndInvalidDataValue;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstance;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
@@ -52,30 +69,10 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSe
 import org.junit.Assert;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
-import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
-import static org.hisp.dhis.android.core.imports.ImportStatus.WARNING;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEnrollments;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEvents;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertTei;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceAndTwoActiveEnrollment;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithCompletedEnrollmentAndEvent;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithEnrollmentAndFutureEvent;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidAttribute;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidDataElement;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidOrgunit;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createTrackedEntityInstanceWithValidAndInvalidDataValue;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstance;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment;
 
 public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegrationTest {
 
@@ -83,7 +80,6 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
     private String serverUrl;
     private String strategy;
 
-    private D2 d2;
     private APICallExecutor executor;
 
     private TrackedEntityInstanceService trackedEntityInstanceService;
@@ -95,10 +91,8 @@ public abstract class TrackedEntityInstanceAPIShould extends BaseRealIntegration
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
 
         executor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 

@@ -5,6 +5,7 @@ pipeline {
 
     stages{
         stage('Clone Branch') {
+            when { expression { false } }
             steps {
                 git url: 'https://github.com/dhis2/dhis2-android-sdk', branch: 'test-lab-app'
                 script {
@@ -13,7 +14,6 @@ pipeline {
             }
         }
         stage('Checks') {
-            when { expression { false } }
             steps {
                 script {
                     echo 'Running Check style and quality'
@@ -52,8 +52,9 @@ pipeline {
         }
         stage('Sonarqube') {
             environment {
-                BITRISE_GIT_BRANCH = "bs_migration"
-                BITRISE_GIT_BRANCH_DEST = "bs_migration"
+                BITRISE_GIT_BRANCH = "test-lab-app"
+                BITRISE_GIT_BRANCH_DEST = "develop"
+                BITRISE_PULL_REQUEST = "000a"
                 SONAR_TOKEN = credentials('android-sonarcloud-token')
             }
             steps {

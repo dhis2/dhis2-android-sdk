@@ -54,7 +54,6 @@ pipeline {
             environment {
                 BITRISE_GIT_BRANCH = "test-lab-app"
                 BITRISE_GIT_BRANCH_DEST = "develop"
-                BITRISE_PULL_REQUEST = "000a"
                 SONAR_TOKEN = credentials('android-sonarcloud-token')
             }
             steps {

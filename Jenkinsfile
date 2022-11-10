@@ -63,5 +63,18 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to nexus') {
+            environment {
+                NEXUS_USERNAME = ""
+                NEXUS_PASSWORD = ""
+                GPG_KEY_ID = ""
+                GPG_PASSPHRASE = ""
+            }
+            steps {
+                echo 'Browserstack deployment and running tests'
+                sh 'chmod +x ./scripts/browserstackJenkins.sh'
+                sh './scripts/deploy_to_nexus.sh'
+            }
+        }
     }
 }

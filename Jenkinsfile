@@ -4,15 +4,6 @@ pipeline {
     }
 
     stages{
-        stage('Clone Branch') {
-            when { expression { false } }
-            steps {
-                git url: 'https://github.com/dhis2/dhis2-android-sdk', branch: 'test-lab-app'
-                script {
-                    echo 'Clonning DHIS2 Android SDK develop branch and updating submodules'
-                }
-            }
-        }
         stage('Checks') {
             steps {
                 script {
@@ -21,7 +12,6 @@ pipeline {
                 }
             }
         }
-
         stage('Unit tests') {
             steps {
                 script {

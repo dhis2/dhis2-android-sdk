@@ -64,6 +64,9 @@ pipeline {
             }
         }
         stage('Deploy to nexus') {
+            when {
+                expression { false }
+            }
             environment {
                 NEXUS_USERNAME = ""
                 NEXUS_PASSWORD = ""

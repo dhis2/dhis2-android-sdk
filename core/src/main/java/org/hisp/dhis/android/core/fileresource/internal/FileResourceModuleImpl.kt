@@ -39,6 +39,17 @@ internal class FileResourceModuleImpl @Inject internal constructor(
     private val fileResourceDownloader: FileResourceDownloader
 ) : FileResourceModule {
 
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .download()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
     override fun download(): Observable<D2Progress> {
         return fileResourceDownloader()
             .byDomainType().eq(FileResourceDomainType.TRACKER)
@@ -46,6 +57,17 @@ internal class FileResourceModuleImpl @Inject internal constructor(
             .download()
     }
 
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .blockingDownload()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
     override fun blockingDownload() {
         download().blockingSubscribe()
     }

@@ -51,12 +51,12 @@ internal class IndicatorUidsSeeker @Inject constructor(private val databaseAdapt
         val cursor = databaseAdapter.rawQuery(query)
 
         val indicators: MutableSet<String> = HashSet()
-        cursor.use { cursor ->
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
+        cursor.use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
                 do {
-                    indicators.add(cursor.getString(0))
-                } while (cursor.moveToNext())
+                    indicators.add(c.getString(0))
+                } while (c.moveToNext())
             }
         }
 

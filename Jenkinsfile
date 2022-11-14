@@ -18,6 +18,7 @@ pipeline {
                 script {
                     echo 'Running Check style and quality'
                     sh './runChecks.sh'
+                    sh 'echo test'
                 }
             }
         }

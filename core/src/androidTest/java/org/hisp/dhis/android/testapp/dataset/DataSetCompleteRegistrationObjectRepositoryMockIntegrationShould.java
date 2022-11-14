@@ -76,6 +76,6 @@ public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould ex
     }
 
     private DataSetCompleteRegistrationObjectRepository objectRepository() {
-        return d2.dataSetModule().dataSetCompleteRegistrations().value("2018", orgUnitUid, dataSetUid, cocUid);
+        return d2.dataSetModule().dataSetCompleteRegistrations().value("2017", orgUnitUid, dataSetUid, cocUid);
     }
 }

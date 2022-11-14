@@ -52,8 +52,8 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
 
         for (DataSetInstanceSummary summary : summaries) {
             if (summary.dataSetUid().equals("lyLU2wR22tC")) {
-                assertThat(summary.dataSetInstanceCount()).isEqualTo(4);
-                assertThat(summary.valueCount()).isEqualTo(4);
+                assertThat(summary.dataSetInstanceCount()).isEqualTo(2);
+                assertThat(summary.valueCount()).isEqualTo(2);
             }
         }
     }

@@ -280,7 +280,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static String getJoinDataSet() {
         return INNER_JOIN + DataSetTableInfo.TABLE_INFO.name() + AS + DATASET_TABLE_ALIAS +
                 ON + DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.DATA_SET + EQ +
-                DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID;
+                DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID +
+                AND + PERIOD_TYPE + EQ + DATASET_TABLE_ALIAS + "." + DataSetTableInfo.Columns.PERIOD_TYPE;
     }
 
     private static String getJoinCategoryOptionCombo() {

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.dataset.DataSetInstance;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -48,7 +49,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void find_all() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .blockingGet();
-        assertThat(dataSetInstances.size()).isEqualTo(4);
+        assertThat(dataSetInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -56,13 +57,13 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .blockingGet();
-        assertThat(dataSetInstances.size()).isEqualTo(4);
+        assertThat(dataSetInstances.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_period() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
-                .byPeriod().eq("2018")
+                .byPeriod().eq("201907")
                 .blockingGet();
         assertThat(dataSetInstances.size()).isEqualTo(1);
     }
@@ -70,15 +71,15 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     @Test
     public void filter_by_period_type() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
-                .byPeriodType().eq(PeriodType.Yearly)
+                .byPeriodType().eq(PeriodType.Monthly)
                 .blockingGet();
-        assertThat(dataSetInstances.size()).isEqualTo(3);
+        assertThat(dataSetInstances.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_period_start_date() throws ParseException {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
-                .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
+                .byPeriodStartDate().after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-06-15T00:00:00.000"))
                 .blockingGet();
         assertThat(dataSetInstances.size()).isEqualTo(1);
     }
@@ -96,13 +97,13 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(dataSetInstances.size()).isEqualTo(4);
+        assertThat(dataSetInstances.size()).isEqualTo(1);
     }
 
     @Test
     public void fill_completion_information() {
         List<DataSetInstance> dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances()
-                .byPeriod().eq("2018")
+                .byPeriod().eq("201906")
                 .blockingGet();
         assertThat(dataSetInstanceCompleted.get(0).completed()).isTrue();
         assertThat(dataSetInstanceCompleted.get(0).completionDate()).isNotNull();

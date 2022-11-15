@@ -54,7 +54,7 @@ pipeline {
                     echo "$BITRISE_GIT_BRANCH"
                     echo "$BITRISE_GIT_BRANCH_DEST"
                     echo "$BITRISE_PULL_REQUEST"
-                    sh './gradlew :core:sonarqube --stacktrace --no-daemon'
+                    sh './gradlew sonarqube --stacktrace --no-daemon'
                 }
             }
         }

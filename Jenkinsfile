@@ -50,25 +50,20 @@ pipeline {
             steps {
                 script {
                     echo 'Sonarqube job'
-                    echo "$env"
-                    echo "$BITRISE_GIT_BRANCH"
-                    echo "$BITRISE_GIT_BRANCH_DEST"
-                    echo "$BITRISE_PULL_REQUEST"
                     sh './gradlew sonarqube --stacktrace --no-daemon'
                 }
             }
         }
-        stage('Deploy to nexus') {
+        stage('Deploy') {
             environment {
-                NEXUS_USERNAME = ""
-                NEXUS_PASSWORD = ""
-                GPG_KEY_ID = ""
-                GPG_PASSPHRASE = ""
+                NEXUS_USERNAME = credentials('android-sonatype-nexus-username')
+                NEXUS_PASSWORD = credentials('android-sonatype-nexus-password')
+                GPG_KEY_ID = credentials('android-sdk-signing-public-key-id')
+                GPG_PASSPHRASE = credentials('android-sdk-signing-private-key-password')
             }
             steps {
-                echo 'Browserstack deployment and running tests'
-                sh 'chmod +x ./scripts/browserstackJenkins.sh'
-                sh './scripts/deploy_to_nexus.sh'
+                echo 'Deploy to Sonatype nexus'
+                sh './gradlew :core:publish'
             }
         }
     }

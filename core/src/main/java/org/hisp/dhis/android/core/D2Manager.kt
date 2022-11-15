@@ -118,7 +118,7 @@ object D2Manager {
                 multiUserDatabaseManager.loadIfLogged(credentials)
             }
 
-            d2 = D2(d2DIComponent)
+            d2 = D2(d2DIComponent, d2Config)
 
             if (credentials != null) {
                 val uid = d2!!.userModule().user().blockingGet().uid()

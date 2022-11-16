@@ -66,9 +66,8 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import retrofit2.Retrofit
 
 @Suppress("TooManyFunctions")
-class D2 internal constructor(val d2DIComponent: D2DIComponent, d2Config: D2Configuration) {
+class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     private val modules: D2Modules = d2DIComponent.modules()
-    internal val context: Context = d2Config.context().applicationContext
 
     @VisibleForTesting
     fun retrofit(): Retrofit {
@@ -211,5 +210,9 @@ class D2 internal constructor(val d2DIComponent: D2DIComponent, d2Config: D2Conf
 
     fun smsModule(): SmsModule {
         return modules.sms
+    }
+
+    internal fun context(): Context {
+        return d2DIComponent.appContext()
     }
 }

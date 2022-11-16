@@ -48,7 +48,7 @@ class MockIntegrationTestObjects(val content: MockIntegrationTestDatabaseContent
     var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
 
     @JvmField
-    val d2DIComponent: D2DIComponent = d2.d2DIComponent
+    internal val d2DIComponent: D2DIComponent = d2.d2DIComponent
     val dhis2MockServer: Dhis2MockServer = Dhis2MockServer(0)
 
     @Throws(IOException::class)

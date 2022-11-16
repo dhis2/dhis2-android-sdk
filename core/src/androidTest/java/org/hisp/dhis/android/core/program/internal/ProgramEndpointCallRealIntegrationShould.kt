@@ -25,33 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.program.Program
+import org.junit.Before
 
-import android.content.Context;
+class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-import org.hisp.dhis.android.core.D2Configuration;
+    /**
+     * A quick integration test that is probably flaky, but will help with finding bugs related to the
+     * metadataSyncCall. It works against the demo server.
+     */
+    private var programCall: Single<List<Program>>? = null
 
-import dagger.Module;
-import dagger.Provides;
-
-@Module
-class AppContextDIModule {
-    private final Context context;
-    private final D2Configuration d2Configuration;
-
-    AppContextDIModule(D2Configuration d2Configuration) {
-        this.context = d2Configuration.context().getApplicationContext();
-        this.d2Configuration = d2Configuration;
+    @Before
+    override fun setUp() {
+        super.setUp()
+        programCall = createCall()
     }
 
-    @Provides
-    Context appContext() {
-        return context;
+    private fun createCall(): Single<List<Program>> {
+        return getD2DIComponent(d2).programCall().download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
     }
 
-    @Provides
-    D2Configuration d2Configuration() {
-        return d2Configuration;
+    // @Test
+    fun download_programs() {
+        if (!d2.userModule().isLogged.blockingGet()) {
+            d2.userModule().logIn(username, password, url).blockingGet()
+        }
+
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
+            To run the test, you will need to disable foreign key support in database in
+            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+            uncomment the @Test tag */
+        programCall!!.blockingGet()
     }
 }

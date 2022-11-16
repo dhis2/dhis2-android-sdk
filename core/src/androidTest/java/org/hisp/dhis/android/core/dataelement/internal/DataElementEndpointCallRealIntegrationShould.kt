@@ -25,29 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement.internal
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.junit.Before
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
+class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
+    /**
+     * A quick integration test that is probably flaky, but will help with finding bugs related to the
+     * metadataSyncCall. It works against the demo server.
+     */
+    private var dataElementCall: Callable<List<DataElement>>? = null
 
-import javax.inject.Inject;
+    @Before
+    override fun setUp() {
+        super.setUp()
+        dataElementCall = createCall()
+    }
 
-import dagger.Reusable;
+    private fun createCall(): Callable<List<DataElement>> {
+        val uids = setOf(
+            "FTRrcoaog83",
+            "P3jJH5Tu5VC",
+            "FQ2o8UBlcrS"
+        )
+        return getD2DIComponent(d2).dataElementCallFactory().create(uids)
+    }
 
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
+    // @Test
+    fun download_data_elements() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
+            To run the test, you will need to disable foreign key support in database in
+            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+            uncomment the @Test tag */
+        dataElementCall!!.call()
     }
 }

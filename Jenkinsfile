@@ -41,6 +41,7 @@ pipeline {
             }
         }
         stage('Sonarqube') {
+            when { expression { false } }
             environment {
                 BITRISE_GIT_BRANCH = "$env.GIT_BRANCH"
                 BITRISE_GIT_BRANCH_DEST = "${env.CHANGE_TARGET == null ? env.GIT_BRANCH : env.CHANGE_TARGET}"
@@ -63,6 +64,8 @@ pipeline {
             }
             steps {
                 echo 'Deploy to Sonatype nexus'
+                echo "$NEXUS_USERNAME"
+                echo "$GPG_KEY_ID"
                 sh './gradlew :core:publish'
             }
         }

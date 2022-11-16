@@ -43,8 +43,8 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 270,
-            versionName      : "1.7.0"
+            versionCode      : 280,
+            versionName      : "1.8.0-LMIS-SNAPSHOT"
     ]
 
     libraries = [

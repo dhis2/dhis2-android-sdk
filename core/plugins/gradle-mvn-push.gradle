@@ -138,9 +138,4 @@ afterEvaluate {
             }
         }
     }
-
-    signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("publishing") }
-        sign publishing.publications.release
-    }
 }

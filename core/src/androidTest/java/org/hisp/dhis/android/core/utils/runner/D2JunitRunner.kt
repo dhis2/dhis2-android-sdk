@@ -25,44 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.core.utils.runner
 
-import androidx.test.rule.GrantPermissionRule
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.MockIntegrationTestObjects
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper.setServerUrl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
-import org.junit.Rule
+import org.junit.runner.notification.RunNotifier
+import org.junit.runners.BlockJUnit4ClassRunner
 
-abstract class BaseMockIntegrationTest {
+class D2JunitRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
 
-    @get:Rule
-    var permissionRule = GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
-    companion object {
-        @JvmStatic
-        lateinit var objects: MockIntegrationTestObjects
-        @JvmStatic
-        lateinit var d2: D2
-        @JvmStatic
-        lateinit var dhis2MockServer: Dhis2MockServer
-        @JvmStatic
-        lateinit var databaseAdapter: DatabaseAdapter
-
-        @JvmStatic
-        fun setUpClass(content: MockIntegrationTestDatabaseContent): Boolean {
-            val tuple = MockIntegrationTestObjectsFactory.getObjects(content)
-            tuple.objects.let { objs ->
-                objects = objs
-                d2 = objs.d2
-                D2Manager.setD2(objs.d2)
-                databaseAdapter = objs.databaseAdapter
-                dhis2MockServer = objs.dhis2MockServer
-                setServerUrl(dhis2MockServer.baseEndpoint)
-            }
-            return tuple.isNewInstance
-        }
+    override fun run(notifier: RunNotifier) {
+        notifier.addListener(D2JunitTestListener())
+        notifier.fireTestRunStarted(description)
+        super.run(notifier)
     }
 }

@@ -26,19 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
-import android.content.Context;
+apply from: project.file("../core/plugins/jacoco.gradle")
 
-import androidx.test.platform.app.InstrumentationRegistry;
+android {
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
 
-public class DatabaseRemover {
-
-    public static void removeAllDatabases() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        for (String dbName : context.databaseList()) {
-            context.deleteDatabase(dbName);
-        }
-
+    defaultConfig {
+        applicationId "org.hisp.dhis.android.instrumentedTestApp"
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
     }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
+}
+
+dependencies {
+    api project(':core')
 }

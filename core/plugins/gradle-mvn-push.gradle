@@ -84,6 +84,10 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+tasks.withType(Sign) {
+    onlyIf { isReleaseBuild() }
+}
+
 afterEvaluate {
     publishing {
         publications {
@@ -137,5 +141,10 @@ afterEvaluate {
                 }
             }
         }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("publishing") }
+        sign publishing.publications.release
     }
 }

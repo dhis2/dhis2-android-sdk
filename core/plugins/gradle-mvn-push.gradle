@@ -34,7 +34,12 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
-    return hasProperty("NEXUS_USERNAME") ? NEXUS_USERNAME : ""
+    if (hasProperty("NEXUS_USERNAME")) {
+        println(NEXUS_USERNAME)
+        return NEXUS_USERNAME
+    } else {
+        return ""
+    }
 }
 
 def getRepositoryPassword() {
@@ -46,6 +51,7 @@ def gpgKeyId() {
 }
 
 def gpgKeyLocation() {
+    println(GPG_KEY_LOCATION)
     return hasProperty("GPG_KEY_LOCATION") ? GPG_KEY_LOCATION : ""
 }
 

@@ -34,25 +34,25 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
-    System.getenv("NEXUS_USERNAME")
-    return hasProperty("NEXUS_USERNAME") ? NEXUS_USERNAME : ""
+    println(System.getenv("NEXUS_USERNAME"))
+    return System.getenv("NEXUS_USERNAME")
 }
 
 def getRepositoryPassword() {
-    return hasProperty("NEXUS_PASSWORD") ? NEXUS_PASSWORD : ""
+    return System.getenv("NEXUS_PASSWORD")
 }
 
 def gpgKeyId() {
-    return hasProperty("GPG_KEY_ID") ? GPG_KEY_ID : ""
+    return System.getenv("GPG_KEY_ID")
 }
 
 def gpgKeyLocation() {
     println(System.getenv("GPG_KEY_LOCATION"))
-    return hasProperty("GPG_KEY_LOCATION") ? GPG_KEY_LOCATION : ""
+    return System.getenv("GPG_KEY_LOCATION")
 }
 
 def gpgPassphrase() {
-    return hasProperty("GPG_PASSPHRASE") ? GPG_PASSPHRASE : ""
+    return System.getenv("GPG_PASSPHRASE")
 }
 
 gradle.taskGraph.whenReady { taskGraph ->

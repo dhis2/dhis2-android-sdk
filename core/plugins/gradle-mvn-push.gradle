@@ -84,10 +84,6 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
-tasks.withType(Sign) {
-    onlyIf { isReleaseBuild() }
-}
-
 afterEvaluate {
     publishing {
         publications {

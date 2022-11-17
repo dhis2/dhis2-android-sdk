@@ -43,8 +43,8 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 271,
-            versionName      : "1.7.0-JENKINS-SNAPSHOT"
+            versionCode      : 280,
+            versionName      : "1.8.0"
     ]
 
     libraries = [

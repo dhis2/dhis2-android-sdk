@@ -30,6 +30,8 @@
 # fail if any commands fails, debug logs
 set -ex
 
+# This script is used to deploy using Bitrise. Once Bitrise is not used anymore, it can be removed.
+
 GPG_KEY_LOCATION=$PWD/secret.gpg
 
 # Download gpg file

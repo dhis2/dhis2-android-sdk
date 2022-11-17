@@ -33,25 +33,23 @@ def getSnapshotRepositoryUrl() {
             : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-def getRepositoryUsername() {
-    println(System.getenv("NEXUS_USERNAME"))
+static def getRepositoryUsername() {
     return System.getenv("NEXUS_USERNAME")
 }
 
-def getRepositoryPassword() {
+static def getRepositoryPassword() {
     return System.getenv("NEXUS_PASSWORD")
 }
 
-def gpgKeyId() {
+static def gpgKeyId() {
     return System.getenv("GPG_KEY_ID")
 }
 
-def gpgKeyLocation() {
-    println(System.getenv("GPG_KEY_LOCATION"))
+static def gpgKeyLocation() {
     return System.getenv("GPG_KEY_LOCATION")
 }
 
-def gpgPassphrase() {
+static def gpgPassphrase() {
     return System.getenv("GPG_PASSPHRASE")
 }
 

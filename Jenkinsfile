@@ -5,7 +5,6 @@ pipeline {
 
     stages{
         stage('Checks') {
-            when { expression { false } }
             steps {
                 script {
                     echo 'Running Check style and quality'
@@ -14,7 +13,6 @@ pipeline {
             }
         }
         stage('Unit tests') {
-            when { expression { false } }
             steps {
                 script {
                     echo 'Running unit tests'
@@ -23,7 +21,6 @@ pipeline {
             }
         }
         stage('Instrumented tests') {
-            when { expression { false } }
             environment {
                 BROWSERSTACK = credentials('android-browserstack')
             }
@@ -44,7 +41,6 @@ pipeline {
             }
         }
         stage('Sonarqube') {
-            when { expression { false } }
             environment {
                 BITRISE_GIT_BRANCH = "$env.GIT_BRANCH"
                 BITRISE_GIT_BRANCH_DEST = "${env.CHANGE_TARGET == null ? env.GIT_BRANCH : env.CHANGE_TARGET}"

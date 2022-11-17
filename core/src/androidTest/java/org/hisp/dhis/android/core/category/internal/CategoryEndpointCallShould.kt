@@ -25,33 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.junit.Test
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
-import org.junit.Test;
-
-import java.util.HashSet;
-import java.util.List;
-
-import io.reactivex.Single;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
+class CategoryEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
-    public void download_category_successfully() {
-        Single<List<Category>> categoriesSingle =
-                objects.d2DIComponent.internalModules().category.categoryCall.download(new HashSet<>(
-                        Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
+    fun download_category_successfully() {
+        val categoriesSingle = objects.d2DIComponent.internalModules().category.categoryCall.download(
+            setOf("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")
+        )
+        dhis2MockServer.enqueueMockResponse("category/categories.json")
 
-        dhis2MockServer.enqueueMockResponse("category/categories.json");
-
-        List<Category> categories = categoriesSingle.blockingGet();
-        assertThat(categories.isEmpty()).isFalse();
+        val categories = categoriesSingle.blockingGet()
+        assertThat(categories.isEmpty()).isFalse()
     }
 }

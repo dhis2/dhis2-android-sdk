@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import java.util.concurrent.atomic.AtomicInteger
 
 @Reusable
 @VisibleForTesting
@@ -183,5 +184,20 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
     override fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P> {
         return downloader
             .doOnSuccess { o: P -> handler.handle(o) }
+    }
+
+    override fun <P> downloadPagedPayload(
+        pageSize: Int,
+        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>
+    ): Single<Payload<P>> {
+        val page = AtomicInteger(1)
+        return Single.defer { downloader(page.getAndIncrement(), pageSize) }
+            .map { it.items() }
+            .repeat()
+            .takeUntil { list -> list.size < pageSize }
+            .reduce(emptyList()) { items: List<P>, items2: List<P> ->
+                items + items2
+            }
+            .map { list -> Payload(list) }
     }
 }

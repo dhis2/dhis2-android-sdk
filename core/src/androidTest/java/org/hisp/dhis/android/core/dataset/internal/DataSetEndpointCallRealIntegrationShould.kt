@@ -25,52 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataelement.internal;
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.junit.Before
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.junit.Before;
+class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-public class DataElementEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private Callable<List<DataElement>> dataElementCall;
+    private var dataSetCall: Callable<List<DataSet>>? = null
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-        dataElementCall = createCall();
+    override fun setUp() {
+        super.setUp()
+        dataSetCall = createCall()
     }
 
-    private Callable<List<DataElement>> createCall() {
-        Set<String> uids = new HashSet<>();
-
-        uids.add("FTRrcoaog83");
-        uids.add("P3jJH5Tu5VC");
-        uids.add("FQ2o8UBlcrS");
-
-        return getD2DIComponent(d2).dataElementCallFactory().create(uids);
+    private fun createCall(): Callable<List<DataSet>> {
+        return getD2DIComponent(d2).dataSetCallFactory().create(setOf("lyLU2wR22tC", "BfMAe6Itzgt"))
     }
 
     // @Test
-    public void download_data_elements() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+    @Throws(Exception::class)
+    fun download_data_sets() {
+        if (!d2.userModule().isLogged.blockingGet()) {
+            d2.userModule().logIn(username, password, url).blockingGet()
+        }
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
             CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
-
-        dataElementCall.call();
+        dataSetCall!!.call()
     }
 }

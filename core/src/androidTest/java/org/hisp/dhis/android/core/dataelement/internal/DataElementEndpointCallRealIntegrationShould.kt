@@ -25,33 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.junit.Before
 
-import com.google.common.collect.Lists;
+class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
+    /**
+     * A quick integration test that is probably flaky, but will help with finding bugs related to the
+     * metadataSyncCall. It works against the demo server.
+     */
+    private var dataElementCall: Callable<List<DataElement>>? = null
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
-import org.junit.Test;
+    @Before
+    override fun setUp() {
+        super.setUp()
+        dataElementCall = createCall()
+    }
 
-import java.util.HashSet;
-import java.util.List;
+    private fun createCall(): Callable<List<DataElement>> {
+        val uids = setOf(
+            "FTRrcoaog83",
+            "P3jJH5Tu5VC",
+            "FQ2o8UBlcrS"
+        )
+        return getD2DIComponent(d2).dataElementCallFactory().create(uids)
+    }
 
-import io.reactivex.Single;
+    // @Test
+    fun download_data_elements() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
-
-    @Test
-    public void download_category_successfully() {
-        Single<List<Category>> categoriesSingle =
-                objects.d2DIComponent.internalModules().category.categoryCall.download(new HashSet<>(
-                        Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
-
-        dhis2MockServer.enqueueMockResponse("category/categories.json");
-
-        List<Category> categories = categoriesSingle.blockingGet();
-        assertThat(categories.isEmpty()).isFalse();
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
+            To run the test, you will need to disable foreign key support in database in
+            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+            uncomment the @Test tag */
+        dataElementCall!!.call()
     }
 }

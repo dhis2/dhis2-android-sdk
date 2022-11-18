@@ -25,48 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.program.Program;
-import org.junit.Before;
-import org.mockito.internal.util.collections.Sets;
-
-import java.util.List;
-
-import io.reactivex.Single;
-
-public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
-     * metadataSyncCall. It works against the demo server.
-     */
-    private Single<List<Program>> programCall;
-
-    @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-        programCall = createCall();
-    }
-
-    private Single<List<Program>> createCall() {
-        return getD2DIComponent(d2).programCall().download(Sets.newSet("lxAQ7Zs9VYR", "AwNmMxxakEo"));
-    }
+class CategoryEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
-    public void download_programs() throws Exception {
-        if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn(username, password, url).blockingGet();
-        }
-
-        /*  This test won't pass independently of DataElementEndpointCallFactory and
-            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
-            To run the test, you will need to disable foreign key support in database in
-            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
-            uncomment the @Test tag */
-
-        programCall.blockingGet();
+    fun call_categories_endpoint() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        val categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
+            setOf("cX5k9anHEHd")
+        )
+        val categories = categoryEndpointCall.blockingGet()
+        assertThat(categories.isEmpty()).isFalse()
     }
 }

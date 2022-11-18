@@ -25,31 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.d2.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.category.internal.CategoryInternalModule
+import org.hisp.dhis.android.core.user.internal.UserInternalModule
+import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule
 
-import static com.google.common.truth.Truth.assertThat;
-
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.category.Category;
-
-import java.util.HashSet;
-import java.util.List;
-
-import io.reactivex.Single;
-
-public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    //@Test
-    public void call_categories_endpoint() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        Single<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
-                new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
-        List<Category> categories = categoryEndpointCall.blockingGet();
-
-        assertThat(categories.isEmpty()).isFalse();
-    }
-}
+@Reusable
+internal class D2InternalModules @Inject constructor(
+    val category: CategoryInternalModule,
+    val visualization: VisualizationInternalModule,
+    val user: UserInternalModule
+)

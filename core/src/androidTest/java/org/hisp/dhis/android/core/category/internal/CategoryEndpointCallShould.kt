@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.junit.Test
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
+class CategoryEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-import javax.inject.Inject;
+    @Test
+    fun download_category_successfully() {
+        val categoriesSingle = objects.d2DIComponent.internalModules().category.categoryCall.download(
+            setOf("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")
+        )
+        dhis2MockServer.enqueueMockResponse("category/categories.json")
 
-import dagger.Reusable;
-
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
-
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
+        val categories = categoriesSingle.blockingGet()
+        assertThat(categories.isEmpty()).isFalse()
     }
 }

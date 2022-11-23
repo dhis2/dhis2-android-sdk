@@ -42,9 +42,10 @@ pipeline {
         }
         stage('Sonarqube') {
             environment {
-                GIT_BRANCH = "$env.GIT_BRANCH"
+                GIT_BRANCH = "${env.GIT_BRANCH}"
                 GIT_BRANCH_DEST = "${env.CHANGE_TARGET == null ? env.GIT_BRANCH : env.CHANGE_TARGET}"
-                PULL_REQUEST = "$env.CHANGE_ID"
+                // Jenkinsfile considers empty value ('') as null
+                PULL_REQUEST = "${env.CHANGE_ID == null ? '' : env.CHANGE_ID }"
                 SONAR_TOKEN = credentials('android-sonarcloud-token')
             }
             steps {

@@ -4,7 +4,7 @@ pipeline {
     }
 
     stages{
-        when { expression = false }
+        when { expression { false } }
         stage('Checks') {
             steps {
                 script {

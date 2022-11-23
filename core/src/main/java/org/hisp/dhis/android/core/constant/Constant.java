@@ -48,6 +48,10 @@ public abstract class Constant extends BaseIdentifiableObject implements CoreObj
     @JsonProperty()
     public abstract Double value();
 
+    @Nullable
+    @JsonProperty()
+    public abstract Double type();
+
     public static Builder builder() {
         return new $$AutoValue_Constant.Builder();
     }
@@ -65,6 +69,8 @@ public abstract class Constant extends BaseIdentifiableObject implements CoreObj
         public abstract Builder id(Long id);
 
         public abstract Builder value(Double value);
+
+        public abstract Builder type(Double type);
 
         public abstract Constant build();
     }

@@ -4,8 +4,8 @@ pipeline {
     }
 
     stages{
-        when { expression { false } }
         stage('Checks') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'Running Check style and quality'

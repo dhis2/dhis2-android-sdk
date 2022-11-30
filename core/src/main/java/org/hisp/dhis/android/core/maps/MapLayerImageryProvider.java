@@ -26,44 +26,54 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.maps;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-class BaseDatabaseOpenHelper {
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 135;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+import java.util.List;
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@AutoValue
+public abstract class MapLayerImageryProvider implements CoreObject {
+
+    @NonNull
+    public abstract String mapLayer();
+
+    @NonNull
+    public abstract String attribution();
+
+    @Nullable
+    @ColumnAdapter(MapLayerImagerProviderAreaListColumnAdapter.class)
+    public abstract List<MapLayerImageryProviderArea> coverageAreas();
+
+    public static MapLayerImageryProvider create(Cursor cursor) {
+        return AutoValue_MapLayerImageryProvider.createFromCursor(cursor);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    public abstract Builder toBuilder();
 
-        databaseAdapter.enableWriteAheadLogging();
+    public static Builder builder() {
+        return new AutoValue_MapLayerImageryProvider.Builder();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder mapLayer(String mapLayer);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder attribution(String attribution);
+
+        public abstract Builder coverageAreas(List<MapLayerImageryProviderArea> coverageAreas);
+
+        public abstract MapLayerImageryProvider build();
     }
 }

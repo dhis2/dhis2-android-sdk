@@ -26,44 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.maps;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-class BaseDatabaseOpenHelper {
+import java.util.List;
 
-    static final int VERSION = 135;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_MapLayerImageryProviderArea.Builder.class)
+public abstract class MapLayerImageryProviderArea {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    @Nullable
+    public abstract List<Double> bbox();
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public abstract int zoomMax();
+
+    public abstract int zoomMin();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_MapLayerImageryProviderArea.Builder();
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
 
-        databaseAdapter.enableWriteAheadLogging();
-    }
+        public abstract Builder bbox(List<Double> bbox);
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+        public abstract Builder zoomMax(int zoomMax);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder zoomMin(int zoomMin);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract MapLayerImageryProviderArea build();
     }
 }

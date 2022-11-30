@@ -25,45 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maps.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
+import org.hisp.dhis.android.core.maps.MapLayerImageryProvider
+import org.hisp.dhis.android.core.maps.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+@RunWith(D2JunitRunner::class)
+class MapLayerImageryProviderStoreIntegrationShould : LinkStoreAbstractIntegrationShould<MapLayerImageryProvider>(
+    MapLayerImageryProviderStore.create(TestDatabaseAdapterFactory.get()),
+    MapLayerImageryProviderTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 135;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    override fun addMasterUid(): String {
+        return MapLayerImageryProviderSamples.get().mapLayer()
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    override fun buildObject(): MapLayerImageryProvider {
+        return MapLayerImageryProviderSamples.get()
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun buildObjectWithOtherMasterUid(): MapLayerImageryProvider {
+        return buildObject().toBuilder()
+            .mapLayer("other_map_layer")
+            .build()
     }
 }

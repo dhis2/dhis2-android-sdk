@@ -25,39 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.option.Option
+package org.hisp.dhis.android.core.maps;
 
-@Reusable
-class OptionCall @Inject internal constructor(
-    private val service: OptionService,
-    private val handler: Handler<Option>,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Option> {
-    override fun download(uids: Set<String>): Single<List<Option>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+import android.database.Cursor;
 
-            apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
-            }
-        }
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_MapImageUrl.Builder.class)
+public abstract class MapImageUrl implements CoreObject {
+
+    public abstract String style();
+
+    public abstract String imageUrl();
+
+    public static Builder builder() {
+        return new $$AutoValue_MapImageUrl.Builder();
     }
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
-        private const val PAGE_SIZE = 5000
+    public static MapImageUrl create(Cursor cursor) {
+        return $AutoValue_MapImageUrl.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder style(String style);
+
+        public abstract Builder imageUrl(String imageUrl);
+
+        public abstract MapImageUrl autoBuild();
     }
 }

@@ -51,6 +51,7 @@ object MapLayerTableInfo {
                         NAME,
                         DISPLAY_NAME,
                         EXTERNAL,
+                        MAP_LAYER_POSITION,
                         STYLE,
                         IMAGE_URL,
                         SUBDOMAINS,
@@ -63,6 +64,7 @@ object MapLayerTableInfo {
             const val NAME = "name"
             const val DISPLAY_NAME = "displayName"
             const val EXTERNAL = "external"
+            const val MAP_LAYER_POSITION = "mapLayerPosition"
             const val STYLE = "style"
             const val IMAGE_URL = "imageUrl"
             const val SUBDOMAINS = "subdomains"

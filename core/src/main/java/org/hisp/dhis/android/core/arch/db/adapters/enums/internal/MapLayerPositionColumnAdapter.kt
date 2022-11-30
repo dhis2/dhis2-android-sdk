@@ -25,24 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.maps
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.maps.MapLayer
 import org.hisp.dhis.android.core.maps.MapLayerPosition
 
-object MapLayerSamples {
-    fun get(): MapLayer {
-        return MapLayer.builder()
-            .id(1L)
-            .uid("map_layer_uid")
-            .name("Map Layer")
-            .displayName("Display map layer")
-            .external(true)
-            .mapLayerPosition(MapLayerPosition.BASEMAP)
-            .style("light")
-            .imageUrl("https://provider-{s}.url")
-            .subdomains(listOf("a", "b", "c"))
-            .subdomainToken("{s}")
-            .build()
+internal class MapLayerPositionColumnAdapter : EnumColumnAdapter<MapLayerPosition>() {
+    override fun getEnumClass(): Class<MapLayerPosition> {
+        return MapLayerPosition::class.java
     }
 }

@@ -44,10 +44,11 @@ internal object MapLayerStore {
         w.bind(2, o.name())
         w.bind(3, o.displayName())
         w.bind(4, o.external())
-        w.bind(5, o.style())
-        w.bind(6, o.imageUrl())
-        w.bind(7, StringListColumnAdapter.serialize(o.subdomains()))
-        w.bind(8, o.subdomainToken())
+        w.bind(5, o.mapLayerPosition())
+        w.bind(6, o.style())
+        w.bind(7, o.imageUrl())
+        w.bind(8, StringListColumnAdapter.serialize(o.subdomains()))
+        w.bind(9, o.subdomainToken())
     }
 
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {

@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapLayerPositionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMapLayerImageryProviderColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -58,6 +59,10 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
 
     @NonNull
     public abstract Boolean external();
+
+    @NonNull
+    @ColumnAdapter(MapLayerPositionColumnAdapter.class)
+    public abstract MapLayerPosition mapLayerPosition();
 
     @Nullable
     public abstract String style();
@@ -96,6 +101,8 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
         public abstract Builder displayName(String displayName);
 
         public abstract Builder external(Boolean external);
+
+        public abstract Builder mapLayerPosition(MapLayerPosition mapLayerPosition);
 
         public abstract Builder style(String style);
 

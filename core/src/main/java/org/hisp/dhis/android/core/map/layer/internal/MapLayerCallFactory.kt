@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.map.layer.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
 import org.hisp.dhis.android.core.map.layer.internal.osm.OSMCallFactory
-import javax.inject.Inject
 
 @Reusable
 internal class MapLayerCallFactory @Inject constructor(

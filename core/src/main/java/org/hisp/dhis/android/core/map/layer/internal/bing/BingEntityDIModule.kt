@@ -40,5 +40,4 @@ internal class BingEntityDIModule {
     fun service(retrofit: Retrofit): BingService {
         return retrofit.create(BingService::class.java)
     }
-
 }

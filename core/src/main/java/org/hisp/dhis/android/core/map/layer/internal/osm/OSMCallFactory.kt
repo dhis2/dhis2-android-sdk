@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.map.layer.internal.osm
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import javax.inject.Inject
 
 @Reusable
 internal class OSMCallFactory @Inject constructor(

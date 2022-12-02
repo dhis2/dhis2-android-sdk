@@ -36,18 +36,20 @@ object MapLayerImageryProviderSamples {
             .id(1L)
             .mapLayer("map_layer_uid")
             .attribution("some_attribution")
-            .coverageAreas(listOf(
-                MapLayerImageryProviderArea.builder()
-                    .bbox(listOf(4.5, 5.6))
-                    .zoomMax(3)
-                    .zoomMin(1)
-                    .build(),
-                MapLayerImageryProviderArea.builder()
-                    .bbox(listOf(90.0, 180.0))
-                    .zoomMax(7)
-                    .zoomMin(0)
-                    .build()
-            ))
+            .coverageAreas(
+                listOf(
+                    MapLayerImageryProviderArea.builder()
+                        .bbox(listOf(4.5, 5.6))
+                        .zoomMax(3)
+                        .zoomMin(1)
+                        .build(),
+                    MapLayerImageryProviderArea.builder()
+                        .bbox(listOf(90.0, 180.0))
+                        .zoomMax(7)
+                        .zoomMin(0)
+                        .build()
+                )
+            )
             .build()
     }
 }

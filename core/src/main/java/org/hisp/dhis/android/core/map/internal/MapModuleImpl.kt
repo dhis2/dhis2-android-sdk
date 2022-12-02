@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.map.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerModuleDownloader
-import javax.inject.Inject
 
 @Reusable
 internal class MapModuleImpl @Inject internal constructor(

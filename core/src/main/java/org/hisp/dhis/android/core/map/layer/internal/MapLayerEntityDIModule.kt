@@ -38,8 +38,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransactionChildrenAppender
 
 @Module
 internal class MapLayerEntityDIModule {

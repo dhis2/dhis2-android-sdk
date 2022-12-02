@@ -35,8 +35,10 @@ import retrofit2.http.Query
 
 internal interface BingService {
 
-    @GET("https://dev.virtualearth.net/REST/V1/Imagery/Metadata/{$STYLE}?output=json" +
-            "&include=ImageryProviders&culture=en-GB&uriScheme=https")
+    @GET(
+        "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/{$STYLE}?output=json" +
+            "&include=ImageryProviders&culture=en-GB&uriScheme=https"
+    )
     fun getBaseMap(
         @Path(STYLE) style: String,
         @Query(API_KEY) apiKey: String

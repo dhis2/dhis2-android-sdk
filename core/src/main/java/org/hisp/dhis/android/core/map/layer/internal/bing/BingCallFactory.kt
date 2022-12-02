@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
 
 @Reusable
 internal class BingCallFactory @Inject constructor(
@@ -92,19 +92,23 @@ internal class BingCallFactory @Inject constructor(
                     .imageUrl(resource.imageUrl)
                     .subdomains(resource.imageUrlSubdomains)
                     .subdomainPlaceholder("{subdomain}")
-                    .imageryProviders(resource.imageryProviders.map { i ->
-                        MapLayerImageryProvider.builder()
-                            .mapLayer(basemap.id)
-                            .attribution(i.attribution)
-                            .coverageAreas(i.coverageAreas.map { ca ->
-                                MapLayerImageryProviderArea.builder()
-                                    .bbox(ca.bbox)
-                                    .zoomMax(ca.zoomMax)
-                                    .zoomMin(ca.zoomMin)
-                                    .build()
-                            })
-                            .build()
-                    })
+                    .imageryProviders(
+                        resource.imageryProviders.map { i ->
+                            MapLayerImageryProvider.builder()
+                                .mapLayer(basemap.id)
+                                .attribution(i.attribution)
+                                .coverageAreas(
+                                    i.coverageAreas.map { ca ->
+                                        MapLayerImageryProviderArea.builder()
+                                            .bbox(ca.bbox)
+                                            .zoomMax(ca.zoomMax)
+                                            .zoomMin(ca.zoomMin)
+                                            .build()
+                                    }
+                                )
+                                .build()
+                        }
+                    )
                     .build()
             }
     }

@@ -35,5 +35,4 @@ interface MapModule {
     fun mapLayers(): MapLayerCollectionRepository
 
     fun mapLayersDownloader(): UntypedModuleDownloader
-
 }

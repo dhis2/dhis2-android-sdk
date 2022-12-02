@@ -46,11 +46,11 @@ object MapLayerImageryProviderTableInfo {
     class Columns : CoreColumns() {
         override fun all(): Array<String> {
             return super.all() +
-                    listOf(
-                        MAP_LAYER,
-                        ATTRIBUTION,
-                        COVERAGE_AREAS
-                    )
+                listOf(
+                    MAP_LAYER,
+                    ATTRIBUTION,
+                    COVERAGE_AREAS
+                )
         }
 
         companion object {

@@ -46,17 +46,17 @@ object MapLayerTableInfo {
     class Columns : CoreColumns() {
         override fun all(): Array<String> {
             return super.all() +
-                    listOf(
-                        UID,
-                        NAME,
-                        DISPLAY_NAME,
-                        EXTERNAL,
-                        MAP_LAYER_POSITION,
-                        STYLE,
-                        IMAGE_URL,
-                        SUBDOMAINS,
-                        SUBDOMAIN_PLACEHOLDER
-                    )
+                listOf(
+                    UID,
+                    NAME,
+                    DISPLAY_NAME,
+                    EXTERNAL,
+                    MAP_LAYER_POSITION,
+                    STYLE,
+                    IMAGE_URL,
+                    SUBDOMAINS,
+                    SUBDOMAIN_PLACEHOLDER
+                )
         }
 
         companion object {

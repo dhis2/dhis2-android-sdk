@@ -62,13 +62,6 @@ pipeline {
             }
         }
         stage('Deploy') {
-            when {
-                allOf {
-                    // Do not deploy on PR builds
-                    expression { env.CHANGE_ID == null }
-                    expression { env.GIT_BRANCH == "master" }
-                }
-            }
             environment {
                 NEXUS_USERNAME = credentials('android-sonatype-nexus-username')
                 NEXUS_PASSWORD = credentials('android-sonatype-nexus-password')

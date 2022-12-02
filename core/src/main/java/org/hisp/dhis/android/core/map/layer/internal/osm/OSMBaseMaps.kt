@@ -37,7 +37,7 @@ object OSMBaseMaps {
             subdomains = listOf("a", "b", "c", "d"),
             subdomainPlaceholder = "{s}",
             attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors," +
-                    " &copy; <a href=\"https://carto.com/attribution\">Carto</a>"
+                " &copy; <a href=\"https://carto.com/attribution\">Carto</a>"
         ),
         OSMBaseMap(
             id = "k6QEWMytadd",

@@ -26,29 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.core.map.layer.internal.osm
 
-internal object BingBasemaps {
-    val list: List<BingBasemap> = listOf(
-        BingBasemap(
-            id = "ql5jVkAL1iy",
-            name = "Bing Road",
-            style = "CanvasLight"
-        ),
-        BingBasemap(
-            id = "PwJ1fQoTthh",
-            name = "Bing Dark",
-            style = "CanvasDark"
-        ),
-        BingBasemap(
-            id = "kKJNmY2yYtM",
-            name = "Bing Aerial",
-            style = "Aerial"
-        ),
-        BingBasemap(
-            id = "TfK2zM71AHJ",
-            name = "Bing Aerial Labels",
-            style = "AerialWithLabelsOnDemand"
-        )
-    )
-}
+data class OSMBaseMap(
+    val id: String,
+    val name: String,
+    val style: String? = null,
+    val imageUrl: String,
+    val subdomains: List<String>? = null,
+    val subdomainPlaceholder: String? = null,
+    val attribution: String
+)

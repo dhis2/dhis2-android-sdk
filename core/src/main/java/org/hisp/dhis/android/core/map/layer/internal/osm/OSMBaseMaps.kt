@@ -26,29 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.core.map.layer.internal.osm
 
-internal object BingBasemaps {
-    val list: List<BingBasemap> = listOf(
-        BingBasemap(
-            id = "ql5jVkAL1iy",
-            name = "Bing Road",
-            style = "CanvasLight"
+object OSMBaseMaps {
+    val list: List<OSMBaseMap> = listOf(
+        OSMBaseMap(
+            id = "l7rimUxoQu4",
+            name = "OSM Light",
+            imageUrl = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png",
+            subdomains = listOf("a", "b", "c", "d"),
+            subdomainPlaceholder = "{s}",
+            attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors," +
+                    " &copy; <a href=\"https://carto.com/attribution\">Carto</a>"
         ),
-        BingBasemap(
-            id = "PwJ1fQoTthh",
-            name = "Bing Dark",
-            style = "CanvasDark"
-        ),
-        BingBasemap(
-            id = "kKJNmY2yYtM",
-            name = "Bing Aerial",
-            style = "Aerial"
-        ),
-        BingBasemap(
-            id = "TfK2zM71AHJ",
-            name = "Bing Aerial Labels",
-            style = "AerialWithLabelsOnDemand"
+        OSMBaseMap(
+            id = "k6QEWMytadd",
+            name = "OSM Detailed",
+            imageUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains = listOf("a", "b", "c", "d"),
+            subdomainPlaceholder = "{s}",
+            attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors\n"
         )
     )
 }

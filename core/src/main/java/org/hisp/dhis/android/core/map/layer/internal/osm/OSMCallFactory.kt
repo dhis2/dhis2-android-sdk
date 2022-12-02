@@ -25,25 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map.layer.internal
+
+package org.hisp.dhis.android.core.map.layer.internal.osm
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
-import org.hisp.dhis.android.core.map.layer.internal.osm.OSMCallFactory
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import javax.inject.Inject
 
 @Reusable
-internal class MapLayerCallFactory @Inject constructor(
-    private val osmCallFactory: OSMCallFactory,
-    private val bingCallFactory: BingCallFactory
+internal class OSMCallFactory @Inject constructor(
+    private val mapLayerHandler: Handler<MapLayer>
 ) {
 
-    fun downloadMetadata(): Single<List<MapLayer>> {
-        return Single.merge(
-            osmCallFactory.download(),
-            bingCallFactory.download()
-        ).toList().map { it.flatten() }
+    fun download(): Single<List<MapLayer>> {
+        return Single.defer {
+            getOSMBaseMaps().map { mapLayers ->
+                mapLayerHandler.handleMany(mapLayers)
+                mapLayers
+            }
+        }
+    }
+
+    private fun getOSMBaseMaps(): Single<List<MapLayer>> {
+        return Single.fromCallable {
+            OSMBaseMaps.list.map { basemap ->
+                MapLayer.builder()
+                    .uid(basemap.id)
+                    .name(basemap.name)
+                    .displayName(basemap.name)
+                    .style(basemap.style)
+                    .mapLayerPosition(MapLayerPosition.BASEMAP)
+                    .external(false)
+                    .imageUrl(basemap.imageUrl)
+                    .subdomains(basemap.subdomains)
+                    .subdomainPlaceholder(basemap.subdomainPlaceholder)
+                    .imageryProviders(
+                        listOf(
+                            MapLayerImageryProvider.builder()
+                                .mapLayer(basemap.id)
+                                .attribution(basemap.attribution)
+                                .build()
+                        )
+                    )
+                    .build()
+            }
+        }
     }
 }

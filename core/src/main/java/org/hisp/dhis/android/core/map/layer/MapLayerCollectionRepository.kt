@@ -25,20 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map.internal
+package org.hisp.dhis.android.core.map.layer
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.map.MapModule
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerModuleDownloader
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import javax.inject.Inject
 
 @Reusable
-internal class MapThemeModuleImpl @Inject internal constructor(
-    private val mapLayerModuleDownloader: MapLayerModuleDownloader
-) : MapModule {
+class MapLayerCollectionRepository @Inject internal constructor(
+    store: IdentifiableObjectStore<MapLayer>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<MapLayer>>,
+    scope: RepositoryScope
+) : ReadOnlyWithUidCollectionRepositoryImpl<MapLayer, MapLayerCollectionRepository>(store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope
+    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, childrenAppenders, s) }) {
 
-    override fun layersDownloader(): UntypedModuleDownloader {
-        return mapLayerModuleDownloader
+    fun withImageryProviders(): MapLayerCollectionRepository {
+        return cf.withChild(MapLayer.IMAGERY_PROVIDERS)
     }
 }

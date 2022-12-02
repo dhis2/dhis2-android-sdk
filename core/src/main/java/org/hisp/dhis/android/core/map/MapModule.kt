@@ -28,9 +28,12 @@
 package org.hisp.dhis.android.core.map
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
 
 interface MapModule {
 
-    fun layersDownloader(): UntypedModuleDownloader
+    fun mapLayers(): MapLayerCollectionRepository
+
+    fun mapLayersDownloader(): UntypedModuleDownloader
 
 }

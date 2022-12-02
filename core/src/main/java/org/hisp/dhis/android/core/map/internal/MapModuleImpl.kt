@@ -25,47 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map.layer.internal
+package org.hisp.dhis.android.core.map.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.programtheme.stock.InternalStockTheme
-import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeTransactionChildrenAppender
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.map.MapModule
+import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerModuleDownloader
+import javax.inject.Inject
 
-@Module
-internal class MapLayerEntityDIModule {
+@Reusable
+internal class MapModuleImpl @Inject internal constructor(
+    private val mapLayerCollectionRepository: MapLayerCollectionRepository,
+    private val mapLayerModuleDownloader: MapLayerModuleDownloader
+) : MapModule {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
-        return MapLayerStore.create(databaseAdapter)
+    override fun mapLayers(): MapLayerCollectionRepository {
+        return mapLayerCollectionRepository
     }
 
-    @Provides
-    @Reusable
-    fun handler(
-        store: IdentifiableObjectStore<MapLayer>,
-        imageryProviderHandler: LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider>
-    ): Handler<MapLayer> {
-        return MapLayerHandler(store, imageryProviderHandler)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        store: LinkStore<MapLayerImageryProvider>
-    ): Map<String, ChildrenAppender<MapLayer>> {
-        return mapOf(
-            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store)
-        )
+    override fun mapLayersDownloader(): UntypedModuleDownloader {
+        return mapLayerModuleDownloader
     }
 }

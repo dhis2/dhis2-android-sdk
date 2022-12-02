@@ -47,6 +47,8 @@ import java.util.List;
 @AutoValue
 public abstract class MapLayer extends BaseObject implements ObjectWithUidInterface {
 
+    public static final String IMAGERY_PROVIDERS = "imageryProviders";
+
     @Override
     @NonNull
     public abstract String uid();

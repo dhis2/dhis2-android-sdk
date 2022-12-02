@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerEntityDIModule
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderEntityDIModule
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingEntityDIModule
-import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeService
-import retrofit2.Retrofit
 
 @Module(
     includes = [
@@ -48,7 +46,7 @@ internal class MapPackageDIModule {
 
     @Provides
     @Reusable
-    fun module(impl: MapThemeModuleImpl): MapModule {
+    fun module(impl: MapModuleImpl): MapModule {
         return impl
     }
 }

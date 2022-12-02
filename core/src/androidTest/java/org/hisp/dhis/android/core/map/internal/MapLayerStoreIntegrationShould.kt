@@ -25,44 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.maps.MapLayerSamples
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
+@RunWith(D2JunitRunner::class)
+class MapLayerStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<MapLayer>(
+    MapLayerStore.create(TestDatabaseAdapterFactory.get()),
+    MapLayerTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): MapLayer {
+        return MapLayerSamples.get()
     }
 
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+    override fun buildObjectToUpdate(): MapLayer {
+        return MapLayerSamples.get().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

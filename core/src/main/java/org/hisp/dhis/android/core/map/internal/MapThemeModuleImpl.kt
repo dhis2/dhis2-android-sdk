@@ -25,28 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
+package org.hisp.dhis.android.core.map.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.maps.MapLayerSamples
-import org.hisp.dhis.android.core.maps.MapLayer
-import org.hisp.dhis.android.core.maps.MapLayerTableInfo
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.map.MapModule
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerModuleDownloader
+import javax.inject.Inject
 
-@RunWith(D2JunitRunner::class)
-class MapLayerStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<MapLayer>(
-    MapLayerStore.create(TestDatabaseAdapterFactory.get()),
-    MapLayerTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): MapLayer {
-        return MapLayerSamples.get()
-    }
+@Reusable
+internal class MapThemeModuleImpl @Inject internal constructor(
+    private val mapLayerModuleDownloader: MapLayerModuleDownloader
+) : MapModule {
 
-    override fun buildObjectToUpdate(): MapLayer {
-        return MapLayerSamples.get().toBuilder()
-            .name("new_name")
-            .build()
+    override fun layersDownloader(): UntypedModuleDownloader {
+        return mapLayerModuleDownloader
     }
 }

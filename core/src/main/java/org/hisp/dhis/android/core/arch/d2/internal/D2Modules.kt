@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
 import org.hisp.dhis.android.core.legendset.LegendSetModule
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule
+import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.note.NoteModule
 import org.hisp.dhis.android.core.option.OptionModule
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
@@ -76,6 +77,7 @@ internal class D2Modules @Inject constructor(
     val legendSet: LegendSetModule,
     val dataStore: DataStoreModule,
     val maintenance: MaintenanceModule,
+    val maps: MapModule,
     val note: NoteModule,
     val program: ProgramModule,
     val programTheme: ProgramThemeModule,

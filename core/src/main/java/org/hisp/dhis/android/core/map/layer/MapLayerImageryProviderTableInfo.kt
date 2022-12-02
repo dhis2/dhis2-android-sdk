@@ -25,44 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.layer
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+object MapLayerImageryProviderTableInfo {
 
-import java.util.ArrayList;
-import java.util.List;
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "MapLayerImageryProvider"
+        }
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return super.all() +
+                    listOf(
+                        MAP_LAYER,
+                        ATTRIBUTION,
+                        COVERAGE_AREAS
+                    )
+        }
 
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+        companion object {
+            const val MAP_LAYER = "mapLayer"
+            const val ATTRIBUTION = "attribution"
+            const val COVERAGE_AREAS = "coverageAreas"
+        }
     }
 }

@@ -25,44 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map
 
-package org.hisp.dhis.android.core.settings.internal;
-
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeCall
 
 @Reusable
-class SystemSettingsSplitter {
+internal class MapModuleDownloader @Inject constructor(
+    private val stockThemeCall: StockThemeCall
+) : UntypedModuleDownloader {
 
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
-    }
-
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+    override fun downloadMetadata(): Completable {
+        return Completable.fromAction {
+            stockThemeCall.getCompletable(false).blockingAwait()
+        }
     }
 }

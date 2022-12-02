@@ -25,44 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.layer.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+@Module
+internal class MapLayerEntityDIModule {
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
+        return MapLayerStore.create(databaseAdapter)
     }
 
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+    @Provides
+    @Reusable
+    fun handler(
+        store: IdentifiableObjectStore<MapLayer>,
+        imageryProviderHandler: LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider>
+    ): Handler<MapLayer> {
+        return MapLayerHandler(store, imageryProviderHandler)
     }
+
 }

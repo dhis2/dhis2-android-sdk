@@ -26,43 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import io.reactivex.Single
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.ArrayList;
-import java.util.List;
+internal interface BingService {
 
-import javax.inject.Inject;
+    @GET("https://dev.virtualearth.net/REST/V1/Imagery/Metadata/{$STYLE}?output=json" +
+            "&include=ImageryProviders&culture=en-GB&uriScheme=https")
+    fun getBaseMap(
+        @Path(STYLE) style: String,
+        @Query(API_KEY) apiKey: String
+    ): Single<BingServerResponse>
 
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
-    }
-
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+    companion object {
+        const val STYLE = "bing-style"
+        const val API_KEY = "key"
     }
 }

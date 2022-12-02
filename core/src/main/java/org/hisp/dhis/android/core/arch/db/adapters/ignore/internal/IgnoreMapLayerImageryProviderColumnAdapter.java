@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.maps.MapLayerImageryProvider;
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider;
 
 import java.util.List;
 

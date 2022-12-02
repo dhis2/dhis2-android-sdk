@@ -25,31 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.maps.MapLayerImageryProvider
-import org.hisp.dhis.android.core.maps.MapLayerImageryProviderTableInfo
+package org.hisp.dhis.android.core.map.layer;
 
-@Suppress("MagicNumber")
-internal object MapLayerImageryProviderStore {
-    private val BINDER = StatementBinder { o: MapLayerImageryProvider, w: StatementWrapper ->
-        w.bind(1, o.mapLayer())
-        w.bind(2, o.attribution())
-        w.bind(3, MapLayerImagerProviderAreaListColumnAdapter.serialize(o.coverageAreas()))
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import java.util.List;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_MapLayerImageryProviderArea.Builder.class)
+public abstract class MapLayerImageryProviderArea {
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<Double> bbox();
+
+    @JsonProperty()
+    public abstract int zoomMax();
+
+    @JsonProperty()
+    public abstract int zoomMin();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_MapLayerImageryProviderArea.Builder();
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<MapLayerImageryProvider> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            MapLayerImageryProviderTableInfo.TABLE_INFO,
-            MapLayerImageryProviderTableInfo.Columns.MAP_LAYER,
-            BINDER
-        ) { cursor -> MapLayerImageryProvider.create(cursor) }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+
+        public abstract Builder bbox(List<Double> bbox);
+
+        public abstract Builder zoomMax(int zoomMax);
+
+        public abstract Builder zoomMin(int zoomMin);
+
+        public abstract MapLayerImageryProviderArea build();
     }
 }

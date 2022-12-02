@@ -25,48 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import android.database.Cursor;
+@RunWith(D2JunitRunner::class)
+class MapLayerImageryProviderStoreIntegrationShould : LinkStoreAbstractIntegrationShould<MapLayerImageryProvider>(
+    MapLayerImageryProviderStore.create(TestDatabaseAdapterFactory.get()),
+    MapLayerImageryProviderTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import androidx.annotation.Nullable;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_SystemSettings.Builder.class)
-public abstract class SystemSettings {
-
-    @Nullable
-    @JsonProperty()
-    public abstract String keyFlag();
-
-    @Nullable
-    @JsonProperty()
-    public abstract String keyStyle();
-
-    public static SystemSettings create(Cursor cursor) {
-        return AutoValue_SystemSettings.createFromCursor(cursor);
+    override fun addMasterUid(): String {
+        return MapLayerImageryProviderSamples.get().mapLayer()
     }
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_SystemSettings.Builder();
+    override fun buildObject(): MapLayerImageryProvider {
+        return MapLayerImageryProviderSamples.get()
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder keyFlag(String keyFlag);
-
-        public abstract Builder keyStyle(String keyStyle);
-
-        public abstract SystemSettings build();
+    override fun buildObjectWithOtherMasterUid(): MapLayerImageryProvider {
+        return buildObject().toBuilder()
+            .mapLayer("other_map_layer")
+            .build()
     }
 }

@@ -25,25 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.layer.internal.bing
 
-package org.hisp.dhis.android.core.settings.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+@Module
+internal class BingEntityDIModule {
 
-final class SystemSettingsFields {
-
-    private static final String KEY_FLAG = "keyFlag";
-    private static final String KEY_STYLE = "keyStyle";
-
-    private static FieldsHelper<SystemSettings> fh = new FieldsHelper<>();
-    static final Fields<SystemSettings> allFields = Fields.<SystemSettings>builder()
-            .fields(
-                    fh.<String>field(KEY_FLAG),
-                    fh.<String>field(KEY_STYLE)
-            ).build();
-
-    private SystemSettingsFields() {
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): BingService {
+        return retrofit.create(BingService::class.java)
     }
+
 }

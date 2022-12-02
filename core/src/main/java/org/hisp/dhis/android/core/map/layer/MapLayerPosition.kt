@@ -25,36 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.maps.MapLayer
-import org.hisp.dhis.android.core.maps.MapLayerTableInfo
+package org.hisp.dhis.android.core.map.layer
 
-@Suppress("MagicNumber")
-internal object MapLayerStore {
-    private val BINDER = StatementBinder { o: MapLayer, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.name())
-        w.bind(3, o.displayName())
-        w.bind(4, o.external())
-        w.bind(5, o.mapLayerPosition())
-        w.bind(6, o.style())
-        w.bind(7, o.imageUrl())
-        w.bind(8, StringListColumnAdapter.serialize(o.subdomains()))
-        w.bind(9, o.subdomainToken())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
-        return objectWithUidStore(
-            databaseAdapter, MapLayerTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> MapLayer.create(cursor) }
-    }
+enum class MapLayerPosition {
+    BASEMAP, OVERLAY
 }

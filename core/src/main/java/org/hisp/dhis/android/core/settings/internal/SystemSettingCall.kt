@@ -25,22 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
+package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.maps.MapLayerImageryProvider
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.SystemSetting
+import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields.allFields
+import javax.inject.Inject
 
-@Module
-internal class MapLayerImageryProviderEntityDIModule {
+@Reusable
+internal class SystemSettingCall @Inject constructor(
+    private val apiDownloader: APIDownloader,
+    private val handler: Handler<SystemSetting>,
+    private val service: SettingService,
+    private val settingsSplitter: SystemSettingsSplitter
+) : ListCall<SystemSetting> {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<MapLayerImageryProvider> {
-        return MapLayerImageryProviderStore.create(databaseAdapter)
+    override fun download(): Single<List<SystemSetting>> {
+        return apiDownloader.downloadList(
+            handler = handler,
+            downloader = service.getSystemSettings(allFields).map(settingsSplitter::splitSettings)
+        )
     }
-
 }

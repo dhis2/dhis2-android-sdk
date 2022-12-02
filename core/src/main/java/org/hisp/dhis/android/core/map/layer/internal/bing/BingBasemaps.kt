@@ -26,8 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maps
+package org.hisp.dhis.android.core.map.layer.internal.bing
 
-enum class MapLayerPosition {
-    BASEMAP, OVERLAY
+internal object BingBasemaps {
+
+    val list: List<BingBasemap> = listOf(
+        BingBasemap(
+            id = "ql5jVkAL1iy",
+            name = "Bing Road",
+            style = "CanvasLight"
+        ),
+        BingBasemap(
+            id = "PwJ1fQoTthh",
+            name = "Bing Dark",
+            style = "CanvasDark"
+        ),
+        BingBasemap(
+            id = "kKJNmY2yYtM",
+            name = "Bing Aerial",
+            style = "Aerial"
+        ),
+        BingBasemap(
+            id = "TfK2zM71AHJ",
+            name = "Bing Aerial Labels",
+            style = "AerialWithLabelsOnDemand"
+        )
+    )
 }

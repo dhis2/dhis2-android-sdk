@@ -25,44 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.layer.internal
 
-package org.hisp.dhis.android.core.maps;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
-import androidx.annotation.Nullable;
+@Module
+internal class MapLayerImageryProviderEntityDIModule {
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_MapLayerImageryProviderArea.Builder.class)
-public abstract class MapLayerImageryProviderArea {
-
-    @Nullable
-    public abstract List<Double> bbox();
-
-    public abstract int zoomMax();
-
-    public abstract int zoomMin();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayerImageryProviderArea.Builder();
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<MapLayerImageryProvider> {
+        return MapLayerImageryProviderStore.create(databaseAdapter)
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
-
-        public abstract Builder bbox(List<Double> bbox);
-
-        public abstract Builder zoomMax(int zoomMax);
-
-        public abstract Builder zoomMin(int zoomMin);
-
-        public abstract MapLayerImageryProviderArea build();
+    @Provides
+    @Reusable
+    fun handler(
+        store: LinkStore<MapLayerImageryProvider>
+    ): LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider> {
+        return LinkHandlerImpl(store)
     }
 }

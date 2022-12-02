@@ -25,55 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.layer.internal
 
-package org.hisp.dhis.android.core.maps;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
+import javax.inject.Inject
 
-import android.database.Cursor;
+@Reusable
+internal class MapLayerCallFactory @Inject constructor(
+    private val bingCallFactory: BingCallFactory
+) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-@AutoValue
-public abstract class MapLayerImageryProvider implements CoreObject {
-
-    @NonNull
-    public abstract String mapLayer();
-
-    @NonNull
-    public abstract String attribution();
-
-    @Nullable
-    @ColumnAdapter(MapLayerImagerProviderAreaListColumnAdapter.class)
-    public abstract List<MapLayerImageryProviderArea> coverageAreas();
-
-    public static MapLayerImageryProvider create(Cursor cursor) {
-        return AutoValue_MapLayerImageryProvider.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayerImageryProvider.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder mapLayer(String mapLayer);
-
-        public abstract Builder attribution(String attribution);
-
-        public abstract Builder coverageAreas(List<MapLayerImageryProviderArea> coverageAreas);
-
-        public abstract MapLayerImageryProvider build();
+    fun downloadMetadata(): Single<List<MapLayer>> {
+        return bingCallFactory.download()
     }
 }

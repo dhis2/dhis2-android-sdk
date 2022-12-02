@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.maps.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 
 internal class MapLayerPositionColumnAdapter : EnumColumnAdapter<MapLayerPosition>() {
     override fun getEnumClass(): Class<MapLayerPosition> {

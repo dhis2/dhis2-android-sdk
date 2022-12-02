@@ -25,33 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
+package org.hisp.dhis.android.core.map.layer.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
-import org.hisp.dhis.android.core.maps.MapLayerImageryProvider
-import org.hisp.dhis.android.core.maps.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import javax.inject.Inject
 
-@RunWith(D2JunitRunner::class)
-class MapLayerImageryProviderStoreIntegrationShould : LinkStoreAbstractIntegrationShould<MapLayerImageryProvider>(
-    MapLayerImageryProviderStore.create(TestDatabaseAdapterFactory.get()),
-    MapLayerImageryProviderTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
-) {
+@Reusable
+class MapLayerModuleDownloader @Inject internal constructor(
+    private val mapLayerCallFactory: MapLayerCallFactory
+) : UntypedModuleDownloader {
 
-    override fun addMasterUid(): String {
-        return MapLayerImageryProviderSamples.get().mapLayer()
-    }
-
-    override fun buildObject(): MapLayerImageryProvider {
-        return MapLayerImageryProviderSamples.get()
-    }
-
-    override fun buildObjectWithOtherMasterUid(): MapLayerImageryProvider {
-        return buildObject().toBuilder()
-            .mapLayer("other_map_layer")
-            .build()
+    override fun downloadMetadata(): Completable {
+        return Completable.fromSingle(mapLayerCallFactory.downloadMetadata())
     }
 }

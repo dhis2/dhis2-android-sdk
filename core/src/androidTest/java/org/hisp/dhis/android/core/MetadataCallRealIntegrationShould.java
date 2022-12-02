@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
+import org.junit.Test;
+
 import io.reactivex.schedulers.Schedulers;
 
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
@@ -57,11 +59,13 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.metadataModule().blockingDownload();
+        //d2.metadataModule().blockingDownload();
+
+        d2.mapsModule().layersDownloader().downloadMetadata().blockingAwait();
 
         //TODO: add additional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.

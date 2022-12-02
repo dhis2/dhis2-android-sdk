@@ -25,38 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps
+package org.hisp.dhis.android.core.map.layer.internal
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.common.CoreColumns
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 
-object MapLayerImageryProviderTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "MapLayerImageryProvider"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
+@Suppress("MagicNumber")
+internal object MapLayerStore {
+    private val BINDER = StatementBinder { o: MapLayer, w: StatementWrapper ->
+        w.bind(1, o.uid())
+        w.bind(2, o.name())
+        w.bind(3, o.displayName())
+        w.bind(4, o.external())
+        w.bind(5, o.mapLayerPosition())
+        w.bind(6, o.style())
+        w.bind(7, o.imageUrl())
+        w.bind(8, StringListColumnAdapter.serialize(o.subdomains()))
+        w.bind(9, o.subdomainPlaceholder())
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return super.all() +
-                    listOf(
-                        MAP_LAYER,
-                        ATTRIBUTION,
-                        COVERAGE_AREAS
-                    )
-        }
-
-        companion object {
-            const val MAP_LAYER = "mapLayer"
-            const val ATTRIBUTION = "attribution"
-            const val COVERAGE_AREAS = "coverageAreas"
-        }
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
+        return objectWithUidStore(
+            databaseAdapter, MapLayerTableInfo.TABLE_INFO,
+            BINDER
+        ) { cursor: Cursor -> MapLayer.create(cursor) }
     }
 }

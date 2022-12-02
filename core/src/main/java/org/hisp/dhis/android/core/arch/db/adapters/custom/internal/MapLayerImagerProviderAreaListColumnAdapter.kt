@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.maps.MapLayerImageryProviderArea
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 
 internal class MapLayerImagerProviderAreaListColumnAdapter :
     JSONObjectListColumnAdapter<MapLayerImageryProviderArea>() {

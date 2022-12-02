@@ -25,44 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.settings.SystemSettings
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+internal object SystemSettingsFields {
+    private const val KEY_FLAG = "keyFlag"
+    private const val KEY_STYLE = "keyStyle"
+    private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
 
-import java.util.ArrayList;
-import java.util.List;
+    private val fh = FieldsHelper<SystemSettings>()
 
-import javax.inject.Inject;
+    @JvmStatic
+    val allFields: Fields<SystemSettings> = Fields.builder<SystemSettings>()
+        .fields(
+            fh.field<String>(KEY_FLAG),
+            fh.field<String>(KEY_STYLE)
+        ).build()
 
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
-    }
-
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
-    }
+    @JvmStatic
+    val bingApiKey: Fields<SystemSettings> = Fields.builder<SystemSettings>()
+        .fields(
+            fh.field<Any>(KEY_BING_MAPS_API_KEY)
+        ).build()
 }

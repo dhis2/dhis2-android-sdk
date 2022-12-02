@@ -25,22 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maps.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.maps.MapLayer
+package org.hisp.dhis.android.core.map.layer.internal.bing
 
-@Module
-internal class MapLayerEntityDIModule {
+internal data class BingServerResponse(
+    val resourceSets: List<ResourceSet>
+)
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
-        return MapLayerStore.create(databaseAdapter)
-    }
+internal data class ResourceSet(
+    val estimatedTotal: Int,
+    val resources: List<Resource>
+)
 
-}
+internal data class Resource(
+    val imageHeight: Int,
+    val imageWidth: Int,
+    val imageUrl: String,
+    val imageUrlSubdomains: List<String>,
+    val zoomMax: Int,
+    val zoomMin: Int,
+    val imageryProviders: List<ImageryProvider>
+)
+
+internal data class ImageryProvider(
+    val attribution: String,
+    val coverageAreas: List<CoverageArea>
+)
+
+internal data class CoverageArea(
+    val bbox: List<Double>,
+    val zoomMax: Int,
+    val zoomMin: Int
+)

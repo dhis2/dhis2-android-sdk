@@ -26,43 +26,54 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.map.layer;
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import android.database.Cursor;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
 import java.util.List;
 
-import javax.inject.Inject;
+@AutoValue
+public abstract class MapLayerImageryProvider implements CoreObject {
 
-import dagger.Reusable;
+    @NonNull
+    public abstract String mapLayer();
 
-@Reusable
-class SystemSettingsSplitter {
+    @NonNull
+    public abstract String attribution();
 
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
+    @Nullable
+    @ColumnAdapter(MapLayerImagerProviderAreaListColumnAdapter.class)
+    public abstract List<MapLayerImageryProviderArea> coverageAreas();
+
+    public static MapLayerImageryProvider create(Cursor cursor) {
+        return AutoValue_MapLayerImageryProvider.createFromCursor(cursor);
     }
 
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
+    public abstract Builder toBuilder();
 
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
+    public static Builder builder() {
+        return new AutoValue_MapLayerImageryProvider.Builder();
+    }
 
-        return settingList;
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+
+        public abstract Builder mapLayer(String mapLayer);
+
+        public abstract Builder attribution(String attribution);
+
+        public abstract Builder coverageAreas(List<MapLayerImageryProviderArea> coverageAreas);
+
+        public abstract MapLayerImageryProvider build();
     }
 }

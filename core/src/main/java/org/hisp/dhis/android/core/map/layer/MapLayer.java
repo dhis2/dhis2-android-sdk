@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maps;
+package org.hisp.dhis.android.core.map.layer;
 
 import android.database.Cursor;
 
@@ -75,7 +75,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     public abstract List<String> subdomains();
 
     @Nullable
-    public abstract String subdomainToken();
+    public abstract String subdomainPlaceholder();
 
     @Nullable
     @ColumnAdapter(IgnoreMapLayerImageryProviderColumnAdapter.class)
@@ -110,7 +110,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
 
         public abstract Builder subdomains(List<String> subdomains);
 
-        public abstract Builder subdomainToken(String subdomainToken);
+        public abstract Builder subdomainPlaceholder(String subdomainPlaceholder);
 
         public abstract Builder imageryProviders(List<MapLayerImageryProvider> imageryProviders);
 

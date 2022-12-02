@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.data.maps
 
-import org.hisp.dhis.android.core.maps.MapLayerImageryProvider
-import org.hisp.dhis.android.core.maps.MapLayerImageryProviderArea
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 
 object MapLayerImageryProviderSamples {
     fun get(): MapLayerImageryProvider {

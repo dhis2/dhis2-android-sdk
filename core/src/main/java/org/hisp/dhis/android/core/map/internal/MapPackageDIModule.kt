@@ -25,44 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.map.MapModule
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerEntityDIModule
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderEntityDIModule
+import org.hisp.dhis.android.core.map.layer.internal.bing.BingEntityDIModule
+import org.hisp.dhis.android.core.programtheme.stock.internal.StockThemeService
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+@Module(
+    includes = [
+        MapLayerEntityDIModule::class,
+        MapLayerImageryProviderEntityDIModule::class,
+        BingEntityDIModule::class,
+    ]
+)
+internal class MapPackageDIModule {
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingsSplitter {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingsSplitter() {
-        /* Empty constructor to add Inject annotation */
-    }
-
-    List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value(settings.getKeyFlag())
-                .build();
-        SystemSetting style = SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.STYLE)
-                .value(settings.getKeyStyle())
-                .build();
-
-        List<SystemSetting> settingList = new ArrayList<>(2);
-        settingList.add(flag);
-        settingList.add(style);
-
-        return settingList;
+    @Provides
+    @Reusable
+    fun module(impl: MapThemeModuleImpl): MapModule {
+        return impl
     }
 }

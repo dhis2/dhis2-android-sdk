@@ -480,6 +480,24 @@ class ProgramIndicatorExecutorShould {
         assertThat(result).isNull()
     }
 
+    @Test
+    fun evaluate_missing_dataelement() {
+        whenever(dataElementStore.selectByUid(dataElementUid1)).doReturn(null)
+        setExpression(de(programStage1, dataElementUid1))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_missing_attribute() {
+        whenever(trackedEntityAttributeStore.selectByUid(attributeUid1)).doReturn(null)
+        setExpression(att(attributeUid1))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------

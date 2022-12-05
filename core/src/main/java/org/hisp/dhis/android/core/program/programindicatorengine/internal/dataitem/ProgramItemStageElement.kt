@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
 import java.util.*
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
@@ -58,11 +59,11 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             }
         }
 
-        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
+        val dataElement = getDataElement(visitor, dataElementId)
         val handledValue = visitor.handleNulls(value)
         val strValue = handledValue?.toString()
 
-        return formatValue(strValue, dataElement!!.valueType())
+        return formatValue(strValue, dataElement.valueType())
     }
 
     private fun getCandidates(events: List<Event>, dataElement: String): List<TrackedEntityDataValue> {
@@ -88,8 +89,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         // TODO Manage null and boolean values
 
-        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
-            ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
+        val dataElement = getDataElement(visitor, dataElementId)
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,
@@ -121,5 +121,10 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
                 .id1(dataElementId)
                 .build()
         )
+    }
+
+    private fun getDataElement(visitor: CommonExpressionVisitor, uid: String): DataElement {
+        return visitor.dataElementStore.selectByUid(uid)
+            ?: throw IllegalArgumentException("DataElement $uid does not exist.")
     }
 }

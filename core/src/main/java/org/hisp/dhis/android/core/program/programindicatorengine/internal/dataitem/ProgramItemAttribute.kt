@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
@@ -46,13 +47,13 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
         val attributeUid = ctx.uid0.text
 
         val attributeValue = visitor.programIndicatorContext.attributeValues[attributeUid]
-        val attribute = visitor.trackedEntityAttributeStore.selectByUid(attributeUid)
+        val attribute = getAttribute(visitor, attributeUid)
 
         val value = attributeValue?.value()
         val handledValue = visitor.handleNulls(value)
         val strValue = handledValue?.toString()
 
-        return formatValue(strValue, attribute!!.valueType())
+        return formatValue(strValue, attribute.valueType())
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
@@ -62,8 +63,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
 
         // TODO Manage null and boolean values
 
-        val attribute = visitor.trackedEntityAttributeStore.selectByUid(attributeUid)
-            ?: throw IllegalArgumentException("Attribute $attributeUid does not exist.")
+        val attribute = getAttribute(visitor, attributeUid)
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityAttributeValueTableInfo.Columns.VALUE,
@@ -90,5 +90,10 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
                 .id0(ctx.uid0.text)
                 .build()
         )
+    }
+
+    private fun getAttribute(visitor: CommonExpressionVisitor, uid: String): TrackedEntityAttribute {
+        return visitor.trackedEntityAttributeStore.selectByUid(uid)
+            ?: throw IllegalArgumentException("Attribute $uid does not exist.")
     }
 }

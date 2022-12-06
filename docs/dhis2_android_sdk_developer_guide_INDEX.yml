@@ -7,6 +7,7 @@
 - Workflow: "@github(dhis2/dhis2-android-sdk, docs/content/developer/workflow.md, master)"
 - Analytics: "@github(dhis2/dhis2-android-sdk, docs/content/developer/analytics.md, master)"
 - Settings: "@github(dhis2/dhis2-android-sdk, docs/content/developer/settings.md, master)"
+- Maps: "@github(dhis2/dhis2-android-sdk, docs/content/developer/maps.md, master)"
 - DHIS2 Services: "@github(dhis2/dhis2-android-sdk, docs/content/developer/dhis2-services.md, master)"
 - Error management: "@github(dhis2/dhis2-android-sdk, docs/content/developer/error-management.md, master)"
 - SMS Module: "@github(dhis2/dhis2-android-sdk, docs/content/developer/sms.md, master)"

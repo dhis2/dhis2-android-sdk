@@ -31,12 +31,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 
 internal object DataValueByDataSetQueryHelper {
 
     private const val DSE_ALIAS = "dse"
     private const val DE_ALIAS = "de"
+    private const val DS_ALIAS = "ds"
     private const val COC_ALIAS = "coc"
+    private const val AOC_ALIAS = "aoc"
 
     private const val DSE_DATASET = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.DATA_SET}"
     private const val DSE_DATAELEMENT = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT}"
@@ -45,24 +48,38 @@ internal object DataValueByDataSetQueryHelper {
     private const val DE_UID = "$DE_ALIAS.${DataElementTableInfo.Columns.UID}"
     private const val DE_CATEGORYCOMBO = "$DE_ALIAS.${DataElementTableInfo.Columns.CATEGORY_COMBO}"
 
+    private const val DS_UID = "$DS_ALIAS.${DataSetTableInfo.Columns.UID}"
+    private const val DS_CATEGORYCOMBO = "$DS_ALIAS.${DataSetTableInfo.Columns.CATEGORY_COMBO}"
+
     private const val COC_UID = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.UID}"
     private const val COC_CATEGORYCOMBO = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO}"
 
+    private const val AOC_UID = "$AOC_ALIAS.${CategoryOptionComboTableInfo.Columns.UID}"
+    private const val AOC_CATEGORYCOMBO = "$AOC_ALIAS.${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO}"
+
     @JvmStatic
-    val key = buildKey(DataValueTableInfo.Columns.DATA_ELEMENT, DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO)
+    val key = buildKey(
+        DataValueTableInfo.Columns.DATA_ELEMENT,
+        DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+        DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO
+    )
 
     @JvmStatic
     val operator = FilterItemOperator.IN
 
     @JvmStatic
     fun whereClause(dataSetUid: String): String =
-        """SELECT ${buildKey(DSE_DATAELEMENT, COC_UID)} 
+        """SELECT ${buildKey(DSE_DATAELEMENT, COC_UID, AOC_UID)} 
             FROM ${DataSetDataElementLinkTableInfo.TABLE_INFO.name()} $DSE_ALIAS
             INNER JOIN ${DataElementTableInfo.TABLE_INFO.name()} $DE_ALIAS
                 ON $DE_UID = $DSE_DATAELEMENT
+            INNER JOIN ${DataSetTableInfo.TABLE_INFO.name()} $DS_ALIAS
+                ON $DS_UID = $DSE_DATASET
             INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $COC_ALIAS
                 ON $COC_CATEGORYCOMBO = 
                     (CASE WHEN $DSE_CATEGORYCOMBO IS NOT NULL THEN $DSE_CATEGORYCOMBO ELSE $DE_CATEGORYCOMBO END)
+            INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $AOC_ALIAS
+                ON $AOC_CATEGORYCOMBO = $DS_CATEGORYCOMBO
             WHERE $DSE_DATASET = '$dataSetUid'
         """.trimIndent().replace("\n", " ")
 
@@ -76,7 +93,11 @@ internal object DataValueByDataSetQueryHelper {
 
      This solution using an auxiliary key is a workaround for that.
      */
-    private fun buildKey(dataElementTag: String, categoryOptionComboTag: String): String {
-        return "$dataElementTag || '.' || $categoryOptionComboTag"
+    private fun buildKey(
+        dataElementTag: String,
+        categoryOptionComboTag: String,
+        attributeOptionComboTag: String
+    ): String {
+        return "$dataElementTag || '.' || $categoryOptionComboTag || '.' || $attributeOptionComboTag"
     }
 }

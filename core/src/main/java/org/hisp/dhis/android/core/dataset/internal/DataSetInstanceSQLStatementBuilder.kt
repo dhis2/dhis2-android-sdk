@@ -225,7 +225,7 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
             EQ + COC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
 
         private const val AOC_WHERE_CLAUSE = DATASET_TABLE_ALIAS + "." + DataSetTableInfo.Columns.CATEGORY_COMBO +
-                EQ + AOC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
+            EQ + AOC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
 
         private const val GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
@@ -235,9 +235,9 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
 
         private val SELECT_CLAUSE =
             "SELECT * FROM (" +
-                    "$INNER_SELECT_CLAUSE " +
-                    "WHERE $COC_BY_DATASET_WHERE_CLAUSE AND $AOC_WHERE_CLAUSE " +
-                    "$GROUP_BY_CLAUSE)"
+                "$INNER_SELECT_CLAUSE " +
+                "WHERE $COC_BY_DATASET_WHERE_CLAUSE AND $AOC_WHERE_CLAUSE " +
+                "$GROUP_BY_CLAUSE)"
 
         private val joinPeriod: String
             get() = INNER_JOIN + PeriodTableInfo.TABLE_INFO.name() + AS + PERIOD_TABLE_ALIAS +

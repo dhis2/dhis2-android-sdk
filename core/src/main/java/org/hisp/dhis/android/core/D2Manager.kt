@@ -55,6 +55,7 @@ object D2Manager {
     private lateinit var d2DIComponent: D2DIComponent
 
     internal var isTestMode = false
+    internal var isRealIntegration = false
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the
@@ -142,12 +143,6 @@ object D2Manager {
     @JvmStatic
     fun blockingInstantiateD2(d2Config: D2Configuration): D2? {
         return instantiateD2(d2Config).blockingGet()
-    }
-
-    @JvmStatic
-    @VisibleForTesting
-    fun setTestMode(testMode: Boolean) {
-        isTestMode = testMode
     }
 
     @JvmStatic

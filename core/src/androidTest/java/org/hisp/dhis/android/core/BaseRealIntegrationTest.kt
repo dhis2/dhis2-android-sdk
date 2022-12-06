@@ -46,7 +46,7 @@ abstract class BaseRealIntegrationTest {
 
     @Before
     open fun setUp() {
-        d2 = D2Factory.forNewDatabase()
+        d2 = D2Factory.forNewDatabase(isRealIntegration = true)
     }
 
     @After

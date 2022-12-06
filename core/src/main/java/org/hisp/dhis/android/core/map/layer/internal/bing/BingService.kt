@@ -30,23 +30,12 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import io.reactivex.Single
 import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.Url
 
 internal interface BingService {
 
-    @GET(
-        "{$HOST}REST/V1/Imagery/Metadata/{$STYLE}?output=json&include=ImageryProviders&culture=en-GB&uriScheme=https"
-    )
+    @GET
     fun getBaseMap(
-        @Path(HOST) host: String,
-        @Path(STYLE) style: String,
-        @Query(API_KEY) apiKey: String
+        @Url url: String
     ): Single<BingServerResponse>
-
-    companion object {
-        const val HOST = "host"
-        const val STYLE = "bing-style"
-        const val API_KEY = "key"
-    }
 }

@@ -65,6 +65,7 @@ internal class BingCallFactory @Inject constructor(
                         mapLayerHandler.handleMany(mapLayers)
                         mapLayers
                     }
+                    .onErrorReturnItem(emptyList())
             } else {
                 Single.just(emptyList())
             }
@@ -78,7 +79,7 @@ internal class BingCallFactory @Inject constructor(
     }
 
     private fun downloadBasemap(bingkey: String, basemap: BingBasemap): Single<List<MapLayer>> {
-        return bingService.getBaseMap(host, basemap.style, bingkey)
+        return bingService.getBaseMap(getUrl(basemap.style, bingkey))
             .map { m ->
                 m.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
                     listOf(
@@ -115,7 +116,12 @@ internal class BingCallFactory @Inject constructor(
             }.onErrorReturnItem(emptyList())
     }
 
-    companion object {
-        val host = if (D2Manager.isTestMode) "" else "https://dev.virtualearth.net/"
+    private fun getUrl(style: String, bingKey: String): String {
+        return if (D2Manager.isTestMode && !D2Manager.isRealIntegration) {
+            "mockBingMaps"
+        } else {
+            "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/$style?" +
+                "output=json&include=ImageryProviders&culture=en-GB&uriScheme=https&key=$bingKey"
+        }
     }
 }

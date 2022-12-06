@@ -36,15 +36,16 @@ import retrofit2.http.Query
 internal interface BingService {
 
     @GET(
-        "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/{$STYLE}?output=json" +
-            "&include=ImageryProviders&culture=en-GB&uriScheme=https"
+        "{$HOST}REST/V1/Imagery/Metadata/{$STYLE}?output=json&include=ImageryProviders&culture=en-GB&uriScheme=https"
     )
     fun getBaseMap(
+        @Path(HOST) host: String,
         @Path(STYLE) style: String,
         @Query(API_KEY) apiKey: String
     ): Single<BingServerResponse>
 
     companion object {
+        const val HOST = "host"
         const val STYLE = "bing-style"
         const val API_KEY = "key"
     }

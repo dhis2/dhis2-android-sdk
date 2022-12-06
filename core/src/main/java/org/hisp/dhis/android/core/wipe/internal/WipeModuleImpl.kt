@@ -25,25 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.core.wipe.internal
 
-import org.junit.BeforeClass
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.common.Unit
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-abstract class BaseMockIntegrationTestMetadataEnqueable : BaseMockIntegrationTest() {
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUpClass() {
-            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable)
-            if (isNewInstance) {
-                objects.dhis2MockServer.enqueueLoginResponses()
-                objects.d2.userModule().blockingLogIn(
-                    "android", "Android123",
-                    objects.dhis2MockServer.baseEndpoint
-                )
-                objects.dhis2MockServer.enqueueMetadataResponses()
-                objects.d2.metadataModule().blockingDownload()
-            }
+internal class WipeModuleImpl(
+    private val d2CallExecutor: D2CallExecutor,
+    private val moduleWipers: List<ModuleWiper>
+) : WipeModule {
+    @Throws(D2Error::class)
+    override fun wipeEverything() {
+        return d2CallExecutor.executeD2CallTransactionally {
+            wipeMetadataInternal()
+            wipeDataInternal()
+            Unit()
+        }
+    }
+
+    @Throws(D2Error::class)
+    override fun wipeMetadata() {
+        return d2CallExecutor.executeD2CallTransactionally {
+            wipeMetadataInternal()
+            Unit()
+        }
+    }
+
+    @Throws(D2Error::class)
+    override fun wipeData() {
+        return d2CallExecutor.executeD2CallTransactionally {
+            wipeDataInternal()
+            Unit()
+        }
+    }
+
+    private fun wipeMetadataInternal() {
+        for (moduleWiper in moduleWipers) {
+            moduleWiper.wipeMetadata()
+        }
+    }
+
+    private fun wipeDataInternal() {
+        for (moduleWiper in moduleWipers) {
+            moduleWiper.wipeData()
         }
     }
 }

@@ -25,63 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.wipe.internal
 
-package org.hisp.dhis.android.core.wipe.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.List;
-
-final class WipeModuleImpl implements WipeModule {
-
-    private final D2CallExecutor d2CallExecutor;
-    private final List<ModuleWiper> moduleWipers;
-
-    WipeModuleImpl(D2CallExecutor d2CallExecutor,
-                   List<ModuleWiper> moduleWipers) {
-        this.d2CallExecutor = d2CallExecutor;
-        this.moduleWipers = moduleWipers;
+@Reusable
+class TableWiper @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+    fun wipeTable(tableInfo: TableInfo) {
+        databaseAdapter.delete(tableInfo.name())
     }
 
-    @Override
-    public Unit wipeEverything() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            wipeMetadataInternal();
-            wipeDataInternal();
-
-            return new Unit();
-        });
-    }
-
-    @Override
-    public Unit wipeMetadata() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            wipeMetadataInternal();
-
-            return new Unit();
-        });
-    }
-
-    @Override
-    public Unit wipeData() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            wipeDataInternal();
-
-            return new Unit();
-        });
-    }
-
-    private void wipeMetadataInternal() {
-        for (ModuleWiper moduleWiper : moduleWipers) {
-            moduleWiper.wipeMetadata();
-        }
-    }
-
-    private void wipeDataInternal() {
-        for (ModuleWiper moduleWiper : moduleWipers) {
-            moduleWiper.wipeData();
+    fun wipeTables(vararg tableInfos: TableInfo) {
+        for (tableInfo in tableInfos) {
+            wipeTable(tableInfo)
         }
     }
 }

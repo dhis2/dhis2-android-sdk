@@ -25,40 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.map.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettings;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class SystemSettingSplitterShould {
-
-    private SystemSettings settingsPojo = SystemSettings.builder().keyFlag("aFlag").keyStyle("aStyle").build();
-    private SystemSettingsSplitter systemSettingsSplitter = new SystemSettingsSplitter();
-
-    @Test
-    public void build_flag_setting() throws IOException, ParseException {
-        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
-        SystemSetting flag = settingList.get(0);
-        assertThat(flag.key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
-        assertThat(flag.value()).isEqualTo("aFlag");
+@Reusable
+class MapModuleWiper @Inject internal constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
+        tableWiper.wipeTables(
+            MapLayerTableInfo.TABLE_INFO,
+            MapLayerImageryProviderTableInfo.TABLE_INFO
+        )
     }
 
-    @Test
-    public void build_style_setting() throws IOException, ParseException {
-        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
-        SystemSetting style = settingList.get(1);
-        assertThat(style.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
-        assertThat(style.value()).isEqualTo("aStyle");
+    override fun wipeData() {
+        // No metadata to wipe
     }
 }

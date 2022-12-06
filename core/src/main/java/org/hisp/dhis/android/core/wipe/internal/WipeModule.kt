@@ -25,33 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.wipe.internal
 
-package org.hisp.dhis.android.core.wipe.internal;
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+interface WipeModule {
+    @Throws(D2Error::class)
+    fun wipeEverything()
 
-import javax.inject.Inject;
+    @Throws(D2Error::class)
+    fun wipeMetadata()
 
-import dagger.Reusable;
-
-@Reusable
-public final class TableWiper {
-
-    private final DatabaseAdapter databaseAdapter;
-
-    @Inject
-    public TableWiper(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    public void wipeTable(TableInfo tableInfo) {
-        databaseAdapter.delete(tableInfo.name());
-    }
-
-    public void wipeTables(TableInfo... tableInfos) {
-        for (TableInfo tableInfo: tableInfos) {
-            wipeTable(tableInfo);
-        }
-    }
+    @Throws(D2Error::class)
+    fun wipeData()
 }

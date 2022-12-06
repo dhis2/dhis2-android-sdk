@@ -47,13 +47,14 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 @Suppress("TooManyFunctions")
 object D2Manager {
     private var d2: D2? = null
-    private var isTestMode = false
     private var testingSecureStore: SecureStore? = null
     private var testingInsecureStore: InsecureStore? = null
     private var testingServerUrl: String? = null
     private var testingDatabaseName: String? = null
     private var testingUsername: String? = null
     private lateinit var d2DIComponent: D2DIComponent
+
+    internal var isTestMode = false
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the

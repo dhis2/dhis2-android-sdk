@@ -25,10 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.wipe.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-public interface ModuleWiper {
-   void wipeMetadata();
-   void wipeData();
+class SystemSettingsShould : BaseObjectShould("settings/system_settings.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val settings = objectMapper.readValue(jsonStream, SystemSettings::class.java)
+        assertThat(settings.keyFlag).isEqualTo("sierra_leone")
+        assertThat(settings.keyStyle).isEqualTo("light_blue/light_blue.css")
+        assertThat(settings.keyBingMapsApiKey).isEqualTo("keyBingMapsApiKey")
+    }
 }

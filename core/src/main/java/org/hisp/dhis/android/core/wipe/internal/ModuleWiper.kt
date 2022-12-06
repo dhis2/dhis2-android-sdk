@@ -25,30 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.wipe.internal
 
-package org.hisp.dhis.android.core.settings;
-
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SystemSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public SystemSettingsShould() {
-        super("settings/system_settings.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SystemSettings settings = objectMapper.readValue(jsonStream, SystemSettings.class);
-
-        assertThat(settings.keyFlag()).isEqualTo("sierra_leone");
-        assertThat(settings.keyStyle()).isEqualTo("light_blue/light_blue.css");
-    }
+interface ModuleWiper {
+    fun wipeMetadata()
+    fun wipeData()
 }

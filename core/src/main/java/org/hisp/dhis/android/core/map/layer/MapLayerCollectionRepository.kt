@@ -32,7 +32,10 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 @Reusable
@@ -48,6 +51,34 @@ class MapLayerCollectionRepository @Inject internal constructor(
         scope
     ) { s: RepositoryScope -> MapLayerCollectionRepository(store, childrenAppenders, s) }
 ) {
+
+    fun byUid(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.UID)
+    }
+
+    fun byName(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.NAME)
+    }
+
+    fun byDisplayName(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.DISPLAY_NAME)
+    }
+
+    fun byExternal(): BooleanFilterConnector<MapLayerCollectionRepository> {
+        return cf.bool(MapLayerTableInfo.Columns.EXTERNAL)
+    }
+
+    fun byMapLayerPosition(): EnumFilterConnector<MapLayerCollectionRepository, MapLayerPosition> {
+        return cf.enumC(MapLayerTableInfo.Columns.MAP_LAYER_POSITION)
+    }
+
+    fun byStyle(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.STYLE)
+    }
+
+    fun byImageUrl(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.IMAGE_URL)
+    }
 
     fun withImageryProviders(): MapLayerCollectionRepository {
         return cf.withChild(MapLayer.IMAGERY_PROVIDERS)

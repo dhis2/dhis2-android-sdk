@@ -1,0 +1,128 @@
+{
+  "authenticationResultCode": "ValidCredentials",
+  "brandLogoUri": "http:\/\/dev.virtualearth.net\/Branding\/logo_powered_by.png",
+  "copyright": "Copyright © 2022 Microsoft and its suppliers. All rights reserved. This API cannot be accessed and the content and any results may not be used, reproduced or transmitted in any manner without express written permission from Microsoft Corporation.",
+  "resourceSets": [
+    {
+      "estimatedTotal": 1,
+      "resources": [
+        {
+          "__type": "ImageryMetadata:http:\/\/schemas.microsoft.com\/search\/local\/ws\/rest\/v1",
+          "imageHeight": 256,
+          "imageUrl": "https:\/\/{subdomain}.ssl.ak.dynamic.tiles.virtualearth.net\/comp\/ch\/{quadkey}?mkt=en-GB&it=G,L&cstl=WL&og=2064&n=z",
+          "imageUrlSubdomains": [
+            "t0",
+            "t1",
+            "t2",
+            "t3"
+          ],
+          "imageWidth": 256,
+          "imageryProviders": [
+            {
+              "attribution": "© 2022 Microsoft Corporation",
+              "coverageAreas": [
+                {
+                  "bbox": [
+                    -90,
+                    -180,
+                    90,
+                    180
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 1
+                }
+              ]
+            },
+            {
+              "attribution": "© 2022 TomTom",
+              "coverageAreas": [
+                {
+                  "bbox": [
+                    -90,
+                    -180,
+                    90,
+                    180
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 1
+                }
+              ]
+            },
+            {
+              "attribution": "© 2022 Zenrin",
+              "coverageAreas": [
+                {
+                  "bbox": [
+                    23.5,
+                    122.5,
+                    46.65,
+                    151.66
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 4
+                }
+              ]
+            },
+            {
+              "attribution": "© 2022 TMAP MOBILITY",
+              "coverageAreas": [
+                {
+                  "bbox": [
+                    34.0135,
+                    124.3834,
+                    38.6701,
+                    129.8908
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 8
+                },
+                {
+                  "bbox": [
+                    37.3354,
+                    130.7187,
+                    37.6059,
+                    131.014
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 8
+                }
+              ]
+            },
+            {
+              "attribution": "© 2022 NavInfo",
+              "coverageAreas": [
+                {
+                  "bbox": [
+                    18.566,
+                    72.846,
+                    54.3085,
+                    123.972
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 6
+                },
+                {
+                  "bbox": [
+                    40.0186,
+                    123.972,
+                    54.3085,
+                    136.0872
+                  ],
+                  "zoomMax": 21,
+                  "zoomMin": 6
+                }
+              ]
+            }
+          ],
+          "vintageEnd": null,
+          "vintageStart": null,
+          "zoomMax": 21,
+          "zoomMin": 1
+        }
+      ]
+    }
+  ],
+  "statusCode": 200,
+  "statusDescription": "OK",
+  "traceId": "718998758ef44d1d8a253a4bab8ae61e|PUS0004C69|0.0.0.1"
+}

@@ -25,24 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import org.junit.BeforeClass
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-abstract class BaseMockIntegrationTestMetadataEnqueable : BaseMockIntegrationTest() {
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUpClass() {
-            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable)
-            if (isNewInstance) {
-                objects.dhis2MockServer.enqueueLoginResponses()
-                objects.d2.userModule().blockingLogIn(
-                    "android", "Android123",
-                    objects.dhis2MockServer.baseEndpoint
-                )
-                objects.dhis2MockServer.enqueueMetadataResponses()
-                objects.d2.metadataModule().blockingDownload()
+class BingServerResponseShould : BaseObjectShould("map/layer/bing/bing_server_response.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        objectMapper.readValue(jsonStream, BingServerResponse::class.java)?.let {
+            assertThat(it.resourceSets.size).isEqualTo(1)
+
+            it.resourceSets.first().let { s ->
+                assertThat(s.resources.size).isEqualTo(1)
+
+                val r = s.resources.first()
+                assertThat(r.imageHeight).isEqualTo(256)
+                assertThat(r.imageWidth).isEqualTo(256)
+                assertThat(r.imageUrl).startsWith("https://{subdomain}.ssl.ak.dynamic.tiles.virtualearth.net/comp/")
+                assertThat(r.imageUrlSubdomains.size).isEqualTo(4)
+                assertThat(r.zoomMax).isEqualTo(21)
+                assertThat(r.zoomMin).isEqualTo(1)
+                assertThat(r.imageryProviders.size).isEqualTo(5)
+
+                val p = r.imageryProviders.first()
+                assertThat(p.attribution).isEqualTo("© 2022 Microsoft Corporation")
+                assertThat(p.coverageAreas.size).isEqualTo(1)
+
+                val c = p.coverageAreas.first()
+                assertThat(c.bbox).isEqualTo(listOf(-90.0, -180.0, 90.0, 180.0))
+                assertThat(c.zoomMax).isEqualTo(21)
+                assertThat(c.zoomMin).isEqualTo(1)
             }
         }
     }

@@ -25,16 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.wipe.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.settings.SystemSetting
+import org.hisp.dhis.android.core.settings.SystemSettings
 
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+@Reusable
+internal class SystemSettingsSplitter @Inject constructor() {
+    fun splitSettings(settings: SystemSettings): List<SystemSetting> {
+        val flag = SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.FLAG)
+            .value(settings.keyFlag)
+            .build()
+        val style = SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.STYLE)
+            .value(settings.keyStyle)
+            .build()
 
-public interface WipeModule {
-    Unit wipeEverything() throws D2Error;
-
-    Unit wipeMetadata() throws D2Error;
-
-    Unit wipeData() throws D2Error;
+        return listOf(flag, style)
+    }
 }

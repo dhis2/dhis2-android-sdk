@@ -25,22 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.wipe.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
+import org.hisp.dhis.android.core.settings.SystemSettings
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
+@RunWith(JUnit4::class)
+class SystemSettingSplitterShould {
+    private val settings: SystemSettings = SystemSettings(
+        keyFlag = "aFlag",
+        keyStyle = "aStyle",
+        keyBingMapsApiKey = null
+    )
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private val systemSettingsSplitter = SystemSettingsSplitter()
 
-@Module()
-public final class WipeDIModule {
+    @Test
+    fun build_flag_setting() {
+        val settingList = systemSettingsSplitter.splitSettings(settings)
+        settingList[0].let { flag ->
+            assertThat(flag.key()).isEqualTo(SystemSettingKey.FLAG)
+            assertThat(flag.value()).isEqualTo("aFlag")
+        }
+    }
 
-    @Provides
-    @Reusable
-    WipeModule wipeModule(D2CallExecutor d2CallExecutor,
-                          D2ModuleWipers moduleWipers) {
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers);
+    @Test
+    fun build_style_setting() {
+        val settingList = systemSettingsSplitter.splitSettings(settings)
+        settingList[1].let { style ->
+            assertThat(style.key()).isEqualTo(SystemSettingKey.STYLE)
+            assertThat(style.value()).isEqualTo("aStyle")
+        }
     }
 }

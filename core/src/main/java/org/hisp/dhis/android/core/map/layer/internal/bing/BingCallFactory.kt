@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
@@ -71,45 +72,50 @@ internal class BingCallFactory @Inject constructor(
     }
 
     private fun downloadBingBasemaps(bingKey: String): Single<List<MapLayer>> {
-        // TODO Manage failure
         return Single.merge(
             BingBasemaps.list.map { b -> downloadBasemap(bingKey, b) }
-        ).toList()
+        ).toList().map { it.flatten() }
     }
 
-    private fun downloadBasemap(bingkey: String, basemap: BingBasemap): Single<MapLayer> {
-        return bingService.getBaseMap(basemap.style, bingkey)
+    private fun downloadBasemap(bingkey: String, basemap: BingBasemap): Single<List<MapLayer>> {
+        return bingService.getBaseMap(host, basemap.style, bingkey)
             .map { m ->
-                val resource = m.resourceSets.first().resources.first()
-
-                MapLayer.builder()
-                    .uid(basemap.id)
-                    .name(basemap.name)
-                    .displayName(basemap.name)
-                    .style(basemap.style)
-                    .mapLayerPosition(MapLayerPosition.BASEMAP)
-                    .external(false)
-                    .imageUrl(resource.imageUrl)
-                    .subdomains(resource.imageUrlSubdomains)
-                    .subdomainPlaceholder("{subdomain}")
-                    .imageryProviders(
-                        resource.imageryProviders.map { i ->
-                            MapLayerImageryProvider.builder()
-                                .mapLayer(basemap.id)
-                                .attribution(i.attribution)
-                                .coverageAreas(
-                                    i.coverageAreas.map { ca ->
-                                        MapLayerImageryProviderArea.builder()
-                                            .bbox(ca.bbox)
-                                            .zoomMax(ca.zoomMax)
-                                            .zoomMin(ca.zoomMin)
-                                            .build()
-                                    }
-                                )
-                                .build()
-                        }
+                m.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
+                    listOf(
+                        MapLayer.builder()
+                            .uid(basemap.id)
+                            .name(basemap.name)
+                            .displayName(basemap.name)
+                            .style(basemap.style)
+                            .mapLayerPosition(MapLayerPosition.BASEMAP)
+                            .external(false)
+                            .imageUrl(resource.imageUrl)
+                            .subdomains(resource.imageUrlSubdomains)
+                            .subdomainPlaceholder("{subdomain}")
+                            .imageryProviders(
+                                resource.imageryProviders.map { i ->
+                                    MapLayerImageryProvider.builder()
+                                        .mapLayer(basemap.id)
+                                        .attribution(i.attribution)
+                                        .coverageAreas(
+                                            i.coverageAreas.map { ca ->
+                                                MapLayerImageryProviderArea.builder()
+                                                    .bbox(ca.bbox)
+                                                    .zoomMax(ca.zoomMax)
+                                                    .zoomMin(ca.zoomMin)
+                                                    .build()
+                                            }
+                                        )
+                                        .build()
+                                }
+                            )
+                            .build()
                     )
-                    .build()
-            }
+                } ?: emptyList()
+            }.onErrorReturnItem(emptyList())
+    }
+
+    companion object {
+        val host = if (D2Manager.isTestMode) "" else "https://dev.virtualearth.net/"
     }
 }

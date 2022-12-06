@@ -1,4 +1,5 @@
 {
   "keyFlag": "sierra_leone",
-  "keyStyle": "light_blue/light_blue.css"
+  "keyStyle": "light_blue/light_blue.css",
+  "keyBingMapsApiKey": "keyBingMapsApiKey"
 }

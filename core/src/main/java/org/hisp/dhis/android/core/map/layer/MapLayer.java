@@ -84,7 +84,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     public abstract List<MapLayerImageryProvider> imageryProviders();
 
     public static MapLayer create(Cursor cursor) {
-        return AutoValue_MapLayer.createFromCursor(cursor);
+        return $AutoValue_MapLayer.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -94,7 +94,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder uid(String uid);
 

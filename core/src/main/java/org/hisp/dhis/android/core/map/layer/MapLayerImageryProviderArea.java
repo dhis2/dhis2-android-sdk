@@ -59,7 +59,7 @@ public abstract class MapLayerImageryProviderArea {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract Builder bbox(List<Double> bbox);
 

@@ -56,7 +56,7 @@ public abstract class MapLayerImageryProvider implements CoreObject {
     public abstract List<MapLayerImageryProviderArea> coverageAreas();
 
     public static MapLayerImageryProvider create(Cursor cursor) {
-        return AutoValue_MapLayerImageryProvider.createFromCursor(cursor);
+        return $AutoValue_MapLayerImageryProvider.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -66,7 +66,7 @@ public abstract class MapLayerImageryProvider implements CoreObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder mapLayer(String mapLayer);
 

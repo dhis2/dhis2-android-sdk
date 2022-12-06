@@ -51,7 +51,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                 d2.dataValueModule().dataValues()
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(6);
+        assertThat(dataValues.size()).isEqualTo(7);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("g9eOBujte1U")
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(6);
+        assertThat(dataValues.size()).isEqualTo(7);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(5);
+        assertThat(dataValues.size()).isEqualTo(6);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .eq("Gmbgme7z9BF")
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(5);
+        assertThat(dataValues.size()).isEqualTo(6);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .isFalse()
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(5);
+        assertThat(dataValues.size()).isEqualTo(6);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(6);
+        assertThat(dataValues.size()).isEqualTo(7);
     }
 
     @Test
@@ -192,7 +192,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(dataValues.size()).isEqualTo(6);
+        assertThat(dataValues.size()).isEqualTo(7);
     }
 
     @Test

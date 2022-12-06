@@ -43,7 +43,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
         val dataSetInstances = d2.dataSetModule().dataSetInstances()
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(2)
+        assertThat(dataSetInstances.size).isEqualTo(3)
     }
 
     @Test
@@ -70,7 +70,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
             .byPeriodType().eq(PeriodType.Monthly)
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(2)
+        assertThat(dataSetInstances.size).isEqualTo(3)
     }
 
     @Test
@@ -79,7 +79,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
             .byPeriodStartDate().after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-06-15T00:00:00.000"))
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(1)
+        assertThat(dataSetInstances.size).isEqualTo(2)
     }
 
     @Test
@@ -88,7 +88,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
             .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(2)
+        assertThat(dataSetInstances.size).isEqualTo(3)
     }
 
     @Test
@@ -97,12 +97,13 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
             .byOrganisationUnitUid().eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(1)
+        assertThat(dataSetInstances.size).isEqualTo(2)
     }
 
     @Test
     fun fill_completion_information() {
         val dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances()
+            .byDataSetUid().eq("lyLU2wR22tC")
             .byPeriod().eq("201906")
             .blockingGet()
 
@@ -110,6 +111,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
         assertThat(dataSetInstanceCompleted[0].completionDate()).isNotNull()
 
         val dataSetInstanceUncompleted = d2.dataSetModule().dataSetInstances()
+            .byDataSetUid().eq("lyLU2wR22tC")
             .byPeriod().eq("201907")
             .blockingGet()
 
@@ -125,5 +127,15 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
 
         assertThat(dataSetInstances.size).isEqualTo(1)
         assertThat(dataSetInstances[0].valueCount()).isEqualTo(1)
+    }
+
+    @Test
+    fun does_not_include_values_with_other_aoc() {
+        val dataSetInstances = d2.dataSetModule().dataSetInstances()
+            .byPeriod().eq("201908")
+            .blockingGet()
+
+        assertThat(dataSetInstances.size).isEqualTo(1)
+        assertThat(dataSetInstances.first().valueCount()).isEqualTo(1)
     }
 }

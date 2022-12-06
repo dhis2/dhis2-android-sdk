@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
 import org.hisp.dhis.android.core.legendset.LegendSetModule
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule
+import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.note.NoteModule
 import org.hisp.dhis.android.core.option.OptionModule
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
@@ -170,6 +171,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun maintenanceModule(): MaintenanceModule {
         return modules.maintenance
+    }
+
+    fun mapsModule(): MapModule {
+        return modules.maps
     }
 
     fun noteModule(): NoteModule {

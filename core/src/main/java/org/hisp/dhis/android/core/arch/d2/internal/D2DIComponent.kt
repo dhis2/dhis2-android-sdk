@@ -69,6 +69,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule
 import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule
 import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule
+import org.hisp.dhis.android.core.map.internal.MapPackageDIModule
 import org.hisp.dhis.android.core.note.internal.NotePackageDIModule
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionSet
@@ -145,7 +146,8 @@ import retrofit2.Retrofit
         UserPackageDIModule::class,
         ValidationPackageDIModule::class,
         VisualizationPackageDIModule::class,
-        DataValueConflictDIModule::class
+        DataValueConflictDIModule::class,
+        MapPackageDIModule::class
     ]
 )
 @Suppress("TooManyFunctions")

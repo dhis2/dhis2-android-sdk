@@ -219,10 +219,13 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
             SELECT_STATE +
             FROM_CLAUSE
 
-        private const val COC_BY_DATASET_WHERE_CLAUSE = " WHERE " +
-            "(CASE WHEN " + DSE_CATEGORY_COMBO + " IS NOT NULL THEN " + DSE_CATEGORY_COMBO +
+        private const val COC_BY_DATASET_WHERE_CLAUSE = "(CASE " +
+            "WHEN " + DSE_CATEGORY_COMBO + " IS NOT NULL THEN " + DSE_CATEGORY_COMBO +
             " ELSE " + DATAELEMENT_TABLE_ALIAS + "." + DataElementTableInfo.Columns.CATEGORY_COMBO + " END)" +
             EQ + COC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
+
+        private const val AOC_WHERE_CLAUSE = DATASET_TABLE_ALIAS + "." + DataSetTableInfo.Columns.CATEGORY_COMBO +
+            EQ + AOC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
 
         private const val GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
@@ -231,7 +234,10 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
             ATTRIBUTE_OPTION_COMBO_UID
 
         private val SELECT_CLAUSE =
-            "SELECT * FROM ($INNER_SELECT_CLAUSE$COC_BY_DATASET_WHERE_CLAUSE$GROUP_BY_CLAUSE)"
+            "SELECT * FROM (" +
+                "$INNER_SELECT_CLAUSE " +
+                "WHERE $COC_BY_DATASET_WHERE_CLAUSE AND $AOC_WHERE_CLAUSE " +
+                "$GROUP_BY_CLAUSE)"
 
         private val joinPeriod: String
             get() = INNER_JOIN + PeriodTableInfo.TABLE_INFO.name() + AS + PERIOD_TABLE_ALIAS +

@@ -64,7 +64,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(2);
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test

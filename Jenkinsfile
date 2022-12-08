@@ -18,7 +18,6 @@ pipeline {
                     echo "$GIT_BRANCH"
                     echo "$GIT_BRANCH_DEST"
                     echo "$PULL_REQUEST"
-                    echo "$SONAR_TOKEN"
                     if (GIT_BRANCH_DEST != null) {
                         // Fetch destination branch for Sonarqube comparision
                         remote = sh(returnStdout: true, script: 'git remote').trim()

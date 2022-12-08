@@ -4,42 +4,6 @@ pipeline {
     }
 
     stages{
-        stage('Checks') {
-            steps {
-                script {
-                    echo 'Running Check style and quality'
-                    sh './runChecks.sh'
-                }
-            }
-        }
-        stage('Unit tests') {
-            steps {
-                script {
-                    echo 'Running unit tests'
-                    sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
-                }
-            }
-        }
-        stage('Instrumented tests') {
-            environment {
-                BROWSERSTACK = credentials('android-browserstack')
-            }
-            steps {
-                script {
-                    echo 'Browserstack deployment and running tests'
-                    sh 'chmod +x ./scripts/browserstackJenkins.sh'
-                    sh './scripts/browserstackJenkins.sh'
-                }
-            }
-        }
-        stage('JaCoCo report') {
-            steps {
-                script {
-                    echo 'JaCoCo report'
-                    sh './gradlew jacocoReport --stacktrace --no-daemon'
-                }
-            }
-        }
         stage('Sonarqube') {
             environment {
                 GIT_BRANCH = "${env.GIT_BRANCH}"
@@ -51,6 +15,10 @@ pipeline {
             steps {
                 script {
                     echo 'Sonarqube job'
+                    echo "$GIT_BRANCH"
+                    echo "$GIT_BRANCH_DEST"
+                    echo "$PULL_REQUEST"
+                    echo "$SONAR_TOKEN"
                     if (GIT_BRANCH_DEST != null) {
                         // Fetch destination branch for Sonarqube comparision
                         remote = sh(returnStdout: true, script: 'git remote').trim()

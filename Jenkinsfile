@@ -14,7 +14,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo 'Sonarqube'
+                    echo 'Sonarqube job'
                     echo "$GIT_BRANCH"
                     echo "$GIT_BRANCH_DEST"
                     echo "$PULL_REQUEST"

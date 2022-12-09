@@ -50,14 +50,9 @@ pipeline {
             }
             steps {
                 script {
-                    echo 'Sonarqube job'
-                    if (GIT_BRANCH_DEST != null) {
-                        // Fetch destination branch for Sonarqube comparision
-                        remote = sh(returnStdout: true, script: 'git remote').trim()
-                        url = sh(returnStdout: true, script: "git remote get-url $remote").trim()
-                        sh "git fetch --no-tags --force --progress -- $url +refs/heads/$GIT_BRANCH_DEST:refs/remotes/$remote/$GIT_BRANCH_DEST"
-                    }
-                    sh './gradlew sonarqube --stacktrace --no-daemon'
+                    echo 'Sonarqube'
+                    sh 'chmod +x ./scripts/sonarqube.sh'
+                    sh './scripts/sonarqube.sh'
                 }
             }
         }

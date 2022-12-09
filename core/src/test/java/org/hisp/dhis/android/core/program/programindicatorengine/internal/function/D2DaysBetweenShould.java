@@ -72,11 +72,13 @@ public class D2DaysBetweenShould {
     @Test
     public void evaluate_correct_number_of_days() {
         assertDaysBetween("2010-10-15", "2010-10-20", "5");
-        //assertDaysBetween("2010-09-30", "2010-10-15", "15");
+        assertDaysBetween("2010-09-30", "2010-10-15", "15");
+        assertDaysBetween("2010-10-25", "2010-11-02", "8");
         assertDaysBetween("2010-12-31", "2011-01-01", "1");
 
         assertDaysBetween("2010-10-20", "2010-10-15", "-5");
-        //assertDaysBetween("2010-10-15", "2010-09-30", "-15");
+        assertDaysBetween("2010-10-15", "2010-09-30", "-15");
+        assertDaysBetween("2010-11-02", "2010-10-25", "-8");
         assertDaysBetween("2011-01-01", "2010-12-31", "-1");
     }
 

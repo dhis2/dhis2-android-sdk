@@ -29,7 +29,7 @@
 
 set -ex
 
-if [ ! -z "$GIT_BRANCH_DEST"]
+if [ ! -z "$GIT_BRANCH_DEST" ]
 then
   # Download information from destination branch if Pull Request
   remote=$(git remote)

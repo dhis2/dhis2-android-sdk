@@ -27,20 +27,49 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
-import org.joda.time.Days
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-internal class D2DaysBetween : ProgramBetweenDatesFunction() {
+@RunWith(MockitoJUnitRunner::class)
+class D2OizpShould {
+    private val context: ExprContext = mock()
+    private val visitor: CommonExpressionVisitor = mock()
+    private val mockedFirstExpr: ExprContext = mock()
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return Days.daysBetween(startDate, endDate).days.toString()
+    private val functionToTest = D2Oizp()
+
+    @Before
+    fun setUp() {
+        whenever(context.expr(0)).thenReturn(mockedFirstExpr)
     }
 
-    override fun getSql(startExpression: String, endExpression: String): Any {
-        return "CAST((julianday($endExpression) - julianday($startExpression)) AS INTEGER)"
+    @Test
+    fun return_one_for_non_negative_argument() {
+        assertOizp("0", "1")
+        assertOizp("1", "1")
+        assertOizp("10", "1")
     }
 
-    private companion object {
-        const val MillisInADay = 24 * 60 * 60 * 1000
+    @Test
+    fun return_zero_for_negative_argument() {
+        assertOizp("-1", "0")
+        assertOizp("-10", "0")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun throw_illegal_argument_exception_for_non_number_argument() {
+        assertOizp("non_number", null)
+    }
+
+    private fun assertOizp(value: String, monthsBetween: String?) {
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn(value)
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo(monthsBetween)
     }
 }

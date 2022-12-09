@@ -44,7 +44,7 @@ internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkSt
     private fun handleInternal(s: S, transformer: Function1<S, O>) {
         val s2 = beforeObjectHandled(s)
         val s3 = transformer.invoke(s2)
-        store.insert(s3)
+        store.insertIfNotExists(s3)
         afterObjectHandled(s3)
     }
 

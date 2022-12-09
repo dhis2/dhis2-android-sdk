@@ -80,12 +80,11 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
     public void allow_access_to_compulsory_data_element_operands() {
         DataSet dataSet = d2.dataSetModule().dataSets().withCompulsoryDataElementOperands().uid("lyLU2wR22tC").blockingGet();
         List<DataElementOperand> dataElementOperands = dataSet.compulsoryDataElementOperands();
-        assertThat(dataElementOperands.size()).isEqualTo(1);
+        assertThat(dataElementOperands.size()).isEqualTo(2);
 
         DataElementOperand operand = dataElementOperands.get(0);
-        assertThat(operand.uid()).isEqualTo("g9eOBujte1U.Gmbgme7z9BF");
-        assertThat(operand.dataElement().uid()).isEqualTo("g9eOBujte1U");
-        assertThat(operand.categoryOptionCombo().uid()).isEqualTo("Gmbgme7z9BF");
+        assertThat(operand.uid()).isNotNull();
+        assertThat(operand.dataElement().uid()).isNotNull();
     }
 
     @Test

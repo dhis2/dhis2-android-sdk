@@ -261,7 +261,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withCompulsoryDataElementOperands()
                 .one().blockingGet();
-        assertThat(dataSet.compulsoryDataElementOperands().size()).isEqualTo(1);
+        assertThat(dataSet.compulsoryDataElementOperands().size()).isEqualTo(2);
     }
 
     @Test

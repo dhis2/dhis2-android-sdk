@@ -25,58 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+@RunWith(MockitoJUnitRunner::class)
+class D2ZingShould {
+    private val context: ExprContext = mock()
+    private val visitor: CommonExpressionVisitor = mock()
+    private val mockedFirstExpr: ExprContext = mock()
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-@RunWith(MockitoJUnitRunner.class)
-public class D2OizpShould {
-    @Mock
-    private ExpressionParser.ExprContext context;
-
-    @Mock
-    private CommonExpressionVisitor visitor;
-
-    @Mock
-    private ExpressionParser.ExprContext mockedFirstExpr;
-
-    private D2Oizp functionToTest = new D2Oizp();
+    private val functionToTest = D2Zing()
 
     @Before
-    public void setUp() {
-        when(context.expr(0)).thenReturn(mockedFirstExpr);
+    fun setUp() {
+        whenever(context.expr(0)).thenReturn(mockedFirstExpr)
     }
 
     @Test
-    public void return_one_for_non_negative_argument() {
-        assertOizp("0", "1");
-        assertOizp("1", "1");
-        assertOizp("10", "1");
+    fun return_same_value_for_non_negative_argument() {
+        assertZing("0", "0")
+        assertZing("1", "1")
+        assertZing("5", "5")
+        assertZing("0.1", "0.1")
+        assertZing("1.1", "1.1")
     }
 
     @Test
-    public void return_zero_for_negative_argument() {
-        assertOizp("-1", "0");
-        assertOizp("-10", "0");
+    fun return_zero_for_negative_argument() {
+        assertZing("-0.1", "0")
+        assertZing("-1", "0")
+        assertZing("-10", "0")
+        assertZing("-1.1", "0")
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_for_non_number_argument() {
-        assertOizp("non_number", null);
+    @Test(expected = IllegalArgumentException::class)
+    fun throw_illegal_argument_exception_for_non_number_argument() {
+        assertZing("non_number", null)
     }
 
-    private void assertOizp(String value, String monthsBetween) {
-        when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(value);
-        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo(monthsBetween);
+    private fun assertZing(value: String, monthsBetween: String?) {
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn(value)
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo(monthsBetween)
     }
 }

@@ -61,7 +61,10 @@ pipeline {
                 allOf {
                     // Do not deploy on PR builds
                     expression { env.CHANGE_ID == null }
-                    expression { env.GIT_BRANCH == "master" }
+                    anyOf {
+                        expression { env.GIT_BRANCH == "master" }
+                        expression { env.GIT_BRANCH == "1.7.1-rc" }
+                    }
                 }
             }
             environment {

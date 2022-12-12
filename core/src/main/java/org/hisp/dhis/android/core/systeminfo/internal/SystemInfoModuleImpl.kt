@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
-import javax.inject.Inject
 
 @Reusable
 class SystemInfoModuleImpl @Inject internal constructor(

@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.systeminfo.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.systeminfo.*
 
 @Singleton
+@Suppress("TooManyFunctions", "TooGenericExceptionThrown")
 class DHISVersionManagerImpl @Inject internal constructor(
     private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
 ) : DHISVersionManager {
@@ -53,7 +54,7 @@ class DHISVersionManagerImpl @Inject internal constructor(
         return patchVersion
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { DHISPatchVersion.getValue(it) }
-                    .also { patch -> patchVersion =  patch}
+                    .also { patch -> patchVersion = patch }
             }
     }
 

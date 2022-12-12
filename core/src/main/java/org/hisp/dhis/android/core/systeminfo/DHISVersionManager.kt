@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
+@Suppress("FunctionNaming", "TooManyFunctions")
 interface DHISVersionManager {
     fun getVersion(): DHISVersion
     fun getPatchVersion(): DHISPatchVersion?

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -42,7 +43,6 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.allowedVersionsAsStr
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.isAllowedVersion
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import javax.inject.Inject
 
 @Reusable
 class SystemInfoCall @Inject internal constructor(
@@ -64,9 +64,9 @@ class SystemInfoCall @Inject internal constructor(
                         .errorComponent(D2ErrorComponent.SDK)
                         .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                         .errorDescription(
-                            "Server DHIS version (" + version + ") not valid. "
-                                    + "Allowed versions: "
-                                    + CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
+                            "Server DHIS version (" + version + ") not valid. " +
+                                "Allowed versions: " +
+                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
                         )
                         .build()
                 }

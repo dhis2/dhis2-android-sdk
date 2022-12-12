@@ -32,6 +32,7 @@ import android.util.Log
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.maintenance.D2Error
 import retrofit2.Call
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCall @Inject constructor(
@@ -171,8 +171,8 @@ internal class FileResourceDownloadCall @Inject constructor(
                 val fileResource = apiCallExecutor.executeObjectCall(fileResourceService.getFileResource(uid))
 
                 val acceptedContentLength = (maxContentLength == null) ||
-                        (fileResource.contentLength() == null) ||
-                        (fileResource.contentLength()!! <= maxContentLength)
+                    (fileResource.contentLength() == null) ||
+                    (fileResource.contentLength()!! <= maxContentLength)
 
                 if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = apiCallExecutor.executeObjectCall(download(value))

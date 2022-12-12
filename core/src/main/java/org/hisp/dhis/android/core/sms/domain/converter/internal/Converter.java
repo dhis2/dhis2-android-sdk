@@ -83,7 +83,7 @@ public abstract class Converter<P> {
             if (smsVersion == null) {
                 throw D2Error.builder()
                         .errorCode(D2ErrorCode.SMS_NOT_SUPPORTED)
-                        .errorDescription("SMS is not supported in version " + dhisVersionManager.getPatchVersion())
+                        .errorDescription("SMS is not supported in version " + dhisVersionManager.  getPatchVersion())
                         .errorComponent(D2ErrorComponent.SDK)
                         .build();
             }

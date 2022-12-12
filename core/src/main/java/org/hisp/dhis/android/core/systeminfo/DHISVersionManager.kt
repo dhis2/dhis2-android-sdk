@@ -25,37 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+interface DHISVersionManager {
+    fun getVersion(): DHISVersion
+    fun getPatchVersion(): DHISPatchVersion?
+    fun getSmsVersion(): SMSVersion?
 
-import javax.inject.Inject;
+    @Deprecated("")
+    fun is2_29(): Boolean
+    fun is2_30(): Boolean
+    fun is2_31(): Boolean
+    fun is2_32(): Boolean
+    fun is2_33(): Boolean
+    fun is2_34(): Boolean
+    fun is2_35(): Boolean
+    fun is2_36(): Boolean
+    fun is2_37(): Boolean
+    fun is2_38(): Boolean
+    fun is2_39(): Boolean
+    fun is2_40(): Boolean
 
-import dagger.Reusable;
+    /**
+     * Check if the current version is strictly greater than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is strictly greater than the parameter.
+     */
+    fun isGreaterThan(version: DHISVersion): Boolean
 
-@Reusable
-public final class SystemInfoModuleImpl implements SystemInfoModule {
-
-    private final DHISVersionManager versionManager;
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
-
-    @Inject
-    SystemInfoModuleImpl(DHISVersionManager versionManager,
-                         ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
-    }
-
-    @Override
-    public DHISVersionManager versionManager() {
-        return versionManager;
-    }
-
-    @Override
-    public ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo() {
-        return systemInfo;
-    }
+    /**
+     * Check if the current version is greater or equal than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is greater or equal than the parameter.
+     */
+    fun isGreaterOrEqualThan(version: DHISVersion): Boolean
 }

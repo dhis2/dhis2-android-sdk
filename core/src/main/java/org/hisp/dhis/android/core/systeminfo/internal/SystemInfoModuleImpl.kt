@@ -25,51 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal
 
-public interface DHISVersionManager {
-    DHISVersion getVersion();
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
+import javax.inject.Inject
 
-    DHISPatchVersion getPatchVersion();
+@Reusable
+class SystemInfoModuleImpl @Inject internal constructor(
+    private val versionManager: DHISVersionManager,
+    private val systemInfo: ReadOnlyWithDownloadObjectRepository<SystemInfo>
+) : SystemInfoModule {
+    override fun versionManager(): DHISVersionManager {
+        return versionManager
+    }
 
-    SMSVersion getSmsVersion();
-
-    @Deprecated
-    boolean is2_29();
-
-    boolean is2_30();
-
-    boolean is2_31();
-
-    boolean is2_32();
-
-    boolean is2_33();
-
-    boolean is2_34();
-
-    boolean is2_35();
-
-    boolean is2_36();
-
-    boolean is2_37();
-
-    boolean is2_38();
-
-    boolean is2_39();
-
-    /**
-     * Check if the current version is strictly greater than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is strictly greater than the parameter.
-     */
-    boolean isGreaterThan(DHISVersion version);
-
-    /**
-     * Check if the current version is greater or equal than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is greater or equal than the parameter.
-     */
-    boolean isGreaterOrEqualThan(DHISVersion version);
+    override fun systemInfo(): ReadOnlyWithDownloadObjectRepository<SystemInfo> {
+        return systemInfo
+    }
 }

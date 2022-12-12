@@ -328,7 +328,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             .trackedEntityDataValues(extraData.dataValueMap[event.uid()])
             .notes(getEventNotes(extraData.notes, event))
 
-        if (versionManager.is2_30) {
+        if (versionManager.is2_30()) {
             eventBuilder.geometry(null)
         }
 

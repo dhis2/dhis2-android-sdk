@@ -25,49 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.junit.Before
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.systeminfo.DHISVersion;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-public class DHISVersionManagerShould {
-
-    @Mock
-    private ObjectWithoutUidStore<SystemInfo> systemInfoStore;
-
-    @Mock
-    private SystemInfo systemInfo;
+class DHISVersionManagerShould {
+    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo> = mock()
+    private val systemInfo: SystemInfo = mock()
 
     // Object to test
-    private DHISVersionManager dhisVersionManager;
+    private lateinit var dhisVersionManager: DHISVersionManager
 
     @Before
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-        when(systemInfoStore.selectFirst()).thenReturn(systemInfo);
-
-        this.dhisVersionManager = new DHISVersionManagerImpl(systemInfoStore);
+    fun setUp() {
+        whenever(systemInfoStore.selectFirst()).thenReturn(systemInfo)
+        dhisVersionManager = DHISVersionManagerImpl(systemInfoStore)
     }
 
     @Test
-    public void compare_version_when_not_null() {
-        when(systemInfo.version()).thenReturn("2.31.2");
-
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse();
+    fun compare_version_when_not_null() {
+        whenever(systemInfo.version()).thenReturn("2.31.2")
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse()
     }
 }

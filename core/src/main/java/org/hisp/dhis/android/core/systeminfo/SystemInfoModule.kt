@@ -25,11 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 
-public interface SystemInfoModule {
-    DHISVersionManager versionManager();
-    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo();
+interface SystemInfoModule {
+    fun versionManager(): DHISVersionManager
+    fun systemInfo(): ReadOnlyWithDownloadObjectRepository<SystemInfo>
 }

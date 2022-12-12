@@ -48,7 +48,7 @@ internal class EventPostPayloadGenerator @Inject internal constructor(
             val eventBuilder = event.toBuilder()
                 .trackedEntityDataValues(dataValueMap[event.uid()])
                 .notes(notes.filter { it.event() == event.uid() })
-            if (versionManager.is2_30) {
+            if (versionManager.is2_30()) {
                 eventBuilder.geometry(null)
             }
             eventBuilder.build()

@@ -36,6 +36,9 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.fileresource.FileResourceValueType
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -46,15 +49,22 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val dataValueStore: DataValueStore
+    private val dataValueStore: DataValueStore,
+    private val dhisVersionManager: DHISVersionManager
 ) {
 
     fun getMissingTrackerAttributeValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>
     ): List<MissingTrackerAttributeValue> {
+        val valueTypes =
+            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+                params.valueTypes
+            } else {
+                params.valueTypes.filter { it == FileResourceValueType.IMAGE }
+            }
         val attributesWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, params.valueTypes)
+            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, valueTypes)
             .build()
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
         val attributeValuesWhereClause = WhereClauseBuilder()

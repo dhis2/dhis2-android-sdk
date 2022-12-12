@@ -32,7 +32,6 @@ import android.util.Log
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import javax.inject.Inject
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -42,13 +41,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
-import org.hisp.dhis.android.core.fileresource.FileResourceElementType
-import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
-import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.maintenance.D2Error
 import retrofit2.Call
+import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCall @Inject constructor(
@@ -110,13 +107,22 @@ internal class FileResourceDownloadCall @Inject constructor(
                     values = attributeDataValues,
                     maxContentLength = params.maxContentLength,
                     download = { v ->
-                        fileResourceService.getFileFromTrackedEntityAttribute(
-                            v.trackedEntityInstance()!!,
-                            v.trackedEntityAttribute()!!,
-                            FileResizerHelper.Dimension.MEDIUM.name
-                        )
+                        when (v.valueType) {
+                            ValueType.IMAGE ->
+                                fileResourceService.getImageFromTrackedEntityAttribute(
+                                    v.value.trackedEntityInstance()!!,
+                                    v.value.trackedEntityAttribute()!!,
+                                    FileResizerHelper.Dimension.MEDIUM.name
+                                )
+                            ValueType.FILE_RESOURCE ->
+                                fileResourceService.getFileFromTrackedEntityAttribute(
+                                    v.value.trackedEntityInstance()!!,
+                                    v.value.trackedEntityAttribute()!!
+                                )
+                            else -> null
+                        }
                     },
-                    getUid = { v -> v.value() }
+                    getUid = { v -> v.value.value() }
                 )
             }
 
@@ -142,7 +148,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private fun <V> downloadAndPersistFiles(
         values: List<V>,
         maxContentLength: Int?,
-        download: (V) -> Call<ResponseBody>,
+        download: (V) -> Call<ResponseBody>?,
         getUid: (V) -> String?
     ) {
         val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
@@ -157,16 +163,16 @@ internal class FileResourceDownloadCall @Inject constructor(
     private fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
-        download: (V) -> Call<ResponseBody>,
+        download: (V) -> Call<ResponseBody>?,
         getUid: (V) -> String?
     ): FileResource? {
         return getUid(value)?.let { uid ->
             try {
                 val fileResource = apiCallExecutor.executeObjectCall(fileResourceService.getFileResource(uid))
 
-                val acceptedContentLength = maxContentLength == null ||
-                    fileResource.contentLength() == null ||
-                    fileResource.contentLength()!! <= maxContentLength
+                val acceptedContentLength = (maxContentLength == null) ||
+                        (fileResource.contentLength() == null) ||
+                        (fileResource.contentLength()!! <= maxContentLength)
 
                 if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = apiCallExecutor.executeObjectCall(download(value))

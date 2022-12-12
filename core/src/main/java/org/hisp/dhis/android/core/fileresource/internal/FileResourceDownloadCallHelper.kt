@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -36,10 +35,10 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCallHelper @Inject constructor(
@@ -53,18 +52,15 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
     fun getMissingTrackerAttributeValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>
-    ): List<TrackedEntityAttributeValue> {
-        // TODO Download files for TrackedEntityAttributes
-        val valueTypes = params.valueTypes.filter { it == FileResourceValueType.IMAGE }
-
-        val attributeUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, valueTypes)
+    ): List<MissingTrackerAttributeValue> {
+        val attributesWhereClause = WhereClauseBuilder()
+            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, params.valueTypes)
             .build()
-        val trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause)
+        val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
         val attributeValuesWhereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids
+                trackedEntityAttributes.map { it.uid() }
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.VALUE,
@@ -72,6 +68,10 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
             )
             .build()
         return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause)
+            .map { av ->
+                val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
+                MissingTrackerAttributeValue(av, type)
+            }
     }
 
     fun getMissingTrackerDataValues(

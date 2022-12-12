@@ -43,10 +43,16 @@ internal interface FileResourceService {
     fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): Call<FileResource>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
-    fun getFileFromTrackedEntityAttribute(
+    fun getImageFromTrackedEntityAttribute(
         @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
         @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
         @Query("dimension") dimension: String
+    ): Call<ResponseBody>
+
+    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/file")
+    fun getFileFromTrackedEntityAttribute(
+        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
+        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String
     ): Call<ResponseBody>
 
     @GET("$EVENTS/files")

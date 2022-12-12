@@ -57,14 +57,14 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>
     ): List<MissingTrackerAttributeValue> {
-        val valueTypes =
+        val fileTypes =
             if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
                 params.valueTypes
             } else {
                 params.valueTypes.filter { it == FileResourceValueType.IMAGE }
             }
         val attributesWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, valueTypes)
+            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, fileTypes.map { it.valueType })
             .build()
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
         val attributeValuesWhereClause = WhereClauseBuilder()
@@ -89,7 +89,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         existingFileResources: List<String>
     ): List<TrackedEntityDataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes)
+            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
             .build()
         val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)
@@ -105,7 +105,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         existingFileResources: List<String>
     ): List<DataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes)
+            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "AGGREGATE")
             .build()
         val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)

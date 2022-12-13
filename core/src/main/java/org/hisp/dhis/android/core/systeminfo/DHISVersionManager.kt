@@ -27,25 +27,10 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-@Suppress("FunctionNaming", "TooManyFunctions")
 interface DHISVersionManager {
     fun getVersion(): DHISVersion
     fun getPatchVersion(): DHISPatchVersion?
     fun getSmsVersion(): SMSVersion?
-
-    @Deprecated("")
-    fun is2_29(): Boolean
-    fun is2_30(): Boolean
-    fun is2_31(): Boolean
-    fun is2_32(): Boolean
-    fun is2_33(): Boolean
-    fun is2_34(): Boolean
-    fun is2_35(): Boolean
-    fun is2_36(): Boolean
-    fun is2_37(): Boolean
-    fun is2_38(): Boolean
-    fun is2_39(): Boolean
-    fun is2_40(): Boolean
 
     /**
      * Check if the current version is strictly greater than the parameter.

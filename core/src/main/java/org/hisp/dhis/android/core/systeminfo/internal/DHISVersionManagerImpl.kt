@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.systeminfo.internal
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.*
 
 @Singleton
-@Suppress("TooManyFunctions", "TooGenericExceptionThrown")
 class DHISVersionManagerImpl @Inject internal constructor(
     private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
 ) : DHISVersionManager {
@@ -47,7 +49,11 @@ class DHISVersionManagerImpl @Inject internal constructor(
                 systemInfo.version()?.let { DHISVersion.getValue(it) }
                     .also { dhisVersion -> version = dhisVersion }
             }
-            ?: throw RuntimeException("Cannot get DHIS2 version")
+            ?: throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                .errorDescription("Invalid DHIS version")
+                .build()
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
@@ -64,54 +70,6 @@ class DHISVersionManagerImpl @Inject internal constructor(
                 systemInfo.version()?.let { SMSVersion.getValue(it) }
                     .also { sms -> smsVersion = sms }
             }
-    }
-
-    override fun is2_29(): Boolean {
-        return getVersion() === DHISVersion.V2_29
-    }
-
-    override fun is2_30(): Boolean {
-        return getVersion() === DHISVersion.V2_30
-    }
-
-    override fun is2_31(): Boolean {
-        return getVersion() === DHISVersion.V2_31
-    }
-
-    override fun is2_32(): Boolean {
-        return getVersion() === DHISVersion.V2_32
-    }
-
-    override fun is2_33(): Boolean {
-        return getVersion() === DHISVersion.V2_33
-    }
-
-    override fun is2_34(): Boolean {
-        return getVersion() === DHISVersion.V2_34
-    }
-
-    override fun is2_35(): Boolean {
-        return getVersion() === DHISVersion.V2_35
-    }
-
-    override fun is2_36(): Boolean {
-        return getVersion() === DHISVersion.V2_36
-    }
-
-    override fun is2_37(): Boolean {
-        return getVersion() === DHISVersion.V2_37
-    }
-
-    override fun is2_38(): Boolean {
-        return getVersion() === DHISVersion.V2_38
-    }
-
-    override fun is2_39(): Boolean {
-        return getVersion() === DHISVersion.V2_39
-    }
-
-    override fun is2_40(): Boolean {
-        return getVersion() === DHISVersion.V2_40
     }
 
     override fun isGreaterThan(version: DHISVersion): Boolean {

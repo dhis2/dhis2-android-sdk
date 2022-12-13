@@ -31,9 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.systeminfo.*
 import org.junit.Before
 import org.junit.Test
 
@@ -57,5 +56,40 @@ class DHISVersionManagerShould {
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse()
+
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_30)).isTrue()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_31)).isTrue()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_32)).isFalse()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_33)).isFalse()
+    }
+
+    @Test(expected = D2Error::class)
+    fun throw_invalid_version() {
+        whenever(systemInfo.version()).thenReturn("Invalid_version")
+        dhisVersionManager.getVersion()
+    }
+
+    @Test
+    fun should_get_patch_version() {
+        whenever(systemInfo.version()).thenReturn("2.40.0")
+        assertThat(dhisVersionManager.getPatchVersion()).isEqualTo(DHISPatchVersion.V2_40_0)
+    }
+
+    @Test
+    fun return_null_if_unknown_patch_version() {
+        whenever(systemInfo.version()).thenReturn("2.39.5.1")
+        assertThat(dhisVersionManager.getPatchVersion()).isNull()
+    }
+
+    @Test
+    fun should_return_sms_version() {
+        whenever(systemInfo.version()).thenReturn("2.39.5.1")
+        assertThat(dhisVersionManager.getSmsVersion()).isEqualTo(SMSVersion.V2)
+    }
+
+    @Test
+    fun return_null_if_none_sms_version() {
+        whenever(systemInfo.version()).thenReturn("2.31.7")
+        assertThat(dhisVersionManager.getSmsVersion()).isNull()
     }
 }

@@ -25,36 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-
-public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegrationTest {
-    //@Test
-    public void return_2_30_version_when_connecting_to_2_30_server() throws Exception {
-        d2.wipeModule().wipeEverything();
-
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
-
-        d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet();
-        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
-        assertThat(versionManager.is2_30()).isTrue();
-        assertThat(versionManager.is2_31()).isFalse();
+@RunWith(D2JunitRunner::class)
+class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun allow_access_to_system_info_user() {
+        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()
+        assertThat(systemInfo.version()).isEqualTo("2.38")
+        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }
 
-    //@Test
-    public void return_2_31_version_when_connecting_to_2_31_server() throws Exception {
-        d2.wipeModule().wipeEverything();
-
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
-
-        d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet();
-        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31);
-        assertThat(versionManager.is2_30()).isFalse();
-        assertThat(versionManager.is2_31()).isTrue();
+    @Test
+    fun allow_access_to_version_manager() {
+        val version = d2.systemInfoModule().versionManager().getVersion()
+        assertThat(version).isEqualTo(DHISVersion.V2_38)
     }
 }

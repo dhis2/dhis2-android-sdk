@@ -25,11 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 
-public interface SystemInfoModule {
-    DHISVersionManager versionManager();
-    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo();
+@Reusable
+class SystemInfoModuleImpl @Inject internal constructor(
+    private val versionManager: DHISVersionManager,
+    private val systemInfo: ReadOnlyWithDownloadObjectRepository<SystemInfo>
+) : SystemInfoModule {
+    override fun versionManager(): DHISVersionManager {
+        return versionManager
+    }
+
+    override fun systemInfo(): ReadOnlyWithDownloadObjectRepository<SystemInfo> {
+        return systemInfo
+    }
 }

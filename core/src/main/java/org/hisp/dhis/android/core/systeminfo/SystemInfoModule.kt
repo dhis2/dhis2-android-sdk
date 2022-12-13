@@ -25,36 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-
-public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegrationTest {
-    //@Test
-    public void return_2_30_version_when_connecting_to_2_30_server() throws Exception {
-        d2.wipeModule().wipeEverything();
-
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
-
-        d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet();
-        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
-        assertThat(versionManager.is2_30()).isTrue();
-        assertThat(versionManager.is2_31()).isFalse();
-    }
-
-    //@Test
-    public void return_2_31_version_when_connecting_to_2_31_server() throws Exception {
-        d2.wipeModule().wipeEverything();
-
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
-
-        d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet();
-        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31);
-        assertThat(versionManager.is2_30()).isFalse();
-        assertThat(versionManager.is2_31()).isTrue();
-    }
+interface SystemInfoModule {
+    fun versionManager(): DHISVersionManager
+    fun systemInfo(): ReadOnlyWithDownloadObjectRepository<SystemInfo>
 }

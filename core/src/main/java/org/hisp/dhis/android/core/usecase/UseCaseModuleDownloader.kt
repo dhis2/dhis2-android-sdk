@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase
 
 import dagger.Reusable
 import io.reactivex.Completable
@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
 
 @Reusable
-internal class MapModuleDownloader @Inject constructor(
+internal class UseCaseModuleDownloader @Inject constructor(
     private val stockUseCaseCall: StockUseCaseCall
 ) : UntypedModuleDownloader {
 

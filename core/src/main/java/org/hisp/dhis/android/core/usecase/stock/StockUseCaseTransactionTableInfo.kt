@@ -25,22 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+object StockUseCaseTransactionTableInfo {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "StockUseCaseTransaction"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
+
+    class Columns : DeletableDataColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM_UID,
+                SORT_ORDER,
+                TRANSACTION_TYPE,
+                DISTRIBUTED_TO,
+                STOCK_DISTRIBUTED,
+                STOCK_DISCARDED,
+                STOCK_CORRECTED
+            )
+        }
+
+        companion object {
+            const val PROGRAM_UID = "programUid"
+            const val SORT_ORDER = "sortOrder"
+            const val TRANSACTION_TYPE = "transactionType"
+            const val DISTRIBUTED_TO = "distributedTo"
+            const val STOCK_DISTRIBUTED = "stockDistributed"
+            const val STOCK_DISCARDED = "stockDiscarded"
+            const val STOCK_CORRECTED = "stockCorrected"
         }
     }
 }

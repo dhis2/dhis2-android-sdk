@@ -25,22 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.StockUseCase
+import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransaction
 
 @Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+internal class StockUseCaseTransformer : TwoWayTransformer<InternalStockUseCase, StockUseCase> {
+    override fun transform(o: InternalStockUseCase): StockUseCase {
+        return StockUseCase(
+            o.uid(),
+            o.itemCode(),
+            o.itemDescription(),
+            o.programType(),
+            o.description(),
+            o.stockOnHand(),
+            o.transactions()?.map { StockUseCaseTransaction.transformFrom(it) } ?: emptyList()
+        )
+    }
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    override fun deTransform(t: StockUseCase): InternalStockUseCase {
+        return InternalStockUseCase.builder()
+            .uid(t.programUid)
+            .itemCode(t.itemCode)
+            .itemDescription(t.itemDescription)
+            .programType(t.programType)
+            .description(t.description)
+            .stockOnHand(t.stockOnHand)
+            .transactions(t.transactions.map { StockUseCaseTransaction.transformTo(t.programUid, it) })
+            .build()
     }
 }

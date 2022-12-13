@@ -25,22 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+@RunWith(JUnit4::class)
+class StockUseCaseCallShould {
+    private val handler: IdentifiableHandlerImpl<InternalStockUseCase> = mock()
+    private val service: StockUseCaseService = mock()
+    private val stockUseCaseSingle: Single<List<InternalStockUseCase>> = mock()
+    private val apiCallExecutor: RxAPICallExecutor = mock()
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    private lateinit var stockUseCaseCall: StockUseCaseCall
+
+    @Before
+    fun setUp() {
+        whenever(service.stockUseCases()) doReturn stockUseCaseSingle
+        stockUseCaseCall = StockUseCaseCall(handler, service, apiCallExecutor)
+    }
+
+    @Test
+    fun default_to_empty_collection_if_not_found() {
+        whenever(apiCallExecutor.wrapSingle(stockUseCaseSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
+
+        stockUseCaseCall.getCompletable(false).blockingAwait()
+
+        verify(handler).handleMany(emptyList())
+        verifyNoMoreInteractions(handler)
     }
 }

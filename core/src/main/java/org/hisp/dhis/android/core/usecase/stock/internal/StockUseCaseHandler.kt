@@ -25,22 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+internal class StockUseCaseHandler @Inject constructor(
+        store: IdentifiableObjectStore<InternalStockUseCase>,
+        private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
+) : IdentifiableHandlerImpl<InternalStockUseCase>(store) {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    override fun beforeCollectionHandled(oCollection: Collection<InternalStockUseCase>): Collection<InternalStockUseCase> {
+        store.delete()
+        transactionLinkHandler.resetAllLinks()
+        return oCollection
+    }
+
+    override fun afterObjectHandled(o: InternalStockUseCase, action: HandleAction) {
+        transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it.toBuilder().programUid(o.uid()).build() }
     }
 }

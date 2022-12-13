@@ -25,22 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.UseCaseModule
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseEntityDIModule
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionEntityDIModule
+import retrofit2.Retrofit
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+@Module(
+    includes = [
+        StockUseCaseEntityDIModule::class,
+        StockUseCaseTransactionEntityDIModule::class,
+    ]
+)
+internal class UseCasePackageDIModule {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    @Provides
+    @Reusable
+    fun stockUseCaseService(retrofit: Retrofit): StockUseCaseService {
+        return retrofit.create(StockUseCaseService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: UseCaseModuleImpl): UseCaseModule {
+        return impl
     }
 }

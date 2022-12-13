@@ -25,22 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+package org.hisp.dhis.android.testapp.usecase.stock;
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+public class InternalStockUseCasePublicAccessShould
+        extends BasePublicAccessShould<InternalStockUseCase> {
+
+    @Mock
+    private InternalStockUseCase object;
+
+    @Override
+    public InternalStockUseCase object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        InternalStockUseCase.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        InternalStockUseCase.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

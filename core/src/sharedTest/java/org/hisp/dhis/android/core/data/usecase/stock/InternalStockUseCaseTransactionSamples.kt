@@ -25,22 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.data.usecase.stock
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
-
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+internal object InternalStockUseCaseTransactionSamples {
+    fun get(): InternalStockUseCaseTransaction {
+        return InternalStockUseCaseTransaction.builder()
+            .id(1L)
+            .programUid("program_uid")
+            .sortOrder(2)
+            .transactionType("CORRECTED")
+            .distributedTo("distributed_to")
+            .stockDistributed("stock_distributed")
+            .stockDiscarded("stock_discarded")
+            .stockCorrected("stock_corrected")
+            .build()
     }
 }

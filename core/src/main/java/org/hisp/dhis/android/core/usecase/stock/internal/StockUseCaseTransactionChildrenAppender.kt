@@ -25,22 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+internal class StockUseCaseTransactionChildrenAppender(
+    private val transactionLinkStore: LinkStore<InternalStockUseCaseTransaction>
+) : ChildrenAppender<InternalStockUseCase>() {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
+        return internalStockUseCase.toBuilder()
+            .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockUseCase.uid()))
+            .build()
     }
 }

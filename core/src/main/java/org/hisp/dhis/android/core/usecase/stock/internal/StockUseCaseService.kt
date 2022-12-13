@@ -25,22 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import io.reactivex.Single
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import retrofit2.http.GET
 
-@Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+internal interface StockUseCaseService {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
-    }
+    @GET("dataStore/USE_CASES/stockUseCases")
+    fun stockUseCases(): Single<List<InternalStockUseCase>>
 }

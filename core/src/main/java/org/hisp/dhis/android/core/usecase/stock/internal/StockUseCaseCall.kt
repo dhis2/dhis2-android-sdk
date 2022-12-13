@@ -25,22 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map
+package org.hisp.dhis.android.core.usecase.stock.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
+import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
 
 @Reusable
-internal class MapModuleDownloader @Inject constructor(
-    private val stockUseCaseCall: StockUseCaseCall
-) : UntypedModuleDownloader {
+internal class StockUseCaseCall @Inject constructor(
+        private val stockUseCaseHandler: HandlerWithTransformer<InternalStockUseCase>,
+        private val stockUseCaseService: StockUseCaseService,
+        private val apiCallExecutor: RxAPICallExecutor,
+) : BaseSettingCall<List<InternalStockUseCase>>() {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    override fun fetch(storeError: Boolean): Single<List<InternalStockUseCase>> {
+        return apiCallExecutor.wrapSingle(stockUseCaseService.stockUseCases(), storeError = storeError)
+    }
+
+    override fun process(item: List<InternalStockUseCase>?) {
+        val stockUseCases = item ?: emptyList()
+        stockUseCaseHandler.handleMany(stockUseCases)
     }
 }

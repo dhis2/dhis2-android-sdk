@@ -79,7 +79,6 @@ import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule
-import org.hisp.dhis.android.core.usecase.internal.UseCasePackageDIModule
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule
@@ -92,6 +91,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPaylo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+import org.hisp.dhis.android.core.usecase.internal.UseCasePackageDIModule
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule
 import org.hisp.dhis.android.core.visualization.internal.VisualizationPackageDIModule

@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.option.internal.OptionModuleWiper
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleWiper
 import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper
 import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper
-import org.hisp.dhis.android.core.usecase.internal.UseCaseModuleWiper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper
 import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper
@@ -57,6 +56,7 @@ import org.hisp.dhis.android.core.sms.internal.SMSModuleWiper
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper
+import org.hisp.dhis.android.core.usecase.internal.UseCaseModuleWiper
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWiper
@@ -64,37 +64,37 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWipe
 @Reusable
 @Suppress("LongParameterList")
 internal class D2ModuleWipers @Inject constructor(
-        attribute: AttributeModuleWiper,
-        category: CategoryModuleWiper,
-        common: CommonModuleWiper,
-        constant: ConstantModuleWiper,
-        dataElement: DataElementModuleWiper,
-        dataSet: DataSetModuleWiper,
-        dataValue: DataValueModuleWiper,
-        enrollment: EnrollmentModuleWiper,
-        event: EventModuleWiper,
-        fileResource: FileResourceModuleWiper,
-        importModule: ImportModuleWiper,
-        indicator: IndicatorModuleWiper,
-        legendSet: LegendSetModuleWiper,
-        localDataStore: LocalDataStoreModuleWiper,
-        maintenance: MaintenanceModuleWiper,
-        map: MapModuleWiper,
-        option: OptionModuleWiper,
-        organisationUnit: OrganisationUnitModuleWiper,
-        period: PeriodModuleWiper,
-        program: ProgramModuleWiper,
-        useCase: UseCaseModuleWiper,
-        relationship: RelationshipModuleWiper,
-        resource: ResourceModuleWiper,
-        smsModuleWiper: SMSModuleWiper,
-        systemInfo: SystemInfoModuleWiper,
-        systemSetting: SettingModuleWiper,
-        trackedEntity: TrackedEntityModuleWiper,
-        trackerJob: TrackerJobModuleWiper,
-        user: UserModuleWiper,
-        validation: ValidationModuleWiper,
-        visualization: VisualizationModuleWiper
+    attribute: AttributeModuleWiper,
+    category: CategoryModuleWiper,
+    common: CommonModuleWiper,
+    constant: ConstantModuleWiper,
+    dataElement: DataElementModuleWiper,
+    dataSet: DataSetModuleWiper,
+    dataValue: DataValueModuleWiper,
+    enrollment: EnrollmentModuleWiper,
+    event: EventModuleWiper,
+    fileResource: FileResourceModuleWiper,
+    importModule: ImportModuleWiper,
+    indicator: IndicatorModuleWiper,
+    legendSet: LegendSetModuleWiper,
+    localDataStore: LocalDataStoreModuleWiper,
+    maintenance: MaintenanceModuleWiper,
+    map: MapModuleWiper,
+    option: OptionModuleWiper,
+    organisationUnit: OrganisationUnitModuleWiper,
+    period: PeriodModuleWiper,
+    program: ProgramModuleWiper,
+    useCase: UseCaseModuleWiper,
+    relationship: RelationshipModuleWiper,
+    resource: ResourceModuleWiper,
+    smsModuleWiper: SMSModuleWiper,
+    systemInfo: SystemInfoModuleWiper,
+    systemSetting: SettingModuleWiper,
+    trackedEntity: TrackedEntityModuleWiper,
+    trackerJob: TrackerJobModuleWiper,
+    user: UserModuleWiper,
+    validation: ValidationModuleWiper,
+    visualization: VisualizationModuleWiper
 ) {
     val wipers: List<ModuleWiper>
 

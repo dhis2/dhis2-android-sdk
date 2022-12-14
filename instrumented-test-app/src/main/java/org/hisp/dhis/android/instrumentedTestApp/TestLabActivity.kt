@@ -30,5 +30,4 @@ package org.hisp.dhis.android.instrumentedTestApp
 
 import android.app.Activity
 
-class TestLabActivity : Activity() {
-}
+class TestLabActivity : Activity()

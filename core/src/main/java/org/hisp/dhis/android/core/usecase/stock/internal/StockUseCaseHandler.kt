@@ -36,11 +36,13 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
 internal class StockUseCaseHandler @Inject constructor(
-        store: IdentifiableObjectStore<InternalStockUseCase>,
-        private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
+    store: IdentifiableObjectStore<InternalStockUseCase>,
+    private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
 ) : IdentifiableHandlerImpl<InternalStockUseCase>(store) {
 
-    override fun beforeCollectionHandled(oCollection: Collection<InternalStockUseCase>): Collection<InternalStockUseCase> {
+    override fun beforeCollectionHandled(
+        oCollection: Collection<InternalStockUseCase>
+    ): Collection<InternalStockUseCase> {
         store.delete()
         transactionLinkHandler.resetAllLinks()
         return oCollection

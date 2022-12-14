@@ -32,14 +32,14 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
 @Reusable
 internal class StockUseCaseCall @Inject constructor(
-        private val stockUseCaseHandler: HandlerWithTransformer<InternalStockUseCase>,
-        private val stockUseCaseService: StockUseCaseService,
-        private val apiCallExecutor: RxAPICallExecutor,
+    private val stockUseCaseHandler: HandlerWithTransformer<InternalStockUseCase>,
+    private val stockUseCaseService: StockUseCaseService,
+    private val apiCallExecutor: RxAPICallExecutor,
 ) : BaseSettingCall<List<InternalStockUseCase>>() {
 
     override fun fetch(storeError: Boolean): Single<List<InternalStockUseCase>> {

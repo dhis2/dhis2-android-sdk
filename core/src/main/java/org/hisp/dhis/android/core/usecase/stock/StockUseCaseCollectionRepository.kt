@@ -39,10 +39,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 @Reusable
 class StockUseCaseCollectionRepository @Inject internal constructor(
-        store: IdentifiableObjectStore<InternalStockUseCase>,
-        childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockUseCase>>,
-        scope: RepositoryScope,
-        transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
+    store: IdentifiableObjectStore<InternalStockUseCase>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockUseCase>>,
+    scope: RepositoryScope,
+    transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
     ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
         StockUseCaseCollectionRepository>(

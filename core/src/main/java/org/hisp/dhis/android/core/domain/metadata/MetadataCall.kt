@@ -55,14 +55,14 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
-import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
-import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
+import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -71,25 +71,25 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDown
 @Suppress("LongParameterList")
 @Reusable
 internal class MetadataCall @Inject constructor(
-        private val rxCallExecutor: RxAPICallExecutor,
-        private val systemInfoDownloader: SystemInfoModuleDownloader,
-        private val systemSettingDownloader: SettingModuleDownloader,
-        private val useCaseDownloader: UseCaseModuleDownloader,
-        private val userModuleDownloader: UserModuleDownloader,
-        private val categoryDownloader: CategoryModuleDownloader,
-        private val programDownloader: ProgramModuleDownloader,
-        private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
-        private val dataSetDownloader: DataSetModuleDownloader,
-        private val visualizationDownloader: VisualizationModuleDownloader,
-        private val constantModuleDownloader: ConstantModuleDownloader,
-        private val indicatorModuleDownloader: IndicatorModuleDownloader,
-        private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader,
-        private val smsModule: SmsModule,
-        private val databaseAdapter: DatabaseAdapter,
-        private val generalSettingCall: GeneralSettingCall,
-        private val multiUserDatabaseManager: MultiUserDatabaseManager,
-        private val credentialsSecureStore: CredentialsSecureStore,
-        private val legendSetModuleDownloader: LegendSetModuleDownloader,
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val systemInfoDownloader: SystemInfoModuleDownloader,
+    private val systemSettingDownloader: SettingModuleDownloader,
+    private val useCaseDownloader: UseCaseModuleDownloader,
+    private val userModuleDownloader: UserModuleDownloader,
+    private val categoryDownloader: CategoryModuleDownloader,
+    private val programDownloader: ProgramModuleDownloader,
+    private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
+    private val dataSetDownloader: DataSetModuleDownloader,
+    private val visualizationDownloader: VisualizationModuleDownloader,
+    private val constantModuleDownloader: ConstantModuleDownloader,
+    private val indicatorModuleDownloader: IndicatorModuleDownloader,
+    private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader,
+    private val smsModule: SmsModule,
+    private val databaseAdapter: DatabaseAdapter,
+    private val generalSettingCall: GeneralSettingCall,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val legendSetModuleDownloader: LegendSetModuleDownloader,
 ) {
 
     companion object {

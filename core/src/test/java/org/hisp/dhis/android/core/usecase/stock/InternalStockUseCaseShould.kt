@@ -40,7 +40,8 @@ class InternalStockUseCaseShould {
 
     @Test
     fun map_from_json_string() {
-        val internalStockUseCase: InternalStockUseCase = objectMapper.readValue(jsonStream, InternalStockUseCase::class.java)
+        val internalStockUseCase: InternalStockUseCase = objectMapper
+            .readValue(jsonStream, InternalStockUseCase::class.java)
 
         Truth.assertThat(internalStockUseCase).isNotNull()
         Truth.assertThat(internalStockUseCase.uid()).isEqualTo("IpHINAT79UW")

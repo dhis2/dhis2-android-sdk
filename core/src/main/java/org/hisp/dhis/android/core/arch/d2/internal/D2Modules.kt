@@ -49,12 +49,12 @@ import org.hisp.dhis.android.core.option.OptionModule
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
 import org.hisp.dhis.android.core.period.PeriodModule
 import org.hisp.dhis.android.core.program.ProgramModule
-import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.relationship.RelationshipModule
 import org.hisp.dhis.android.core.settings.SettingModule
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
+import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
@@ -62,33 +62,33 @@ import org.hisp.dhis.android.core.visualization.VisualizationModule
 @Reusable
 @Suppress("LongParameterList")
 internal class D2Modules @Inject constructor(
-        val analytics: AnalyticsModule,
-        val category: CategoryModule,
-        val constant: ConstantModule,
-        val dataElement: DataElementModule,
-        val dataSet: DataSetModule,
-        val option: OptionModule,
-        val dataValue: DataValueModule,
-        val enrollment: EnrollmentModule,
-        val event: EventModule,
-        val fileResource: FileResourceModule,
-        val importModule: ImportModule,
-        val indicator: IndicatorModule,
-        val legendSet: LegendSetModule,
-        val dataStore: DataStoreModule,
-        val maintenance: MaintenanceModule,
-        val maps: MapModule,
-        val note: NoteModule,
-        val program: ProgramModule,
-        val useCase: UseCaseModule,
-        val organisationUnit: OrganisationUnitModule,
-        val systemInfo: SystemInfoModule,
-        val settingModule: SettingModule,
-        val periodModule: PeriodModule,
-        val relationship: RelationshipModule,
-        val trackedEntity: TrackedEntityModule,
-        val user: UserModule,
-        val validation: ValidationModule,
-        val visualization: VisualizationModule,
-        val sms: SmsModule
+    val analytics: AnalyticsModule,
+    val category: CategoryModule,
+    val constant: ConstantModule,
+    val dataElement: DataElementModule,
+    val dataSet: DataSetModule,
+    val option: OptionModule,
+    val dataValue: DataValueModule,
+    val enrollment: EnrollmentModule,
+    val event: EventModule,
+    val fileResource: FileResourceModule,
+    val importModule: ImportModule,
+    val indicator: IndicatorModule,
+    val legendSet: LegendSetModule,
+    val dataStore: DataStoreModule,
+    val maintenance: MaintenanceModule,
+    val maps: MapModule,
+    val note: NoteModule,
+    val program: ProgramModule,
+    val useCase: UseCaseModule,
+    val organisationUnit: OrganisationUnitModule,
+    val systemInfo: SystemInfoModule,
+    val settingModule: SettingModule,
+    val periodModule: PeriodModule,
+    val relationship: RelationshipModule,
+    val trackedEntity: TrackedEntityModule,
+    val user: UserModule,
+    val validation: ValidationModule,
+    val visualization: VisualizationModule,
+    val sms: SmsModule
 )

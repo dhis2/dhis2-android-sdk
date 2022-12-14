@@ -47,12 +47,12 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
-import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader

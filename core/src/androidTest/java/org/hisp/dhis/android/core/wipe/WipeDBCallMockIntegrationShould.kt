@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.data.maps.MapLayerSamples
 import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
 import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
+import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples
+import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
@@ -51,6 +53,8 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigS
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -126,6 +130,15 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
         SMSConfigStoreImpl.create(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
         SMSOngoingSubmissionStore.create(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
+
+        StockUseCaseStore.create(databaseAdapter).insert(
+                InternalStockUseCaseSamples.get()
+                        .toBuilder().uid("lxAQ7Zs9VYR").build()
+        )
+        StockUseCaseTransactionLinkStore.create(databaseAdapter).insert(
+                InternalStockUseCaseTransactionSamples.get()
+                        .toBuilder().programUid("lxAQ7Zs9VYR").build()
+        )
 
         MapLayerStore.create(databaseAdapter).insert(MapLayerSamples.get())
         MapLayerImageryProviderStore.create(databaseAdapter).insert(MapLayerImageryProviderSamples.get())

@@ -52,7 +52,6 @@ import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
@@ -69,7 +68,6 @@ class MetadataCallShould : BaseCallShould() {
     private val rxAPICallExecutor: RxAPICallExecutor = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
-    private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
     private val userDownloader: UserModuleDownloader = mock()
     private val categoryDownloader: CategoryModuleDownloader = mock()
     private val programDownloader: ProgramModuleDownloader = mock()
@@ -98,7 +96,6 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemInfoDownloader.downloadWithProgressManager(any()))
             .thenReturn(Observable.just(BaseD2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata()).thenReturn(
             Completable.complete()
@@ -132,7 +129,6 @@ class MetadataCallShould : BaseCallShould() {
             rxAPICallExecutor,
             systemInfoDownloader,
             systemSettingDownloader,
-            useCaseModuleDownloader,
             userDownloader,
             categoryDownloader,
             programDownloader,

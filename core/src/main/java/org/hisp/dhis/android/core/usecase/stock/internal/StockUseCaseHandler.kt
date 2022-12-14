@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.usecase.stock.internal
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 internal class StockUseCaseHandler @Inject constructor(
     store: IdentifiableObjectStore<InternalStockUseCase>,
     private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
-) : IdentifiableHandlerImpl<InternalStockUseCase>(store) {
+) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
     override fun beforeCollectionHandled(
         oCollection: Collection<InternalStockUseCase>

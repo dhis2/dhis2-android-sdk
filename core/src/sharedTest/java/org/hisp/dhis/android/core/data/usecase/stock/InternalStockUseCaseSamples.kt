@@ -39,7 +39,6 @@ internal object InternalStockUseCaseSamples {
             .programType("program_type")
             .itemCode("item_code")
             .itemDescription("item_description")
-            .deleted(false)
             .transactions(listOf(InternalStockUseCaseTransactionSamples.get()))
             .build()
     }

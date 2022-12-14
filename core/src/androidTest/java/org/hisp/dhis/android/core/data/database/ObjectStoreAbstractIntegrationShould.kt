@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.data.database
 
+import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import kotlin.jvm.Throws
@@ -92,6 +93,8 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         cv1.remove("_id")
         val cv2 = m2.toContentValues()
         cv2.remove("_id")
+        Log.v("fafitolio1", cv1.toString())
+        Log.v("fafitolio2", cv2.toString())
         assertThat(cv1).isEqualTo(cv2)
     }
 

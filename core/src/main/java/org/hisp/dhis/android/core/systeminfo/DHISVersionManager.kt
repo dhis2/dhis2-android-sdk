@@ -25,37 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+interface DHISVersionManager {
+    fun getVersion(): DHISVersion
+    fun getPatchVersion(): DHISPatchVersion?
+    fun getSmsVersion(): SMSVersion?
 
-import javax.inject.Inject;
+    /**
+     * Check if the current version is strictly greater than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is strictly greater than the parameter.
+     */
+    fun isGreaterThan(version: DHISVersion): Boolean
 
-import dagger.Reusable;
-
-@Reusable
-public final class SystemInfoModuleImpl implements SystemInfoModule {
-
-    private final DHISVersionManager versionManager;
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
-
-    @Inject
-    SystemInfoModuleImpl(DHISVersionManager versionManager,
-                         ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
-    }
-
-    @Override
-    public DHISVersionManager versionManager() {
-        return versionManager;
-    }
-
-    @Override
-    public ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo() {
-        return systemInfo;
-    }
+    /**
+     * Check if the current version is greater or equal than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is greater or equal than the parameter.
+     */
+    fun isGreaterOrEqualThan(version: DHISVersion): Boolean
 }

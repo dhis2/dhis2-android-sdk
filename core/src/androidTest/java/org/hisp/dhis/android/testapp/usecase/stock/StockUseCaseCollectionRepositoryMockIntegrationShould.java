@@ -45,10 +45,10 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
     public void find_all() {
         List<StockUseCase> stockUseCases = d2.useCaseModule().stockUseCases()
                 .blockingGet();
-        assertThat(stockUseCases.size()).isEqualTo(0);
+        assertThat(stockUseCases.size()).isEqualTo(1);
     }
 
-    //@Test
+    @Test
     public void filter_by_uid() {
         StockUseCase stockUseCase = d2.useCaseModule().stockUseCases()
                 .uid("IpHINAT79UW")
@@ -57,7 +57,7 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(stockUseCase.getStockOnHand()).isEqualTo("ypCQAFr1a5l");
     }
 
-    //@Test
+    @Test
     public void filter_by_number() {
         List<StockUseCase> stockUseCases = d2.useCaseModule().stockUseCases()
                 .withTransactions()

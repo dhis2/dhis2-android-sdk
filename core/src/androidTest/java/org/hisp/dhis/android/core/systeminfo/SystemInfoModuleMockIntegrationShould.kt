@@ -25,49 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.systeminfo.DHISVersion;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-public class DHISVersionManagerShould {
-
-    @Mock
-    private ObjectWithoutUidStore<SystemInfo> systemInfoStore;
-
-    @Mock
-    private SystemInfo systemInfo;
-
-    // Object to test
-    private DHISVersionManager dhisVersionManager;
-
-    @Before
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-        when(systemInfoStore.selectFirst()).thenReturn(systemInfo);
-
-        this.dhisVersionManager = new DHISVersionManagerImpl(systemInfoStore);
+@RunWith(D2JunitRunner::class)
+class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun allow_access_to_system_info_user() {
+        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()
+        assertThat(systemInfo.version()).isEqualTo("2.38")
+        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }
 
     @Test
-    public void compare_version_when_not_null() {
-        when(systemInfo.version()).thenReturn("2.31.2");
-
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse();
-        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse();
+    fun allow_access_to_version_manager() {
+        val version = d2.systemInfoModule().versionManager().getVersion()
+        assertThat(version).isEqualTo(DHISVersion.V2_38)
     }
 }

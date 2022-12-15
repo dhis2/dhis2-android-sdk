@@ -25,23 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import static com.google.common.truth.Truth.assertThat;
+class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
+    // @Test
+    fun return_2_30_version_when_connecting_to_2_30_server() {
+        d2.wipeModule().wipeEverything()
+        val versionManager = d2.systemInfoModule().versionManager()
+        d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet()
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30)
+        assertThat(versionManager.getVersion()).isNotEqualTo(DHISVersion.V2_31)
+    }
 
-@RunWith(D2JunitRunner.class)
-public class SystemInfoModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+    // @Test
+    @Throws(Exception::class)
+    fun return_2_31_version_when_connecting_to_2_31_server() {
+        d2.wipeModule().wipeEverything()
+        val versionManager = d2.systemInfoModule().versionManager()
+        d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet()
 
-    @Test
-    public void allow_access_to_system_info_user() {
-        SystemInfo systemInfo = d2.systemInfoModule().systemInfo().blockingGet();
-        assertThat(systemInfo.version()).isEqualTo("2.38");
-        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone");
+        assertThat(versionManager.getVersion()).isNotEqualTo(DHISVersion.V2_30)
+        assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31)
     }
 }

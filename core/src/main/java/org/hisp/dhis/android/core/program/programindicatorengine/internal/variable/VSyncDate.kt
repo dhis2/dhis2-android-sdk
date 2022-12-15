@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VSyncDate : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val enrollment = visitor.programIndicatorContext.enrollment
+        val enrollment = visitor.programIndicatorContext!!.enrollment
 
         return if (enrollment == null) {
             getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.lastUpdated()) }
@@ -49,7 +49,7 @@ internal class VSyncDate : ProgramExpressionItem() {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EnrollmentTableInfo.Columns.LAST_UPDATED}"
             AnalyticsType.ENROLLMENT, null ->

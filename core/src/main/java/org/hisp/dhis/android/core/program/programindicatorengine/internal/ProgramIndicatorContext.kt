@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
-internal data class ProgramIndicatorContext(
+data class ProgramIndicatorContext(
     val programIndicator: ProgramIndicator,
     val enrollment: Enrollment? = null,
     val attributeValues: Map<String, TrackedEntityAttributeValue> = mapOf(),

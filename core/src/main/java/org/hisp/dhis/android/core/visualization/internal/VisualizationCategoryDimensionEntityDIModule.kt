@@ -49,6 +49,6 @@ internal class VisualizationCategoryDimensionEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<VisualizationCategoryDimensionLink>):
         LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

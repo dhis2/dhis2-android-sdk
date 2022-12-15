@@ -156,17 +156,17 @@ internal object ProgramIndicatorSQLUtils {
         conditionalValueExpression: String? = null
     ): String {
         val stageElementItems = itemIds.filter {
-            it.dimensionalItemType() == DimensionalItemType.TRACKED_ENTITY_DATA_VALUE
+            it.dimensionalItemType == DimensionalItemType.TRACKED_ENTITY_DATA_VALUE
         }
         val attributeItems = itemIds.filter {
-            it.dimensionalItemType() == DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE
+            it.dimensionalItemType == DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE
         }
 
         val stageElementsSql = if (!stageElementItems.isNullOrEmpty()) {
             val stageElementWhereClause = stageElementItems.joinToString(" OR ") {
-                "(${EventTableInfo.Columns.PROGRAM_STAGE} = '${it.id0()}' " +
+                "(${EventTableInfo.Columns.PROGRAM_STAGE} = '${it.id0}' " +
                     "AND " +
-                    "${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${it.id1()}')"
+                    "${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${it.id1}')"
             }
 
             "SELECT COUNT(*) " +
@@ -187,7 +187,7 @@ internal object ProgramIndicatorSQLUtils {
 
         val attributesSql = if (!attributeItems.isNullOrEmpty()) {
             val attributesWhereClause = "${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN " +
-                "(${attributeItems.joinToString(",") { "'${it.id0()}'" }})"
+                "(${attributeItems.joinToString(",") { "'${it.id0}'" }})"
 
             "SELECT COUNT(*) " +
                 "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +

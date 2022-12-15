@@ -41,12 +41,15 @@ internal object ExpressionHelper {
     fun getValueMap(dataValues: List<DataValue>): Map<DimensionalItemObject, Double> {
         val valueMap: MutableMap<DimensionalItemObject, Double> = HashMap()
         for (dataValue in dataValues) {
-            val deId = dataValue.dataElement()
-            val cocId = dataValue.categoryOptionCombo()
-            val dataElementItem: DimensionalItemObject = DataElementObject.create(deId)
-            addDimensionalItemValueToMap(dataElementItem, dataValue.value(), valueMap)
-            val dataElementOperandItem: DimensionalItemObject = DataElementOperandObject.create(deId, cocId)
-            addDimensionalItemValueToMap(dataElementOperandItem, dataValue.value(), valueMap)
+            dataValue.dataElement()?.let { deId ->
+                val dataElementItem: DimensionalItemObject = DataElementObject(deId)
+                addDimensionalItemValueToMap(dataElementItem, dataValue.value(), valueMap)
+
+                dataValue.categoryOptionCombo()?.let { cocId ->
+                    val dataElementOperandItem: DimensionalItemObject = DataElementOperandObject(deId, cocId)
+                    addDimensionalItemValueToMap(dataElementOperandItem, dataValue.value(), valueMap)
+                }
+            }
         }
         return valueMap
     }

@@ -42,10 +42,7 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.*
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -107,7 +104,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         Parser.listen(programIndicator.expression(), collector)
 
         val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
-        sqlVisitor.itemIds = collector.itemIds.toSet()
+        sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
         val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
@@ -134,13 +131,15 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext
     ): CommonExpressionVisitor {
-        return CommonExpressionVisitor.newBuilder()
-            .withItemMap(ProgramIndicatorParserUtils.PROGRAM_INDICATOR_SQL_EXPRESSION_ITEMS)
-            .withItemMethod(itemMethod)
-            .withConstantMap(constantMap())
-            .withProgramIndicatorSQLContext(context)
-            .withDataElementStore(dataElementStore)
-            .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
-            .buildForProgramSQLIndicator()
+        return CommonExpressionVisitor(
+            CommonExpressionVisitorScope.ProgramSQLIndicator(
+                itemMap = ProgramIndicatorParserUtils.PROGRAM_INDICATOR_SQL_EXPRESSION_ITEMS,
+                itemMethod = itemMethod,
+                constantMap = constantMap(),
+                programIndicatorSQLContext = context,
+                dataElementStore = dataElementStore,
+                trackedEntityAttributeStore = trackedEntityAttributeStore
+            )
+        )
     }
 }

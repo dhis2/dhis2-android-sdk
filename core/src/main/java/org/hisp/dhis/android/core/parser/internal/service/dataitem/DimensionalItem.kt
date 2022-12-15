@@ -25,51 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
-
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Parsed dimensional item as handled by the expression service.
  *
  * @author Jim Grace
  */
-public abstract class DimensionalItem
-        implements ExpressionItem {
-
-    @Override
-    public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemIds().add(getDimensionalItemId(ctx));
-
-        return DOUBLE_VALUE_IF_NULL;
+internal abstract class DimensionalItem : ExpressionItem {
+    override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        visitor.itemIds.add(getDimensionalItemId(ctx))
+        return DOUBLE_VALUE_IF_NULL
     }
 
-    @Override
-    public final Object getOrgUnitGroup(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return DOUBLE_VALUE_IF_NULL;
+    override fun getOrgUnitGroup(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return DOUBLE_VALUE_IF_NULL
     }
 
-    @Override
-    public final Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Double value = visitor.getItemValueMap().get(getId(ctx));
-
-        return visitor.handleNulls(value);
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val value = visitor.itemValueMap[getId(ctx)]
+        return visitor.handleNulls(value)!!
     }
 
-    @Override
-    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Double value = visitor.getItemValueMap().get(getId(ctx));
-
-        if (value == null) {
-            return ctx.getText();
-        } else {
-            return value.toString();
-        }
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val value = visitor.itemValueMap[getId(ctx)]
+        return value?.toString() ?: ctx.text
     }
 
     /**
@@ -78,15 +63,16 @@ public abstract class DimensionalItem
      * @param ctx the parser item context
      * @return the DimensionalItemId object for this item
      */
-    public abstract DimensionalItemId getDimensionalItemId(ExprContext ctx);
+    abstract fun getDimensionalItemId(ctx: ExprContext): DimensionalItemId
 
     /**
      * Returns the id for this item.
-     * <p/>
+     *
+     *
      * For example, uid, or uid1.uid2, etc.
      *
      * @param ctx the parser item context
      * @return the id for this item
      */
-    public abstract String getId(ExprContext ctx);
+    abstract fun getId(ctx: ExprContext): String
 }

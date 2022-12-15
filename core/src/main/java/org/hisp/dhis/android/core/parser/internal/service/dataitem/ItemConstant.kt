@@ -25,30 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class VEnrollmentStatus : ExpressionItem {
+/**
+ * Expression item Constant
+ *
+ * @author Jim Grace
+ */
+internal class ItemConstant : ExpressionItem {
+    override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val constantDisplayName = visitor.constantMap[ctx.uid0.text]?.displayName()
+            ?: throw ParserExceptionWithoutContext("No constant defined for " + ctx.uid0.text)
+        visitor.itemDescriptions[ctx.text] = constantDisplayName
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return visitor.programIndicatorContext!!.enrollment?.status()?.name
+        return DOUBLE_VALUE_IF_NULL
+    }
+
+    override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        visitor.itemIds.add(getDimensionalItemId(ctx))
+
+        return DOUBLE_VALUE_IF_NULL
+    }
+
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val constantValue = visitor.constantMap[ctx.uid0.text]?.value()
+            ?: throw ParserExceptionWithoutContext("Can't find constant to evaluate " + ctx.uid0.text)
+
+        return constantValue
+    }
+
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val constant = visitor.constantMap[ctx.uid0.text]
+
+        return constant?.value()?.toString() ?: ctx.text
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
-                    column = EnrollmentTableInfo.Columns.STATUS
-                )
-            AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.STATUS}"
-        }
+        return evaluate(ctx, visitor)
+    }
+
+    fun getDimensionalItemId(ctx: ExprContext): DimensionalItemId {
+        return DimensionalItemId(
+            dimensionalItemType = DimensionalItemType.CONSTANT,
+            id0 = ctx.uid0.text
+        )
     }
 }

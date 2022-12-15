@@ -39,13 +39,13 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEnrollmentCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val enrollment = visitor.programIndicatorContext.enrollment
+        val enrollment = visitor.programIndicatorContext!!.enrollment
 
         return if (enrollment == null) 0.toString() else 1.toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val enrollmentSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        val enrollmentSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EventTableInfo.Columns.ENROLLMENT}"
             AnalyticsType.ENROLLMENT, null ->

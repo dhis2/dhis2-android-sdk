@@ -49,6 +49,6 @@ internal class CategoryOptionOrganisationUnitEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>):
         LinkHandler<CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction, CategoryOptionOrganisationUnitLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

@@ -39,13 +39,13 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEnrollmentDate : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return visitor.programIndicatorContext.enrollment?.let {
+        return visitor.programIndicatorContext!!.enrollment?.let {
             ParserUtils.getMediumDateString(it.enrollmentDate())
         }
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
                     column = EnrollmentTableInfo.Columns.ENROLLMENT_DATE

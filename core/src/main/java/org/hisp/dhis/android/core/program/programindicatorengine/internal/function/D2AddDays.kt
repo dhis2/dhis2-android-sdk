@@ -35,7 +35,7 @@ import org.joda.time.DateTime
 
 internal class D2AddDays : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val dateStr = visitor.castStringVisit(ctx.expr(0))
         val days = visitor.castStringVisit(ctx.expr(1))
         val date = DateTime(dateStr)

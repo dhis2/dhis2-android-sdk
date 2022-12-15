@@ -50,6 +50,6 @@ internal class OrganisationUnitProgramLinkEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<OrganisationUnitProgramLink>):
         LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

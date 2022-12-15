@@ -25,26 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression
 
-package org.hisp.dhis.android.core.parser.internal.expression;
+import android.os.Build
+import org.hisp.dhis.antlr.Parser
 
-import android.os.Build;
+internal object CommonParser {
 
-import org.hisp.dhis.antlr.Parser;
-
-public final class CommonParser {
-
-    private CommonParser() {
-    }
-
-    public static Object visit(String expression, CommonExpressionVisitor visitor) {
-        int sdkVersion = Build.VERSION.SDK_INT;
+    @JvmStatic
+    fun visit(expression: String?, visitor: CommonExpressionVisitor): Any? {
+        val sdkVersion = Build.VERSION.SDK_INT
 
         // In unit test, sdk value is 0. Ignore it and use cache by default.
-        if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
-            return Parser.visit(expression, visitor, false);
+        return if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
+            Parser.visit(expression, visitor, false)
         } else {
-            return Parser.visit(expression, visitor);
+            Parser.visit(expression, visitor)
         }
     }
 }

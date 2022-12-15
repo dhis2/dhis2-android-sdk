@@ -25,34 +25,60 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class VTeiCount : ExpressionItem {
+/**
+ * Expression item OrganisationUnitGroup
+ *
+ * @author Jim Grace
+ */
+internal class ItemOrgUnitGroup : ExpressionItem {
+    override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val orgUnitGroupName = visitor.organisationUnitGroupStore!!.selectByUid(ctx.uid0.text)?.displayName()
+            ?: throw ParserExceptionWithoutContext("No organization unit group defined for " + ctx.uid0.text)
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val count = if (visitor.programIndicatorContext!!.enrollment == null) 0 else 1
+        visitor.itemDescriptions[ctx.text] = orgUnitGroupName
 
-        return count.toString()
+        return DOUBLE_VALUE_IF_NULL
     }
 
-    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val teiSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
-                    column = EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE
-                )
-            AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}"
-        }
+    /*
+    @Override
+    public Object getOrgUnitGroup( ExprContext ctx, CommonExpressionVisitor visitor )
+    {
+        visitor.getOrgUnitGroupIds().add( ctx.uid0.getText() );
 
-        return "DISTINCT $teiSelector"
+        return DOUBLE_VALUE_IF_NULL;
+    }
+     */
+    override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        visitor.itemIds.add(getDimensionalItemId(ctx))
+
+        return DOUBLE_VALUE_IF_NULL
+    }
+
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val count = visitor.orgUnitCountMap[ctx.uid0.text]
+            ?: throw ParserExceptionWithoutContext("Can't find count for orgunitGroup unit " + ctx.uid0.text)
+
+        return count.toDouble()
+    }
+
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val count = visitor.orgUnitCountMap[ctx.uid0.text]
+        return count?.toString() ?: ctx.text
+    }
+
+    private fun getDimensionalItemId(ctx: ExprContext): DimensionalItemId {
+        return DimensionalItemId(
+            dimensionalItemType = DimensionalItemType.ORGANISATION_UNIT_GROUP,
+            id0 = ctx.uid0.text
+        )
     }
 }

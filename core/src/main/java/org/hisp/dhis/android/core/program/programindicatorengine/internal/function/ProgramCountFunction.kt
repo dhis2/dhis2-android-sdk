@@ -46,7 +46,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val dataElement = ctx.uid1.text
 
         var count = 0
-        val stageEvents = visitor.programIndicatorContext.events[programStage]
+        val stageEvents = visitor.programIndicatorContext!!.events[programStage]
 
         stageEvents?.forEach { event ->
             event.trackedEntityDataValues()?.forEach { dataValue ->
@@ -64,7 +64,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val programStageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
-        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
+        val dataElement = visitor.dataElementStore!!.selectByUid(dataElementId)
             ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
 
         val valueCastExpression = getColumnValueCast(
@@ -80,7 +80,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
             "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
             "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
             "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
-            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
             "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
             "AND $valueCastExpression $conditionalSql " +
             ")"

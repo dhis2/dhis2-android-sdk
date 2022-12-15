@@ -47,7 +47,7 @@ internal interface IndicatorDataItem : ExpressionItem {
             getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
                 getEvaluator(visitor).evaluate(
                     evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext.contextMetadata + metadataEntry
+                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry
                 )
             }
         } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -58,7 +58,7 @@ internal interface IndicatorDataItem : ExpressionItem {
             getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
                 getEvaluator(visitor).getSql(
                     evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext.contextMetadata + metadataEntry
+                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry
                 )?.let { "($it)" }
             }
         }
@@ -75,7 +75,7 @@ internal interface IndicatorDataItem : ExpressionItem {
         return getDataItem(ctx, visitor)?.let { dataItem ->
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
-                filters = visitor.indicatorContext.evaluationItem.allDimensionItems,
+                filters = visitor.indicatorContext!!.evaluationItem.allDimensionItems,
                 aggregationType = visitor.indicatorContext.evaluationItem.aggregationType
             )
         }
@@ -88,7 +88,7 @@ internal interface IndicatorDataItem : ExpressionItem {
     ): Pair<String, MetadataItem>? {
         return when (val dataItem = evaluationItem.dimensionItems.first()) {
             is DimensionItem.DataItem.DataElementOperandItem -> {
-                val dataElement = visitor.indicatorContext.dataElementStore.selectByUid(dataItem.dataElement)
+                val dataElement = visitor.indicatorContext!!.dataElementStore.selectByUid(dataItem.dataElement)
                 val coc = visitor.indicatorContext.categoryOptionComboStore.selectByUid(dataItem.categoryOptionCombo)
 
                 if (dataElement == null || coc == null) {
@@ -110,13 +110,13 @@ internal interface IndicatorDataItem : ExpressionItem {
             }
             is DimensionItem.DataItem.DataElementItem -> {
                 val dataElement =
-                    visitor.indicatorContext.dataElementStore.selectByUid(dataItem.uid)
+                    visitor.indicatorContext!!.dataElementStore.selectByUid(dataItem.uid)
                         ?: throw AnalyticsException.InvalidDataElement(dataItem.uid)
 
                 dataItem.uid to MetadataItem.DataElementItem(dataElement)
             }
             is DimensionItem.DataItem.ProgramIndicatorItem -> {
-                val programIndicator = visitor.indicatorContext.programIndicatorRepository
+                val programIndicator = visitor.indicatorContext!!.programIndicatorRepository
                     .withAnalyticsPeriodBoundaries()
                     .uid(dataItem.uid)
                     .blockingGet()
@@ -125,7 +125,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 dataItem.uid to MetadataItem.ProgramIndicatorItem(programIndicator)
             }
             is DimensionItem.DataItem.EventDataItem.DataElement -> {
-                val program = visitor.indicatorContext.programStore.selectByUid(dataItem.program)
+                val program = visitor.indicatorContext!!.programStore.selectByUid(dataItem.program)
                     ?: throw AnalyticsException.InvalidProgram(dataItem.program)
 
                 val dataElement = visitor.indicatorContext.dataElementStore.selectByUid(dataItem.dataElement)
@@ -135,7 +135,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 metadataItem.id to metadataItem
             }
             is DimensionItem.DataItem.EventDataItem.Attribute -> {
-                val program = visitor.indicatorContext.programStore.selectByUid(dataItem.program)
+                val program = visitor.indicatorContext!!.programStore.selectByUid(dataItem.program)
                     ?: throw AnalyticsException.InvalidProgram(dataItem.program)
 
                 val attribute = visitor.indicatorContext.trackedEntityAttributeStore.selectByUid(dataItem.attribute)

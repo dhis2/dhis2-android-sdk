@@ -25,50 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT;
-import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;
-
-@AutoValue
-public abstract class DimensionalItemId {
-
-    public abstract DimensionalItemType dimensionalItemType();
-
-    public abstract String id0();
-
-    @Nullable
-    public abstract String id1();
-
-    @Nullable
-    public abstract String id2();
-
-    public static Builder builder() {
-        return new AutoValue_DimensionalItemId.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dimensionalItemType(DimensionalItemType dimensionalItemType);
-
-        public abstract Builder id0(String id0);
-
-        public abstract Builder id1(@Nullable String id1);
-
-        public abstract Builder id2(@Nullable String id2);
-
-        public abstract DimensionalItemId build();
-    }
-
-    public boolean isDataElementOrOperand() {
-        return dimensionalItemType() == DATA_ELEMENT
-                || dimensionalItemType() == DATA_ELEMENT_OPERAND;
-    }
-
+internal class DimensionalItemId(
+    val dimensionalItemType: DimensionalItemType,
+    val id0: String,
+    val id1: String? = null,
+    val id2: String? = null
+) {
+    val isDataElementOrOperand: Boolean
+        get() = (
+            dimensionalItemType === DimensionalItemType.DATA_ELEMENT ||
+                dimensionalItemType === DimensionalItemType.DATA_ELEMENT_OPERAND
+            )
 }

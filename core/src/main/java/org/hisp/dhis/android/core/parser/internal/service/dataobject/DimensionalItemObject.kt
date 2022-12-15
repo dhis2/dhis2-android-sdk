@@ -25,12 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataobject
 
-package org.hisp.dhis.android.core.parser.internal.service.dataobject;
-
-public interface DimensionalItemObject {
+internal interface DimensionalItemObject {
     /**
      * Gets the dimension item identifier.
      */
-    String getDimensionItem();
+    val dimensionItem: String
 }

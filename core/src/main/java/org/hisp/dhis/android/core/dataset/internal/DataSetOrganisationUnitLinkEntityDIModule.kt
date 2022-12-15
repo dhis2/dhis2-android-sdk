@@ -50,6 +50,6 @@ internal class DataSetOrganisationUnitLinkEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<DataSetOrganisationUnitLink>):
         LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

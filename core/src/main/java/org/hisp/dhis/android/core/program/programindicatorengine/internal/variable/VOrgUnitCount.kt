@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VOrgUnitCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val orgUnits = when (visitor.programIndicatorContext.programIndicator.analyticsType()) {
+        val orgUnits = when (visitor.programIndicatorContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 visitor.programIndicatorContext.events.values.flatMap { it.map { it.organisationUnit() } }
             AnalyticsType.ENROLLMENT ->
@@ -50,7 +50,7 @@ internal class VOrgUnitCount : ExpressionItem {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val eventSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        val eventSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EventTableInfo.Columns.ORGANISATION_UNIT}"
             AnalyticsType.ENROLLMENT, null ->

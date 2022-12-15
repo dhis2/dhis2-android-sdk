@@ -25,9 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.usecase.UseCaseModule
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseEntityDIModule
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionEntityDIModule
+import retrofit2.Retrofit
 
-import android.app.Activity
+@Module(
+    includes = [
+        StockUseCaseEntityDIModule::class,
+        StockUseCaseTransactionEntityDIModule::class,
+    ]
+)
+internal class UseCasePackageDIModule {
 
-class TestLabActivity : Activity()
+    @Provides
+    @Reusable
+    fun stockUseCaseService(retrofit: Retrofit): StockUseCaseService {
+        return retrofit.create(StockUseCaseService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: UseCaseModuleImpl): UseCaseModule {
+        return impl
+    }
+}

@@ -25,9 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
+import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
-import android.app.Activity
+@Reusable
+class UseCaseModuleWiper @Inject internal constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
+        tableWiper.wipeTables(
+            StockUseCaseTableInfo.TABLE_INFO,
+            StockUseCaseTransactionTableInfo.TABLE_INFO
+        )
+    }
 
-class TestLabActivity : Activity()
+    override fun wipeData() {
+        // No metadata to wipe
+    }
+}

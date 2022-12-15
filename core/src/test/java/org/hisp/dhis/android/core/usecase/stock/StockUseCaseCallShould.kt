@@ -25,9 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock
 
-package org.hisp.dhis.android.instrumentedTestApp
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import android.app.Activity
+@RunWith(JUnit4::class)
+class StockUseCaseCallShould {
+    private val handler: IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase> = mock()
+    private val service: StockUseCaseService = mock()
+    private val stockUseCaseSingle: Single<List<InternalStockUseCase>> = mock()
+    private val apiCallExecutor: RxAPICallExecutor = mock()
 
-class TestLabActivity : Activity()
+    private lateinit var stockUseCaseCall: StockUseCaseCall
+
+    @Before
+    fun setUp() {
+        whenever(service.stockUseCases()) doReturn stockUseCaseSingle
+        stockUseCaseCall = StockUseCaseCall(handler, service, apiCallExecutor)
+    }
+
+    @Test
+    fun default_to_empty_collection_if_not_found() {
+        whenever(apiCallExecutor.wrapSingle(stockUseCaseSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
+
+        stockUseCaseCall.getCompletable(false).blockingAwait()
+
+        verify(handler).handleMany(emptyList())
+        verifyNoMoreInteractions(handler)
+    }
+}

@@ -25,9 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.usecase.stock
 
-package org.hisp.dhis.android.instrumentedTestApp
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-import android.app.Activity
-
-class TestLabActivity : Activity()
+internal object InternalStockUseCaseTransactionSamples {
+    fun get(): InternalStockUseCaseTransaction {
+        return InternalStockUseCaseTransaction.builder()
+            .id(1L)
+            .programUid("program_uid")
+            .sortOrder(2)
+            .transactionType("CORRECTED")
+            .distributedTo("distributed_to")
+            .stockDistributed("stock_distributed")
+            .stockDiscarded("stock_discarded")
+            .stockCorrected("stock_corrected")
+            .build()
+    }
+}

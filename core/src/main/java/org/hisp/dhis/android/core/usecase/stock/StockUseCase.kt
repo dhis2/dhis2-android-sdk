@@ -26,8 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.instrumentedTestApp
+package org.hisp.dhis.android.core.usecase.stock
 
-import android.app.Activity
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-class TestLabActivity : Activity()
+data class StockUseCase(
+    val programUid: String,
+    val itemCode: String,
+    val itemDescription: String,
+    val programType: String,
+    val description: String,
+    val stockOnHand: String,
+    val transactions: List<StockUseCaseTransaction>
+) : ObjectWithUidInterface {
+    override fun uid(): String {
+        return programUid
+    }
+}

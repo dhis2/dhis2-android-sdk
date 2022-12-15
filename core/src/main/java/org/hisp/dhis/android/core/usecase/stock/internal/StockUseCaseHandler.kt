@@ -25,9 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-import android.app.Activity
+internal class StockUseCaseHandler @Inject constructor(
+    store: IdentifiableObjectStore<InternalStockUseCase>,
+    private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
+) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
-class TestLabActivity : Activity()
+    override fun beforeCollectionHandled(
+        oCollection: Collection<InternalStockUseCase>
+    ): Collection<InternalStockUseCase> {
+        store.delete()
+        transactionLinkHandler.resetAllLinks()
+        return oCollection
+    }
+
+    override fun afterObjectHandled(o: InternalStockUseCase, action: HandleAction) {
+        transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it.toBuilder().programUid(o.uid()).build() }
+    }
+}

@@ -25,9 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase
 
-package org.hisp.dhis.android.instrumentedTestApp
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
 
-import android.app.Activity
+@Reusable
+internal class UseCaseModuleDownloader @Inject constructor(
+    private val stockUseCaseCall: StockUseCaseCall
+) : UntypedModuleDownloader {
 
-class TestLabActivity : Activity()
+    override fun downloadMetadata(): Completable {
+        return Completable.fromAction {
+            stockUseCaseCall.getCompletable(false).blockingAwait()
+        }
+    }
+}

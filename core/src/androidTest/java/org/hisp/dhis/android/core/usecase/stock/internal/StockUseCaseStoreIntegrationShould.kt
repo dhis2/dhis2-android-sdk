@@ -25,9 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples.get
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import android.app.Activity
+@RunWith(D2JunitRunner::class)
+class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<InternalStockUseCase>(
+    create(TestDatabaseAdapterFactory.get()), StockUseCaseTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): InternalStockUseCase {
+        return get()
+    }
 
-class TestLabActivity : Activity()
+    override fun buildObjectToUpdate(): InternalStockUseCase {
+        return get().toBuilder()
+            .stockOnHand("new_stock_on_hand")
+            .build()
+    }
+}

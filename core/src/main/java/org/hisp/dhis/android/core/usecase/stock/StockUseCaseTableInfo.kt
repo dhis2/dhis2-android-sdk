@@ -25,9 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock
 
-package org.hisp.dhis.android.instrumentedTestApp
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import android.app.Activity
+object StockUseCaseTableInfo {
 
-class TestLabActivity : Activity()
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "StockUseCase"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
+
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                UID,
+                ITEM_CODE,
+                ITEM_DESCRIPTION,
+                PROGRAM_TYPE,
+                DESCRIPTION,
+                STOCK_ON_HAND
+            )
+        }
+
+        companion object {
+            const val UID = "uid"
+            const val ITEM_CODE = "itemCode"
+            const val ITEM_DESCRIPTION = "itemDescription"
+            const val PROGRAM_TYPE = "programType"
+            const val DESCRIPTION = "description"
+            const val STOCK_ON_HAND = "stockOnHand"
+        }
+    }
+}

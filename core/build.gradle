@@ -62,7 +62,7 @@ ext {
             dagger          : "2.39.1",
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
-            sqlCipher       : "4.4.0",
+            sqlCipher       : "4.4.3",
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",

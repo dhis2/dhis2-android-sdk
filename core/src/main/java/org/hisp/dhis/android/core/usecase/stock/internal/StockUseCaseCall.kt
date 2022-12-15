@@ -25,9 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
-import android.app.Activity
+@Reusable
+internal class StockUseCaseCall @Inject constructor(
+    private val stockUseCaseHandler: HandlerWithTransformer<InternalStockUseCase>,
+    private val stockUseCaseService: StockUseCaseService,
+    private val apiCallExecutor: RxAPICallExecutor,
+) : BaseSettingCall<List<InternalStockUseCase>>() {
 
-class TestLabActivity : Activity()
+    override fun fetch(storeError: Boolean): Single<List<InternalStockUseCase>> {
+        return apiCallExecutor.wrapSingle(stockUseCaseService.stockUseCases(), storeError = storeError)
+    }
+
+    override fun process(item: List<InternalStockUseCase>?) {
+        val stockUseCases = item ?: emptyList()
+        stockUseCaseHandler.handleMany(stockUseCases)
+    }
+}

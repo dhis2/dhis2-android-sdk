@@ -25,9 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-package org.hisp.dhis.android.instrumentedTestApp
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction;
 
-import android.app.Activity
+import java.util.List;
 
-class TestLabActivity : Activity()
+public final class IgnoreInternalStockUseCaseTransactionListColumnAdapter extends
+        IgnoreColumnAdapter<List<InternalStockUseCaseTransaction>> {
+}

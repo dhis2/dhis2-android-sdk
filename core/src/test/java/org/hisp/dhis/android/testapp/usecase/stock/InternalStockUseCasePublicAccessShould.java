@@ -26,8 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.instrumentedTestApp
+package org.hisp.dhis.android.testapp.usecase.stock;
 
-import android.app.Activity
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-class TestLabActivity : Activity()
+public class InternalStockUseCasePublicAccessShould
+        extends BasePublicAccessShould<InternalStockUseCase> {
+
+    @Mock
+    private InternalStockUseCase object;
+
+    @Override
+    public InternalStockUseCase object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        InternalStockUseCase.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        InternalStockUseCase.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
+}

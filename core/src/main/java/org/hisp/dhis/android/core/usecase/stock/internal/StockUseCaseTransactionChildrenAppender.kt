@@ -25,9 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-import android.app.Activity
+internal class StockUseCaseTransactionChildrenAppender(
+    private val transactionLinkStore: LinkStore<InternalStockUseCaseTransaction>
+) : ChildrenAppender<InternalStockUseCase>() {
 
-class TestLabActivity : Activity()
+    override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
+        return internalStockUseCase.toBuilder()
+            .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockUseCase.uid()))
+            .build()
+    }
+}

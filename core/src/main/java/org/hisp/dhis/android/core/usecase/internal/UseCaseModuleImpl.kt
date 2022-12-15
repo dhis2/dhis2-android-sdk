@@ -25,9 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.usecase.UseCaseModule
+import org.hisp.dhis.android.core.usecase.stock.StockUseCaseCollectionRepository
 
-import android.app.Activity
-
-class TestLabActivity : Activity()
+@Reusable
+internal class UseCaseModuleImpl @Inject internal constructor(
+    private val stockUseCases: StockUseCaseCollectionRepository
+) : UseCaseModule {
+    override fun stockUseCases(): StockUseCaseCollectionRepository {
+        return stockUseCases
+    }
+}

@@ -25,9 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.usecase.stock.internal
 
-package org.hisp.dhis.android.instrumentedTestApp
+import io.reactivex.Single
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import retrofit2.http.GET
 
-import android.app.Activity
+internal interface StockUseCaseService {
 
-class TestLabActivity : Activity()
+    @GET("dataStore/USE_CASES/stockUseCases")
+    fun stockUseCases(): Single<List<InternalStockUseCase>>
+}

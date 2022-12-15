@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.option.internal.OptionModuleWiper
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleWiper
 import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper
 import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper
-import org.hisp.dhis.android.core.programtheme.internal.ProgramThemeModuleWiper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper
 import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper
@@ -57,6 +56,7 @@ import org.hisp.dhis.android.core.sms.internal.SMSModuleWiper
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper
+import org.hisp.dhis.android.core.usecase.internal.UseCaseModuleWiper
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWiper
@@ -84,7 +84,7 @@ internal class D2ModuleWipers @Inject constructor(
     organisationUnit: OrganisationUnitModuleWiper,
     period: PeriodModuleWiper,
     program: ProgramModuleWiper,
-    programTheme: ProgramThemeModuleWiper,
+    useCase: UseCaseModuleWiper,
     relationship: RelationshipModuleWiper,
     resource: ResourceModuleWiper,
     smsModuleWiper: SMSModuleWiper,
@@ -120,7 +120,7 @@ internal class D2ModuleWipers @Inject constructor(
             organisationUnit,
             period,
             program,
-            programTheme,
+            useCase,
             relationship,
             resource,
             smsModuleWiper,

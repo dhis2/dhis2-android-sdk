@@ -49,12 +49,12 @@ import org.hisp.dhis.android.core.option.OptionModule
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
 import org.hisp.dhis.android.core.period.PeriodModule
 import org.hisp.dhis.android.core.program.ProgramModule
-import org.hisp.dhis.android.core.programtheme.ProgramThemeModule
 import org.hisp.dhis.android.core.relationship.RelationshipModule
 import org.hisp.dhis.android.core.settings.SettingModule
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
+import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
@@ -80,7 +80,7 @@ internal class D2Modules @Inject constructor(
     val maps: MapModule,
     val note: NoteModule,
     val program: ProgramModule,
-    val programTheme: ProgramThemeModule,
+    val useCase: UseCaseModule,
     val organisationUnit: OrganisationUnitModule,
     val systemInfo: SystemInfoModule,
     val settingModule: SettingModule,

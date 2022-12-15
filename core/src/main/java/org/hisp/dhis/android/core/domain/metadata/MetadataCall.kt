@@ -55,14 +55,14 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
-import org.hisp.dhis.android.core.programtheme.ProgramThemeModuleDownloader
-import org.hisp.dhis.android.core.programtheme.stock.StockTheme
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
+import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -74,7 +74,7 @@ internal class MetadataCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
-    private val programThemeDownloader: ProgramThemeModuleDownloader,
+    private val useCaseDownloader: UseCaseModuleDownloader,
     private val userModuleDownloader: UserModuleDownloader,
     private val categoryDownloader: CategoryModuleDownloader,
     private val programDownloader: ProgramModuleDownloader,
@@ -120,8 +120,8 @@ internal class MetadataCall @Inject constructor(
                 systemSettingDownloader.downloadMetadata().toSingle {
                     progressManager.increaseProgress(SystemSetting::class.java, false)
                 },
-                programThemeDownloader.downloadMetadata().toSingle {
-                    progressManager.increaseProgress(StockTheme::class.java, false)
+                useCaseDownloader.downloadMetadata().toSingle {
+                    progressManager.increaseProgress(StockUseCase::class.java, false)
                 },
                 constantModuleDownloader.downloadMetadata().map {
                     progressManager.increaseProgress(Constant::class.java, false)

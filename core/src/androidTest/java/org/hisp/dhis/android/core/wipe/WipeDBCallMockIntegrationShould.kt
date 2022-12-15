@@ -132,12 +132,12 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         SMSOngoingSubmissionStore.create(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
 
         StockUseCaseStore.create(databaseAdapter).insert(
-                InternalStockUseCaseSamples.get()
-                        .toBuilder().uid("lxAQ7Zs9VYR").build()
+            InternalStockUseCaseSamples.get()
+                .toBuilder().uid("lxAQ7Zs9VYR").build()
         )
         StockUseCaseTransactionLinkStore.create(databaseAdapter).insert(
-                InternalStockUseCaseTransactionSamples.get()
-                        .toBuilder().programUid("lxAQ7Zs9VYR").build()
+            InternalStockUseCaseTransactionSamples.get()
+                .toBuilder().programUid("lxAQ7Zs9VYR").build()
         )
 
         MapLayerStore.create(databaseAdapter).insert(MapLayerSamples.get())

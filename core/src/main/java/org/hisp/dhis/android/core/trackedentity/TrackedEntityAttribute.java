@@ -106,6 +106,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Boolean displayOnVisitSchedule();
 
     @Nullable
+    @JsonProperty()
+    public abstract Boolean confidential();
+
+    @Nullable
     @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
     @ColumnName(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
     public abstract Boolean orgUnitScope();
@@ -176,6 +180,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder generated(Boolean generated);
 
         public abstract Builder displayOnVisitSchedule(Boolean displayOnVisitSchedule);
+
+        public abstract Builder confidential(Boolean confidential);
 
         @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
         public abstract Builder orgUnitScope(Boolean orgUnitScope);

@@ -45,6 +45,7 @@
       "orgunitScope": true,
       "displayInListNoProgram": true,
       "displayOnVisitSchedule": true,
+      "confidential": true,
       "sortOrderInListNoProgram": 0,
       "displayName": "Profile",
       "expression": "expression",

@@ -109,7 +109,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
-        val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+        val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"

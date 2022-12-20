@@ -58,7 +58,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
-        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
 
         val values: List<String?> = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->

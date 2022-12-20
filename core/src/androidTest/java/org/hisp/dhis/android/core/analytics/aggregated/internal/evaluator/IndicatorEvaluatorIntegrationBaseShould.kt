@@ -201,6 +201,20 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(value).isEqualTo("23.0")
     }
 
+    @Test
+    fun should_evaluate_aggregation_type_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val sumIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(SUM)")
+        val sumResult = evaluateForAbsolute(sumIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(sumResult).isEqualTo("5.0")
+
+        val avgIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(AVERAGE)")
+        val avgResult = evaluateForAbsolute(avgIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(avgResult).isEqualTo("2.5")
+    }
+
     private fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT

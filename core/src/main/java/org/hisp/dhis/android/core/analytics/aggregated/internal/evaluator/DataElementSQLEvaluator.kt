@@ -67,7 +67,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
-        val aggregator = getAggregator(evaluationItem, metadata)
+        val aggregator = getAggregator(evaluationItem, metadata, queryMods)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
@@ -222,11 +222,14 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): AggregationType {
         val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
-        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+        return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+            queryMods.aggregationType!!
+        } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
             evaluationItem.aggregationType
         } else if (itemList.size > 1) {
             AggregationType.SUM

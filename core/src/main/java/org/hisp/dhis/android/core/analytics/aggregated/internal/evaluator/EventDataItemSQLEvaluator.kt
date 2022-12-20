@@ -71,7 +71,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val eventDataItem = getEventDataItems(evaluationItem)[0]
-        val aggregator = getAggregator(evaluationItem, eventDataItem, metadata)
+        val aggregator = getAggregator(evaluationItem, eventDataItem, metadata, queryMods)
         val (valueColumn, fromClause) = getEventDataItemSQLItems(eventDataItem)
 
         val whereClause = WhereClauseBuilder().apply {
@@ -288,9 +288,12 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         item: DimensionItem.DataItem.EventDataItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): AggregationType {
-        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+        return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+            queryMods.aggregationType!!
+        } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
             evaluationItem.aggregationType
         } else {
             val aggregationType = when (val metadataItem = metadata[item.id]) {

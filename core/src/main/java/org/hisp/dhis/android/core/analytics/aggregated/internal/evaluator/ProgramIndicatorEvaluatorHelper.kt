@@ -387,10 +387,13 @@ internal object ProgramIndicatorEvaluatorHelper {
 
     fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        programIndicator: ProgramIndicator
+        programIndicator: ProgramIndicator,
+        queryMods: QueryMods?,
     ): AggregationType {
         val aggregationType =
-            if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+            if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+                queryMods.aggregationType!!
+            } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
                 evaluationItem.aggregationType
             } else {
                 programIndicator.aggregationType()

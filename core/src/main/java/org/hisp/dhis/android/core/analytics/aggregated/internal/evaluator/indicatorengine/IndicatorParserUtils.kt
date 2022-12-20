@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indica
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramDataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.function.PeriodOffset
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
@@ -103,7 +104,10 @@ internal object IndicatorParserUtils {
             ExpressionParser.HASH_BRACE to DataElementItem(),
             ExpressionParser.I_BRACE to ProgramIndicatorItem(),
             ExpressionParser.D_BRACE to ProgramDataElementItem(),
-            ExpressionParser.A_BRACE to ProgramAttributeItem()
+            ExpressionParser.A_BRACE to ProgramAttributeItem(),
+
+            // Query modifiers
+            ExpressionParser.PERIOD_OFFSET to PeriodOffset(),
         )
 
     fun getDays(

@@ -26,11 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 
-internal data class QueryMods(
-    var aggregationType: AggregationType? = null,
-    var periodOffset: Int? = null
-)
+object AnalyticsPeriodHelper {
+
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
+
+    fun shitPeriods(periods: List<Period>, offset: Int): List<Period> {
+        return periods.mapNotNull { periodGenerator.generatePeriod(it.periodType()!!, it.startDate()!!, offset) }
+    }
+}

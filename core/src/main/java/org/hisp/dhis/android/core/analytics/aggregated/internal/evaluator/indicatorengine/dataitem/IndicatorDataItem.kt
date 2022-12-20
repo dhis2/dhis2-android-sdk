@@ -47,7 +47,8 @@ internal interface IndicatorDataItem : ExpressionItem {
             getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
                 getEvaluator(visitor).evaluate(
                     evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry
+                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
+                    queryMods = visitor.state.queryMods
                 )
             }
         } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -58,7 +59,8 @@ internal interface IndicatorDataItem : ExpressionItem {
             getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
                 getEvaluator(visitor).getSql(
                     evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry
+                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
+                    queryMods = visitor.state.queryMods
                 )?.let { "($it)" }
             }
         }

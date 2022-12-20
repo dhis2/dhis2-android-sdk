@@ -59,9 +59,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
     fun getProgramIndicatorValue(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata)
+        val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -71,11 +72,12 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
     fun getProgramIndicatorSQL(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
         val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
-        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata)
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata, queryMods?.periodOffset)
 
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
@@ -90,9 +92,9 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
         val contextWhereClause = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
             AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata, queryMods)
         }
 
         val context = ProgramIndicatorSQLContext(

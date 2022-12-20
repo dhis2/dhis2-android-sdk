@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 
 internal class IndicatorEvaluator @Inject constructor(
     private val indicatorEngine: IndicatorEngine
@@ -39,7 +40,8 @@ internal class IndicatorEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
@@ -53,7 +55,8 @@ internal class IndicatorEvaluator @Inject constructor(
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }

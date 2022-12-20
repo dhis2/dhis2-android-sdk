@@ -149,6 +149,14 @@ internal class CommonExpressionVisitor constructor(
         return result
     }
 
+    fun visitWithQueryMods(ctx: ParserRuleContext, queryMods: QueryMods): Any? {
+        val savedQueryMods = state.queryMods
+        state.queryMods = queryMods
+        val result = visit(ctx)
+        state.queryMods = savedQueryMods
+        return result
+    }
+
     /**
      * Handles nulls and missing values.
      *

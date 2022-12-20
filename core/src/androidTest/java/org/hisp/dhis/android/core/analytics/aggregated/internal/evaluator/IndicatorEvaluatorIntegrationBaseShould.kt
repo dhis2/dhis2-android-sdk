@@ -176,6 +176,31 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(overrideValue).isEqualTo("2.5")
     }
 
+    @Test
+    fun should_evaluate_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val indicator = createIndicator(numerator = "(${de(dataElement1.uid())}.periodOffset(-2)).periodOffset(+1)")
+
+        val value = evaluateForAbsolute(indicator, periodId = period201912.periodId()!!)
+        assertThat(value).isEqualTo("2.0")
+    }
+
+    @Test
+    fun should_evaluate_relative_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("20", dataElementUid = dataElement2.uid(), periodId = period201911.periodId()!!)
+        createDataValue("30", dataElementUid = dataElement2.uid(), periodId = period201912.periodId()!!)
+
+        val expression = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}.periodOffset(-1)"
+        val indicator = createIndicator(numerator = expression)
+
+        val value = evaluateForThisMonth(indicator)
+        assertThat(value).isEqualTo("23.0")
+    }
+
     private fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT

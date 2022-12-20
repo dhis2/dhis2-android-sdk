@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
@@ -48,9 +49,10 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getSql(evaluationItem, metadata)
+        val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -60,7 +62,8 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -70,7 +73,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, this)
-                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator, queryMods)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
@@ -178,9 +181,10 @@ internal class DataElementSQLEvaluator @Inject constructor(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
-        aggregationType: AggregationType
+        aggregationType: AggregationType,
+        queryMods: QueryMods?,
     ): WhereClauseBuilder {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods?.periodOffset)
         val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
 
         return builder.appendInSubQuery(

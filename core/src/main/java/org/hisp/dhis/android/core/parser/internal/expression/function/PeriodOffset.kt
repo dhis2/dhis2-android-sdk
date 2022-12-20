@@ -25,45 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class IndicatorSQLEvaluator @Inject constructor(
-    private val indicatorEngine: IndicatorSQLEngine
-) : AnalyticsEvaluator {
+/**
+ * Function periodOffset
+ *
+ * @author Enrico Colasante
+ */
+internal class PeriodOffset : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val state = visitor.state
+        val existingPeriodOffset = state.queryMods?.periodOffset ?: 0
+        val parsedPeriodOffset = ctx.period?.text?.toIntOrNull() ?: 0
+        val periodOffset = existingPeriodOffset + parsedPeriodOffset
 
-    override fun evaluate(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
-    ): String? {
-        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
-        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
+        val queryMods = (state.queryMods ?: QueryMods()).copy(periodOffset = periodOffset)
 
-        return indicatorEngine.evaluateIndicator(
-            indicator = indicator,
-            contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
-        )
+        return visitor.visitWithQueryMods(ctx.expr(0), queryMods)
     }
 
-    override fun getSql(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
-    ): String {
-        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
-        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
-
-        return indicatorEngine.getSql(
-            indicator = indicator,
-            contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
-        )
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
     }
 }

@@ -95,9 +95,10 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getReportingPeriods(
         items: List<DimensionItem>,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        periodOffset: Int?
     ): List<Period> {
-        return mutableListOf<Period>().apply {
+        val periods = mutableListOf<Period>().apply {
             items.forEach { i ->
                 when (val item = i as DimensionItem.PeriodItem) {
                     is DimensionItem.PeriodItem.Absolute -> {
@@ -110,6 +111,11 @@ internal object AnalyticsEvaluatorHelper {
                     }
                 }
             }
+        }
+        return if (periodOffset != null && periodOffset != 0) {
+            AnalyticsPeriodHelper.shitPeriods(periods, periodOffset)
+        } else {
+            periods
         }
     }
 

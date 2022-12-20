@@ -55,6 +55,7 @@ public class TrackedEntityAttributeSamples {
                 .generated(Boolean.TRUE)
                 .aggregationType(AggregationType.DEFAULT)
                 .displayOnVisitSchedule(Boolean.TRUE)
+                .confidential(Boolean.TRUE)
                 .orgUnitScope(Boolean.TRUE)
                 .unique(Boolean.TRUE)
                 .inherit(Boolean.TRUE)

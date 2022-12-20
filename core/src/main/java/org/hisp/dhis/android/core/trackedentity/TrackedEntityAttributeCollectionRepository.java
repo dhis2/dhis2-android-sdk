@@ -96,6 +96,10 @@ public final class TrackedEntityAttributeCollectionRepository
         return cf.bool(Columns.DISPLAY_ON_VISIT_SCHEDULE);
     }
 
+    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byConfidential() {
+        return cf.bool(Columns.CONFIDENTIAL);
+    }
+
     public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byOrgUnitScope() {
         return cf.bool(TrackedEntityAttributeFields.ORG_UNIT_SCOPE);
     }

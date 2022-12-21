@@ -25,33 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
-
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsPeriodHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 
-object AnalyticsPeriodHelper {
-
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
-
-    fun shiftPeriod(period: Period, offset: Int): Period {
-        return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)!!
+internal class ItemYearlyPeriodCount : ItemPeriodBase() {
+    override fun evaluate(period: Period): Double {
+        return when (period.periodType()!!) {
+            PeriodType.Daily -> evaluateDaily(period)
+            PeriodType.Weekly,
+            PeriodType.WeeklyWednesday,
+            PeriodType.WeeklyThursday,
+            PeriodType.WeeklySaturday,
+            PeriodType.WeeklySunday,
+            PeriodType.BiWeekly -> evaluateWeeklyOrBiWeekly(period)
+            PeriodType.Monthly -> 12
+            PeriodType.BiMonthly -> 6
+            PeriodType.Quarterly -> 4
+            PeriodType.SixMonthly,
+            PeriodType.SixMonthlyApril,
+            PeriodType.SixMonthlyNov -> 2
+            PeriodType.Yearly,
+            PeriodType.FinancialApril,
+            PeriodType.FinancialJuly,
+            PeriodType.FinancialOct,
+            PeriodType.FinancialNov -> 1
+        }.toDouble()
     }
 
-    fun shiftPeriods(periods: List<Period>, offset: Int): List<Period> {
-        return periods.map { shiftPeriod(it, offset) }
+    private fun evaluateDaily(period: Period): Int {
+        val year = getYear(period)
+        return if (year % 4 == 0) 366 else 365
     }
 
-    fun countWeeksOrBiWeeksInYear(periodType: PeriodType, year: Int): Int {
-        // The period containing this date is the last period in the year
-        val lastDate = DateUtils.SIMPLE_DATE_FORMAT.parse("$year-12-28")
-        val lastPeriod = periodGenerator.generatePeriod(periodType, lastDate, 0)!!
+    private fun evaluateWeeklyOrBiWeekly(period: Period): Int {
+        val year = getYear(period)
+        return AnalyticsPeriodHelper.countWeeksOrBiWeeksInYear(period.periodType()!!, year)
+    }
 
-        return ParserUtils.getTrailingDigits(lastPeriod.periodId()!!)!!
+    private fun getYear(period: Period): Int {
+        return period.periodId()!!.substring(0, 4).toInt()
     }
 }

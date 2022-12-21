@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019SunW25
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
@@ -149,6 +150,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             dataElement1.displayName()!!,
             categoryOptionCombo.displayName()
         ),
+        period2019SunW25.periodId()!! to MetadataItem.PeriodItem(period2019SunW25),
+        period201910.periodId()!! to MetadataItem.PeriodItem(period201910),
         period201911.periodId()!! to MetadataItem.PeriodItem(period201911),
         period201912.periodId()!! to MetadataItem.PeriodItem(period201912),
         period202001.periodId()!! to MetadataItem.PeriodItem(period202001),
@@ -208,6 +211,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         dataElementStore.insert(dataElement3)
         dataElementStore.insert(dataElement4)
 
+        periodStore.insert(period2019SunW25)
         periodStore.insert(period201910)
         periodStore.insert(period201911)
         periodStore.insert(period201912)

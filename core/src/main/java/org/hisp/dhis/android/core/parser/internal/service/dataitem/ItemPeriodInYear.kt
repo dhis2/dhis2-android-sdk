@@ -25,33 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
-
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 
-object AnalyticsPeriodHelper {
+internal class ItemPeriodInYear : ItemPeriodBase() {
+    override fun evaluate(period: Period): Double {
+        val periodIsoDate = DateUtils.SIMPLE_DATE_FORMAT.format(period.startDate()!!)
 
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
-
-    fun shiftPeriod(period: Period, offset: Int): Period {
-        return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)!!
-    }
-
-    fun shiftPeriods(periods: List<Period>, offset: Int): List<Period> {
-        return periods.map { shiftPeriod(it, offset) }
-    }
-
-    fun countWeeksOrBiWeeksInYear(periodType: PeriodType, year: Int): Int {
-        // The period containing this date is the last period in the year
-        val lastDate = DateUtils.SIMPLE_DATE_FORMAT.parse("$year-12-28")
-        val lastPeriod = periodGenerator.generatePeriod(periodType, lastDate, 0)!!
-
-        return ParserUtils.getTrailingDigits(lastPeriod.periodId()!!)!!
+        return when (period.periodType()!!) {
+            PeriodType.Daily -> LocalDate.parse(periodIsoDate).dayOfYear
+            PeriodType.Monthly,
+            PeriodType.BiMonthly -> period.periodId()!!.substring(4, 6).toInt()
+            PeriodType.Yearly,
+            PeriodType.FinancialApril,
+            PeriodType.FinancialJuly,
+            PeriodType.FinancialNov,
+            PeriodType.FinancialOct -> 1
+            else -> ParserUtils.getTrailingDigits(period.periodId()!!) ?: 0
+        }.toDouble()
     }
 }

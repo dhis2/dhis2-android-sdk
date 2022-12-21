@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019SunW25
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -230,6 +230,34 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         ).forEach { (numerator, expected) ->
             val indicator = createIndicator(numerator = numerator)
             val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_yearly_period_count_item() {
+        val indicator = createIndicator(numerator = "[yearlyPeriodCount]")
+
+        mapOf(
+            period201910 to "12.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "52.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_period_in_year() {
+        val indicator = createIndicator(numerator = "[periodInYear]")
+
+        mapOf(
+            period201910 to "10.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "25.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
             assertThat(result).isEqualTo(expected)
         }
     }

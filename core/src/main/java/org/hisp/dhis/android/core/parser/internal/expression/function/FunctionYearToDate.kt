@@ -25,33 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+/**
+ * Function periodOffset
+ *
+ * @author Jim Grace
+ */
+internal class FunctionYearToDate : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(yearToDate = true)
 
-object AnalyticsPeriodHelper {
-
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
-
-    fun shiftPeriod(period: Period, offset: Int): Period {
-        return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)!!
+        return visitor.visitWithQueryMods(ctx.expr(0), queryMods)
     }
 
-    fun shiftPeriods(periods: List<Period>, offset: Int): List<Period> {
-        return periods.map { shiftPeriod(it, offset) }
-    }
-
-    fun countWeeksOrBiWeeksInYear(periodType: PeriodType, year: Int): Int {
-        // The period containing this date is the last period in the year
-        val lastDate = DateUtils.SIMPLE_DATE_FORMAT.parse("$year-12-28")
-        val lastPeriod = periodGenerator.generatePeriod(periodType, lastDate, 0)!!
-
-        return ParserUtils.getTrailingDigits(lastPeriod.periodId()!!)!!
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
     }
 }

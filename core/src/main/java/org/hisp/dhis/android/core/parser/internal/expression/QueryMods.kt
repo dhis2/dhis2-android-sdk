@@ -35,5 +35,6 @@ internal data class QueryMods(
     var aggregationType: AggregationType? = null,
     var minDate: LocalDate? = null,
     var maxDate: LocalDate? = null,
-    var periodOffset: Int? = null
+    var periodOffset: Int? = null,
+    var yearToDate: Boolean = false,
 )

@@ -113,7 +113,7 @@ internal object AnalyticsEvaluatorHelper {
             }
         }
         return if (periodOffset != null && periodOffset != 0) {
-            AnalyticsPeriodHelper.shitPeriods(periods, periodOffset)
+            AnalyticsPeriodHelper.shiftPeriods(periods, periodOffset)
         } else {
             periods
         }

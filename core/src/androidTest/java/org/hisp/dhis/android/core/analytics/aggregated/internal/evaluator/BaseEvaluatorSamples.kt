@@ -220,6 +220,13 @@ object BaseEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .build()
 
+    val period2019SunW25: Period = Period.builder()
+        .periodId("2019SunW25")
+        .periodType(PeriodType.WeeklySunday)
+        .startDate(DateUtils.DATE_FORMAT.parse("2019-06-16T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2019-06-22T23:59:59.999"))
+        .build()
+
     val period201910: Period = Period.builder()
         .periodId("201910")
         .periodType(PeriodType.Monthly)

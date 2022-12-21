@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
- * Function periodOffset
+ * Function minDate
  *
  * @author Jim Grace
  */

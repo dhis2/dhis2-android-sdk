@@ -60,4 +60,18 @@ class ParserUtilsShould {
             assertThrows(ParserExceptionWithoutContext::class.java) { ParserUtils.parseExpressionDate(it) }
         }
     }
+
+    @Test
+    fun should_parse_period_trailing_digits() {
+        mapOf(
+            "2022W1" to 1,
+            "2022WedW14" to 14,
+            "2022Q4" to 4,
+            "2022BiW13" to 13,
+            "2022S2" to 2,
+            "2022NovS1" to 1
+        ).forEach { (periodId, trailingDigits) ->
+            assertThat(ParserUtils.getTrailingDigits(periodId)).isEqualTo(trailingDigits)
+        }
+    }
 }

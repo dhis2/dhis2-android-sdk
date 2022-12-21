@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import kotlinx.datetime.LocalDate
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsPeriodHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -48,6 +49,7 @@ internal object ParserUtils {
     private const val NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$"
     private val NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP)
     private const val DEFAULT_DATE_FORMAT = "yyyy-MM-dd"
+    private val trailingPeriodDigits = "\\d+$".toRegex()
 
     val ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription
     val ITEM_GET_IDS = ExpressionItem::getItemId
@@ -149,5 +151,9 @@ internal object ParserUtils {
         } catch (e: Exception) {
             throw ParserExceptionWithoutContext("Invalid date: $expression - ${e.message}")
         }
+    }
+
+    fun getTrailingDigits(periodId: String): Int? {
+        return trailingPeriodDigits.find(periodId)?.value?.toInt()
     }
 }

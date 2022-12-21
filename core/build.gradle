@@ -68,6 +68,9 @@ ext {
             smsCompression  : "0.2.0",
             expressionParser: "1.0.29",
 
+            // Kotlin
+            kotlinxDatetime : "0.4.0",
+
             // test dependencies
             coreTesting     : "2.1.0",
             jUnit           : "4.13.2",
@@ -188,6 +191,9 @@ dependencies {
 
     // Joda time
     api "joda-time:joda-time:${libraries.jodaTime}"
+
+    // Kotlinx datetime
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"
 
     // sms compression library
     api "com.github.dhis2:sms-compression:${libraries.smsCompression}"

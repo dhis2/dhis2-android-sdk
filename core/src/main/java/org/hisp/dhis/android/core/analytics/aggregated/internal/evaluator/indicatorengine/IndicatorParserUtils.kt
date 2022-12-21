@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indica
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionAggregationType
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMaxDate
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMinDate
 import org.hisp.dhis.android.core.parser.internal.expression.function.PeriodOffset
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
@@ -109,6 +111,8 @@ internal object IndicatorParserUtils {
 
             // Query modifiers
             ExpressionParser.AGGREGATION_TYPE to FunctionAggregationType(),
+            ExpressionParser.MIN_DATE to FunctionMinDate(),
+            ExpressionParser.MAX_DATE to FunctionMaxDate(),
             ExpressionParser.PERIOD_OFFSET to PeriodOffset(),
         )
 

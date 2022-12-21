@@ -78,6 +78,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
             }
+            appendDateQueryMods(queryMods, this)
             appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
         }.build()
 
@@ -218,6 +219,19 @@ internal class DataElementSQLEvaluator @Inject constructor(
             builder = builder,
             metadata = metadata
         )
+    }
+
+    private fun appendDateQueryMods(queryMods: QueryMods?, builder: WhereClauseBuilder): WhereClauseBuilder {
+        return builder.apply {
+            queryMods?.minDate?.let {
+                val date = it.toString()
+                appendInSubQuery(DataValueTableInfo.Columns.PERIOD, AnalyticsEvaluatorHelper.getPeriodsFromDate(date))
+            }
+            queryMods?.maxDate?.let {
+                val date = it.toString()
+                appendInSubQuery(DataValueTableInfo.Columns.PERIOD, AnalyticsEvaluatorHelper.getPeriodsToDate(date))
+            }
+        }
     }
 
     private fun getAggregator(

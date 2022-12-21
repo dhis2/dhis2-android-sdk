@@ -25,15 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.parser.internal.expression
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.common.AggregationType
+/**
+ * Function periodOffset
+ *
+ * @author Jim Grace
+ */
+internal class FunctionMinDate : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val date = ParserUtils.parseExpressionDate(ctx.minDate.text)
+        val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(minDate = date)
 
-internal data class QueryMods(
-    var aggregationType: AggregationType? = null,
-    var minDate: LocalDate? = null,
-    var maxDate: LocalDate? = null,
-    var periodOffset: Int? = null
-)
+        return visitor.visitWithQueryMods(ctx.expr(0), queryMods)
+    }
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
+    }
+}

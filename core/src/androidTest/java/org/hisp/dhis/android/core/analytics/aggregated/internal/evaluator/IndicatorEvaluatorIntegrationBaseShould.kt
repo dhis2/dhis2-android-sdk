@@ -40,9 +40,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201910
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -213,6 +215,23 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         val avgIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(AVERAGE)")
         val avgResult = evaluateForAbsolute(avgIndicator, periodId = period2019Q4.periodId()!!)
         assertThat(avgResult).isEqualTo("2.5")
+    }
+
+    @Test
+    fun should_evaluate_min_date_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
+        createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        mapOf(
+            "${de(dataElement1.uid())}.minDate(2019-10-05)" to "12.0",
+            "${de(dataElement1.uid())}.maxDate(2019-12-01)" to "6.0",
+            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0",
+        ).forEach { (numerator, expected) ->
+            val indicator = createIndicator(numerator = numerator)
+            val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
     }
 
     private fun evaluateForThisMonth(

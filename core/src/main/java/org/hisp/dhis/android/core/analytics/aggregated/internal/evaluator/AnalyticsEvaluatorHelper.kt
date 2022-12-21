@@ -175,6 +175,19 @@ internal object AnalyticsEvaluatorHelper {
             }"
     }
 
+    fun getPeriodsFromDate(startDate: String): String {
+        return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
+                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${PeriodTableInfo.Columns.START_DATE} >= '$startDate'"
+    }
+
+
+    fun getPeriodsToDate(endDate: String): String {
+        return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
+                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${PeriodTableInfo.Columns.END_DATE} <= '$endDate'"
+    }
+
     fun getPeriodWhereClause(columnStart: String, columnEnd: String, period: Period): String {
         return "$columnStart >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
             "AND " +

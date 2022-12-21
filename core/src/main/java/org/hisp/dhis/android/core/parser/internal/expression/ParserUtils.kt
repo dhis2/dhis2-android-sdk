@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.parser.internal.expression
 
+import kotlinx.datetime.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -37,8 +38,10 @@ import org.hisp.dhis.android.core.parser.internal.expression.operator.*
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemConstant
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemDays
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemOrgUnitGroup
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import kotlin.math.exp
 
 internal object ParserUtils {
     const val DOUBLE_VALUE_IF_NULL = 0.0
@@ -135,6 +138,16 @@ internal object ParserUtils {
             val format = SimpleDateFormat()
             format.applyPattern(DEFAULT_DATE_FORMAT)
             format.format(date)
+        }
+    }
+
+    fun parseExpressionDate(expression: String): LocalDate {
+        return try {
+            val tokens = expression.split('-')
+            val dateStr = tokens[0] + "-" + tokens[1].padStart(2, '0') + "-" + tokens[2].padStart(2, '0')
+            LocalDate.parse(dateStr)
+        } catch (e: Exception) {
+            throw ParserExceptionWithoutContext("Invalid date: $expression - ${e.message}")
         }
     }
 }

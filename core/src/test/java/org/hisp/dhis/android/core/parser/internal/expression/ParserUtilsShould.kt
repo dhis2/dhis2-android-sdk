@@ -25,15 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.parser.internal.expression
 
-import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.common.AggregationType
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
+import org.junit.Assert.assertThrows
+import org.junit.Test
 
-internal data class QueryMods(
-    var aggregationType: AggregationType? = null,
-    var minDate: LocalDate? = null,
-    var maxDate: LocalDate? = null,
-    var periodOffset: Int? = null
-)
+class ParserUtilsShould {
+
+    @Test
+    fun parse_expression_date() {
+        mapOf(
+            "2022-12-10" to listOf(2022, 12, 10, "2022-12-10"),
+            "2022-05-08" to listOf(2022, 5, 8, "2022-05-08"),
+            "2022-5-8" to listOf(2022, 5, 8, "2022-05-08"),
+        ).forEach { (str, tokens) ->
+            val date = ParserUtils.parseExpressionDate(str)
+            assertThat(date.year).isEqualTo(tokens[0])
+            assertThat(date.monthNumber).isEqualTo(tokens[1])
+            assertThat(date.dayOfMonth).isEqualTo(tokens[2])
+            assertThat(date.toString()).isEqualTo(tokens[3])
+        }
+    }
+
+    @Test
+    fun parse_invalid_date() {
+        listOf(
+            "",
+            "null",
+            "2022-08",
+            "2022-13-35",
+        ).forEach {
+            assertThrows(ParserExceptionWithoutContext::class.java) { ParserUtils.parseExpressionDate(it) }
+        }
+    }
+}

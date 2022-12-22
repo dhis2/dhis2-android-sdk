@@ -50,6 +50,7 @@ android {
             testCoverageEnabled = true
         }
     }
+    namespace 'org.hisp.dhis.android.instrumentedTestApp'
 }
 
 dependencies {

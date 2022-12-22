@@ -33,7 +33,11 @@ import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.*
+import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
+import org.hisp.dhis.android.core.tracker.importer.internal.JobObjectReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.junit.Test
 
 class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-success.json"), ObjectShould {

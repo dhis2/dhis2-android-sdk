@@ -59,7 +59,7 @@ ext {
             autoValueCursor : "2.0.1",
             retrofit        : "2.9.0",
             okHttp          : "3.12.0",
-            dagger          : "2.39.1",
+            dagger          : "2.44.2",
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.3",

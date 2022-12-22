@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
@@ -185,7 +185,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         aggregationType: AggregationType,
         queryMods: QueryMods?,
     ): WhereClauseBuilder {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods?.periodOffset)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
         val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
 
         return builder.appendInSubQuery(

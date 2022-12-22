@@ -215,6 +215,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         periodStore.insert(period201910)
         periodStore.insert(period201911)
         periodStore.insert(period201912)
+        periodStore.insert(period202001)
         periodStore.insert(period2019Q4)
 
         trackedEntityTypeStore.insert(trackedEntityType)

@@ -77,7 +77,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
     ): String {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
         val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
-        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata, queryMods?.periodOffset)
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata, queryMods)
 
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
@@ -92,9 +92,19 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
         val contextWhereClause = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods
+                )
             AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata, queryMods)
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods
+                )
         }
 
         val context = ProgramIndicatorSQLContext(

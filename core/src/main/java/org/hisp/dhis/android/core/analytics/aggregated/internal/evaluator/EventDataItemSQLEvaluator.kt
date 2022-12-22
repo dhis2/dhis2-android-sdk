@@ -230,7 +230,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         aggregation: AggregationType,
         queryMods: QueryMods?,
     ): WhereClauseBuilder {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods?.periodOffset)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
 
         return if (reportingPeriods.isEmpty()) {
             builder

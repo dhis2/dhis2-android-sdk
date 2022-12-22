@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
@@ -96,7 +97,7 @@ internal object AnalyticsEvaluatorHelper {
     fun getReportingPeriods(
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
-        periodOffset: Int?
+        queryMods: QueryMods?
     ): List<Period> {
         val periods = mutableListOf<Period>().apply {
             items.forEach { i ->
@@ -112,11 +113,22 @@ internal object AnalyticsEvaluatorHelper {
                 }
             }
         }
-        return if (periodOffset != null && periodOffset != 0) {
-            AnalyticsPeriodHelper.shiftPeriods(periods, periodOffset)
-        } else {
-            periods
-        }
+
+        return periods
+            .run {
+                if (queryMods?.periodOffset?.let { it != 0 } == true) {
+                    AnalyticsPeriodHelper.shiftPeriods(this, queryMods.periodOffset!!)
+                } else {
+                    this
+                }
+            }
+            .run {
+                if (queryMods?.yearToDate == true) {
+                    this.flatMap { AnalyticsPeriodHelper.getPeriodsToDate(it) }
+                } else {
+                    this
+                }
+            }.distinctBy { it.periodId() }
     }
 
     fun getReportingPeriodsForAggregationType(
@@ -177,15 +189,14 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getPeriodsFromDate(startDate: String): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
-                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${PeriodTableInfo.Columns.START_DATE} >= '$startDate'"
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${PeriodTableInfo.Columns.START_DATE} >= '$startDate'"
     }
-
 
     fun getPeriodsToDate(endDate: String): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
-                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${PeriodTableInfo.Columns.END_DATE} <= '$endDate'"
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${PeriodTableInfo.Columns.END_DATE} <= '$endDate'"
     }
 
     fun getPeriodWhereClause(columnStart: String, columnEnd: String, period: Period): String {

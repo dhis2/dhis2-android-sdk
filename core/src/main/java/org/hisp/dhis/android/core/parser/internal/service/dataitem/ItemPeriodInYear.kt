@@ -27,26 +27,11 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
 
 internal class ItemPeriodInYear : ItemPeriodBase() {
     override fun evaluate(period: Period): Double {
-        val periodIsoDate = DateUtils.SIMPLE_DATE_FORMAT.format(period.startDate()!!)
-
-        return when (period.periodType()!!) {
-            PeriodType.Daily -> LocalDate.parse(periodIsoDate).dayOfYear
-            PeriodType.Monthly,
-            PeriodType.BiMonthly -> period.periodId()!!.substring(4, 6).toInt()
-            PeriodType.Yearly,
-            PeriodType.FinancialApril,
-            PeriodType.FinancialJuly,
-            PeriodType.FinancialNov,
-            PeriodType.FinancialOct -> 1
-            else -> ParserUtils.getTrailingDigits(period.periodId()!!) ?: 0
-        }.toDouble()
+        return ParserUtils.getPeriodInYear(period).toDouble()
     }
 }

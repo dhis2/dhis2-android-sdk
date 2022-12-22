@@ -206,6 +206,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         }.build()
     }
 
+    @Suppress("LongParameterList")
     private fun appendProgramIndicatorPeriodClauses(
         dimensions: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
@@ -220,7 +221,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                     column = defaultColumn,
                     dimensions = dimensions,
                     metadata = metadata,
-                    periodOffset = queryMods?.periodOffset
+                    queryMods = queryMods
                 )
             )
         } else {
@@ -234,9 +235,9 @@ internal object ProgramIndicatorEvaluatorHelper {
         column: String,
         dimensions: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
-        periodOffset: Int?
+        queryMods: QueryMods?
     ): String {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata, periodOffset)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata, queryMods)
 
         return WhereClauseBuilder().apply {
             reportingPeriods.forEach { period ->

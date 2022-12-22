@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 
+@Suppress("MagicNumber")
 internal class ItemYearlyPeriodCount : ItemPeriodBase() {
     override fun evaluate(period: Period): Double {
         return when (period.periodType()!!) {

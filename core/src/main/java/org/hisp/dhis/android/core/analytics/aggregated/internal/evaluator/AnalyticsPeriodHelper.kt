@@ -54,4 +54,14 @@ object AnalyticsPeriodHelper {
 
         return ParserUtils.getTrailingDigits(lastPeriod.periodId()!!)!!
     }
+
+    fun getPeriodsToDate(period: Period): List<Period> {
+        val periodInYear = ParserUtils.getPeriodInYear(period)
+
+        val periodsExcludingEnd = (1 until periodInYear).map {
+            periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, -it)!!
+        }
+
+        return periodsExcludingEnd + period
+    }
 }

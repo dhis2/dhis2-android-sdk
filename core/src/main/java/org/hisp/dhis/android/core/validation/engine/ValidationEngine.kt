@@ -25,13 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.engine
 
-package org.hisp.dhis.android.core.validation.engine;
+import io.reactivex.Single
 
-import io.reactivex.Single;
-
-public interface ValidationEngine {
-
+interface ValidationEngine {
     /**
      * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
      * list of validation conflicts.
@@ -42,14 +40,18 @@ public interface ValidationEngine {
      * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
      * @return Validation result
      */
-    Single<ValidationResult> validate(String dataSetUid, String periodId,
-                                      String orgUnitUid, String attributeOptionComboUid);
+    fun validate(
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Single<ValidationResult>
 
     /**
      * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
      * list of validation conflicts. Important: this is a blocking method and it should not be
      * executed in the main thread. Consider the asynchronous version
-     * {@link #validate(String, String, String, String)}.
+     * [.validate].
      *
      * @param dataSetUid DataSet uid to run the validation rules
      * @param periodId Validation period
@@ -57,7 +59,10 @@ public interface ValidationEngine {
      * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
      * @return Validation result
      */
-    ValidationResult blockingValidate(String dataSetUid, String periodId,
-                                      String orgUnitUid, String attributeOptionComboUid);
-
+    fun blockingValidate(
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): ValidationResult
 }

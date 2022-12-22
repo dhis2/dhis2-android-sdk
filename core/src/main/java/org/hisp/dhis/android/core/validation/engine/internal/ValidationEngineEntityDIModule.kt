@@ -25,36 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.datasetindicatorengine
+package org.hisp.dhis.android.core.validation.engine.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
-import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 
-@Reusable
-internal class DataSetIndicatorEvaluator @Inject constructor(private val expressionService: ExpressionService) {
-
-    fun evaluate(
-        indicator: Indicator,
-        indicatorType: IndicatorType,
-        context: ExpressionServiceContext
-    ): Double {
-        val numerator = expressionService.getExpressionValue(
-            indicator.numerator(), context, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val denominator = expressionService.getExpressionValue(
-            indicator.denominator(), context, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
-        val value = (expressionService.getExpressionValue(formula) ?: 0.0) as Double
-
-        return ParserUtils.getRounded(value, indicator.decimals() ?: 2)
+@Module
+internal class ValidationEngineEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(impl: ValidationEngineImpl): ValidationEngine {
+        return impl
     }
 }

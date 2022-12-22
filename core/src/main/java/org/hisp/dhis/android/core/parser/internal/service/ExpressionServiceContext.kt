@@ -26,20 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine.internal;
+package org.hisp.dhis.android.core.parser.internal.service
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ValidationEngineEntityDIModule {
-
-    @Provides
-    @Reusable
-    public ValidationEngine store(ValidationEngineImpl impl) {
-        return impl;
-    }
-}
+internal data class ExpressionServiceContext(
+    val valueMap: Map<DimensionalItemObject, Double> = emptyMap(),
+    val constantMap: Map<String, Constant> = emptyMap(),
+    val orgUnitCountMap: Map<String, Int> = emptyMap(),
+    val days: Int? = 0,
+)

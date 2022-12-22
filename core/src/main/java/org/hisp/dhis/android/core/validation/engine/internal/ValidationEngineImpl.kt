@@ -25,72 +25,87 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.datasetindicatorengine
+package org.hisp.dhis.android.core.validation.engine.internal
 
-import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
-import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
-import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
-import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
+import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper.getValueMap
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
+import org.hisp.dhis.android.core.validation.engine.ValidationResult
+import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
 
-@Reusable
-internal class DataSetIndicatorEngineImpl @Inject constructor(
-    private val indicatorRepository: IndicatorCollectionRepository,
-    private val indicatorTypeRepository: IndicatorTypeCollectionRepository,
+internal class ValidationEngineImpl @Inject constructor(
+    private val validationExecutor: ValidationExecutor,
+    private val validationRuleRepository: ValidationRuleCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,
     private val constantRepository: ConstantCollectionRepository,
-    private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>,
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val periodHelper: PeriodHelper,
-    private val dataSetIndicatorEvaluator: DataSetIndicatorEvaluator
-) : DataSetIndicatorEngine {
-
-    override fun evaluate(
-        indicatorUid: String,
+    private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>
+) : ValidationEngine {
+    override fun validate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
         attributeOptionComboUid: String
-    ): Single<Double> {
-        return Single.fromCallable {
-            blockingEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
-        }
+    ): Single<ValidationResult> {
+        return Single.fromCallable { blockingValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
     }
 
-    override fun blockingEvaluate(
-        indicatorUid: String,
+    override fun blockingValidate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
         attributeOptionComboUid: String
-    ): Double {
-        val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
-        val indicatorType = indicatorTypeRepository.uid(indicator.indicatorType()?.uid()).blockingGet()
+    ): ValidationResult {
+        val rules = getValidationRulesForDataSetValidation(dataSetUid)
 
-        val context = ExpressionServiceContext(
-            valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId),
-            constantMap = getConstantMap(),
-            orgUnitCountMap = getOrgunitGroupMap(),
-            days = PeriodHelper.getDays(getPeriod(periodId))
-        )
+        val violations = if (rules.isNotEmpty()) {
+            val constantMap = constantMap
+            val valueMap = getValueMap(
+                dataSetUid, attributeOptionComboUid,
+                orgUnitUid, periodId
+            )
+            val orgunitGroupMap = orgunitGroupMap
+            val organisationUnit = getOrganisationUnit(orgUnitUid)
+            val period = getPeriod(periodId)
+            val context = ExpressionServiceContext(valueMap, constantMap, orgunitGroupMap, PeriodHelper.getDays(period))
 
-        return dataSetIndicatorEvaluator.evaluate(
-            indicator = indicator,
-            indicatorType = indicatorType,
-            context = context
-        )
+            rules.mapNotNull {
+                validationExecutor.evaluateRule(it, organisationUnit, context, period, attributeOptionComboUid)
+            }
+        } else {
+            emptyList()
+        }
+
+        val status = if (violations.isEmpty()) ValidationResultStatus.OK else ValidationResultStatus.ERROR
+
+        return ValidationResult.builder()
+            .status(status)
+            .violations(violations)
+            .build()
+    }
+
+    private fun getValidationRulesForDataSetValidation(datasetUid: String): List<ValidationRule> {
+        return validationRuleRepository
+            .byDataSetUids(listOf(datasetUid))
+            .bySkipFormValidation().isFalse
+            .blockingGet()
     }
 
     private fun getValueMap(
@@ -99,27 +114,30 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         orgUnitUid: String,
         periodId: String
     ): Map<DimensionalItemObject, Double> {
-        val dataValues: List<DataValue> = dataValueRepository
+        val dataValues = dataValueRepository
             .byDataSetUid(dataSetUid)
-            .byPeriod().eq(periodId)
-            .byOrganisationUnitUid().eq(orgUnitUid)
             .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+            .byOrganisationUnitUid().eq(orgUnitUid)
+            .byPeriod().eq(periodId)
             .byDeleted().isFalse
             .blockingGet()
-
-        return ExpressionHelper.getValueMap(dataValues)
+        return getValueMap(dataValues)
     }
 
-    private fun getConstantMap(): Map<String, Constant> {
-        val constants: List<Constant> = constantRepository.blockingGet()
-        return mapByUid(constants)
+    private val constantMap: Map<String, Constant>
+        get() {
+            val constants = constantRepository.blockingGet()
+            return mapByUid(constants)
+        }
+
+    private fun getOrganisationUnit(orgunitId: String): OrganisationUnit? {
+        return organisationUnitRepository.uid(orgunitId).blockingGet()
     }
 
-    private fun getOrgunitGroupMap(): Map<String, Int> {
-        return orgunitGroupLinkStore.groupAndGetCountBy(
+    private val orgunitGroupMap: Map<String, Int>
+        get() = orgunitGroupLinkStore.groupAndGetCountBy(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
         )
-    }
 
     private fun getPeriod(periodId: String): Period {
         return periodHelper.blockingGetPeriodForPeriodId(periodId)

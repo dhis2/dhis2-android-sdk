@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_RE
 import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateLiteral
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
-import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
@@ -71,12 +70,9 @@ internal class ExpressionService @Inject constructor(
         return if (expression == null) {
             emptySet()
         } else {
-            // TODO REVIEW
-            val itemIds: MutableSet<DimensionalItemId> = HashSet()
             val visitor = newVisitor(ITEM_GET_IDS, emptyMap())
-            visitor.itemIds = itemIds
             visit(expression, visitor)
-            itemIds
+            visitor.itemIds
         }
     }
 
@@ -100,102 +96,84 @@ internal class ExpressionService @Inject constructor(
         } else {
             val visitor = newVisitor(ITEM_GET_DESCRIPTIONS, constantMap)
             visit(expression, visitor)
-            val itemDescriptions = visitor.itemDescriptions
-            var description: String = expression
-            for ((key, value) in itemDescriptions) {
-                description = description.replace(key, value)
+            visitor.itemDescriptions.entries.fold(expression) { acc, (key, value) ->
+                acc.replace(key, value)
             }
-            description
         }
     }
 
     fun getExpressionValue(expression: String?): Any? {
         return getExpressionValue(
-            expression, emptyMap(), emptyMap(), emptyMap(), 0, MissingValueStrategy.NEVER_SKIP
+            expression, ExpressionServiceContext(), MissingValueStrategy.NEVER_SKIP
         )
     }
 
-    @Suppress("LongParameterList", "ComplexMethod", "ReturnCount")
     fun getExpressionValue(
         expression: String?,
-        valueMap: Map<DimensionalItemObject, Double>,
-        constantMap: Map<String, Constant>,
-        orgUnitCountMap: Map<String, Int>,
-        days: Int?,
+        context: ExpressionServiceContext,
         missingValueStrategy: MissingValueStrategy
     ): Any? {
         return expression?.let {
             val visitor = newVisitor(
                 ITEM_EVALUATE,
-                constantMap
+                context.constantMap
             )
-            val itemValueMap = valueMap.map { it.key.dimensionItem to it.value }.toMap()
+            val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
 
             visitor.itemValueMap = itemValueMap
-            visitor.orgUnitCountMap = orgUnitCountMap
-            if (days != null) {
-                visitor.days = days.toDouble()
-            }
+            visitor.orgUnitCountMap = context.orgUnitCountMap
+            visitor.days = context.days?.toDouble()
+
             val value = visit(expression, visitor)
             val itemsFound = visitor.state.itemsFound
             val itemValuesFound = visitor.state.itemValuesFound
 
+            val handledValue =
+                if (value == null) {
+                    0.0
+                } else if (value is Double && value.isNaN()) {
+                    null
+                } else {
+                    value
+                }
+
             when (missingValueStrategy) {
                 MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING -> {
                     if (itemValuesFound < itemsFound) {
-                        return null
-                    }
-                    if (itemsFound != 0 && itemValuesFound == 0) {
-                        return null
-                    }
-                    if (value == null) {
-                        // TODO Handle other ParseType
-                        return 0.0
+                        null
+                    } else {
+                        handledValue
                     }
                 }
                 MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING -> {
                     if (itemsFound != 0 && itemValuesFound == 0) {
-                        return null
-                    }
-                    if (value == null) {
-                        return 0.0
+                        null
+                    } else {
+                        handledValue
                     }
                 }
-                MissingValueStrategy.NEVER_SKIP -> if (value == null) {
-                    return 0.0
-                }
-            }
-
-            if (value is Double && value.isNaN()) {
-                null
-            } else {
-                value
+                MissingValueStrategy.NEVER_SKIP -> handledValue
             }
         }
     }
 
     fun regenerateExpression(
         expression: String?,
-        valueMap: Map<DimensionalItemObject, Double>,
-        constantMap: Map<String, Constant>,
-        orgUnitCountMap: Map<String, Int>,
-        days: Int?
+        context: ExpressionServiceContext
     ): String {
         return if (expression == null) {
             ""
         } else {
             val visitor = newVisitor(
                 ITEM_REGENERATE,
-                constantMap
+                context.constantMap
             )
 
-            val itemValueMap = valueMap.map { it.key.dimensionItem to it.value }.toMap()
+            val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
             visitor.itemValueMap = itemValueMap
-            visitor.orgUnitCountMap = orgUnitCountMap
+            visitor.orgUnitCountMap = context.orgUnitCountMap
             visitor.setExpressionLiteral(RegenerateLiteral())
-            if (days != null) {
-                visitor.days = days.toDouble()
-            }
+            visitor.days = context.days?.toDouble()
             visit(expression, visitor) as String
         }
     }

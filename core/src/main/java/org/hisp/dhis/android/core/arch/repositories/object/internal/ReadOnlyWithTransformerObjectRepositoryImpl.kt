@@ -45,9 +45,9 @@ internal constructor(
     private val transformer: TwoWayTransformer<M, T>
 ) : ReadOnlyObjectRepository<T> {
 
-    fun blockingGetWithoutChildren(): M {
+    fun blockingGetWithoutChildren(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
-        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))!!
+        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
 
     /**

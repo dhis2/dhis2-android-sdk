@@ -128,31 +128,22 @@ internal class ExpressionService @Inject constructor(
             val itemsFound = visitor.state.itemsFound
             val itemValuesFound = visitor.state.itemValuesFound
 
-            val handledValue =
-                if (value == null) {
-                    0.0
-                } else if (value is Double && value.isNaN()) {
-                    null
-                } else {
-                    value
-                }
-
             when (missingValueStrategy) {
                 MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING -> {
                     if (itemValuesFound < itemsFound) {
                         null
                     } else {
-                        handledValue
+                        getHandledValue(value)
                     }
                 }
                 MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING -> {
                     if (itemsFound != 0 && itemValuesFound == 0) {
                         null
                     } else {
-                        handledValue
+                        getHandledValue(value)
                     }
                 }
-                MissingValueStrategy.NEVER_SKIP -> handledValue
+                MissingValueStrategy.NEVER_SKIP -> getHandledValue(value)
             }
         }
     }
@@ -180,6 +171,17 @@ internal class ExpressionService @Inject constructor(
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
+
+    private fun getHandledValue(value: Any?): Any? {
+        return if (value == null) {
+            0.0
+        } else if (value is Double && value.isNaN()) {
+            null
+        } else {
+            value
+        }
+    }
+
     /**
      * Creates a new ExpressionItemsVisitor object.
      */

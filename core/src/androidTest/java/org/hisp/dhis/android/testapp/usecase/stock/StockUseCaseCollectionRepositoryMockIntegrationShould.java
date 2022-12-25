@@ -66,4 +66,16 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(stockUseCases.get(0).getTransactions().size()).isEqualTo(3);
     }
 
+    @Test
+    public void return_false_when_use_case_does_not_exist() {
+        boolean stockUseCaseExists = d2.useCaseModule().stockUseCases()
+                .uid("IpHINAT79UW")
+                .blockingExists();
+
+        boolean stockUseCaseDoesNotExist = d2.useCaseModule().stockUseCases()
+                .uid("false_uid")
+                .blockingExists();
+        assertThat(stockUseCaseExists).isEqualTo(true);
+        assertThat(stockUseCaseDoesNotExist).isEqualTo(false);
+    }
 }

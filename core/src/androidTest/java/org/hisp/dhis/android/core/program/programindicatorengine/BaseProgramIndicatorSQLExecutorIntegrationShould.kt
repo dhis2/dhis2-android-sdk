@@ -112,7 +112,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             evaluationItem = evaluationItem,
             metadata = metadata +
                 (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)) +
-                (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap())
+                (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap()),
+            queryMods = null
         )
     }
 

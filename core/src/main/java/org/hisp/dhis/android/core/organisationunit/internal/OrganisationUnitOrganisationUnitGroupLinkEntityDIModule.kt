@@ -51,6 +51,6 @@ internal class OrganisationUnitOrganisationUnitGroupLinkEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<OrganisationUnitOrganisationUnitGroupLink>):
         LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

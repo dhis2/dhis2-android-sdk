@@ -25,57 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataobject
 
-package org.hisp.dhis.android.core.parser.internal.service.dataobject;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class DataElementOperandObject implements DimensionalItemObject {
-    private static final String SEPARATOR = ".";
-
-    private static final String SYMBOL_WILDCARD = "*";
-
-    abstract String dataElement();
-
-    @Nullable
-    abstract String categoryOptionCombo();
-
-    @Nullable
-    abstract String attributeOptionCombo();
-
-    public static DataElementOperandObject create(String dataElement, String categoryOptionCombo) {
-        return create(dataElement, categoryOptionCombo, null);
-    }
-
-    public static DataElementOperandObject create(String dataElement, String categoryOptionCombo,
-                                                  String attributeOptionCombo) {
-        return new AutoValue_DataElementOperandObject(dataElement, categoryOptionCombo, attributeOptionCombo);
-    }
-
-    @Override
-    public String getDimensionItem() {
-        StringBuilder item = new StringBuilder();
-
-        if (dataElement() != null) {
-            item.append(dataElement());
-
-            if (categoryOptionCombo() == null) {
-                if (attributeOptionCombo() != null) {
-                    item.append(SEPARATOR).append(SYMBOL_WILDCARD);
+internal data class DataElementOperandObject(
+    val dataElement: String,
+    val categoryOptionCombo: String?,
+    val attributeOptionCombo: String? = null
+) : DimensionalItemObject {
+    override val dimensionItem: String
+        get() {
+            val item = StringBuilder()
+            item.append(dataElement)
+            if (categoryOptionCombo == null) {
+                if (attributeOptionCombo != null) {
+                    item.append(SEPARATOR).append(SYMBOL_WILDCARD)
                 }
             } else {
-                item.append(SEPARATOR).append(categoryOptionCombo());
+                item.append(SEPARATOR).append(categoryOptionCombo)
             }
-
-            if (attributeOptionCombo() != null) {
-                item.append(SEPARATOR).append(attributeOptionCombo());
+            if (attributeOptionCombo != null) {
+                item.append(SEPARATOR).append(attributeOptionCombo)
             }
+            return item.toString()
         }
 
-        return item.toString();
+    companion object {
+        private const val SEPARATOR = "."
+        private const val SYMBOL_WILDCARD = "*"
     }
-
 }

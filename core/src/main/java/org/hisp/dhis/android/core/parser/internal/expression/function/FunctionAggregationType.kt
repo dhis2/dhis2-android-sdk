@@ -25,21 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.validation.engine.internal;
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+/**
+ * Function aggregationType
+ *
+ * @author Jim Grace
+ */
+internal class FunctionAggregationType : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val aggregationType = parseAggregationType(ctx.aggregationType.text)
+        val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(aggregationType = aggregationType)
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+        return visitor.visitWithQueryMods(ctx.expr(0), queryMods)
+    }
 
-@Module
-public final class ValidationEngineEntityDIModule {
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
+    }
 
-    @Provides
-    @Reusable
-    public ValidationEngine store(ValidationEngineImpl impl) {
-        return impl;
+    private fun parseAggregationType(text: String): AggregationType? {
+        return try {
+            AggregationType.valueOf(text)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
     }
 }

@@ -59,7 +59,7 @@ ext {
             autoValueCursor : "2.0.1",
             retrofit        : "2.9.0",
             okHttp          : "3.12.0",
-            dagger          : "2.39.1",
+            dagger          : "2.44.2",
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.3",
@@ -67,6 +67,9 @@ ext {
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
             expressionParser: "1.0.29",
+
+            // Kotlin
+            kotlinxDatetime : "0.4.0",
 
             // test dependencies
             coreTesting     : "2.1.0",
@@ -91,43 +94,28 @@ def libraries = project.ext.libraries
 
 android {
     compileSdkVersion configuration.targetSdkVersion
-    buildToolsVersion configuration.buildToolsVersion
 
     defaultConfig {
         minSdkVersion configuration.minSdkVersion
         targetSdkVersion configuration.targetSdkVersion
-        versionCode configuration.versionCode
-        versionName configuration.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
-        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+        buildConfigField("long", "VERSION_CODE", "${configuration.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${configuration.versionName}\"")
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     packagingOptions {
-        // excluding duplicate license files
-        // from jackson modules
-        exclude "META-INF/LICENSE"
-
-        // should be removed with interoperability library
-        exclude "META-INF/rxjava.properties"
+        resources {
+            excludes += ['META-INF/LICENSE', 'META-INF/rxjava.properties']
+        }
     }
 
-    lintOptions {
-        // casting 'InvalidPackage' error to warning
-        warning "InvalidPackage"
-        disable 'MissingTranslation'
-
-        // Fail early.
-        abortOnError true
-    }
 
     buildTypes {
         debug {
@@ -150,6 +138,12 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    lint {
+        abortOnError true
+        disable 'MissingTranslation'
+        warning 'InvalidPackage'
+    }
+    namespace 'org.hisp.dhis.android'
 }
 
 
@@ -188,6 +182,9 @@ dependencies {
 
     // Joda time
     api "joda-time:joda-time:${libraries.jodaTime}"
+
+    // Kotlinx datetime
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"
 
     // sms compression library
     api "com.github.dhis2:sms-compression:${libraries.smsCompression}"

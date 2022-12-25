@@ -25,23 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataobject
 
-package org.hisp.dhis.android.core.parser.internal.service.dataobject;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class DataElementObject implements DimensionalItemObject {
-
-    abstract String dataElement();
-
-    public static DataElementObject create(String dataElement) {
-        return new AutoValue_DataElementObject(dataElement);
-    }
-
-    @Override
-    public String getDimensionItem() {
-        return dataElement();
-    }
-
+internal data class DataElementObject(val dataElement: String) : DimensionalItemObject {
+    override val dimensionItem: String
+        get() = dataElement
 }

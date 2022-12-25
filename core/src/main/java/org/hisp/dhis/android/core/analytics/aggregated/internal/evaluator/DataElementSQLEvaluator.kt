@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
@@ -48,9 +49,10 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getSql(evaluationItem, metadata)
+        val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -60,21 +62,23 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
-        val aggregator = getAggregator(evaluationItem, metadata)
+        val aggregator = getAggregator(evaluationItem, metadata, queryMods)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, this)
-                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator, queryMods)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
             }
+            appendDateQueryMods(queryMods, this)
             appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
         }.build()
 
@@ -178,9 +182,10 @@ internal class DataElementSQLEvaluator @Inject constructor(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
-        aggregationType: AggregationType
+        aggregationType: AggregationType,
+        queryMods: QueryMods?,
     ): WhereClauseBuilder {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
         val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
 
         return builder.appendInSubQuery(
@@ -216,13 +221,29 @@ internal class DataElementSQLEvaluator @Inject constructor(
         )
     }
 
+    private fun appendDateQueryMods(queryMods: QueryMods?, builder: WhereClauseBuilder): WhereClauseBuilder {
+        return builder.apply {
+            queryMods?.minDate?.let {
+                val date = it.toString()
+                appendInSubQuery(DataValueTableInfo.Columns.PERIOD, AnalyticsEvaluatorHelper.getPeriodsFromDate(date))
+            }
+            queryMods?.maxDate?.let {
+                val date = it.toString()
+                appendInSubQuery(DataValueTableInfo.Columns.PERIOD, AnalyticsEvaluatorHelper.getPeriodsToDate(date))
+            }
+        }
+    }
+
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): AggregationType {
         val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 
-        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+        return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+            queryMods.aggregationType!!
+        } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
             evaluationItem.aggregationType
         } else if (itemList.size > 1) {
             AggregationType.SUM

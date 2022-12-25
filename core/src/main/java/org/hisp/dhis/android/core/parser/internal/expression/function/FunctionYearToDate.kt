@@ -25,50 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import androidx.annotation.Nullable;
+/**
+ * Function periodOffset
+ *
+ * @author Jim Grace
+ */
+internal class FunctionYearToDate : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(yearToDate = true)
 
-import com.google.auto.value.AutoValue;
-
-import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT;
-import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;
-
-@AutoValue
-public abstract class DimensionalItemId {
-
-    public abstract DimensionalItemType dimensionalItemType();
-
-    public abstract String id0();
-
-    @Nullable
-    public abstract String id1();
-
-    @Nullable
-    public abstract String id2();
-
-    public static Builder builder() {
-        return new AutoValue_DimensionalItemId.Builder();
+        return visitor.visitWithQueryMods(ctx.expr(0), queryMods)
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dimensionalItemType(DimensionalItemType dimensionalItemType);
-
-        public abstract Builder id0(String id0);
-
-        public abstract Builder id1(@Nullable String id1);
-
-        public abstract Builder id2(@Nullable String id2);
-
-        public abstract DimensionalItemId build();
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
     }
-
-    public boolean isDataElementOrOperand() {
-        return dimensionalItemType() == DATA_ELEMENT
-                || dimensionalItemType() == DATA_ELEMENT_OPERAND;
-    }
-
 }

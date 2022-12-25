@@ -48,7 +48,7 @@ internal class D2RelationshipCount : ExpressionItem {
 
         val rTypeUid = ctx.uid0?.text
 
-        val queries = getQueries(visitor.programIndicatorSQLContext.programIndicator)
+        val queries = getQueries(visitor.programIndicatorSQLContext!!.programIndicator)
 
         return "(SELECT COUNT(*) " +
             "FROM ${RelationshipItemTableInfo.TABLE_INFO.name()} $riAlias " +

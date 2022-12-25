@@ -25,12 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression
 
-package org.hisp.dhis.android.core.parser.internal.service.dataobject;
+import android.os.Build
+import org.hisp.dhis.antlr.Parser
 
-public interface DimensionalItemObject {
-    /**
-     * Gets the dimension item identifier.
-     */
-    String getDimensionItem();
+internal object CommonParser {
+
+    @JvmStatic
+    fun visit(expression: String?, visitor: CommonExpressionVisitor): Any? {
+        val sdkVersion = Build.VERSION.SDK_INT
+
+        // In unit test, sdk value is 0. Ignore it and use cache by default.
+        return if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
+            Parser.visit(expression, visitor, false)
+        } else {
+            Parser.visit(expression, visitor)
+        }
+    }
 }

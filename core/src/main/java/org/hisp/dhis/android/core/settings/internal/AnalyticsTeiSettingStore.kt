@@ -51,11 +51,11 @@ internal object AnalyticsTeiSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
+            _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
+            _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {

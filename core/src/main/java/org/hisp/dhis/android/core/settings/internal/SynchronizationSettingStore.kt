@@ -46,11 +46,11 @@ internal object SynchronizationSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: SynchronizationSettings, _: StatementWrapper ->
+            _: SynchronizationSettings, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: SynchronizationSettings, _: StatementWrapper ->
+            _: SynchronizationSettings, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<SynchronizationSettings> {

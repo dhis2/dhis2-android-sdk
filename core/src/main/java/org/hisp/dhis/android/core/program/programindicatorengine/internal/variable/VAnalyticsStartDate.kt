@@ -35,7 +35,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VAnalyticsStartDate : ExpressionItem {
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val startDate = visitor.programIndicatorSQLContext.periods
+        val startDate = visitor.programIndicatorSQLContext!!.periods
             ?.mapNotNull { it.startDate() }
             ?.minByOrNull { it.time }
 

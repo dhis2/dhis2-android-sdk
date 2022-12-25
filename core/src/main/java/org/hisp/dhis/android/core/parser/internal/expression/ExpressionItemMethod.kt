@@ -25,18 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression
 
-package org.hisp.dhis.android.core.parser.internal.expression;
-
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Applies a method in an ExprFunction.
  *
  * @author Jim Grace
  */
-@FunctionalInterface
-public interface ExpressionItemMethod {
+internal fun interface ExpressionItemMethod {
     /**
      * Invokes a method in an expression function
      *
@@ -45,5 +43,5 @@ public interface ExpressionItemMethod {
      * @param visitor the visitor class for supporting methods
      * @return the method result from the expression item class
      */
-    Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor);
+    fun apply(item: ExpressionItem, ctx: ExprContext, visitor: CommonExpressionVisitor): Any
 }

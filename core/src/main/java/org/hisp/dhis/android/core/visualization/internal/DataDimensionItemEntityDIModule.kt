@@ -49,6 +49,6 @@ internal class DataDimensionItemEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<DataDimensionItem>):
         LinkHandler<DataDimensionItem, DataDimensionItem> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

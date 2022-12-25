@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
-import java.util.*
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
@@ -49,7 +48,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
         val stageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
-        val eventList = visitor.programIndicatorContext.events[stageId]
+        val eventList = visitor.programIndicatorContext!!.events[stageId]
         var value: String? = null
 
         if (eventList != null) {
@@ -100,7 +99,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             column = valueCastExpression,
             programStageUid = programStageId,
             dataElementUid = dataElementId,
-            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
         )
 
         return if (visitor.state.replaceNulls) {
@@ -115,16 +114,16 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
         val dataElementId = ctx.uid1.text
 
         return visitor.itemIds.add(
-            DimensionalItemId.builder()
-                .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_DATA_VALUE)
-                .id0(stageId)
-                .id1(dataElementId)
-                .build()
+            DimensionalItemId(
+                dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_DATA_VALUE,
+                id0 = stageId,
+                id1 = dataElementId
+            )
         )
     }
 
     private fun getDataElement(visitor: CommonExpressionVisitor, uid: String): DataElement {
-        return visitor.dataElementStore.selectByUid(uid)
+        return visitor.dataElementStore!!.selectByUid(uid)
             ?: throw IllegalArgumentException("DataElement $uid does not exist.")
     }
 }

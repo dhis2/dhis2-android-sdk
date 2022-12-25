@@ -31,6 +31,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 
 internal class IndicatorSQLEvaluator @Inject constructor(
     private val indicatorEngine: IndicatorSQLEngine
@@ -38,7 +39,8 @@ internal class IndicatorSQLEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
@@ -52,7 +54,8 @@ internal class IndicatorSQLEvaluator @Inject constructor(
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)

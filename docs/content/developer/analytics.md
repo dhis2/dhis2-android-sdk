@@ -326,48 +326,52 @@ Properties included in the `GridDimensionalResponse` object:
 
 This table shows the functionality supported by the Indicator dimension item compared to the backend analytics.
 
-| Type              | Element               | Backend   | Android SDK   |
-|----------         |---------------------- |-----------|---------------|
-|**Mathematical:**  |Parenthesis            | Yes       | Yes           |     
-|                   |Plus (+)               | Yes       | Yes           |
-|                   |Minus (-)              | Yes       | Yes           |
-|                   |Power (^)              | Yes       | No            |
-|                   |Multiply (*)           | Yes       | Yes           |
-|                   |Divide (/)             | Yes       | Yes           |
-|                   |Modulus (%)            | Yes       | Yes           |
-|**Logical:**       |NOT                    | Yes       | Yes           |
-|                   |!                      | Yes       | Yes           |
-|                   |AND                    | Yes       | Yes           |
-|                   |&&                     | Yes       | Yes           |
-|                   |OR                     | Yes       | Yes           |
-|                   |&#124;&#124;           | Yes       | Yes           |
-|**Comparison:**    |Equal (==)             | Yes       | Yes           |
-|                   |NotEqual (!=)          | Yes       | Yes           |
-|                   |GT (>)                 | Yes       | Yes           |
-|                   |LT (<)                 | Yes       | Yes           |
-|                   |GE (>=)                | Yes       | Yes           |
-|                   |LE (<=)                | Yes       | Yes           |
-|**Functions:**     |FirstNonNull           | Yes       | Yes           |
-|                   |Greatest               | Yes       | Yes           |
-|                   |If                     | Yes       | Yes           |
-|                   |IsNotNull              | Yes       | Yes           |
-|                   |IsNull                 | Yes       | Yes           |
-|                   |Least                  | Yes       | Yes           |
-|                   |Log                    | Yes       | No            |
-|                   |Log10                  | Yes       | No            |
-|                   |.aggregationType       | Yes       | No            |
-|                   |.maxDate               | Yes       | No            |
-|                   |.minDate               | Yes       | No            |
-|                   |.periodOffset          | Yes       | No            |
-|**Dimensions:**    |Constant               | Yes       | Yes           |
-|                   |DataElement            | Yes       | Yes           |
-|                   |ProgramAttribute       | Yes       | Yes           |
-|                   |ProgramDataElement     | Yes       | Yes           |
-|                   |ProgramIndicator       | Yes       | Yes           |
-|                   |OrgUnitGroup           | Yes       | No            |
-|                   |ReportingRate          | Yes       | No            |
-|                   |Days                   | Yes       | Yes           |
-|                   |N_Brace (indicators)   | Yes       | No            |
+| Type              | Element              | Backend   | Android SDK |
+|----------         |----------------------|-----------|-------------|
+|**Mathematical:**  | Parenthesis          | Yes       | Yes         |     
+|                   | Plus (+)             | Yes       | Yes         |
+|                   | Minus (-)            | Yes       | Yes         |
+|                   | Power (^)            | Yes       | No          |
+|                   | Multiply (*)         | Yes       | Yes         |
+|                   | Divide (/)           | Yes       | Yes         |
+|                   | Modulus (%)          | Yes       | Yes         |
+|**Logical:**       | NOT                  | Yes       | Yes         |
+|                   | !                    | Yes       | Yes         |
+|                   | AND                  | Yes       | Yes         |
+|                   | &&                   | Yes       | Yes         |
+|                   | OR                   | Yes       | Yes         |
+|                   | &#124;&#124;         | Yes       | Yes         |
+|**Comparison:**    | Equal (==)           | Yes       | Yes         |
+|                   | NotEqual (!=)        | Yes       | Yes         |
+|                   | GT (>)               | Yes       | Yes         |
+|                   | LT (<)               | Yes       | Yes         |
+|                   | GE (>=)              | Yes       | Yes         |
+|                   | LE (<=)              | Yes       | Yes         |
+|**Functions:**     | FirstNonNull         | Yes       | Yes         |
+|                   | Greatest             | Yes       | Yes         |
+|                   | If                   | Yes       | Yes         |
+|                   | IsNotNull            | Yes       | Yes         |
+|                   | IsNull               | Yes       | Yes         |
+|                   | Least                | Yes       | Yes         |
+|                   | Log                  | Yes       | No          |
+|                   | Log10                | Yes       | No          |
+|                   | Subexpression        | Yes       | No          |
+|                   | .aggregationType     | Yes       | Yes         |
+|                   | .maxDate             | Yes       | Yes         |
+|                   | .minDate             | Yes       | Yes         |
+|                   | .periodOffset        | Yes       | Yes         |
+|                   | .yearToDate          | Yes       | Yes         |
+|**Dimensions:**    | Constant             | Yes       | Yes         |
+|                   | DataElement          | Yes       | Yes         |
+|                   | ProgramAttribute     | Yes       | Yes         |
+|                   | ProgramDataElement   | Yes       | Yes         |
+|                   | ProgramIndicator     | Yes       | Yes         |
+|                   | OrgUnitGroup         | Yes       | No          |
+|                   | ReportingRate        | Yes       | No          |
+|                   | Days                 | Yes       | Yes         |
+|                   | PeriodInYear         | Yes       | Yes         |
+|                   | YearlyPeriodCount    | Yes       | Yes         |
+|                   | N_Brace (indicators) | Yes       | No          |
 
 ### Program indicator support { #android_sdk_analytics_program_indicator_support }
 

@@ -26,25 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression;
+package org.hisp.dhis.android.core.parser.internal.service
 
-import android.os.Build;
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 
-import org.hisp.dhis.antlr.Parser;
-
-public final class CommonParser {
-
-    private CommonParser() {
-    }
-
-    public static Object visit(String expression, CommonExpressionVisitor visitor) {
-        int sdkVersion = Build.VERSION.SDK_INT;
-
-        // In unit test, sdk value is 0. Ignore it and use cache by default.
-        if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
-            return Parser.visit(expression, visitor, false);
-        } else {
-            return Parser.visit(expression, visitor);
-        }
-    }
-}
+internal data class ExpressionServiceContext(
+    val valueMap: Map<DimensionalItemObject, Double> = emptyMap(),
+    val constantMap: Map<String, Constant> = emptyMap(),
+    val orgUnitCountMap: Map<String, Int> = emptyMap(),
+    val days: Int? = 0,
+)

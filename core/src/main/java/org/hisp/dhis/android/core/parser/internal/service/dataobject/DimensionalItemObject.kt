@@ -25,39 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataobject
 
-package org.hisp.dhis.android.core.validation.engine;
-
-import io.reactivex.Single;
-
-public interface ValidationEngine {
-
+internal interface DimensionalItemObject {
     /**
-     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
-     * list of validation conflicts.
-     *
-     * @param dataSetUid DataSet uid to run the validation rules
-     * @param periodId Validation period
-     * @param orgUnitUid Organisation unit uid to run the validation rules
-     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
-     * @return Validation result
+     * Gets the dimension item identifier.
      */
-    Single<ValidationResult> validate(String dataSetUid, String periodId,
-                                      String orgUnitUid, String attributeOptionComboUid);
-
-    /**
-     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
-     * list of validation conflicts. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version
-     * {@link #validate(String, String, String, String)}.
-     *
-     * @param dataSetUid DataSet uid to run the validation rules
-     * @param periodId Validation period
-     * @param orgUnitUid Organisation unit uid to run the validation rules
-     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
-     * @return Validation result
-     */
-    ValidationResult blockingValidate(String dataSetUid, String periodId,
-                                      String orgUnitUid, String attributeOptionComboUid);
-
+    val dimensionItem: String
 }

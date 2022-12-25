@@ -35,10 +35,10 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VValueCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val expression = visitor.programIndicatorContext.programIndicator.expression()
+        val expression = visitor.programIndicatorContext!!.programIndicator.expression()
             ?: throw IllegalArgumentException("Expression is null")
 
-        return visitor.programIndicatorExecutor.getValueCount(expression).toString()
+        return visitor.programIndicatorExecutor!!.getValueCount(expression).toString()
     }
 
     override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
@@ -48,7 +48,7 @@ internal class VValueCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return ProgramIndicatorSQLUtils.valueCountExpression(
             itemIds = visitor.itemIds,
-            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
         )
     }
 }

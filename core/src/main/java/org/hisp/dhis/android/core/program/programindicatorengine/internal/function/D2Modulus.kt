@@ -25,25 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import java.util.*
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2Modulus : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val firstValue = visitor.castStringVisit(ctx.expr(0))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
+        val secondValue = visitor.castStringVisit(ctx.expr(1))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
 
-import static org.hisp.dhis.antlr.AntlrParserUtils.castDouble;
-
-public class D2Substring
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String originalString = visitor.castStringVisit(ctx.expr(0));
-        return StringUtils.substring(
-                originalString == null ? "" : originalString,
-                castDouble(visitor.castStringVisit(ctx.expr(1))).intValue(),
-                castDouble(visitor.castStringVisit(ctx.expr(2))).intValue());
+        return String.format(Locale.US, "%.1f", firstValue % secondValue)
     }
 }

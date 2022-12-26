@@ -26,28 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+package org.hisp.dhis.android.core.util
 
-import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import kotlin.math.max
 
-import static org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap;
-import static org.hisp.dhis.antlr.AntlrParserUtils.castDouble;
+object StringUtils {
+    fun substring(str: String?, start: Int, end: Int): String? {
+        return str?.let {
+            val positiveEnd = end
+                .run {
+                    if (this < 0) this + str.length
+                    else this
+                }
+                .run {
+                    if (this > str.length) str.length
+                    else this
+                }
 
-public class D2Left
-        implements ExpressionItem {
+            val positiveStart = start
+                .run {
+                    if (this < 0) this + str.length
+                    else this
+                }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Double doubleValue = castDouble(visitor.castStringVisit(ctx.expr(1)));
-
-        if (doubleValue % 1 != 0) {
-            throw new IllegalArgumentException("Number has to be an integer");
+            if (positiveStart > positiveEnd) {
+                ""
+            } else {
+                str.substring(max(positiveStart, 0), max(positiveEnd, 0))
+            }
         }
-
-        int chars = doubleValue.intValue();
-        return wrap(StringUtils.substring(visitor.castStringVisit(ctx.expr(0)), 0, chars));
     }
 }

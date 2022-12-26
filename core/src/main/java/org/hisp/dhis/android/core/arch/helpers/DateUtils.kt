@@ -84,4 +84,12 @@ object DateUtils {
     fun getEndDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
     }
+
+    @JvmStatic
+    fun addMonths(date: Date, amount: Int): Date {
+        val c = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
+        c.time = date
+        c.add(Calendar.MONTH, amount)
+        return c.time
+    }
 }

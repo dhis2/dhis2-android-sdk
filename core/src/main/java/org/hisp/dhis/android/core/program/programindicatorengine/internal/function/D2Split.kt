@@ -25,20 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap
+import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2Split : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val input = visitor.castStringVisit(ctx.expr(0))
+        val delimiter = visitor.castStringVisit(ctx.expr(1))
 
-import static org.apache.commons.lang3.math.NumberUtils.toDouble;
+        return if (input == null || delimiter == null) {
+            return ""
+        } else {
+            val index = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(2))).toInt()
+            val tokens = input.split(delimiter)
 
-public class D2Ceil
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return String.valueOf((long) Math.ceil(toDouble(visitor.castStringVisit(ctx.expr(0)), 0.0)));
+            if (tokens.size > index && index >= 0) {
+                wrap(tokens[index])
+            } else ""
+        }
     }
 }

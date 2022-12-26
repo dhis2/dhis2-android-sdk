@@ -37,8 +37,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-
 public class ResponseController {
 
     public static final String GET = "GET";
@@ -77,7 +75,7 @@ public class ResponseController {
 
     String getBody(String method, String currentPath){
         Map<String, String> resourcesMap = methodsMap.get(method);
-        String filename = EMPTY;
+        String filename = "";
 
         List<String> paths = new ArrayList<>(resourcesMap.keySet());
         Collections.reverse(paths);
@@ -91,7 +89,7 @@ public class ResponseController {
     }
 
     private String findResponse(Map<String, String> resourcesMap, String path, String currentPath) {
-        String filename = EMPTY;
+        String filename = "";
         Pattern pattern = Pattern.compile(path);
         Matcher matcher = pattern.matcher(currentPath);
 

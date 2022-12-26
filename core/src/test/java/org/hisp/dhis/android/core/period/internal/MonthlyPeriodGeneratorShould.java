@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.period.internal;
 
 import com.google.common.collect.Lists;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;

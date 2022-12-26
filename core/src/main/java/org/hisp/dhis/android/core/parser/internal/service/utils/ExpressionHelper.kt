@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.parser.internal.service.utils
 
 import java.lang.NumberFormatException
 import java.util.*
-import org.apache.commons.lang3.math.NumberUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject
@@ -60,11 +59,11 @@ internal object ExpressionHelper {
         valueMap: MutableMap<DimensionalItemObject, Double>
     ) {
         try {
-            val newValue = NumberUtils.createDouble(value)
-
-            val existingValue = valueMap[item]
-            val result = (existingValue ?: 0.0) + newValue
-            valueMap[item] = result
+            value?.toDouble()?.let { newValue ->
+                val existingValue = valueMap[item]
+                val result = (existingValue ?: 0.0) + newValue
+                valueMap[item] = result
+            }
         } catch (e: NumberFormatException) {
             // Ignore non-numeric values
         }

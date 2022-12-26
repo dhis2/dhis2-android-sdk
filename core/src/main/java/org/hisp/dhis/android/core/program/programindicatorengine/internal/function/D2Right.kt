@@ -27,16 +27,20 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
-import org.joda.time.Days
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap
+import org.hisp.dhis.android.core.util.StringUtils
+import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class D2DaysBetween : ProgramBetweenDatesFunction() {
+internal class D2Right : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val doubleValue = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(1)))
+        require(doubleValue % 1 == 0.0) { "Number has to be an integer" }
+        val chars = doubleValue.toInt()
+        val str = visitor.castStringVisit(ctx.expr(0))
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return Days.daysBetween(startDate, endDate).days.toString()
-    }
-
-    override fun getSql(startExpression: String, endExpression: String): Any {
-        return "CAST((julianday($endExpression) - julianday($startExpression)) AS INTEGER)"
+        return wrap(StringUtils.substring(str?.reversed(), 0, chars)).reversed()
     }
 }

@@ -25,40 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap
+import org.hisp.dhis.android.core.util.StringUtils
+import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2Left : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val doubleValue = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(1)))
+        require(doubleValue % 1 == 0.0) { "Number has to be an integer" }
+        val chars = doubleValue.toInt()
+        val str = visitor.castStringVisit(ctx.expr(0))
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap;
-import static org.hisp.dhis.antlr.AntlrParserUtils.castDouble;
-
-public class D2Split
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String input = visitor.castStringVisit(ctx.expr(0));
-        String delimiter = visitor.castStringVisit(ctx.expr(1));
-
-        if (input == null || delimiter == null) {
-            return "";
-        }
-
-        int index = castDouble(visitor.castStringVisit(ctx.expr(2))).intValue();
-
-        List<String> tokens = Arrays.asList(StringUtils.split(input, delimiter));
-
-        if (tokens.size() > index && index >= 0) {
-            return wrap(tokens.get(index));
-        }
-
-        return "";
+        return wrap(StringUtils.substring(str, 0, chars))
     }
 }

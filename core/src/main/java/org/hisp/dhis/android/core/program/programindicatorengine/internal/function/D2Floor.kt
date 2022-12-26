@@ -25,30 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import kotlin.math.floor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-
-import static org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap;
-import static org.hisp.dhis.antlr.AntlrParserUtils.castDouble;
-
-public class D2Right
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Double doubleValue = castDouble(visitor.castStringVisit(ctx.expr(1)));
-
-        if (doubleValue % 1 != 0) {
-            throw new IllegalArgumentException("Number has to be an integer");
-        }
-
-        int chars = doubleValue.intValue();
-        return wrap(StringUtils.reverse(
-                StringUtils.substring(StringUtils.reverse(visitor.castStringVisit(ctx.expr(0))), 0, chars)));
+internal class D2Floor : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val value = visitor.castStringVisit(ctx.expr(0))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
+        return floor(value).toLong().toString()
     }
 }

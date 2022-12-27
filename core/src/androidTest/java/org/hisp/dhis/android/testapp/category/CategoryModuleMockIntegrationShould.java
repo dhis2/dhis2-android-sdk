@@ -58,15 +58,6 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
     }
 
     @Test
-    public void allow_access_to_combos_with_category_option_combos() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos().blockingGet();
-        assertThat(combos.size()).isEqualTo(2);
-        for (CategoryCombo combo : combos) {
-            assertThat(accessCategoryOptionCombos(combo) == null).isFalse();
-        }
-    }
-
-    @Test
     public void allow_access_to_combos_with_categories() {
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos().withCategories().blockingGet();
         assertThat(combos.size()).isEqualTo(2);
@@ -92,9 +83,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.code()).isEqualTo("BIRTHS");
         assertThat(combo.name()).isEqualTo("Births");
         List<CategoryOptionCombo> optionCombos = accessCategoryOptionCombos(combo);
-        assertThat(optionCombos == null).isFalse();
-        assertThat(optionCombos.size()).isEqualTo(2);
-        assertThat(optionCombos.iterator().next().name()).isEqualTo("Trained TBA, At PHU");
+        assertThat(optionCombos == null).isTrue();
     }
 
     @Test

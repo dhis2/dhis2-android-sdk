@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
+import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -134,6 +136,13 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .status(ImportStatus.ERROR)
                     .build()
             )
+
+            val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
+
+            dataValueConflictStore.insert(DataValueConflictSamples.get())
+            dataValueConflictStore.insert(DataValueConflictSamples.get().toBuilder()
+                    .dataElement("bx6fsa0t90x")
+                    .build())
         }
 
         private fun storeSomeKeyValuesInLocalDataStore() {

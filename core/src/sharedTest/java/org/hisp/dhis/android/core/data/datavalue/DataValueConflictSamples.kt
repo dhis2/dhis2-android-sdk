@@ -41,7 +41,7 @@ object DataValueConflictSamples {
             .attributeOptionCombo("HllvX50cXC0")
             .categoryOptionCombo("Prlt0C1RF0s")
             .created(getDate("021-06-02T12:38:53.743"))
-            .dataElement("UOlfIjgN8X6")
+            .dataElement("g9eOBujte1U")
             .period("202101")
             .orgUnit("DiszpKrYNg8").build()
     }

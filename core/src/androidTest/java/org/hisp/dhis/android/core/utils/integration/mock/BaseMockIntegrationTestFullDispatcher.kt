@@ -140,20 +140,24 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
             val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
 
             dataValueConflictStore.insert(DataValueConflictSamples.get())
-            dataValueConflictStore.insert(DataValueConflictSamples.get().toBuilder()
+            dataValueConflictStore.insert(
+                DataValueConflictSamples.get().toBuilder()
                     .value("5")
                     .conflict("conflict")
                     .dataElement("bx6fsa0t90x")
                     .categoryOptionCombo("bRowv6yZOF2")
                     .status(ImportStatus.WARNING)
-                    .build())
-            dataValueConflictStore.insert(DataValueConflictSamples.get().toBuilder()
+                    .build()
+            )
+            dataValueConflictStore.insert(
+                DataValueConflictSamples.get().toBuilder()
                     .attributeOptionCombo("DwrQJzeChWp")
                     .categoryOptionCombo("Gmbgme7z9BF")
                     .period("202201")
                     .orgUnit("YuQRtpLP10I")
                     .displayDescription("display_description_other")
-                    .build())
+                    .build()
+            )
         }
 
         private fun storeSomeKeyValuesInLocalDataStore() {

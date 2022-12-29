@@ -41,7 +41,7 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun find_all() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .blockingGet()
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(3)
     }
@@ -49,9 +49,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_conflict() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byConflict()
-                .eq("conflict")
-                .blockingGet()
+            .byConflict()
+            .eq("conflict")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(1)
     }
@@ -59,9 +59,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_data_element() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byDataElement()
-                .eq("g9eOBujte1U")
-                .blockingGet()
+            .byDataElement()
+            .eq("g9eOBujte1U")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -69,9 +69,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_period() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byPeriod()
-                .eq("202101")
-                .blockingGet()
+            .byPeriod()
+            .eq("202101")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -79,9 +79,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_organisation_unit() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byOrganisationUnitUid()
-                .eq("DiszpKrYNg8")
-                .blockingGet()
+            .byOrganisationUnitUid()
+            .eq("DiszpKrYNg8")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -89,9 +89,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_category_option_combo() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byCategoryOptionCombo()
-                .eq("Gmbgme7z9BF")
-                .blockingGet()
+            .byCategoryOptionCombo()
+            .eq("Gmbgme7z9BF")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -99,9 +99,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_attribute_option_combo() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byAttributeOptionCombo()
-                .eq("bRowv6yZOF2")
-                .blockingGet()
+            .byAttributeOptionCombo()
+            .eq("bRowv6yZOF2")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -109,9 +109,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_value() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byValue()
-                .eq("5")
-                .blockingGet()
+            .byValue()
+            .eq("5")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(1)
     }
@@ -119,9 +119,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_created() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byCreated()
-                .eq(DateUtils.DATE_FORMAT.parse("021-06-02T12:38:53.743"))
-                .blockingGet()
+            .byCreated()
+            .eq(DateUtils.DATE_FORMAT.parse("021-06-02T12:38:53.743"))
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(3)
     }
@@ -129,8 +129,8 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_state() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byStatus().eq(ImportStatus.SUCCESS)
-                .blockingGet()
+            .byStatus().eq(ImportStatus.SUCCESS)
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(2)
     }
@@ -138,9 +138,9 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_display_description() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byDisplayDescription()
-                .eq("display_description_other")
-                .blockingGet()
+            .byDisplayDescription()
+            .eq("display_description_other")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(1)
     }
@@ -148,8 +148,8 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_error_code() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byErrorCode().isNull
-                .blockingGet()
+            .byErrorCode().isNull
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(3)
     }
@@ -157,8 +157,8 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     @Test
     fun filter_by_dataset() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byDataSet("lyLU2wR22tC")
-                .blockingGet()
+            .byDataSet("lyLU2wR22tC")
+            .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(1)
     }

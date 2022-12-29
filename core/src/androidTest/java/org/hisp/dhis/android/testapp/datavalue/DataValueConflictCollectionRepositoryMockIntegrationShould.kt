@@ -43,7 +43,7 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
         val dataValues = d2.dataValueModule().dataValueConflicts()
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(3)
     }
 
     @Test
@@ -53,7 +53,7 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .eq("conflict")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(1)
     }
 
     @Test
@@ -63,17 +63,17 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .eq("g9eOBujte1U")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_period() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
                 .byPeriod()
-                .eq("2018")
+                .eq("202101")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(1)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
@@ -83,7 +83,7 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .eq("DiszpKrYNg8")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
@@ -93,7 +93,7 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .eq("Gmbgme7z9BF")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
@@ -103,14 +103,14 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .eq("bRowv6yZOF2")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_value() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
                 .byValue()
-                .eq("11")
+                .eq("5")
                 .blockingGet()
 
         assertThat(dataValues.size).isEqualTo(1)
@@ -120,10 +120,10 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
     fun filter_by_created() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
                 .byCreated()
-                .eq(DateUtils.DATE_FORMAT.parse("2010-02-11T00:00:00.000+0100"))
+                .eq(DateUtils.DATE_FORMAT.parse("021-06-02T12:38:53.743"))
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(1)
+        assertThat(dataValues.size).isEqualTo(3)
     }
 
     @Test
@@ -132,27 +132,26 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .byStatus().eq(ImportStatus.SUCCESS)
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_display_description() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
                 .byDisplayDescription()
-                .eq("display description")
+                .eq("display_description_other")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_error_code() {
         val dataValues = d2.dataValueModule().dataValueConflicts()
-                .byErrorCode()
-                .eq("ERROR_CODE")
+                .byErrorCode().isNull
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(3)
     }
 
     @Test
@@ -161,6 +160,6 @@ class DataValueConflictCollectionRepositoryMockIntegrationShould : BaseMockInteg
                 .byDataSet("lyLU2wR22tC")
                 .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(5)
+        assertThat(dataValues.size).isEqualTo(1)
     }
 }

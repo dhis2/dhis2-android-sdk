@@ -75,8 +75,6 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<CategoryCombo>>() {{
             put(CategoryComboFields.CATEGORIES, CategoryCategoryComboChildrenAppender.create(databaseAdapter));
-            put(CategoryComboFields.CATEGORY_OPTION_COMBOS,
-                    CategoryOptionComboChildrenAppender.create(databaseAdapter));
         }};
     }
 }

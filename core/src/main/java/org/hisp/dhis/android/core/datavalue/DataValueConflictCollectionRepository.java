@@ -64,7 +64,7 @@ public final class DataValueConflictCollectionRepository
     }
 
     public DataValueConflictCollectionRepository byDataSet(String dataSetUid) {
-        return cf.subQuery(DataValueByDataSetQueryHelper.getKey())
+        return cf.subQuery(DataValueByDataSetQueryHelper.getDataValueConflictKey())
                 .rawSubQuery(DataValueByDataSetQueryHelper.getOperator(),
                         DataValueByDataSetQueryHelper.whereClause(dataSetUid));
     }

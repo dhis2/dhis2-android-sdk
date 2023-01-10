@@ -140,7 +140,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     public Boolean existsInDataSet(DataValue dataValue, String dataSetUid) {
         WhereClauseBuilder whereClauseBuilder = uniqueWhereClauseBuilder(dataValue)
                 .appendInSubQuery(
-                        DataValueByDataSetQueryHelper.getKey(),
+                        DataValueByDataSetQueryHelper.getDataValueKey(),
                         DataValueByDataSetQueryHelper.whereClause(dataSetUid)
                 );
         return selectWhere(whereClauseBuilder.build()).size() > 0;

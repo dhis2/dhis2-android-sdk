@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.datavalue;
 
 public interface DataValueModule {
     DataValueCollectionRepository dataValues();
+    DataValueConflictCollectionRepository dataValueConflicts();
 }

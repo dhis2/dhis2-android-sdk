@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
 @Reusable
 internal object DatabaseConfigurationTransformer {
-    fun transform(serverUrl: String?, databaseName: String?, username: String?): DatabasesConfiguration {
+    fun transform(serverUrl: String, databaseName: String, username: String): DatabasesConfiguration {
         return DatabasesConfiguration.builder()
             .accounts(
                 listOf(

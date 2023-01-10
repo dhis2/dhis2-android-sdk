@@ -25,60 +25,59 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
-
-import androidx.annotation.NonNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder
+import com.google.auto.value.AutoValue
+import org.hisp.dhis.android.core.common.State
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder.class)
-public abstract class DatabaseAccount {
+@JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder::class)
+abstract class DatabaseAccount {
+    @JsonProperty
+    abstract fun username(): String
 
-    @JsonProperty()
-    @NonNull
-    public abstract String username();
+    @JsonProperty
+    abstract fun serverUrl(): String
 
-    @JsonProperty()
-    @NonNull
-    public abstract String serverUrl();
+    @JsonProperty
+    abstract fun databaseName(): String
 
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseName();
+    @JsonProperty
+    abstract fun databaseCreationDate(): String
 
-    @JsonProperty()
-    @NonNull
-    public abstract String databaseCreationDate();
+    @JsonProperty
+    abstract fun encrypted(): Boolean
 
-    @JsonProperty()
-    @NonNull
-    public abstract boolean encrypted();
+    @JsonProperty
+    abstract fun syncState(): State?
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseAccount.Builder();
-    }
+    abstract fun toBuilder(): Builder
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    abstract class Builder {
+        abstract fun username(username: String): Builder
 
-        public abstract Builder username(String username);
+        abstract fun serverUrl(serverUrl: String): Builder
 
-        public abstract Builder serverUrl(String serverUrl);
+        abstract fun databaseName(databaseName: String): Builder
 
-        public abstract Builder databaseName(String databaseName);
+        abstract fun databaseCreationDate(databaseCreationDate: String): Builder
 
-        public abstract Builder encrypted(boolean encrypted);
+        abstract fun encrypted(encrypted: Boolean): Builder
 
-        public abstract Builder databaseCreationDate(String databaseCreationDate);
+        abstract fun syncState(syncState: State?): Builder
 
-        public abstract DatabaseAccount build();
+        abstract fun build(): DatabaseAccount
+    }
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder {
+            return AutoValue_DatabaseAccount.Builder()
+        }
     }
 }

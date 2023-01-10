@@ -34,6 +34,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
+import java.util.*
 
 @Reusable
 internal class AccountManagerImpl @Inject constructor(
@@ -60,7 +62,7 @@ internal class AccountManagerImpl @Inject constructor(
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
     override fun getAccounts(): List<DatabaseAccount> {
-        return databasesConfigurationStore.get()?.accounts() ?: emptyList()
+        return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
     }
 
     override fun setMaxAccounts(maxAccounts: Int) {
@@ -126,6 +128,15 @@ internal class AccountManagerImpl @Inject constructor(
 
         FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
         databaseAdapterFactory.deleteDatabase(loggedAccount)
+    }
+
+    private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
+        val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account)
+        val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
+
+        return account.toBuilder()
+            .syncState(syncState)
+            .build()
     }
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {

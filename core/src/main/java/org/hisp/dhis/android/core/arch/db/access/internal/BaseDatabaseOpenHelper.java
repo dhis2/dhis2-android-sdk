@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Build;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
@@ -47,11 +46,7 @@ class BaseDatabaseOpenHelper {
     }
 
     void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
+        databaseAdapter.setForeignKeyConstraintsEnabled(true);
         databaseAdapter.enableWriteAheadLogging();
     }
 

@@ -49,19 +49,19 @@ internal class DatabaseMigrationParser(
     }
 
     @Throws(IOException::class)
-    fun parseSnapshot(version: Int): List<String> {
-        return parseFile("snapshots", version)
+    fun parseSnapshot(): List<String> {
+        return parseFile("snapshots", "snapshot")
     }
 
     @Throws(IOException::class)
     private fun parseMigration(version: Int): DatabaseMigration {
-        return DatabaseMigration(version, parseFile("migrations", version), codeMigrations.map[version])
+        return DatabaseMigration(version, parseFile("migrations", version.toString()), codeMigrations.map[version])
     }
 
     @Throws(IOException::class)
-    private fun parseFile(directory: String, newVersion: Int): List<String> {
-        val fileName = "$directory/$newVersion.sql"
-        val inputStream = assetManager.open(fileName)
+    private fun parseFile(directory: String, fileName: String): List<String> {
+        val path = "$directory/$fileName.sql"
+        val inputStream = assetManager.open(path)
         val sc = Scanner(inputStream, "UTF-8")
         val lines: MutableList<String> = ArrayList()
         while (sc.hasNextLine()) {

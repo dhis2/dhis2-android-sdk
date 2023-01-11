@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.usecase.stock
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 
 object StockUseCaseTransactionTableInfo {
 
@@ -45,7 +44,7 @@ object StockUseCaseTransactionTableInfo {
         }
     }
 
-    class Columns : DeletableDataColumns() {
+    class Columns : CoreColumns() {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),

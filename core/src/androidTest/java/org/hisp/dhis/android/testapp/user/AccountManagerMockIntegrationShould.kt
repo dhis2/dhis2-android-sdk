@@ -69,6 +69,14 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
+    fun can_set_null_max_accounts() {
+        d2.userModule().accountManager().setMaxAccounts(null)
+        assertThat(d2.userModule().accountManager().getMaxAccounts()).isNull()
+
+        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+    }
+
+    @Test
     fun can_delete_current_logged_account() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()

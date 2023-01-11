@@ -64,12 +64,12 @@ internal class AccountManagerImpl @Inject constructor(
         return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
     }
 
-    override fun setMaxAccounts(maxAccounts: Int) {
+    override fun setMaxAccounts(maxAccounts: Int?) {
         multiUserDatabaseManager.setMaxAccounts(maxAccounts)
     }
 
-    override fun getMaxAccounts(): Int {
-        return databasesConfigurationStore.get()?.maxAccounts() ?: MultiUserDatabaseManager.DefaultMaxAccounts
+    override fun getMaxAccounts(): Int? {
+        return databasesConfigurationStore.get()?.maxAccounts()
     }
 
     @Throws(D2Error::class)

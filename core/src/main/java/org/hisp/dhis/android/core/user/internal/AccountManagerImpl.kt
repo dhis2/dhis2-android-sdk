@@ -32,7 +32,6 @@ import android.content.Context
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper

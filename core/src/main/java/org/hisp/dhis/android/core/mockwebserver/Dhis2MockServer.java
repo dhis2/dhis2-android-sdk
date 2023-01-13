@@ -92,7 +92,7 @@ public class Dhis2MockServer {
     private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
-    private static final String USER_JSON = "user/user.json";
+    private static final String USER_JSON = "user/user38.json";
     private static final String EVENTS_JSON = "event/events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";

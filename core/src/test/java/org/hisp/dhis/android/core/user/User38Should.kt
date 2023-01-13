@@ -25,52 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import io.reactivex.Single;
-
-@RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
-
-    @Mock
-    private CredentialsSecureStore credentialsSecureStore;
-
-    @Mock
-    private Credentials credentials;
-
-    private Single<Boolean> isUserLoggedInSingle;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        when(credentials.getUsername()).thenReturn("user");
-        when(credentials.getPassword()).thenReturn("password");
-
-        isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
-    }
+class User38Should : BaseObjectShould("user/user38.json"), ObjectShould {
 
     @Test
-    public void return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse();
-    }
+    override fun map_from_json_string() {
+        val user = objectMapper.readValue(jsonStream, User::class.java)
 
-    @Test
-    public void return_true_if_credentials_stored() {
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue();
+        assertThat(user.name()).isEqualTo("John Barnes")
+        assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))
+        assertThat(user.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-03-31T13:31:09.324"))
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
+        assertThat(user.username()).isEqualTo("android")
+        assertThat(user.surname()).isEqualTo("Barnes")
+        assertThat(user.firstName()).isEqualTo("John")
+        assertThat(user.email()).isEqualTo("john@hmail.com")
+        assertThat(user.displayName()).isEqualTo("John Barnes")
+        assertThat(user.userRoles()!![0].uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
+        assertThat(UserInternalAccessor.accessUserCredentials(user)).isNull()
     }
 }

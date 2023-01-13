@@ -60,6 +60,7 @@ final class UserStore {
             w.bind(17, o.email());
             w.bind(18, o.phoneNumber());
             w.bind(19, o.nationality());
+            w.bind(20, o.username());
         }
     };
 

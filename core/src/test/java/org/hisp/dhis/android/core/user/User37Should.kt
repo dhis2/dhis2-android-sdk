@@ -25,33 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.UserCredentials;
+class User37Should : BaseObjectShould("user/user37.json"), ObjectShould {
 
-import java.util.Collections;
-import java.util.Map;
+    @Test
+    override fun map_from_json_string() {
+        val user = objectMapper.readValue(jsonStream, User::class.java)
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class UserCredentialsEntityDIModule {
-
-    @Provides
-    @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders(
-            UserRoleChildrenAppender userRoleChildrenAppender) {
-        return Collections.singletonMap(UserCredentialsFields.USER_ROLES, userRoleChildrenAppender);
+        assertThat(user.name()).isEqualTo("John Barnes")
+        assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))
+        assertThat(user.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-03-31T13:31:09.324"))
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
+        assertThat(user.surname()).isEqualTo("Barnes")
+        assertThat(user.firstName()).isEqualTo("John")
+        assertThat(user.email()).isEqualTo("john@hmail.com")
+        assertThat(user.displayName()).isEqualTo("John Barnes")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).uid()).isEqualTo("M0fCOxtkURr")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
     }
 }

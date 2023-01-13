@@ -27,41 +27,39 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.core.user.UserRole
-import javax.inject.Inject
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Reusable
-internal class UserHandler @Inject constructor(
-    userStore: IdentifiableObjectStore<User>,
-    private val userRoleHandler: Handler<UserRole>,
-    private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
-) : IdentifiableHandlerImpl<User>(userStore) {
+@RunWith(JUnit4::class)
+class IsUserLoggedInCallableShould {
+    private val credentialsSecureStore: CredentialsSecureStore = mock()
+    private val credentials: Credentials = mock()
 
-    override fun beforeObjectHandled(o: User): User {
-        return o.toBuilder().run {
-            val userCredentials = UserInternalAccessor.accessUserCredentials(o)
+    private lateinit var isUserLoggedInSingle: Single<Boolean>
 
-            if (o.username() == null && userCredentials.username() != null) {
-                username(userCredentials.username())
-            }
-            if (o.userRoles() == null && userCredentials.userRoles() != null) {
-                userRoles(userCredentials.userRoles())
-            }
-
-            build()
-        }
+    @Before
+    fun setUp() {
+        whenever(credentials.username).thenReturn("user")
+        whenever(credentials.password).thenReturn("password")
+        isUserLoggedInSingle = IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged
     }
 
-    override fun afterObjectHandled(o: User, action: HandleAction) {
-        userRoleCollectionCleaner.deleteNotPresent(o.userRoles())
-        userRoleHandler.handleMany(o.userRoles())
+    @Test
+    fun return_false_if_credentials_not_stored() {
+        assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
+    }
+
+    @Test
+    fun return_true_if_credentials_stored() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        assertThat(isUserLoggedInSingle.blockingGet()).isTrue()
     }
 }

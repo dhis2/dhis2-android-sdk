@@ -27,41 +27,62 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserRole
-import javax.inject.Inject
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Reusable
-internal class UserHandler @Inject constructor(
-    userStore: IdentifiableObjectStore<User>,
-    private val userRoleHandler: Handler<UserRole>,
-    private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
-) : IdentifiableHandlerImpl<User>(userStore) {
+@RunWith(JUnit4::class)
+class UserHandlerShould {
+    private val userStore: IdentifiableObjectStore<User> = mock()
+    private val userRoleHandler: Handler<UserRole> = mock()
+    private val userRoleCollectionCleaner: CollectionCleaner<UserRole> = mock()
 
-    override fun beforeObjectHandled(o: User): User {
-        return o.toBuilder().run {
-            val userCredentials = UserInternalAccessor.accessUserCredentials(o)
+    private val userRoles: List<UserRole> = mock()
 
-            if (o.username() == null && userCredentials.username() != null) {
-                username(userCredentials.username())
-            }
-            if (o.userRoles() == null && userCredentials.userRoles() != null) {
-                userRoles(userCredentials.userRoles())
-            }
+    private lateinit var user: User
+    private lateinit var userCredentials: UserCredentials
 
-            build()
-        }
+    // object to test
+    private lateinit var userHandler: UserHandler
+
+    @Before
+    fun setUp() {
+        userHandler = UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
+        userCredentials = UserCredentials.builder()
+            .uid("credentialsUid")
+            .username("username")
+            .userRoles(userRoles)
+            .build()
+        user = User.builder()
+            .uid("userUid")
+            .userCredentials(userCredentials)
+            .build()
+
+        whenever(userStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
-    override fun afterObjectHandled(o: User, action: HandleAction) {
-        userRoleCollectionCleaner.deleteNotPresent(o.userRoles())
-        userRoleHandler.handleMany(o.userRoles())
+    @Test
+    fun extend_identifiable_sync_handler_impl() {
+        val genericHandler: IdentifiableHandlerImpl<User> =
+            UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
+    }
+
+    @Test
+    fun add_username_and_roles_from_credentials() {
+        userHandler.handle(user)
+
+        verify(userRoleCollectionCleaner, times(1)).deleteNotPresent(eq(userRoles))
+        verify(userRoleHandler, times(1)).handleMany(eq(userRoles))
     }
 }

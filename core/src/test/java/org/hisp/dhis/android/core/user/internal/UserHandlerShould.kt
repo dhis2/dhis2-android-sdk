@@ -60,7 +60,6 @@ class UserHandlerShould {
     fun setUp() {
         userHandler = UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
         userCredentials = UserCredentials.builder()
-            .uid("credentialsUid")
             .username("username")
             .userRoles(userRoles)
             .build()

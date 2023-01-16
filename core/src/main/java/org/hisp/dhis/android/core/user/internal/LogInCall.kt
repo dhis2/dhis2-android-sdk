@@ -88,7 +88,7 @@ internal class LogInCall @Inject internal constructor(
 
         val authenticateCall = userService.authenticate(
             okhttp3.Credentials.basic(username!!, password!!),
-            UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion())
+            UserFields.allFieldsWithoutOrgUnit(null)
         )
 
         val credentials = Credentials(username, trimmedServerUrl!!, password, null)

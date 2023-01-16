@@ -25,34 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
 
 @Reusable
-public final class UserCredentialsObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<UserCredentials, UserCredentialsObjectRepository> {
+class UserCredentialsObjectRepository @Inject internal constructor(
+    store: IdentifiableObjectStore<User>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
+    scope: RepositoryScope,
+    transformer: TwoWayTransformer<User, UserCredentials>
+) : ReadOnlyObjectRepository<UserCredentials> by ReadOnlyWithTransformerObjectRepositoryImpl(
+    store,
+    childrenAppenders,
+    scope,
+    transformer
+) {
 
-    @Inject
-    UserCredentialsObjectRepository(UserCredentialsStore store,
-                                    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders,
-                                    RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));
+    private val cf: FilterConnectorFactory<UserCredentialsObjectRepository> = FilterConnectorFactory(scope) { s ->
+        UserCredentialsObjectRepository(store, childrenAppenders, s, transformer)
     }
 
-    public UserCredentialsObjectRepository withUserRoles() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserCredentialsFields.USER_ROLES));
+    fun withUserRoles(): UserCredentialsObjectRepository {
+        return cf.withChild(UserCredentialsFields.USER_ROLES)
     }
 }

@@ -52,7 +52,7 @@ class LogInCallErrorCatcherShould {
     fun return_bad_credentials_error_for_expected_error_response() {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
-                    "\"status\":\"ERROR\",\"message\":\"Unauthorized\"}"
+                "\"status\":\"ERROR\",\"message\":\"Unauthorized\"}"
         val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
         val errorBody = APIErrorMapper().getErrorBody(response)
         assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
@@ -62,7 +62,7 @@ class LogInCallErrorCatcherShould {
     fun return_bad_credentials_error_for_other_messages() {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
-                    "\"status\":\"ERROR\",\"message\":\"Something new\"}"
+                "\"status\":\"ERROR\",\"message\":\"Something new\"}"
         val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
         val errorBody = APIErrorMapper().getErrorBody(response)
         assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
@@ -72,7 +72,7 @@ class LogInCallErrorCatcherShould {
     fun return_account_locked() {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
-                    "\"status\":\"ERROR\",\"message\":\"Account locked\"}"
+                "\"status\":\"ERROR\",\"message\":\"Account locked\"}"
         val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
         val errorBody = APIErrorMapper().getErrorBody(response)
         assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED)

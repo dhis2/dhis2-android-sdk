@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-internal interface TwoWayTransformer<O, T> : Transformer<O, T> {
+interface TwoWayTransformer<O, T> : Transformer<O, T> {
     fun deTransform(t: T): O
 }

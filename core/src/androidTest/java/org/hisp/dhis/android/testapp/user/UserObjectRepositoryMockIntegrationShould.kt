@@ -25,35 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.user
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.user.UserRoleSamples;
-import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+@RunWith(D2JunitRunner::class)
+class UserObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_user() {
+        val user = d2.userModule().user().blockingGet()
 
-@RunWith(D2JunitRunner.class)
-public class UserRoleStoreIntegrationShould extends
-        IdentifiableObjectStoreAbstractIntegrationShould<UserRole> {
-
-    public UserRoleStoreIntegrationShould() {
-        super(UserRoleStore.create(TestDatabaseAdapterFactory.get()),
-                UserRoleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
+        assertThat(user.firstName()).isEqualTo("John")
     }
 
-    @Override
-    protected UserRole buildObject() {
-        return UserRoleSamples.getUserRole();
-    }
+    @Test
+    fun with_user_roles() {
+        val user = d2.userModule().user()
+            .withUserRoles()
+            .blockingGet()
 
-    @Override
-    protected UserRole buildObjectToUpdate() {
-        return UserRoleSamples.getUserRole().toBuilder()
-                .name("new_name")
-                .build();
+        assertThat(user.userRoles()!!.size).isEqualTo(1)
+        assertThat(user.userRoles()!![0].name()).isEqualTo("Superuser")
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.nhaarman.mockitokotlin2.*
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -41,7 +42,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Call
-import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
@@ -56,7 +56,6 @@ class UserCallShould : BaseCallShould() {
     private lateinit var userSyncCall: Callable<User>
 
     @Before
-    @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
         userSyncCall = UserCall(genericCallData, apiCallExecutor, userService, userHandler, dhisVersionManager)
@@ -65,7 +64,6 @@ class UserCallShould : BaseCallShould() {
     }
 
     @Test
-    @Throws(D2Error::class)
     fun not_invoke_stores_on_call_io_exception() {
         whenever(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error)
         try {
@@ -82,20 +80,18 @@ class UserCallShould : BaseCallShould() {
     }
 
     @Test
-    @Throws(Exception::class)
     fun not_invoke_handler_after_call_failure() {
         whenever(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error)
         try {
             userSyncCall.call()
             Assert.fail("Call should't succeed")
         } catch (d2Exception: D2Error) {
+            // verify that database was not touched
+            verify(databaseAdapter, never()).beginNewTransaction()
+            verify(transaction, never()).setSuccessful()
+            verify(transaction, never()).end()
+            verify(userHandler, never()).handle(user)
         }
-
-        // verify that database was not touched
-        verify(databaseAdapter, never()).beginNewTransaction()
-        verify(transaction, never()).setSuccessful()
-        verify(transaction, never()).end()
-        verify(userHandler, never()).handle(user)
     }
 
     @Test

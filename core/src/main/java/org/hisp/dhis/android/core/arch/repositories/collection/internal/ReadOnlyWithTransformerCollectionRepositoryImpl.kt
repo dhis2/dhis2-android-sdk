@@ -52,7 +52,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
     private val store: ReadableStore<M>,
     val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>,
+    val cf: FilterConnectorFactory<R>,
     open val transformer: TwoWayTransformer<M, T>
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 

@@ -101,19 +101,25 @@ object UserFields {
             .fields(username, userRoles.with(UserRoleFields.allFields))
     }
 
-    private fun getBaseFields(version: DHISVersion): Fields.Builder<User> {
-        return if (version >= DHISVersion.V2_38) {
-            baseFields38()
-        } else {
-            baseFields37()
+    private fun allBaseFields(): Fields.Builder<User> {
+        return commonFields()
+            .fields(userCredentials.with(UserCredentialsFields.allFields))
+            .fields(username, userRoles.with(UserRoleFields.allFields))
+    }
+
+    private fun getBaseFields(version: DHISVersion?): Fields.Builder<User> {
+        return when {
+            version == null -> allBaseFields()
+            version >= DHISVersion.V2_38 -> baseFields38()
+            else -> baseFields37()
         }
     }
 
-    fun allFieldsWithoutOrgUnit(version: DHISVersion): Fields<User> {
+    fun allFieldsWithoutOrgUnit(version: DHISVersion?): Fields<User> {
         return getBaseFields(version).build()
     }
 
-    fun allFieldsWithOrgUnit(version: DHISVersion): Fields<User> {
+    fun allFieldsWithOrgUnit(version: DHISVersion?): Fields<User> {
         return getBaseFields(version)
             .fields(
                 organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),

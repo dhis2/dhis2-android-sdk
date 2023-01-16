@@ -25,42 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.UserRoleSamples
+import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.core.user.UserRoleTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields;
-
-public final class UserCredentialsTableInfo {
-
-    private UserCredentialsTableInfo() {
+@RunWith(D2JunitRunner::class)
+class UserRoleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<UserRole>(
+    UserRoleStore.create(TestDatabaseAdapterFactory.get()),
+    UserRoleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): UserRole {
+        return UserRoleSamples.getUserRole()
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "UserCredentials";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableColumns {
-        public static final String USER = "user";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    UserCredentialsFields.USERNAME,
-                    USER
-            );
-        }
+    override fun buildObjectToUpdate(): UserRole {
+        return UserRoleSamples.getUserRole().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

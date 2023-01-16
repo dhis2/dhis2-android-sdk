@@ -25,33 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.UserCredentials;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.util.*
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentials
 
 @Module
-public final class UserCredentialsEntityDIModule {
-
+internal class UserEntityDIModule : IdentifiableStoreProvider<User> {
     @Provides
     @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<User> {
+        return UserStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders(
-            UserRoleChildrenAppender userRoleChildrenAppender) {
-        return Collections.singletonMap(UserCredentialsFields.USER_ROLES, userRoleChildrenAppender);
+    fun handler(userHandler: UserHandler): Handler<User> {
+        return userHandler
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(userRoleChildrenAppender: UserRoleChildrenAppender): Map<String, ChildrenAppender<User>> {
+        return mapOf(
+            UserFields.USER_ROLES to userRoleChildrenAppender
+        )
+    }
+
+    @Provides
+    @Reusable
+    fun transformer(): TwoWayTransformer<User, UserCredentials> {
+        return UserUserCredentialsTransformer()
     }
 }

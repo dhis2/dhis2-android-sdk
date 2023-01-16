@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserRole
 import org.junit.Before
 import org.junit.Test
@@ -76,6 +76,8 @@ class UserHandlerShould {
     fun extend_identifiable_sync_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<User> =
             UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
+
+        assertThat(genericHandler).isNotNull()
     }
 
     @Test

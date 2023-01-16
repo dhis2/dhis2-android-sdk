@@ -25,43 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.UserSamples
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.User;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class UserEntityDIModule implements IdentifiableStoreProvider<User> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<User> store(DatabaseAdapter databaseAdapter) {
-        return UserStore.create(databaseAdapter);
+@RunWith(D2JunitRunner::class)
+class UserStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<User>(
+    UserStore.create(TestDatabaseAdapterFactory.get()),
+    UserTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): User {
+        return UserSamples.getUser()
     }
 
-    @Provides
-    @Reusable
-    Handler<User> handler(UserHandler userHandler) {
-        return userHandler;
-    }
-
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<User>> childrenAppenders() {
-        return Collections.emptyMap();
+    override fun buildObjectToUpdate(): User {
+        return UserSamples.getUser().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

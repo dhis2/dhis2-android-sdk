@@ -44,7 +44,7 @@ class UserAuthenticateWithEncryptionMockIntegrationShould {
 
     @Test
     fun return_false_for_is_logged_when_not_logged() {
-        assertThat(d2.userModule().isLogged.blockingGet()).isFalse()
+        assertThat(d2.userModule().isLogged().blockingGet()).isFalse()
     }
 
     @Test

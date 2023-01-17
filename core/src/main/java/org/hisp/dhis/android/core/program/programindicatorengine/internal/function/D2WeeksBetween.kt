@@ -27,12 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.daysUntil
+import org.hisp.dhis.android.core.util.toLocalDate
 
 internal class D2WeeksBetween : ProgramBetweenDatesFunction() {
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return ((endDate.millis - startDate.millis) / MillisInAWeek).toString()
+    override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {
+        val daysBetween = startDate.toLocalDate().daysUntil(endDate.toLocalDate())
+        return (daysBetween / daysInWeek).toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {
@@ -40,6 +43,6 @@ internal class D2WeeksBetween : ProgramBetweenDatesFunction() {
     }
 
     private companion object {
-        const val MillisInAWeek = 7 * 24 * 60 * 60 * 1000
+        const val daysInWeek = 7
     }
 }

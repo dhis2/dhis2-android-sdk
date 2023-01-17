@@ -48,7 +48,7 @@ internal object AttributeValueFilterSamples {
             .gt("10")
             .lt("20")
             .eq("abc")
-            .`in`(setOf("Norway", "India"))
+            .`in`(setOf("Norway"))
             .like("abc")
             .dateFilter(
                 DateFilterPeriod.builder()

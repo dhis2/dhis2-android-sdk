@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserRole;
+package org.hisp.dhis.android.core.user.internal
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentials
 
-import dagger.Reusable;
-
-@Reusable
-final class UserRoleChildrenAppender extends ChildrenAppender<UserCredentials> {
-
-
-    private final IdentifiableObjectStore<UserRole> store;
-
-    @Inject
-    UserRoleChildrenAppender(IdentifiableObjectStore<UserRole> store) {
-        this.store = store;
+internal class UserUserCredentialsTransformer : TwoWayTransformer<User, UserCredentials> {
+    override fun transform(o: User): UserCredentials {
+        return UserCredentials.builder()
+            .name(o.name())
+            .displayName(o.displayName())
+            .username(o.username())
+            .userRoles(o.userRoles())
+            .build()
     }
 
-    @Override
-    public UserCredentials appendChildren(UserCredentials userCredentials) {
-        UserCredentials.Builder builder = userCredentials.toBuilder();
-        builder.userRoles(store.selectAll());
-        return builder.build();
+    override fun deTransform(t: UserCredentials): User {
+        return User.builder()
+            .uid(t.username())
+            .name(t.name())
+            .displayName(t.displayName())
+            .username(t.username())
+            .userRoles(t.userRoles())
+            .userCredentials(t)
+            .build()
     }
 }

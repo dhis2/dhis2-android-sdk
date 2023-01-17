@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.user.UserTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class UserStore {
+public final class UserStore {
     private UserStore() {}
 
     private static StatementBinder<User> BINDER = new IdentifiableStatementBinder<User>() {
@@ -60,6 +60,7 @@ final class UserStore {
             w.bind(17, o.email());
             w.bind(18, o.phoneNumber());
             w.bind(19, o.nationality());
+            w.bind(20, o.username());
         }
     };
 

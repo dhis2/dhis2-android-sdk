@@ -68,7 +68,8 @@ public final class UserTableInfo {
                     UserFields.LANGUAGES,
                     UserFields.EMAIL,
                     UserFields.PHONE_NUMBER,
-                    UserFields.NATIONALITY
+                    UserFields.NATIONALITY,
+                    UserFields.USERNAME
             );
         }
     }

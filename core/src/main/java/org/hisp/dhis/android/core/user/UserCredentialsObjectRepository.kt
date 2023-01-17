@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,31 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.testapp.user;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
 
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@Reusable
+class UserCredentialsObjectRepository @Inject internal constructor(
+    store: IdentifiableObjectStore<User>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
+    scope: RepositoryScope,
+    transformer: TwoWayTransformer<User, UserCredentials>
+) : ReadOnlyObjectRepository<UserCredentials> by ReadOnlyWithTransformerObjectRepositoryImpl(
+    store,
+    childrenAppenders,
+    scope,
+    transformer
+) {
 
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void find_user() {
-        UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
-        assertThat(userCredentials.username()).isEqualTo("android");
-        assertThat(userCredentials.name()).isEqualTo("John Barnes");
+    private val cf: FilterConnectorFactory<UserCredentialsObjectRepository> = FilterConnectorFactory(scope) { s ->
+        UserCredentialsObjectRepository(store, childrenAppenders, s, transformer)
     }
 
-    @Test
-    public void return_user_roles_as_children() {
-        UserCredentials userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet();
-        assertThat(userCredentials.userRoles().size()).isEqualTo(1);
-        assertThat(userCredentials.userRoles().get(0).name()).isEqualTo("Superuser");
+    fun withUserRoles(): UserCredentialsObjectRepository {
+        return cf.withChild(UserCredentialsFields.USER_ROLES)
     }
 }

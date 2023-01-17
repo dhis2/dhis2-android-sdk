@@ -25,42 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserRole
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields;
-
-public final class UserCredentialsTableInfo {
-
-    private UserCredentialsTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "UserCredentials";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableColumns {
-        public static final String USER = "user";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    UserCredentialsFields.USERNAME,
-                    USER
-            );
-        }
+@Reusable
+internal class UserRoleChildrenAppender @Inject constructor(
+    private val store: IdentifiableObjectStore<UserRole>
+) : ChildrenAppender<User>() {
+    override fun appendChildren(user: User): User {
+        val builder = user.toBuilder()
+        builder.userRoles(store.selectAll())
+        return builder.build()
     }
 }

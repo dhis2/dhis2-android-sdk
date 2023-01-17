@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.BuildConfig
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
-import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
@@ -63,7 +63,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
                 OLD_DBNAME,
                 false
             )
-            val username = getUsername(databaseAdapter)
+            val username = getUsernameForOldDatabase(databaseAdapter)
             val serverUrl = getServerUrl(databaseAdapter)
             databaseAdapter.close()
             credentialsStore.remove()
@@ -130,9 +130,22 @@ internal class DatabaseConfigurationMigration @Inject constructor(
         }
     }
 
-    private fun getUsername(databaseAdapter: DatabaseAdapter): String? {
-        val store = UserCredentialsStoreImpl.create(databaseAdapter)
-        return store.selectFirst()?.username()
+    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+        return try {
+            val cursor = databaseAdapter.rawQuery("SELECT username FROM UserCredentials")
+            var username: String? = null
+
+            cursor.use {
+                if (cursor.count > 0) {
+                    cursor.moveToFirst()
+                    username = it.getString(0)
+                }
+            }
+
+            username
+        } catch (e: SQLiteException) {
+            return null
+        }
     }
 
     private fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {

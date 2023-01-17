@@ -25,28 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.data.user;
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.user.UserCredentials;
+@RunWith(JUnit4::class)
+class IsUserLoggedInCallableShould {
+    private val credentialsSecureStore: CredentialsSecureStore = mock()
+    private val credentials: Credentials = mock()
 
-public class UserCredentialsSamples {
+    private lateinit var isUserLoggedInSingle: Single<Boolean>
 
-    public static UserCredentials getUserCredentials() {
-        UserCredentials.Builder builder = UserCredentials.builder();
+    @Before
+    fun setUp() {
+        whenever(credentials.username).thenReturn("user")
+        whenever(credentials.password).thenReturn("password")
+        isUserLoggedInSingle = IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged
+    }
 
-        return builder
-                .id(1L)
-                .uid("M0fCOxtkURr")
-                .code("android")
-                .name("John Barnes")
-                .displayName("John Barnes")
-                .created(FillPropertiesTestUtils.parseDate("2015-03-31T13:31:09.206"))
-                .lastUpdated(FillPropertiesTestUtils.parseDate("2017-11-29T11:45:37.250"))
-                .username("android")
-                .user(ObjectWithUid.create("DXyJmlo9rge"))
-                .build();
+    @Test
+    fun return_false_if_credentials_not_stored() {
+        assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
+    }
+
+    @Test
+    fun return_true_if_credentials_stored() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        assertThat(isUserLoggedInSingle.blockingGet()).isTrue()
     }
 }

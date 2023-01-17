@@ -25,41 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.UserRoleSamples
+import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.core.user.UserRoleTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.user.UserCredentials;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class UserCredentialsEntityDIModule {
-
-    @Provides
-    @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
+@RunWith(D2JunitRunner::class)
+class UserRoleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<UserRole>(
+    UserRoleStore.create(TestDatabaseAdapterFactory.get()),
+    UserRoleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): UserRole {
+        return UserRoleSamples.getUserRole()
     }
 
-    @Provides
-    @Reusable
-    Handler<UserCredentials> handler(UserCredentialsStore store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders(
-            UserRoleChildrenAppender userRoleChildrenAppender) {
-        return Collections.singletonMap(UserCredentialsFields.USER_ROLES, userRoleChildrenAppender);
+    override fun buildObjectToUpdate(): UserRole {
+        return UserRoleSamples.getUserRole().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

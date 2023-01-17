@@ -25,28 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.UserSamples
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
+@RunWith(D2JunitRunner::class)
+class UserStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<User>(
+    UserStore.create(TestDatabaseAdapterFactory.get()),
+    UserTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): User {
+        return UserSamples.getUser()
+    }
 
-public interface UserModule {
-    AuthenticatedUserObjectRepository authenticatedUser();
-    UserRoleCollectionRepository userRoles();
-    AuthorityCollectionRepository authorities();
-    UserCredentialsObjectRepository userCredentials();
-    UserObjectRepository user();
-
-    AccountManager accountManager();
-    
-    Single<User> logIn(String username, String password, String serverUrl);
-    User blockingLogIn(String username, String password, String serverUrl);
-    Completable logOut();
-    void blockingLogOut();
-    Single<Boolean> isLogged();
-    boolean blockingIsLogged();
-
-    OpenIDConnectHandler openIdHandler();
+    override fun buildObjectToUpdate(): User {
+        return UserSamples.getUser().toBuilder()
+            .name("new_name")
+            .build()
+    }
 }

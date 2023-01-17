@@ -25,35 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.util.*
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentials
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.user.UserRoleSamples;
-import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class UserRoleStoreIntegrationShould extends
-        IdentifiableObjectStoreAbstractIntegrationShould<UserRole> {
-
-    public UserRoleStoreIntegrationShould() {
-        super(UserRoleStore.create(TestDatabaseAdapterFactory.get()),
-                UserRoleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@Module
+internal class UserEntityDIModule : IdentifiableStoreProvider<User> {
+    @Provides
+    @Reusable
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<User> {
+        return UserStore.create(databaseAdapter)
     }
 
-    @Override
-    protected UserRole buildObject() {
-        return UserRoleSamples.getUserRole();
+    @Provides
+    @Reusable
+    fun handler(userHandler: UserHandler): Handler<User> {
+        return userHandler
     }
 
-    @Override
-    protected UserRole buildObjectToUpdate() {
-        return UserRoleSamples.getUserRole().toBuilder()
-                .name("new_name")
-                .build();
+    @Provides
+    @Reusable
+    fun childrenAppenders(userRoleChildrenAppender: UserRoleChildrenAppender): Map<String, ChildrenAppender<User>> {
+        return mapOf(
+            UserFields.USER_ROLES to userRoleChildrenAppender
+        )
+    }
+
+    @Provides
+    @Reusable
+    fun transformer(): TwoWayTransformer<User, UserCredentials> {
+        return UserUserCredentialsTransformer()
     }
 }

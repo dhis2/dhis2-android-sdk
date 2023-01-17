@@ -25,34 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields;
-import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 
-import java.util.Map;
+@Suppress("TooManyFunctions")
+interface UserModule {
+    fun authenticatedUser(): AuthenticatedUserObjectRepository
+    fun userRoles(): UserRoleCollectionRepository
+    fun authorities(): AuthorityCollectionRepository
+    fun user(): UserObjectRepository
+    fun accountManager(): AccountManager
+    fun logIn(username: String, password: String, serverUrl: String): Single<User>
+    fun blockingLogIn(username: String, password: String, serverUrl: String): User
+    fun logOut(): Completable
+    fun blockingLogOut()
+    fun isLogged(): Single<Boolean>
+    fun blockingIsLogged(): Boolean
+    fun openIdHandler(): OpenIDConnectHandler
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class UserCredentialsObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<UserCredentials, UserCredentialsObjectRepository> {
-
-    @Inject
-    UserCredentialsObjectRepository(UserCredentialsStore store,
-                                    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders,
-                                    RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));
-    }
-
-    public UserCredentialsObjectRepository withUserRoles() {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserCredentialsFields.USER_ROLES));
-    }
+    @Deprecated(message = "Use user() instead.")
+    fun userCredentials(): UserCredentialsObjectRepository
 }

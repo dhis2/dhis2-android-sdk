@@ -25,41 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.user
 
-package org.hisp.dhis.android.core.user.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.user.UserModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        AuthenticatedUserEntityDIModule.class,
-        AuthorityEntityDIModule.class,
-        UserCredentialsEntityDIModule.class,
-        UserRoleEntityDIModule.class,
-        UserEntityDIModule.class,
-        UserOrganisationUnitLinkEntityDIModule.class
-})
-public final class UserPackageDIModule {
-
-    @Provides
-    @Reusable
-    UserService userService(Retrofit retrofit) {
-        return retrofit.create(UserService.class);
+@RunWith(D2JunitRunner::class)
+class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_user() {
+        val userCredentials = d2.userModule().userCredentials().blockingGet()
+        assertThat(userCredentials.username()).isEqualTo("android")
+        assertThat(userCredentials.name()).isEqualTo("John Barnes")
+        assertThat(userCredentials.displayName()).isEqualTo("John Barnes")
     }
 
-    @Provides
-    @Reusable
-    AuthorityService authorityService(Retrofit retrofit) {
-        return retrofit.create(AuthorityService.class);
-    }
-
-    @Provides
-    @Reusable
-    UserModule module(UserModuleImpl impl) {
-        return impl;
+    @Test
+    fun return_user_roles_as_children() {
+        val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()
+        assertThat(userCredentials.userRoles()!!.size).isEqualTo(1)
+        assertThat(userCredentials.userRoles()!![0].name()).isEqualTo("Superuser")
     }
 }

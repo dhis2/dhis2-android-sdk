@@ -25,35 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.user
 
-package org.hisp.dhis.android.testapp.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+@RunWith(D2JunitRunner::class)
+class UserObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_user() {
+        val user = d2.userModule().user().blockingGet()
 
-public class UserCredentialsPublicAccessShould extends BasePublicAccessShould<UserCredentials> {
-
-    @Mock
-    private UserCredentials object;
-
-    @Override
-    public UserCredentials object() {
-        return object;
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
+        assertThat(user.firstName()).isEqualTo("John")
     }
 
-    @Override
-    public void has_public_create_method() {
-        UserCredentials.create(null);
-    }
+    @Test
+    fun with_user_roles() {
+        val user = d2.userModule().user()
+            .withUserRoles()
+            .blockingGet()
 
-    @Override
-    public void has_public_builder_method() {
-        UserCredentials.builder();
-    }
-
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+        assertThat(user.userRoles()!!.size).isEqualTo(1)
+        assertThat(user.userRoles()!![0].name()).isEqualTo("Superuser")
     }
 }

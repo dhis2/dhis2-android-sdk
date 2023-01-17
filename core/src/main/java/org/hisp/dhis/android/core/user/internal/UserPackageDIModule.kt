@@ -25,13 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.user.UserModule
+import retrofit2.Retrofit
 
+@Module(
+    includes = [
+        AuthenticatedUserEntityDIModule::class,
+        AuthorityEntityDIModule::class,
+        UserRoleEntityDIModule::class,
+        UserEntityDIModule::class,
+        UserOrganisationUnitLinkEntityDIModule::class
+    ]
+)
+internal class UserPackageDIModule {
+    @Provides
+    @Reusable
+    fun userService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
+    }
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.user.UserCredentials;
+    @Provides
+    @Reusable
+    fun authorityService(retrofit: Retrofit): AuthorityService {
+        return retrofit.create(AuthorityService::class.java)
+    }
 
-public interface UserCredentialsStore extends IdentifiableObjectStore<UserCredentials> {
-    UserCredentials getForUser(String userId);
+    @Provides
+    @Reusable
+    fun module(impl: UserModuleImpl): UserModule {
+        return impl
+    }
 }

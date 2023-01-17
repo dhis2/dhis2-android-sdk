@@ -73,6 +73,14 @@ class D2AddDaysShould {
         whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("31")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2011-01-01")
+
+        whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01T00:00:00.000")
+        whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("10")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-12-11")
+
+        whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01T04:35:12.123")
+        whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("10")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-12-11")
     }
 
     @Test(expected = IllegalArgumentException::class)

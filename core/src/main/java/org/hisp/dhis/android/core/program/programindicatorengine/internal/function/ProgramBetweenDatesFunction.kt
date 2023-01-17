@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 import kotlinx.datetime.*
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.util.parseDateStr
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
@@ -46,8 +47,8 @@ internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
             return 0.toString()
         }
 
-        val startDate = parseDateStr(start)
-        val endDate = parseDateStr(end)
+        val startDate = LocalDateTime.parseDateStr(start)
+        val endDate = LocalDateTime.parseDateStr(end)
 
         return evaluate(startDate, endDate)
     }
@@ -61,14 +62,5 @@ internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
         }
 
         return getSql(start, end)
-    }
-
-    private fun parseDateStr(dateStr: String): LocalDateTime {
-        return try {
-            LocalDateTime.parse(dateStr)
-        } catch (_: RuntimeException) {
-            val tz = TimeZone.currentSystemDefault()
-            LocalDate.parse(dateStr).atStartOfDayIn(tz).toLocalDateTime(tz)
-        }
     }
 }

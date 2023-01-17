@@ -29,10 +29,13 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.util.parseDateStr
+import org.hisp.dhis.android.core.util.toLocalDate
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2AddDays : ExpressionItem {
@@ -40,7 +43,7 @@ internal class D2AddDays : ExpressionItem {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val dateStr = visitor.castStringVisit(ctx.expr(0))
         val days = visitor.castStringVisit(ctx.expr(1))
-        val date = LocalDate.parse(dateStr)
+        val date = LocalDateTime.parseDateStr(dateStr).toLocalDate()
 
         val shiftedDate = date.plus(days.toDouble().toInt(), DateTimeUnit.DAY)
 

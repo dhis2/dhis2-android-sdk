@@ -28,9 +28,17 @@
 
 package org.hisp.dhis.android.core.util
 
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.*
 
 internal fun LocalDateTime.toLocalDate(): LocalDate {
     return LocalDate(this.year, this.monthNumber, this.dayOfMonth)
+}
+
+internal fun LocalDateTime.Companion.parseDateStr(dateStr: String): LocalDateTime {
+    return try {
+        parse(dateStr)
+    } catch (_: RuntimeException) {
+        val tz = TimeZone.currentSystemDefault()
+        LocalDate.parse(dateStr).atStartOfDayIn(tz).toLocalDateTime(tz)
+    }
 }

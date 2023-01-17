@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor

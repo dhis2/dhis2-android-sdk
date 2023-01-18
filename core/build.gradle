@@ -64,7 +64,6 @@ ext {
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.3",
-            jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
             expressionParser: "1.0.29",
 
@@ -177,9 +176,6 @@ dependencies {
     api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
     api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
-
-    // Joda time
-    api "joda-time:joda-time:${libraries.jodaTime}"
 
     // Kotlinx datetime
     implementation "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"

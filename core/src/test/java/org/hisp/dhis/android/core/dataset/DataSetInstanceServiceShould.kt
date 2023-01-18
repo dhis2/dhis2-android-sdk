@@ -33,6 +33,9 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import java.util.*
+import kotlin.time.Duration.Companion.days
+import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
@@ -44,8 +47,6 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.joda.time.Duration
-import org.joda.time.Instant
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -182,11 +183,11 @@ class DataSetInstanceServiceShould {
 
     @Test
     fun `Should return false if dataSet is not expired`() {
-        val now = Instant.now()
-        val monthLater = now.plus(Duration.standardDays(30))
+        val now = Clock.System.now()
+        val monthLater = now.plus(30.days)
 
         whenever(periodHelper.getPeriodForPeriodId(secondPeriodId).blockingGet()) doReturn secondPeriod
-        whenever(secondPeriod.endDate()) doReturn monthLater.toDate()
+        whenever(secondPeriod.endDate()) doReturn Date(monthLater.toEpochMilliseconds())
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 

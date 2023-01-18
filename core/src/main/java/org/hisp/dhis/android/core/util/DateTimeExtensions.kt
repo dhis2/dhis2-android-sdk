@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.monthsUntil
-import org.hisp.dhis.android.core.util.toLocalDate
+package org.hisp.dhis.android.core.util
 
-internal class D2MonthsBetween : ProgramBetweenDatesFunction() {
+import kotlinx.datetime.*
 
-    override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {
-        return startDate.toLocalDate().monthsUntil(endDate.toLocalDate()).toString()
-    }
+internal fun LocalDateTime.toLocalDate(): LocalDate {
+    return LocalDate(this.year, this.monthNumber, this.dayOfMonth)
+}
 
-    override fun getSql(startExpression: String, endExpression: String): Any {
-        return "(strftime('%m', $endExpression) + 12 * strftime('%Y', $endExpression)) - " +
-            "(strftime('%m', $startExpression) + 12 * strftime('%Y', $startExpression))"
+internal fun LocalDateTime.Companion.parseDateStr(dateStr: String): LocalDateTime {
+    return try {
+        parse(dateStr)
+    } catch (_: RuntimeException) {
+        val tz = TimeZone.currentSystemDefault()
+        LocalDate.parse(dateStr).atStartOfDayIn(tz).toLocalDateTime(tz)
     }
 }

@@ -27,13 +27,14 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
-import org.joda.time.Days
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.daysUntil
+import org.hisp.dhis.android.core.util.toLocalDate
 
 internal class D2DaysBetween : ProgramBetweenDatesFunction() {
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return Days.daysBetween(startDate, endDate).days.toString()
+    override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {
+        return startDate.toLocalDate().daysUntil(endDate.toLocalDate()).toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {

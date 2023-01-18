@@ -143,6 +143,12 @@ internal object ParserUtils {
         }
     }
 
+    fun getMediumDateString(localDate: LocalDate?): String? {
+        return localDate?.let {
+            "${it.year}-${it.monthNumber.toString().padStart(2, '0')}-${it.dayOfMonth.toString().padStart(2, '0')}"
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
     fun parseExpressionDate(expression: String): LocalDate {
         return try {

@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.parser.internal.expression.literal
 
 import org.hisp.dhis.antlr.AntlrExprLiteral
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.NumericLiteralContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext
 
 /**
  * Gets typed literal values from an ANTLR parse tree for use internally.

@@ -97,7 +97,7 @@ internal object ParserUtils {
         ExpressionParser.DAYS to ItemDays(),
         ExpressionParser.C_BRACE to ItemConstant(),
 
-        //Literals
+        // Literals
         ExpressionParser.NULL to NullLiteral(),
     )
 

@@ -360,6 +360,9 @@ class ExpressionServiceShould {
             de(dataElementId2) + " / " +
             constant(constantId) + " * " +
             oug(orgunitGroupId) + " - " +
+            "5.0 + " +
+            "'expr' + " +
+            "true + " +
             days
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
@@ -373,7 +376,7 @@ class ExpressionServiceShould {
 
         val regeneratedExpression: Any = service.regenerateExpression(expression, context)
 
-        assertThat(regeneratedExpression).isEqualTo("5.0 + 3.0 / 3.14 * 20 - 10.0")
+        assertThat(regeneratedExpression).isEqualTo("5.0 + 3.0 / 3.14 * 20 - 5.0 + 'expr' + true + 10.0")
     }
 
     @Test

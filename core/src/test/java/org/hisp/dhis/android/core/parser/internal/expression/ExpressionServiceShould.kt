@@ -254,8 +254,9 @@ class ExpressionServiceShould {
 
     @Test
     fun evaluate_functions() {
-        assertThat(service.getExpressionValue("firstNonNull(4 , 'two', 6)")).isEqualTo(4.0)
-        assertThat(service.getExpressionValue("firstNonNull('two' , 4, 6)")).isEqualTo("two")
+        assertThat(service.getExpressionValue("firstNonNull(4, 'two', 6)")).isEqualTo(4.0)
+        assertThat(service.getExpressionValue("firstNonNull('two', 4, 6)")).isEqualTo("two")
+        assertThat(service.getExpressionValue("firstNonNull(null, 4, 6)")).isEqualTo(4.0)
         assertThat(service.getExpressionValue("greatest(5, 2, 7, 3)")).isEqualTo(7.0)
         assertThat(service.getExpressionValue("greatest(-5, -2, -7)")).isEqualTo(-2.0)
         assertThat(service.getExpressionValue("if(5 > 2, 5, 2)")).isEqualTo(5.0)
@@ -359,6 +360,9 @@ class ExpressionServiceShould {
             de(dataElementId2) + " / " +
             constant(constantId) + " * " +
             oug(orgunitGroupId) + " - " +
+            "5.0 + " +
+            "'expr' + " +
+            "true + " +
             days
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
@@ -372,7 +376,7 @@ class ExpressionServiceShould {
 
         val regeneratedExpression: Any = service.regenerateExpression(expression, context)
 
-        assertThat(regeneratedExpression).isEqualTo("5.0 + 3.0 / 3.14 * 20 - 10.0")
+        assertThat(regeneratedExpression).isEqualTo("5.0 + 3.0 / 3.14 * 20 - 5.0 + 'expr' + true + 10.0")
     }
 
     @Test

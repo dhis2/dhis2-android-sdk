@@ -25,32 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.literal
 
-package org.hisp.dhis.android.core.parser.internal.expression.literal;
-
-import org.hisp.dhis.antlr.AntlrExprLiteral;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext;
+import org.hisp.dhis.antlr.AntlrExprLiteral
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.NumericLiteralContext
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext
 
 /**
  * Gets typed literal values from an ANTLR parse tree for use internally.
  */
-public class RegenerateLiteral
-        implements AntlrExprLiteral {
-    @Override
-    public Object getNumericLiteral(ExpressionParser.NumericLiteralContext ctx) {
-        return ctx.getText();
+internal class RegenerateLiteral : AntlrExprLiteral {
+    override fun getNumericLiteral(ctx: NumericLiteralContext): Any? {
+        return ctx.text
     }
 
-    @Override
-    public Object getStringLiteral(StringLiteralContext ctx) {
-        return ctx.getText();
+    override fun getStringLiteral(ctx: StringLiteralContext): Any? {
+        return ctx.text
     }
 
-    @Override
-    public Object getBooleanLiteral(BooleanLiteralContext ctx) {
-        return ctx.getText();
+    override fun getBooleanLiteral(ctx: BooleanLiteralContext): Any? {
+        return ctx.text
     }
 }

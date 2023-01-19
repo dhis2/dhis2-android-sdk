@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.parser.internal.service.utils
 
 import java.lang.NumberFormatException
-import java.util.*
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject

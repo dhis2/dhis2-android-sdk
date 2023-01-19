@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import java.util.regex.Pattern
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.function.*
+import org.hisp.dhis.android.core.parser.internal.expression.literal.NullLiteral
 import org.hisp.dhis.android.core.parser.internal.expression.operator.*
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemConstant
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemDays
@@ -95,6 +96,9 @@ internal object ParserUtils {
         ExpressionParser.OUG_BRACE to ItemOrgUnitGroup(),
         ExpressionParser.DAYS to ItemDays(),
         ExpressionParser.C_BRACE to ItemConstant(),
+
+        //Literals
+        ExpressionParser.NULL to NullLiteral(),
     )
 
     @JvmStatic

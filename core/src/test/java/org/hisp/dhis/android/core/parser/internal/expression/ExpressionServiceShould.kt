@@ -254,8 +254,9 @@ class ExpressionServiceShould {
 
     @Test
     fun evaluate_functions() {
-        assertThat(service.getExpressionValue("firstNonNull(4 , 'two', 6)")).isEqualTo(4.0)
-        assertThat(service.getExpressionValue("firstNonNull('two' , 4, 6)")).isEqualTo("two")
+        assertThat(service.getExpressionValue("firstNonNull(4, 'two', 6)")).isEqualTo(4.0)
+        assertThat(service.getExpressionValue("firstNonNull('two', 4, 6)")).isEqualTo("two")
+        assertThat(service.getExpressionValue("firstNonNull(null, 4, 6)")).isEqualTo(4.0)
         assertThat(service.getExpressionValue("greatest(5, 2, 7, 3)")).isEqualTo(7.0)
         assertThat(service.getExpressionValue("greatest(-5, -2, -7)")).isEqualTo(-2.0)
         assertThat(service.getExpressionValue("if(5 > 2, 5, 2)")).isEqualTo(5.0)

@@ -283,6 +283,13 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         }
     }
 
+    @Test
+    fun should_evaluate_null_literal() {
+        val indicator = createIndicator(numerator = "firstNonNull(null, 4, 2)")
+        val result = evaluateForThisMonth(indicator)
+        assertThat(result).isEqualTo("4.0")
+    }
+
     private fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT

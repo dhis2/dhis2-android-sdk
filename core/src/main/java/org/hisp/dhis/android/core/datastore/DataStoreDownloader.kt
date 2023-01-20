@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+
+package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadCall
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadParams
 import javax.inject.Inject
 
 @Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+class DataStoreDownloader @Inject internal constructor(
+    private val call: DataStoreEntryDownloadCall,
+    private val params: DataStoreEntryDownloadParams
+): BaseRepository {
+    private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreEntryDownloadParams> =
+        ScopedFilterConnectorFactory { params ->
+            DataStoreDownloader(call, params)
+        }
+
+    /**
+     * Download and persist the content in the dataStore according to the filters specified.
+     */
+    fun download(): Observable<D2Progress> {
+        return call.download(params)
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    fun blockingDownload() {
+        download().blockingSubscribe()
+    }
+
+    fun byNamespace(): ListFilterConnector<DataStoreDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(namespaces = list) }
     }
 }

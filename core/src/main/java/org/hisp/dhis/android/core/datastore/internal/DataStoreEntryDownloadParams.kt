@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
-    }
-
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
-    }
-}
+internal data class DataStoreEntryDownloadParams(
+    val namespaces: List<String> = emptyList()
+) : BaseScope

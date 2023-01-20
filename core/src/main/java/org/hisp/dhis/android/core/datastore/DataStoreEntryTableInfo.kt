@@ -25,24 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.datastore
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
+
+object DataStoreEntryTableInfo {
+
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "DataStore"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    class Columns : DeletableDataColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NAMESPACE,
+                KEY,
+                VALUE,
+                SYNC_STATE,
+                DELETED
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NAMESPACE,
+                KEY,
+            )
+        }
+
+        companion object {
+            const val NAMESPACE = "namespace"
+            const val KEY = "key"
+            const val VALUE = "value"
+        }
     }
 }

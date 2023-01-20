@@ -27,22 +27,36 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.dataelement.DataElement
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
-    }
+internal interface DataStoreEntryService {
+    @GET("dataStore")
+    fun getNamespaces(): Single<List<String>>
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    @GET("dataStore/{$NAMESPACE}")
+    fun getNamespaceKeys(
+        @Path(NAMESPACE) namespace: String
+    ): Single<List<String>>
+
+    @GET("dataStore/{$NAMESPACE}/{$KEY}")
+    fun getNamespaceValues38(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String
+    ): Call<Payload<DataElement>>
+
+    @GET("dataStore/{$NAMESPACE}/{$KEY}")
+    fun getNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY)  key: String
+    ): Single<Any>
+
+    companion object {
+        private const val NAMESPACE = "namespace"
+        private const val KEY = "key"
     }
 }

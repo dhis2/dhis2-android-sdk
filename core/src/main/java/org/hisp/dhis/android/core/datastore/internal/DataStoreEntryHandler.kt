@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import javax.inject.Inject
 
 @Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+internal class DataStoreEntryHandler @Inject constructor(
+    private val store: ObjectWithoutUidStore<DataStoreEntry>
+) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
+
+    override fun beforeCollectionHandled(oCollection: Collection<DataStoreEntry>): Collection<DataStoreEntry> {
+        // TODO Filter out unsynced values
+        return oCollection
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    override fun handleMany(
+        masterUid: String,
+        slaves: Collection<DataStoreEntry>?,
+        transformer: (DataStoreEntry) -> DataStoreEntry
+    ) {
+        //TODO Clean namespace. Remove those that are not in the list and are SYNC'ed
+        handleMany(slaves)
     }
+
+    override fun resetAllLinks() {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteOrPersist(o: DataStoreEntry): HandleAction {
+        return store.updateOrInsertWhere(o)
+    }
+
 }

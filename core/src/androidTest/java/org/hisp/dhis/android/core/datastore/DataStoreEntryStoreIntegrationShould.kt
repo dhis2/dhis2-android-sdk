@@ -25,24 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.core.datastore
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.datastore.DataStoreEntrySamples
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+@RunWith(D2JunitRunner::class)
+class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataStoreEntry>(
+    create(TestDatabaseAdapterFactory.get()),
+    DataStoreEntryTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): DataStoreEntry {
+        return DataStoreEntrySamples.get()
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    override fun buildObjectToUpdate(): DataStoreEntry {
+        return DataStoreEntrySamples.get()
+            .toBuilder()
+            .value("value2")
+            .build()
     }
 }

@@ -27,33 +27,45 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.datastore.KeyValuePair
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
-@Module
-internal class LocalDataStoreEntityDIModule {
+@Suppress("MagicNumber")
+internal object DataStoreEntryStore {
 
-    @Provides
-    @Reusable
-    fun service(retrofit: Retrofit): DataStoreEntryService {
-        return retrofit.create(DataStoreEntryService::class.java)
+    private val BINDER: StatementBinder<DataStoreEntry> = StatementBinder { o, w ->
+        w.bind(1, o.namespace())
+        w.bind(2, o.key())
+        w.bind(3, o.value())
+        w.bind(4, o.syncState())
+        w.bind(5, o.deleted())
     }
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return LocalDataStoreStore.create(databaseAdapter)
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
+        w.bind(6, o.namespace())
+        w.bind(7, o.key())
     }
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<KeyValuePair>> {
-        return emptyMap()
+    private val WHERE_DELETE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
+        w.bind(1, o.namespace())
+        w.bind(2, o.key())
+    }
+
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<DataStoreEntry> {
+        return objectWithoutUidStore(
+            databaseAdapter,
+            DataStoreEntryTableInfo.TABLE_INFO,
+            BINDER,
+            WHERE_UPDATE_BINDER,
+            WHERE_DELETE_BINDER
+        ) { cursor: Cursor -> DataStoreEntry.create(cursor) }
     }
 }

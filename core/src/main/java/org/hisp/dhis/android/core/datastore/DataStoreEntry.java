@@ -25,24 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.datastore;
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+
+@AutoValue
+public abstract class DataStoreEntry extends BaseDeletableDataObject {
+
+    @NonNull
+    public abstract String namespace();
+
+    @NonNull
+    public abstract String key();
+
+    @Nullable
+    public abstract String value();
+
+    public static DataStoreEntry create(Cursor cursor) {
+        return $AutoValue_DataStoreEntry.createFromCursor(cursor);
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new $$AutoValue_DataStoreEntry.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder namespace(String namespace);
+
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract DataStoreEntry build();
     }
 }

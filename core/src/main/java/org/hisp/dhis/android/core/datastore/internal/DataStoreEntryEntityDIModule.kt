@@ -27,22 +27,39 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreDownloader
-import org.hisp.dhis.android.core.datastore.DataStoreModule
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
 
-@Reusable
-class DataStoreModuleImpl @Inject internal constructor(
-    private val localDataStore: LocalDataStoreCollectionRepository,
-    private val dataStoreDownloader: DataStoreDownloader
-) : DataStoreModule {
-    override fun localDataStore(): LocalDataStoreCollectionRepository {
-        return localDataStore
+@Module
+internal class DataStoreEntryEntityDIModule {
+
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<DataStoreEntry> {
+        return DataStoreEntryStore.create(databaseAdapter)
     }
 
-    override fun dataStoreDownloader(): DataStoreDownloader {
-        return dataStoreDownloader
+    @Provides
+    @Reusable
+    fun handler(impl: DataStoreEntryHandler): LinkHandler<DataStoreEntry, DataStoreEntry> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<DataStoreEntry>> {
+        return emptyMap()
+    }
+
+    @Provides
+    @Reusable
+    fun downloaderParams(): DataStoreEntryDownloadParams {
+        return DataStoreEntryDownloadParams()
     }
 }

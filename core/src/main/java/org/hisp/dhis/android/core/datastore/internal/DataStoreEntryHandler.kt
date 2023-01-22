@@ -29,11 +29,15 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 import javax.inject.Inject
 
 @Reusable
@@ -41,26 +45,59 @@ internal class DataStoreEntryHandler @Inject constructor(
     private val store: ObjectWithoutUidStore<DataStoreEntry>
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
-    override fun beforeCollectionHandled(oCollection: Collection<DataStoreEntry>): Collection<DataStoreEntry> {
-        // TODO Filter out unsynced values
-        return oCollection
-    }
-
     override fun handleMany(
         masterUid: String,
         slaves: Collection<DataStoreEntry>?,
         transformer: (DataStoreEntry) -> DataStoreEntry
     ) {
-        //TODO Clean namespace. Remove those that are not in the list and are SYNC'ed
-        handleMany(slaves)
+        val entriesToHandle = filterUnsycnedEntries(masterUid, slaves)
+        handleMany(entriesToHandle)
+        cleanOrphan(masterUid, entriesToHandle)
     }
 
     override fun resetAllLinks() {
-        TODO("Not yet implemented")
+        store.delete()
     }
 
     override fun deleteOrPersist(o: DataStoreEntry): HandleAction {
         return store.updateOrInsertWhere(o)
     }
 
+    private fun filterUnsycnedEntries(
+        namespace: String,
+        slaves: Collection<DataStoreEntry>?
+    ): List<DataStoreEntry>? {
+        return slaves?.let {
+            val whereClause = WhereClauseBuilder().run {
+                appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
+                appendNotInKeyStringValues(
+                    DataColumns.SYNC_STATE,
+                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+                )
+                build()
+            }
+            val entriesPendingToSync = store.selectWhere(whereClause)
+
+            slaves.filter { entry ->
+                entriesPendingToSync.none { it.key() == entry.key() }
+            }
+        }
+    }
+
+    private fun cleanOrphan(
+        namespace: String,
+        slaves: Collection<DataStoreEntry>?
+    ) {
+        val notInSlaves = WhereClauseBuilder().run {
+            appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
+            appendInKeyEnumValues(DataColumns.SYNC_STATE, listOf(State.SYNCED, State.SYNCED_VIA_SMS))
+
+            if (!slaves.isNullOrEmpty()) {
+                appendNotInKeyStringValues(DataStoreEntryTableInfo.Columns.KEY, slaves.map { it.key() })
+            }
+            build()
+        }
+
+        store.deleteWhere(notInSlaves)
+    }
 }

@@ -79,11 +79,32 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
 
     private fun fetchNamespace(namespace: String): Single<List<DataStoreEntry>> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            //TODO
-            fetchNamespace37(namespace)
+            fetchNamespace38(namespace)
         } else {
             fetchNamespace37(namespace)
         }
+    }
+
+    private fun fetchNamespace38(namespace: String): Single<List<DataStoreEntry>> {
+        var page = 1
+        return rxCallExecutor.wrapSingle(Single.defer {
+            dataStoreEntryService.getNamespaceValues38(namespace, page, PAGE_SIZE)
+        }, storeError = false)
+            .map { pagedEntry ->
+                pagedEntry.entries.map { keyValuePair ->
+                    val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(keyValuePair.value)
+                    DataStoreEntry.builder()
+                        .namespace(namespace)
+                        .key(keyValuePair.key)
+                        .value(strValue)
+                        .build()
+                }
+            }
+            .doOnSuccess { page++ }
+            .repeat()
+            .takeUntil { entries -> entries.size < PAGE_SIZE }
+            .toList()
+            .map { list -> list.flatten() }
     }
 
     private fun fetchNamespace37(namespace: String): Single<List<DataStoreEntry>> {
@@ -93,11 +114,11 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
                     .flatMapSingle { key ->
                         rxCallExecutor.wrapSingle(dataStoreEntryService.getNamespaceKeyValue(namespace, key), false)
                             .map { value ->
-                                val parsedValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
+                                val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
                                 DataStoreEntry.builder()
                                     .namespace(namespace)
                                     .key(key)
-                                    .value(parsedValue)
+                                    .value(strValue)
                                     .syncState(State.SYNCED)
                                     .deleted(false)
                                     .build()
@@ -105,5 +126,9 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
                     }
                     .toList()
             }
+    }
+
+    companion object {
+        private const val PAGE_SIZE = 50
     }
 }

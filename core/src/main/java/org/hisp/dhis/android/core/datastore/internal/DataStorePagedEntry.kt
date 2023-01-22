@@ -27,37 +27,11 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.hisp.dhis.android.core.arch.api.payload.internal.Pager
 
-internal interface DataStoreEntryService {
-    @GET("$DATA_STORE")
-    fun getNamespaces(): Single<List<String>>
+internal data class DataStorePagedEntry(
+    val pager: Pager,
+    val entries: List<DataStorePageEntryItem>
+)
 
-    @GET("$DATA_STORE/{$NAMESPACE}")
-    fun getNamespaceKeys(
-        @Path(NAMESPACE) namespace: String
-    ): Single<List<String>>
-
-    @GET("$DATA_STORE/{$NAMESPACE}")
-    fun getNamespaceValues38(
-        @Path(NAMESPACE) namespace: String,
-        @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
-        @Query("fields") fields: String = "."
-    ): Single<DataStorePagedEntry>
-
-    @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
-    fun getNamespaceKeyValue(
-        @Path(NAMESPACE) namespace: String,
-        @Path(KEY)  key: String
-    ): Single<Any>
-
-    companion object {
-        private const val DATA_STORE = "dataStore"
-        private const val NAMESPACE = "namespace"
-        private const val KEY = "key"
-    }
-}
+internal data class DataStorePageEntryItem(val key: String, val value: Any?)

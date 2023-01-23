@@ -97,6 +97,8 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
                         .namespace(namespace)
                         .key(keyValuePair.key)
                         .value(strValue)
+                        .syncState(State.SYNCED)
+                        .deleted(false)
                         .build()
                 }
             }

@@ -49,6 +49,12 @@ public class APIExecutorsDIModule {
 
     @Provides
     @Reusable
+    CoroutineAPICallExecutor coroutineAPICallExecutor(CoroutineAPICallExecutorImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
     APIDownloader apiDownloader(APIDownloaderImpl impl) {
         return impl;
     }

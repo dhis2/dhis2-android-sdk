@@ -35,6 +35,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.net.ssl.SSLException
 import okhttp3.Request
+import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -109,13 +110,18 @@ internal class APIErrorMapper @Inject constructor() {
             .build()
     }
 
-    val rxObjectErrorBuilder: D2Error.Builder
-        get() = D2Error.builder()
-            .errorComponent(D2ErrorComponent.Server)
-
     fun getBaseErrorBuilder(call: Call<*>): D2Error.Builder {
-        return D2Error.builder()
+        return getBaseErrorBuilder()
             .url(getUrl(call.request()))
+    }
+
+    fun getBaseErrorBuilder(response: Response<*>): D2Error.Builder {
+        return getBaseErrorBuilder()
+            .url(getUrl(response.raw().request()))
+    }
+
+    fun getBaseErrorBuilder(): D2Error.Builder {
+        return D2Error.builder()
             .errorComponent(D2ErrorComponent.Server)
     }
 

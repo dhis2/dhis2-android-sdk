@@ -29,7 +29,7 @@ package org.hisp.dhis.android.testapp.datastore
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -79,7 +79,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 
-        DataStoreEntryStore.create(databaseAdapter)
+        DataStoreEntryStoreImpl.create(databaseAdapter)
             .updateWhere(repository.blockingGet().toBuilder().syncState(State.ERROR).build())
 
         assertThat(repository.blockingExists()).isTrue()
@@ -90,7 +90,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
         assertThat(repository.blockingGet().deleted()).isTrue()
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
 
-        DataStoreEntryStore.create(databaseAdapter)
+        DataStoreEntryStoreImpl.create(databaseAdapter)
             .deleteWhere(repository.blockingGet())
     }
 
@@ -100,7 +100,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 
-        DataStoreEntryStore.create(databaseAdapter)
+        DataStoreEntryStoreImpl.create(databaseAdapter)
             .updateWhere(repository.blockingGet().toBuilder().syncState(State.TO_UPDATE).build())
 
         repository.blockingDelete()
@@ -112,7 +112,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
         assertThat(repository.blockingGet().deleted()).isFalse()
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
 
-        DataStoreEntryStore.create(databaseAdapter)
+        DataStoreEntryStoreImpl.create(databaseAdapter)
             .deleteWhere(repository.blockingGet())
     }
 }

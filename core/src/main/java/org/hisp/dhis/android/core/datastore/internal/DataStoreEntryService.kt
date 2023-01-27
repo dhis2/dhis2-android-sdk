@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import retrofit2.http.*
 
 internal interface DataStoreEntryService {
-    @GET("$DATA_STORE")
+    @GET(DATA_STORE)
     fun getNamespaces(): Single<List<String>>
 
     @GET("$DATA_STORE/{$NAMESPACE}")
@@ -52,8 +51,28 @@ internal interface DataStoreEntryService {
     @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     fun getNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
-        @Path(KEY)  key: String
+        @Path(KEY) key: String
     ): Single<Any>
+
+    @POST("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun postNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String,
+        @Body value: Any?
+    ): HttpMessageResponse
+
+    @PUT("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun putNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String,
+        @Body value: Any?
+    ): HttpMessageResponse
+
+    @DELETE("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun deleteNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String
+    ): HttpMessageResponse
 
     companion object {
         private const val DATA_STORE = "dataStore"

@@ -31,7 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
@@ -41,8 +40,8 @@ internal class DataStoreEntryEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<DataStoreEntry> {
-        return DataStoreEntryStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): DataStoreEntryStore {
+        return DataStoreEntryStoreImpl.create(databaseAdapter)
     }
 
     @Provides

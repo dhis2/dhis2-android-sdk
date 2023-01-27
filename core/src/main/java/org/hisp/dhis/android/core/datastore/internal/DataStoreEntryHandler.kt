@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -42,7 +41,7 @@ import javax.inject.Inject
 
 @Reusable
 internal class DataStoreEntryHandler @Inject constructor(
-    private val store: ObjectWithoutUidStore<DataStoreEntry>
+    private val store: DataStoreEntryStore
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
     override fun handleMany(

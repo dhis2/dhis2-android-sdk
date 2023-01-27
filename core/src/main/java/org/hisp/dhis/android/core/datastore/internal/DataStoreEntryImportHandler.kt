@@ -25,29 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore
+package org.hisp.dhis.android.core.datastore.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.datastore.DataStoreEntrySamples
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl.Companion.create
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import dagger.Reusable
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import javax.inject.Inject
 
-@RunWith(D2JunitRunner::class)
-class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataStoreEntry>(
-    create(TestDatabaseAdapterFactory.get()),
-    DataStoreEntryTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+@Reusable
+internal class DataStoreEntryImportHandler @Inject constructor(
+    private val store: DataStoreEntryStore
 ) {
-    override fun buildObject(): DataStoreEntry {
-        return DataStoreEntrySamples.get()
+
+    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
+        if (response.httpStatusCode() == 200 || response.httpStatusCode() == 404) {
+            store.deleteWhere(entry)
+        } else {
+            store.setStateIfUploading(entry, State.ERROR)
+        }
     }
 
-    override fun buildObjectToUpdate(): DataStoreEntry {
-        return DataStoreEntrySamples.get()
-            .toBuilder()
-            .value("value2")
-            .build()
+    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
+        val syncState = if (response.status() == "OK") {
+            State.SYNCED
+        } else {
+            State.ERROR
+        }
+        store.setStateIfUploading(entry, syncState)
     }
 }

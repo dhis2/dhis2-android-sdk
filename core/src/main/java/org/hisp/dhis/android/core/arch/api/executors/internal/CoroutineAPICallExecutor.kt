@@ -25,29 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore
+package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.datastore.DataStoreEntrySamples
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl.Companion.create
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
-
-@RunWith(D2JunitRunner::class)
-class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataStoreEntry>(
-    create(TestDatabaseAdapterFactory.get()),
-    DataStoreEntryTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): DataStoreEntry {
-        return DataStoreEntrySamples.get()
-    }
-
-    override fun buildObjectToUpdate(): DataStoreEntry {
-        return DataStoreEntrySamples.get()
-            .toBuilder()
-            .value("value2")
-            .build()
-    }
+internal interface CoroutineAPICallExecutor {
+    suspend fun <P> wrap(
+        storeError: Boolean = true,
+        acceptedErrorCodes: List<Int>? = null,
+        errorCatcher: APICallErrorCatcher? = null,
+        errorClass: Class<P>? = null,
+        block: suspend () -> P
+    ): Result<P>
 }

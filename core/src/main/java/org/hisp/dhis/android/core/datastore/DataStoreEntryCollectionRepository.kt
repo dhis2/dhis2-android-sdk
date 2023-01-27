@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.datastore
 import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -43,25 +42,30 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryPostCall
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import javax.inject.Inject
 
 @Reusable
 class DataStoreEntryCollectionRepository @Inject internal constructor(
-    private val store: ObjectWithoutUidStore<DataStoreEntry>,
+    private val store: DataStoreEntryStore,
+    private val call: DataStoreEntryPostCall,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope
 ) : ReadOnlyCollectionRepositoryImpl<DataStoreEntry, DataStoreEntryCollectionRepository>(
     store,
     childrenAppenders,
     scope,
-    FilterConnectorFactory(scope) { s -> DataStoreEntryCollectionRepository(store, childrenAppenders, s) }
+    FilterConnectorFactory(scope) { s -> DataStoreEntryCollectionRepository(store, call, childrenAppenders, s) }
 ), ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
     override fun upload(): Observable<D2Progress> {
-        TODO("Not yet implemented")
+        return Observable
+            .fromCallable { bySyncState().`in`(*State.uploadableStatesIncludingError()).blockingGetWithoutChildren() }
+            .flatMap { call.uploadDataStoreEntries(it) }
     }
 
     override fun blockingUpload() {
-        TODO("Not yet implemented")
+        upload().blockingSubscribe()
     }
 
     fun value(namespace: String, key: String): DataStoreEntryObjectRepository {

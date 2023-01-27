@@ -27,45 +27,12 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
-@Suppress("MagicNumber")
-internal object DataStoreEntryStore {
+internal interface DataStoreEntryStore : ObjectWithoutUidStore<DataStoreEntry> {
+    fun setState(entry: DataStoreEntry, state: State)
 
-    private val BINDER: StatementBinder<DataStoreEntry> = StatementBinder { o, w ->
-        w.bind(1, o.namespace())
-        w.bind(2, o.key())
-        w.bind(3, o.value())
-        w.bind(4, o.syncState())
-        w.bind(5, o.deleted())
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
-        w.bind(6, o.namespace())
-        w.bind(7, o.key())
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
-        w.bind(1, o.namespace())
-        w.bind(2, o.key())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<DataStoreEntry> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            DataStoreEntryTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> DataStoreEntry.create(cursor) }
-    }
+    fun setStateIfUploading(entry: DataStoreEntry, state: State)
 }

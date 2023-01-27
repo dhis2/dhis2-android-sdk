@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
 import org.joda.time.DateTime
+import org.joda.time.Days
 
 internal class D2DaysBetween : ProgramBetweenDatesFunction() {
 
     override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return ((endDate.millis - startDate.millis) / MillisInADay).toString()
+        return Days.daysBetween(startDate, endDate).days.toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {

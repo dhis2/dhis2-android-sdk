@@ -59,7 +59,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations =
                 d2.dataSetModule().dataSetCompleteRegistrations()
                         .byPeriod()
-                        .eq("2018")
+                        .eq("2016")
                         .blockingGet();
 
         assertThat(dataSetCompleteRegistrations.size()).isEqualTo(1);
@@ -84,7 +84,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(2);
     }
 
     @Test

@@ -46,7 +46,7 @@ abstract class BaseRealIntegrationTest {
 
     @Before
     open fun setUp() {
-        d2 = D2Factory.forNewDatabase()
+        d2 = D2Factory.forNewDatabase(isRealIntegration = true)
     }
 
     @After
@@ -54,14 +54,14 @@ abstract class BaseRealIntegrationTest {
         D2Factory.clear()
     }
 
-    protected fun getGenericCallData(d2: D2): GenericCallData {
+    internal fun getGenericCallData(d2: D2): GenericCallData {
         return GenericCallData.create(
             d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
             d2.systemInfoModule().versionManager()
         )
     }
 
-    protected fun getD2DIComponent(d2: D2): D2DIComponent {
+    internal fun getD2DIComponent(d2: D2): D2DIComponent {
         return d2.d2DIComponent
     }
 }

@@ -417,15 +417,15 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendEventStatusAndDates(
         where: WhereClauseBuilder,
-        eventStatus: List<EventStatus>?,
+        eventStatusList: List<EventStatus>?,
         eventDate: DateFilterPeriod?
     ) {
-        if (eventStatus == null) {
+        if (eventStatusList == null) {
             appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
-        } else if (eventStatus.size > 0 && eventDate != null) {
+        } else if (eventStatusList.isNotEmpty() && eventDate != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
-            for (eventStatus in eventStatus) {
+            for (eventStatus in eventStatusList) {
                 val statusWhere = WhereClauseBuilder()
                 when (eventStatus) {
                     EventStatus.ACTIVE -> {
@@ -464,8 +464,6 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     EventStatus.SKIPPED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                         appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
-                    }
-                    else -> {
                     }
                 }
                 statusListWhere.appendOrComplexQuery(statusWhere.build())

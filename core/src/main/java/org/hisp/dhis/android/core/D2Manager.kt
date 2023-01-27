@@ -47,13 +47,15 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 @Suppress("TooManyFunctions")
 object D2Manager {
     private var d2: D2? = null
-    private var isTestMode = false
     private var testingSecureStore: SecureStore? = null
     private var testingInsecureStore: InsecureStore? = null
     private var testingServerUrl: String? = null
     private var testingDatabaseName: String? = null
     private var testingUsername: String? = null
     private lateinit var d2DIComponent: D2DIComponent
+
+    internal var isTestMode = false
+    internal var isRealIntegration = false
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the
@@ -141,12 +143,6 @@ object D2Manager {
     @JvmStatic
     fun blockingInstantiateD2(d2Config: D2Configuration): D2? {
         return instantiateD2(d2Config).blockingGet()
-    }
-
-    @JvmStatic
-    @VisibleForTesting
-    fun setTestMode(testMode: Boolean) {
-        isTestMode = testMode
     }
 
     @JvmStatic

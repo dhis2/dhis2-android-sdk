@@ -79,4 +79,9 @@ internal interface APIDownloader {
     fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
     fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
     fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P>
+
+    fun <P> downloadPagedPayload(
+        pageSize: Int,
+        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>
+    ): Single<Payload<P>>
 }

@@ -36,7 +36,9 @@ internal class VZeroPosValueCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val expression = visitor.programIndicatorContext.programIndicator.expression()
-        return visitor.programIndicatorExecutor.getZeroPosValueCount(expression!!).toString()
+            ?: throw IllegalArgumentException("Expression is null")
+
+        return visitor.programIndicatorExecutor.getZeroPosValueCount(expression).toString()
     }
 
     override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {

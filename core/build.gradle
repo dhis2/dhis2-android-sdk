@@ -43,8 +43,8 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 270,
-            versionName      : "1.7.0"
+            versionCode      : 271,
+            versionName      : "1.7.1"
     ]
 
     libraries = [
@@ -62,7 +62,7 @@ ext {
             dagger          : "2.39.1",
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
-            sqlCipher       : "4.4.0",
+            sqlCipher       : "4.4.3",
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
@@ -218,9 +218,10 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "androidx.arch.core:core-testing:${libraries.coreTesting}"
     androidTestImplementation "com.jraska.livedata:testing-ktx:${libraries.liveDataTesting}"
+    androidTestImplementation "androidx.arch.core:core-testing:${libraries.coreTesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
+    androidTestImplementation "androidx.test:rules:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

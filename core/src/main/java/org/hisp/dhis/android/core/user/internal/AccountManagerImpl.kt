@@ -124,7 +124,7 @@ internal class AccountManagerImpl @Inject constructor(
         val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
         databasesConfigurationStore.set(updatedConfiguration)
 
-        FileResourceDirectoryHelper.deleteFileResourceDirectory(context, loggedAccount)
+        FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
         databaseAdapterFactory.deleteDatabase(loggedAccount)
     }
 

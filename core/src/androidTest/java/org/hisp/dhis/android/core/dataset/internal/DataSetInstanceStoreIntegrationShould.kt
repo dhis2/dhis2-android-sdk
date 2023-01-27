@@ -73,35 +73,48 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
     }
 
     private fun insertDataValuesWithStates(state1: State, state2: State) {
-        val dataElements = d2.dataSetModule().dataSets()
+        val dataset = d2.dataSetModule().dataSets()
+            .byUid().eq("lyLU2wR22tC")
             .withDataSetElements()
             .one()
             .blockingGet()
-            .dataSetElements()!!.map { it.dataElement() }
+
+        val dataElements = dataset.dataSetElements()!!
 
         val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
 
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202208")
 
-        val optionCombo = d2.categoryModule().categoryOptionCombos().one().blockingGet()
+        val categoryOption1 = d2.categoryModule().categoryOptionCombos()
+            .byCategoryComboUid().eq(dataElements[0]?.categoryCombo()?.uid())
+            .one().blockingGet()
+
+        val categoryOption2 = d2.categoryModule().categoryOptionCombos()
+            .byCategoryComboUid().eq(dataElements[1]?.categoryCombo()?.uid())
+            .one().blockingGet()
+
+        val attributeOption = d2.categoryModule().categoryOptionCombos()
+            .byCategoryComboUid().eq(dataset.categoryCombo()?.uid())
+            .one().blockingGet()
 
         val baseBuilder = DataValue.builder()
             .value("")
             .organisationUnit(orgunit.uid())
             .period(period.periodId()!!)
-            .categoryOptionCombo(optionCombo.uid())
-            .attributeOptionCombo(optionCombo.uid())
+            .attributeOptionCombo(attributeOption.uid())
 
         dataValueStore.updateOrInsertWhere(
             baseBuilder
-                .dataElement(dataElements[0].uid())
+                .dataElement(dataElements[0]?.dataElement()?.uid()!!)
+                .categoryOptionCombo(categoryOption1.uid())
                 .syncState(state1)
                 .build()
         )
 
         dataValueStore.updateOrInsertWhere(
             baseBuilder
-                .dataElement(dataElements[1].uid())
+                .dataElement(dataElements[1]?.dataElement()?.uid()!!)
+                .categoryOptionCombo(categoryOption2.uid())
                 .syncState(state2)
                 .build()
         )

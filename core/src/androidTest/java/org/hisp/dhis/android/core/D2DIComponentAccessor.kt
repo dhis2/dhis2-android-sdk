@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core
 
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 
-object D2DIComponentAccessor {
+internal object D2DIComponentAccessor {
     fun getD2DIComponent(d2: D2): D2DIComponent {
         return d2.d2DIComponent
     }

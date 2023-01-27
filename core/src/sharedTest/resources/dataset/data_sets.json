@@ -27,7 +27,7 @@
         "id": "workflowId"
       },
       "categoryCombo": {
-        "id": "m2jTvAj5kkm"
+        "id": "p0KPaWEg3cf"
       },
       "dataSetElements": [
         {
@@ -104,6 +104,21 @@
           "dataElement": {
             "id": "g9eOBujte1U"
           }
+        },
+        {
+          "id": "bx6fsa0t90x",
+          "categoryOptionCombo": {
+            "id": "Gmbgme7z9BF"
+          },
+          "dataElement": {
+            "id": "bx6fsa0t90x"
+          }
+        },
+        {
+          "id": "bx6fsa0t90x",
+          "dataElement": {
+            "id": "bx6fsa0t90x"
+          }
         }
       ],
       "dataInputPeriods": [
@@ -146,6 +161,17 @@
         "id": "m2jTvAj5kkm"
       },
       "dataSetElements": [
+        {
+          "dataSet": {
+            "id": "BfMAe6Itzgt"
+          },
+          "dataElement": {
+            "id": "g9eOBujte1U"
+          },
+          "categoryCombo": {
+            "id": "m2jTvAj5kkm"
+          }
+        }
       ],
       "indicators": [
       ],

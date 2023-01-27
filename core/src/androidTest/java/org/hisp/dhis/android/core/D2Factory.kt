@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 internal object D2Factory {
 
     @JvmStatic
-    fun forNewDatabase(): D2 {
-        return forNewDatabaseInternal(InMemorySecureStore(), InMemoryUnsecureStore())
+    fun forNewDatabase(isRealIntegration: Boolean = false): D2 {
+        return forNewDatabaseInternal(InMemorySecureStore(), InMemoryUnsecureStore(), isRealIntegration)
     }
 
     @JvmStatic
@@ -50,14 +50,19 @@ internal object D2Factory {
     @Throws(D2Error::class)
     fun forNewDatabaseWithAndroidSecureStore(): D2 {
         val context = InstrumentationRegistry.getInstrumentation().context
-        return forNewDatabaseInternal(AndroidSecureStore(context), AndroidInsecureStore(context))
+        return forNewDatabaseInternal(AndroidSecureStore(context), AndroidInsecureStore(context), false)
     }
 
-    private fun forNewDatabaseInternal(secureStore: SecureStore, insecureStore: InsecureStore): D2 {
+    private fun forNewDatabaseInternal(
+        secureStore: SecureStore,
+        insecureStore: InsecureStore,
+        isRealIntegration: Boolean
+    ): D2 {
         val context = InstrumentationRegistry.getInstrumentation().context
         val d2Configuration = d2Configuration(context)
 
-        D2Manager.setTestMode(true)
+        D2Manager.isTestMode = true
+        D2Manager.isRealIntegration = isRealIntegration
         D2Manager.setTestingSecureStore(secureStore)
         D2Manager.setTestingInsecureStore(insecureStore)
 

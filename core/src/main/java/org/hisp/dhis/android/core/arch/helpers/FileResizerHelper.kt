@@ -33,6 +33,7 @@ import android.graphics.BitmapFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -81,7 +82,8 @@ object FileResizerHelper {
     @Suppress("MagicNumber")
     private fun resize(fileToResize: File, bitmap: Bitmap, dstWidth: Int, dstHeight: Int, dimension: Dimension): File {
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false)
-        val resizedFile = File(fileToResize.parent, "resized-${dimension.name}-${fileToResize.name}")
+        val parentFile = getCacheDir() ?: fileToResize.parentFile
+        val resizedFile = File(parentFile.path, "resized-${dimension.name}-${fileToResize.name}")
         try {
             FileOutputStream(resizedFile).use { fileOutputStream ->
                 scaledBitmap.compress(getCompressFormat(resizedFile), 100, fileOutputStream)
@@ -108,6 +110,21 @@ object FileResizerHelper {
             .errorCode(D2ErrorCode.FAIL_RESIZING_IMAGE)
             .errorDescription(e.message)
             .build()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun getCacheDir(): File? {
+        return if (D2Manager.isD2Instantiated()) {
+            D2Manager.getD2().context().let {
+                try {
+                    FileResourceDirectoryHelper.getFileCacheResourceDirectory(it)
+                } catch (e: RuntimeException) {
+                    FileResourceDirectoryHelper.getRootFileCacheResourceDirectory(it)
+                }
+            }
+        } else {
+            null
+        }
     }
 
     @Suppress("MagicNumber")

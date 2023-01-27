@@ -1,0 +1,26 @@
+{
+  "programUid": "IpHINAT79UW",
+  "itemCode": "wBr4wccNBj1",
+  "itemDescription": "MBczRWvfM46",
+  "programType": "logistics",
+  "description": "this is a logistics program, stock management",
+  "stockOnHand": "ypCQAFr1a5l",
+  "transactions": [
+    {
+      "sortOrder": 0,
+      "transactionType": "DISTRIBUTED",
+      "distributedTo": "yfsEseIcEXr",
+      "stockDistributed": "lpGYJoVUudr"
+    },
+    {
+      "sortOrder": 1,
+      "transactionType": "CORRECTED",
+      "stockCorrected": "ej1YwWaYGmm"
+    },
+    {
+      "sortOrder": 2,
+      "transactionType": "DISCARDED",
+      "stockDiscarded": "I7cmT3iXT0y"
+    }
+  ]
+}

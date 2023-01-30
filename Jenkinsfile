@@ -21,7 +21,6 @@ pipeline {
             }
         }
         stage('Instrumented tests') {
-            when { expression { false } }
             environment {
                 BROWSERSTACK = credentials('android-browserstack')
             }
@@ -34,7 +33,6 @@ pipeline {
             }
         }
         stage('JaCoCo report') {
-            when { expression { false } }
             steps {
                 script {
                     echo 'JaCoCo report'
@@ -43,7 +41,6 @@ pipeline {
             }
         }
         stage('Sonarqube') {
-            when { expression { false } }
             environment {
                 GIT_BRANCH = "${env.GIT_BRANCH}"
                 // Jenkinsfile considers empty value ('') as null
@@ -66,7 +63,6 @@ pipeline {
                     expression { env.CHANGE_ID == null }
                     anyOf {
                         expression { env.GIT_BRANCH == "master" }
-                        expression { env.GIT_BRANCH == "1.7.1-rc" }
                     }
                 }
             }

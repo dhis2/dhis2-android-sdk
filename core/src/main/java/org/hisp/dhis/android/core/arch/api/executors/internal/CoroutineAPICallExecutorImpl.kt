@@ -28,29 +28,41 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import dagger.Reusable
+import javax.inject.Inject
+import kotlinx.coroutines.*
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import retrofit2.HttpException
 import retrofit2.Response
-import javax.inject.Inject
 
 @Reusable
 internal class CoroutineAPICallExecutorImpl @Inject constructor(
     private val errorMapper: APIErrorMapper,
     private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher,
-    private val errorStore: ObjectStore<D2Error>
+    private val errorStore: ObjectStore<D2Error>,
+    private val databaseAdapter: DatabaseAdapter,
+    private val foreignKeyCleaner: ForeignKeyCleaner,
 ) : CoroutineAPICallExecutor {
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private val dbDispatcher = newSingleThreadContext("DB")
+
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun <P> wrap(
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
         errorClass: Class<P>?,
         block: suspend () -> P
-    ): Result<P> {
+    ): Result<P, D2Error> {
         return try {
-            Result.success(block.invoke())
+            Result.Success(block.invoke())
         } catch (t: HttpException) {
             val response = t.response()
 
@@ -59,33 +71,57 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
                 val errorBuilder = errorBuilder(response)
 
                 if (userAccountDisabledErrorCatcher.isUserAccountLocked(response, errorBody)) {
-                    Result.failure(
+                    Result.Failure(
                         catchError(userAccountDisabledErrorCatcher, errorBuilder, response, errorBody, storeError)
                     )
                 } else if (errorClass != null && acceptedErrorCodes?.contains(response.code()) == true) {
-                    Result.success(
+                    Result.Success(
                         ObjectMapperFactory.objectMapper().readValue(errorBody, errorClass)
                     )
                 } else if (errorCatcher != null) {
-                    Result.failure(
+                    Result.Failure(
                         catchError(errorCatcher, errorBuilder, response, errorBody, storeError)
                     )
                 } else {
-                    Result.failure(
+                    Result.Failure(
                         storeAndReturn(
                             errorMapper.responseException(errorBuilder, response, null, errorBody), storeError
                         )
                     )
                 }
             } else {
-                Result.failure(
+                Result.Failure(
                     storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError)
                 )
             }
         } catch (d2Error: D2Error) {
-            Result.failure(d2Error)
+            Result.Failure(d2Error)
         } catch (t: Throwable) {
-            Result.failure(storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError))
+            Result.Failure(storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError))
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun <P> wrapTransactionally(
+        cleanForeignKeyErrors: Boolean,
+        block: suspend () -> P
+    ): P {
+        return withContext(dbDispatcher) {
+            val transaction = databaseAdapter.beginNewTransaction()
+            try {
+                val result = coroutineScope {
+                    block.invoke()
+                }
+                successfulTransaction(transaction, cleanForeignKeyErrors)
+                return@withContext result
+            } catch (t: Throwable) {
+                throw when (t) {
+                    is D2Error -> t
+                    else -> errorMapper.mapRetrofitException(t, baseErrorBuilder())
+                }
+            } finally {
+                transaction.end()
+            }
         }
     }
 
@@ -121,5 +157,12 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
 
     private fun baseErrorBuilder(): D2Error.Builder {
         return errorMapper.getBaseErrorBuilder()
+    }
+
+    private fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {
+        if (cleanForeignKeys) {
+            foreignKeyCleaner.cleanForeignKeyErrors()
+        }
+        t.setSuccessful()
     }
 }

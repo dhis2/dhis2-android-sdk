@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+
 internal interface CoroutineAPICallExecutor {
     suspend fun <P> wrap(
         storeError: Boolean = true,
@@ -34,5 +37,10 @@ internal interface CoroutineAPICallExecutor {
         errorCatcher: APICallErrorCatcher? = null,
         errorClass: Class<P>? = null,
         block: suspend () -> P
-    ): Result<P>
+    ): Result<P, D2Error>
+
+    suspend fun <P> wrapTransactionally(
+        cleanForeignKeyErrors: Boolean = true,
+        block: suspend () -> P
+    ): P
 }

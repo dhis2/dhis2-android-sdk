@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.datastore.internal
 import com.fasterxml.jackson.databind.JsonNode
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
@@ -41,9 +43,9 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
-import javax.inject.Inject
 
 @Reusable
+@Suppress("MagicNumber")
 internal class DataStoreEntryPostCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreEntryService,
@@ -89,45 +91,35 @@ internal class DataStoreEntryPostCall @Inject constructor(
 
         result.fold(
             onSuccess = { r -> dataStoreEntryImportHandler.handleDelete(entry, r) },
-            onFailure = { t ->
-                when (t) {
-                    is D2Error -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t)))
-                    else -> throw t
-                }
-            }
+            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) }
         )
     }
 
     private suspend fun createOrUpdate(entry: DataStoreEntry) {
         val result = when (entry.syncState()) {
             State.TO_POST ->
-                tryCreate(entry).map { r ->
+                tryCreate(entry).flatMap { r ->
                     when (r.httpStatusCode()) {
-                        409 -> tryUpdate(entry).getOrThrow()
-                        else -> r
+                        409 -> tryUpdate(entry)
+                        else -> Result.Success(r)
                     }
                 }
             else ->
-                tryUpdate(entry).map { r ->
+                tryUpdate(entry).flatMap { r ->
                     when (r.httpStatusCode()) {
-                        404 -> tryCreate(entry).getOrThrow()
-                        else -> r
+                        404 -> tryCreate(entry)
+                        else -> Result.Success(r)
                     }
                 }
         }
 
         result.fold(
             onSuccess = { r -> dataStoreEntryImportHandler.handleUpdateOrCreate(entry, r) },
-            onFailure = { t ->
-                when (t) {
-                    is D2Error -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t)))
-                    else -> throw t
-                }
-            }
+            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) }
         )
     }
 
-    private suspend fun tryCreate(entry: DataStoreEntry): Result<HttpMessageResponse> {
+    private suspend fun tryCreate(entry: DataStoreEntry): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
@@ -137,7 +129,7 @@ internal class DataStoreEntryPostCall @Inject constructor(
         }
     }
 
-    private suspend fun tryUpdate(entry: DataStoreEntry): Result<HttpMessageResponse> {
+    private suspend fun tryUpdate(entry: DataStoreEntry): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(404),

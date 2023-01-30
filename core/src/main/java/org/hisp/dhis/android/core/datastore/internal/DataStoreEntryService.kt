@@ -27,32 +27,31 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import retrofit2.http.*
 
 internal interface DataStoreEntryService {
     @GET(DATA_STORE)
-    fun getNamespaces(): Single<List<String>>
+    suspend fun getNamespaces(): List<String>
 
     @GET("$DATA_STORE/{$NAMESPACE}")
-    fun getNamespaceKeys(
+    suspend fun getNamespaceKeys(
         @Path(NAMESPACE) namespace: String
-    ): Single<List<String>>
+    ): List<String>
 
     @GET("$DATA_STORE/{$NAMESPACE}")
-    fun getNamespaceValues38(
+    suspend fun getNamespaceValues38(
         @Path(NAMESPACE) namespace: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
         @Query("fields") fields: String = "."
-    ): Single<DataStorePagedEntry>
+    ): DataStorePagedEntry
 
     @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
-    fun getNamespaceKeyValue(
+    suspend fun getNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
         @Path(KEY) key: String
-    ): Single<Any>
+    ): Any
 
     @POST("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun postNamespaceKeyValue(

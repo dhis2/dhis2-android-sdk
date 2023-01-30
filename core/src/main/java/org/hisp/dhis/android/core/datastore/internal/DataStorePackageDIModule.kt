@@ -32,10 +32,12 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.datastore.DataStoreModule
 
-@Module(includes = [
-    DataStoreEntryEntityDIModule::class,
-    LocalDataStoreEntityDIModule::class
-])
+@Module(
+    includes = [
+        DataStoreEntryEntityDIModule::class,
+        LocalDataStoreEntityDIModule::class
+    ]
+)
 class DataStorePackageDIModule {
     @Provides
     @Reusable

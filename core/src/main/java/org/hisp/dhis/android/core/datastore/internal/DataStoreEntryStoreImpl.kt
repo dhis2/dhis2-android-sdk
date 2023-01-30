@@ -57,7 +57,8 @@ internal class DataStoreEntryStoreImpl(
     whereUpdateBinder,
     whereDeleteBinder,
     objectFactory
-), DataStoreEntryStore {
+),
+    DataStoreEntryStore {
 
     override fun setState(entry: DataStoreEntry, state: State) {
         val updates = ContentValues()
@@ -91,12 +92,12 @@ internal class DataStoreEntryStoreImpl(
             w.bind(5, o.deleted())
         }
 
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: DataStoreEntry, w: StatementWrapper ->
             w.bind(6, o.namespace())
             w.bind(7, o.key())
         }
 
-        private val WHERE_DELETE_BINDER = WhereStatementBinder<DataStoreEntry> { o: DataStoreEntry, w: StatementWrapper ->
+        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: DataStoreEntry, w: StatementWrapper ->
             w.bind(1, o.namespace())
             w.bind(2, o.key())
         }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -44,7 +45,6 @@ import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryPostCall
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
-import javax.inject.Inject
 
 @Reusable
 class DataStoreEntryCollectionRepository @Inject internal constructor(
@@ -57,10 +57,13 @@ class DataStoreEntryCollectionRepository @Inject internal constructor(
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s -> DataStoreEntryCollectionRepository(store, call, childrenAppenders, s) }
-), ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
+),
+    ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
     override fun upload(): Observable<D2Progress> {
         return Observable
-            .fromCallable { bySyncState().`in`(*State.uploadableStatesIncludingError()).blockingGetWithoutChildren() }
+            .fromCallable {
+                bySyncState().`in`(State.uploadableStatesIncludingError().toList()).blockingGetWithoutChildren()
+            }
             .flatMap { call.uploadDataStoreEntries(it) }
     }
 

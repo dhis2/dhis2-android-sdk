@@ -30,19 +30,19 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadCall
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadParams
-import javax.inject.Inject
 
 @Reusable
 class DataStoreDownloader @Inject internal constructor(
     private val call: DataStoreEntryDownloadCall,
     private val params: DataStoreEntryDownloadParams
-): BaseRepository {
+) : BaseRepository {
     private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreEntryDownloadParams> =
         ScopedFilterConnectorFactory { params ->
             DataStoreDownloader(call, params)

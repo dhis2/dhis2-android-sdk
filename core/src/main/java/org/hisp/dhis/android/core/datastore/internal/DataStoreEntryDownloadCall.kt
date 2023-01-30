@@ -30,37 +30,49 @@ package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import javax.inject.Inject
+import kotlinx.coroutines.rx2.rxObservable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
 
 @Reusable
 internal class DataStoreEntryDownloadCall @Inject constructor(
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreEntryService,
     private val dataStoreEntryHandler: LinkHandler<DataStoreEntry, DataStoreEntry>,
     private val versionManager: DHISVersionManager
 ) {
     fun download(params: DataStoreEntryDownloadParams): Observable<D2Progress> {
-        return rxCallExecutor.wrapObservableTransactionally(
-            rxCallExecutor.wrapSingle(dataStoreEntryService.getNamespaces(), storeError = false)
-                .map { filterNamespaces(params, it) }
-                .flatMapObservable { namespaces ->
-                    val progressManager = D2ProgressManager(namespaces.size)
-                    Observable.fromIterable(namespaces)
-                        .flatMapSingle { downloadNamespace(it) }
-                        .map { progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false) }
-                },
-            cleanForeignKeys = false
-        )
+        return rxObservable {
+            return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
+                cleanForeignKeyErrors = true
+            ) {
+                coroutineAPICallExecutor.wrap(storeError = false) {
+                    dataStoreEntryService.getNamespaces()
+                }
+                    .map { filterNamespaces(params, it) }
+                    .fold(
+                        onSuccess = { namespaces ->
+                            val progressManager = D2ProgressManager(namespaces.size)
+                            namespaces.forEach { namespace ->
+                                downloadNamespace(namespace)
+                                send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
+                            }
+                            send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
+                        },
+                        onFailure = { t -> throw t }
+                    )
+            }
+        }
     }
 
     private fun filterNamespaces(params: DataStoreEntryDownloadParams, namespaces: List<String>): List<String> {
@@ -71,13 +83,14 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
         }
     }
 
-    private fun downloadNamespace(namespace: String): Single<Unit> {
+    private suspend fun downloadNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return fetchNamespace(namespace).map { list ->
             dataStoreEntryHandler.handleMany(namespace, list) { t -> t }
+            list
         }
     }
 
-    private fun fetchNamespace(namespace: String): Single<List<DataStoreEntry>> {
+    private suspend fun fetchNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             fetchNamespace38(namespace)
         } else {
@@ -85,49 +98,63 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
         }
     }
 
-    private fun fetchNamespace38(namespace: String): Single<List<DataStoreEntry>> {
-        var page = 1
-        return rxCallExecutor.wrapSingle(Single.defer {
-            dataStoreEntryService.getNamespaceValues38(namespace, page, PAGE_SIZE)
-        }, storeError = false)
-            .map { pagedEntry ->
-                pagedEntry.entries.map { keyValuePair ->
-                    val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(keyValuePair.value)
-                    DataStoreEntry.builder()
-                        .namespace(namespace)
-                        .key(keyValuePair.key)
-                        .value(strValue)
-                        .syncState(State.SYNCED)
-                        .deleted(false)
-                        .build()
-                }
+    private suspend fun fetchNamespace38(namespace: String): Result<List<DataStoreEntry>, D2Error> {
+        var pag = 1
+        var entries: Result<List<DataStoreEntry>, D2Error> = Result.Success(emptyList())
+        var lastPage: List<DataStoreEntry> = emptyList()
+
+        do {
+            val result = coroutineAPICallExecutor.wrap(storeError = false) {
+                dataStoreEntryService.getNamespaceValues38(namespace, pag, PAGE_SIZE)
             }
-            .doOnSuccess { page++ }
-            .repeat()
-            .takeUntil { entries -> entries.size < PAGE_SIZE }
-            .toList()
-            .map { list -> list.flatten() }
+            result.fold(
+                onSuccess = { pagedEntry ->
+                    val pageEntries = pagedEntry.entries.map { keyValuePair ->
+                        val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(keyValuePair.value)
+                        DataStoreEntry.builder()
+                            .namespace(namespace)
+                            .key(keyValuePair.key)
+                            .value(strValue)
+                            .syncState(State.SYNCED)
+                            .deleted(false)
+                            .build()
+                    }
+
+                    entries = Result.Success((entries.getOrNull() ?: emptyList()) + pageEntries)
+                    lastPage = pageEntries
+                    pag++
+                },
+                onFailure = { t ->
+                    entries = Result.Failure(t)
+                }
+            )
+        } while (lastPage.size >= PAGE_SIZE && result.succeeded)
+
+        return entries
     }
 
-    private fun fetchNamespace37(namespace: String): Single<List<DataStoreEntry>> {
-        return rxCallExecutor.wrapSingle(dataStoreEntryService.getNamespaceKeys(namespace), storeError = false)
-            .flatMap { keys ->
-                Observable.fromIterable(keys)
-                    .flatMapSingle { key ->
-                        rxCallExecutor.wrapSingle(dataStoreEntryService.getNamespaceKeyValue(namespace, key), false)
-                            .map { value ->
-                                val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
-                                DataStoreEntry.builder()
-                                    .namespace(namespace)
-                                    .key(key)
-                                    .value(strValue)
-                                    .syncState(State.SYNCED)
-                                    .deleted(false)
-                                    .build()
-                            }
-                    }
-                    .toList()
+    private suspend fun fetchNamespace37(namespace: String): Result<List<DataStoreEntry>, D2Error> {
+        val result = coroutineAPICallExecutor.wrap(storeError = false) {
+            dataStoreEntryService.getNamespaceKeys(namespace)
+        }
+
+        return result.map { keys ->
+            keys.map { key ->
+                val keyResult = coroutineAPICallExecutor.wrap(storeError = false) {
+                    dataStoreEntryService.getNamespaceKeyValue(namespace, key)
+                }
+
+                val value = keyResult.getOrThrow()
+                val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
+                DataStoreEntry.builder()
+                    .namespace(namespace)
+                    .key(key)
+                    .value(strValue)
+                    .syncState(State.SYNCED)
+                    .deleted(false)
+                    .build()
             }
+        }
     }
 
     companion object {

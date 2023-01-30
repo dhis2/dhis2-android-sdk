@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
-import javax.inject.Inject
 
 @Reusable
 class DataStoreEntryObjectRepository @Inject internal constructor(
@@ -53,7 +53,8 @@ class DataStoreEntryObjectRepository @Inject internal constructor(
     ObjectRepositoryFactory { s ->
         DataStoreEntryObjectRepository(store, childrenAppenders, s, namespace, key)
     }
-), ReadWriteValueObjectRepository<DataStoreEntry> {
+),
+    ReadWriteValueObjectRepository<DataStoreEntry> {
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }
     }
@@ -81,7 +82,6 @@ class DataStoreEntryObjectRepository @Inject internal constructor(
             val entry = blockingGetWithoutChildren()
             entry.toBuilder()
                 .syncState(if (entry.syncState() == State.TO_POST) State.TO_POST else State.TO_UPDATE)
-
         } else {
             DataStoreEntry.builder()
                 .namespace(namespace)

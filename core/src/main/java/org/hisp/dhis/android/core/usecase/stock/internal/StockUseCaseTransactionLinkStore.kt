@@ -47,7 +47,7 @@ internal object StockUseCaseTransactionLinkStore {
             w.bind(4, o.distributedTo())
             w.bind(5, o.stockDistributed())
             w.bind(6, o.stockDiscarded())
-            w.bind(7, o.stockCorrected())
+            w.bind(7, o.stockCount())
         }
 
     val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(

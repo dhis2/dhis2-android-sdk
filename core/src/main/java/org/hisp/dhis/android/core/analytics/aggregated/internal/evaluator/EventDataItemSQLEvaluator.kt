@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns as tavColumns
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
@@ -50,9 +51,10 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getSql(evaluationItem, metadata)
+        val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -63,19 +65,20 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     @Suppress("LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
         val eventDataItem = getEventDataItems(evaluationItem)[0]
-        val aggregator = getAggregator(evaluationItem, eventDataItem, metadata)
+        val aggregator = getAggregator(evaluationItem, eventDataItem, metadata, queryMods)
         val (valueColumn, fromClause) = getEventDataItemSQLItems(eventDataItem)
 
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, this)
-                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator, queryMods)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
@@ -224,9 +227,10 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
-        aggregation: AggregationType
+        aggregation: AggregationType,
+        queryMods: QueryMods?,
     ): WhereClauseBuilder {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
 
         return if (reportingPeriods.isEmpty()) {
             builder
@@ -284,9 +288,12 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         item: DimensionItem.DataItem.EventDataItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): AggregationType {
-        return if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+        return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+            queryMods.aggregationType!!
+        } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
             evaluationItem.aggregationType
         } else {
             val aggregationType = when (val metadataItem = metadata[item.id]) {

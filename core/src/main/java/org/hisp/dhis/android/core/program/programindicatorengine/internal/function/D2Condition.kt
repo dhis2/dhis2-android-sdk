@@ -41,7 +41,7 @@ internal class D2Condition : ExpressionItem {
         val valueIfTrue = visitor.castStringVisit(ctx.expr(0))
         val valueIfFalse = visitor.castStringVisit(ctx.expr(1))
 
-        val testResult = visitor.programIndicatorExecutor.getProgramIndicatorExpressionValue(testExpression)
+        val testResult = visitor.programIndicatorExecutor!!.getProgramIndicatorExpressionValue(testExpression)
 
         return if ("true" == testResult) {
             valueIfTrue

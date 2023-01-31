@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
@@ -51,18 +52,19 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
 
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
-        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+        val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
 
         val values: List<String?> = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
+                evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata, queryMods)
             AnalyticsType.ENROLLMENT, null ->
-                evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
+                evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata, queryMods)
         }
 
         return aggregateValues(aggregationType, values)
@@ -70,7 +72,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
@@ -78,9 +81,10 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     private fun evaluateEventProgramIndicator(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): List<String?> {
-        return getFilteredEventUids(programIndicator, evaluationItem, metadata).map {
+        return getFilteredEventUids(programIndicator, evaluationItem, metadata, queryMods).map {
             programIndicatorEngine.getEventProgramIndicatorValue(it, programIndicator.uid())
         }
     }
@@ -88,10 +92,11 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     private fun getFilteredEventUids(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): List<String> {
         val whereClause = ProgramIndicatorEvaluatorHelper
-            .getEventWhereClause(programIndicator, evaluationItem, metadata)
+            .getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
 
         val rawClause = "SELECT * FROM ${EventTableInfo.TABLE_INFO.name()} $event WHERE $whereClause"
         return eventStore.selectRawQuery(rawClause).map { it.uid() }
@@ -100,9 +105,10 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     private fun evaluateEnrollmentProgramIndicator(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?
     ): List<String?> {
-        return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata).map {
+        return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata, queryMods).map {
             programIndicatorEngine.getEnrollmentProgramIndicatorValue(it, programIndicator.uid())
         }
     }
@@ -110,10 +116,16 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     private fun getFilteredEnrollmentUids(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): List<String> {
         val whereClause =
-            ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
+            ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
+                programIndicator,
+                evaluationItem,
+                metadata,
+                queryMods
+            )
 
         val rawClause = "SELECT * FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollment WHERE $whereClause"
         return enrollmentStore.selectRawQuery(rawClause).map { it.uid() }

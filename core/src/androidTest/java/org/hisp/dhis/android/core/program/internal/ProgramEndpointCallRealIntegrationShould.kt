@@ -52,7 +52,7 @@ class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun download_programs() {
-        if (!d2.userModule().isLogged.blockingGet()) {
+        if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(username, password, url).blockingGet()
         }
 

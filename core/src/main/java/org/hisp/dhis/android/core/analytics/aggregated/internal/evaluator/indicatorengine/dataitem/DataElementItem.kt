@@ -50,6 +50,6 @@ internal class DataElementItem : IndicatorDataItem {
     }
 
     override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.dataElementEvaluator
+        return visitor.indicatorContext!!.dataElementEvaluator
     }
 }

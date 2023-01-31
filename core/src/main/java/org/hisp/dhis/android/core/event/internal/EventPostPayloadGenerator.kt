@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 
@@ -48,7 +49,7 @@ internal class EventPostPayloadGenerator @Inject internal constructor(
             val eventBuilder = event.toBuilder()
                 .trackedEntityDataValues(dataValueMap[event.uid()])
                 .notes(notes.filter { it.event() == event.uid() })
-            if (versionManager.is2_30) {
+            if (versionManager.getVersion() == DHISVersion.V2_30) {
                 eventBuilder.geometry(null)
             }
             eventBuilder.build()

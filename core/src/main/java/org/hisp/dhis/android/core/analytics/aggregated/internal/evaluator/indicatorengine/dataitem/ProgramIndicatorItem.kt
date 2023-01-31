@@ -45,6 +45,6 @@ internal class ProgramIndicatorItem : IndicatorDataItem {
     }
 
     override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.programIndicatorEvaluator
+        return visitor.indicatorContext!!.programIndicatorEvaluator
     }
 }

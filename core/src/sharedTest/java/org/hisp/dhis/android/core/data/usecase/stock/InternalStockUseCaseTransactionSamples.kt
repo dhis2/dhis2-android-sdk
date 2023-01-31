@@ -39,7 +39,7 @@ internal object InternalStockUseCaseTransactionSamples {
             .distributedTo("distributed_to")
             .stockDistributed("stock_distributed")
             .stockDiscarded("stock_discarded")
-            .stockCorrected("stock_corrected")
+            .stockCount("stock_count")
             .build()
     }
 }

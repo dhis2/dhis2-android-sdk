@@ -44,16 +44,16 @@ class StockUseCaseCollectionRepository @Inject internal constructor(
     scope: RepositoryScope,
     transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
-    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
-        StockUseCaseCollectionRepository>(
-        store,
-        childrenAppenders,
-        scope,
-        FilterConnectorFactory(scope) { s: RepositoryScope ->
-            StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
-        },
-        transformer
-    ) {
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
+    StockUseCaseCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
+    },
+    transformer
+) {
     private val cf: FilterConnectorFactory<StockUseCaseCollectionRepository> =
         FilterConnectorFactory(scope) { s: RepositoryScope ->
             StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)

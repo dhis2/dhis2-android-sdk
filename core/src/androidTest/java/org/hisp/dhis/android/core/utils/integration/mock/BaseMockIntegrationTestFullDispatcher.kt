@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
+import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -56,6 +58,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                 downloadTrackedEntityInstances()
                 downloadEvents()
                 downloadAggregatedData()
+                downloadFileResources()
                 storeSomeD2Errors()
                 storeSomeConflicts()
                 storeSomeKeyValuesInLocalDataStore()
@@ -94,6 +97,10 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
             d2.aggregatedModule().data().blockingDownload()
         }
 
+        private fun downloadFileResources() {
+            d2.fileResourceModule().fileResourceDownloader().blockingDownload()
+        }
+
         private fun storeSomeD2Errors() {
             val d2ErrorStore = D2ErrorStore.create(databaseAdapter)
             d2ErrorStore.insert(D2ErrorSamples.get())
@@ -127,6 +134,28 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .tableReference("table_reference_2")
                     .errorCode("error_code_2")
                     .status(ImportStatus.ERROR)
+                    .build()
+            )
+
+            val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
+
+            dataValueConflictStore.insert(DataValueConflictSamples.get())
+            dataValueConflictStore.insert(
+                DataValueConflictSamples.get().toBuilder()
+                    .value("5")
+                    .conflict("conflict")
+                    .dataElement("bx6fsa0t90x")
+                    .categoryOptionCombo("bRowv6yZOF2")
+                    .status(ImportStatus.WARNING)
+                    .build()
+            )
+            dataValueConflictStore.insert(
+                DataValueConflictSamples.get().toBuilder()
+                    .attributeOptionCombo("DwrQJzeChWp")
+                    .categoryOptionCombo("Gmbgme7z9BF")
+                    .period("202201")
+                    .orgUnit("YuQRtpLP10I")
+                    .displayDescription("display_description_other")
                     .build()
             )
         }

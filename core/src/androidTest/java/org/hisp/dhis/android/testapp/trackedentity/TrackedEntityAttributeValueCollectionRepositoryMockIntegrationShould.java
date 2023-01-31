@@ -98,7 +98,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
                         .blockingGet();
-        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(2);
     }
 
     @Test

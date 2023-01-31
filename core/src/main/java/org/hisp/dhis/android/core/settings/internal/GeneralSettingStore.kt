@@ -52,11 +52,11 @@ internal object GeneralSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {
-        _: GeneralSettings, _: StatementWrapper ->
+            _: GeneralSettings, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder<GeneralSettings> {
-        _: GeneralSettings, _: StatementWrapper ->
+            _: GeneralSettings, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {

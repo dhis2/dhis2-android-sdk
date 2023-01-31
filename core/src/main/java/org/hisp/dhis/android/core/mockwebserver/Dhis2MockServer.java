@@ -92,11 +92,13 @@ public class Dhis2MockServer {
     private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
-    private static final String USER_JSON = "user/user.json";
+    private static final String USER_JSON = "user/user38.json";
     private static final String EVENTS_JSON = "event/events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
+    private static final String TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png";
+    private static final String FILE_RESOURCE = "trackedentity/tracked_entity_attribute_value_image_resource.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
@@ -270,10 +272,14 @@ public class Dhis2MockServer {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
                     return createMockResponse(SMS_METADATA);
+                } else if (path.startsWith("/api/fileResources")) {
+                    return createMockResponse(FILE_RESOURCE);
+                } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
+                    return createMockResponse(TRACKED_ENTITY_IMAGE);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)
-                            .setBody("Path not present in Dhis2MockServer dispatcher");
+                            .setBody("Path not present in Dhis2MockServer dispatcher: " + path);
                 }
             }
         };
@@ -303,6 +309,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
+        enqueueMockResponse(STOCK_USE_CASES_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -48,7 +49,7 @@ public abstract class DatabasesConfiguration {
     public abstract long versionCode();
 
     @JsonProperty()
-    @NonNull
+    @Nullable
     public abstract Integer maxAccounts();
 
     @JsonProperty()

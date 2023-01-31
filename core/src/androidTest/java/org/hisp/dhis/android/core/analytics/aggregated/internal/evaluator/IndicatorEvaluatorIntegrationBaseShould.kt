@@ -40,9 +40,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201910
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019SunW25
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -174,6 +177,117 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
 
         val overrideValue = evaluateForAbsolute(indicator, period2019Q4.periodId()!!, AggregationType.AVERAGE)
         assertThat(overrideValue).isEqualTo("2.5")
+    }
+
+    @Test
+    fun should_evaluate_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val indicator = createIndicator(numerator = "(${de(dataElement1.uid())}.periodOffset(-2)).periodOffset(+1)")
+
+        val value = evaluateForAbsolute(indicator, periodId = period201912.periodId()!!)
+        assertThat(value).isEqualTo("2.0")
+    }
+
+    @Test
+    fun should_evaluate_relative_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("20", dataElementUid = dataElement2.uid(), periodId = period201911.periodId()!!)
+        createDataValue("30", dataElementUid = dataElement2.uid(), periodId = period201912.periodId()!!)
+
+        val expression = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}.periodOffset(-1)"
+        val indicator = createIndicator(numerator = expression)
+
+        val value = evaluateForThisMonth(indicator)
+        assertThat(value).isEqualTo("23.0")
+    }
+
+    @Test
+    fun should_evaluate_aggregation_type_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val sumIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(SUM)")
+        val sumResult = evaluateForAbsolute(sumIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(sumResult).isEqualTo("5.0")
+
+        val avgIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(AVERAGE)")
+        val avgResult = evaluateForAbsolute(avgIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(avgResult).isEqualTo("2.5")
+    }
+
+    @Test
+    fun should_evaluate_min_date_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
+        createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        mapOf(
+            "${de(dataElement1.uid())}.minDate(2019-10-05)" to "12.0",
+            "${de(dataElement1.uid())}.maxDate(2019-12-01)" to "6.0",
+            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0",
+        ).forEach { (numerator, expected) ->
+            val indicator = createIndicator(numerator = numerator)
+            val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_yearly_period_count_item() {
+        val indicator = createIndicator(numerator = "[yearlyPeriodCount]")
+
+        mapOf(
+            period201910 to "12.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "52.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_period_in_year() {
+        val indicator = createIndicator(numerator = "[periodInYear]")
+
+        mapOf(
+            period201910 to "10.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "25.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_year_to_date() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
+        createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("16", dataElementUid = dataElement1.uid(), periodId = period202001.periodId()!!)
+
+        val indicator = createIndicator(numerator = "${de(dataElement1.uid())}.yearToDate()")
+
+        mapOf(
+            period201910 to "2.0",
+            period201911 to "6.0",
+            period201912 to "14.0",
+            period202001 to "16.0",
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_null_literal() {
+        val indicator = createIndicator(numerator = "firstNonNull(null, 4, 2)")
+        val result = evaluateForThisMonth(indicator)
+        assertThat(result).isEqualTo("4.0")
     }
 
     private fun evaluateForThisMonth(

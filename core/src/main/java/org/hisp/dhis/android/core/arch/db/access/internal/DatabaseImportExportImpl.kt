@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
-import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
+import org.hisp.dhis.android.core.user.internal.UserStore
 
 @Reusable
 internal class DatabaseImportExportImpl @Inject constructor(
@@ -88,8 +88,8 @@ internal class DatabaseImportExportImpl @Inject constructor(
                     .build()
             }
 
-            val userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-            val username = userCredentialsStore.selectFirst()!!.username()
+            val userStore = UserStore.create(databaseAdapter)
+            val username = userStore.selectFirst()!!.username()
 
             val systemInfoStore = SystemInfoStore.create(databaseAdapter)
             val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!

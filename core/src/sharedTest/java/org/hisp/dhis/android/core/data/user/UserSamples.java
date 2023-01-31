@@ -46,6 +46,7 @@ public class UserSamples {
                 .firstName("John")
                 .surname("Barnes")
                 .email("john@hmail.com")
+                .username("android")
                 .build();
     }
 }

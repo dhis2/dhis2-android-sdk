@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.junit.Before
 import org.junit.Test
@@ -54,7 +55,6 @@ class DataSetIndicatorEvaluatorShould {
     private val diObject1: DimensionalItemObject = mock()
     private val diObject2: DimensionalItemObject = mock()
 
-    private lateinit var valueMap: Map<DimensionalItemObject, Double>
     private lateinit var orgunitGroupMap: Map<String, Int>
 
     private lateinit var expressionService: ExpressionService
@@ -78,36 +78,40 @@ class DataSetIndicatorEvaluatorShould {
 
     @Test
     fun evaluate_indicator_factor() {
-        valueMap = mapOf(
-            diObject1 to 5.0,
-            diObject2 to 10.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 5.0,
+                diObject2 to 10.0
+            )
         )
 
         whenever(indicatorType.factor()) doReturn 1
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(0.5)
 
         whenever(indicatorType.factor()) doReturn 100
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(50)
 
         whenever(indicatorType.factor()) doReturn -10
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(-5)
     }
 
     @Test
     fun evaluate_indicator_decimals_default() {
-        valueMap = mapOf(
-            diObject1 to 10.0,
-            diObject2 to 3.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0,
+                diObject2 to 3.0
+            )
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(3.33)
     }
 
@@ -115,47 +119,59 @@ class DataSetIndicatorEvaluatorShould {
     fun evaluate_indicator_decimals_configurable() {
         whenever(indicator.decimals()) doReturn 3
 
-        valueMap = mapOf(
-            diObject1 to 10.0,
-            diObject2 to 3.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0,
+                diObject2 to 3.0
+            )
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(3.333)
     }
 
     @Test
     fun evaluate_null_numerator() {
-        valueMap = mapOf(
-            diObject2 to 10.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject2 to 10.0
+            )
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(0.0)
     }
 
     @Test
     fun evaluate_null_denominator() {
-        valueMap = mapOf(
-            diObject1 to 10.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0
+            )
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(0.0)
     }
 
     @Test
     fun evaluate_zero_denominator() {
-        valueMap = mapOf(
-            diObject1 to 10.0,
-            diObject2 to 0.0
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0,
+                diObject2 to 0.0
+            )
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+            evaluator.evaluate(indicator, indicatorType, context)
         ).isEqualTo(0.0)
+    }
+
+    private fun getContextForValueMap(valueMap: Map<DimensionalItemObject, Double>): ExpressionServiceContext {
+        return ExpressionServiceContext(valueMap, constantMap, orgunitGroupMap, days)
     }
 }

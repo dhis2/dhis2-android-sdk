@@ -46,7 +46,7 @@ internal class OpenIDConnectTokenRefresher @Inject constructor(
         val service = AuthorizationService(context)
         return Single.create<String> {
             authState.performActionWithFreshTokens(service) {
-                _: String?, idToken: String?, ex: AuthorizationException? ->
+                    _: String?, idToken: String?, ex: AuthorizationException? ->
                 service.dispose()
                 if (idToken != null) {
                     it.onSuccess(idToken)

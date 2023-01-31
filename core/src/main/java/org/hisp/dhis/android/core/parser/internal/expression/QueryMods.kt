@@ -28,8 +28,13 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.common.AggregationType
 
-internal class QueryMods {
-    var aggregationType: AggregationType? = null
-}
+internal data class QueryMods(
+    var aggregationType: AggregationType? = null,
+    var minDate: LocalDate? = null,
+    var maxDate: LocalDate? = null,
+    var periodOffset: Int? = null,
+    var yearToDate: Boolean = false,
+)

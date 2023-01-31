@@ -36,6 +36,14 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indica
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramDataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.function.*
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionAggregationType
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMaxDate
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMinDate
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionYearToDate
+import org.hisp.dhis.android.core.parser.internal.expression.function.PeriodOffset
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemPeriodInYear
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemYearlyPeriodCount
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
@@ -103,7 +111,16 @@ internal object IndicatorParserUtils {
             ExpressionParser.HASH_BRACE to DataElementItem(),
             ExpressionParser.I_BRACE to ProgramIndicatorItem(),
             ExpressionParser.D_BRACE to ProgramDataElementItem(),
-            ExpressionParser.A_BRACE to ProgramAttributeItem()
+            ExpressionParser.A_BRACE to ProgramAttributeItem(),
+            ExpressionParser.PERIOD_IN_YEAR to ItemPeriodInYear(),
+            ExpressionParser.YEARLY_PERIOD_COUNT to ItemYearlyPeriodCount(),
+
+            // Query modifiers
+            ExpressionParser.AGGREGATION_TYPE to FunctionAggregationType(),
+            ExpressionParser.MIN_DATE to FunctionMinDate(),
+            ExpressionParser.MAX_DATE to FunctionMaxDate(),
+            ExpressionParser.PERIOD_OFFSET to PeriodOffset(),
+            ExpressionParser.YEAR_TO_DATE to FunctionYearToDate(),
         )
 
     fun getDays(

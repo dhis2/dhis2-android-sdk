@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.21'
     repositories {
         google()
         mavenLocal()
@@ -8,9 +8,9 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:11.0.0"
         classpath "org.jacoco:org.jacoco.core:0.8.8"
     }
 }
@@ -60,7 +60,7 @@ subprojects { project ->
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     ktlint {
-        version = "0.37.2"
+        version = "0.45.2"
         android = true
         outputColorName = "RED"
         reporters {

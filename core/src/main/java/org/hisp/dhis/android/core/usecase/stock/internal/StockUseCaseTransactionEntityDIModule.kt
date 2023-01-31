@@ -48,6 +48,6 @@ internal class StockUseCaseTransactionEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<InternalStockUseCaseTransaction>):
         LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

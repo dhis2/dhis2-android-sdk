@@ -80,9 +80,9 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
         val configuration = databaseConfigurationSecureStore.get()
 
-        configuration?.let {
+        configuration?.maxAccounts()?.let { maxAccounts ->
             val exceedingAccounts = DatabaseConfigurationHelper
-                .getOldestAccounts(configuration.accounts(), configuration.maxAccounts() - 1)
+                .getOldestAccounts(configuration.accounts(), maxAccounts - 1)
 
             val updatedConfiguration =
                 DatabaseConfigurationHelper.removeAccount(configuration, exceedingAccounts)
@@ -116,8 +116,8 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         )
     }
 
-    fun setMaxAccounts(maxAccounts: Int) {
-        if (maxAccounts <= 0) {
+    fun setMaxAccounts(maxAccounts: Int?) {
+        if (maxAccounts != null && maxAccounts <= 0) {
             throw IllegalArgumentException("MaxAccounts must be greater than 0")
         } else {
             val configuration = databaseConfigurationSecureStore.get()

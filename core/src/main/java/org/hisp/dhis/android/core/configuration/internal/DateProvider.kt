@@ -28,5 +28,5 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 internal interface DateProvider {
-    val dateStr: String?
+    val dateStr: String
 }

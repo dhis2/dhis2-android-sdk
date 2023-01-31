@@ -58,6 +58,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
     private val programStageStore: IdentifiableObjectStore<ProgramStage>
 ) : ProgramIndicatorEngine {
 
+    @Deprecated("Deprecated in Java")
     override fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,

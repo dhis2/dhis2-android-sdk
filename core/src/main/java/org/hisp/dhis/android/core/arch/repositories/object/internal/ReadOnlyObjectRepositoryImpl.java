@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
@@ -42,6 +43,7 @@ public abstract class ReadOnlyObjectRepositoryImpl<M, R extends ReadOnlyObjectRe
     protected final Map<String, ChildrenAppender<M>> childrenAppenders;
     protected final RepositoryScope scope;
     protected final ObjectRepositoryFactory<R> repositoryFactory;
+    protected final FilterConnectorFactory<R> cf;
 
     ReadOnlyObjectRepositoryImpl(Map<String, ChildrenAppender<M>> childrenAppenders,
                                  RepositoryScope scope,
@@ -49,6 +51,7 @@ public abstract class ReadOnlyObjectRepositoryImpl<M, R extends ReadOnlyObjectRe
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.repositoryFactory = repositoryFactory;
+        this.cf = new FilterConnectorFactory<>(scope, repositoryFactory);
     }
 
     abstract M blockingGetWithoutChildren();

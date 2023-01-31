@@ -35,13 +35,11 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseServerConfigurationOld
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseUserConfigurationOld
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOld
 import org.hisp.dhis.android.core.user.UserCredentials
-import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Test
@@ -64,10 +62,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     private val newName = nameGenerator.getDatabaseName(serverUrl, username, false)
 
     private val credentials = UserCredentials.builder()
-        .id(1L)
-        .uid("uid")
         .username(username)
-        .user(ObjectWithUid.create("user"))
         .build()
 
     private lateinit var migration: DatabaseConfigurationMigration
@@ -113,8 +108,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         assertThat(context.databaseList().contains(newName)).isTrue()
 
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, false)
-        val credentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-        assertThat(credentialsStore.selectFirst()).isEqualTo(credentials)
+        assertThat(getUsernameForOldDatabase(databaseAdapter)).isEqualTo(credentials.username())
 
         assertThat(credentialsSecureStore.get()).isNull()
     }
@@ -184,10 +178,24 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     private fun setCredentialsAndServerUrl(databaseAdapter: DatabaseAdapter) {
+        databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
-        val credentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-        credentialsStore.insert(credentials)
+        databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")
         val configurationStore = ConfigurationStore.create(databaseAdapter)
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
+    }
+
+    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+        val cursor = databaseAdapter.rawQuery("SELECT username FROM UserCredentials")
+        var username: String? = null
+
+        cursor.use {
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                username = it.getString(0)
+            }
+        }
+
+        return username
     }
 }

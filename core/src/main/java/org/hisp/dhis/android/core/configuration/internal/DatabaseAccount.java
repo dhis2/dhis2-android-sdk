@@ -25,15 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.State;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder.class)
@@ -59,6 +61,9 @@ public abstract class DatabaseAccount {
     @NonNull
     public abstract boolean encrypted();
 
+    @Nullable
+    public abstract State syncState();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -78,6 +83,8 @@ public abstract class DatabaseAccount {
         public abstract Builder encrypted(boolean encrypted);
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract Builder syncState(State syncState);
 
         public abstract DatabaseAccount build();
     }

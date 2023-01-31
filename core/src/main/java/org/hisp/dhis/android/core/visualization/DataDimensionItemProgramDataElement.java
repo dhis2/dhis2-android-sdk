@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -72,7 +71,7 @@ public abstract class DataDimensionItemProgramDataElement implements ObjectWithU
     public abstract Builder toBuilder();
 
     private ObjectWithUid getTokenAt(int position) {
-        String[] tokens = uid() == null ? ArrayUtils.EMPTY_STRING_ARRAY : uid().split("\\.");
+        String[] tokens = uid() == null ? new String[] {} : uid().split("\\.");
         String uid = tokens.length > position ? tokens[position] : null;
         return uid == null ? null : ObjectWithUid.create(uid);
     }

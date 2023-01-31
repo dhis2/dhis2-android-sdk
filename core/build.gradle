@@ -43,30 +43,32 @@ ext {
             buildToolsVersion: "30.0.2",
             minSdkVersion    : 21,
             targetSdkVersion : 31,
-            versionCode      : 271,
-            versionName      : "1.7.1"
+            versionCode      : 280,
+            versionName      : "1.8.0-SNAPSHOT"
     ]
 
     libraries = [
+            libraryDesugaring:'1.2.2',
+
             // android
             annotation      : '1.4.0',
             paging          : '2.1.2',
 
             // java
-            apacheCommons   : "3.8.1",
             jackson         : "2.11.2",
             autoValue       : "1.7.4",
             autoValueCursor : "2.0.1",
             retrofit        : "2.9.0",
             okHttp          : "3.12.0",
-            dagger          : "2.39.1",
+            dagger          : "2.44.2",
             rxJava          : "2.2.12",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.3",
-            jexl            : "2.1.1",
-            jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
             expressionParser: "1.0.29",
+
+            // Kotlin
+            kotlinxDatetime : "0.4.0",
 
             // test dependencies
             coreTesting     : "2.1.0",
@@ -91,43 +93,30 @@ def libraries = project.ext.libraries
 
 android {
     compileSdkVersion configuration.targetSdkVersion
-    buildToolsVersion configuration.buildToolsVersion
 
     defaultConfig {
         minSdkVersion configuration.minSdkVersion
         targetSdkVersion configuration.targetSdkVersion
-        versionCode configuration.versionCode
-        versionName configuration.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
-        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+        buildConfigField("long", "VERSION_CODE", "${configuration.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${configuration.versionName}\"")
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     packagingOptions {
-        // excluding duplicate license files
-        // from jackson modules
-        exclude "META-INF/LICENSE"
-
-        // should be removed with interoperability library
-        exclude "META-INF/rxjava.properties"
+        resources {
+            excludes += ['META-INF/LICENSE', 'META-INF/rxjava.properties']
+        }
     }
 
-    lintOptions {
-        // casting 'InvalidPackage' error to warning
-        warning "InvalidPackage"
-        disable 'MissingTranslation'
-
-        // Fail early.
-        abortOnError true
-    }
 
     buildTypes {
         debug {
@@ -150,10 +139,18 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    lint {
+        abortOnError true
+        disable 'MissingTranslation'
+        warning 'InvalidPackage'
+    }
+    namespace 'org.hisp.dhis.android'
 }
 
 
 dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${libraries.libraryDesugaring}"
+
     // RxJava
     api "io.reactivex.rxjava2:rxjava:${libraries.rxJava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxAndroid}"
@@ -180,14 +177,8 @@ dependencies {
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
     api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
 
-    // Apache libraries
-    api "org.apache.commons:commons-lang3:${libraries.apacheCommons}"
-    api("org.apache.commons:commons-jexl:${libraries.jexl}") {
-        exclude group: 'commons-logging', module: 'commons-logging'
-    }
-
-    // Joda time
-    api "joda-time:joda-time:${libraries.jodaTime}"
+    // Kotlinx datetime
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"
 
     // sms compression library
     api "com.github.dhis2:sms-compression:${libraries.smsCompression}"

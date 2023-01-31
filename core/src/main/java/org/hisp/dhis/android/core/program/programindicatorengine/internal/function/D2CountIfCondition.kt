@@ -36,7 +36,7 @@ internal class D2CountIfCondition : ProgramCountFunction() {
 
     override fun countIf(ctx: ExprContext, visitor: CommonExpressionVisitor, value: String?): Boolean {
         val expression = value + trimQuotes(ctx.stringLiteral().text)
-        val result = visitor.programIndicatorExecutor.getProgramIndicatorExpressionValue(expression)
+        val result = visitor.programIndicatorExecutor!!.getProgramIndicatorExpressionValue(expression)
 
         return "true" == result
     }

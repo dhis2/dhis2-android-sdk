@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 
 @Reusable
@@ -42,13 +43,14 @@ internal class UserCall @Inject constructor(
     private val genericCallData: GenericCallData,
     private val apiCallExecutor: APICallExecutor,
     private val userService: UserService,
-    private val userHandler: Handler<User>
+    private val userHandler: Handler<User>,
+    private val dhisVersionManager: DHISVersionManager
 ) : Callable<User> {
 
     @Throws(D2Error::class)
     override fun call(): User {
         val user = apiCallExecutor.executeObjectCall(
-            userService.getUser(UserFields.allFieldsWithOrgUnit)
+            userService.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
         )
 
         val transaction = genericCallData.databaseAdapter().beginNewTransaction()

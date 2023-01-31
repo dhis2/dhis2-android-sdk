@@ -47,6 +47,6 @@ internal class ProgramAttributeItem : IndicatorDataItem {
     }
 
     override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
-        return visitor.indicatorContext.eventDataItemEvaluator
+        return visitor.indicatorContext!!.eventDataItemEvaluator
     }
 }

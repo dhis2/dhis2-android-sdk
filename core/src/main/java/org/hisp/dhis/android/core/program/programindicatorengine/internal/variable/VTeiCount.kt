@@ -38,13 +38,13 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VTeiCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val count = if (visitor.programIndicatorContext.enrollment == null) 0 else 1
+        val count = if (visitor.programIndicatorContext!!.enrollment == null) 0 else 1
 
         return count.toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val teiSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        val teiSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
                     column = EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE

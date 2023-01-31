@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
 
 @Reusable
+@Suppress("TooManyFunctions")
 internal class AccountManagerImpl @Inject constructor(
     private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
@@ -60,15 +61,15 @@ internal class AccountManagerImpl @Inject constructor(
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
     override fun getAccounts(): List<DatabaseAccount> {
-        return databasesConfigurationStore.get()?.accounts() ?: emptyList()
+        return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
     }
 
-    override fun setMaxAccounts(maxAccounts: Int) {
+    override fun setMaxAccounts(maxAccounts: Int?) {
         multiUserDatabaseManager.setMaxAccounts(maxAccounts)
     }
 
-    override fun getMaxAccounts(): Int {
-        return databasesConfigurationStore.get()?.maxAccounts() ?: MultiUserDatabaseManager.DefaultMaxAccounts
+    override fun getMaxAccounts(): Int? {
+        return databasesConfigurationStore.get()?.maxAccounts()
     }
 
     @Throws(D2Error::class)
@@ -126,6 +127,15 @@ internal class AccountManagerImpl @Inject constructor(
 
         FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
         databaseAdapterFactory.deleteDatabase(loggedAccount)
+    }
+
+    private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
+        val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account)
+        val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
+
+        return account.toBuilder()
+            .syncState(syncState)
+            .build()
     }
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {

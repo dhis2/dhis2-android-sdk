@@ -326,154 +326,160 @@ Properties included in the `GridDimensionalResponse` object:
 
 This table shows the functionality supported by the Indicator dimension item compared to the backend analytics.
 
-| Type              | Element               | Backend   | Android SDK   |
-|----------         |---------------------- |-----------|---------------|
-|**Mathematical:**  |Parenthesis            | Yes       | Yes           |     
-|                   |Plus (+)               | Yes       | Yes           |
-|                   |Minus (-)              | Yes       | Yes           |
-|                   |Power (^)              | Yes       | No            |
-|                   |Multiply (*)           | Yes       | Yes           |
-|                   |Divide (/)             | Yes       | Yes           |
-|                   |Modulus (%)            | Yes       | Yes           |
-|**Logical:**       |NOT                    | Yes       | Yes           |
-|                   |!                      | Yes       | Yes           |
-|                   |AND                    | Yes       | Yes           |
-|                   |&&                     | Yes       | Yes           |
-|                   |OR                     | Yes       | Yes           |
-|                   |&#124;&#124;           | Yes       | Yes           |
-|**Comparison:**    |Equal (==)             | Yes       | Yes           |
-|                   |NotEqual (!=)          | Yes       | Yes           |
-|                   |GT (>)                 | Yes       | Yes           |
-|                   |LT (<)                 | Yes       | Yes           |
-|                   |GE (>=)                | Yes       | Yes           |
-|                   |LE (<=)                | Yes       | Yes           |
-|**Functions:**     |FirstNonNull           | Yes       | Yes           |
-|                   |Greatest               | Yes       | Yes           |
-|                   |If                     | Yes       | Yes           |
-|                   |IsNotNull              | Yes       | Yes           |
-|                   |IsNull                 | Yes       | Yes           |
-|                   |Least                  | Yes       | Yes           |
-|                   |Log                    | Yes       | No            |
-|                   |Log10                  | Yes       | No            |
-|                   |.aggregationType       | Yes       | No            |
-|                   |.maxDate               | Yes       | No            |
-|                   |.minDate               | Yes       | No            |
-|                   |.periodOffset          | Yes       | No            |
-|**Dimensions:**    |Constant               | Yes       | Yes           |
-|                   |DataElement            | Yes       | Yes           |
-|                   |ProgramAttribute       | Yes       | Yes           |
-|                   |ProgramDataElement     | Yes       | Yes           |
-|                   |ProgramIndicator       | Yes       | Yes           |
-|                   |OrgUnitGroup           | Yes       | No            |
-|                   |ReportingRate          | Yes       | No            |
-|                   |Days                   | Yes       | Yes           |
-|                   |N_Brace (indicators)   | Yes       | No            |
+| Type              | Element              | Backend   | Android SDK |
+|-------------------|----------------------|-----------|-------------|
+| **Mathematical:** | Parenthesis          | Yes       | Yes         |     
+|                   | Plus (+)             | Yes       | Yes         |
+|                   | Minus (-)            | Yes       | Yes         |
+|                   | Power (^)            | Yes       | No          |
+|                   | Multiply (*)         | Yes       | Yes         |
+|                   | Divide (/)           | Yes       | Yes         |
+|                   | Modulus (%)          | Yes       | Yes         |
+| **Logical:**      | NOT                  | Yes       | Yes         |
+|                   | !                    | Yes       | Yes         |
+|                   | AND                  | Yes       | Yes         |
+|                   | &&                   | Yes       | Yes         |
+|                   | OR                   | Yes       | Yes         |
+|                   | &#124;&#124;         | Yes       | Yes         |
+| **Comparison:**   | Equal (==)           | Yes       | Yes         |
+|                   | NotEqual (!=)        | Yes       | Yes         |
+|                   | GT (>)               | Yes       | Yes         |
+|                   | LT (<)               | Yes       | Yes         |
+|                   | GE (>=)              | Yes       | Yes         |
+|                   | LE (<=)              | Yes       | Yes         |
+| **Literals:**     | null                 | Yes       | Yes         |
+| **Functions:**    | FirstNonNull         | Yes       | Yes         |
+|                   | Greatest             | Yes       | Yes         |
+|                   | If                   | Yes       | Yes         |
+|                   | IsNotNull            | Yes       | Yes         |
+|                   | IsNull               | Yes       | Yes         |
+|                   | Least                | Yes       | Yes         |
+|                   | Log                  | Yes       | No          |
+|                   | Log10                | Yes       | No          |
+|                   | Subexpression        | Yes       | No          |
+|                   | .aggregationType     | Yes       | Yes         |
+|                   | .maxDate             | Yes       | Yes         |
+|                   | .minDate             | Yes       | Yes         |
+|                   | .periodOffset        | Yes       | Yes         |
+|                   | .yearToDate          | Yes       | Yes         |
+| **Dimensions:**   | Constant             | Yes       | Yes         |
+|                   | DataElement          | Yes       | Yes         |
+|                   | ProgramAttribute     | Yes       | Yes         |
+|                   | ProgramDataElement   | Yes       | Yes         |
+|                   | ProgramIndicator     | Yes       | Yes         |
+|                   | OrgUnitGroup         | Yes       | No          |
+|                   | ReportingRate        | Yes       | No          |
+|                   | Days                 | Yes       | Yes         |
+|                   | PeriodInYear         | Yes       | Yes         |
+|                   | YearlyPeriodCount    | Yes       | Yes         |
+|                   | N_Brace (indicators) | Yes       | No          |
 
 ### Program indicator support { #android_sdk_analytics_program_indicator_support }
 
 This table shows the functionality supported by the ProgramIndicator dimension item compared to the backend analytics.
 
-| Type                      | Element               | Backend   | Android SDK   |
-|---------------------------|-----------------------|-----------|---------------|
-|**Mathematical:**          |Parenthesis            | Yes       | Yes           |     
-|                           |Plus (+)               | Yes       | Yes           |
-|                           |Minus (-)              | Yes       | Yes           |
-|                           |Power (^)              | Yes       | No            |
-|                           |Multiply (*)           | Yes       | Yes           |
-|                           |Divide (/)             | Yes       | Yes           |
-|                           |Modulus (%)            | Yes       | Yes           |
-|**Logical:**               |NOT                    | Yes       | Yes           |
-|                           |!                      | Yes       | Yes           |
-|                           |AND                    | Yes       | Yes           |
-|                           |&&                     | Yes       | Yes           |
-|                           |OR                     | Yes       | Yes           |
-|                           |&#124;&#124;           | Yes       | Yes           |
-|**Comparison:**            |Equal (==)             | Yes       | Yes           |
-|                           |NotEqual (!=)          | Yes       | Yes           |
-|                           |GT (>)                 | Yes       | Yes           |
-|                           |LT (<)                 | Yes       | Yes           |
-|                           |GE (>=)                | Yes       | Yes           |
-|                           |LE (<=)                | Yes       | Yes           |
-|**Functions:**             |FirstNonNull           | Yes       | Yes           |
-|                           |Greatest               | Yes       | Yes           |
-|                           |If                     | Yes       | Yes           |
-|                           |IsNotNull              | Yes       | Yes           |
-|                           |IsNull                 | Yes       | Yes           |
-|                           |Least                  | Yes       | Yes           |
-|                           |Log                    | Yes       | No            |
-|                           |Log10                  | Yes       | No            |
-|                           |PeriodOffset           | Yes       | No            |
-|**D2 functions:**          |D2AddDays              | No        | No            |
-|                           |D2Ceil                 | No        | No            |
-|                           |D2Concatenate          | No        | No            |
-|                           |D2Condition            | Yes       | Yes           |
-|                           |D2Count                | Yes       | Yes           |
-|                           |D2CountIfCondition     | Yes       | Yes           |
-|                           |D2CountIfValue         | Yes       | Yes           |
-|                           |D2DaysBetween          | Yes       | Yes           |
-|                           |D2Floor                | No        | No            |
-|                           |D2HasValue             | Yes       | Yes           |
-|                           |D2Left                 | No        | No            |
-|                           |D2Length               | No        | No            |
-|                           |D2MaxValue             | Yes       | No            |
-|                           |D2MinutesBetween       | Yes       | Yes           |
-|                           |D2MinValue             | Yes       | No            |
-|                           |D2Modulus              | No        | No            |
-|                           |D2MonthsBetween        | Yes       | Yes           |
-|                           |D2Oizp                 | Yes       | Yes           |
-|                           |D2RelationshipCount    | Yes       | Yes           |
-|                           |D2Right                | No        | No            |
-|                           |D2Round                | No        | No            |
-|                           |D2Split                | No        | No            |
-|                           |D2Substring            | No        | No            |
-|                           |D2ValidatePattern      | No        | No            |
-|                           |D2WeeksBetween         | Yes       | Yes           |
-|                           |D2YearsBetween         | Yes       | Yes           |
-|                           |D2Zing                 | Yes       | Yes           |
-|                           |D2Zpvc                 | Yes       | Yes           |
-|                           |D2LastEventDate        | No        | No            |
-|                           |D2AddControlDigits     | No        | No            |
-|                           |D2CheckControlDigits   | No        | No            |
-|                           |D2ZScoreWFA            | No        | No            |
-|                           |D2ZScoreWFH            | No        | No            |
-|                           |D2ZScoreHFA            | No        | No            |
-|                           |D2InOrgUnitGroup       | No        | No            |
-|                           |D2HasUserRole          | No        | No            |
-|**Aggregation functions:** |avg                    | Yes       | No            |
-|                           |count                  | Yes       | No            |
-|                           |max                    | Yes       | No            |
-|                           |min                    | Yes       | No            |
-|                           |percentileCont         | Yes       | No            |
-|                           |stddev                 | Yes       | No            |
-|                           |stddevPop              | Yes       | No            |
-|                           |stddevSamp             | Yes       | No            |
-|                           |sum                    | Yes       | No            |
-|                           |variance               | Yes       | No            |
-|**Variables:**             |AnalyticsPeriodEnd     | Yes       | Yes           |
-|                           |AnalyticsPeriodStart   | Yes       | Yes           |
-|                           |CreationDate           | Yes       | Yes           |
-|                           |CurrentDate            | Yes       | Yes           |
-|                           |CompletedDate          | Yes       | Yes           |
-|                           |DueDate                | Yes       | Yes           |
-|                           |EnrollmentCount        | Yes       | Yes           |
-|                           |EnrollmentDate         | Yes       | Yes           |
-|                           |EnrollmentStatus       | Yes       | Yes           |
-|                           |EventStatus            | Yes       | Yes           |
-|                           |EventCount             | Yes       | Yes           |
-|                           |ExecutionDate          | Yes       | Yes           |
-|                           |EventDate              | Yes       | Yes           |
-|                           |IncidentDate           | Yes       | Yes           |
-|                           |OrgunitCount           | Yes       | Yes           |
-|                           |ProgramStageId         | Yes       | Yes           |
-|                           |ProgramStageName       | Yes       | Yes           |
-|                           |SyncDate               | Yes       | Yes           |
-|                           |TeiCount               | Yes       | Yes           |
-|                           |ValueCount             | Yes       | Yes           |
-|                           |ZeroPosValueCount      | Yes       | Yes           |
-|**Other:**                 |Constant               | Yes       | Yes           |
-|                           |ProgramStageElement    | Yes       | Yes           |
-|                           |ProgramAttribute       | Yes       | Yes           |
-|                           |PS_EVENTDATE           | Yes       | Yes           |
+| Type                       | Element              | Backend   | Android SDK   |
+|----------------------------|----------------------|-----------|---------------|
+| **Mathematical:**          | Parenthesis          | Yes       | Yes           |     
+|                            | Plus (+)             | Yes       | Yes           |
+|                            | Minus (-)            | Yes       | Yes           |
+|                            | Power (^)            | Yes       | No            |
+|                            | Multiply (*)         | Yes       | Yes           |
+|                            | Divide (/)           | Yes       | Yes           |
+|                            | Modulus (%)          | Yes       | Yes           |
+| **Logical:**               | NOT                  | Yes       | Yes           |
+|                            | !                    | Yes       | Yes           |
+|                            | AND                  | Yes       | Yes           |
+|                            | &&                   | Yes       | Yes           |
+|                            | OR                   | Yes       | Yes           |
+|                            | &#124;&#124;         | Yes       | Yes           |
+| **Comparison:**            | Equal (==)           | Yes       | Yes           |
+|                            | NotEqual (!=)        | Yes       | Yes           |
+|                            | GT (>)               | Yes       | Yes           |
+|                            | LT (<)               | Yes       | Yes           |
+|                            | GE (>=)              | Yes       | Yes           |
+|                            | LE (<=)              | Yes       | Yes           |
+| **Literals:**              | null                 | Yes       | Yes           |
+| **Functions:**             | FirstNonNull         | Yes       | Yes           |
+|                            | Greatest             | Yes       | Yes           |
+|                            | If                   | Yes       | Yes           |
+|                            | IsNotNull            | Yes       | Yes           |
+|                            | IsNull               | Yes       | Yes           |
+|                            | Least                | Yes       | Yes           |
+|                            | Log                  | Yes       | No            |
+|                            | Log10                | Yes       | No            |
+|                            | PeriodOffset         | Yes       | No            |
+| **D2 functions:**          | D2AddDays            | No        | No            |
+|                            | D2Ceil               | No        | No            |
+|                            | D2Concatenate        | No        | No            |
+|                            | D2Condition          | Yes       | Yes           |
+|                            | D2Count              | Yes       | Yes           |
+|                            | D2CountIfCondition   | Yes       | Yes           |
+|                            | D2CountIfValue       | Yes       | Yes           |
+|                            | D2DaysBetween        | Yes       | Yes           |
+|                            | D2Floor              | No        | No            |
+|                            | D2HasValue           | Yes       | Yes           |
+|                            | D2Left               | No        | No            |
+|                            | D2Length             | No        | No            |
+|                            | D2MaxValue           | Yes       | No            |
+|                            | D2MinutesBetween     | Yes       | Yes           |
+|                            | D2MinValue           | Yes       | No            |
+|                            | D2Modulus            | No        | No            |
+|                            | D2MonthsBetween      | Yes       | Yes           |
+|                            | D2Oizp               | Yes       | Yes           |
+|                            | D2RelationshipCount  | Yes       | Yes           |
+|                            | D2Right              | No        | No            |
+|                            | D2Round              | No        | No            |
+|                            | D2Split              | No        | No            |
+|                            | D2Substring          | No        | No            |
+|                            | D2ValidatePattern    | No        | No            |
+|                            | D2WeeksBetween       | Yes       | Yes           |
+|                            | D2YearsBetween       | Yes       | Yes           |
+|                            | D2Zing               | Yes       | Yes           |
+|                            | D2Zpvc               | Yes       | Yes           |
+|                            | D2LastEventDate      | No        | No            |
+|                            | D2AddControlDigits   | No        | No            |
+|                            | D2CheckControlDigits | No        | No            |
+|                            | D2ZScoreWFA          | No        | No            |
+|                            | D2ZScoreWFH          | No        | No            |
+|                            | D2ZScoreHFA          | No        | No            |
+|                            | D2InOrgUnitGroup     | No        | No            |
+|                            | D2HasUserRole        | No        | No            |
+| **Aggregation functions:** | avg                  | Yes       | No            |
+|                            | count                | Yes       | No            |
+|                            | max                  | Yes       | No            |
+|                            | min                  | Yes       | No            |
+|                            | percentileCont       | Yes       | No            |
+|                            | stddev               | Yes       | No            |
+|                            | stddevPop            | Yes       | No            |
+|                            | stddevSamp           | Yes       | No            |
+|                            | sum                  | Yes       | No            |
+|                            | variance             | Yes       | No            |
+| **Variables:**             | AnalyticsPeriodEnd   | Yes       | Yes           |
+|                            | AnalyticsPeriodStart | Yes       | Yes           |
+|                            | CreationDate         | Yes       | Yes           |
+|                            | CurrentDate          | Yes       | Yes           |
+|                            | CompletedDate        | Yes       | Yes           |
+|                            | DueDate              | Yes       | Yes           |
+|                            | EnrollmentCount      | Yes       | Yes           |
+|                            | EnrollmentDate       | Yes       | Yes           |
+|                            | EnrollmentStatus     | Yes       | Yes           |
+|                            | EventStatus          | Yes       | Yes           |
+|                            | EventCount           | Yes       | Yes           |
+|                            | ExecutionDate        | Yes       | Yes           |
+|                            | EventDate            | Yes       | Yes           |
+|                            | IncidentDate         | Yes       | Yes           |
+|                            | OrgunitCount         | Yes       | Yes           |
+|                            | ProgramStageId       | Yes       | Yes           |
+|                            | ProgramStageName     | Yes       | Yes           |
+|                            | SyncDate             | Yes       | Yes           |
+|                            | TeiCount             | Yes       | Yes           |
+|                            | ValueCount           | Yes       | Yes           |
+|                            | ZeroPosValueCount    | Yes       | Yes           |
+| **Other:**                 | Constant             | Yes       | Yes           |
+|                            | ProgramStageElement  | Yes       | Yes           |
+|                            | ProgramAttribute     | Yes       | Yes           |
+|                            | PS_EVENTDATE         | Yes       | Yes           |
 
 ### Aggregation type support { #android_sdk_analytics_aggregation_type_support }
 

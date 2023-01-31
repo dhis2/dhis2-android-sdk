@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class OptionStore {
+public final class OptionStore {
 
     private OptionStore() {}
 

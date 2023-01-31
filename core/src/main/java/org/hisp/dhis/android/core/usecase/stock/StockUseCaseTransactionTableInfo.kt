@@ -54,7 +54,7 @@ object StockUseCaseTransactionTableInfo {
                 DISTRIBUTED_TO,
                 STOCK_DISTRIBUTED,
                 STOCK_DISCARDED,
-                STOCK_CORRECTED
+                STOCK_COUNT
             )
         }
 
@@ -65,7 +65,7 @@ object StockUseCaseTransactionTableInfo {
             const val DISTRIBUTED_TO = "distributedTo"
             const val STOCK_DISTRIBUTED = "stockDistributed"
             const val STOCK_DISCARDED = "stockDiscarded"
-            const val STOCK_CORRECTED = "stockCorrected"
+            const val STOCK_COUNT = "stockCount"
         }
     }
 }

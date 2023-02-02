@@ -27,32 +27,38 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
-@Reusable
-@Suppress("MagicNumber")
-internal class DataStoreEntryImportHandler @Inject constructor(
-    private val store: DataStoreEntryStore
-) {
+@Module
+internal class DataStoreEntityDIModule {
 
-    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
-        if (response.httpStatusCode() == 200 || response.httpStatusCode() == 404) {
-            store.deleteWhere(entry)
-        } else {
-            store.setStateIfUploading(entry, State.ERROR)
-        }
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): DataStoreEntryStore {
+        return DataStoreEntryStoreImpl.create(databaseAdapter)
     }
 
-    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
-        val syncState = if (response.status() == "OK") {
-            State.SYNCED
-        } else {
-            State.ERROR
-        }
-        store.setStateIfUploading(entry, syncState)
+    @Provides
+    @Reusable
+    fun handler(impl: DataStoreHandler): LinkHandler<DataStoreEntry, DataStoreEntry> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<DataStoreEntry>> {
+        return emptyMap()
+    }
+
+    @Provides
+    @Reusable
+    fun downloaderParams(): DataStoreDownloadParams {
+        return DataStoreDownloadParams()
     }
 }

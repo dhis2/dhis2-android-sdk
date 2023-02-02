@@ -41,8 +41,8 @@ internal class LocalDataStoreEntityDIModule {
 
     @Provides
     @Reusable
-    fun service(retrofit: Retrofit): DataStoreEntryService {
-        return retrofit.create(DataStoreEntryService::class.java)
+    fun service(retrofit: Retrofit): DataStoreService {
+        return retrofit.create(DataStoreService::class.java)
     }
 
     @Provides

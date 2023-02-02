@@ -35,15 +35,15 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadCall
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryDownloadParams
+import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadCall
+import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadParams
 
 @Reusable
 class DataStoreDownloader @Inject internal constructor(
-    private val call: DataStoreEntryDownloadCall,
-    private val params: DataStoreEntryDownloadParams
+    private val call: DataStoreDownloadCall,
+    private val params: DataStoreDownloadParams
 ) : BaseRepository {
-    private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreEntryDownloadParams> =
+    private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreDownloadParams> =
         ScopedFilterConnectorFactory { params ->
             DataStoreDownloader(call, params)
         }

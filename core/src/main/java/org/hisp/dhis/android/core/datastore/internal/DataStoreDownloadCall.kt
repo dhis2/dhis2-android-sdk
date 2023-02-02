@@ -45,13 +45,13 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
-internal class DataStoreEntryDownloadCall @Inject constructor(
+internal class DataStoreDownloadCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataStoreEntryService: DataStoreEntryService,
+    private val dataStoreEntryService: DataStoreService,
     private val dataStoreEntryHandler: LinkHandler<DataStoreEntry, DataStoreEntry>,
     private val versionManager: DHISVersionManager
 ) {
-    fun download(params: DataStoreEntryDownloadParams): Observable<D2Progress> {
+    fun download(params: DataStoreDownloadParams): Observable<D2Progress> {
         return rxObservable {
             return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
                 cleanForeignKeyErrors = true
@@ -75,7 +75,7 @@ internal class DataStoreEntryDownloadCall @Inject constructor(
         }
     }
 
-    private fun filterNamespaces(params: DataStoreEntryDownloadParams, namespaces: List<String>): List<String> {
+    private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> {
         return if (params.namespaces.isNotEmpty()) {
             namespaces.filter { params.namespaces.contains(it) }
         } else {

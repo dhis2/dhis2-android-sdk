@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreModule
 
 @Module(
     includes = [
-        DataStoreEntryEntityDIModule::class,
+        DataStoreEntityDIModule::class,
         LocalDataStoreEntityDIModule::class
     ]
 )

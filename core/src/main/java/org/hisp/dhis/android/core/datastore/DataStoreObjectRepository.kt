@@ -40,18 +40,18 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 
 @Reusable
-class DataStoreEntryObjectRepository @Inject internal constructor(
+class DataStoreObjectRepository @Inject internal constructor(
     store: ObjectWithoutUidStore<DataStoreEntry>,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope,
     private val namespace: String,
     private val key: String
-) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreEntryObjectRepository>(
+) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s ->
-        DataStoreEntryObjectRepository(store, childrenAppenders, s, namespace, key)
+        DataStoreObjectRepository(store, childrenAppenders, s, namespace, key)
     }
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {

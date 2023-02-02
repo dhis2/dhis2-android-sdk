@@ -35,10 +35,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataStoreEntryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class DataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val dataStoreEntries = d2.dataStoreModule().dataStoreEntries()
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
             .blockingGet()
 
         assertThat(dataStoreEntries.size).isEqualTo(3)
@@ -46,7 +46,7 @@ class DataStoreEntryCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun filter_by_namespace() {
-        val dataStoreEntries = d2.dataStoreModule().dataStoreEntries()
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
             .byNamespace().eq("capture")
             .blockingGet()
 
@@ -55,7 +55,7 @@ class DataStoreEntryCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun filter_by_key() {
-        val dataStoreEntries = d2.dataStoreModule().dataStoreEntries()
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
             .byKey().eq("summary")
             .blockingGet()
 
@@ -64,7 +64,7 @@ class DataStoreEntryCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun filter_by_sync_state() {
-        val dataStoreEntries = d2.dataStoreModule().dataStoreEntries()
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
@@ -73,7 +73,7 @@ class DataStoreEntryCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun filter_by_sync_deleted() {
-        val dataStoreEntries = d2.dataStoreModule().dataStoreEntries()
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
             .byDeleted().isFalse
             .blockingGet()
 

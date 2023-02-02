@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.datastore.internal
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import retrofit2.http.*
 
-internal interface DataStoreEntryService {
+internal interface DataStoreService {
     @GET(DATA_STORE)
     suspend fun getNamespaces(): List<String>
 

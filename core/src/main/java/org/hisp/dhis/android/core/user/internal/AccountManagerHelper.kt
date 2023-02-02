@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
+import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -53,6 +54,7 @@ internal object AccountManagerHelper {
         NoteTableInfo.TABLE_INFO,
         ProgramOwnerTableInfo.TABLE_INFO,
         RelationshipTableInfo.TABLE_INFO,
+        DataStoreEntryTableInfo.TABLE_INFO,
     )
 
     private val syncStateQuery =

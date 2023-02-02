@@ -36,12 +36,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
     fun add_new_key() {
         val value = "new_value"
-        val repository = d2.dataStoreModule().dataStoreEntries()
+        val repository = d2.dataStoreModule().dataStore()
             .value("settings", "new_key")
         repository.blockingSet(value)
 
@@ -52,7 +52,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun add_new_namespace() {
         val value = "new_value"
-        val repository = d2.dataStoreModule().dataStoreEntries()
+        val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet(value)
 
@@ -62,7 +62,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
 
     @Test
     fun delete_value_if_state_to_post() {
-        val repository = d2.dataStoreModule().dataStoreEntries()
+        val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet("new_value")
 
@@ -75,7 +75,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
 
     @Test
     fun set_state_to_delete_if_state_is_not_to_post() {
-        val repository = d2.dataStoreModule().dataStoreEntries()
+        val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 
@@ -96,7 +96,7 @@ class DataStoreEntryObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
 
     @Test
     fun set_not_deleted_when_updating_deleted_value() {
-        val repository = d2.dataStoreModule().dataStoreEntries()
+        val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 

@@ -46,10 +46,10 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Reusable
 @Suppress("MagicNumber")
-internal class DataStoreEntryPostCall @Inject constructor(
+internal class DataStorePostCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataStoreEntryService: DataStoreEntryService,
-    private val dataStoreEntryImportHandler: DataStoreEntryImportHandler,
+    private val dataStoreEntryService: DataStoreService,
+    private val dataStoreEntryImportHandler: DataStoreImportHandler,
     private val store: DataStoreEntryStore
 ) {
     fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Observable<D2Progress> {

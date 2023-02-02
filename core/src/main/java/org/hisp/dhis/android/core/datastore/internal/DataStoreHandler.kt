@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
 @Reusable
-internal class DataStoreEntryHandler @Inject constructor(
+internal class DataStoreHandler @Inject constructor(
     private val store: DataStoreEntryStore
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 

@@ -63,6 +63,15 @@ class DataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     }
 
     @Test
+    fun filter_by_value() {
+        val dataStoreEntries = d2.dataStoreModule().dataStore()
+            .byValue().isNotNull
+            .blockingGet()
+
+        assertThat(dataStoreEntries.size).isEqualTo(3)
+    }
+
+    @Test
     fun filter_by_sync_state() {
         val dataStoreEntries = d2.dataStoreModule().dataStore()
             .bySyncState().eq(State.SYNCED)

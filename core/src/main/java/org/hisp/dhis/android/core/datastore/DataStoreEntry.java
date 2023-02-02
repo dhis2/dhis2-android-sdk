@@ -60,7 +60,7 @@ public abstract class DataStoreEntry extends BaseDeletableDataObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder namespace(String namespace);

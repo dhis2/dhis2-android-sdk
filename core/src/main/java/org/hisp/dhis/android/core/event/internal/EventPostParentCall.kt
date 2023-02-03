@@ -45,7 +45,7 @@ internal class EventPostParentCall @Inject internal constructor(
 
     fun uploadEvents(events: List<Event>): Observable<D2Progress> {
         return if (events.isEmpty()) {
-            Observable.empty<D2Progress>()
+            Observable.empty()
         } else {
             if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadEvents(events)

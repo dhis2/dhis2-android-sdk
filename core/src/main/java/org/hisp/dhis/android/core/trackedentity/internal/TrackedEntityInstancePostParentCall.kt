@@ -44,7 +44,7 @@ internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
 
     fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
         return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
+            Observable.empty()
         } else {
             if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)

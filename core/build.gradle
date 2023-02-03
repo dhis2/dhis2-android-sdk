@@ -69,6 +69,7 @@ ext {
 
             // Kotlin
             kotlinxDatetime : "0.4.0",
+            coroutines      : "1.6.4",
 
             // test dependencies
             coreTesting     : "2.1.0",
@@ -177,8 +178,10 @@ dependencies {
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
     api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
 
-    // Kotlinx datetime
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"
+    // Kotlin
+    api "org.jetbrains.kotlinx:kotlinx-datetime:${libraries.kotlinxDatetime}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${libraries.coroutines}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${libraries.coroutines}"
 
     // sms compression library
     api "com.github.dhis2:sms-compression:${libraries.smsCompression}"

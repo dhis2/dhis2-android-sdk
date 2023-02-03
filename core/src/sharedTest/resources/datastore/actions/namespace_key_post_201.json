@@ -1,0 +1,6 @@
+{
+  "httpStatus": "Created",
+  "httpStatusCode": 201,
+  "status": "OK",
+  "message": "Key created: 'config'"
+}

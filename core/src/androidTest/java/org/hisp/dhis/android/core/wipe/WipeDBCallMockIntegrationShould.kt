@@ -101,6 +101,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.eventModule().eventDownloader().limit(1).blockingDownload()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).blockingDownload()
         d2.aggregatedModule().data().blockingDownload()
+        d2.dataStoreModule().dataStoreDownloader().blockingDownload()
     }
 
     private fun givenOthersInDatabase() {

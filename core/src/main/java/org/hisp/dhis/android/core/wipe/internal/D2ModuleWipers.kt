@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.internal.CommonModuleWiper
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper
 import org.hisp.dhis.android.core.dataelement.internal.DataElementModuleWiper
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleWiper
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreModuleWiper
+import org.hisp.dhis.android.core.datastore.internal.DataStoreModuleWiper
 import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper
@@ -77,7 +77,7 @@ internal class D2ModuleWipers @Inject constructor(
     importModule: ImportModuleWiper,
     indicator: IndicatorModuleWiper,
     legendSet: LegendSetModuleWiper,
-    localDataStore: LocalDataStoreModuleWiper,
+    dataStore: DataStoreModuleWiper,
     maintenance: MaintenanceModuleWiper,
     map: MapModuleWiper,
     option: OptionModuleWiper,
@@ -113,7 +113,7 @@ internal class D2ModuleWipers @Inject constructor(
             importModule,
             indicator,
             legendSet,
-            localDataStore,
+            dataStore,
             maintenance,
             map,
             option,

@@ -27,21 +27,55 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.DataStoreModule
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import retrofit2.http.*
 
-@Module(
-    includes = [
-        DataStoreEntityDIModule::class,
-        LocalDataStoreEntityDIModule::class
-    ]
-)
-class DataStorePackageDIModule {
-    @Provides
-    @Reusable
-    fun module(impl: DataStoreModuleImpl): DataStoreModule {
-        return impl
+internal interface DataStoreService {
+    @GET(DATA_STORE)
+    suspend fun getNamespaces(): List<String>
+
+    @GET("$DATA_STORE/{$NAMESPACE}")
+    suspend fun getNamespaceKeys(
+        @Path(NAMESPACE) namespace: String
+    ): List<String>
+
+    @GET("$DATA_STORE/{$NAMESPACE}")
+    suspend fun getNamespaceValues38(
+        @Path(NAMESPACE) namespace: String,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("fields") fields: String = "."
+    ): DataStorePagedEntry
+
+    @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun getNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String
+    ): Any
+
+    @POST("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun postNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String,
+        @Body value: Any?
+    ): HttpMessageResponse
+
+    @PUT("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun putNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String,
+        @Body value: Any?
+    ): HttpMessageResponse
+
+    @DELETE("$DATA_STORE/{$NAMESPACE}/{$KEY}")
+    suspend fun deleteNamespaceKeyValue(
+        @Path(NAMESPACE) namespace: String,
+        @Path(KEY) key: String
+    ): HttpMessageResponse
+
+    companion object {
+        private const val DATA_STORE = "dataStore"
+        private const val NAMESPACE = "namespace"
+        private const val KEY = "key"
     }
 }

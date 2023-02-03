@@ -59,6 +59,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                 downloadEvents()
                 downloadAggregatedData()
                 downloadFileResources()
+                downloadDataStore()
                 storeSomeD2Errors()
                 storeSomeConflicts()
                 storeSomeKeyValuesInLocalDataStore()
@@ -99,6 +100,10 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
 
         private fun downloadFileResources() {
             d2.fileResourceModule().fileResourceDownloader().blockingDownload()
+        }
+
+        private fun downloadDataStore() {
+            d2.dataStoreModule().dataStoreDownloader().blockingDownload()
         }
 
         private fun storeSomeD2Errors() {

@@ -99,6 +99,9 @@ public class Dhis2MockServer {
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png";
     private static final String FILE_RESOURCE = "trackedentity/tracked_entity_attribute_value_image_resource.json";
+    private static final String DATA_STORE_NAMESPACES = "datastore/namespaces.json";
+    private static final String DATA_STORE_NAMESPACE_CAPTURE = "datastore/namespace_capture.json";
+    private static final String DATA_STORE_NAMESPACE_SCORECARD = "datastore/namespace_scorecard.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
@@ -276,6 +279,12 @@ public class Dhis2MockServer {
                     return createMockResponse(FILE_RESOURCE);
                 } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
                     return createMockResponse(TRACKED_ENTITY_IMAGE);
+                } else if (path.equals("/api/dataStore")) {
+                    return createMockResponse(DATA_STORE_NAMESPACES);
+                } else if (path.startsWith("/api/dataStore/capture")) {
+                    return createMockResponse(DATA_STORE_NAMESPACE_CAPTURE);
+                } else if (path.startsWith("/api/dataStore/scorecard")) {
+                    return createMockResponse(DATA_STORE_NAMESPACE_SCORECARD);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)

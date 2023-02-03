@@ -26,39 +26,50 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datastore
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+object DataStoreEntryTableInfo {
 
-class BaseDatabaseOpenHelper {
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "DataStore"
+        }
 
-    static final int VERSION = 139;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
+    class Columns : DeletableDataColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NAMESPACE,
+                KEY,
+                VALUE,
+                SYNC_STATE,
+                DELETED
+            )
+        }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NAMESPACE,
+                KEY,
+            )
+        }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val NAMESPACE = "namespace"
+            const val KEY = "key"
+            const val VALUE = "value"
+        }
     }
 }

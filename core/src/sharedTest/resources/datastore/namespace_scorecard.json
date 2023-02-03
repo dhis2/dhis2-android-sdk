@@ -1,0 +1,12 @@
+{
+  "pager": {
+    "page": 1,
+    "pageSize": 50
+  },
+  "entries": [
+    {
+      "key": "savedObjects",
+      "value": {}
+    }
+  ]
+}

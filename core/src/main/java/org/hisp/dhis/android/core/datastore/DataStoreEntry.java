@@ -26,39 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datastore;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-class BaseDatabaseOpenHelper {
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 139;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+public abstract class DataStoreEntry extends BaseDeletableDataObject {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @NonNull
+    public abstract String namespace();
+
+    @NonNull
+    public abstract String key();
+
+    @Nullable
+    public abstract String value();
+
+    public static DataStoreEntry create(Cursor cursor) {
+        return $AutoValue_DataStoreEntry.createFromCursor(cursor);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new $$AutoValue_DataStoreEntry.Builder();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
+        public abstract Builder id(Long id);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder namespace(String namespace);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract DataStoreEntry build();
     }
 }

@@ -34,9 +34,16 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datastore.KeyValuePair
+import retrofit2.Retrofit
 
 @Module
 internal class LocalDataStoreEntityDIModule {
+
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): DataStoreService {
+        return retrofit.create(DataStoreService::class.java)
+    }
 
     @Provides
     @Reusable

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datastore
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
+import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadCall
+import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadParams
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@Reusable
+class DataStoreDownloader @Inject internal constructor(
+    private val call: DataStoreDownloadCall,
+    private val params: DataStoreDownloadParams
+) : BaseRepository {
+    private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreDownloadParams> =
+        ScopedFilterConnectorFactory { params ->
+            DataStoreDownloader(call, params)
+        }
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 139;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    /**
+     * Download and persist the content in the dataStore according to the filters specified.
+     */
+    fun download(): Observable<D2Progress> {
+        return call.download(params)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    fun byNamespace(): ListFilterConnector<DataStoreDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(namespaces = list) }
     }
 }

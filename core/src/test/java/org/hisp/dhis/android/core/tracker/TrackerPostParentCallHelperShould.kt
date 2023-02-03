@@ -84,4 +84,11 @@ class TrackerPostParentCallHelperShould {
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V1)
         assertThat(helper.useNewTrackerImporter()).isFalse()
     }
+
+    @Test
+    fun should_always_return_false_if_less_than_38() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_37_0.strValue)
+        whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V2)
+        assertThat(helper.useNewTrackerImporter()).isFalse()
+    }
 }

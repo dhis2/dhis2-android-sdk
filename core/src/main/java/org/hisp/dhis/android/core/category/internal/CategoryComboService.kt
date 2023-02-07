@@ -25,44 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryCombo
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.category.Category;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryEntityDIModule implements IdentifiableStoreProvider<Category> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Category> store(DatabaseAdapter databaseAdapter) {
-        return CategoryStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public Handler<Category> handler(IdentifiableObjectStore<Category> store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Category>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(CategoryFields.CATEGORY_OPTIONS,
-                CategoryCategoryOptionChildrenAppender.create(databaseAdapter));
-    }
+internal interface CategoryComboService {
+    @GET("categoryCombos")
+    fun getCategoryCombos(
+        @Query("fields") @Which fields: Fields<CategoryCombo>,
+        @Query("filter") @Where uids: Filter<CategoryCombo, String>,
+        @Query("paging") paging: Boolean?
+    ): Single<Payload<CategoryCombo>>
 }

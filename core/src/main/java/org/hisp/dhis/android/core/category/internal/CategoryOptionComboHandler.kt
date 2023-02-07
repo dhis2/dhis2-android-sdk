@@ -25,28 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Set;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class CategoryComboUidsSeekerMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void seek_category_combos_uids() {
-        Set<String> categories = new CategoryComboUidsSeeker(databaseAdapter).seekUids();
-
-        assertThat(categories.size()).isEqualTo(2);
-        assertThat(categories.contains("m2jTvAj5kkm")).isTrue();
-        // Default category combo (p0KPaWEg3cf).
-        assertThat(categories.contains("p0KPaWEg3cf")).isTrue();
+@Reusable
+internal class CategoryOptionComboHandler @Inject constructor(
+    store: CategoryOptionComboStore,
+    private val categoryOptionComboCategoryOptionLinkHandler:
+    LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
+) : IdentifiableHandlerImpl<CategoryOptionCombo>(store) {
+    override fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
+        categoryOptionComboCategoryOptionLinkHandler.handleMany(
+            o.uid(),
+            o.categoryOptions()
+        ) { categoryOption: CategoryOption ->
+            CategoryOptionComboCategoryOptionLink.builder()
+                .categoryOptionCombo(o.uid())
+                .categoryOption(categoryOption.uid())
+                .build()
+        }
     }
 }

@@ -28,35 +28,28 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import javax.inject.Inject
 
 @Reusable
-internal class CategoryCall @Inject constructor(
-    private val handler: Handler<Category>,
-    private val service: CategoryService,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Category> {
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 90
+internal class CategoryModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
+        tableWiper.wipeTables(
+            CategoryTableInfo.TABLE_INFO,
+            CategoryOptionTableInfo.TABLE_INFO,
+            CategoryOptionComboTableInfo.TABLE_INFO,
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryComboTableInfo.TABLE_INFO,
+            CategoryCategoryComboLinkTableInfo.TABLE_INFO
+        )
     }
 
-    override fun download(uids: Set<String>): Single<List<Category>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getCategories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false
-            )
-        }
+    override fun wipeData() {
+        // No data to wipe
     }
 }

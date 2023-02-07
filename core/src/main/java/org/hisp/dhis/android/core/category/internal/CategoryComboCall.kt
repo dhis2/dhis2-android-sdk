@@ -25,26 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.category.CategoryCombo
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+@Reusable
+internal class CategoryComboCall @Inject constructor(
+    private val service: CategoryComboService,
+    private val handler: Handler<CategoryCombo>,
+    private val apiDownloader: APIDownloader
+) : UidsCall<CategoryCombo> {
+    override fun download(uids: Set<String>): Single<List<CategoryCombo>> {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
+            service.getCategoryCombos(
+                CategoryComboFields.allFields,
+                CategoryComboFields.uid.`in`(partitionUids),
+                paging = false
+            )
+        }
+    }
 
-public final class CategoryOptionComboFields {
-
-    public static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
-
-
-    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
-            ).build();
-
-    private CategoryOptionComboFields() {
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

@@ -25,26 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.Category
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface CategoryComboService {
-
-    @GET("categoryCombos")
-    Single<Payload<CategoryCombo>> getCategoryCombos(
-            @Query("fields") @Which Fields<CategoryCombo> fields,
-            @Query("filter") @Where Filter<CategoryCombo, String> uids,
-            @Query("paging") Boolean paging);
+internal interface CategoryService {
+    @GET("categories")
+    fun getCategories(
+        @Query("fields") @Which fields: Fields<Category>,
+        @Query("filter") @Where uids: Filter<Category, String>,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<Category>>
 }

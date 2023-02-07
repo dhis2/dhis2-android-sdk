@@ -27,35 +27,40 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.Category
-import javax.inject.Inject
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryTableInfo
 
-@Reusable
-internal class CategoryCall @Inject constructor(
-    private val handler: Handler<Category>,
-    private val service: CategoryService,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Category> {
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 90
+internal class CategoryCategoryComboChildrenAppender private constructor(
+    private val linkChildStore: LinkChildStore<CategoryCombo, Category>
+) : ChildrenAppender<CategoryCombo>() {
+    override fun appendChildren(categoryCombo: CategoryCombo): CategoryCombo {
+        val builder = categoryCombo.toBuilder()
+        builder.categories(linkChildStore.getChildren(categoryCombo))
+        return builder.build()
     }
 
-    override fun download(uids: Set<String>): Single<List<Category>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getCategories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false
+    companion object {
+        private val CHILD_PROJECTION = LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY
+        )
+
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryCombo> {
+            return CategoryCategoryComboChildrenAppender(
+                linkChildStore(
+                    databaseAdapter,
+                    CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> Category.create(cursor) }
             )
         }
     }

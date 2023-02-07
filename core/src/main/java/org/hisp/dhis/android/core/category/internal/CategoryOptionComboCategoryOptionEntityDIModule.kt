@@ -25,33 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStore.create
 
 @Module
-public final class CategoryOptionComboCategoryOptionEntityDIModule {
-
+internal class CategoryOptionComboCategoryOptionEntityDIModule {
     @Provides
     @Reusable
-    LinkStore<CategoryOptionComboCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionComboCategoryOptionLink> {
+        return create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-    categoryOptionComboCategoryOptionLinkHandler(LinkStore<CategoryOptionComboCategoryOptionLink> store) {
-        return new LinkHandlerImpl<>(store);
+    fun categoryOptionComboCategoryOptionLinkHandler(
+        store: LinkStore<CategoryOptionComboCategoryOptionLink>
+    ): LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink> {
+        return LinkHandlerImpl(store)
     }
 }

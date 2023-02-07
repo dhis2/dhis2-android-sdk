@@ -25,33 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
-import org.hisp.dhis.android.core.category.CategoryOption;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryCategoryOptionEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkStore<CategoryCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryOptionLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> handler(
-            LinkStore<CategoryCategoryOptionLink> store) {
-        return new OrderedLinkHandlerImpl<>(store);
-    }
-}
+@Reusable
+internal class CategoryInternalModule @Inject constructor(
+    val categoryCall: UidsCall<Category>,
+    val categoryComboCall: UidsCall<CategoryCombo>
+)

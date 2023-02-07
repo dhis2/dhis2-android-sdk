@@ -25,25 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
+internal object CategoryComboFields {
+    const val CATEGORIES = "categories"
+    const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.category.Category;
+    private val fh = FieldsHelper<CategoryCombo>()
+    val uid = fh.uid()
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface CategoryService {
-
-  @GET("categories")
-  Single<Payload<Category>> getCategories(@Query("fields") @Which Fields<Category> fields,
-                                          @Query("filter") @Where Filter<Category, String> uids,
-                                          @Query("paging") Boolean paging);
+    val allFields: Fields<CategoryCombo> = Fields.builder<CategoryCombo>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.field<Boolean>(CategoryComboTableInfo.Columns.IS_DEFAULT),
+            fh.nestedFieldWithUid(CATEGORIES),
+            fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS)
+                .with(CategoryOptionComboFields.allFields)
+        ).build()
 }

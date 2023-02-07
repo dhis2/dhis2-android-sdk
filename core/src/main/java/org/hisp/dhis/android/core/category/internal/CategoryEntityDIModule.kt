@@ -25,30 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.internal.CategoryStore.create
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
+@Module
+internal class CategoryEntityDIModule : IdentifiableStoreProvider<Category> {
+    @Provides
+    @Reusable
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Category> {
+        return create(databaseAdapter)
+    }
 
-public final class CategoryFields {
+    @Provides
+    @Reusable
+    fun handler(store: IdentifiableObjectStore<Category>): Handler<Category> {
+        return IdentifiableHandlerImpl(store)
+    }
 
-    public static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<Category> fh = new FieldsHelper<>();
-
-    public static final Field<Category, String> uid = fh.uid();
-
-    public static final Fields<Category> allFields = Fields.<Category>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-                    fh.<String>field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
-            ).build();
-
-    private CategoryFields() {
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Category>> {
+        return mapOf(
+            CategoryFields.CATEGORY_OPTIONS to
+                    CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
+        )
     }
 }

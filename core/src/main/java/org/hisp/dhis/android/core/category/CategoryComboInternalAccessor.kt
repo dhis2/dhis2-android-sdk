@@ -25,33 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryCategoryComboEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkStore<CategoryCategoryComboLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryComboLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    OrderedLinkHandler<Category, CategoryCategoryComboLink> handler(
-            LinkStore<CategoryCategoryComboLink> store) {
-        return new OrderedLinkHandlerImpl<>(store);
+internal object CategoryComboInternalAccessor {
+    fun accessCategoryOptionCombos(categoryCombo: CategoryCombo): List<CategoryOptionCombo>? {
+        return categoryCombo.categoryOptionCombos()
     }
 }

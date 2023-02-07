@@ -25,40 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
-
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.category.*
+import javax.inject.Inject
 
 @Reusable
-final class CategoryOptionComboHandler extends IdentifiableHandlerImpl<CategoryOptionCombo> {
-
-    private final LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-            categoryOptionComboCategoryOptionLinkHandler;
-
-    @Inject
-    CategoryOptionComboHandler(CategoryOptionComboStore store,
-                               LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-                                       categoryOptionComboCategoryOptionLinkHandler) {
-        super(store);
-        this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
+class CategoryModuleImpl @Inject internal constructor(
+    private val categories: CategoryCollectionRepository,
+    private val categoryOptions: CategoryOptionCollectionRepository,
+    private val categoryOptionCombos: CategoryOptionComboCollectionRepository,
+    private val categoryCombos: CategoryComboCollectionRepository,
+    private val categoryOptionComboService: CategoryOptionComboService
+) : CategoryModule {
+    override fun categories(): CategoryCollectionRepository {
+        return categories
     }
 
-    @Override
-    protected void afterObjectHandled(CategoryOptionCombo optionCombo, HandleAction action) {
-        categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
-                optionCombo.categoryOptions(),
-                categoryOption -> CategoryOptionComboCategoryOptionLink.builder()
-                        .categoryOptionCombo(optionCombo.uid()).categoryOption(categoryOption.uid()).build());
+    override fun categoryOptions(): CategoryOptionCollectionRepository {
+        return categoryOptions
+    }
+
+    override fun categoryOptionCombos(): CategoryOptionComboCollectionRepository {
+        return categoryOptionCombos
+    }
+
+    override fun categoryCombos(): CategoryComboCollectionRepository {
+        return categoryCombos
+    }
+
+    override fun categoryOptionComboService(): CategoryOptionComboService {
+        return categoryOptionComboService
     }
 }

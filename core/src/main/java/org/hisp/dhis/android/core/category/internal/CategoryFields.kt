@@ -25,43 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryTableInfo
 
+internal object CategoryFields {
+    const val CATEGORY_OPTIONS = "categoryOptions"
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.category.CategoryCombo;
+    private val fh = FieldsHelper<Category>()
+    val uid = fh.uid()
 
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-final class CategoryComboCall implements UidsCall<CategoryCombo> {
-
-    private static final int MAX_UID_LIST_SIZE = 130;
-
-    private final CategoryComboService service;
-    private final Handler<CategoryCombo> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    CategoryComboCall(CategoryComboService service, Handler<CategoryCombo> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<CategoryCombo>> download(Set<String> uids) {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getCategoryCombos(CategoryComboFields.allFields, CategoryComboFields.uid.in(partitionUids),
-                        Boolean.FALSE));
-    }
+    val allFields: Fields<Category> = Fields.builder<Category>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.nestedFieldWithUid(CATEGORY_OPTIONS),
+            fh.field<String>(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
+        ).build()
 }

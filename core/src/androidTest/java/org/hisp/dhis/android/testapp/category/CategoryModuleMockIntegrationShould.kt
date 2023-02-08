@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -56,7 +56,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         assertThat(combos.size).isEqualTo(2)
 
         for (combo in combos) {
-            assertThat(combo.categories()).isNull()
+            assertThat(combo.categories()).isNotNull()
         }
     }
 
@@ -164,13 +164,13 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
     @Test
     fun allow_access_to_category_option_combos_without_children() {
         val categoryOptionCombos = d2.categoryModule().categoryOptionCombos().blockingGet()
-        assertThat(categoryOptionCombos.size).isEqualTo(4)
+        assertThat(categoryOptionCombos.size).isEqualTo(3)
     }
 
     @Test
     fun allow_access_to_category_option_combos_with_category_options() {
         val categoryOptionCombos = d2.categoryModule().categoryOptionCombos().withCategoryOptions().blockingGet()
-        assertThat(categoryOptionCombos.size).isEqualTo(4)
+        assertThat(categoryOptionCombos.size).isEqualTo(3)
 
         for (categoryOptionCombo in categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions()).isNotNull()

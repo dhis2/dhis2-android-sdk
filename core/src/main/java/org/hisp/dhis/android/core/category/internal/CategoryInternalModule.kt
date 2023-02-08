@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryInternalModule @Inject constructor(

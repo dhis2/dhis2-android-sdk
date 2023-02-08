@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
 import org.hisp.dhis.android.core.category.*
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryComboHandler @Inject constructor(

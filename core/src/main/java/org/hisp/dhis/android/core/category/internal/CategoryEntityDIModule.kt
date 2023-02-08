@@ -58,7 +58,7 @@ internal class CategoryEntityDIModule : IdentifiableStoreProvider<Category> {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Category>> {
         return mapOf(
             CategoryFields.CATEGORY_OPTIONS to
-                    CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
+                CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
         )
     }
 }

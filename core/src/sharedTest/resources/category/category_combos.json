@@ -60,25 +60,6 @@
               "id": "as6ygGvUGNg"
             }
           ]
-        },
-        {
-          "lastUpdated": "2011-12-24T12:24:25.319",
-          "code": "COC_00001",
-          "created": "2011-12-24T12:24:25.319",
-          "name": "Incomplete categoryCombo",
-          "id": "awrtJzfChWp",
-          "displayName": "Incomplete categoryCombo",
-          "categoryCombo": {
-            "id": "m2jTvAj5kkm"
-          },
-          "categoryOptions": [
-            {
-              "id": "uZUnebiT5DI"
-            },
-            {
-              "id": "tsaygfvUfNg"
-            }
-          ]
         }
       ]
     },

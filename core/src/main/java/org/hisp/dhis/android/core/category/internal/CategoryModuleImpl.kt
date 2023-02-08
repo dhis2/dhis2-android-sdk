@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.category.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.category.*
 
 @Reusable
 class CategoryModuleImpl @Inject internal constructor(

@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryComboUidsSeeker @Inject constructor(

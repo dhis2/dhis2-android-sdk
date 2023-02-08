@@ -55,7 +55,7 @@ internal class CategoryOptionComboEntityDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOptionCombo>> {
         return mapOf(
             CategoryOptionComboFields.CATEGORY_OPTIONS to
-                    CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter)
+                CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter)
         )
     }
 }

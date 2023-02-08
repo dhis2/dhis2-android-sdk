@@ -27,32 +27,33 @@
  */
 
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id("com.android.application")
+    kotlin("android")
+    kotlin("android.extensions")
 }
 
-apply from: project.file("../core/plugins/jacoco.gradle")
+apply(from = project.file("../core/plugins/jacoco.gradle"))
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdk = 33
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
-        applicationId "org.hisp.dhis.android.instrumentedTestApp"
-        minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
+        minSdk = 21
+        targetSdk = 33
+        versionCode = 1
+        versionName = "1.0"
     }
 
     buildTypes {
-        debug {
-            testCoverageEnabled = true
+        getByName("debug") {
+            enableAndroidTestCoverage = true
         }
     }
-    namespace 'org.hisp.dhis.android.instrumentedTestApp'
+    namespace = "org.hisp.dhis.android.instrumentedTestApp"
 }
 
 dependencies {
-    api project(':core')
+    implementation(project(":core"))
 }

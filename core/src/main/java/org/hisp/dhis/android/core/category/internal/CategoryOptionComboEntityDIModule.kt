@@ -27,36 +27,35 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl.Companion.create
 
-@Reusable
-internal class CategoryCall @Inject constructor(
-    private val handler: Handler<Category>,
-    private val service: CategoryService,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Category> {
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 90
+@Module
+internal class CategoryOptionComboEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): CategoryOptionComboStore {
+        return create(databaseAdapter)
     }
 
-    override fun download(uids: Set<String>): Single<List<Category>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getCategories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false
-            )
-        }
+    @Provides
+    @Reusable
+    fun handler(impl: CategoryOptionComboHandler): HandlerWithTransformer<CategoryOptionCombo> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOptionCombo>> {
+        return mapOf(
+            CategoryOptionComboFields.CATEGORY_OPTIONS to
+                CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter)
+        )
     }
 }

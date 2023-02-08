@@ -25,33 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.internal.CategoryStore.create
 
 @Module
-public final class CategoryCategoryComboEntityDIModule {
-
+internal class CategoryEntityDIModule : IdentifiableStoreProvider<Category> {
     @Provides
     @Reusable
-    LinkStore<CategoryCategoryComboLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryComboLinkStore.create(databaseAdapter);
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Category> {
+        return create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    OrderedLinkHandler<Category, CategoryCategoryComboLink> handler(
-            LinkStore<CategoryCategoryComboLink> store) {
-        return new OrderedLinkHandlerImpl<>(store);
+    fun handler(store: IdentifiableObjectStore<Category>): Handler<Category> {
+        return IdentifiableHandlerImpl(store)
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Category>> {
+        return mapOf(
+            CategoryFields.CATEGORY_OPTIONS to
+                CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
+        )
     }
 }

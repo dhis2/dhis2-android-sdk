@@ -25,30 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
-
-public final class CategoryFields {
-
-    public static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<Category> fh = new FieldsHelper<>();
-
-    public static final Field<Category, String> uid = fh.uid();
-
-    public static final Fields<Category> allFields = Fields.<Category>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-                    fh.<String>field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
-            ).build();
-
-    private CategoryFields() {
-    }
-}
+@Reusable
+internal class CategoryInternalModule @Inject constructor(
+    val categoryCall: UidsCall<Category>,
+    val categoryComboCall: UidsCall<CategoryCombo>
+)

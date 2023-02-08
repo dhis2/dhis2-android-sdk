@@ -25,17 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.program.ProgramTableInfo
 
-import java.util.List;
+@Reusable
+internal class CategoryComboUidsSeeker @Inject constructor(
+    private val databaseAdapter: DatabaseAdapter
+) {
+    fun seekUids(): Set<String> {
+        val tableNames = listOf(
+            ProgramTableInfo.TABLE_INFO.name(),
+            DataSetTableInfo.TABLE_INFO.name(),
+            DataElementTableInfo.TABLE_INFO.name(),
+            DataSetElementLinkTableInfo.TABLE_INFO.name()
+        )
+        val query = MultipleTableQueryBuilder()
+            .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()
 
-public final class CategoryComboInternalAccessor {
+        val categoryCombos: MutableSet<String> = HashSet()
 
-    private CategoryComboInternalAccessor() {
-    }
-
-    public static List<CategoryOptionCombo> accessCategoryOptionCombos(CategoryCombo categoryCombo) {
-        return categoryCombo.categoryOptionCombos();
+        databaseAdapter.rawQuery(query).use { cursor ->
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                do {
+                    categoryCombos.add(cursor.getString(0))
+                } while (cursor.moveToNext())
+            }
+        }
+        return categoryCombos
     }
 }

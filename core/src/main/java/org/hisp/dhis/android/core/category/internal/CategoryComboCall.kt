@@ -25,40 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
-
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.category.CategoryCombo
 
 @Reusable
-final class CategoryOptionComboHandler extends IdentifiableHandlerImpl<CategoryOptionCombo> {
-
-    private final LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-            categoryOptionComboCategoryOptionLinkHandler;
-
-    @Inject
-    CategoryOptionComboHandler(CategoryOptionComboStore store,
-                               LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-                                       categoryOptionComboCategoryOptionLinkHandler) {
-        super(store);
-        this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
+internal class CategoryComboCall @Inject constructor(
+    private val service: CategoryComboService,
+    private val handler: Handler<CategoryCombo>,
+    private val apiDownloader: APIDownloader
+) : UidsCall<CategoryCombo> {
+    override fun download(uids: Set<String>): Single<List<CategoryCombo>> {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
+            service.getCategoryCombos(
+                CategoryComboFields.allFields,
+                CategoryComboFields.uid.`in`(partitionUids),
+                paging = false
+            )
+        }
     }
 
-    @Override
-    protected void afterObjectHandled(CategoryOptionCombo optionCombo, HandleAction action) {
-        categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
-                optionCombo.categoryOptions(),
-                categoryOption -> CategoryOptionComboCategoryOptionLink.builder()
-                        .categoryOptionCombo(optionCombo.uid()).categoryOption(categoryOption.uid()).build());
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

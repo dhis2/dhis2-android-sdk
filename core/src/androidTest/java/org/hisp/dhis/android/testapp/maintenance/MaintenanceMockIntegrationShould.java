@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.testapp.maintenance;
 
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
@@ -51,15 +49,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
     @Test
     public void allow_access_to_foreign_key_violations() {
         List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(violations.size()).isEqualTo(4);
-
-        ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
-                .toTable(CategoryOptionTableInfo.TABLE_INFO.name())
-                .toColumn(IdentifiableColumns.UID)
-                .fromTable(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name())
-                .fromColumn(CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION)
-                .notFoundValue("non_existent_category_option_uid")
-                .build();
+        assertThat(violations.size()).isEqualTo(3);
 
         ForeignKeyViolation optionViolation = ForeignKeyViolation.builder()
                 .toTable(OptionSetTableInfo.TABLE_INFO.name())
@@ -75,7 +65,6 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
             violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
         }
 
-        assertThat(violationsToCompare.contains(categoryOptionComboViolation)).isTrue();
         assertThat(violationsToCompare.contains(optionViolation)).isTrue();
     }
 

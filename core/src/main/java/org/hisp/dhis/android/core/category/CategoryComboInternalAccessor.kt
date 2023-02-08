@@ -25,40 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryOptionComboEntityDIModule {
-
-    @Provides
-    @Reusable
-    public CategoryOptionComboStore store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionComboStoreImpl.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public HandlerWithTransformer<CategoryOptionCombo> handler(CategoryOptionComboHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<CategoryOptionCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(CategoryOptionComboFields.CATEGORY_OPTIONS,
-                CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter));
+internal object CategoryComboInternalAccessor {
+    fun accessCategoryOptionCombos(categoryCombo: CategoryCombo): List<CategoryOptionCombo>? {
+        return categoryCombo.categoryOptionCombos()
     }
 }

@@ -25,26 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+object CategoryOptionComboFields {
+    const val CATEGORY_OPTIONS = "categoryOptions"
 
-public final class CategoryOptionComboFields {
+    private val fh = FieldsHelper<CategoryOptionCombo>()
 
-    public static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
-
-
-    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
-            ).build();
-
-    private CategoryOptionComboFields() {
-    }
+    val allFields: Fields<CategoryOptionCombo> = Fields.builder<CategoryOptionCombo>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.nestedFieldWithUid(CATEGORY_OPTIONS)
+        ).build()
 }

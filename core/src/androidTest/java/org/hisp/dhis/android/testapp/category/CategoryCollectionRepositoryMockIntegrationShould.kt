@@ -25,28 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.category
 
-package org.hisp.dhis.android.core.category.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@RunWith(D2JunitRunner::class)
+class CategoryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_all() {
+        val categories = d2.categoryModule().categories().blockingGet()
 
-import java.util.Set;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class CategoryComboUidsSeekerMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+        assertThat(categories.size).isEqualTo(4)
+    }
 
     @Test
-    public void seek_category_combos_uids() {
-        Set<String> categories = new CategoryComboUidsSeeker(databaseAdapter).seekUids();
+    fun filter_by_name() {
+        val categories = d2.categoryModule().categories()
+            .byName().like("e")
+            .blockingGet()
 
-        assertThat(categories.size()).isEqualTo(2);
-        assertThat(categories.contains("m2jTvAj5kkm")).isTrue();
-        // Default category combo (p0KPaWEg3cf).
-        assertThat(categories.contains("p0KPaWEg3cf")).isTrue();
+        assertThat(categories.size).isEqualTo(3)
+    }
+
+    @Test
+    fun filter_by_data_dimension_type() {
+        val categories = d2.categoryModule().categories()
+            .byDataDimensionType().eq("DISAGGREGATION")
+            .blockingGet()
+
+        assertThat(categories.size).isEqualTo(4)
+    }
+
+    @Test
+    fun include_category_options_as_children() {
+        val category = d2.categoryModule().categories()
+            .withCategoryOptions()
+            .uid("vGs6omsRekv")
+            .blockingGet()
+
+        assertThat(category.categoryOptions()!!.size).isEqualTo(1)
     }
 }

@@ -27,36 +27,21 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.category.Category
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-@Reusable
-internal class CategoryCall @Inject constructor(
-    private val handler: Handler<Category>,
-    private val service: CategoryService,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Category> {
+@RunWith(D2JunitRunner::class)
+class CategoryComboUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun seek_category_combos_uids() {
+        val categories = CategoryComboUidsSeeker(databaseAdapter).seekUids()
+        assertThat(categories.size).isEqualTo(2)
+        assertThat(categories.contains("m2jTvAj5kkm")).isTrue()
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 90
-    }
-
-    override fun download(uids: Set<String>): Single<List<Category>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getCategories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false
-            )
-        }
+        // Default category combo (p0KPaWEg3cf).
+        assertThat(categories.contains("p0KPaWEg3cf")).isTrue()
     }
 }

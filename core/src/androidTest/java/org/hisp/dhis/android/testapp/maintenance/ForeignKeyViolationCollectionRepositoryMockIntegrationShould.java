@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.maintenance;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -46,27 +46,27 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     @Test
     public void find_all() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(4);
+        assertThat(foreignKeyViolations.size()).isEqualTo(3);
     }
 
     @Test
     public void filter_by_from_table() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromTable().eq("CategoryOptionComboCategoryOptionLink").blockingGet();
+                .byFromTable().eq("Option").blockingGet();
         assertThat(foreignKeyViolations.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_from_column() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromColumn().eq("categoryOption").blockingGet();
+                .byFromColumn().eq("optionSet").blockingGet();
         assertThat(foreignKeyViolations.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_to_table() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byToTable().eq("CategoryOption").blockingGet();
+                .byToTable().eq("OptionSet").blockingGet();
         assertThat(foreignKeyViolations.size()).isEqualTo(1);
     }
 
@@ -74,13 +74,13 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     public void filter_by_to_column() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
                 .byToColumn().eq("uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(3);
+        assertThat(foreignKeyViolations.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_not_found_value() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byNotFoundValue().eq("non_existent_category_option_uid").blockingGet();
+                .byNotFoundValue().eq("non_existent_option_set_uid").blockingGet();
         assertThat(foreignKeyViolations.size()).isEqualTo(1);
     }
 
@@ -94,14 +94,14 @@ public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extend
     @Test
     public void filter_by_from_object_row() {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromObjectRow().like("categoryOption: non_existent_category_option_uid").blockingGet();
+                .byFromObjectRow().like("optionSet: non_existent_option_set_uid").blockingGet();
         assertThat(foreignKeyViolations.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_created() throws ParseException {
         List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byCreated().after(BaseIdentifiableObject.parseDate("2019-01-15T08:14:06.767")).blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(4);
+                .byCreated().after(DateUtils.DATE_FORMAT.parse("2019-01-15T08:14:06.767")).blockingGet();
+        assertThat(foreignKeyViolations.size()).isEqualTo(3);
     }
 }

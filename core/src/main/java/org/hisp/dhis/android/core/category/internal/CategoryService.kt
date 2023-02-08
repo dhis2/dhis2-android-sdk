@@ -25,33 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.Category
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
-import org.hisp.dhis.android.core.category.CategoryOption;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryCategoryOptionEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkStore<CategoryCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryOptionLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> handler(
-            LinkStore<CategoryCategoryOptionLink> store) {
-        return new OrderedLinkHandlerImpl<>(store);
-    }
+internal interface CategoryService {
+    @GET("categories")
+    fun getCategories(
+        @Query("fields") @Which fields: Fields<Category>,
+        @Query("filter") @Where uids: Filter<Category, String>,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<Category>>
 }

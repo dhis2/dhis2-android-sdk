@@ -25,47 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
 @Reusable
-public final class CategoryModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    CategoryModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
+internal class CategoryModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
         tableWiper.wipeTables(
-                CategoryTableInfo.TABLE_INFO,
-                CategoryOptionTableInfo.TABLE_INFO,
-                CategoryOptionComboTableInfo.TABLE_INFO,
-                CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryComboTableInfo.TABLE_INFO,
-                CategoryCategoryComboLinkTableInfo.TABLE_INFO
-        );
+            CategoryTableInfo.TABLE_INFO,
+            CategoryOptionTableInfo.TABLE_INFO,
+            CategoryOptionComboTableInfo.TABLE_INFO,
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryComboTableInfo.TABLE_INFO,
+            CategoryCategoryComboLinkTableInfo.TABLE_INFO
+        )
     }
 
-    @Override
-    public void wipeData() {
+    override fun wipeData() {
         // No data to wipe
     }
 }

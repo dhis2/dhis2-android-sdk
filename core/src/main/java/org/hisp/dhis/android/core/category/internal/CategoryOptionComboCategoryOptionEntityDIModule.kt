@@ -25,26 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStore.create
 
+@Module
+internal class CategoryOptionComboCategoryOptionEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionComboCategoryOptionLink> {
+        return create(databaseAdapter)
+    }
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface CategoryComboService {
-
-    @GET("categoryCombos")
-    Single<Payload<CategoryCombo>> getCategoryCombos(
-            @Query("fields") @Which Fields<CategoryCombo> fields,
-            @Query("filter") @Where Filter<CategoryCombo, String> uids,
-            @Query("paging") Boolean paging);
+    @Provides
+    @Reusable
+    fun categoryOptionComboCategoryOptionLinkHandler(
+        store: LinkStore<CategoryOptionComboCategoryOptionLink>
+    ): LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink> {
+        return LinkHandlerImpl(store)
+    }
 }

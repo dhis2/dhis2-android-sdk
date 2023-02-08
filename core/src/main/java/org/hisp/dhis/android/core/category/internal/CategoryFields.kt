@@ -25,33 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
+internal object CategoryFields {
+    const val CATEGORY_OPTIONS = "categoryOptions"
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private val fh = FieldsHelper<Category>()
+    val uid = fh.uid()
 
-@Module
-public final class CategoryOptionComboCategoryOptionEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkStore<CategoryOptionComboCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
-    categoryOptionComboCategoryOptionLinkHandler(LinkStore<CategoryOptionComboCategoryOptionLink> store) {
-        return new LinkHandlerImpl<>(store);
-    }
+    val allFields: Fields<Category> = Fields.builder<Category>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.nestedFieldWithUid(CATEGORY_OPTIONS),
+            fh.field<String>(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
+        ).build()
 }

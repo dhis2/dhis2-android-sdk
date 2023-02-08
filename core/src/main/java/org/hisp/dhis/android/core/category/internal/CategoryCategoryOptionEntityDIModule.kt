@@ -25,35 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore.create
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+@Module
+internal class CategoryCategoryOptionEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryOptionLink> {
+        return create(databaseAdapter)
+    }
 
-import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
-
-public final class CategoryComboFields {
-
-    public static final String CATEGORIES = "categories";
-    public static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
-
-    private static final FieldsHelper<CategoryCombo> fh = new FieldsHelper<>();
-
-    public static final Field<CategoryCombo, String> uid = fh.uid();
-
-    public static final Fields<CategoryCombo> allFields = Fields.<CategoryCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(Columns.IS_DEFAULT),
-                    fh.nestedFieldWithUid(CATEGORIES),
-                    fh.<CategoryOptionCombo>nestedField(CATEGORY_OPTION_COMBOS)
-                            .with(CategoryOptionComboFields.allFields)
-            ).build();
-
-    private CategoryComboFields() {
+    @Provides
+    @Reusable
+    fun handler(
+        store: LinkStore<CategoryCategoryOptionLink>
+    ): OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> {
+        return OrderedLinkHandlerImpl(store)
     }
 }

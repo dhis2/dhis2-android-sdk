@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,50 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.testapp.category;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.category.*
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void find_all() {
-        List<Category> categories = d2.categoryModule().categories().blockingGet();
-        assertThat(categories.size()).isEqualTo(4);
+@Reusable
+class CategoryModuleImpl @Inject internal constructor(
+    private val categories: CategoryCollectionRepository,
+    private val categoryOptions: CategoryOptionCollectionRepository,
+    private val categoryOptionCombos: CategoryOptionComboCollectionRepository,
+    private val categoryCombos: CategoryComboCollectionRepository,
+    private val categoryOptionComboService: CategoryOptionComboService
+) : CategoryModule {
+    override fun categories(): CategoryCollectionRepository {
+        return categories
     }
 
-    @Test
-    public void filter_by_name() {
-        List<Category> categories = d2.categoryModule().categories()
-                .byName().like("e")
-                .blockingGet();
-        assertThat(categories.size()).isEqualTo(3);
+    override fun categoryOptions(): CategoryOptionCollectionRepository {
+        return categoryOptions
     }
 
-    @Test
-    public void filter_by_data_dimension_type() {
-        List<Category> categories = d2.categoryModule().categories()
-                .byDataDimensionType().eq("DISAGGREGATION")
-                .blockingGet();
-        assertThat(categories.size()).isEqualTo(4);
+    override fun categoryOptionCombos(): CategoryOptionComboCollectionRepository {
+        return categoryOptionCombos
     }
 
-    @Test
-    public void include_category_options_as_children() {
-        Category category = d2.categoryModule().categories()
-                .withCategoryOptions()
-                .uid("vGs6omsRekv")
-                .blockingGet();
-        assertThat(category.categoryOptions().size()).isEqualTo(1);
+    override fun categoryCombos(): CategoryComboCollectionRepository {
+        return categoryCombos
+    }
+
+    override fun categoryOptionComboService(): CategoryOptionComboService {
+        return categoryOptionComboService
     }
 }

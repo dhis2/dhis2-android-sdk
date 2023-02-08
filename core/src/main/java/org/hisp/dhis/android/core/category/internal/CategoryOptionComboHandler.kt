@@ -25,31 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category.internal
 
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
 @Reusable
-public final class CategoryInternalModule {
-
-    @VisibleForTesting
-    final UidsCall<Category> categoryCall;
-
-    @VisibleForTesting
-    final UidsCall<CategoryCombo> categoryComboCall;
-
-    @Inject
-    CategoryInternalModule(UidsCall<Category> categoryCall,
-                           UidsCall<CategoryCombo> categoryComboCall) {
-        this.categoryCall = categoryCall;
-        this.categoryComboCall = categoryComboCall;
+internal class CategoryOptionComboHandler @Inject constructor(
+    store: CategoryOptionComboStore,
+    private val categoryOptionComboCategoryOptionLinkHandler:
+        LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
+) : IdentifiableHandlerImpl<CategoryOptionCombo>(store) {
+    override fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
+        categoryOptionComboCategoryOptionLinkHandler.handleMany(
+            o.uid(),
+            o.categoryOptions()
+        ) { categoryOption: CategoryOption ->
+            CategoryOptionComboCategoryOptionLink.builder()
+                .categoryOptionCombo(o.uid())
+                .categoryOption(categoryOption.uid())
+                .build()
+        }
     }
 }

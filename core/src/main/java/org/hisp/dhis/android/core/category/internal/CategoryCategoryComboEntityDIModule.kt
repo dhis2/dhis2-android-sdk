@@ -25,43 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore.create
 
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-final class CategoryComboCall implements UidsCall<CategoryCombo> {
-
-    private static final int MAX_UID_LIST_SIZE = 130;
-
-    private final CategoryComboService service;
-    private final Handler<CategoryCombo> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    CategoryComboCall(CategoryComboService service, Handler<CategoryCombo> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+@Module
+internal class CategoryCategoryComboEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryComboLink> {
+        return create(databaseAdapter)
     }
 
-    @Override
-    public Single<List<CategoryCombo>> download(Set<String> uids) {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getCategoryCombos(CategoryComboFields.allFields, CategoryComboFields.uid.in(partitionUids),
-                        Boolean.FALSE));
+    @Provides
+    @Reusable
+    fun handler(
+        store: LinkStore<CategoryCategoryComboLink>
+    ): OrderedLinkHandler<Category, CategoryCategoryComboLink> {
+        return OrderedLinkHandlerImpl(store)
     }
 }

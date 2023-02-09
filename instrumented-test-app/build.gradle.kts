@@ -29,7 +29,6 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 apply(from = project.file("../core/plugins/jacoco.gradle"))

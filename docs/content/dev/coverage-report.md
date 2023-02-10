@@ -10,7 +10,7 @@ How to generate the report:
 // Run unit tests. It generates a coverage report (.exec) in build/jacoco.
 ./gradlew testDebugUnitTest
 
-// Run android test with coverage. This property is used in build.gradle to activate the coverage report.
+// Run android test with coverage. This property is used in build.gradle.kts to activate the coverage report.
 // It generates a coverage report (.ec) in build/outputs/code_coverage.
 ./gradlew -Pcoverage connectedDebugAndroidTest
 

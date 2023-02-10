@@ -44,51 +44,52 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 }
 
-val _targetSdkVersion = 31
+val _targetSdkVersion = 33
 val _minSdkVersion = 21
 val VERSION_CODE: String by project
 val VERSION_NAME: String by project
 
-val libraries = mapOf(
-    "libraryDesugaring" to "1.2.2",
+/*
+** Libraries
+*/
+val libraryDesugaring = "1.2.2"
 
-    // android
-    "annotation" to "1.4.0",
-    "paging" to "2.1.2",
+// android
+val annotation = "1.4.0"
+val paging = "2.1.2"
 
-    // java
-    "jackson" to "2.11.2",
-    "autoValue" to "1.7.4",
-    "autoValueCursor" to "2.0.1",
-    "retrofit" to "2.9.0",
-    "okHttp" to "3.12.0",
-    "dagger" to "2.44.2",
-    "rxJava" to "2.2.12",
-    "rxAndroid" to "2.1.1",
-    "sqlCipher" to "4.4.3",
-    "smsCompression" to "0.2.0",
-    "expressionParser" to "1.0.29",
+// java
+val jackson = "2.11.2"
+val autoValue = "1.7.4"
+val autoValueCursor = "2.0.1"
+val retrofit = "2.9.0"
+val okHttp = "3.12.0"
+val dagger = "2.44.2"
+val rxJava = "2.2.12"
+val rxAndroid = "2.1.1"
+val sqlCipher = "4.4.3"
+val smsCompression = "0.2.0"
+val expressionParser = "1.0.29"
 
-    // Kotlin
-    "kotlinxDatetime" to "0.4.0",
-    "coroutines" to "1.6.4",
+// Kotlin
+val kotlinxDatetime = "0.4.0"
+val coroutines = "1.6.4"
 
-    // test dependencies
-    "coreTesting" to "2.1.0",
-    "jUnit" to "4.13.2",
-    "mockito" to "3.4.6",
-    "mockitoKotlin" to "2.2.0",
-    "truth" to "1.1.2",
-    "testRunner" to "1.4.0",
-    "equalsVerifier" to "3.4.1",
-    "flipper" to "0.83.0",
-    "soloader" to "0.10.1",
-    "liveDataTesting" to "1.2.0",
-    "commonsLogging" to "1.2",
+// test dependencies
+val coreTesting = "2.1.0"
+val jUnit = "4.13.2"
+val mockito = "3.4.6"
+val mockitoKotlin = "2.2.0"
+val truth = "1.1.2"
+val testRunner = "1.4.0"
+val equalsVerifier = "3.4.1"
+val flipper = "0.83.0"
+val soloader = "0.10.1"
+val liveDataTesting = "1.2.0"
+val commonsLogging = "1.2"
 
-    // open id
-    "appauth" to "0.8.1"
-)
+// open id
+val appauth = "0.8.1"
 
 android {
     compileSdk = _targetSdkVersion
@@ -110,6 +111,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     packagingOptions {
         resources {
             excludes += listOf("META-INF/LICENSE", "META-INF/rxjava.properties")
@@ -149,85 +151,87 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${libraries["libraryDesugaring"]}")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$libraryDesugaring")
 
     // RxJava
-    api("io.reactivex.rxjava2:rxjava:${libraries["rxJava"]}")
-    api("io.reactivex.rxjava2:rxandroid:${libraries["rxAndroid"]}")
+    api("io.reactivex.rxjava2:rxjava:$rxJava")
+    api("io.reactivex.rxjava2:rxandroid:$rxAndroid")
 
     // AndroidX
-    api("androidx.annotation:annotation:${libraries["annotation"]}")
-    api("androidx.paging:paging-runtime:${libraries["paging"]}")
+    api("androidx.annotation:annotation:$annotation")
+    api("androidx.paging:paging-runtime:$paging")
 
     // Auto Value
-    api("com.google.auto.value:auto-value-annotations:${libraries["autoValue"]}")
-    kapt("com.google.auto.value:auto-value:${libraries["autoValue"]}")
+    api("com.google.auto.value:auto-value-annotations:$autoValue")
+    kapt("com.google.auto.value:auto-value:$autoValue")
 
     // Dagger
-    api("com.google.dagger:dagger:${libraries["dagger"]}")
-    kapt("com.google.dagger:dagger-compiler:${libraries["dagger"]}")
+    api("com.google.dagger:dagger:$dagger")
+    kapt("com.google.dagger:dagger-compiler:$dagger")
 
     // Jackson
-    api("com.fasterxml.jackson.core:jackson-databind:${libraries["jackson"]}")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:${libraries["jackson"]}")
+    api("com.fasterxml.jackson.core:jackson-databind:$jackson")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson")
 
     // Square libraries
-    api("com.squareup.okhttp3:okhttp:${libraries["okHttp"]}")
-    api("com.squareup.retrofit2:retrofit:${libraries["retrofit"]}")
-    api("com.squareup.retrofit2:converter-jackson:${libraries["retrofit"]}")
-    api("com.squareup.retrofit2:adapter-rxjava2:${libraries["retrofit"]}")
+    api("com.squareup.okhttp3:okhttp:$okHttp")
+    api("com.squareup.retrofit2:retrofit:$retrofit")
+    api("com.squareup.retrofit2:converter-jackson:$retrofit")
+    api("com.squareup.retrofit2:adapter-rxjava2:$retrofit")
 
     // Kotlin
-    api("org.jetbrains.kotlinx:kotlinx-datetime:${libraries["kotlinxDatetime"]}")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libraries["coroutines"]}")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${libraries["coroutines"]}")
+    api("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetime")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines")
 
     // sms compression library
-    api("com.github.dhis2:sms-compression:${libraries["smsCompression"]}")
+    api("com.github.dhis2:sms-compression:$smsCompression")
 
     // DHIS 2 antlr expression parser
-    api("org.hisp.dhis.parser:dhis-antlr-expression-parser:${libraries["expressionParser"]}")
+    api("org.hisp.dhis.parser:dhis-antlr-expression-parser:$expressionParser")
 
     // Extension which generates mappers for work with cursor and content values
-    api("com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries["autoValueCursor"]}")
-    kapt("com.gabrielittner.auto.value:auto-value-cursor:${libraries["autoValueCursor"]}")
+    api("com.gabrielittner.auto.value:auto-value-cursor-annotations:$autoValueCursor")
+    kapt("com.gabrielittner.auto.value:auto-value-cursor:$autoValueCursor")
 
-    api("net.zetetic:android-database-sqlcipher:${libraries["sqlCipher"]}")
+    api("net.zetetic:android-database-sqlcipher:$sqlCipher")
 
-    api("com.squareup.okhttp3:mockwebserver:${libraries["okHttp"]}")
+    api("com.squareup.okhttp3:mockwebserver:$okHttp")
 
     // Java test dependencies
-    testImplementation("junit:junit:${libraries["jUnit"]}")
-    testImplementation("org.mockito:mockito-core:${libraries["mockito"]}")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries["mockitoKotlin"]}")
-    testImplementation("com.google.truth:truth:${libraries["truth"]}") {
+    testImplementation("junit:junit:$jUnit")
+    testImplementation("org.mockito:mockito-core:$mockito")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin")
+    testImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.
     }
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:${libraries["equalsVerifier"]}")
-    testImplementation("com.squareup.okhttp3:mockwebserver:${libraries["okHttp"]}")
-    testImplementation("androidx.test:runner:${libraries["testRunner"]}")
-    testImplementation("commons-logging:commons-logging:${libraries["commonsLogging"]}")
+
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
+    testImplementation("androidx.test:runner:$testRunner")
+    testImplementation("commons-logging:commons-logging:$commonsLogging")
 
     // Android test dependencies
-    androidTestImplementation("commons-logging:commons-logging:${libraries["commonsLogging"]}")
-    androidTestImplementation("org.mockito:mockito-core:${libraries["mockito"]}")
-    androidTestImplementation("com.jraska.livedata:testing-ktx:${libraries["liveDataTesting"]}")
-    androidTestImplementation("androidx.arch.core:core-testing:${libraries["coreTesting"]}")
-    androidTestImplementation("androidx.test:runner:${libraries["testRunner"]}")
-    androidTestImplementation("androidx.test:rules:${libraries["testRunner"]}")
-    androidTestImplementation("com.squareup.okhttp3:logging-interceptor:${libraries["okHttp"]}")
-    androidTestImplementation("com.google.truth:truth:${libraries["truth"]}") {
+    androidTestImplementation("commons-logging:commons-logging:$commonsLogging")
+    androidTestImplementation("org.mockito:mockito-core:$mockito")
+    androidTestImplementation("com.jraska.livedata:testing-ktx:$liveDataTesting")
+    androidTestImplementation("androidx.arch.core:core-testing:$coreTesting")
+    androidTestImplementation("androidx.test:runner:$testRunner")
+    androidTestImplementation("androidx.test:rules:$testRunner")
+    androidTestImplementation("com.squareup.okhttp3:logging-interceptor:$okHttp")
+    androidTestImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.
     }
-    debugImplementation("com.facebook.flipper:flipper:${libraries["flipper"]}")
-    debugImplementation("com.facebook.soloader:soloader:${libraries["soloader"]}")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:${libraries["flipper"]}") {
+
+    debugImplementation("com.facebook.flipper:flipper:$flipper")
+    debugImplementation("com.facebook.soloader:soloader:$soloader")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:$flipper") {
         exclude(group = "com.squareup.okhttp3")
     }
 
-    releaseImplementation("com.facebook.flipper:flipper-noop:${libraries["flipper"]}")
+    releaseImplementation("com.facebook.flipper:flipper-noop:$flipper")
 
-    implementation("net.openid:appauth:${libraries["appauth"]}")
+    implementation("net.openid:appauth:$appauth")
     implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 }
 

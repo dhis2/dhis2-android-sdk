@@ -37,11 +37,17 @@ plugins {
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
 apply(from = project.file("plugins/jacoco.gradle"))
+apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
-val _targetSdkVersion = "android-31"
-val _minSdkVersion = "android-21"
-val _versionCode = 280
-val _versionName = "1.8.0-SNAPSHOT"
+repositories {
+    mavenCentral()
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+}
+
+val _targetSdkVersion = 31
+val _minSdkVersion = 21
+val VERSION_CODE: String by project
+val VERSION_NAME: String by project
 
 val libraries = mapOf(
     "libraryDesugaring" to "1.2.2",
@@ -85,17 +91,17 @@ val libraries = mapOf(
 )
 
 android {
-    compileSdkVersion = _targetSdkVersion
+    compileSdk = _targetSdkVersion
 
     defaultConfig {
-        minSdkPreview = _minSdkVersion
-        targetSdkPreview = _targetSdkVersion
+        minSdk = _minSdkVersion
+        targetSdk = _targetSdkVersion
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField("long", "VERSION_CODE", "$_versionCode")
-        buildConfigField("String", "VERSION_NAME", "\"${_versionName}\"")
+        buildConfigField("long", "VERSION_CODE", VERSION_CODE)
+        buildConfigField("String", "VERSION_NAME", "\"${VERSION_NAME}\"")
     }
 
     compileOptions {
@@ -109,7 +115,6 @@ android {
             excludes += listOf("META-INF/LICENSE", "META-INF/rxjava.properties")
         }
     }
-
 
     buildTypes {
         getByName("debug") {
@@ -126,7 +131,6 @@ android {
             java.srcDirs("src/sharedTest/java")
             resources.srcDirs("src/sharedTest/resources")
         }
-
     }
 
     testOptions {
@@ -134,14 +138,15 @@ android {
             isReturnDefaultValues = true
         }
     }
-    /*lint {
+
+    lint {
         abortOnError = true
-        disable("MissingTranslation")
-        warning("InvalidPackage")
-    }*/
+        disable += "MissingTranslation"
+        warning += "InvalidPackage"
+    }
+
     namespace = "org.hisp.dhis.android"
 }
-
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${libraries["libraryDesugaring"]}")
@@ -226,18 +231,9 @@ dependencies {
     implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 }
 
-apply(from = project.file("plugins/gradle-mvn-push.gradle"))
-
-repositories {
-    mavenCentral()
-    maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-}
-
 detekt {
     toolVersion = "1.18.0"
     config = files("config/detekt.yml")
     parallel = true
     buildUponDefaultConfig = false
 }
-
-

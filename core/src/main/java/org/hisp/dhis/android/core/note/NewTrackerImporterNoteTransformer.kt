@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.note
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 
-internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
+internal object NewTrackerImporterNoteTransformer : TwoWayTransformer<Note, NewTrackerImporterNote> {
     override fun transform(o: Note): NewTrackerImporterNote {
         return NewTrackerImporterNote.builder()
             .id(o.id())
@@ -42,6 +42,21 @@ internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTracker
             .storedBy(o.storedBy())
             .storedAt(o.storedDate())
             .syncState(o.syncState())
+            .build()
+    }
+
+    override fun deTransform(t: NewTrackerImporterNote): Note {
+        return Note.builder()
+            .id(t.id())
+            .uid(t.uid())
+            .deleted(t.deleted())
+            .noteType(t.noteType())
+            .event(t.event())
+            .enrollment(t.enrollment())
+            .value(t.value())
+            .storedBy(t.storedBy())
+            .storedDate(t.storedAt())
+            .syncState(t.syncState())
             .build()
     }
 }

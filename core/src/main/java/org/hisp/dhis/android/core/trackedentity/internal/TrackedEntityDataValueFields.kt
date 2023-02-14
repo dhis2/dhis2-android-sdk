@@ -25,11 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import java.util.*
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+internal object TrackedEntityDataValueFields {
+    private val fh = FieldsHelper<TrackedEntityDataValue>()
+
+    val allFields: Fields<TrackedEntityDataValue> = Fields.builder<TrackedEntityDataValue>()
+        .fields(
+            fh.field<String>(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT),
+            fh.field<String>(TrackedEntityDataValueTableInfo.Columns.STORED_BY),
+            fh.field<String>(TrackedEntityDataValueTableInfo.Columns.VALUE),
+            fh.field<Date>(TrackedEntityDataValueTableInfo.Columns.CREATED),
+            fh.field<Date>(TrackedEntityDataValueTableInfo.Columns.LAST_UPDATED),
+            fh.field<Boolean>(TrackedEntityDataValueTableInfo.Columns.PROVIDED_ELSEWHERE)
+        ).build()
 }

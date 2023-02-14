@@ -25,30 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.note.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import java.util.*
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
+internal object NewTrackedEntityAttributeValueFields {
+    private const val ATTRIBUTE = "attribute"
+    private const val VALUE = "value"
+    private const val CREATED_AT = "createdAt"
+    private const val UPDATED_AT = "updatedAt"
 
-public final class NoteFields {
-    public final static String UID = "note";
+    private val fh = FieldsHelper<NewTrackerImporterTrackedEntityAttributeValue>()
 
-    private static final FieldsHelper<Note> fh = new FieldsHelper<>();
-
-    public static final Field<Note, String> uid = fh.uid();
-
-    public static final Fields<Note> all = Fields.<Note>builder()
+    val allFields: Fields<NewTrackerImporterTrackedEntityAttributeValue> =
+        Fields.builder<NewTrackerImporterTrackedEntityAttributeValue>()
             .fields(
-                    fh.<String>field(UID),
-                    fh.<String>field(Columns.VALUE),
-                    fh.<String>field(Columns.STORED_BY),
-                    fh.<String>field(Columns.STORED_DATE)
-            ).build();
-
-    private NoteFields() {
-    }
+                fh.field<String>(ATTRIBUTE),
+                fh.field<String>(VALUE),
+                fh.field<Date>(CREATED_AT),
+                fh.field<Date>(UPDATED_AT)
+            ).build()
 }

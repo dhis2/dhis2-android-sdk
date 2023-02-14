@@ -41,7 +41,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserInfoColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.user.UserInfo;
 
 import java.util.Date;
 
@@ -69,7 +73,8 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
 
     @Nullable
     @JsonProperty()
-    public abstract String storedBy();
+    @ColumnAdapter(IgnoreUserInfoColumnAdapter.class)
+    public abstract UserInfo createdBy();
 
     @Nullable
     @JsonProperty()
@@ -103,7 +108,7 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
 
         public abstract Builder dataElement(String dataElement);
 
-        public abstract Builder storedBy(String storedBy);
+        public abstract Builder createdBy(UserInfo createdBy);
 
         public abstract Builder value(String value);
 

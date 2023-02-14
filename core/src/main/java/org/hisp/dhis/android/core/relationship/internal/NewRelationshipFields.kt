@@ -25,11 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.relationship.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+internal object NewRelationshipFields {
+    const val RELATIONSHIP = "relationship"
+    const val RELATIONSHIP_NAME = "relationshipName"
+    private const val RELATIONSHIP_TYPE = "relationshipType"
+    private const val CREATED_AT = "createdAt"
+    private const val UPDATED_AT = "updatedAt"
+    private const val FROM = "from"
+    private const val TO = "to"
+
+    private val fh = FieldsHelper<NewTrackerImporterRelationship>()
+
+    val allFields: Fields<NewTrackerImporterRelationship> = Fields.builder<NewTrackerImporterRelationship>().fields(
+        fh.field<String>(RELATIONSHIP),
+        fh.field<String>(RELATIONSHIP_NAME),
+        fh.field<String>(RELATIONSHIP_TYPE),
+        fh.field<String>(CREATED_AT),
+        fh.field<String>(UPDATED_AT),
+        fh.nestedField<NewTrackerImporterRelationshipItem>(FROM).with(NewRelationshipItemFields.allFields),
+        fh.nestedField<NewTrackerImporterRelationshipItem>(TO).with(NewRelationshipItemFields.allFields)
+    ).build()
 }

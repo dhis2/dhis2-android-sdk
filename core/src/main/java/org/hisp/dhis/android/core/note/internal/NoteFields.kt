@@ -25,11 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.note.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.NoteTableInfo
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+internal object NoteFields {
+    const val UID = "note"
+
+    private val fh = FieldsHelper<Note>()
+    val uid = fh.uid()
+
+    val all: Fields<Note> = Fields.builder<Note>()
+        .fields(
+            fh.field<String>(UID),
+            fh.field<String>(NoteTableInfo.Columns.VALUE),
+            fh.field<String>(NoteTableInfo.Columns.STORED_BY),
+            fh.field<String>(NoteTableInfo.Columns.STORED_DATE)
+        ).build()
 }

@@ -25,30 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
+@Module
+internal class TrackerImporterPackageDIModule {
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): TrackerImporterService {
+        return retrofit.create(TrackerImporterService::class.java)
+    }
 
-import java.util.Date;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackerJobObject> {
+        return create(databaseAdapter)
+    }
 
-public final class TrackedEntityAttributeValueFields {
-
-    public static final String ATTRIBUTE = "attribute";
-
-    private static final FieldsHelper<TrackedEntityAttributeValue> fh = new FieldsHelper<>();
-
-    static final Fields<TrackedEntityAttributeValue> allFields = Fields.<TrackedEntityAttributeValue>builder()
-            .fields(
-                    fh.<String>field(ATTRIBUTE),
-                    fh.<String>field(Columns.VALUE),
-                    fh.<Date>field(Columns.CREATED),
-                    fh.<Date>field(Columns.LAST_UPDATED)
-            ).build();
-
-    private TrackedEntityAttributeValueFields() {
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<TrackerJobObject>): Handler<TrackerJobObject> {
+        return ObjectWithoutUidHandlerImpl(store)
     }
 }

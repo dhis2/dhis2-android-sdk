@@ -31,25 +31,44 @@ import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import javax.inject.Inject
 
 @Reusable
-internal abstract class EventEndpointCallFactory {
+internal class NewEventEndpointCallFactory @Inject constructor(
+    private val service: TrackerExporterService
+) : EventEndpointCallFactory() {
 
-    abstract fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>>
-
-    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<Event>>
-
-    protected fun getUidStr(query: TrackerAPIQuery): String? {
-        return if (query.uids.isEmpty()) null else query.uids.joinToString(";")
+    override fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+        return service.getEvents(
+            fields = NewEventFields.allFields,
+            orgUnit = eventQuery.orgUnit,
+            orgUnitMode = eventQuery.commonParams.ouMode.name,
+            program = eventQuery.commonParams.program,
+            startDate = getEventStartDate(eventQuery),
+            paging = true,
+            page = eventQuery.page,
+            pageSize = eventQuery.pageSize,
+            lastUpdatedStartDate = eventQuery.lastUpdatedStr,
+            includeDeleted = true,
+            eventUid = getUidStr(eventQuery)
+        ).map { mapPayload(it) }
     }
 
-    protected fun getEventStartDate(query: TrackerAPIQuery): String? {
-        return when {
-            query.commonParams.program != null -> query.commonParams.startDate
-            else -> null
-        }
+    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+        return service.getEventSingle(
+            eventUid = uid,
+            fields = NewEventFields.asRelationshipFields,
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
+        ).map { mapPayload(it) }
     }
 
-
+    private fun mapPayload(payload: Payload<NewTrackerImporterEvent>): Payload<Event> {
+        val newItems = payload.items().map { t -> NewTrackerImporterEventTransformer.deTransform(t) }
+        return Payload(newItems)
+    }
 }

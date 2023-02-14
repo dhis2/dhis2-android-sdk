@@ -25,24 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemTrackedEntity
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+internal object NewRelationshipItemTrackedEntityInstanceFields {
+    private const val TRACKED_ENTITY = "trackedEntity"
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-public interface EnrollmentService {
-    String ENROLLMENTS = "enrollments";
-    String ENROLLMENT_UID = "enrollmentUid";
-    String FIELDS = "fields";
-
-    @GET(ENROLLMENTS + "/{" + ENROLLMENT_UID + "}")
-    Single<Enrollment> getEnrollmentSingle(@Path(ENROLLMENT_UID) String trackedEntityInstanceUid,
-                                           @Query(FIELDS) @Which Fields<Enrollment> fields);
+    val trackedEntityInstance: Field<NewTrackerImporterRelationshipItemTrackedEntity, String> =
+        Field.create(TRACKED_ENTITY)
 }

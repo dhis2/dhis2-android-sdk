@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
@@ -40,12 +39,10 @@ object EventCallFactory {
     @JvmStatic
     fun create(
         retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList()
-
-    ): Callable<List<Event>> {
+    ): Single<Payload<Event>> {
 
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
@@ -63,9 +60,8 @@ object EventCallFactory {
             uids = uids
         )
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, null)
-        ).getCall(eventQuery)
+        return OldEventEndpointCallFactory(
+            retrofit.create(EventService::class.java)
+        ).getCollectionCall(eventQuery)
     }
 }

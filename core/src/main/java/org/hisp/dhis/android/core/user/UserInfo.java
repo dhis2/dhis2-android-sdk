@@ -26,36 +26,56 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields;
+import android.database.Cursor;
 
-public final class RelationshipFields {
-    static final String RELATIONSHIP = "relationship";
-    static final String RELATIONSHIP_NAME = "relationshipName";
-    private static final String RELATIONSHIP_TYPE = "relationshipType";
-    private static final String FROM = "from";
-    private static final String TO = "to";
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    // Used only for children appending, can't be used in query
-    public static final String ITEMS = "items";
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    private static final FieldsHelper<Relationship> fh = new FieldsHelper<>();
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserInfo.Builder.class)
+public abstract class UserInfo {
 
-    public static final Fields<Relationship> allFields
-            = Fields.<Relationship>builder().fields(
-            fh.<String>field(RELATIONSHIP),
-            fh.<String>field(RELATIONSHIP_NAME),
-            fh.<String>field(RELATIONSHIP_TYPE),
-            fh.<String>field(BaseIdentifiableObject.CREATED),
-            fh.<String>field(BaseIdentifiableObject.LAST_UPDATED),
-            fh.<RelationshipItem>nestedField(FROM).with(RelationshipItemFields.allFields),
-            fh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields)
-    ).build();
+    @Nullable
+    public abstract String uid();
 
-    private RelationshipFields() {
+    @Nullable
+    public abstract String username();
+
+    @Nullable
+    public abstract String firstName();
+
+    @Nullable
+    public abstract String surname();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_UserInfo.Builder();
+    }
+
+    @NonNull
+    public static UserInfo create(Cursor cursor) {
+        return AutoValue_UserInfo.createFromCursor(cursor);
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder username(String username);
+
+        public abstract Builder firstName(String firstName);
+
+        public abstract Builder surname(String surname);
+
+        public abstract UserInfo build();
     }
 }

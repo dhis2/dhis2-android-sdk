@@ -25,11 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.enrollment.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import javax.inject.Inject
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+@Reusable
+internal class NewEnrollmentEndpointCallFactory @Inject constructor(
+    private val service: TrackerExporterService
+) : EnrollmentEndpointCallFactory {
+    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
+        return service.getEnrollmentSingle(
+            uid,
+            NewEnrollmentFields.asRelationshipFields
+        ).map { NewTrackerImporterEnrollmentTransformer.deTransform(it) }
+    }
 }

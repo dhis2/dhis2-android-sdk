@@ -25,18 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+internal object NewRelationshipItemEventFields {
+    private const val EVENT = "event"
 
-final class RelationshipItemEventFields {
-
-    private static final String EVENT = "event";
-
-    public static final Field<RelationshipItemEvent, String> event = Field.create(EVENT);
-
-    private RelationshipItemEventFields() {
-    }
+    val event: Field<NewTrackerImporterRelationshipItemEvent, String> = Field.create(EVENT)
 }

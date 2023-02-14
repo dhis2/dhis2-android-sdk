@@ -25,11 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.enrollment.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+interface EnrollmentService {
+    @GET("$ENROLLMENTS/{$ENROLLMENT_UID}")
+    fun getEnrollmentSingle(
+        @Path(ENROLLMENT_UID) enrollmentUid: String?,
+        @Query(FIELDS) @Which fields: Fields<Enrollment>
+    ): Single<Enrollment>
+
+    companion object {
+        const val ENROLLMENTS = "enrollments"
+        const val ENROLLMENT_UID = "enrollmentUid"
+        const val FIELDS = "fields"
+    }
 }

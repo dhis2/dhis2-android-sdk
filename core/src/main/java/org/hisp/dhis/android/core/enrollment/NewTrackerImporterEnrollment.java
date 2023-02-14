@@ -43,10 +43,10 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -55,7 +55,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
-import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue;
 
 import java.util.Date;
@@ -153,8 +153,8 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
-    abstract List<Relationship> relationships();
+    @ColumnAdapter(IgnoreNewRelationshipListColumnAdapter.class)
+    abstract List<NewTrackerImporterRelationship> relationships();
 
     public static Builder builder() {
         return new $$AutoValue_NewTrackerImporterEnrollment.Builder();
@@ -210,7 +210,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder notes(List<NewTrackerImporterNote> notes);
 
-        public abstract Builder relationships(List<Relationship> relationships);
+        public abstract Builder relationships(List<NewTrackerImporterRelationship> relationships);
 
         public abstract NewTrackerImporterEnrollment build();
     }

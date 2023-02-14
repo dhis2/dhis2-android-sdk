@@ -25,11 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.note.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+internal object NewNoteFields {
+    const val UID = "note"
+    private const val VALUE = "value"
+    private const val STORED_AT = "storedAt"
+    private const val STORED_BY = "storedBy"
+
+    private val fh = FieldsHelper<NewTrackerImporterNote>()
+    val uid = fh.uid()
+
+    val all: Fields<NewTrackerImporterNote> = Fields.builder<NewTrackerImporterNote>()
+        .fields(
+            fh.field<String>(UID),
+            fh.field<String>(VALUE),
+            fh.field<String>(STORED_AT),
+            fh.field<String>(STORED_BY)
+        ).build()
 }

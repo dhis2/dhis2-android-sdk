@@ -25,30 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.enrollment.Enrollment
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-
-public final class RelationshipItemFields {
-
-    private static final FieldsHelper<RelationshipItem> fh = new FieldsHelper<>();
-
-    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder()
-            .fields(
-                    fh.<RelationshipItemTrackedEntityInstance>nestedField(Columns.TRACKED_ENTITY_INSTANCE)
-                            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.<RelationshipItemEnrollment>nestedField(Columns.ENROLLMENT)
-                    .with(RelationshipItemEnrollmentFields.enrollment),
-            fh.<RelationshipItemEvent>nestedField(Columns.EVENT).with(RelationshipItemEventFields.event)
-    ).build();
-
-    private RelationshipItemFields() {
-    }
+internal interface EnrollmentEndpointCallFactory {
+    fun getRelationshipEntityCall(uid: String): Single<Enrollment>
 }

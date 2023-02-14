@@ -25,11 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.event.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import javax.inject.Inject
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+@Reusable
+internal class OldEventEndpointCallFactory @Inject constructor(
+    private val service: EventService
+) : EventEndpointCallFactory() {
+
+    override fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+        return service.getEvents(
+            fields = EventFields.allFields,
+            orgUnit = eventQuery.orgUnit,
+            orgUnitMode = eventQuery.commonParams.ouMode.name,
+            program = eventQuery.commonParams.program,
+            startDate = getEventStartDate(eventQuery),
+            paging = true,
+            page = eventQuery.page,
+            pageSize = eventQuery.pageSize,
+            lastUpdatedStartDate = eventQuery.lastUpdatedStr,
+            includeDeleted = true,
+            eventUid = getUidStr(eventQuery)
+        )
+    }
+
+    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+        return service.getEventSingle(
+            eventUid = uid,
+            fields = EventFields.asRelationshipFields,
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
+        )
+    }
 }

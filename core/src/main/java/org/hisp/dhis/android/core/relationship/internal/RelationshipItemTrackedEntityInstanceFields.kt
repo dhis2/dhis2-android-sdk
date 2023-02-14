@@ -25,19 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
-
-final class RelationshipItemTrackedEntityInstanceFields {
-
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-
-    static final Field<RelationshipItemTrackedEntityInstance, String> trackedEntityInstance =
-            Field.create(TRACKED_ENTITY_INSTANCE);
-
-    private RelationshipItemTrackedEntityInstanceFields() {
-    }
+internal object RelationshipItemTrackedEntityInstanceFields {
+    private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+    val trackedEntityInstance: Field<RelationshipItemTrackedEntityInstance, String> =
+        Field.create(TRACKED_ENTITY_INSTANCE)
 }

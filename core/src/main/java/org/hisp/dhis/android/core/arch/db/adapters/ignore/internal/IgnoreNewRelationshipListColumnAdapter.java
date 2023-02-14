@@ -25,11 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
+
+import java.util.List;
+
+public final class IgnoreNewRelationshipListColumnAdapter
+        extends IgnoreColumnAdapter<List<NewTrackerImporterRelationship>> {
 }

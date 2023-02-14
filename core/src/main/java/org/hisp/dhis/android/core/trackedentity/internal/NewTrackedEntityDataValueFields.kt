@@ -25,37 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import java.util.*
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+internal object NewTrackedEntityDataValueFields {
+    private const val DATA_ELEMENT = "dataElement"
+    private const val CREATED_BY = "createdBy"
+    private const val VALUE = "value"
+    private const val CREATED_AT = "createdAt"
+    private const val UPDATED_AT = "updatedAt"
+    private const val PROVIDED_ELSEWHERE = "providedElsewhere"
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+    private val fh = FieldsHelper<NewTrackerImporterTrackedEntityDataValue>()
 
-@Module
-public final class TrackerImporterPackageDIModule {
-
-    @Provides
-    @Reusable
-    TrackerImporterService service(Retrofit retrofit) {
-        return retrofit.create(TrackerImporterService.class);
-    }
-
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<TrackerJobObject> store(DatabaseAdapter databaseAdapter) {
-        return TrackerJobObjectStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Handler<TrackerJobObject> handler(ObjectWithoutUidStore<TrackerJobObject> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
-    }
+    val allFields: Fields<NewTrackerImporterTrackedEntityDataValue> =
+        Fields.builder<NewTrackerImporterTrackedEntityDataValue>()
+            .fields(
+                fh.field<String>(DATA_ELEMENT),
+                fh.field<String>(CREATED_BY),
+                fh.field<String>(VALUE),
+                fh.field<Date>(CREATED_AT),
+                fh.field<Date>(UPDATED_AT),
+                fh.field<Boolean>(PROVIDED_ELSEWHERE)
+            ).build()
 }

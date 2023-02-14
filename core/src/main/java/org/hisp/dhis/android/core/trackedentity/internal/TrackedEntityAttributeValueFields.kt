@@ -25,18 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import java.util.*
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
+internal object TrackedEntityAttributeValueFields {
+    const val ATTRIBUTE = "attribute"
+    private val fh = FieldsHelper<TrackedEntityAttributeValue>()
 
-final class RelationshipItemEnrollmentFields {
-
-    private static final String ENROLLMENT = "enrollment";
-
-    static final Field<RelationshipItemEnrollment, String> enrollment = Field.create(ENROLLMENT);
-
-    private RelationshipItemEnrollmentFields() {
-    }
+    val allFields: Fields<TrackedEntityAttributeValue> = Fields.builder<TrackedEntityAttributeValue>()
+        .fields(
+            fh.field<String>(ATTRIBUTE),
+            fh.field<String>(TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+            fh.field<Date>(TrackedEntityAttributeValueTableInfo.Columns.CREATED),
+            fh.field<Date>(TrackedEntityAttributeValueTableInfo.Columns.LAST_UPDATED)
+        ).build()
 }

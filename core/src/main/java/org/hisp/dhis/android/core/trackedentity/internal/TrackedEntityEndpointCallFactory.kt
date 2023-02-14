@@ -27,68 +27,39 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Call
+import java.util.concurrent.Callable
 
-@Reusable
-internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService
-) {
+internal abstract class TrackedEntityEndpointCallFactory {
 
-    fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
-        return trackedEntityInstanceService.getTrackedEntityInstances(
-            getUidStr(query),
-            query.orgUnit,
-            query.commonParams.ouMode.name,
-            query.commonParams.program,
-            getProgramStatus(query),
-            getProgramStartDate(query),
-            TrackedEntityInstanceFields.allFields,
-            TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
-            paging = true,
-            query.page,
-            query.pageSize,
-            query.lastUpdatedStr,
-            includeAllAttributes = true,
-            includeDeleted = true
-        )
-    }
+    abstract fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>>
 
-    private fun getUidStr(query: TrackerAPIQuery): String? {
+    abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
+
+    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>>
+
+    abstract fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<List<TrackedEntityInstance>>
+
+    protected fun getUidStr(query: TrackerAPIQuery): String? {
         return if (query.uids.isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids, ";")
     }
 
-    private fun getProgramStatus(query: TrackerAPIQuery): String? {
+    protected fun getProgramStatus(query: TrackerAPIQuery): String? {
         return when {
             query.commonParams.program != null -> query.programStatus?.toString()
             else -> null
         }
     }
 
-    private fun getProgramStartDate(query: TrackerAPIQuery): String? {
+    protected fun getProgramStartDate(query: TrackerAPIQuery): String? {
         return when {
             query.commonParams.program != null -> query.commonParams.startDate
             else -> null
         }
-    }
-
-    fun getEntityCall(uid: String, query: TrackerAPIQuery): Call<TrackedEntityInstance> {
-        return trackedEntityInstanceService.getSingleTrackedEntityInstance(
-            uid,
-            query.commonParams.ouMode.name,
-            query.commonParams.program,
-            getProgramStatus(query),
-            getProgramStartDate(query),
-            TrackedEntityInstanceFields.allFields,
-            includeAllAttributes = true,
-            includeDeleted = true
-        )
     }
 }

@@ -25,11 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
+package org.hisp.dhis.android.core.relationship.internal
 
-interface Handler<O> {
-    fun handle(o: O)
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 
-    @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+internal object RelationshipItemEventFields {
+    private const val EVENT = "event"
+
+    val event: Field<RelationshipItemEvent, String> = Field.create(EVENT)
 }

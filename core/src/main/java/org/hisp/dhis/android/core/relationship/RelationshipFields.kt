@@ -25,30 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
+internal object RelationshipFields {
+    const val RELATIONSHIP = "relationship"
+    const val RELATIONSHIP_NAME = "relationshipName"
+    private const val RELATIONSHIP_TYPE = "relationshipType"
+    private const val FROM = "from"
+    private const val TO = "to"
 
-import java.util.Date;
+    // Used only for children appending, can't be used in query
+    const val ITEMS = "items"
+    private val fh = FieldsHelper<Relationship>()
 
-public final class TrackedEntityDataValueFields {
-
-    private static final FieldsHelper<TrackedEntityDataValue> fh = new FieldsHelper<>();
-
-    public static final Fields<TrackedEntityDataValue> allFields = Fields.<TrackedEntityDataValue>builder()
-            .fields(
-                    fh.<String>field(Columns.DATA_ELEMENT),
-                    fh.<String>field(Columns.STORED_BY),
-                    fh.<String>field(Columns.VALUE),
-                    fh.<Date>field(Columns.CREATED),
-                    fh.<Date>field(Columns.LAST_UPDATED),
-                    fh.<Boolean>field(Columns.PROVIDED_ELSEWHERE)
-            ).build();
-
-    private TrackedEntityDataValueFields() {
-    }
+    val allFields: Fields<Relationship> = Fields.builder<Relationship>().fields(
+        fh.field<String>(RELATIONSHIP),
+        fh.field<String>(RELATIONSHIP_NAME),
+        fh.field<String>(RELATIONSHIP_TYPE),
+        fh.field<String>(BaseIdentifiableObject.CREATED),
+        fh.field<String>(BaseIdentifiableObject.LAST_UPDATED),
+        fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
+        fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields)
+    ).build()
 }

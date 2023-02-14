@@ -25,33 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity
+package org.hisp.dhis.android.core.relationship.internal
 
-internal object NewTrackerImporterTranckedEntityTransformer {
-    fun transform(
-        o: TrackedEntityInstance,
-        tetAttributeMap: Map<String, List<String>>
-    ): NewTrackerImporterTrackedEntity {
-        val teiAttributes = o.trackedEntityAttributeValues() ?: emptyList()
-        val typeAttributes = tetAttributeMap[o.trackedEntityType()] ?: emptyList()
-        val teiTypeAttributes = teiAttributes
-            .filter { typeAttributes.contains(it.trackedEntityAttribute()) }
-            .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.relationship.*
 
-        return NewTrackerImporterTrackedEntity.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .createdAtClient(o.createdAtClient())
-            .updatedAtClient(o.lastUpdatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .trackedEntityType(o.trackedEntityType())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .trackedEntityAttributeValues(teiTypeAttributes)
-            .build()
-    }
+internal object RelationshipItemFields {
+    private val fh = FieldsHelper<RelationshipItem>()
+    val allFields: Fields<RelationshipItem> = Fields.builder<RelationshipItem>()
+        .fields(
+            fh.nestedField<RelationshipItemTrackedEntityInstance>(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
+                .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            fh.nestedField<RelationshipItemEnrollment>(RelationshipItemTableInfo.Columns.ENROLLMENT)
+                .with(RelationshipItemEnrollmentFields.enrollment),
+            fh.nestedField<RelationshipItemEvent>(RelationshipItemTableInfo.Columns.EVENT)
+                .with(RelationshipItemEventFields.event)
+        ).build()
 }

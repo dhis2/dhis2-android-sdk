@@ -28,18 +28,16 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
+import io.reactivex.Single
+import kotlinx.coroutines.rx2.await
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -51,16 +49,13 @@ class EventEndpointCallShould {
     private val program = "proramUid"
     private val startDateStr = "2021-01-01"
 
-    private val databaseAdapter: DatabaseAdapter = mock()
-    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher = mock()
-
     @Test
     fun realize_request_with_page_filters_when_included_in_query() {
         val eventEndpointCall = givenAEventCallByPagination(2, 32)
 
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.call()
+        eventEndpointCall.blockingGet()
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains("paging=true&page=2&pageSize=32")
@@ -72,7 +67,7 @@ class EventEndpointCallShould {
 
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.call()
+        eventEndpointCall.subscribe()
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains("orgUnit=$orgunit")
@@ -85,7 +80,7 @@ class EventEndpointCallShould {
 
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.call()
+        eventEndpointCall.blockingGet()
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains(startDateStr)
@@ -97,13 +92,13 @@ class EventEndpointCallShould {
 
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.call()
+        eventEndpointCall.blockingGet()
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).doesNotContain(startDateStr)
     }
 
-    private fun givenAEventCallByPagination(page: Int, pageCount: Int): Callable<List<Event>> {
+    private fun givenAEventCallByPagination(page: Int, pageCount: Int): Single<Payload<Event>> {
         val eventQuery = TrackerAPIQuery(
             commonParams = get(),
             page = page,
@@ -113,18 +108,17 @@ class EventEndpointCallShould {
         return givenACallForQuery(eventQuery)
     }
 
-    private fun givenACallForQuery(eventQuery: TrackerAPIQuery): Callable<List<Event>> {
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
-        ).getCall(eventQuery)
+    private fun givenACallForQuery(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+        return OldEventEndpointCallFactory(
+            retrofit.create(EventService::class.java)
+        ).getCollectionCall(eventQuery)
     }
 
     private fun givenAEventCallByOrgUnitAndProgram(
         orgUnit: String,
         program: String?,
         startDate: String? = null
-    ): Callable<List<Event>> {
+    ): Single<Payload<Event>> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 listOf(),

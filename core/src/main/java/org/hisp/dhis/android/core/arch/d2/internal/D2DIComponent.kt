@@ -89,6 +89,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.usecase.internal.UseCasePackageDIModule
@@ -141,6 +142,7 @@ import retrofit2.Retrofit
         SettingPackageDIModule::class,
         UseCasePackageDIModule::class,
         TrackedEntityPackageDIModule::class,
+        TrackerExporterPackageDIModule::class,
         TrackerImporterPackageDIModule::class,
         SmsDIModule::class,
         UserPackageDIModule::class,

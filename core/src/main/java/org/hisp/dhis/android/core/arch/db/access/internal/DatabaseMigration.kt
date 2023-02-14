@@ -27,4 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>)
+import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+
+internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)

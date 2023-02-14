@@ -89,7 +89,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
 
             databaseConfigurationSecureStore.set(updatedConfiguration)
             exceedingAccounts.forEach {
-                FileResourceDirectoryHelper.deleteFileResourceDirectory(context, it)
+                FileResourceDirectoryHelper.deleteFileResourceDirectories(context, it)
                 databaseAdapterFactory.deleteDatabase(it)
             }
         }

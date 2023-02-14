@@ -28,33 +28,19 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import androidx.annotation.NonNull;
-
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
-
-import java.util.List;
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
 
 @AutoValue
-abstract class EventQueryBundle {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    abstract List<String> orgUnits();
+abstract class EventQueryBundle extends BaseTrackerQueryBundle {
 
     static Builder builder() {
         return new AutoValue_EventQueryBundle.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnits(List<String> orgUnits);
-
+    abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
         abstract EventQueryBundle build();
     }
 }

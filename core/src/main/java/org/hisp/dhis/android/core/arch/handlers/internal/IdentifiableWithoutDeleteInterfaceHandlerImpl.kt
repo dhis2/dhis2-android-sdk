@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWithUidInterface>(
+internal open class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWithUidInterface>(
     val store: IdentifiableObjectStore<O>
 ) :
     HandlerBaseImpl<O>() {

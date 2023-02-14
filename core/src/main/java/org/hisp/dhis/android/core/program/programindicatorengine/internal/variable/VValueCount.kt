@@ -36,7 +36,9 @@ internal class VValueCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val expression = visitor.programIndicatorContext.programIndicator.expression()
-        return visitor.programIndicatorExecutor.getValueCount(expression!!).toString()
+            ?: throw IllegalArgumentException("Expression is null")
+
+        return visitor.programIndicatorExecutor.getValueCount(expression).toString()
     }
 
     override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryRepositoryScope;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -81,6 +82,20 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
     }
 
     @Test
+    public void find_by_incident_date() throws ParseException {
+        Date refDate = DateUtils.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .byIncidentDate().afterOrEqual(refDate)
+                        .byIncidentDate().beforeOrEqual(refDate)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
     public void find_by_event_date() throws ParseException {
         Date refDate = DateUtils.DATE_FORMAT.parse("2015-05-01T00:00:00.000");
 
@@ -110,5 +125,31 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
                 d2.trackedEntityModule().trackedEntityInstanceQuery().getScope();
 
         assertThat(scope.attribute()).isNotNull();
+    }
+
+    @Test
+    public void find_by_transferred_orgunit() {
+        TrackedEntityInstanceQueryCollectionRepository originalOu = d2.trackedEntityModule()
+                .trackedEntityInstanceQuery()
+                .byProgram().eq("lxAQ7Zs9VYR")
+                .byOrgUnits().eq("DiszpKrYNg8");
+
+        TrackedEntityInstanceQueryCollectionRepository transferredOu = d2.trackedEntityModule()
+                .trackedEntityInstanceQuery()
+                .byProgram().eq("lxAQ7Zs9VYR")
+                .byOrgUnits().eq("g8upMTyEZGZ");
+
+        assertThat(originalOu.blockingCount()).isEqualTo(2);
+        assertThat(transferredOu.blockingCount()).isEqualTo(0);
+
+        // Transfer ownership
+        String teiUid = originalOu.blockingGet().get(0).uid();
+        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "lxAQ7Zs9VYR", "g8upMTyEZGZ");
+
+        assertThat(originalOu.blockingCount()).isEqualTo(1);
+        assertThat(transferredOu.blockingCount()).isEqualTo(1);
+
+        // Undo change
+        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "lxAQ7Zs9VYR", "DiszpKrYNg8");
     }
 }

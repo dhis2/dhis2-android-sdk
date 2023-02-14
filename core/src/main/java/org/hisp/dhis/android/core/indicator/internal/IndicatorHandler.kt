@@ -44,13 +44,13 @@ internal class IndicatorHandler @Inject constructor(
     private val indicatorLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink>
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
-    override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
-        super.afterObjectHandled(indicator, action)
+    override fun afterObjectHandled(o: Indicator, action: HandleAction) {
+        super.afterObjectHandled(o, action)
 
-        if (indicator.legendSets() != null) {
-            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet, sortOrder ->
+        if (o.legendSets() != null) {
+            indicatorLegendSetLinkHandler.handleMany(o.uid(), o.legendSets()) { legendSet, sortOrder ->
                 IndicatorLegendSetLink.builder()
-                    .indicator(indicator.uid())
+                    .indicator(o.uid())
                     .legendSet(legendSet.uid())
                     .sortOrder(sortOrder)
                     .build()

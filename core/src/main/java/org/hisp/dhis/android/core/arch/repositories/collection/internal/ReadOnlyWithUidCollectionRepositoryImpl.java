@@ -44,10 +44,10 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & Obje
         R extends ReadOnlyCollectionRepository<M>>
         extends BaseReadOnlyWithUidCollectionRepositoryImpl<M, R> {
 
-    ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                            Map<String, ChildrenAppender<M>> childrenAppenders,
-                                            RepositoryScope scope,
-                                            FilterConnectorFactory<R> cf) {
+    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                   RepositoryScope scope,
+                                                   FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
     }
 

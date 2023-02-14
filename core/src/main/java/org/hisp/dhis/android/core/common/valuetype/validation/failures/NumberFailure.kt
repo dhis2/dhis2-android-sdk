@@ -31,4 +31,5 @@ package org.hisp.dhis.android.core.common.valuetype.validation.failures
 sealed class NumberFailure : Throwable() {
     object ScientificNotationException : NumberFailure()
     object NumberFormatException : NumberFailure()
+    object LeadingZeroException : NumberFailure()
 }

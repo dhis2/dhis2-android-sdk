@@ -46,7 +46,7 @@ internal class SettingModuleDownloader @Inject constructor(
         return Completable.fromAction {
             downloadFromSettingsApp().blockingAwait()
             userSettingsCall.download().blockingGet()
-            systemSettingCall.call()
+            systemSettingCall.download().blockingGet()
         }
     }
 

@@ -27,49 +27,19 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
 
-import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class DataElementItem : ExpressionItem {
+internal class DataElementItem : IndicatorDataItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                visitor.indicatorContext.dataElementEvaluator.evaluate(
-                    evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-                )
-            }
-        } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
-    }
-
-    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                visitor.indicatorContext.dataElementEvaluator.getSql(
-                    evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-                )?.let { "($it)" }
-            }
-        }
-    }
-
-    private fun getEvaluationItem(
-        ctx: ExprContext,
-        visitor: CommonExpressionVisitor
-    ): AnalyticsServiceEvaluationItem? {
+    override fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem? {
         val dataElementUid = ctx.uid0?.text
         val categoryOptionComboUid = ctx.uid1?.text
 
-        val dataItem = when {
+        return when {
             dataElementUid != null && categoryOptionComboUid != null ->
                 DimensionItem.DataItem.DataElementOperandItem(dataElementUid, categoryOptionComboUid)
             dataElementUid != null ->
@@ -77,51 +47,9 @@ internal class DataElementItem : ExpressionItem {
             else ->
                 null
         }
-
-        return dataItem?.let {
-            AnalyticsServiceEvaluationItem(
-                dimensionItems = listOf(dataItem),
-                filters = visitor.indicatorContext.evaluationItem.filters +
-                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
-            )
-        }
     }
 
-    private fun getMetadataEntry(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        visitor: CommonExpressionVisitor
-    ): Pair<String, MetadataItem>? {
-        return when (val dataItem = evaluationItem.dimensionItems.first()) {
-            is DimensionItem.DataItem.DataElementOperandItem -> {
-                val dataElement = visitor.indicatorContext.dataElementStore.selectByUid(dataItem.dataElement)
-                val coc = visitor.indicatorContext.categoryOptionComboStore.selectByUid(dataItem.categoryOptionCombo)
-
-                if (dataElement == null || coc == null) {
-                    throw AnalyticsException.InvalidDataElementOperand(dataItem.id)
-                }
-
-                val dataElementOperandId = dataItem.id
-                val dataElementOperand = DataElementOperand.builder()
-                    .uid(dataItem.id)
-                    .dataElement(ObjectWithUid.create(dataItem.dataElement))
-                    .categoryOptionCombo(ObjectWithUid.create(dataItem.categoryOptionCombo))
-                    .build()
-
-                dataElementOperandId to MetadataItem.DataElementOperandItem(
-                    dataElementOperand,
-                    dataElement.displayName()!!,
-                    coc.displayName()
-                )
-            }
-            is DimensionItem.DataItem.DataElementItem -> {
-                val dataElement =
-                    visitor.indicatorContext.dataElementStore.selectByUid(dataItem.uid)
-                        ?: throw AnalyticsException.InvalidDataElement(dataItem.uid)
-
-                dataItem.uid to MetadataItem.DataElementItem(dataElement)
-            }
-            else ->
-                null
-        }
+    override fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator {
+        return visitor.indicatorContext.dataElementEvaluator
     }
 }

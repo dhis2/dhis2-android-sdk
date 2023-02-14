@@ -46,15 +46,17 @@ abstract class BaseLocalAnalyticsTest : BaseMockIntegrationTest() {
             SizeFactor = sizeFactor
             val isNewInstance = setUpClass(dispatcher)
             if (isNewInstance) {
-                objects.dhis2MockServer.setRequestDispatcher()
-                objects.d2.userModule().blockingLogIn(
+                objects?.dhis2MockServer?.setRequestDispatcher()
+                objects?.d2?.userModule()?.blockingLogIn(
                     RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.baseEndpoint
+                    objects?.dhis2MockServer?.baseEndpoint
                 )
             }
 
-            val filler = LocalAnalyticsDatabaseFiller(objects.d2)
-            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.get(SizeFactor))
+            objects?.d2?.let {
+                val filler = LocalAnalyticsDatabaseFiller(it)
+                filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.get(SizeFactor))
+            }
         }
     }
 }

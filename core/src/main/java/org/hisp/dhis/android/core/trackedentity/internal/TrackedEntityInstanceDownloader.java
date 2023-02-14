@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams;
+
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Observable;
-
-import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams;
 
 @Reusable
 public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<TrackedEntityInstanceDownloader> {
@@ -66,7 +66,7 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
      *
      * @return An Observable that notifies about the progress.
      */
-    public Observable<D2Progress> download() {
+    public Observable<TrackerD2Progress> download() {
         ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
         return this.downloadCall.download(params);
     }

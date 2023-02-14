@@ -33,24 +33,24 @@ def getSnapshotRepositoryUrl() {
             : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-def getRepositoryUsername() {
-    return hasProperty("NEXUS_USERNAME") ? NEXUS_USERNAME : ""
+static def getRepositoryUsername() {
+    return System.getenv("NEXUS_USERNAME")
 }
 
-def getRepositoryPassword() {
-    return hasProperty("NEXUS_PASSWORD") ? NEXUS_PASSWORD : ""
+static def getRepositoryPassword() {
+    return System.getenv("NEXUS_PASSWORD")
 }
 
-def gpgKeyId() {
-    return hasProperty("GPG_KEY_ID") ? GPG_KEY_ID : ""
+static def gpgKeyId() {
+    return System.getenv("GPG_KEY_ID")
 }
 
-def gpgKeyLocation() {
-    return hasProperty("GPG_KEY_LOCATION") ? GPG_KEY_LOCATION : ""
+static def gpgKeyLocation() {
+    return System.getenv("GPG_KEY_LOCATION")
 }
 
-def gpgPassphrase() {
-    return hasProperty("GPG_PASSPHRASE") ? GPG_PASSPHRASE : ""
+static def gpgPassphrase() {
+    return System.getenv("GPG_PASSPHRASE")
 }
 
 gradle.taskGraph.whenReady { taskGraph ->

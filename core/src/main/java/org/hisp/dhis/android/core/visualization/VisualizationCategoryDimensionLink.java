@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.visualization;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
@@ -46,7 +47,7 @@ public abstract class VisualizationCategoryDimensionLink implements CoreObject {
     @NonNull
     public abstract String category();
 
-    @NonNull
+    @Nullable
     public abstract String categoryOption();
 
     public static Builder builder() {

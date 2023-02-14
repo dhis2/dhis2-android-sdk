@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
 import java.util.*
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.assumeStageElementSyntax
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
@@ -74,11 +74,11 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             }
         }
 
-        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
+        val dataElement = getDataElement(visitor, dataElementId)
         val handledValue = visitor.handleNulls(value)
         val strValue = handledValue?.toString()
 
-        return formatValue(strValue, dataElement!!.valueType())
+        return formatValue(strValue, dataElement.valueType())
     }
 
     private fun sum(values: List<Double>): Double {
@@ -113,26 +113,21 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         // TODO Manage null and boolean values
 
-        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
-            ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
+        val dataElement = getDataElement(visitor, dataElementId)
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,
             dataElement.valueType()
         )
 
-        val selectExpression = "(SELECT $valueCastExpression " +
-            "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
-            "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
-            "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-            "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
-            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-            "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
-            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} DESC LIMIT 1" +
-            ")"
+        val selectExpression = ProgramIndicatorSQLUtils.getTrackerDataValueWhereClause(
+            column = valueCastExpression,
+            programStageUid = programStageId,
+            dataElementUid = dataElementId,
+            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+        )
 
-        return if (visitor.replaceNulls) {
+        return if (visitor.state.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(dataElement.valueType())}))"
         } else {
             selectExpression
@@ -150,5 +145,10 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
                 .id1(dataElementId)
                 .build()
         )
+    }
+
+    private fun getDataElement(visitor: CommonExpressionVisitor, uid: String): DataElement {
+        return visitor.dataElementStore.selectByUid(uid)
+            ?: throw IllegalArgumentException("DataElement $uid does not exist.")
     }
 }

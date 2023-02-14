@@ -31,24 +31,52 @@ import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
-import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import org.hisp.dhis.android.core.fileresource.*
 
 @Reusable
 internal class FileResourceModuleImpl @Inject internal constructor(
     private val fileResources: FileResourceCollectionRepository,
-    private val fileResourceCall: FileResourceCall
+    private val fileResourceDownloader: FileResourceDownloader
 ) : FileResourceModule {
 
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .download()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
     override fun download(): Observable<D2Progress> {
-        return fileResourceCall.download()
+        return fileResourceDownloader()
+            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byValueType().eq(FileResourceValueType.IMAGE)
+            .download()
     }
 
+    @Deprecated(
+        "Replace with fileResourceDownloader()",
+        replaceWith = ReplaceWith(
+            expression = "fileResourceDownloader()\n" +
+                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
+                "            .blockingDownload()",
+            "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
+        )
+    )
     override fun blockingDownload() {
-        fileResourceCall.blockingDownload()
+        download().blockingSubscribe()
     }
 
     override fun fileResources(): FileResourceCollectionRepository {
         return fileResources
+    }
+
+    override fun fileResourceDownloader(): FileResourceDownloader {
+        return fileResourceDownloader
     }
 }

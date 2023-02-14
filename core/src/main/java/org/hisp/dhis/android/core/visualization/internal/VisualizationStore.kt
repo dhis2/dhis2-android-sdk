@@ -85,6 +85,7 @@ internal object VisualizationStore {
             w.bind(43, o.legend()?.style())
             w.bind(44, UidsHelper.getUidOrNull(o.legend()?.set()))
             w.bind(45, o.legend()?.strategy())
+            w.bind(46, o.aggregationType())
         }
     }
 

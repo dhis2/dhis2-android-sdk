@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.core.visualization.Visualization
 
 internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
+    private val categoryOptionLinkStore: LinkStore<CategoryCategoryOptionLink>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>
 ) {
     private val dataDimension = "dx"
@@ -146,17 +149,20 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
     }
 
     private fun extractUidDimensionItems(visualization: Visualization, uid: String): List<DimensionItem> {
-        val category = categoryStore.selectByUid(uid)
+        return categoryStore.selectByUid(uid)?.let {
+            visualization.categoryDimensions()
+                ?.find { it.category()?.uid() == uid }
+                ?.let { categoryDimension ->
+                    val categoryOptions =
+                        if (categoryDimension.categoryOptions().isNullOrEmpty()) {
+                            categoryOptionLinkStore.selectLinksForMasterUid(uid).mapNotNull { it.categoryOption() }
+                        } else {
+                            categoryDimension.categoryOptions()!!.map { it.uid() }
+                        }
 
-        return if (category != null) {
-            val categoryDimension = visualization.categoryDimensions()?.find { it.category()?.uid() == uid }
-
-            categoryDimension?.categoryOptions()?.map {
-                DimensionItem.CategoryItem(uid, it.uid())
-            } ?: emptyList()
-        } else {
-            emptyList()
-        }
+                    categoryOptions.map { DimensionItem.CategoryItem(uid, it) }
+                }
+        } ?: emptyList()
     }
 
     fun getGridDimensions(visualization: Visualization): GridDimension {

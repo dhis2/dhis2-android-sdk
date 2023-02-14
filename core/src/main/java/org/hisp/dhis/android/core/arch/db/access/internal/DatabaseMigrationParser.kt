@@ -31,8 +31,14 @@ import android.content.res.AssetManager
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Scanner
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigrations
 
-internal class DatabaseMigrationParser(private val assetManager: AssetManager) {
+internal class DatabaseMigrationParser(
+    private val assetManager: AssetManager,
+    databaseAdapter: DatabaseAdapter
+) {
+    private val codeMigrations = DatabaseCodeMigrations(databaseAdapter)
 
     @Throws(IOException::class)
     fun parseMigrations(oldVersion: Int, newVersion: Int): List<DatabaseMigration> {
@@ -49,7 +55,7 @@ internal class DatabaseMigrationParser(private val assetManager: AssetManager) {
 
     @Throws(IOException::class)
     private fun parseMigration(version: Int): DatabaseMigration {
-        return DatabaseMigration(version, parseFile("migrations", version))
+        return DatabaseMigration(version, parseFile("migrations", version), codeMigrations.map[version])
     }
 
     @Throws(IOException::class)

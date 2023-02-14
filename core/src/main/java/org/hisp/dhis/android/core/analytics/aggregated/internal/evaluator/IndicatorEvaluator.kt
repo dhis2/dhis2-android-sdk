@@ -29,11 +29,9 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
-import org.hisp.dhis.android.core.indicator.Indicator
 
 internal class IndicatorEvaluator @Inject constructor(
     private val indicatorEngine: IndicatorEngine
@@ -43,12 +41,8 @@ internal class IndicatorEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        val indicator = getIndicator(evaluationItem, metadata)
-
-        val contextEvaluationItem = AnalyticsServiceEvaluationItem(
-            dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != indicator.uid() },
-            filters = evaluationItem.filters.filter { it.id != indicator.uid() }
-        )
+        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
+        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
 
         return indicatorEngine.evaluateIndicator(
             indicator = indicator,
@@ -62,17 +56,5 @@ internal class IndicatorEvaluator @Inject constructor(
         metadata: Map<String, MetadataItem>
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
-    }
-
-    private fun getIndicator(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): Indicator {
-        val indicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
-            .find { it is DimensionItem.DataItem.IndicatorItem }
-            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no indicator dimension provided.")
-
-        return (metadata[indicatorItem.id] as MetadataItem.IndicatorItem).item
     }
 }

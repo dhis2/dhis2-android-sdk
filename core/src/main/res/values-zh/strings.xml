@@ -27,7 +27,22 @@
   -->
 
 <resources>
+    <!-- Tracker import errors -->
+    <string name="E1000">您无权访问 %s</string>
+    <string name="E1001">您无权访问类型 %s</string>
+    <string name="E1002">%s 已经存在。 （%s：%s）</string>
+    <string name="E1003">%s 超出您的搜索范围</string>
+    <string name="E1005">找不到 %s 类型</string>
+    <string name="E1006">属性 %s 不存在</string>
+    <string name="E1007">该属性与值类型“%s”不匹配。 （错误：%s）</string>
     <string name="E1008">项目阶段 %s 没有对项目的引用。检查项目阶段配置</string>
+    <string name="E1009">该文件已被分配。 （文件：%s）</string>
+    <string name="E1032">在服务器中未找到 %s 事件。 （事件：%s）</string>
+    <string name="E1063">在服务器中找不到 %s。 （%s：%s）</string>
+    <string name="E1064">`%s` 属性的属性值 `%s` 不是唯一的。 （属性：%s）</string>
     <string name="E1069">在服务器中找不到链接到注册的项目%s。 （项目：%s，注册：%s）</string>
+    <string name="E1081">在服务器中找不到注册。 （报名：%s）</string>
+    <string name="E1084">在服务器中找不到文件引用。 （文件资源：%s）</string>
+    <string name="E1100">您无权删除 %s。 （%s：%s）</string>
     <string name="E1103">您无权删除注册。 （注册：%s）</string>
 </resources>

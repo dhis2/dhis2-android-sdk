@@ -40,8 +40,6 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldSuccess("+4")
         valueShouldSuccess("254.3")
         valueShouldSuccess("98.000005")
-        valueShouldSuccess("0000005.20")
-        valueShouldSuccess("+0003")
         valueShouldSuccess("-6.299")
     }
 
@@ -52,6 +50,12 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("12e10", NumberFailure.ScientificNotationException)
         valueShouldFail("3.2e23", NumberFailure.ScientificNotationException)
         valueShouldFail("37.e88", NumberFailure.ScientificNotationException)
+    }
+
+    @Test
+    fun `Should fail when passing leading zeros`() {
+        valueShouldFail("0000005.20", NumberFailure.LeadingZeroException)
+        valueShouldFail("+0003", NumberFailure.LeadingZeroException)
     }
 
     @Test
@@ -68,5 +72,6 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("π", NumberFailure.NumberFormatException)
         valueShouldFail("ln(2)", NumberFailure.NumberFormatException)
         valueShouldFail("2/3", NumberFailure.NumberFormatException)
+        valueShouldFail(".5", NumberFailure.NumberFormatException)
     }
 }

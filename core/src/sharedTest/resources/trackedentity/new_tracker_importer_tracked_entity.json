@@ -1,0 +1,38 @@
+{
+  "trackedEntity": "vOxUH373fy5",
+  "trackedEntityType": "nEenWmSyUEp",
+  "createdAt": "2017-01-20T10:44:02.770",
+  "createdAtClient": "2017-01-20T10:44:02.770",
+  "updatedAt": "2022-09-28T14:07:34.455",
+  "updatedAtClient": "2017-05-26T11:46:22.372",
+  "orgUnit": "DiszpKrYNg8",
+  "inactive": false,
+  "deleted": false,
+  "potentialDuplicate": false,
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -11.49169921875,
+      9.535667170047729
+    ]
+  },
+  "attributes": [
+    {
+      "attribute": "zDhUuAYrxNC",
+      "displayName": "Last name",
+      "createdAt": "2017-05-26T11:46:22.371",
+      "updatedAt": "2017-05-26T11:46:22.371",
+      "valueType": "TEXT",
+      "value": "Ryder"
+    },
+    {
+      "attribute": "w75KJ2mc4zz",
+      "code": "MMD_PER_NAM",
+      "displayName": "First name",
+      "createdAt": "2017-05-26T11:46:22.369",
+      "updatedAt": "2017-05-26T11:46:22.369",
+      "valueType": "TEXT",
+      "value": "Filona"
+    }
+  ]
+}

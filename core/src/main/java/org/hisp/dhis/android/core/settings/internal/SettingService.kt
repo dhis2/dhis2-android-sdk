@@ -31,7 +31,6 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.settings.*
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -39,7 +38,7 @@ import retrofit2.http.Url
 internal interface SettingService {
 
     @GET("systemSettings")
-    fun getSystemSettings(@Query("fields") @Which fields: Fields<SystemSettings>): Call<SystemSettings>
+    fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): Single<SystemSettings>
 
     @GET("userSettings")
     fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>

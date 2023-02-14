@@ -28,28 +28,14 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.junit.Before;
-
-import java.io.IOException;
-
 import static com.google.common.truth.Truth.assertThat;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
+
 public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegrationTest {
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-    }
-
     //@Test
     public void return_2_30_version_when_connecting_to_2_30_server() throws Exception {
-        d2 = D2Factory.forNewDatabase();
         d2.wipeModule().wipeEverything();
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager();
@@ -62,7 +48,6 @@ public class DHISVersionsManagerRealIntegrationShould extends BaseRealIntegratio
 
     //@Test
     public void return_2_31_version_when_connecting_to_2_31_server() throws Exception {
-        d2 = D2Factory.forNewDatabase();
         d2.wipeModule().wipeEverything();
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager();

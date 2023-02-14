@@ -32,4 +32,5 @@ sealed class IntegerZeroOrPositiveFailure : Throwable() {
     object NumberFormatException : IntegerZeroOrPositiveFailure()
     object IntegerOverflow : IntegerZeroOrPositiveFailure()
     object ValueIsNegative : IntegerZeroOrPositiveFailure()
+    object LeadingZeroException : IntegerZeroOrPositiveFailure()
 }

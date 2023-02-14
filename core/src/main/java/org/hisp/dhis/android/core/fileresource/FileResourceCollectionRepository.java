@@ -146,6 +146,10 @@ public final class FileResourceCollectionRepository
         return cf.date(Columns.LAST_UPDATED);
     }
 
+    public EnumFilterConnector<FileResourceCollectionRepository, FileResourceDomain> byDomain() {
+        return cf.enumC(Columns.DOMAIN);
+    }
+
     public StringFilterConnector<FileResourceCollectionRepository> byContentType() {
         return cf.string(Columns.CONTENT_TYPE);
     }

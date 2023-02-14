@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
 import org.hisp.dhis.android.core.imports.internal.ItemsWithFileResources
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 
 @Reusable
 internal class OldTrackerImporterFileResourcesPostCall @Inject internal constructor(
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val fileResourcePostCall: FileResourcePostCall,
     private val fileResourceHelper: FileResourceHelper
 ) {
@@ -54,7 +53,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         trackedEntityInstances: List<TrackedEntityInstance>
     ): Single<ItemsWithFileResources<TrackedEntityInstance>> {
         return Single.create { emitter ->
-            val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
+            val fileResources = fileResourceHelper.getUploadableFileResources()
 
             if (fileResources.isEmpty()) {
                 emitter.onSuccess(ItemsWithFileResources(trackedEntityInstances, emptyList()))
@@ -73,7 +72,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         events: List<Event>
     ): Single<ItemsWithFileResources<Event>> {
         return Single.create { emitter ->
-            val fileResources = fileResourceStore.getUploadableSyncStatesIncludingError()
+            val fileResources = fileResourceHelper.getUploadableFileResources()
 
             if (fileResources.isEmpty()) {
                 emitter.onSuccess(ItemsWithFileResources(events, emptyList()))
@@ -95,7 +94,8 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
             fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
-                val newUid = fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
+                val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                     uploadedFileResources.add(it)
                 }
                 attributeValue.toBuilder().value(newUid).build()
@@ -143,7 +143,8 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
             fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                val newUid = fileResourcePostCall.uploadFileResource(fileResource)?.also {
+                val fValue = FileResourceValue.EventValue(dataValue.dataElement()!!)
+                val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                     uploadedFileResources.add(it)
                 }
                 dataValue.toBuilder().value(newUid).build()
@@ -157,11 +158,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     }
 
     fun updateFileResourceStates(fileResources: List<String>) {
-        fileResources.forEach { fr ->
-            val relatedState = fileResourceHelper.getRelatedResourceState(fr)
-            val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
-            fileResourceStore.setSyncStateIfUploading(fr, state)
-        }
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
     }
 
     @Suppress("TooGenericExceptionCaught")

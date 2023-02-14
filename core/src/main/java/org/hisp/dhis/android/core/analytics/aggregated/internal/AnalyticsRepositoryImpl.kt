@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.AggregationType
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
     private val params: AnalyticsRepositoryParams,
@@ -52,6 +53,10 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
 
     override fun withLegendStrategy(analyticsLegendStrategy: AnalyticsLegendStrategy): AnalyticsRepositoryImpl {
         return updateParams { params -> params.copy(analyticsLegendStrategy = analyticsLegendStrategy) }
+    }
+
+    override fun withAggregationType(aggregationType: AggregationType): AnalyticsRepository {
+        return updateParams { params -> params.copy(aggregationType = aggregationType) }
     }
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {

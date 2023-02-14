@@ -49,6 +49,10 @@ public class Payload<T> {
         // explicit empty constructor
     }
 
+    public Payload(List<T> initialItems) {
+        items = initialItems;
+    }
+
     @JsonAnySetter
     @SuppressWarnings("unused")
     /* package */ void processItems(String key, List<T> values) {

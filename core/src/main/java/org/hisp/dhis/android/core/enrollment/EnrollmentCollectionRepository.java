@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -73,8 +74,8 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
     }
 
     @Override
-    protected void propagateState(Enrollment enrollment) {
-        trackerDataManager.propagateEnrollmentUpdate(enrollment);
+    protected void propagateState(Enrollment enrollment, HandleAction action) {
+        trackerDataManager.propagateEnrollmentUpdate(enrollment, action);
     }
 
     @Override

@@ -152,6 +152,13 @@
             }
           ]
         }
+      ],
+      "programOwners": [
+        {
+          "ownerOrgUnit": "DiszpKrYNg8",
+          "program": "lxAQ7Zs9VYR",
+          "trackedEntityInstance": "nWrB0TfWlvh"
+        }
       ]
     },
     {
@@ -286,6 +293,13 @@
               ]
             }
           ]
+        }
+      ],
+      "programOwners": [
+        {
+          "ownerOrgUnit": "DiszpKrYNg8",
+          "program": "lxAQ7Zs9VYR",
+          "trackedEntityInstance": "nWrB0TfWlvD"
         }
       ]
     }

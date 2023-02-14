@@ -42,8 +42,7 @@ internal class VCompletedDate : ProgramExpressionItem() {
         val enrollment = visitor.programIndicatorContext.enrollment
 
         return if (enrollment == null) {
-            val singleEvent = getLatestEvent(visitor)
-            if (singleEvent == null) null else ParserUtils.getMediumDateString(singleEvent.completedDate())
+            getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.completedDate()) }
         } else {
             ParserUtils.getMediumDateString(enrollment.completedDate())
         }

@@ -37,7 +37,8 @@ enum class DHISVersion(internal val prefix: String) {
     V2_35("2.35"),
     V2_36("2.36"),
     V2_37("2.37"),
-    V2_38("2.38");
+    V2_38("2.38"),
+    V2_39("2.39");
 
     companion object {
         @JvmStatic
@@ -52,7 +53,7 @@ enum class DHISVersion(internal val prefix: String) {
 
         @JvmStatic
         fun allowedVersionsAsStr(): Array<String> {
-            return listOf(V2_30, V2_31, V2_32, V2_33, V2_34, V2_35, V2_36, V2_37, V2_38)
+            return listOf(V2_30, V2_31, V2_32, V2_33, V2_34, V2_35, V2_36, V2_37, V2_38, V2_39)
                 .map { it.prefix }
                 .toTypedArray()
         }

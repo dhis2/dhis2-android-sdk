@@ -28,20 +28,33 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
 internal abstract class TrackerQueryInternalFactory<T>(
+    protected val commonHelper: TrackerQueryFactoryCommonHelper,
     protected val params: ProgramDataDownloadParams,
-    protected val programSettings: ProgramSettings?,
-    protected val specificSettingScope: LimitScope
+    protected val programSettings: ProgramSettings?
 ) {
 
-    abstract fun queryGlobal(
+    fun queryGlobal(
         programs: List<String>
-    ): List<T>
+    ): List<T> {
+        return queryInternal(programs, null) {
+            commonHelper.getCaptureOrgUnitUids()
+        }
+    }
 
-    abstract fun queryPerProgram(
+    fun queryPerProgram(
         programUid: String?
+    ): List<T> {
+        return queryInternal(listOf(programUid!!), programUid) {
+            commonHelper.getLinkedCaptureOrgUnitUids(programUid)
+        }
+    }
+
+    protected abstract fun queryInternal(
+        programs: List<String>,
+        programUid: String?,
+        orgUnitByLimitExtractor: () -> List<String>
     ): List<T>
 }

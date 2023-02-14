@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
@@ -90,8 +91,8 @@ public final class TrackedEntityInstanceObjectRepository
     }
 
     @Override
-    protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
-        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance);
+    protected void propagateState(TrackedEntityInstance trackedEntityInstance, HandleAction action) {
+        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance, action);
     }
 
     @Override

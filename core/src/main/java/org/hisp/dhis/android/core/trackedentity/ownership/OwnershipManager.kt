@@ -33,4 +33,7 @@ import io.reactivex.Completable
 interface OwnershipManager {
     fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
     fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+
+    fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
+    fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
 }

@@ -472,6 +472,32 @@ class ProgramIndicatorExecutorShould {
         assertThat(result2).isNull()
     }
 
+    @Test
+    fun evaluate_invalid_expressions() {
+        setExpression("${de(programStage1, dataElementUid1)} && ")
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_missing_dataelement() {
+        whenever(dataElementStore.selectByUid(dataElementUid1)).doReturn(null)
+        setExpression(de(programStage1, dataElementUid1))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_missing_attribute() {
+        whenever(trackedEntityAttributeStore.selectByUid(attributeUid1)).doReturn(null)
+        setExpression(att(attributeUid1))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------

@@ -31,10 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
-import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -59,12 +56,24 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
     fun should_generate_valid_sql_queries() {
         val scope = TrackedEntityInstanceQueryRepositoryScope.builder()
             .program("programUid")
+            .programStage("programStageUid")
             .programDate(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_10_YEARS)
                     .build()
             )
+            .incidentDate(
+                DateFilterPeriod.builder()
+                    .period(RelativePeriod.LAST_3_MONTHS)
+                    .build()
+            )
             .enrollmentStatus(listOf(EnrollmentStatus.ACTIVE))
+            .eventDate(
+                DateFilterPeriod.builder()
+                    .period(RelativePeriod.LAST_10_YEARS)
+                    .build()
+            )
+            .eventStatus(listOf(EventStatus.ACTIVE))
             .attribute(
                 listOf(
                     RepositoryScopeFilterItem.builder()
@@ -104,6 +113,7 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
             .orgUnitMode(OrganisationUnitMode.CAPTURE)
             .orgUnits(listOf("orgunit1", "orgunit2"))
             .followUp(true)
+            .assignedUserMode(AssignedUserMode.CURRENT)
             .eventFilters(
                 listOf(
                     TrackedEntityInstanceQueryEventFilter.builder()
@@ -117,6 +127,12 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                         )
                         .build()
                 )
+            )
+            .states(listOf(State.SYNCED, State.TO_UPDATE))
+            .lastUpdatedDate(
+                DateFilterPeriod.builder()
+                    .period(RelativePeriod.LAST_10_YEARS)
+                    .build()
             )
             .order(
                 listOf(

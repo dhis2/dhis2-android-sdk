@@ -32,12 +32,13 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerFailure
 
 object IntegerValidator : IntegerValidatorBase<IntegerFailure>() {
-    override fun validate(value: String): Result<String, IntegerFailure> {
-        return try {
-            value.toInt()
-            Result.Success(value)
-        } catch (e: NumberFormatException) {
-            catchOverflowFailure(value, IntegerFailure.IntegerOverflow, IntegerFailure.NumberFormatException)
-        }
+
+    override fun validateInteger(value: String): Result<String, IntegerFailure> {
+        value.toInt()
+        return Result.Success(value)
     }
+
+    override val formatFailure = IntegerFailure.NumberFormatException
+    override val overflowFailure = IntegerFailure.IntegerOverflow
+    override val leadingZeroException = IntegerFailure.LeadingZeroException
 }

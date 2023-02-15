@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import javax.inject.Inject
 
 @Reusable
 class RelationshipDownloadAndPersistCallFactory @Inject internal constructor(

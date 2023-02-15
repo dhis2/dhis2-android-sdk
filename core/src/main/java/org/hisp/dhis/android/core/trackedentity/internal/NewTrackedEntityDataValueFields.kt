@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
-import java.util.*
 
 internal object NewTrackedEntityDataValueFields {
     private const val DATA_ELEMENT = "dataElement"

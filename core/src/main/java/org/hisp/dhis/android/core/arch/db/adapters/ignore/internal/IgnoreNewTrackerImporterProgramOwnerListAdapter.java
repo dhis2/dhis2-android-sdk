@@ -25,21 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.enrollment.Enrollment
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-@Reusable
-internal class OldEnrollmentEndpointCallFactory @Inject constructor(
-    private val service: EnrollmentService
-) : EnrollmentEndpointCallFactory {
-    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
-        return service.getEnrollmentSingle(
-            uid,
-            EnrollmentFields.asRelationshipFields
-        )
-    }
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner;
+
+import java.util.List;
+
+public final class IgnoreNewTrackerImporterProgramOwnerListAdapter
+        extends IgnoreColumnAdapter<List<NewTrackerImporterProgramOwner>> {
 }

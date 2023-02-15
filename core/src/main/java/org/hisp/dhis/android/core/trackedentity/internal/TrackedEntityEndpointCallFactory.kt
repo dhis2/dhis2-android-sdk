@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Single
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import java.util.concurrent.Callable
 
 internal abstract class TrackedEntityEndpointCallFactory {
 

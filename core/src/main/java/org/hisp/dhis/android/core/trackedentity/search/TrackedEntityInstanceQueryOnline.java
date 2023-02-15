@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     @NonNull

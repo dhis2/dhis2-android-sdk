@@ -25,21 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 
-@Reusable
-internal class OldEnrollmentEndpointCallFactory @Inject constructor(
-    private val service: EnrollmentService
-) : EnrollmentEndpointCallFactory {
-    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
-        return service.getEnrollmentSingle(
-            uid,
-            EnrollmentFields.asRelationshipFields
-        )
+internal object NewTrackerImporterProgramOwnerTransformer :
+    TwoWayTransformer<ProgramOwner, NewTrackerImporterProgramOwner> {
+
+    override fun transform(o: ProgramOwner): NewTrackerImporterProgramOwner {
+        return NewTrackerImporterProgramOwner.builder()
+            .program(o.program())
+            .orgUnit(o.ownerOrgUnit())
+            .trackedEntity(o.trackedEntityInstance())
+            .build()
+    }
+
+    override fun deTransform(t: NewTrackerImporterProgramOwner): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(t.program())
+            .ownerOrgUnit(t.orgUnit())
+            .trackedEntityInstance(t.trackedEntity())
+            .build()
     }
 }

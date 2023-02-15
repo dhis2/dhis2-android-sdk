@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwnerTransformer
 
 internal object NewTrackerImporterTrackedEntityTransformer {
     fun transform(
@@ -40,6 +41,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
         val teiTypeAttributes = teiAttributes
             .filter { typeAttributes.contains(it.trackedEntityAttribute()) }
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
+        val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.transform(it) }
 
         return NewTrackerImporterTrackedEntity.builder()
             .id(o.id())
@@ -55,7 +57,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
             .trackedEntityAttributeValues(teiTypeAttributes)
-            .programOwners(o.programOwners())
+            .programOwners(programOwners)
             .build()
     }
 
@@ -77,6 +79,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
         } ?: emptyList()
 
         val relationships = o.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
+        val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.deTransform(it) }
 
         return TrackedEntityInstance.builder()
             .id(o.id())
@@ -93,7 +96,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             .aggregatedSyncState(o.aggregatedSyncState())
             .enrollments(enrollments)
             .trackedEntityAttributeValues(teiAttributeValues + enrollmentAttributeValues)
-            .programOwners(o.programOwners())
+            .programOwners(programOwners)
             .relationships(relationships)
             .build()
     }

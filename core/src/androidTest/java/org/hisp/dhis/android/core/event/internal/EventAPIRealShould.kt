@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
@@ -37,16 +38,16 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Assert
 import org.junit.Before
-import java.util.*
 
 abstract class EventAPIRealShould internal constructor(
     // API version dependant parameters
-    private val serverUrl: String, private val strategy: String
+    private val serverUrl: String,
+    private val strategy: String
 ) : BaseRealIntegrationTest() {
     private val ouMode = OrganisationUnitMode.ACCESSIBLE.name
     private lateinit var apiCallExecutor: APICallExecutor
     private lateinit var eventService: EventService
-    
+
     @Before
     override fun setUp() {
         super.setUp()
@@ -54,7 +55,7 @@ abstract class EventAPIRealShould internal constructor(
         eventService = d2.retrofit().create(EventService::class.java)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun valid_events() {
         login()
@@ -64,7 +65,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent1, validEvent2)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -86,7 +88,7 @@ abstract class EventAPIRealShould internal constructor(
         assertThat(serverValidEvent2).isNotNull()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_invalid_orgunit() {
         login()
@@ -96,7 +98,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent, invalidEvent)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -126,7 +129,7 @@ abstract class EventAPIRealShould internal constructor(
         }
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_invalid_attribute_option_combo() {
         login()
@@ -136,7 +139,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent, invalidEvent)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -166,7 +170,7 @@ abstract class EventAPIRealShould internal constructor(
         }
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_future_date_does_not_fail() {
         login()
@@ -176,7 +180,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent1, validEvent2)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -198,7 +203,7 @@ abstract class EventAPIRealShould internal constructor(
         assertThat(serverValidEvent2).isNotNull()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_invalid_program() {
         login()
@@ -208,7 +213,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent, invalidEvent)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -238,7 +244,7 @@ abstract class EventAPIRealShould internal constructor(
         }
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_invalid_data_values() {
         login()
@@ -248,7 +254,8 @@ abstract class EventAPIRealShould internal constructor(
         payload.events = listOf(validEvent, invalidEvent)
         val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
             eventService
-                .postEvents(payload, strategy), listOf(409), EventWebResponse::class.java
+                .postEvents(payload, strategy),
+            listOf(409), EventWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.WARNING)
         for (importSummary in response.response()!!.importSummaries()!!) {

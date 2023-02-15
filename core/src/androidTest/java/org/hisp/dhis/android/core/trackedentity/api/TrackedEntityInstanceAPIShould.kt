@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
+import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
@@ -46,7 +47,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.junit.Assert
 import org.junit.Before
-import java.util.*
 
 abstract class TrackedEntityInstanceAPIShould internal constructor(
     // API version dependant parameters
@@ -65,7 +65,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         )
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun tei_with_invalid_tracked_entity_attribute() {
         login()
@@ -74,7 +74,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
@@ -101,9 +102,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
             executor.executeObjectCall(
                 trackedEntityInstanceService.getTrackedEntityInstanceAsCall(
                     invalidTEI.uid(),
-                    TrackedEntityInstanceFields.allFields, 
-                    true, 
-                    true
+                    TrackedEntityInstanceFields.allFields, true, true
                 )
             )
             Assert.fail("Should not reach that line")
@@ -113,7 +112,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(serverValidTEI.items().size).isEqualTo(1)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun tei_with_invalid_orgunit() {
         login()
@@ -122,11 +121,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
-        
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
-        
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
@@ -139,19 +139,15 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val serverValidTEI = executor.executeObjectCall(
             trackedEntityInstanceService
                 .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), 
-                    TrackedEntityInstanceFields.allFields,
-                    true, 
-                    true
+                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
+                    true, true
                 )
         )
         try {
             executor.executeObjectCall(
                 trackedEntityInstanceService.getTrackedEntityInstanceAsCall(
                     invalidTEI.uid(),
-                    TrackedEntityInstanceFields.allFields, 
-                    true, 
-                    true
+                    TrackedEntityInstanceFields.allFields, true, true
                 )
             )
             Assert.fail("Should not reach that line")
@@ -161,7 +157,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(serverValidTEI.items().size).isEqualTo(1)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun enrollment_with_valid_values() {
         login()
@@ -170,7 +166,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -185,24 +182,20 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val serverValidTEI = executor.executeObjectCall(
             trackedEntityInstanceService
                 .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), 
-                    TrackedEntityInstanceFields.allFields,
-                    true, 
-                    true
+                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
+                    true, true
                 )
         )
         val serverInvalidTEI = executor.executeObjectCall(
             trackedEntityInstanceService
                 .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), 
-                    TrackedEntityInstanceFields.allFields,
-                    true, 
-                    true
+                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
+                    true, true
                 )
         )
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun enrollment_future_date() {
         login()
@@ -211,7 +204,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -241,7 +235,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEnrollments(serverInvalidTEI.items()[0])).isEmpty()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun already_active_enrollment() {
         login()
@@ -250,7 +244,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -282,7 +277,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEnrollments(serverInvalidTEI.items()[0]).size).isEqualTo(1)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_valid_values() {
         login()
@@ -291,7 +286,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -324,7 +320,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     // IMPORTANT: check the programStage is set to "NO WRITE ACCESS" before running the test
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_no_write_access() {
         login()
@@ -333,7 +329,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -366,7 +363,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0])).isEmpty()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_future_event_date_does_not_fail() {
         login()
@@ -375,7 +372,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -409,7 +407,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_invalid_data_element() {
         login()
@@ -418,7 +416,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -460,7 +459,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         ).isEmpty()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_with_valid_and_invalid_data_value() {
         login()
@@ -469,7 +468,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -512,7 +512,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     // This test is failing
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun event_in_completed_enrollment() {
         login()
@@ -521,7 +521,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val payload = TrackedEntityInstancePayload.create(listOf(completedEnrollment))
         val response = executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
@@ -568,8 +569,10 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(deletedEventsResponse.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
             assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
-            for (enrollmentImportSummary in teiImportSummaries.enrollments()!!
-                .importSummaries()!!) {
+            for (
+                enrollmentImportSummary in teiImportSummaries.enrollments()!!
+                    .importSummaries()!!
+            ) {
                 assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1)
                 for (eventImportSummary in enrollmentImportSummary.events()!!.importSummaries()!!) {
                     assertThat(eventImportSummary.importCount().deleted()).isEqualTo(1)
@@ -590,7 +593,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     private fun executePostCall(payload: TrackedEntityInstancePayload, strategy: String): TEIWebResponse {
         return executor.executeObjectCallWithAcceptedErrorCodes(
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy), listOf(409), TEIWebResponse::class.java
+                .postTrackedEntityInstances(payload, strategy),
+            listOf(409), TEIWebResponse::class.java
         )
     }
 

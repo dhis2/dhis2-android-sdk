@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
@@ -36,7 +38,6 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
-import javax.inject.Inject
 
 @Reusable
 internal class NewEventEndpointCallFactory @Inject constructor(
@@ -67,8 +68,8 @@ internal class NewEventEndpointCallFactory @Inject constructor(
         ).map { mapPayload(it) }
     }
 
-    private fun mapPayload(payload: Payload<NewTrackerImporterEvent>): Payload<Event> {
-        val newItems = payload.items().map { t -> NewTrackerImporterEventTransformer.deTransform(t) }
+    private fun mapPayload(payload: NTIPayload<NewTrackerImporterEvent>): Payload<Event> {
+        val newItems = payload.instances.map { t -> NewTrackerImporterEventTransformer.deTransform(t) }
         return Payload(newItems)
     }
 }

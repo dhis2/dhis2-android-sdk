@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -36,8 +38,6 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class OldTrackedEntityEndpointCallFactory @Inject constructor(

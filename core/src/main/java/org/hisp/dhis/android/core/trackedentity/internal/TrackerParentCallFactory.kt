@@ -28,19 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentEndpointCallFactory
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentEndpointCallFactory
 import org.hisp.dhis.android.core.enrollment.internal.OldEnrollmentEndpointCallFactory
 import org.hisp.dhis.android.core.event.internal.EventEndpointCallFactory
 import org.hisp.dhis.android.core.event.internal.NewEventEndpointCallFactory
 import org.hisp.dhis.android.core.event.internal.OldEventEndpointCallFactory
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Call
-import javax.inject.Inject
 
 @Reusable
 internal class TrackerParentCallFactory @Inject constructor(

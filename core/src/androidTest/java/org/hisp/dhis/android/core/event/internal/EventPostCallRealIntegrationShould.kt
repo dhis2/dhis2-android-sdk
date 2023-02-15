@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
+import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -42,8 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.junit.Before
-import java.util.*
-import java.util.concurrent.Callable
 
 class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var eventStore: EventStore
@@ -68,7 +67,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun successful_response_after_sync_events() {
         downloadMetadata()
@@ -76,7 +75,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.eventModule().events().blockingUpload()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun create_event_with_repository() {
         downloadMetadata()
@@ -94,7 +93,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun pull_event_with_correct_category_combo_after_be_pushed() {
         downloadMetadata()
@@ -107,7 +106,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThatEventPushedIsDownloaded(pushedEvent)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun pull_events_delete_with_repository_and_post() {
         downloadMetadata()
@@ -118,7 +117,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun pull_two_events_with_correct_category_combo_after_be_pushed() {
         downloadMetadata()

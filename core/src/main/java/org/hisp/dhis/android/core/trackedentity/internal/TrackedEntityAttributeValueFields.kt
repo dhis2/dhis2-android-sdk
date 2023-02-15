@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import java.util.*
 
 internal object TrackedEntityAttributeValueFields {
     const val ATTRIBUTE = "attribute"

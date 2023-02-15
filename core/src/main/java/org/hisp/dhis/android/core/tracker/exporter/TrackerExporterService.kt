@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.tracker.exporter
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
@@ -45,7 +45,7 @@ internal interface TrackerExporterService {
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<Payload<NewTrackerImporterTrackedEntity>>
+    ): Single<NTIPayload<NewTrackerImporterTrackedEntity>>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
@@ -89,7 +89,7 @@ internal interface TrackerExporterService {
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean = false
-    ): Payload<NewTrackerImporterTrackedEntity>
+    ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$ENROLLMENTS/{$ENROLLMENT}")
     fun getEnrollmentSingle(
@@ -110,14 +110,14 @@ internal interface TrackerExporterService {
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
         @Query(EVENT) eventUid: String?
-    ): Single<Payload<NewTrackerImporterEvent>>
+    ): Single<NTIPayload<NewTrackerImporterEvent>>
 
     @GET(EVENTS)
     fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(EVENT) eventUid: String,
         @Query(OU_MODE) orgUnitMode: String
-    ): Single<Payload<NewTrackerImporterEvent>>
+    ): Single<NTIPayload<NewTrackerImporterEvent>>
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "tracker/trackedEntities"

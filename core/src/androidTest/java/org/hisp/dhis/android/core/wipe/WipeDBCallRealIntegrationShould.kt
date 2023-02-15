@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
 class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
-    //@Test
+    // @Test
     fun have_empty_database_when_wipe_db_after_sync_metadata() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
@@ -43,7 +43,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThatDatabase(d2.databaseAdapter()).isEmpty
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun have_empty_database_when_wipe_db_after_sync_data() {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -59,7 +59,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThatDatabase(d2.databaseAdapter()).isEmpty
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun do_not_have_metadata_when_wipe_metadata_after_sync_metadata() {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -69,7 +69,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThatDatabase(d2.databaseAdapter()).isEmpty
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun do_not_have_data_when_wipe_data_after_sync() {
         d2.userModule().logIn(username, password, url).blockingGet()

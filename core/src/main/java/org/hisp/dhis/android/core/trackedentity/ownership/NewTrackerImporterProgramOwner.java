@@ -25,21 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.enrollment.Enrollment
+package org.hisp.dhis.android.core.trackedentity.ownership;
 
-@Reusable
-internal class OldEnrollmentEndpointCallFactory @Inject constructor(
-    private val service: EnrollmentService
-) : EnrollmentEndpointCallFactory {
-    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
-        return service.getEnrollmentSingle(
-            uid,
-            EnrollmentFields.asRelationshipFields
-        )
+import android.database.Cursor;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseDataObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterProgramOwner.Builder.class)
+public abstract class NewTrackerImporterProgramOwner extends BaseDataObject {
+
+    @JsonProperty()
+    public abstract String program();
+
+    @JsonProperty()
+    public abstract String trackedEntity();
+
+    @JsonProperty()
+    public abstract String orgUnit();
+
+    public static Builder builder() {
+        return new $$AutoValue_NewTrackerImporterProgramOwner.Builder();
+    }
+
+    public static NewTrackerImporterProgramOwner create(Cursor cursor) {
+        return $AutoValue_NewTrackerImporterProgramOwner.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder program(String event);
+
+        public abstract Builder trackedEntity(String trackedEntityInstance);
+
+        public abstract Builder orgUnit(String ownerOrgUnit);
+
+        public abstract NewTrackerImporterProgramOwner build();
     }
 }

@@ -29,9 +29,12 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
@@ -42,8 +45,6 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
@@ -146,8 +147,8 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
         }
     }
 
-    private fun mapPayload(payload: Payload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
-        val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
+    private fun mapPayload(payload: NTIPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
+        val newItems = payload.instances.map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
     }
 }

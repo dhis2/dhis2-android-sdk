@@ -50,6 +50,4 @@ internal abstract class EventEndpointCallFactory {
             else -> null
         }
     }
-
-
 }

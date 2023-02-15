@@ -25,21 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal
+package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.enrollment.Enrollment
-
-@Reusable
-internal class OldEnrollmentEndpointCallFactory @Inject constructor(
-    private val service: EnrollmentService
-) : EnrollmentEndpointCallFactory {
-    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
-        return service.getEnrollmentSingle(
-            uid,
-            EnrollmentFields.asRelationshipFields
-        )
-    }
-}
+data class NTIPayload<T>(
+    val page: Int,
+    val pageSize: Int,
+    val instances: List<T>
+)

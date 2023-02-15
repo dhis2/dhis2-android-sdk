@@ -35,8 +35,9 @@ internal object RelationshipItemFields {
     private val fh = FieldsHelper<RelationshipItem>()
     val allFields: Fields<RelationshipItem> = Fields.builder<RelationshipItem>()
         .fields(
-            fh.nestedField<RelationshipItemTrackedEntityInstance>(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
-                .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            fh.nestedField<RelationshipItemTrackedEntityInstance>(
+                RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+            ).with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
             fh.nestedField<RelationshipItemEnrollment>(RelationshipItemTableInfo.Columns.ENROLLMENT)
                 .with(RelationshipItemEnrollmentFields.enrollment),
             fh.nestedField<RelationshipItemEvent>(RelationshipItemTableInfo.Columns.EVENT)

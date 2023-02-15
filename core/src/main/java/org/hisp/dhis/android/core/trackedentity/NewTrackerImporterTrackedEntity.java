@@ -44,8 +44,8 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterProgramOwnerListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramOwnerListAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -54,7 +54,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner;
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner;
 
 import java.util.Date;
 import java.util.List;
@@ -118,8 +118,8 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreProgramOwnerListAdapter.class)
-    public abstract List<ProgramOwner> programOwners();
+    @ColumnAdapter(IgnoreNewTrackerImporterProgramOwnerListAdapter.class)
+    public abstract List<NewTrackerImporterProgramOwner> programOwners();
 
     @Nullable
     @JsonProperty()
@@ -167,7 +167,7 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
 
         public abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
 
-        public abstract Builder programOwners(List<ProgramOwner> programOwners);
+        public abstract Builder programOwners(List<NewTrackerImporterProgramOwner> programOwners);
 
         public abstract Builder relationships(List<NewTrackerImporterRelationship> relationships);
 

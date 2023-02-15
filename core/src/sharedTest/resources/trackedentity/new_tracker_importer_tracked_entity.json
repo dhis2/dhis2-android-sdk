@@ -34,5 +34,12 @@
       "valueType": "TEXT",
       "value": "Filona"
     }
+  ],
+  "programOwners": [
+    {
+      "orgUnit": "DiszpKrYNg8",
+      "trackedEntity": "vOxUH373fy5",
+      "program": "IpHINAT79UW"
+    }
   ]
 }

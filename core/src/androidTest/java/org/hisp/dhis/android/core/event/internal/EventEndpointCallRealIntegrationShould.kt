@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 
 class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    // This test is commented because technically it is flaky.
+    // It depends on a live server to operate and the login is hardcoded here.
+    // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
+    // @Test
     @Throws(Exception::class)
     fun download_number_of_events_according_to_default_limit() {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -47,13 +47,13 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         assertThat(events.isEmpty()).isFalse()
 
-        //TODO: we should create dependant server data verifications in other test suite
+        // TODO: we should create dependant server data verifications in other test suite
         /* verifyNumberOfDownloadedEvents(49);
         verifyNumberOfDownloadedTrackedEntityDataValue(335);
         */
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun download_event_with_category_combo_option() {
         d2.userModule().logIn(username, password, url).blockingGet()

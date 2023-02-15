@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
-import kotlinx.coroutines.rx2.await
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.event.Event

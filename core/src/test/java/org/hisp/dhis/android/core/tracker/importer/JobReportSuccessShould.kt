@@ -53,8 +53,6 @@ class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-succ
         assertThat(jobReport.stats).isEqualTo(JobImportCount(1, 2, 3, 4, 10))
 
         val bundleReport = jobReport.bundleReport!!
-        assertThat(bundleReport.stats)
-            .isEqualTo(JobImportCount(5, 6, 7, 8, 26))
 
         assertThat(bundleReport.typeReportMap.trackedEntity).isEqualTo(
             JobTypeReport(

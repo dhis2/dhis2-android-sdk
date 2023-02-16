@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
@@ -65,12 +66,14 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
 
     @Throws(D2Error::class, Exception::class)
     fun queryOnlineBlocking(
-        onlineCallFactory: TrackedEntityInstanceQueryCallFactory,
+        trackerParentCallFactory: TrackerParentCallFactory,
         scope: TrackedEntityInstanceQueryRepositoryScope
     ): List<TrackedEntityInstance> {
         return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
             val noPagingQuery = queryOnline.toBuilder().paging(false).build()
-            val pageInstances = onlineCallFactory.getCall(noPagingQuery).call()
+            val pageInstances = trackerParentCallFactory.getTrackedEntityCall()
+                .getQueryCall(noPagingQuery)
+                .call()
 
             val validInstances = pageInstances.filter { tei ->
                 val isExcluded = scope.excludedUids()?.contains(tei.uid()) ?: false

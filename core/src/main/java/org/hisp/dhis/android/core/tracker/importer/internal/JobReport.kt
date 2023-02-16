@@ -69,9 +69,8 @@ internal data class JobTypeReportMap(
 )
 
 internal data class JobBundleReport(
-    val typeReportMap: JobTypeReportMap,
-    val stats: JobImportCount
-) // TODO whats the difference with father
+    val typeReportMap: JobTypeReportMap
+)
 
 internal data class JobReport(
     val status: String,

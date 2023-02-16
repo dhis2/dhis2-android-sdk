@@ -66,6 +66,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +86,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyWithUidCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstanceStore store;
-    private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
+    private final TrackerParentCallFactory trackerParentCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
@@ -102,7 +103,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(
             final TrackedEntityInstanceStore store,
-            final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
+            final TrackerParentCallFactory trackerParentCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper,
@@ -112,7 +113,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
             final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
-        this.onlineCallFactory = onlineCallFactory;
+        this.trackerParentCallFactory = trackerParentCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.scopeHelper = scopeHelper;
@@ -122,8 +123,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.onlineHelper = onlineHelper;
         this.localQueryHelper = localQueryHelper;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s,
-                        scopeHelper, versionManager, filtersRepository, onlineCache, onlineHelper, localQueryHelper));
+                new TrackedEntityInstanceQueryCollectionRepository(store, trackerParentCallFactory, childrenAppenders,
+                        s, scopeHelper, versionManager, filtersRepository, onlineCache,
+                        onlineHelper, localQueryHelper));
     }
 
     /**
@@ -551,12 +553,12 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
-        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
+        return new TrackedEntityInstanceQueryDataSource(store, trackerParentCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
     public DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>> getResultDataSource() {
-        return new TrackedEntityInstanceQueryDataSourceResult(store, onlineCallFactory, scope,
+        return new TrackedEntityInstanceQueryDataSourceResult(store, trackerParentCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
@@ -574,7 +576,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                return onlineHelper.queryOnlineBlocking(onlineCallFactory, scope);
+                return onlineHelper.queryOnlineBlocking(trackerParentCallFactory, scope);
             } catch (D2Error e) {
                 throw new RuntimeException(e);
             } catch (Exception e) {

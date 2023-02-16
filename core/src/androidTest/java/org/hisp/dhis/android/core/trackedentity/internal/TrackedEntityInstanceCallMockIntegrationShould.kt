@@ -35,6 +35,7 @@ import junit.framework.Assert.fail
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -48,9 +49,15 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.junit.After
 import org.junit.Test
 
 class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+
+    @After
+    fun cleanData() {
+        d2.wipeModule().wipeData()
+    }
 
     @Test
     fun download_tracked_entity_instance_enrollments_and_events() {
@@ -120,6 +127,27 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
             .blockingDownload()
 
         verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid)
+    }
+
+    @Test
+    fun downloadAndPersistRelatedItems() {
+        dhis2MockServer.enqueueSystemInfoResponse()
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instances_with_relationship.json")
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_collection.json")
+
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload()
+
+        val teis = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
+
+        assertThat(teis.size).isEqualTo(2)
+        assertThat(teis.mapNotNull { it.syncState() }).contains(State.SYNCED)
+        assertThat(teis.mapNotNull { it.syncState() }).contains(State.RELATIONSHIP)
+
+        val relationships = d2.relationshipModule().relationships().withItems().blockingGet()
+
+        assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.first().from()).isNotNull()
+        assertThat(relationships.first().to()).isNotNull()
     }
 
     private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) {

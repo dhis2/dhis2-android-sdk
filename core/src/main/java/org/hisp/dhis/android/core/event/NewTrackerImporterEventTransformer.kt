@@ -101,6 +101,7 @@ internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, Ne
             .trackedEntityDataValues(dataValues)
             .notes(notes)
             .relationships(relationships)
+            .trackedEntityInstance(t.trackedEntity())
             .build()
     }
 }

@@ -78,6 +78,8 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             } ?: emptyList()
         } ?: emptyList()
 
+        val attributes = (teiAttributeValues + enrollmentAttributeValues).distinctBy { it.trackedEntityAttribute() }
+
         val relationships = o.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
         val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.deTransform(it) }
 
@@ -95,7 +97,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
             .enrollments(enrollments)
-            .trackedEntityAttributeValues(teiAttributeValues + enrollmentAttributeValues)
+            .trackedEntityAttributeValues(attributes)
             .programOwners(programOwners)
             .relationships(relationships)
             .build()

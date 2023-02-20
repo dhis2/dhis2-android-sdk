@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAda
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -160,6 +161,11 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    public abstract String trackedEntity();
+
     public static Builder builder() {
         return new $$AutoValue_NewTrackerImporterEvent.Builder();
     }
@@ -219,7 +225,7 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
         public abstract Builder aggregatedSyncState(State aggregatedSyncState);
 
-        public abstract Geometry geometry();
+        public abstract Builder trackedEntity(String trackedEntity);
 
         public abstract NewTrackerImporterEvent build();
     }

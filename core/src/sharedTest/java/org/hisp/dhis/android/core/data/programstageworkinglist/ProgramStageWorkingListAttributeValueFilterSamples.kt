@@ -25,40 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.programstageworkinglist
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+internal object ProgramStageWorkingListAttributeValueFilterSamples {
+    fun get(): ProgramStageWorkingListAttributeValueFilter {
+        return ProgramStageWorkingListAttributeValueFilter.builder()
+            .id(1L)
+            .programStageWorkingList("programStageWorkingList")
+            .attribute("attributeUid")
+            .sw("as")
+            .ew("sa")
+            .le("20")
+            .ge("10")
+            .gt("10")
+            .lt("20")
+            .eq("abc")
+            .`in`(setOf("Norway"))
+            .like("abc")
+            .dateFilter(
+                DateFilterPeriod.builder()
+                    .startDate(parseDate("2014-05-01"))
+                    .endDate(parseDate("2019-03-20"))
+                    .type(DatePeriodType.ABSOLUTE)
+                    .build()
+            )
+            .build()
     }
 }

@@ -25,40 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.programstageworkinglist.ProgramStageWorkingListSamples
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import android.content.Context;
-import android.content.res.AssetManager;
+@RunWith(D2JunitRunner::class)
+class ProgramStageWorkingListStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageWorkingList>(
+        ProgramStageWorkingListStore.create(TestDatabaseAdapterFactory.get()),
+        ProgramStageWorkingListTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    override fun buildObject(): ProgramStageWorkingList {
+        return ProgramStageWorkingListSamples.getProgramStageWorkingList()
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun buildObjectToUpdate(): ProgramStageWorkingList {
+        return ProgramStageWorkingListSamples.getProgramStageWorkingList().toBuilder()
+            .programStage(ObjectWithUid.create("other_program_stage"))
+            .build()
     }
 }

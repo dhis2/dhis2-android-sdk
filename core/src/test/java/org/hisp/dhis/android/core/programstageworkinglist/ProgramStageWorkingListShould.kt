@@ -25,40 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import android.content.Context;
-import android.content.res.AssetManager;
+class ProgramStageWorkingListShould :
+    BaseObjectShould("programstageworkinglist/program_stage_working_list.json"),
+    ObjectShould {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    @Test
+    override fun map_from_json_string() {
+        val workingList = objectMapper.readValue(jsonStream, ProgramStageWorkingList::class.java)
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-14T21:17:40.841"))
+        assertThat(workingList.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-14T22:22:15.383"))
+        assertThat(workingList.uid()).isEqualTo("NAgjOfWMXg6")
+        assertThat(workingList.name()).isEqualTo("Ask for comment for low apgar")
+        assertThat(workingList.displayName()).isEqualTo("Ask for comment for low apgar")
+        assertThat(workingList.programStage()).isNull()
+        assertThat(workingList.program()!!.uid()).isEqualTo("IpHINAT79UW")
+        //TODO
     }
 }

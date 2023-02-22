@@ -25,24 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.common.truth.Truth.assertThat
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
+@RunWith(D2JunitRunner::class)
+class TrackedEntityInstanceCallOldMockIntegrationShould : TrackedEntityInstanceCallBaseMockIntegrationShould() {
 
-    @Test
-    override fun map_from_json_string() {
-        val systemInfo = objectMapper.readValue(jsonStream, SystemInfo::class.java)
+    override val importerVersion = TrackerImporterVersion.V1
+    override val teiFile = "trackedentity/tracked_entity_instance.json"
+    override val teiCollectionFile = "trackedentity/tracked_entity_instance_collection.json"
+    override val teiSingleFile = "trackedentity/tracked_entity_instance_single.json"
+    override val teiWithRemovedDataFile = "trackedentity/tracked_entity_instance_with_removed_data_single.json"
 
-        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
-        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
-        assertThat(systemInfo.version()).isEqualTo("2.40.0")
-        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
-        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
+    override fun parseTrackedEntityInstance(file: String): TrackedEntityInstance {
+        val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)
+        val objectMapper = ObjectMapper().setDateFormat(DateUtils.DATE_FORMAT.raw())
+        return objectMapper.readValue(expectedEventsResponseJson, TrackedEntityInstance::class.java)
     }
 }

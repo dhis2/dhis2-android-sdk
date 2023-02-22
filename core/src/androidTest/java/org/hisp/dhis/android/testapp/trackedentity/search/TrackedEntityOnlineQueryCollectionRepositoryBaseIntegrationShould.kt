@@ -25,49 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core
+package org.hisp.dhis.android.testapp.trackedentity.search
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
-import org.hisp.dhis.android.core.maintenance.D2Error
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class EventWithLimitCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould :
+    BaseMockIntegrationTestMetadataEnqueable() {
+
+    abstract val importerVersion: TrackerImporterVersion
+    abstract val responseFile: String
+
+    private lateinit var initSyncParams: SynchronizationSettings
+    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+
+    @Before
+    fun setUp() {
+        initSyncParams = syncStore.selectFirst()!!
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        syncStore.delete()
+        syncStore.insert(testParams)
+    }
 
     @After
-    @Throws(D2Error::class)
     fun tearDown() {
         d2.wipeModule().wipeData()
+        syncStore.delete()
+        syncStore.insert(initSyncParams)
     }
 
     @Test
-    fun download_events() {
-        val eventLimitByOrgUnit = 1
-        dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("event/events_1.json")
-        d2.eventModule().eventDownloader().limit(eventLimitByOrgUnit).blockingDownload()
-        val eventStore = EventStoreImpl.create(databaseAdapter)
-        val downloadedEvents = eventStore.querySingleEvents()
-        Truth.assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
-    }
+    fun find_online_blocking() {
+        dhis2MockServer.enqueueMockResponse(responseFile)
 
-    // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
-    fun download_events_by_uid_limited_by_one() {
-        val eventLimitByOrgUnit = 1
-        dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("event/events_with_uids.json")
-        d2.eventModule().eventDownloader()
-            .byUid()
-            .`in`("wAiGPfJGMxt", "PpNGhvEYnXe")
-            .limit(eventLimitByOrgUnit)
-            .blockingDownload()
-        val eventStore = EventStoreImpl.create(databaseAdapter)
-        val downloadedEvents = eventStore.querySingleEvents()
-        Truth.assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .onlineOnly()
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(2)
     }
 }

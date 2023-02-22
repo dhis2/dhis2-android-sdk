@@ -28,49 +28,52 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
-import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteCreateProjection
-import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class EventPostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+    abstract val importerVersion: TrackerImporterVersion
+    abstract val importConflictsFile1: List<String>
+    abstract val importConflictsFile2: List<String>
+
     private val event1Id = "event1Id"
     private val event2Id = "event2Id"
     private val event3Id = "event3Id"
     private val event4Id = "event4Id"
 
+    private lateinit var initSyncParams: SynchronizationSettings
+    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+
+    @Before
+    fun setUp() {
+        initSyncParams = syncStore.selectFirst()!!
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        syncStore.delete()
+        syncStore.insert(testParams)
+    }
+
     @After
     fun tearDown() {
         d2.wipeModule().wipeData()
-    }
-
-    @Test
-    fun build_payload_with_different_enrollments() {
-        storeEvents()
-        val events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost())
-        assertThat(events.size).isEqualTo(4)
-        for (event in events) {
-            assertThat(event.trackedEntityDataValues()!!.size).isEqualTo(1)
-        }
+        syncStore.delete()
+        syncStore.insert(initSyncParams)
     }
 
     @Test
     fun handle_import_conflicts_correctly() {
         storeEvents()
-        dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json")
+        importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
     }
@@ -78,7 +81,7 @@ class EventPostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMe
     @Test
     fun delete_old_import_conflicts() {
         storeEvents()
-        dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json")
+        importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
 
@@ -89,7 +92,7 @@ class EventPostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMe
         eventStore.setAggregatedSyncState(event2Id, State.TO_POST)
         eventStore.setAggregatedSyncState(event3Id, State.TO_POST)
 
-        dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json")
+        importConflictsFile2.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(2)
     }
@@ -100,52 +103,10 @@ class EventPostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMe
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
         d2.eventModule().events().uid("event1Id").blockingDelete()
 
-        dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json")
+        importConflictsFile2.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
 
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(3)
-    }
-
-    @Test
-    fun recreate_events_with_filters() {
-        val event1 = "event1"
-        val event2 = "event2"
-        val event3 = "event3"
-        val event4 = "event4"
-        val program = d2.programModule().programs().one().blockingGet()
-
-        storeSingleEvent(event1, program, State.TO_POST, false)
-        storeSingleEvent(event2, program, State.TO_UPDATE, false)
-        storeSingleEvent(event3, program, State.TO_UPDATE, true)
-        storeSingleEvent(event4, program, State.SYNCED, false)
-
-        val events = payloadGenerator.getEvents(
-            d2.eventModule().events().byProgramUid().eq(program.uid())
-                .bySyncState().`in`(*uploadableStatesIncludingError()).blockingGet()
-        )
-
-        assertThat(events.size).isEqualTo(3)
-        assertThat(getUidsList(events).containsAll(listOf(event1, event2, event3))).isTrue()
-    }
-
-    @Test
-    fun build_payload_with_event_notes() {
-        storeEvents()
-        d2.noteModule().notes().blockingAdd(
-            NoteCreateProjection.builder()
-                .event(event1Id)
-                .noteType(Note.NoteType.EVENT_NOTE)
-                .value("This is an event note")
-                .build()
-        )
-        val events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost())
-        for (event in events) {
-            if (event1Id == event.uid()) {
-                assertThat(event.notes()!!.size).isEqualTo(1)
-            } else {
-                assertThat(event.notes()!!.size).isEqualTo(0)
-            }
-        }
     }
 
     private fun storeEvents() {
@@ -214,35 +175,16 @@ class EventPostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMe
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
     }
 
-    private fun storeSingleEvent(eventUid: String, program: Program, state: State, deleted: Boolean) {
-        val orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()
-        val programStage = d2.programModule().programStages().one().blockingGet()
-        eventStore.insert(
-            Event.builder()
-                .uid(eventUid)
-                .organisationUnit(orgUnit.uid())
-                .program(program.uid())
-                .programStage(programStage.uid())
-                .syncState(state)
-                .aggregatedSyncState(state)
-                .deleted(deleted)
-                .build()
-        )
-    }
-
     companion object {
-        private lateinit var payloadGenerator: EventPostPayloadGenerator
         private lateinit var eventStore: EventStore
 
         @BeforeClass
         @JvmStatic
-        @Throws(Exception::class)
         fun setUpClass() {
             BaseMockIntegrationTestMetadataEnqueable.setUpClass()
             eventStore = create(
                 objects.databaseAdapter
             )
-            payloadGenerator = objects.d2DIComponent.eventPostPayloadGenerator()
         }
     }
 }

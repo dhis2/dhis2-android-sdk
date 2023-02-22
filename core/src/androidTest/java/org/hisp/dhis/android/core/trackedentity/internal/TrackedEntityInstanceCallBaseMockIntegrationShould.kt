@@ -27,14 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import junit.framework.Assert.fail
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -43,25 +39,54 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
-class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+
+    abstract val importerVersion: TrackerImporterVersion
+    abstract val teiFile: String
+    abstract val teiCollectionFile: String
+    abstract val teiSingleFile: String
+    abstract val teiWithRemovedDataFile: String
+
+    private lateinit var initSyncParams: SynchronizationSettings
+    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+
+    @Before
+    fun setUp() {
+        initSyncParams = syncStore.selectFirst()!!
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        syncStore.delete()
+        syncStore.insert(testParams)
+    }
+
+    @After
+    fun tearDown() {
+        d2.wipeModule().wipeData()
+        syncStore.delete()
+        syncStore.insert(initSyncParams)
+    }
 
     @Test
     fun download_tracked_entity_instance_enrollments_and_events() {
         val teiUid = "PgmUFEQYZdt"
 
         dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_collection.json")
+        dhis2MockServer.enqueueMockResponse(teiCollectionFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
 
-        verifyDownloadedTrackedEntityInstanceSingle("trackedentity/tracked_entity_instance.json", teiUid)
+        verifyDownloadedTrackedEntityInstanceSingle(teiFile, teiUid)
     }
 
     @Test
@@ -70,7 +95,7 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
         val program = "lxAQ7Zs9VYR"
 
         dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_single.json")
+        dhis2MockServer.enqueueMockResponse(teiSingleFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byUid().eq(teiUid)
@@ -78,7 +103,7 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
             .blockingDownload()
 
         dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_single.json")
+        dhis2MockServer.enqueueMockResponse(teiWithRemovedDataFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byUid().eq(teiUid)
@@ -86,7 +111,7 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
             .blockingDownload()
 
         verifyDownloadedTrackedEntityInstanceSingle(
-            "trackedentity/tracked_entity_instance_with_removed_data_single.json",
+            teiWithRemovedDataFile,
             teiUid
         )
     }
@@ -113,20 +138,17 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
         d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, program, "Reason")
 
         dhis2MockServer.enqueueSystemInfoResponse()
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json")
+        dhis2MockServer.enqueueMockResponse(teiFile)
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byUid().eq(teiUid)
             .byProgramUid(program)
             .blockingDownload()
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid)
+        verifyDownloadedTrackedEntityInstance(teiFile, teiUid)
     }
 
     private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) {
-        val parsed = parseTrackedEntityInstanceResponse(
-            file,
-            object : TypeReference<TrackedEntityInstance>() {}
-        )
+        val parsed = parseTrackedEntityInstance(file)
         val expectedEnrollmentResponse = removeDeletedData(parsed)
         val downloadedTei = getDownloadedTei(teiUid)
 
@@ -138,22 +160,13 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
 
     @Throws(IOException::class)
     private fun verifyDownloadedTrackedEntityInstance(file: String, teiUid: String) {
-        val parsed = parseTrackedEntityInstanceResponse(
-            file,
-            object : TypeReference<TrackedEntityInstance>() {}
-        )
+        val parsed = parseTrackedEntityInstance(file)
         val expectedEnrollmentResponse = removeDeletedData(parsed)
         val downloadedTei = getDownloadedTei(teiUid)
 
         assertThat(downloadedTei!!.uid()).isEqualTo(expectedEnrollmentResponse.uid())
         assertThat(downloadedTei.trackedEntityAttributeValues()!!.size)
             .isEqualTo(expectedEnrollmentResponse.trackedEntityAttributeValues()!!.size)
-    }
-
-    private fun <M> parseTrackedEntityInstanceResponse(file: String, reference: TypeReference<M>): M {
-        val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)
-        val objectMapper = ObjectMapper().setDateFormat(DateUtils.DATE_FORMAT.raw())
-        return objectMapper.readValue(expectedEventsResponseJson, reference)
     }
 
     private fun removeDeletedData(trackedEntityInstance: TrackedEntityInstance): TrackedEntityInstance {
@@ -247,4 +260,6 @@ class TrackedEntityInstanceCallMockIntegrationShould : BaseMockIntegrationTestMe
     private fun getEnrollments(trackedEntityInstance: TrackedEntityInstance?): List<Enrollment> {
         return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
     }
+
+    abstract fun parseTrackedEntityInstance(file: String): TrackedEntityInstance
 }

@@ -1,0 +1,32 @@
+{
+  "status": "ERROR",
+  "validationReport": {
+    "errorReports": [
+      {
+        "message": "Event OrganisationUnit: `OrganisationUnit (ABJTilhqOCW)`, and Program: `Program (q04UBOqq3rp)`, dont match.",
+        "errorCode": "E1029",
+        "trackerType": "EVENT",
+        "uid": "event1Id"
+      },
+      {
+        "message": "Event OrganisationUnit: `OrganisationUnit (ABJTilhqOCW)`, and Program: `Program (q04UBOqq3rp)`, dont match.",
+        "errorCode": "E1029",
+        "trackerType": "EVENT",
+        "uid": "event2Id"
+      },
+      {
+        "message": "Event OrganisationUnit: `OrganisationUnit (ABJTilhqOCW)`, and Program: `Program (q04UBOqq3rp)`, dont match.",
+        "errorCode": "E1029",
+        "trackerType": "EVENT",
+        "uid": "event3Id"
+      }
+    ]
+  },
+  "stats": {
+    "created": 0,
+    "updated": 0,
+    "deleted": 0,
+    "ignored": 3,
+    "total": 3
+  }
+}

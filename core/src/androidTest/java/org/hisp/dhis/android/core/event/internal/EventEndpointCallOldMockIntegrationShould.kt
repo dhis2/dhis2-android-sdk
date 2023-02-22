@@ -27,32 +27,15 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Reusable
-internal class EventPostPayloadGenerator @Inject internal constructor(
-    private val versionManager: DHISVersionManager,
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: EventPostNoteStore
-) {
+@RunWith(D2JunitRunner::class)
+class EventEndpointCallOldMockIntegrationShould : EventEndpointCallBaseMockIntegrationShould() {
 
-    fun getEvents(events: List<Event>): List<Event> {
-        val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
-        val notes = noteStore.queryNotes()
-
-        return events.map { event ->
-            val eventBuilder = event.toBuilder()
-                .trackedEntityDataValues(dataValueMap[event.uid()])
-                .notes(notes.filter { it.event() == event.uid() })
-            if (versionManager.getVersion() == DHISVersion.V2_30) {
-                eventBuilder.geometry(null)
-            }
-            eventBuilder.build()
-        }
-    }
+    override val importerVersion: TrackerImporterVersion = TrackerImporterVersion.V1
+    override val events1File: String = "event/events_1.json"
+    override val eventsFirstGoodSecondWrongFKFile: String = "event/two_events_first_good_second_wrong_foreign_key.json"
+    override val eventsWithUids: String = "event/events_with_uids.json"
 }

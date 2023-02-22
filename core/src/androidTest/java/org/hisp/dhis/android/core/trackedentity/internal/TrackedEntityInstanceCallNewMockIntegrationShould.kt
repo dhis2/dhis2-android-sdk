@@ -25,26 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.testapp.trackedentity.search
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class TrackedEntityInstanceQueryCollectionRepositoryMockEnqueableIntegrationShould :
-    BaseMockIntegrationTestMetadataEnqueable() {
+class TrackedEntityInstanceCallNewMockIntegrationShould : TrackedEntityInstanceCallBaseMockIntegrationShould() {
 
-    @Test
-    fun find_online_blocking() {
-        dhis2MockServer.enqueueMockResponse("trackedentity/search_grid.json")
+    override val importerVersion = TrackerImporterVersion.V2
+    override val teiFile = "trackedentity/new_tracker_importer_tracked_entity.json"
+    override val teiCollectionFile = "trackedentity/new_tracker_importer_tracked_entity_collection.json"
+    override val teiSingleFile = "trackedentity/new_tracker_importer_tracked_entity_single.json"
+    override val teiWithRemovedDataFile =
+        "trackedentity/new_tracker_importer_tracked_entity_with_removed_data_single.json"
 
-        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .onlineOnly()
-            .blockingGet()
-
-        assertThat(trackedEntityInstances.size).isEqualTo(2)
+    override fun parseTrackedEntityInstance(file: String): TrackedEntityInstance {
+        val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)
+        val objectMapper = ObjectMapperFactory.objectMapper()
+        val entity = objectMapper.readValue(expectedEventsResponseJson, NewTrackerImporterTrackedEntity::class.java)
+        return NewTrackerImporterTrackedEntityTransformer.deTransform(entity)
     }
 }

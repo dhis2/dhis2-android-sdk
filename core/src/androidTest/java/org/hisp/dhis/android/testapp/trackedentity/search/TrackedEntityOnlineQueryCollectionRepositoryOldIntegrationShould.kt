@@ -25,24 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo
+package org.hisp.dhis.android.testapp.trackedentity.search
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
+@RunWith(D2JunitRunner::class)
+class TrackedEntityOnlineQueryCollectionRepositoryOldIntegrationShould :
+    TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould() {
 
-    @Test
-    override fun map_from_json_string() {
-        val systemInfo = objectMapper.readValue(jsonStream, SystemInfo::class.java)
-
-        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
-        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
-        assertThat(systemInfo.version()).isEqualTo("2.40.0")
-        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
-        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
-    }
+    override val importerVersion = TrackerImporterVersion.V1
+    override val responseFile = "trackedentity/search_grid.json"
 }

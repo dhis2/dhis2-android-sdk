@@ -27,24 +27,27 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-@Module(
-    includes = [
-        ProgramStageWorkingListEntityDIModule::class,
-        ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
-)
-internal class ProgramStageWorkingListPackageDIModule {
+object ProgramStageWorkingListAttributeValueFilterFields {
+    private const val API_IN = "in"
+    private val fh = FieldsHelper<ProgramStageWorkingListAttributeValueFilter>()
 
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
-    }
+    val allFields = Fields.builder<ProgramStageWorkingListAttributeValueFilter>()
+        .fields(
+            fh.field<String>(ItemFilterTableInfo.Columns.ATTRIBUTE),
+            fh.field<String>(ItemFilterTableInfo.Columns.SW),
+            fh.field<String>(ItemFilterTableInfo.Columns.EW),
+            fh.field<String>(ItemFilterTableInfo.Columns.LE),
+            fh.field<String>(ItemFilterTableInfo.Columns.GE),
+            fh.field<String>(ItemFilterTableInfo.Columns.GT),
+            fh.field<String>(ItemFilterTableInfo.Columns.LT),
+            fh.field<String>(ItemFilterTableInfo.Columns.EQ),
+            fh.field<String>(API_IN),
+            fh.field<String>(ItemFilterTableInfo.Columns.LIKE),
+            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER)
+        ).build()
 }

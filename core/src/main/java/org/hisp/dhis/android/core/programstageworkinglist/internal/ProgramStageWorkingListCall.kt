@@ -27,24 +27,46 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
 
-@Module(
-    includes = [
-        ProgramStageWorkingListEntityDIModule::class,
-        ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
-)
-internal class ProgramStageWorkingListPackageDIModule {
+@Reusable
+internal class ProgramStageWorkingListCall @Inject internal constructor(
+    private val service: ProgramStageWorkingListService,
+    private val handler: Handler<ProgramStageWorkingList>,
+    private val apiDownloader: APIDownloader,
+    private val versionManager: DHISVersionManager
+) : UidsCall<ProgramStageWorkingList> {
+    override fun download(uids: Set<String>): Single<List<ProgramStageWorkingList>> {
+        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
 
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
+        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+            apiDownloader.downloadPartitioned(
+                uids,
+                MAX_UID_LIST_SIZE,
+                handler
+            ) { partitionUids: Set<String> ->
+                service.getProgramStageWorkingLists(
+                    ProgramStageWorkingListFields.programUid.`in`(partitionUids),
+                    accessDataReadFilter,
+                    ProgramStageWorkingListFields.allFields,
+                    false
+                )
+            }
+        } else {
+            Single.just(emptyList())
+        }
+    }
+
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 50
     }
 }

@@ -32,12 +32,9 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import retrofit2.Retrofit
 
 @Module
 internal class ProgramStageWorkingListEntityDIModule {
@@ -50,29 +47,13 @@ internal class ProgramStageWorkingListEntityDIModule {
 
     @Provides
     @Reusable
-    fun eventDataFilterStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
-        return ProgramStageWorkingListEventDataFilterStore.create(databaseAdapter)
+    fun handler(impl: ProgramStageWorkingListHandler): Handler<ProgramStageWorkingList> {
+        return impl
     }
 
-    @Provides
     @Reusable
-    fun eventDataFilterHandler(
-        store: ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter>
-    ): HandlerWithTransformer<ProgramStageWorkingListEventDataFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
-    }
-
     @Provides
-    @Reusable
-    fun attributeValueFilterStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter> {
-        return ProgramStageWorkingListAttributeValueFilterStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun attributeValueFilterHandler(
-        store: ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter>
-    ): HandlerWithTransformer<ProgramStageWorkingListAttributeValueFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
+    fun service(retrofit: Retrofit): ProgramStageWorkingListService {
+        return retrofit.create(ProgramStageWorkingListService::class.java)
     }
 }

@@ -27,24 +27,25 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
-@Module(
-    includes = [
-        ProgramStageWorkingListEntityDIModule::class,
-        ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
-)
-internal class ProgramStageWorkingListPackageDIModule {
+object ProgramStageWorkingListEventDataFilterFields {
+    private const val API_IN = "in"
+    private val fh = FieldsHelper<ProgramStageWorkingListEventDataFilter>()
 
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
-    }
+    val allFields = Fields.builder<ProgramStageWorkingListEventDataFilter>()
+        .fields(
+            fh.field<String>(Columns.DATA_ITEM),
+            fh.field<String>(Columns.LE),
+            fh.field<String>(Columns.GE),
+            fh.field<String>(Columns.GT),
+            fh.field<String>(Columns.LT),
+            fh.field<String>(Columns.EQ),
+            fh.field<String>(API_IN),
+            fh.field<String>(Columns.LIKE),
+            fh.field<String>(Columns.DATE_FILTER)
+        ).build()
 }

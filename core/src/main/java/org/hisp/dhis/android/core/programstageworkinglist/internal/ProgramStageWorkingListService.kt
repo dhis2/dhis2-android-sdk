@@ -27,24 +27,22 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import retrofit2.http.*
 
-@Module(
-    includes = [
-        ProgramStageWorkingListEntityDIModule::class,
-        ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
-)
-internal class ProgramStageWorkingListPackageDIModule {
+internal interface ProgramStageWorkingListService {
 
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
-    }
+    @GET("programStageWorkingLists")
+    fun getProgramStageWorkingLists(
+        @Query("filter") @Where uids: Filter<ProgramStageWorkingList, String>,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("fields") @Which fields: Fields<ProgramStageWorkingList>,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<ProgramStageWorkingList>>
 }

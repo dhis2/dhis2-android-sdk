@@ -27,24 +27,36 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.FilterPeriod
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 
-@Module(
-    includes = [
-        ProgramStageWorkingListEntityDIModule::class,
-        ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
-)
-internal class ProgramStageWorkingListPackageDIModule {
+object ProgramStageWorkingListFields {
+    const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
 
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
-    }
+    private val fh = FieldsHelper<ProgramStageWorkingList>()
+
+    val programUid: Field<ProgramStageWorkingList, String> =
+        Field.create(ProgramStageWorkingListTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
+
+    val allFields = Fields.builder<ProgramStageWorkingList>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.field<String>(ProgramStageWorkingListTableInfo.Columns.DESCRIPTION),
+            fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM),
+            fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM_STAGE),
+            fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)
+                .with(ProgramStageQueryCriteriaFields.allFields)
+        )
+        .build()
+
 }

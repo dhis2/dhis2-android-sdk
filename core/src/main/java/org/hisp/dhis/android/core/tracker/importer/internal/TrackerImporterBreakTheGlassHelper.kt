@@ -146,21 +146,29 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
      * Fake break the glass for importer V2
      */
     fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
-        payload.enrollments.forEach {
+        val teiProgramForEnrollment = payload.enrollments.mapNotNull {
             if (it.trackedEntity() != null && it.program() != null) {
-                ownershipManagerImpl.fakeBreakGlass(it.trackedEntity()!!, it.program()!!)
+                Pair(it.trackedEntity()!!, it.program()!!)
+            } else {
+                null
             }
         }
 
-        payload.events
+        val teiProgramForEvent = payload.events
             .filter { event -> payload.enrollments.none { it.uid() == event.enrollment() } }
-            .forEach { event ->
+            .mapNotNull { event ->
                 event.enrollment()?.let { enrollmentStore.selectByUid(it) }?.let {
                     if (it.trackedEntityInstance() != null && it.program() != null) {
-                        ownershipManagerImpl.fakeBreakGlass(it.trackedEntityInstance()!!, it.program()!!)
+                        Pair(it.trackedEntityInstance()!!, it.program()!!)
+                    } else {
+                        null
                     }
                 }
             }
+
+        (teiProgramForEnrollment + teiProgramForEvent).distinct().forEach {
+            ownershipManagerImpl.fakeBreakGlass(it.first, it.second)
+        }
     }
 
     fun isProtectedInSearchScope(program: String?, organisationUnit: String?): Boolean {

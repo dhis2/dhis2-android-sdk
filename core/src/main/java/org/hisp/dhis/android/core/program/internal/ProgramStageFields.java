@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
@@ -91,6 +92,7 @@ public final class ProgramStageFields {
                     fh.<ObjectWithUid>field(Columns.PROGRAM),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<Boolean>field(Columns.REMIND_COMPLETED),
+                    fh.<ValidationStrategy>field(Columns.VALIDATION_STRATEGY),
                     fh.<Boolean>field(Columns.ENABLE_USER_ASSIGNMENT),
                     fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
             ).build();

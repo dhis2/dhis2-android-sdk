@@ -72,6 +72,7 @@ public final class ProgramStageStore {
             w.bind(30, o.remindCompleted());
             w.bind(31, o.featureType());
             w.bind(32, o.enableUserAssignment());
+            w.bind(33, o.validationStrategy());
         }
     };
 

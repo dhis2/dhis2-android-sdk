@@ -25,40 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
-import android.content.Context;
-import android.content.res.AssetManager;
+object ProgramStageWorkingListEventDataFilterFields {
+    private const val API_IN = "in"
+    private val fh = FieldsHelper<ProgramStageWorkingListEventDataFilter>()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+    val allFields = Fields.builder<ProgramStageWorkingListEventDataFilter>()
+        .fields(
+            fh.field<String>(Columns.DATA_ITEM),
+            fh.field<String>(Columns.LE),
+            fh.field<String>(Columns.GE),
+            fh.field<String>(Columns.GT),
+            fh.field<String>(Columns.LT),
+            fh.field<String>(Columns.EQ),
+            fh.field<String>(API_IN),
+            fh.field<String>(Columns.LIKE),
+            fh.field<String>(Columns.DATE_FILTER)
+        ).build()
 }

@@ -25,40 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-import android.content.Context;
-import android.content.res.AssetManager;
+object ProgramStageWorkingListAttributeValueFilterFields {
+    private const val API_IN = "in"
+    private val fh = FieldsHelper<ProgramStageWorkingListAttributeValueFilter>()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+    val allFields = Fields.builder<ProgramStageWorkingListAttributeValueFilter>()
+        .fields(
+            fh.field<String>(ItemFilterTableInfo.Columns.ATTRIBUTE),
+            fh.field<String>(ItemFilterTableInfo.Columns.SW),
+            fh.field<String>(ItemFilterTableInfo.Columns.EW),
+            fh.field<String>(ItemFilterTableInfo.Columns.LE),
+            fh.field<String>(ItemFilterTableInfo.Columns.GE),
+            fh.field<String>(ItemFilterTableInfo.Columns.GT),
+            fh.field<String>(ItemFilterTableInfo.Columns.LT),
+            fh.field<String>(ItemFilterTableInfo.Columns.EQ),
+            fh.field<String>(API_IN),
+            fh.field<String>(ItemFilterTableInfo.Columns.LIKE),
+            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER)
+        ).build()
 }

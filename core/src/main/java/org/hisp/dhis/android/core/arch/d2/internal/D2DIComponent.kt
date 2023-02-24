@@ -78,6 +78,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListPackageDIModule
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule
@@ -148,7 +149,8 @@ import retrofit2.Retrofit
         ValidationPackageDIModule::class,
         VisualizationPackageDIModule::class,
         DataValueConflictDIModule::class,
-        MapPackageDIModule::class
+        MapPackageDIModule::class,
+        ProgramStageWorkingListPackageDIModule::class
     ]
 )
 @Suppress("TooManyFunctions")

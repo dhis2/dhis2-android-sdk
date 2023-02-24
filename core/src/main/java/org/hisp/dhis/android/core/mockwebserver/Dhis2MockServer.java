@@ -73,6 +73,9 @@ public class Dhis2MockServer {
     private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
             "trackedentity/tracked_entity_instance_filters.json";
     private static final String EVENT_FILTERS_JSON = "event/event_filters.json";
+
+    private static final String PROGRAM_STAGE_WORKING_LISTS =
+            "programstageworkinglist/program_stage_working_lists.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
     private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
@@ -226,6 +229,8 @@ public class Dhis2MockServer {
                     return createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
                 } else if (path.startsWith("/api/eventFilters?")) {
                     return createMockResponse(EVENT_FILTERS_JSON);
+                } else if (path.startsWith("/api/programStageWorkingLists?")) {
+                    return createMockResponse(PROGRAM_STAGE_WORKING_LISTS);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
@@ -336,12 +341,13 @@ public class Dhis2MockServer {
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
-        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
-        enqueueMockResponse(EVENT_FILTERS_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTIONS_JSON);
         enqueueMockResponse(OPTION_GROUPS_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+        enqueueMockResponse(EVENT_FILTERS_JSON);
+        enqueueMockResponse(PROGRAM_STAGE_WORKING_LISTS);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);

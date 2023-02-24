@@ -25,40 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 140;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+@Suppress("TooManyFunctions")
+interface ProgramModule {
+    fun programs(): ProgramCollectionRepository
+    fun programIndicators(): ProgramIndicatorCollectionRepository
+    fun programRules(): ProgramRuleCollectionRepository
+    fun programRuleActions(): ProgramRuleActionCollectionRepository
+    fun programRuleVariables(): ProgramRuleVariableCollectionRepository
+    fun programSections(): ProgramSectionCollectionRepository
+    fun programStages(): ProgramStageCollectionRepository
+    fun programStageSections(): ProgramStageSectionsCollectionRepository
+    fun programStageDataElements(): ProgramStageDataElementCollectionRepository
+    fun programTrackedEntityAttributes(): ProgramTrackedEntityAttributeCollectionRepository
+    fun programIndicatorEngine(): ProgramIndicatorEngine
+    fun programStageWorkingLists(): ProgramStageWorkingListCollectionRepository
 }

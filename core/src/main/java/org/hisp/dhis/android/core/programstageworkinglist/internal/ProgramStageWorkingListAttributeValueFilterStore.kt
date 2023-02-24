@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
@@ -37,16 +37,16 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 @Suppress("MagicNumber")
-internal object AttributeValueFilterStore {
-    private val BINDER = StatementBinder { o: AttributeValueFilter, w: StatementWrapper ->
+internal object ProgramStageWorkingListAttributeValueFilterStore {
+    private val BINDER = StatementBinder { o: ProgramStageWorkingListAttributeValueFilter, w: StatementWrapper ->
         w.bindNull(1)
         w.bindNull(2)
-        w.bind(3, o.trackedEntityInstanceFilter())
+        w.bindNull(3)
         w.bind(4, o.attribute())
-        w.bindNull(5)
+        w.bind(5, o.programStageWorkingList())
         w.bind(6, o.sw())
         w.bind(7, o.ew())
         w.bind(8, o.le())
@@ -59,21 +59,21 @@ internal object AttributeValueFilterStore {
         w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListAttributeValueFilter, _ -> }
+    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListAttributeValueFilter, _ -> }
 
     @JvmField
     val CHILD_PROJECTION = SingleParentChildProjection(
         ItemFilterTableInfo.TABLE_INFO,
-        ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER
+        ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
     )
 
     @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AttributeValueFilter> {
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter> {
         return objectWithoutUidStore(
             databaseAdapter,
             ItemFilterTableInfo.TABLE_INFO,
             BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { AttributeValueFilter.create(it) }
+        ) { ProgramStageWorkingListAttributeValueFilter.create(it) }
     }
 }

@@ -25,23 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.programstageworkinglist
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
-
-public interface ProgramModule {
-
-    ProgramCollectionRepository programs();
-    ProgramIndicatorCollectionRepository programIndicators();
-    ProgramRuleCollectionRepository programRules();
-    ProgramRuleActionCollectionRepository programRuleActions();
-    ProgramRuleVariableCollectionRepository programRuleVariables();
-    ProgramSectionCollectionRepository programSections();
-    ProgramStageCollectionRepository programStages();
-    ProgramStageSectionsCollectionRepository programStageSections();
-    ProgramStageDataElementCollectionRepository programStageDataElements();
-    ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes();
-
-    ProgramIndicatorEngine programIndicatorEngine();
+internal object ProgramStageWorkingListAttributeValueFilterSamples {
+    fun get(): ProgramStageWorkingListAttributeValueFilter {
+        return ProgramStageWorkingListAttributeValueFilter.builder()
+            .id(1L)
+            .programStageWorkingList("programStageWorkingList")
+            .attribute("attributeUid")
+            .sw("as")
+            .ew("sa")
+            .le("20")
+            .ge("10")
+            .gt("10")
+            .lt("20")
+            .eq("abc")
+            .`in`(setOf("Norway"))
+            .like("abc")
+            .dateFilter(
+                DateFilterPeriod.builder()
+                    .startDate(parseDate("2014-05-01"))
+                    .endDate(parseDate("2019-03-20"))
+                    .type(DatePeriodType.ABSOLUTE)
+                    .build()
+            )
+            .build()
+    }
 }

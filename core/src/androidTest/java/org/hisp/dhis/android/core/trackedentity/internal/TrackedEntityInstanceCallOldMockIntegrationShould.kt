@@ -43,6 +43,7 @@ class TrackedEntityInstanceCallOldMockIntegrationShould : TrackedEntityInstanceC
     override val teiCollectionFile = "trackedentity/tracked_entity_instance_collection.json"
     override val teiSingleFile = "trackedentity/tracked_entity_instance_single.json"
     override val teiWithRemovedDataFile = "trackedentity/tracked_entity_instance_with_removed_data_single.json"
+    override val teiWithRelationshipFile = "trackedentity/tracked_entity_instances_with_relationship.json"
 
     override fun parseTrackedEntityInstance(file: String): TrackedEntityInstance {
         val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)

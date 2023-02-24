@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import junit.framework.Assert.fail
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -58,6 +59,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     abstract val teiCollectionFile: String
     abstract val teiSingleFile: String
     abstract val teiWithRemovedDataFile: String
+    abstract val teiWithRelationshipFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
     private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
@@ -145,6 +147,27 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             .blockingDownload()
 
         verifyDownloadedTrackedEntityInstance(teiFile, teiUid)
+    }
+
+    @Test
+    fun downloadAndPersistRelatedItems() {
+        dhis2MockServer.enqueueSystemInfoResponse()
+        dhis2MockServer.enqueueMockResponse(teiWithRelationshipFile)
+        dhis2MockServer.enqueueMockResponse(teiCollectionFile)
+
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload()
+
+        val teis = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
+
+        assertThat(teis.size).isEqualTo(2)
+        assertThat(teis.mapNotNull { it.syncState() }).contains(State.SYNCED)
+        assertThat(teis.mapNotNull { it.syncState() }).contains(State.RELATIONSHIP)
+
+        val relationships = d2.relationshipModule().relationships().withItems().blockingGet()
+
+        assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.first().from()).isNotNull()
+        assertThat(relationships.first().to()).isNotNull()
     }
 
     private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) {

@@ -29,8 +29,12 @@ package org.hisp.dhis.android.core.programstageworkinglist
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Test
 
 class ProgramStageWorkingListShould :
@@ -41,13 +45,26 @@ class ProgramStageWorkingListShould :
     override fun map_from_json_string() {
         val workingList = objectMapper.readValue(jsonStream, ProgramStageWorkingList::class.java)
 
-        assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-14T21:17:40.841"))
-        assertThat(workingList.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-14T22:22:15.383"))
+        assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))
+        assertThat(workingList.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))
         assertThat(workingList.uid()).isEqualTo("NAgjOfWMXg6")
-        assertThat(workingList.name()).isEqualTo("Ask for comment for low apgar")
-        assertThat(workingList.displayName()).isEqualTo("Ask for comment for low apgar")
-        assertThat(workingList.programStage()).isNull()
-        assertThat(workingList.program()!!.uid()).isEqualTo("IpHINAT79UW")
-        //TODO
+        assertThat(workingList.name()).isEqualTo("Test WL")
+        assertThat(workingList.displayName()).isEqualTo("Test WL display")
+        assertThat(workingList.program()!!.uid()).isEqualTo("uy2gU8kT1jF")
+        assertThat(workingList.programStage()!!.uid()).isEqualTo("oRySG82BKE6")
+        assertThat(workingList.description()).isEqualTo("Test WL definition")
+        assertThat(workingList.programStageQueryCriteria()?.status()).isEqualTo(EventStatus.ACTIVE)
+        assertThat(workingList.programStageQueryCriteria()?.eventCreatedAt()).isNotNull()
+        assertThat(workingList.programStageQueryCriteria()?.scheduledAt()).isNotNull()
+        assertThat(workingList.programStageQueryCriteria()?.enrollmentStatus()).isEqualTo(EnrollmentStatus.COMPLETED)
+        assertThat(workingList.programStageQueryCriteria()?.enrolledAt()).isNotNull()
+        assertThat(workingList.programStageQueryCriteria()?.enrollmentOccurredAt()).isNotNull()
+        assertThat(workingList.programStageQueryCriteria()?.orgUnit()).isEqualTo("Rp268JB6Ne4")
+        assertThat(workingList.programStageQueryCriteria()?.ouMode()).isEqualTo(OrganisationUnitMode.SELECTED)
+        assertThat(workingList.programStageQueryCriteria()?.assignedUserMode()).isEqualTo(AssignedUserMode.PROVIDED)
+        assertThat(workingList.programStageQueryCriteria()?.order()).isEqualTo("w75KJ2mc4zz:asc")
+        assertThat(workingList.programStageQueryCriteria()?.displayColumnOrder()?.size).isEqualTo(2)
+        assertThat(workingList.programStageQueryCriteria()?.dataFilters()?.size).isEqualTo(1)
+        assertThat(workingList.programStageQueryCriteria()?.attributeValueFilters()?.size).isEqualTo(1)
     }
 }

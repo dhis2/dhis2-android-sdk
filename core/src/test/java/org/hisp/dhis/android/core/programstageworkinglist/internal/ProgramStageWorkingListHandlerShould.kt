@@ -31,7 +31,6 @@ import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
@@ -89,7 +88,7 @@ class ProgramStageWorkingListHandlerShould {
 
     @Test
     fun extend_identifiable_handler_impl() {
-        val genericHandler: IdentifiableHandlerImpl<ProgramStageWorkingList> = ProgramStageWorkingListHandler(
+        ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
             attributeValueFilterHandler

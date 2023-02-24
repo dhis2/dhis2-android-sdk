@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageWorkingListHandler @Inject constructor(

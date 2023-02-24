@@ -65,7 +65,7 @@ internal object ProgramStageWorkingListEventDataFilterStore {
     @JvmField
     val CHILD_PROJECTION = SingleParentChildProjection(
         ItemFilterTableInfo.TABLE_INFO,
-        ItemFilterTableInfo.Columns.EVENT_FILTER
+        ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
     )
 
     @JvmStatic

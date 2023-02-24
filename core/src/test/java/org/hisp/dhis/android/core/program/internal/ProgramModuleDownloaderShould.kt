@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -69,6 +70,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute> = mock()
     private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter> = mock()
     private val eventFilterCall: UidsCall<EventFilter> = mock()
+    private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList> = mock()
     private val relationshipTypeCall: ListCall<RelationshipType> = mock()
     private val optionSetCall: UidsCall<OptionSet> = mock()
     private val optionCall: UidsCall<Option> = mock()
@@ -98,6 +100,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         returnEmptyList(optionGroupCall)
         returnEmptyList(trackedEntityInstanceFilterCall)
         returnEmptyList(eventFilterCall)
+        returnEmptyList(programStageWorkingListCall)
         returnEmptyList(programRuleCall)
         returnEmptyList(programStageCall)
         programModuleDownloader = ProgramModuleDownloader(
@@ -108,6 +111,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
             trackedEntityAttributeCall,
             trackedEntityInstanceFilterCall,
             eventFilterCall,
+            programStageWorkingListCall,
             relationshipTypeCall,
             optionSetCall,
             optionCall,
@@ -172,6 +176,12 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     @Test(expected = Exception::class)
     fun fail_when_event_filters_call_fails() {
         returnError(eventFilterCall)
+        programModuleDownloader.downloadMetadata().blockingAwait()
+    }
+
+    @Test(expected = Exception::class)
+    fun fail_when_program_stage_working_list_call_fails() {
+        returnError(programStageWorkingListCall)
         programModuleDownloader.downloadMetadata().blockingAwait()
     }
 

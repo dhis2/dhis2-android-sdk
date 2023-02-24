@@ -25,31 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programstageworkinglist.internal
+package org.hisp.dhis.android.core.program
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 
-@Module
-internal class ProgramStageWorkingListEventDataFilterEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
-        return ProgramStageWorkingListEventDataFilterStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(
-        store: ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter>
-    ): HandlerWithTransformer<ProgramStageWorkingListEventDataFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
-    }
+@Suppress("TooManyFunctions")
+interface ProgramModule {
+    fun programs(): ProgramCollectionRepository
+    fun programIndicators(): ProgramIndicatorCollectionRepository
+    fun programRules(): ProgramRuleCollectionRepository
+    fun programRuleActions(): ProgramRuleActionCollectionRepository
+    fun programRuleVariables(): ProgramRuleVariableCollectionRepository
+    fun programSections(): ProgramSectionCollectionRepository
+    fun programStages(): ProgramStageCollectionRepository
+    fun programStageSections(): ProgramStageSectionsCollectionRepository
+    fun programStageDataElements(): ProgramStageDataElementCollectionRepository
+    fun programTrackedEntityAttributes(): ProgramTrackedEntityAttributeCollectionRepository
+    fun programIndicatorEngine(): ProgramIndicatorEngine
+    fun programStageWorkingLists(): ProgramStageWorkingListCollectionRepository
 }

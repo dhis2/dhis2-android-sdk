@@ -25,23 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-package org.hisp.dhis.android.core.program;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
+@Reusable
+internal class ProgramStageWorkingListModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
+        tableWiper.wipeTables(
+            ProgramStageWorkingListTableInfo.TABLE_INFO,
+            ItemFilterTableInfo.TABLE_INFO
+        )
+    }
 
-public interface ProgramModule {
-
-    ProgramCollectionRepository programs();
-    ProgramIndicatorCollectionRepository programIndicators();
-    ProgramRuleCollectionRepository programRules();
-    ProgramRuleActionCollectionRepository programRuleActions();
-    ProgramRuleVariableCollectionRepository programRuleVariables();
-    ProgramSectionCollectionRepository programSections();
-    ProgramStageCollectionRepository programStages();
-    ProgramStageSectionsCollectionRepository programStageSections();
-    ProgramStageDataElementCollectionRepository programStageDataElements();
-    ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributes();
-
-    ProgramIndicatorEngine programIndicatorEngine();
+    override fun wipeData() {
+        // No data to wipe
+    }
 }

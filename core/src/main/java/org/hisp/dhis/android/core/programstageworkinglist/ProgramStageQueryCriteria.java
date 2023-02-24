@@ -40,6 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AssignedUserModeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
@@ -97,6 +98,11 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> displayColumnOrder();
+
+    @Nullable
+    @JsonProperty()
     public abstract String orgUnit();
 
     @Nullable
@@ -149,6 +155,8 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
         public abstract Builder enrollmentOccurredAt(DateFilterPeriod enrollmentOccurredAt);
 
         public abstract Builder order(String order);
+
+        public abstract Builder displayColumnOrder(List<String> displayColumnOrder);
 
         public abstract Builder orgUnit(String orgUnit);
 

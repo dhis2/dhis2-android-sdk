@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -59,9 +60,10 @@ internal object ProgramStageWorkingListStore {
                     DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrollmentOccurredAt())
                 )
                 w.bind(16, o.programStageQueryCriteria()?.order())
-                w.bind(17, o.programStageQueryCriteria()?.orgUnit())
-                w.bind(18, o.programStageQueryCriteria()?.ouMode())
-                w.bind(19, o.programStageQueryCriteria()?.assignedUserMode())
+                w.bind(17, StringListColumnAdapter.serialize(o.programStageQueryCriteria()?.displayColumnOrder()))
+                w.bind(18, o.programStageQueryCriteria()?.orgUnit())
+                w.bind(19, o.programStageQueryCriteria()?.ouMode())
+                w.bind(20, o.programStageQueryCriteria()?.assignedUserMode())
             }
         }
 

@@ -27,47 +27,33 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
-@Module
-internal class ProgramStageWorkingListEntityDIModule {
+internal class ProgramStageWorkingListDataFilterChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<ProgramStageWorkingList, ProgramStageWorkingListEventDataFilter>
+) : ChildrenAppender<ProgramStageWorkingList>() {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramStageWorkingList> {
-        return ProgramStageWorkingListStore.create(databaseAdapter)
+    override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
+        val builder = m.toBuilder()
+        val children = childStore.getChildren(m).filter { it.dataItem() != null }
+        val queryCriteria = m.programStageQueryCriteria()?.toBuilder()?.dataFilters(children)?.build()
+        return builder.programStageQueryCriteria(queryCriteria).build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(impl: ProgramStageWorkingListHandler): Handler<ProgramStageWorkingList> {
-        return impl
-    }
-
-    @Reusable
-    @Provides
-    fun service(retrofit: Retrofit): ProgramStageWorkingListService {
-        return retrofit.create(ProgramStageWorkingListService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter
-    ): Map<String, ChildrenAppender<ProgramStageWorkingList>> {
-        return mapOf(
-            ProgramStageQueryCriteriaFields.DATA_FILTERS to
-                ProgramStageWorkingListDataFilterChildrenAppender.create(databaseAdapter),
-            ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter)
-        )
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageWorkingList> {
+            return ProgramStageWorkingListDataFilterChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    ProgramStageWorkingListEventDataFilterStore.CHILD_PROJECTION
+                ) { cursor: Cursor -> ProgramStageWorkingListEventDataFilter.create(cursor) }
+            )
+        }
     }
 }

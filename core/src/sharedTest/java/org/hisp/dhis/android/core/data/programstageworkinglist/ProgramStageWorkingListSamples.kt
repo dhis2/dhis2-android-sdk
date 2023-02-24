@@ -78,6 +78,12 @@ object ProgramStageWorkingListSamples {
                             .build()
                     )
                     .order("order")
+                    .displayColumnOrder(
+                        listOf(
+                            "column1",
+                            "column2"
+                        )
+                    )
                     .orgUnit("orgunit")
                     .ouMode(OrganisationUnitMode.ACCESSIBLE)
                     .assignedUserMode(AssignedUserMode.CURRENT)

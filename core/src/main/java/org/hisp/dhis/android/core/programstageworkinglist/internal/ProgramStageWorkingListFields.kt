@@ -31,14 +31,8 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.FilterPeriod
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 
 object ProgramStageWorkingListFields {
     const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
@@ -58,5 +52,4 @@ object ProgramStageWorkingListFields {
                 .with(ProgramStageQueryCriteriaFields.allFields)
         )
         .build()
-
 }

@@ -57,6 +57,7 @@ internal object ProgramStageWorkingListTableInfo {
                 ENROLLMENT_AT,
                 ENROLLMENT_OCCURRED_AT,
                 ORDER,
+                DISPLAY_COLUMN_ORDER,
                 ORG_UNIT,
                 OU_MODE,
                 ASSIGNED_USER_MODE
@@ -74,6 +75,7 @@ internal object ProgramStageWorkingListTableInfo {
             const val ENROLLMENT_AT = "enrolledAt"
             const val ENROLLMENT_OCCURRED_AT = "enrollmentOccurredAt"
             const val ORDER = "orderProperty"
+            const val DISPLAY_COLUMN_ORDER = "displayColumnOrder"
             const val ORG_UNIT = "orgUnit"
             const val OU_MODE = "ouMode"
             const val ASSIGNED_USER_MODE = "assignedUserMode"

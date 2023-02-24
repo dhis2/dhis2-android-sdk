@@ -65,7 +65,7 @@ internal object ProgramStageWorkingListAttributeValueFilterStore {
     @JvmField
     val CHILD_PROJECTION = SingleParentChildProjection(
         ItemFilterTableInfo.TABLE_INFO,
-        ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER
+        ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
     )
 
     @JvmStatic

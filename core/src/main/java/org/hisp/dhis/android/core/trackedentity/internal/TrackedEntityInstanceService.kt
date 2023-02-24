@@ -47,23 +47,23 @@ internal interface TrackedEntityInstanceService {
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstance(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(OU_MODE) orgUnitMode: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance?>?,
+        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Single<Payload<TrackedEntityInstance>>
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstanceAsCall(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance?>?,
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
+        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Call<Payload<TrackedEntityInstance>>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
-    fun getSingleTrackedEntityInstance(
+    suspend fun getSingleTrackedEntityInstance(
         @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,
@@ -72,7 +72,7 @@ internal interface TrackedEntityInstanceService {
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Call<TrackedEntityInstance>
+    ): TrackedEntityInstance
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstances(

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -47,10 +47,9 @@ internal class EventDownloadCall @Inject internal constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val d2CallExecutor: D2CallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
-    private val endpointCallFactory: EventEndpointCallFactory,
+    private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
     private val lastUpdatedManager: EventLastUpdatedManager
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
@@ -65,9 +64,9 @@ internal class EventDownloadCall @Inject internal constructor(
     }
 
     override fun getItems(query: TrackerAPIQuery): List<Event> {
-        return d2CallExecutor.executeD2Call(
-            endpointCallFactory.getCall(query), true
-        )
+        return rxCallExecutor.wrapSingle(
+            trackerParentCallFactory.getEventCall().getCollectionCall(query), true
+        ).blockingGet().items()
     }
 
     override fun persistItems(

@@ -63,7 +63,6 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule
-import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule
@@ -89,6 +88,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.usecase.internal.UseCasePackageDIModule
@@ -141,6 +141,7 @@ import retrofit2.Retrofit
         SettingPackageDIModule::class,
         UseCasePackageDIModule::class,
         TrackedEntityPackageDIModule::class,
+        TrackerExporterPackageDIModule::class,
         TrackerImporterPackageDIModule::class,
         SmsDIModule::class,
         UserPackageDIModule::class,
@@ -191,9 +192,6 @@ internal interface D2DIComponent {
 
     @VisibleForTesting
     fun oldTrackerImporterPayloadGenerator(): OldTrackerImporterPayloadGenerator
-
-    @VisibleForTesting
-    fun eventPostPayloadGenerator(): EventPostPayloadGenerator
 
     @VisibleForTesting
     fun categoryOptionStore(): IdentifiableObjectStore<CategoryOption>

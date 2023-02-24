@@ -44,107 +44,108 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
+public abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     @NonNull
-    abstract List<String> orgUnits();
+    public abstract List<String> orgUnits();
 
     @Nullable
-    abstract OrganisationUnitMode orgUnitMode();
+    public abstract OrganisationUnitMode orgUnitMode();
 
     @Nullable
-    abstract String program();
+    public abstract String program();
 
     @Nullable
-    abstract String programStage();
+    public abstract String programStage();
 
     @Nullable
-    abstract String query();
+    public abstract String query();
 
     @Nullable
-    abstract List<String> attribute();
+    public abstract List<String> attribute();
 
     @Nullable
-    abstract List<String> filter();
+    public abstract List<String> filter();
 
     @Nullable
-    abstract Date programStartDate();
+    public abstract Date programStartDate();
 
     @Nullable
-    abstract Date programEndDate();
+    public abstract Date programEndDate();
 
     @Nullable
-    abstract EnrollmentStatus enrollmentStatus();
+    public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
-    abstract Date incidentStartDate();
+    public abstract Date incidentStartDate();
 
     @Nullable
-    abstract Date incidentEndDate();
+    public abstract Date incidentEndDate();
 
     @Nullable
-    abstract Boolean followUp();
+    public abstract Boolean followUp();
 
     @Nullable
-    abstract EventStatus eventStatus();
+    public abstract EventStatus eventStatus();
 
     @Nullable
-    abstract Date eventStartDate();
+    public abstract Date eventStartDate();
 
     @Nullable
-    abstract Date eventEndDate();
+    public abstract Date eventEndDate();
 
     @Nullable
-    abstract String trackedEntityType();
+    public abstract String trackedEntityType();
 
     //TODO It is not used in the query because it modifies returned grid structure: if true, it adds an extra column
     @NonNull
-    abstract Boolean includeDeleted();
+    public abstract Boolean includeDeleted();
 
     @Nullable
-    abstract AssignedUserMode assignedUserMode();
+    public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
-    abstract List<String> uids();
+    public abstract List<String> uids();
 
     @Nullable
-    abstract Date lastUpdatedStartDate();
+    public abstract Date lastUpdatedStartDate();
 
     @Nullable
-    abstract Date lastUpdatedEndDate();
+    public abstract Date lastUpdatedEndDate();
 
     @Nullable
-    abstract String order();
+    public abstract String order();
 
-    String formattedProgramStartDate() {
+    public String formattedProgramStartDate() {
         return formatDate(programStartDate());
     }
 
-    String formattedProgramEndDate() {
+    public String formattedProgramEndDate() {
         return formatDate(programEndDate());
     }
 
-    String formattedIncidentStartDate() {
+    public String formattedIncidentStartDate() {
         return formatDate(incidentStartDate());
     }
 
-    String formattedIncidentEndDate() {
+    public String formattedIncidentEndDate() {
         return formatDate(incidentEndDate());
     }
 
-    String formattedEventStartDate() {
+    public String formattedEventStartDate() {
         return formatDate(eventStartDate());
     }
 
-    String formattedEventEndDate() {
+    public String formattedEventEndDate() {
         return formatDate(eventEndDate());
     }
 
-    String formattedLastUpdatedStartDate() {
+    public String formattedLastUpdatedStartDate() {
         return formatDate(lastUpdatedStartDate());
     }
 
-    String formattedLastUpdatedEndDate() {
+    public String formattedLastUpdatedEndDate() {
         return formatDate(lastUpdatedEndDate());
     }
 
@@ -152,60 +153,60 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
     }
 
-    abstract Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryOnline.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder orgUnits(List<String> orgUnits);
+    public abstract static class Builder extends BaseQuery.Builder<Builder> {
+        public abstract Builder orgUnits(List<String> orgUnits);
 
-        abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
+        public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
-        abstract Builder program(String program);
+        public abstract Builder program(String program);
 
-        abstract Builder programStage(String programStage);
+        public abstract Builder programStage(String programStage);
 
-        abstract Builder query(String query);
+        public abstract Builder query(String query);
 
-        abstract Builder attribute(List<String> attribute);
+        public abstract Builder attribute(List<String> attribute);
 
-        abstract Builder filter(List<String> filter);
+        public abstract Builder filter(List<String> filter);
 
-        abstract Builder programStartDate(Date programStartDate);
+        public abstract Builder programStartDate(Date programStartDate);
 
-        abstract Builder programEndDate(Date programEndDate);
+        public abstract Builder programEndDate(Date programEndDate);
 
-        abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+        public abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
 
-        abstract Builder incidentStartDate(Date incidentStartDate);
+        public abstract Builder incidentStartDate(Date incidentStartDate);
 
-        abstract Builder incidentEndDate(Date incidentEndDate);
+        public abstract Builder incidentEndDate(Date incidentEndDate);
 
-        abstract Builder followUp(Boolean followUp);
+        public abstract Builder followUp(Boolean followUp);
 
-        abstract Builder eventStatus(EventStatus eventStatus);
+        public abstract Builder eventStatus(EventStatus eventStatus);
 
-        abstract Builder eventStartDate(Date eventStartDate);
+        public abstract Builder eventStartDate(Date eventStartDate);
 
-        abstract Builder eventEndDate(Date eventEndDate);
+        public abstract Builder eventEndDate(Date eventEndDate);
 
-        abstract Builder trackedEntityType(String trackedEntityType);
+        public abstract Builder trackedEntityType(String trackedEntityType);
 
-        abstract Builder includeDeleted(Boolean includeDeleted);
+        public abstract Builder includeDeleted(Boolean includeDeleted);
 
-        abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
-        abstract Builder uids(List<String> uids);
+        public abstract Builder uids(List<String> uids);
 
-        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
+        public abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
 
-        abstract Builder lastUpdatedEndDate(Date lastUpdatedEndDate);
+        public abstract Builder lastUpdatedEndDate(Date lastUpdatedEndDate);
 
-        abstract Builder order(String order);
+        public abstract Builder order(String order);
 
-        abstract TrackedEntityInstanceQueryOnline build();
+        public abstract TrackedEntityInstanceQueryOnline build();
     }
 }

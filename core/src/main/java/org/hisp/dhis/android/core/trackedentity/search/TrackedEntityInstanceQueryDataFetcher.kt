@@ -39,10 +39,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
-    private val onlineCallFactory: TrackedEntityInstanceQueryCallFactory,
+    private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>>,
@@ -166,7 +167,9 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
 
-            cachedInstances ?: onlineCallFactory.getCall(onlineQuery).call()
+            cachedInstances ?: trackerParentCallFactory.getTrackedEntityCall()
+                .getQueryCall(onlineQuery)
+                .call()
                 .map { Result.Success<TrackedEntityInstance, D2Error>(it) }
                 .also { onlineCache[onlineQuery] = it }
         } catch (e: D2Error) {

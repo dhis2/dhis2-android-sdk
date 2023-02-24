@@ -94,8 +94,11 @@ public class Dhis2MockServer {
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user38.json";
     private static final String EVENTS_JSON = "event/events.json";
+    private static final String NEW_EVENTS_JSON = "event/new_tracker_importer_events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
+    private static final String NEW_TRACKED_ENTITY_INSTANCES_JSON =
+            "trackedentity/new_tracker_importer_tracked_entities.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png";
     private static final String FILE_RESOURCE = "trackedentity/tracked_entity_attribute_value_image_resource.json";
@@ -185,7 +188,7 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
-                }  else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
+                } else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
                     return createMockResponse(STOCK_USE_CASES_JSON);
                 } else if (path.startsWith("/api/apps?filter")) {
                     return createMockResponse(ANDROID_SETTINGS_METADATA_JSON);
@@ -261,8 +264,12 @@ public class Dhis2MockServer {
                     return createMockResponse(CONSTANTS_JSON);
                 } else if (path.startsWith("/api/trackedEntityInstances?")) {
                     return createMockResponse(TRACKED_ENTITY_INSTANCES_JSON);
+                } else if (path.startsWith("/api/tracker/trackedEntities?")) {
+                    return createMockResponse(NEW_TRACKED_ENTITY_INSTANCES_JSON);
                 } else if (path.startsWith("/api/events?")) {
                     return createMockResponse(EVENTS_JSON);
+                } else if (path.startsWith("/api/tracker/events?")) {
+                    return createMockResponse(NEW_EVENTS_JSON);
                 } else if (path.startsWith("/api/dataValueSets?")) {
                     return createMockResponse(DATA_VALUES_JSON);
                 } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
@@ -398,7 +405,7 @@ public class Dhis2MockServer {
         return server.takeRequest();
     }
 
-    public void addResponse(String method, String path, String responseName, int responseCode){
+    public void addResponse(String method, String path, String responseName, int responseCode) {
         dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
     }
 }

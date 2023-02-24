@@ -28,43 +28,23 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import java.util.concurrent.Callable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
 @Reusable
-internal class EventEndpointCallFactory @Inject constructor(
-    private val service: EventService,
-    private val apiCallExecutor: APICallExecutor
-) {
+internal abstract class EventEndpointCallFactory {
 
-    fun getCall(eventQuery: TrackerAPIQuery): Callable<List<Event>> {
-        return Callable {
-            val call = service.getEvents(
-                eventQuery.orgUnit,
-                eventQuery.commonParams.ouMode.name,
-                eventQuery.commonParams.program,
-                getEventStartDate(eventQuery),
-                EventFields.allFields,
-                paging = true,
-                eventQuery.page,
-                eventQuery.pageSize,
-                eventQuery.lastUpdatedStr,
-                includeDeleted = true,
-                getUidStr(eventQuery)
-            )
-            apiCallExecutor.executePayloadCall(call)
-        }
+    abstract fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>>
+
+    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<Event>>
+
+    protected fun getUidStr(query: TrackerAPIQuery): String? {
+        return if (query.uids.isEmpty()) null else query.uids.joinToString(";")
     }
 
-    private fun getUidStr(query: TrackerAPIQuery): String? {
-        return if (query.uids.isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids, ";")
-    }
-
-    private fun getEventStartDate(query: TrackerAPIQuery): String? {
+    protected fun getEventStartDate(query: TrackerAPIQuery): String? {
         return when {
             query.commonParams.program != null -> query.commonParams.startDate
             else -> null

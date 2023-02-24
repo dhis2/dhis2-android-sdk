@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
 
-internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrackerImporterEvent> {
+internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, NewTrackerImporterEvent> {
     override fun transform(o: Event): NewTrackerImporterEvent {
         return NewTrackerImporterEvent.builder()
             .id(o.id())
@@ -65,6 +66,42 @@ internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrack
                     NewTrackerImporterNoteTransformer.transform(it)
                 }
             )
+            .build()
+    }
+
+    override fun deTransform(t: NewTrackerImporterEvent): Event {
+        val notes = t.notes()?.map { NewTrackerImporterNoteTransformer.deTransform(it) }
+
+        val dataValues = t.trackedEntityDataValues()?.map {
+            NewTrackerImporterTrackedEntityDataValueTransformer.deTransform(it)
+        }
+        val relationships = t.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
+
+        return Event.builder()
+            .id(t.id())
+            .uid(t.uid())
+            .deleted(t.deleted())
+            .enrollment(t.enrollment())
+            .created(t.createdAt())
+            .lastUpdated(t.updatedAt())
+            .createdAtClient(t.createdAtClient())
+            .lastUpdatedAtClient(t.updatedAtClient())
+            .program(t.program())
+            .programStage(t.programStage())
+            .organisationUnit(t.organisationUnit())
+            .eventDate(t.occurredAt())
+            .status(t.status())
+            .geometry(t.geometry())
+            .completedDate(t.completedAt())
+            .dueDate(t.scheduledAt())
+            .attributeOptionCombo(t.attributeOptionCombo())
+            .assignedUser(t.assignedUser()?.uid())
+            .syncState(t.syncState())
+            .aggregatedSyncState(t.aggregatedSyncState())
+            .trackedEntityDataValues(dataValues)
+            .notes(notes)
+            .relationships(relationships)
+            .trackedEntityInstance(t.trackedEntity())
             .build()
     }
 }

@@ -102,7 +102,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
                 if (glassErrors.isEmpty()) {
                     Observable.just(d2Progress)
                 } else {
-                    breakTheGlassHelper.fakeBreakGlass(payload)
+                    breakTheGlassHelper.fakeBreakGlass(glassErrors)
                     doPost(payload, importStrategy)
                 }
             }

@@ -32,7 +32,6 @@ import java.text.ParseException
 import java.util.concurrent.Callable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -55,37 +54,31 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
 
     @Throws(D2Error::class)
     private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
-        val uidsStr =
-            if (query.uids() == null) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
-        val orgUnitModeStr = if (query.orgUnitMode() == null) null else query.orgUnitMode().toString()
-        val assignedUserModeStr = if (query.assignedUserMode() == null) null else query.assignedUserMode().toString()
-        val enrollmentStatus = if (query.enrollmentStatus() == null) null else query.enrollmentStatus().toString()
-        val eventStatus = getEventStatus(query)
-
+        val uidsStr = query.uids()?.joinToString(";")
         val orgUnits =
             if (query.orgUnits().isEmpty()) null
-            else CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";")
+            else query.orgUnits().joinToString(";")
 
         val searchGridCall = service.query(
             uidsStr,
             orgUnits,
-            orgUnitModeStr,
+            query.orgUnitMode()?.toString(),
             query.program(),
             query.programStage(),
             query.formattedProgramStartDate(),
             query.formattedProgramEndDate(),
-            enrollmentStatus,
+            query.enrollmentStatus()?.toString(),
             query.formattedIncidentStartDate(),
             query.formattedIncidentEndDate(),
             query.followUp(),
             query.formattedEventStartDate(),
             query.formattedEventEndDate(),
-            eventStatus,
+            getEventStatus(query),
             query.trackedEntityType(),
             query.query(),
             query.attribute(),
             query.filter(),
-            assignedUserModeStr,
+            query.assignedUserMode()?.toString(),
             query.formattedLastUpdatedStartDate(),
             query.formattedLastUpdatedEndDate(),
             query.order(),

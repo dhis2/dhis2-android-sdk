@@ -55,7 +55,7 @@ internal interface EventService {
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
         @Query(EVENT) eventUid: String?
-    ): Call<Payload<Event>>
+    ): Single<Payload<Event>>
 
     @GET("$EVENTS/{$EVENT_UID}")
     fun getEvent(

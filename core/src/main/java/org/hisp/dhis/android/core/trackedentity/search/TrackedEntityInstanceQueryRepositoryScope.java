@@ -75,6 +75,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     @NonNull
     public abstract List<RepositoryScopeFilterItem> filter();
 
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> dataValue();
+
     @Nullable
     public abstract DateFilterPeriod programDate();
 
@@ -86,6 +89,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     @Nullable
     public abstract DateFilterPeriod eventDate();
+
+    @Nullable
+    public abstract DateFilterPeriod dueDate();
 
     @Nullable
     public abstract List<EventStatus> eventStatus();
@@ -129,6 +135,7 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
+                .dataValue(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
                 .eventFilters(Collections.emptyList())
                 .order(Collections.emptyList())
@@ -160,6 +167,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
 
+        public abstract Builder dataValue(List<RepositoryScopeFilterItem> dataValue);
+
         public abstract Builder programDate(DateFilterPeriod dateFilterPeriod);
 
         public abstract Builder incidentDate(DateFilterPeriod incidentDate);
@@ -167,6 +176,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
 
         public abstract Builder eventDate(DateFilterPeriod eventDate);
+
+        public abstract Builder dueDate(DateFilterPeriod dueDate);
 
         public abstract Builder eventStatus(List<EventStatus> eventStatus);
 

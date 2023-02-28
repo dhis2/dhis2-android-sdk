@@ -20,6 +20,7 @@
   "dueDateLabel": "Due date",
   "remindCompleted": false,
   "displayGenerateEventBox": false,
+  "validationStrategy": "ON_UPDATE_AND_INSERT",
   "generatedByEnrollmentDate": false,
   "autoGenerateEvent": true,
   "sortOrder": 1,

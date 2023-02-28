@@ -38,8 +38,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.util.simpleDateFormat
+
 
 @Reusable
 internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
@@ -48,43 +49,43 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
     private val dhisVersionManager: DHISVersionManager
 ) {
-    fun getCall(query: TrackedEntityInstanceQueryOnline): Callable<List<TrackedEntityInstance>> {
+    fun getCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
         return Callable { queryTrackedEntityInstances(query) }
     }
 
     @Throws(D2Error::class)
-    private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
-        val uidsStr = query.uids()?.joinToString(";")
+    private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
+        val uidsStr = query.uids?.joinToString(";")
         val orgUnits =
-            if (query.orgUnits().isEmpty()) null
-            else query.orgUnits().joinToString(";")
+            if (query.orgUnits.isEmpty()) null
+            else query.orgUnits.joinToString(";")
 
         val searchGridCall = service.query(
             uidsStr,
             orgUnits,
-            query.orgUnitMode()?.toString(),
-            query.program(),
-            query.programStage(),
-            query.formattedProgramStartDate(),
-            query.formattedProgramEndDate(),
-            query.enrollmentStatus()?.toString(),
-            query.formattedIncidentStartDate(),
-            query.formattedIncidentEndDate(),
-            query.followUp(),
-            query.formattedEventStartDate(),
-            query.formattedEventEndDate(),
+            query.orgUnitMode?.toString(),
+            query.program,
+            query.programStage,
+            query.programStartDate.simpleDateFormat(),
+            query.programEndDate.simpleDateFormat(),
+            query.enrollmentStatus?.toString(),
+            query.incidentStartDate.simpleDateFormat(),
+            query.incidentEndDate.simpleDateFormat(),
+            query.followUp,
+            query.eventStartDate.simpleDateFormat(),
+            query.eventEndDate.simpleDateFormat(),
             getEventStatus(query),
-            query.trackedEntityType(),
-            query.query(),
-            query.attribute(),
-            query.filter(),
-            query.assignedUserMode()?.toString(),
-            query.formattedLastUpdatedStartDate(),
-            query.formattedLastUpdatedEndDate(),
-            query.order(),
-            query.paging(),
-            query.page(),
-            query.pageSize()
+            query.trackedEntityType,
+            query.query,
+            query.attribute,
+            query.filter,
+            query.assignedUserMode?.toString(),
+            query.lastUpdatedStartDate.simpleDateFormat(),
+            query.lastUpdatedEndDate.simpleDateFormat(),
+            query.order,
+            query.paging,
+            query.page,
+            query.pageSize
         )
 
         return try {
@@ -92,7 +93,11 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 searchGridCall,
                 TrackedEntityInstanceQueryErrorCatcher()
             )
-            mapper.transform(searchGrid)
+            val instances = mapper.transform(searchGrid)
+            TrackerQueryResult(
+                trackedEntities = instances,
+                exhausted = instances.size < query.pageSize
+            )
         } catch (pe: ParseException) {
             throw D2Error.builder()
                 .errorCode(D2ErrorCode.SEARCH_GRID_PARSE)
@@ -104,12 +109,12 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     }
 
     private fun getEventStatus(query: TrackedEntityInstanceQueryOnline): String? {
-        return if (query.eventStatus() == null) {
+        return if (query.eventStatus == null) {
             null
-        } else if (!dhisVersionManager.isGreaterThan(DHISVersion.V2_33) && query.eventStatus() == EventStatus.ACTIVE) {
+        } else if (!dhisVersionManager.isGreaterThan(DHISVersion.V2_33) && query.eventStatus == EventStatus.ACTIVE) {
             EventStatus.VISITED.toString()
         } else {
-            query.eventStatus().toString()
+            query.eventStatus.toString()
         }
     }
 }

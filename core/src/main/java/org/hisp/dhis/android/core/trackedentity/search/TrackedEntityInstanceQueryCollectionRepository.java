@@ -99,7 +99,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper;
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache;
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
     private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
@@ -113,7 +113,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
             final ProgramStageWorkingListCollectionRepository workingListRepository,
-            final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache,
+            final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache,
             final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
             final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;

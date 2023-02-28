@@ -50,11 +50,11 @@ internal class NewEventEndpointCallFactory @Inject constructor(
             orgUnit = eventQuery.orgUnit,
             orgUnitMode = eventQuery.commonParams.ouMode.name,
             program = eventQuery.commonParams.program,
-            startDate = getEventStartDate(eventQuery),
+            occurredAfter = getEventStartDate(eventQuery),
             paging = true,
             page = eventQuery.page,
             pageSize = eventQuery.pageSize,
-            lastUpdatedStartDate = eventQuery.lastUpdatedStr,
+            updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
             eventUid = getUidStr(eventQuery)
         ).map { mapPayload(it) }

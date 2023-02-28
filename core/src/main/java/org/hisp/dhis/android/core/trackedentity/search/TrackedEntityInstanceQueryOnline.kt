@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
-import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
-import org.hisp.dhis.android.core.arch.helpers.Result;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import java.util.*
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class TrackedEntityInstanceQueryEntityDIModule {
-
-    @Provides
-    @Reusable
-    public TrackedEntityInstanceQueryRepositoryScope empty() {
-        return TrackedEntityInstanceQueryRepositoryScope.empty();
-    }
-
-    @Provides
-    @Reusable
-    public D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache() {
-        return new ExpirableCache<>(TimeUnit.MINUTES.toMillis(5));
-    }
-
-}
+data class TrackedEntityInstanceQueryOnline(
+    val page: Int,
+    val pageSize: Int,
+    val paging: Boolean,
+    val orgUnits: List<String>,
+    val orgUnitMode: OrganisationUnitMode? = null,
+    val program: String? = null,
+    val programStage: String? = null,
+    val query: String? = null,
+    val attribute: List<String>? = null,
+    val filter: List<String>? = null,
+    val dataValue: List<String>? = null,
+    val programStartDate: Date? = null,
+    val programEndDate: Date? = null,
+    val enrollmentStatus: EnrollmentStatus? = null,
+    val incidentStartDate: Date? = null,
+    val incidentEndDate: Date? = null,
+    val followUp: Boolean? = null,
+    val eventStatus: EventStatus? = null,
+    val eventStartDate: Date? = null,
+    val eventEndDate: Date? = null,
+    val dueStartDate: Date? = null,
+    val dueEndDate: Date? = null,
+    val trackedEntityType: String? = null,
+    val includeDeleted: Boolean,
+    val assignedUserMode: AssignedUserMode? = null,
+    val uids: List<String>? = null,
+    val lastUpdatedStartDate: Date? = null,
+    val lastUpdatedEndDate: Date? = null,
+    val order: String? = null,
+)

@@ -58,6 +58,7 @@ internal object NewEventFields {
     private const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
     private const val ASSIGNED_USER = "assignedUser"
     private const val DELETED = "deleted"
+    private const val TRACKED_ENTITY = "trackedEntity"
 
     private val fh = FieldsHelper<NewTrackerImporterEvent>()
 
@@ -70,6 +71,10 @@ internal object NewEventFields {
         ).build()
 
     val asRelationshipFields: Fields<NewTrackerImporterEvent> = commonFields().build()
+
+    val teiQueryFields = commonFields()
+        .fields(fh.field<String>(TRACKED_ENTITY))
+        .build()
 
     private fun commonFields(): Fields.Builder<NewTrackerImporterEvent> {
         return Fields.builder<NewTrackerImporterEvent>().fields(

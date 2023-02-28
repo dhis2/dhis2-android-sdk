@@ -54,7 +54,7 @@ internal interface TrackerExporterService {
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,
         @Query(PROGRAM_STATUS) programStatus: String?,
-        @Query(PROGRAM_START_DATE) programStartDate: String?,
+        @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): NewTrackerImporterTrackedEntity
@@ -67,11 +67,11 @@ internal interface TrackerExporterService {
         @Query(OU_MODE) orgUnitMode: String? = null,
         @Query(PROGRAM) program: String? = null,
         @Query(PROGRAM_STAGE) programStage: String? = null,
-        @Query(PROGRAM_START_DATE) programStartDate: String? = null,
-        @Query(PROGRAM_END_DATE) programEndDate: String? = null,
+        @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String? = null,
+        @Query(ENROLLMENT_ENROLLED_BEFORE) programEndDate: String? = null,
         @Query(PROGRAM_STATUS) programStatus: String? = null,
-        @Query(PROGRAM_INCIDENT_START_DATE) programIncidentStartDate: String? = null,
-        @Query(PROGRAM_INCIDENT_END_DATE) programIncidentEndDate: String? = null,
+        @Query(ENROLLMENT_OCCURRED_AFTER) programIncidentStartDate: String? = null,
+        @Query(ENROLLMENT_OCCURRED_BEFORE) programIncidentEndDate: String? = null,
         @Query(FOLLOW_UP) followUp: Boolean? = null,
         @Query(EVENT_START_DATE) eventStartDate: String? = null,
         @Query(EVENT_END_DATE) eventEndDate: String? = null,
@@ -81,8 +81,8 @@ internal interface TrackerExporterService {
         @Query(ATTRIBUTE) attribute: List<String?>? = null,
         @Query(FILTER) filter: List<String?>? = null,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String? = null,
-        @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
+        @Query(UPDATED_AFTER) lastUpdatedStartDate: String? = null,
+        @Query(UPDATED_BEFORE) lastUpdatedEndDate: String? = null,
         @Query(ORDER) order: String? = null,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
@@ -102,14 +102,30 @@ internal interface TrackerExporterService {
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
+        @Query(STATUS) status: String? = null,
         @Query(PROGRAM) program: String?,
-        @Query(OCCURRED_AFTER) startDate: String?,
+        @Query(PROGRAM_STAGE) programStage: String? = null,
+        @Query(PROGRAM_STATUS) programStatus: String? = null,
+        @Query(FILTER) filter: List<String?>? = null,
+        @Query(FILTER_ATTRIBUTES) filterAttributes: List<String?>? = null,
+        @Query(FOLLOW_UP) followUp: Boolean? = null,
+        @Query(OCCURRED_AFTER) occurredAfter: String? = null,
+        @Query(OCCURRED_BEFORE) occurredBefore: String? = null,
+        @Query(SCHEDULED_AFTER) scheduledAfter: String? = null,
+        @Query(SCHEDULED_BEFORE) scheduledBefore: String? = null,
+        @Query(ENROLLMENT_ENROLLED_AFTER) enrollmentEnrolledAfter: String? = null,
+        @Query(ENROLLMENT_ENROLLED_BEFORE) enrollmentEnrolledBefore: String? = null,
+        @Query(ENROLLMENT_OCCURRED_AFTER) enrollmentOccurredAfter: String? = null,
+        @Query(ENROLLMENT_OCCURRED_BEFORE) enrollmentOccurredBefore: String? = null,
+        @Query(ORDER) order: String? = null,
+        @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
+        @Query(UPDATED_AFTER) updatedAfter: String?,
+        @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String?
+        @Query(EVENT) eventUid: String? = null
     ): Single<NTIPayload<NewTrackerImporterEvent>>
 
     @GET(EVENTS)
@@ -136,21 +152,26 @@ internal interface TrackerExporterService {
         const val PAGE_SIZE = "pageSize"
         const val PROGRAM = "program"
         const val PROGRAM_STAGE = "programStage"
-        const val PROGRAM_START_DATE = "enrollmentEnrolledAfter"
-        const val PROGRAM_END_DATE = "enrollmentEnrolledBefore"
+        const val ENROLLMENT_ENROLLED_AFTER = "enrollmentEnrolledAfter"
+        const val ENROLLMENT_ENROLLED_BEFORE = "enrollmentEnrolledBefore"
         const val PROGRAM_STATUS = "programStatus"
-        const val PROGRAM_INCIDENT_START_DATE = "enrollmentOccurredAfter"
-        const val PROGRAM_INCIDENT_END_DATE = "enrollmentOccurredBefore"
+        const val ENROLLMENT_OCCURRED_AFTER = "enrollmentOccurredAfter"
+        const val ENROLLMENT_OCCURRED_BEFORE = "enrollmentOccurredBefore"
         const val FOLLOW_UP = "followUp"
+        const val STATUS = "status"
         const val EVENT_STATUS = "eventStatus"
         const val EVENT_START_DATE = "eventOccurredAfter"
         const val EVENT_END_DATE = "eventOccurredBefore"
         const val OCCURRED_AFTER = "occurredAfter"
+        const val OCCURRED_BEFORE = "occurredBefore"
+        const val SCHEDULED_AFTER = "scheduledAfter"
+        const val SCHEDULED_BEFORE = "scheduledBefore"
         const val TRACKED_ENTITY_TYPE = "trackedEntityType"
         const val INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes"
         const val FILTER = "filter"
-        const val LAST_UPDATED_START_DATE = "updatedAfter"
-        const val LAST_UPDATED_END_DATE = "updatedBefore"
+        const val FILTER_ATTRIBUTES = "filterAttributes"
+        const val UPDATED_AFTER = "updatedAfter"
+        const val UPDATED_BEFORE = "updatedBefore"
         const val INCLUDE_DELETED = "includeDeleted"
         const val ASSIGNED_USER_MODE = "assignedUserMode"
         const val ORDER = "order"

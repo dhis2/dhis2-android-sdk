@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -48,8 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
@@ -109,8 +109,8 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
         return Callable {
             runBlocking {
-                val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty()
-                        || query.dueStartDate != null || query.dueEndDate != null
+                val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty() ||
+                    query.dueStartDate != null || query.dueEndDate != null
 
                 if (shouldCallEventsFirst) {
                     val events = getEventQuery(query)

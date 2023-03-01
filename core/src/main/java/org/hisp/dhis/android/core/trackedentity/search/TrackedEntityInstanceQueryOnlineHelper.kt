@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import javax.inject.Inject
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
@@ -93,6 +93,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
     }
 
+    @Suppress("ComplexMethod")
     private fun getBaseQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope
     ): TrackedEntityInstanceQueryOnline {

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.util
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
 internal fun Date?.simpleDateFormat(): String? {
     return this?.let { DateUtils.SIMPLE_DATE_FORMAT.format(it) }

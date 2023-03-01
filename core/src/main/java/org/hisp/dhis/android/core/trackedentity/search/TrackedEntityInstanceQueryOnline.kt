@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.util.*
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import java.util.*
 
 data class TrackedEntityInstanceQueryOnline(
     val page: Int,

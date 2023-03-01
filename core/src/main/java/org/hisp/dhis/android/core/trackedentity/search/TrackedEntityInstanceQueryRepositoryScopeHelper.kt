@@ -132,6 +132,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         }
     }
 
+    @Suppress("ComplexMethod")
     fun addProgramStageWorkingList(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         workingList: ProgramStageWorkingList

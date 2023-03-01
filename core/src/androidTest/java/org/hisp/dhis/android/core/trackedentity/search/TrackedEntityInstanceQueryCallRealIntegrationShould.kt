@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Assert
 import org.junit.Before
-import java.util.*
 
 class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var repository: TrackedEntityInstanceQueryCollectionRepository
-    
+
     @Before
     override fun setUp() {
         super.setUp()
@@ -48,14 +48,14 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
             .byProgram().eq("IpHINAT79UW")
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_no_filter() {
         login()
         val queryResponse = repository.onlineOnly().blockingGet()
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_filter_name() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -64,7 +64,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_filter_program_start_date() {
         login()
         val cal = Calendar.getInstance()
@@ -75,7 +75,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_filter_program_end_date() {
         login()
         val cal = Calendar.getInstance()
@@ -86,7 +86,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_one_attribute() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -96,7 +96,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_two_attributes() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -107,7 +107,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_one_filter() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -116,7 +116,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_two_filters() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -127,7 +127,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun query_tracked_entity_instances_filtering_by_data_value() {
         login()
         val queryResponse = repository.onlineOnly()
@@ -139,7 +139,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
         assertThat(queryResponse).isNotEmpty()
     }
 
-    //@Test
+    // @Test
     fun throw_exception_for_too_long_list_of_org_units() {
         login()
         val orgUnits = listOf(
@@ -486,11 +486,11 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
             Assert.fail("D2Error was expected but was not thrown")
         } catch (d2e: Exception) {
             // TODO
-            //assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
+            // assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
         }
     }
 
     private fun login() {
-        d2.userModule().logIn(username, password, "https://play.dhis2.org/dev").blockingGet()
+        d2.userModule().logIn(username, password, url).blockingGet()
     }
 }

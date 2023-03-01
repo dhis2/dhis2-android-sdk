@@ -34,12 +34,10 @@ import java.util.*
 import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
-import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance

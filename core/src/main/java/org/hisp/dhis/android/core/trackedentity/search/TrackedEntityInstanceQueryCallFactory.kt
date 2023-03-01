@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
+import java.text.ParseException
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
@@ -43,13 +46,10 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import java.text.ParseException
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
-    private val service: TrackedEntityInstanceService,
+    private val trackedEntityService: TrackedEntityInstanceService,
     private val eventService: EventService,
     private val mapper: SearchGridMapper,
     private val apiCallExecutor: APICallExecutor,
@@ -57,17 +57,17 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private val dhisVersionManager: DHISVersionManager
 ) {
     fun getCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
-        return Callable { topqueyrTrackedEntityInstances(query) }
+        return Callable { queryTrackedEntityInstances(query) }
     }
 
-    private fun topqueyrTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
-        val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty()
-                || query.dueStartDate != null || query.dueEndDate != null
+    private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
+        val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty() ||
+            query.dueStartDate != null || query.dueEndDate != null
 
         return if (shouldCallEventsFirst) {
             val events = getEventQuery(query)
             val teiQuery = getPostEventTeiQuery(query, events)
-            val instances  = getTrackedEntityQuery(teiQuery)
+            val instances = getTrackedEntityQuery(teiQuery)
             TrackerQueryResult(
                 trackedEntities = instances,
                 exhausted = events.size < query.pageSize
@@ -113,7 +113,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         val uidsStr = query.uids?.joinToString(";")
 
-        val searchGridCall = service.query(
+        val searchGridCall = trackedEntityService.query(
             trackedEntityInstance = uidsStr,
             orgUnit = getOrgunits(query.orgUnits),
             orgUnitMode = query.orgUnitMode?.toString(),
@@ -167,24 +167,26 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         }
     }
 
-    private fun getPostEventTeiQuery(
-        query: TrackedEntityInstanceQueryOnline,
-        events: List<Event>
-    ): TrackedEntityInstanceQueryOnline {
-        return query.copy(
-            uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
-            dataValue = null,
-            eventStatus = null,
-            eventStartDate = null,
-            eventEndDate = null,
-            dueStartDate = null,
-            dueEndDate = null,
-            programStage = null,
-        )
-    }
-
     private fun getOrgunits(orgUnits: List<String>): String? {
         return if (orgUnits.isEmpty()) null
         else orgUnits.joinToString(";")
+    }
+
+    companion object {
+        internal fun getPostEventTeiQuery(
+            query: TrackedEntityInstanceQueryOnline,
+            events: List<Event>
+        ): TrackedEntityInstanceQueryOnline {
+            return query.copy(
+                uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
+                dataValue = null,
+                eventStatus = null,
+                eventStartDate = null,
+                eventEndDate = null,
+                dueStartDate = null,
+                dueEndDate = null,
+                programStage = null,
+            )
+        }
     }
 }

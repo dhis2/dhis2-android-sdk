@@ -62,7 +62,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].query()).isEqualTo("LIKE:filter")
+        assertThat(onlineQueries[0].query).isEqualTo("LIKE:filter")
     }
 
     @Test
@@ -84,10 +84,10 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].attribute()!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].attribute()).contains("attribute1:EQ:filter1")
-        assertThat(onlineQueries[0].attribute()).contains("attribute2:EQ:filter21:LIKE:filter22")
-        assertThat(onlineQueries[0].attribute()).contains("attribute3:LIKE:filter31")
+        assertThat(onlineQueries[0].attribute!!.size).isEqualTo(3)
+        assertThat(onlineQueries[0].attribute).contains("attribute1:EQ:filter1")
+        assertThat(onlineQueries[0].attribute).contains("attribute2:EQ:filter21:LIKE:filter22")
+        assertThat(onlineQueries[0].attribute).contains("attribute3:LIKE:filter31")
     }
 
     @Test
@@ -109,10 +109,10 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter()!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].filter()).contains("filterItem1:EQ:filter1")
-        assertThat(onlineQueries[0].filter()).contains("filterItem2:LIKE:filter21")
-        assertThat(onlineQueries[0].filter()).contains("filterItem3:LIKE:filter31:EQ:filter32")
+        assertThat(onlineQueries[0].filter!!.size).isEqualTo(3)
+        assertThat(onlineQueries[0].filter).contains("filterItem1:EQ:filter1")
+        assertThat(onlineQueries[0].filter).contains("filterItem2:LIKE:filter21")
+        assertThat(onlineQueries[0].filter).contains("filterItem3:LIKE:filter31:EQ:filter32")
     }
 
     @Test
@@ -133,7 +133,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter()!!.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter()!![0]).isEqualTo("filterItem1:IN:nom,app;nom-app")
+        assertThat(onlineQueries[0].filter!!.size).isEqualTo(1)
+        assertThat(onlineQueries[0].filter!![0]).isEqualTo("filterItem1:IN:nom,app;nom-app")
     }
 }

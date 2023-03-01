@@ -76,7 +76,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> =
+    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> =
         ExpirableCache()
     private val initialLoad = 30
 
@@ -108,31 +108,31 @@ class TrackedEntityInstanceQueryDataSourceShould {
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(1, initialLoad, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { onlineObjects1 }
+            Callable { TrackerQueryResult(onlineObjects1, true) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(2, initialLoad, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { emptyList() }
+            Callable { TrackerQueryResult(emptyList(), true) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(4, 10, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { emptyList() }
+            Callable { TrackerQueryResult(emptyList(), true) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(1, initialLoad, AssignedUserMode.CURRENT)))
         ).doReturn(
-            Callable { onlineObjects2 }
+            Callable { TrackerQueryResult(onlineObjects2, true) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(4, 10, AssignedUserMode.CURRENT)))
         ).doReturn(
-            Callable { emptyList() }
+            Callable { TrackerQueryResult(emptyList(), true) }
         )
 
         whenever(childrenAppenders[anyString()]).doReturn(identityAppender())
@@ -199,13 +199,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(1, 4, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { onlineObjects1 }
+            Callable { TrackerQueryResult(onlineObjects1, false) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(3, 2, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { emptyList() }
+            Callable { TrackerQueryResult(emptyList(), true) }
         )
 
         dataSource.loadInitial(
@@ -283,13 +283,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(1, 5, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { onlineObjects1 }
+            Callable { TrackerQueryResult(onlineObjects1, false) }
         )
 
         whenever(
             onlineCallFactory.getQueryCall(argThat(QueryPageUserModeMatcher(2, 5, AssignedUserMode.ANY)))
         ).doReturn(
-            Callable { emptyList() }
+            Callable { TrackerQueryResult(emptyList(), true) }
         )
 
         dataSource.loadInitial(

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -70,42 +71,42 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
     // object to test
-    private lateinit var call: Callable<List<TrackedEntityInstance>>
+    private lateinit var call: Callable<TrackerQueryResult>
 
     @Before
     override fun setUp() {
         super.setUp()
         val orgUnits = listOf("ou1", "ou2")
 
-        query =
-            TrackedEntityInstanceQueryOnline.builder()
-                .uids(listOf("uid1", "uid2"))
-                .orgUnits(orgUnits)
-                .orgUnitMode(OrganisationUnitMode.ACCESSIBLE)
-                .program("program")
-                .programStage("progra_stage")
-                .programStartDate(Date())
-                .programEndDate(Date())
-                .enrollmentStatus(EnrollmentStatus.ACTIVE)
-                .followUp(true)
-                .eventStartDate(Date())
-                .eventEndDate(Date())
-                .eventStatus(EventStatus.OVERDUE)
-                .incidentStartDate(Date())
-                .incidentEndDate(Date())
-                .trackedEntityType("teiTypeStr")
-                .query("queryStr")
-                .attribute(attribute)
-                .filter(filter)
-                .includeDeleted(false)
-                .lastUpdatedStartDate(Date())
-                .lastUpdatedEndDate(Date())
-                .order("lastupdated:desc")
-                .assignedUserMode(AssignedUserMode.ANY)
-                .paging(false)
-                .page(2)
-                .pageSize(33)
-                .build()
+        query = TrackedEntityInstanceQueryOnline(
+            uids = listOf("uid1", "uid2"),
+            orgUnits = orgUnits,
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE,
+            program = "program",
+            programStartDate = Date(),
+            programEndDate = Date(),
+            enrollmentStatus = EnrollmentStatus.ACTIVE,
+            followUp = true,
+            eventStartDate = Date(),
+            eventEndDate = Date(),
+            dueStartDate = Date(),
+            dueEndDate = Date(),
+            eventStatus = EventStatus.OVERDUE,
+            incidentStartDate = Date(),
+            incidentEndDate = Date(),
+            trackedEntityType = "teiTypeStr",
+            query = "queryStr",
+            attribute = attribute,
+            filter = filter,
+            includeDeleted = false,
+            lastUpdatedStartDate = Date(),
+            lastUpdatedEndDate = Date(),
+            order = "lastupdated:desc",
+            assignedUserMode = AssignedUserMode.ANY,
+            paging = false,
+            page = 2,
+            pageSize = 33
+        )
 
         whenServiceQuery().thenReturn(searchGridCall)
         whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).doReturn(searchGrid)
@@ -173,7 +174,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     @Test
     fun should_not_map_active_event_status_if_greater_than_2_33() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
-        val activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build()
+        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
         val activeCall = TrackedEntityInstanceQueryCallFactory(
             service, mapper, apiCallExecutor, dhisVersionManager
         ).getCall(activeQuery)
@@ -187,7 +188,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     fun should_map_active_event_status_if_not_greater_than_2_33() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
 
-        val activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build()
+        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
         val activeCall = TrackedEntityInstanceQueryCallFactory(
             service, mapper, apiCallExecutor, dhisVersionManager
         ).getCall(activeQuery)
@@ -196,7 +197,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
         verifyService(activeQuery, EventStatus.VISITED)
 
-        val nonActiveQuery = query.toBuilder().eventStatus(EventStatus.SCHEDULE).build()
+        val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
         val nonActiveCall = TrackedEntityInstanceQueryCallFactory(
             service, mapper, apiCallExecutor, dhisVersionManager
         ).getCall(nonActiveQuery)
@@ -208,34 +209,34 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private fun verifyService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus()
+        expectedStatus: EventStatus? = query.eventStatus
     ) {
         Mockito.verify(service).query(
-            eq(query.uids()!![0] + ";" + query.uids()!![1]),
-            eq(query.orgUnits()[0] + ";" + query.orgUnits()[1]),
-            eq(query.orgUnitMode().toString()),
-            eq(query.program()),
-            eq(query.programStage()),
-            eq(query.formattedProgramStartDate()),
-            eq(query.formattedProgramEndDate()),
-            eq(query.enrollmentStatus().toString()),
-            eq(query.formattedIncidentStartDate()),
-            eq(query.formattedIncidentEndDate()),
-            eq(query.followUp()),
-            eq(query.formattedEventStartDate()),
-            eq(query.formattedEventEndDate()),
+            eq(query.uids!![0] + ";" + query.uids!![1]),
+            eq(query.orgUnits[0] + ";" + query.orgUnits[1]),
+            eq(query.orgUnitMode.toString()),
+            eq(query.program),
+            eq(query.programStage),
+            eq(query.programStartDate.simpleDateFormat()),
+            eq(query.programEndDate.simpleDateFormat()),
+            eq(query.enrollmentStatus?.toString()),
+            eq(query.incidentStartDate.simpleDateFormat()),
+            eq(query.incidentEndDate.simpleDateFormat()),
+            eq(query.followUp),
+            eq(query.eventStartDate.simpleDateFormat()),
+            eq(query.eventEndDate.simpleDateFormat()),
             eq(expectedStatus.toString()),
-            eq(query.trackedEntityType()),
-            eq(query.query()),
-            eq(query.attribute()),
-            eq(query.filter()),
-            eq(query.assignedUserMode().toString()),
-            eq(query.formattedLastUpdatedStartDate()),
-            eq(query.formattedLastUpdatedEndDate()),
-            eq(query.order()),
-            eq(query.paging()),
-            eq(query.page()),
-            eq(query.pageSize())
+            eq(query.trackedEntityType),
+            eq(query.query),
+            eq(query.attribute),
+            eq(query.filter),
+            eq(query.assignedUserMode?.toString()),
+            eq(query.lastUpdatedStartDate.simpleDateFormat()),
+            eq(query.lastUpdatedEndDate.simpleDateFormat()),
+            eq(query.order),
+            eq(query.paging),
+            eq(query.page),
+            eq(query.pageSize)
         )
     }
 

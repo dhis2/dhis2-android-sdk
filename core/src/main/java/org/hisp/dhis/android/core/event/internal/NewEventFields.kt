@@ -72,7 +72,7 @@ internal object NewEventFields {
 
     val asRelationshipFields: Fields<NewTrackerImporterEvent> = commonFields().build()
 
-    val teiQueryFields = commonFields()
+    val teiQueryFields: Fields<NewTrackerImporterEvent> = commonFields()
         .fields(fh.field<String>(TRACKED_ENTITY))
         .build()
 

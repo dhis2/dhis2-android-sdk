@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriod
@@ -144,12 +145,12 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
         workingList.programStageQueryCriteria()?.let { criteria ->
             criteria.status()?.let { builder.eventStatus(listOf(it)) }
-            criteria.eventCreatedAt()?.let { builder.eventDate(it) } // TODO
+            criteria.eventCreatedAt()?.let { builder.eventDate(it) }
             criteria.scheduledAt()?.let { builder.dueDate(it) }
             criteria.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
             criteria.enrolledAt()?.let { builder.programDate(it) }
             criteria.enrollmentOccurredAt()?.let { builder.incidentDate(it) }
-            criteria.order()?.let { } // TODO
+            criteria.order()?.let { applyOrder(builder, it) }
             criteria.orgUnit()?.let { builder.orgUnits(listOf(it)) }
             criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
@@ -208,6 +209,42 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
             }
 
             else -> emptyList()
+        }
+    }
+
+    private fun applyOrder(
+        builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
+        order: String
+    ) {
+        val items = order.split(",").mapNotNull { orderItem ->
+            val orderTokens = orderItem.split(":")
+            val columnStr = orderTokens.getOrNull(0)
+            val directionStr = orderTokens.getOrNull(1) ?: "desc"
+
+            val column = when (columnStr) {
+                "created" -> TrackedEntityInstanceQueryScopeOrderColumn.CREATED
+                "lastupdated" -> TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED
+                "ouname" -> TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME
+                else -> null
+            }
+
+            if (column != null) {
+                val direction =
+                    if (directionStr == "desc") RepositoryScope.OrderByDirection.DESC
+                    else RepositoryScope.OrderByDirection.ASC
+
+                TrackedEntityInstanceQueryScopeOrderByItem.builder()
+                    .column(column)
+                    .direction(direction)
+                    .build()
+            } else {
+                null
+            }
+        }
+
+        if (items.isNotEmpty()) {
+            val existingOrder = builder.build().order()
+            builder.order(existingOrder + items)
         }
     }
 }

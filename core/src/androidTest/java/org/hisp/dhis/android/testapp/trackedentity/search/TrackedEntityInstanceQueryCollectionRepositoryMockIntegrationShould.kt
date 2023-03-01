@@ -137,6 +137,15 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     }
 
     @Test
+    fun find_by_working_list() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .byProgramStageWorkingList().eq("NAgjOfWMXg6")
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(0)
+    }
+
+    @Test
     fun get_scope() {
         val scope = d2.trackedEntityModule().trackedEntityInstanceQuery().scope
 

@@ -46,7 +46,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>>,
+    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper
 ) {
@@ -130,19 +130,17 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         }
 
         val page = (status.requestedItems / requestLoadSize) + 1
-        val onlineQuery = baseOnlineQuery.toBuilder()
-            .page(page)
-            .pageSize(requestLoadSize)
-            .paging(true).build()
+        val onlineQuery = baseOnlineQuery.copy(
+            page = page,
+            pageSize = requestLoadSize,
+            paging = true
+        )
         val queryInstances = queryOnline(onlineQuery)
 
         status.requestedItems += requestLoadSize
+        status.isExhausted = queryInstances.exhausted
 
-        if (queryInstances.size < requestLoadSize) {
-            status.isExhausted = true
-        }
-
-        return queryInstances
+        return queryInstances.items
             .filter {
                 when (it) {
                     is Result.Success ->
@@ -163,17 +161,25 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
     private fun queryOnline(
         onlineQuery: TrackedEntityInstanceQueryOnline
-    ): List<Result<TrackedEntityInstance, D2Error>> {
+    ): TrackedEntityInstanceOnlineResult {
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
 
             cachedInstances ?: trackerParentCallFactory.getTrackedEntityCall()
                 .getQueryCall(onlineQuery)
                 .call()
-                .map { Result.Success<TrackedEntityInstance, D2Error>(it) }
+                .let { result ->
+                    TrackedEntityInstanceOnlineResult(
+                        items = result.trackedEntities.map { Result.Success(it) },
+                        exhausted = result.exhausted
+                    )
+                }
                 .also { onlineCache[onlineQuery] = it }
         } catch (e: D2Error) {
-            listOf(Result.Failure(e))
+            TrackedEntityInstanceOnlineResult(
+                items = listOf(Result.Failure(e)),
+                exhausted = true
+            )
         }
     }
 

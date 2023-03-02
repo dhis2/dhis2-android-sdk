@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.mockito.ArgumentMatcher
+package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-internal class QueryUserModeMatcher(
-    private val assignedUserMode: AssignedUserMode
-) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 
-    override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
-        return query?.let {
-            it.assignedUserMode == assignedUserMode
-        } ?: false
+object AttributeValueFilterHelper {
+
+    fun from(attributeValue: ProgramStageWorkingListAttributeValueFilter?): AttributeValueFilter? {
+        return attributeValue?.let {
+            AttributeValueFilter.builder()
+                .attribute(it.attribute())
+                .ew(it.ew())
+                .sw(it.sw())
+                .le(it.le())
+                .ge(it.ge())
+                .gt(it.gt())
+                .lt(it.lt())
+                .eq(it.eq())
+                .`in`(it.`in`())
+                .like(it.like())
+                .dateFilter(it.dateFilter())
+                .build()
+        }
     }
 }

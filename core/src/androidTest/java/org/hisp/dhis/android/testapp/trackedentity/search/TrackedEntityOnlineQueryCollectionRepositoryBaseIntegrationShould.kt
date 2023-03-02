@@ -43,6 +43,8 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     BaseMockIntegrationTestMetadataEnqueable() {
 
     abstract val importerVersion: TrackerImporterVersion
+
+    abstract val filterByEventFile: String
     abstract val responseFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
@@ -68,6 +70,20 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
         dhis2MockServer.enqueueMockResponse(responseFile)
 
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .onlineOnly()
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(2)
+    }
+
+    @Test
+    fun find_by_data_value() {
+        dhis2MockServer.enqueueMockResponse(filterByEventFile)
+        dhis2MockServer.enqueueMockResponse(responseFile)
+
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .byProgram().eq("programId")
+            .byDataValue("dataElementId").eq("value")
             .onlineOnly()
             .blockingGet()
 

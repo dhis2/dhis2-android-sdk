@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.mockito.ArgumentMatcher
+package org.hisp.dhis.android.core.util
 
-internal class QueryUserModeMatcher(
-    private val assignedUserMode: AssignedUserMode
-) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
+import java.util.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
-    override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
-        return query?.let {
-            it.assignedUserMode == assignedUserMode
-        } ?: false
-    }
+internal fun Date?.simpleDateFormat(): String? {
+    return this?.let { DateUtils.SIMPLE_DATE_FORMAT.format(it) }
 }

@@ -27,16 +27,25 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.mockito.ArgumentMatcher
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.util.concurrent.TimeUnit
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 
-internal class QueryUserModeMatcher(
-    private val assignedUserMode: AssignedUserMode
-) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
+@Module
+internal class TrackedEntityInstanceQueryEntityDIModule {
+    @Provides
+    @Reusable
+    fun empty(): TrackedEntityInstanceQueryRepositoryScope {
+        return TrackedEntityInstanceQueryRepositoryScope.empty()
+    }
 
-    override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
-        return query?.let {
-            it.assignedUserMode == assignedUserMode
-        } ?: false
+    @Provides
+    @Reusable
+    @Suppress("MagicNumber")
+    fun onlineCache(): D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> {
+        return ExpirableCache(TimeUnit.MINUTES.toMillis(5))
     }
 }

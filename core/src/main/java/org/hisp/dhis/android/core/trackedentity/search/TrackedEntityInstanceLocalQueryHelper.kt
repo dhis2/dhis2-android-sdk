@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
@@ -64,6 +65,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private val orgunitAlias = "ou"
     private val userOrgunitAlias = "uou"
     private val teavAlias = "teav"
+    private val tedvAlias = "tedv"
     private val programAlias = "pr"
     private val ownerAlias = "po"
     private val tempOwnerAlias = "tpo"
@@ -192,8 +194,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
-        return scope.eventFilters().isNotEmpty() || scope.programStage() != null ||
-            scope.eventDate() != null || scope.assignedUserMode() != null
+        return scope.eventFilters().isNotEmpty() || scope.dataValue().isNotEmpty() || scope.programStage() != null ||
+            scope.eventDate() != null || scope.dueDate() != null || scope.assignedUserMode() != null
     }
 
     @Suppress("LongMethod")
@@ -352,17 +354,6 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
         for (item in items) {
-            val valueStr = when (item.operator()) {
-                FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
-                FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
-                FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
-                FilterItemOperator.IN -> {
-                    val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
-                    "($value)"
-                }
-                else -> "'${escapeQuotes(item.value())}'"
-            }
-
             val sub = String.format(
                 "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
@@ -370,7 +361,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
                 dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                 item.operator().sqlOperator,
-                valueStr
+                getFilterItemValueStr(item)
             )
 
             where.appendExistsSubQuery(sub)
@@ -388,7 +379,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         scope.programStage()?.let { programStage ->
             where.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
         }
-        appendEventStatusAndDates(where, scope.eventStatus(), scope.eventDate())
+        appendEventStatusAndDates(where, scope.eventStatus(), scope.eventDate(), scope.dueDate())
 
         val innerClause = WhereClauseBuilder()
         scope.eventFilters().forEach { eventFilter ->
@@ -400,6 +391,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendComplexQuery(innerClause.build())
         }
 
+        appendDataValues(where, scope.dataValue())
+
         where.appendKeyOperatorValue(dot(eventAlias, EventTableInfo.Columns.DELETED), "!=", "1")
     }
 
@@ -410,7 +403,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         eventFilter.programStage()?.let { programStage ->
             innerClause.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
         }
-        appendEventStatusAndDates(innerClause, eventFilter.eventStatus(), eventFilter.eventDate())
+        appendEventStatusAndDates(innerClause, eventFilter.eventStatus(), eventFilter.eventDate(), dueDate = null)
 
         return if (innerClause.isEmpty) null else innerClause.build()
     }
@@ -418,10 +411,12 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private fun appendEventStatusAndDates(
         where: WhereClauseBuilder,
         eventStatusList: List<EventStatus>?,
-        eventDate: DateFilterPeriod?
+        eventDate: DateFilterPeriod?,
+        dueDate: DateFilterPeriod?
     ) {
         if (eventStatusList == null) {
             appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
+            appendEventDates(where, dueDate, EventTableInfo.Columns.DUE_DATE)
         } else if (eventStatusList.isNotEmpty() && eventDate != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
@@ -466,6 +461,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                     }
                 }
+                appendEventDates(statusWhere, dueDate, EventTableInfo.Columns.DUE_DATE)
                 statusListWhere.appendOrComplexQuery(statusWhere.build())
             }
             where.appendComplexQuery(statusListWhere.build())
@@ -522,6 +518,38 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             AssignedUserMode.NONE -> where.appendIsNullValue(assignedUserColumn)
             else -> {
             }
+        }
+    }
+
+    private fun appendDataValues(
+        where: WhereClauseBuilder,
+        dataValues: List<RepositoryScopeFilterItem>
+    ) {
+        dataValues.forEach { item ->
+            val sub = String.format(
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(), tedvAlias,
+                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT), dot(eventAlias, IdentifiableColumns.UID),
+                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT), escapeQuotes(item.key()),
+                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
+                item.operator().sqlOperator,
+                getFilterItemValueStr(item)
+            )
+
+            where.appendExistsSubQuery(sub)
+        }
+    }
+
+    private fun getFilterItemValueStr(item: RepositoryScopeFilterItem): String {
+        return when (item.operator()) {
+            FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
+            FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
+            FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
+            FilterItemOperator.IN -> {
+                val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
+                "($value)"
+            }
+            else -> "'${escapeQuotes(item.value())}'"
         }
     }
 

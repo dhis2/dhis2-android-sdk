@@ -34,8 +34,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
@@ -43,18 +46,21 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryErrorCatcher
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
+import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.util.simpleDateFormat
 
 @Reusable
 internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
-    private val trackedEntityInstanceService: TrackerExporterService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val trackedExporterService: TrackerExporterService,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val rxAPICallExecutor: RxAPICallExecutor
 ) : TrackedEntityEndpointCallFactory() {
 
     override fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
         return rxSingle {
-            val payload = trackedEntityInstanceService.getTrackedEntityInstances(
+            val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.allFields,
                 trackedEntityInstances = getUidStr(query),
                 orgUnits = query.orgUnit,
@@ -76,7 +82,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     }
 
     override suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance {
-        val tei = trackedEntityInstanceService.getSingleTrackedEntityInstance(
+        val tei = trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,
             orgUnitMode = query.commonParams.ouMode.name,
@@ -91,7 +97,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     }
 
     override fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>> {
-        return trackedEntityInstanceService.getTrackedEntityInstance(
+        return trackedExporterService.getTrackedEntityInstance(
             trackedEntityInstance = uid,
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
@@ -100,55 +106,133 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
         ).map { mapPayload(it) }
     }
 
-    override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<List<TrackedEntityInstance>> {
+    override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
         return Callable {
             runBlocking {
-                coroutineAPICallExecutor.wrap(
-                    errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
-                ) {
-                    val uidsStr = query.uids()?.joinToString(";")
-                    val orgUnits =
-                        if (query.orgUnits().isEmpty()) null
-                        else query.orgUnits().joinToString(";")
+                val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty() ||
+                    query.dueStartDate != null || query.dueEndDate != null
 
-                    val payload = trackedEntityInstanceService.getTrackedEntityInstances(
-                        fields = NewTrackedEntityInstanceFields.allFields,
-                        trackedEntityInstances = uidsStr,
-                        orgUnits = orgUnits,
-                        orgUnitMode = query.orgUnitMode()?.toString(),
-                        program = query.program(),
-                        programStage = query.programStage(),
-                        programStartDate = query.formattedProgramStartDate(),
-                        programEndDate = query.formattedProgramEndDate(),
-                        programStatus = query.enrollmentStatus()?.toString(),
-                        programIncidentStartDate = query.formattedIncidentStartDate(),
-                        programIncidentEndDate = query.formattedIncidentEndDate(),
-                        followUp = query.followUp(),
-                        eventStartDate = query.formattedEventStartDate(),
-                        eventEndDate = query.formattedEventEndDate(),
-                        eventStatus = query.eventStatus()?.toString(),
-                        trackedEntityType = query.trackedEntityType(),
-                        query = query.query(),
-                        attribute = query.attribute(),
-                        filter = query.filter(),
-                        assignedUserMode = query.assignedUserMode()?.toString(),
-                        lastUpdatedStartDate = query.formattedLastUpdatedStartDate(),
-                        lastUpdatedEndDate = query.formattedLastUpdatedEndDate(),
-                        order = query.order(),
-                        paging = query.paging(),
-                        page = query.page(),
-                        pageSize = query.pageSize(),
-                        includeAllAttributes = true
+                if (shouldCallEventsFirst) {
+                    val events = getEventQuery(query)
+                    val teiQuery = getPostEventTeiQuery(query, events)
+                    val instances = getTrackedEntityQuery(teiQuery)
+                    TrackerQueryResult(
+                        trackedEntities = instances,
+                        exhausted = events.size < query.pageSize
                     )
-
-                    mapPayload(payload)
-                }.getOrThrow().items()
+                } else {
+                    val instances = getTrackedEntityQuery(query)
+                    TrackerQueryResult(
+                        trackedEntities = instances,
+                        exhausted = instances.size < query.pageSize
+                    )
+                }
             }
         }
+    }
+
+    private fun getEventQuery(query: TrackedEntityInstanceQueryOnline): List<NewTrackerImporterEvent> {
+        return rxAPICallExecutor.wrapSingle(
+            trackedExporterService.getEvents(
+                fields = NewEventFields.teiQueryFields,
+                orgUnit = getOrgunits(query.orgUnits),
+                orgUnitMode = query.orgUnitMode?.toString(),
+                status = query.eventStatus?.toString(),
+                program = query.program,
+                programStage = query.programStage,
+                programStatus = query.enrollmentStatus?.toString(),
+                filter = query.dataValue,
+                filterAttributes = query.filter,
+                followUp = query.followUp,
+                occurredAfter = query.eventStartDate.simpleDateFormat(),
+                occurredBefore = query.eventStartDate.simpleDateFormat(),
+                scheduledAfter = query.dueStartDate.simpleDateFormat(),
+                scheduledBefore = query.dueEndDate.simpleDateFormat(),
+                enrollmentEnrolledAfter = query.programStartDate.simpleDateFormat(),
+                enrollmentEnrolledBefore = query.programEndDate.simpleDateFormat(),
+                enrollmentOccurredAfter = query.incidentStartDate.simpleDateFormat(),
+                enrollmentOccurredBefore = query.incidentEndDate.simpleDateFormat(),
+                order = query.order,
+                assignedUserMode = query.assignedUserMode?.toString(),
+                paging = query.paging,
+                pageSize = query.pageSize,
+                page = query.page,
+                updatedAfter = query.lastUpdatedStartDate.simpleDateFormat(),
+                updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
+                includeDeleted = query.includeDeleted
+            ),
+            storeError = false
+        ).blockingGet().instances
+    }
+
+    private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
+        return coroutineAPICallExecutor.wrap(
+            errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
+        ) {
+            val uidsStr = query.uids?.joinToString(";")
+
+            val payload = trackedExporterService.getTrackedEntityInstances(
+                fields = NewTrackedEntityInstanceFields.allFields,
+                trackedEntityInstances = uidsStr,
+                orgUnits = getOrgunits(query.orgUnits),
+                orgUnitMode = query.orgUnitMode?.toString(),
+                program = query.program,
+                programStage = query.programStage,
+                programStartDate = query.programStartDate.simpleDateFormat(),
+                programEndDate = query.programEndDate.simpleDateFormat(),
+                programStatus = query.enrollmentStatus?.toString(),
+                programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
+                programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
+                followUp = query.followUp,
+                eventStartDate = query.eventStartDate.simpleDateFormat(),
+                eventEndDate = query.eventEndDate.simpleDateFormat(),
+                eventStatus = query.eventStatus?.toString(),
+                trackedEntityType = query.trackedEntityType,
+                query = query.query,
+                attribute = query.attribute,
+                filter = query.filter,
+                assignedUserMode = query.assignedUserMode?.toString(),
+                lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
+                lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
+                order = query.order,
+                paging = query.paging,
+                page = query.page,
+                pageSize = query.pageSize,
+                includeAllAttributes = true
+            )
+
+            mapPayload(payload)
+        }.getOrThrow().items()
+    }
+
+    private fun getPostEventTeiQuery(
+        query: TrackedEntityInstanceQueryOnline,
+        events: List<NewTrackerImporterEvent>
+    ): TrackedEntityInstanceQueryOnline {
+        return TrackedEntityInstanceQueryOnline(
+            page = query.page,
+            pageSize = query.pageSize,
+            paging = query.paging,
+            orgUnits = query.orgUnits,
+            orgUnitMode = query.orgUnitMode,
+            program = query.program,
+            uids = events.mapNotNull { it.trackedEntity() }.distinct(),
+            query = query.query,
+            attribute = query.attribute,
+            filter = query.filter,
+            order = query.order,
+            trackedEntityType = query.trackedEntityType,
+            includeDeleted = query.includeDeleted
+        )
     }
 
     private fun mapPayload(payload: NTIPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
         val newItems = payload.instances.map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
+    }
+
+    private fun getOrgunits(orgUnits: List<String>): String? {
+        return if (orgUnits.isEmpty()) null
+        else orgUnits.joinToString(";")
     }
 }

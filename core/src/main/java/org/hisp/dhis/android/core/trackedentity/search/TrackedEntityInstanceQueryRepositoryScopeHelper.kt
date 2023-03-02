@@ -30,11 +30,16 @@ package org.hisp.dhis.android.core.trackedentity.search
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.FilterOperators
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.internal.AttributeValueFilterHelper
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -108,47 +113,138 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
         filter: AttributeValueFilter?
     ) {
-        if (filter != null) {
+        filter?.let {
             val existingFilters = builder.build().filter()
 
             val filterBuilder = RepositoryScopeFilterItem.builder().key(filter.attribute())
 
-            val newFilters = when {
-                filter.eq() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.EQ).value(filter.eq()).build())
-                filter.like() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.LIKE).value(filter.like()).build())
-                filter.le() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.LE).value(filter.le()).build())
-                filter.lt() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.LT).value(filter.lt()).build())
-                filter.ge() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.GE).value(filter.ge()).build())
-                filter.gt() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.GT).value(filter.gt()).build())
-                filter.sw() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.SW).value(filter.sw()).build())
-                filter.ew() != null ->
-                    listOf(filterBuilder.operator(FilterItemOperator.EW).value(filter.ew()).build())
-                filter.`in`() != null ->
-                    listOf(
-                        filterBuilder.operator(FilterItemOperator.IN)
-                            .value(FilterOperatorsHelper.listToStr(filter.`in`()!!)).build()
-                    )
-                filter.dateFilter() != null -> {
-                    val start = dateFilterPeriodHelper.getStartDate(filter.dateFilter()!!)?.let {
-                        filterBuilder.operator(FilterItemOperator.GE).value(DateUtils.DATE_FORMAT.format(it)).build()
+            val newFilters = applyCommonFilterOperators(filterBuilder, filter)
+                .ifEmpty {
+                    when {
+                        filter.sw() != null ->
+                            listOf(filterBuilder.operator(FilterItemOperator.SW).value(filter.sw()).build())
+                        filter.ew() != null ->
+                            listOf(filterBuilder.operator(FilterItemOperator.EW).value(filter.ew()).build())
+                        else -> emptyList()
                     }
-                    val end = dateFilterPeriodHelper.getEndDate(filter.dateFilter()!!)?.let {
-                        filterBuilder.operator(FilterItemOperator.LE).value(DateUtils.DATE_FORMAT.format(it)).build()
-                    }
-                    listOfNotNull(start, end)
                 }
 
-                else -> emptyList()
+            builder.filter(existingFilters + newFilters)
+        }
+    }
+
+    @Suppress("ComplexMethod")
+    fun addProgramStageWorkingList(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        workingList: ProgramStageWorkingList
+    ): TrackedEntityInstanceQueryRepositoryScope {
+        val builder = scope.toBuilder()
+
+        workingList.program()?.uid()?.let { builder.program(it) }
+        workingList.programStage()?.uid()?.let { builder.programStage(it) }
+
+        workingList.programStageQueryCriteria()?.let { criteria ->
+            criteria.status()?.let { builder.eventStatus(listOf(it)) }
+            criteria.eventCreatedAt()?.let { builder.eventDate(it) }
+            criteria.scheduledAt()?.let { builder.dueDate(it) }
+            criteria.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
+            criteria.enrolledAt()?.let { builder.programDate(it) }
+            criteria.enrollmentOccurredAt()?.let { builder.incidentDate(it) }
+            criteria.order()?.let { applyOrder(builder, it) }
+            criteria.orgUnit()?.let { builder.orgUnits(listOf(it)) }
+            criteria.ouMode()?.let { builder.orgUnitMode(it) }
+            criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
+            criteria.dataFilters()?.forEach { applyDataValueFilter(builder, it) }
+            criteria.attributeValueFilters()
+                ?.map { AttributeValueFilterHelper.from(it) }
+                ?.forEach { applyAttributeValueFilter(builder, it) }
+        }
+
+        return builder.build()
+    }
+
+    private fun applyDataValueFilter(
+        builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
+        filter: ProgramStageWorkingListEventDataFilter?
+    ) {
+        filter?.let {
+            val existingFilters = builder.build().dataValue()
+            val filterBuilder = RepositoryScopeFilterItem.builder().key(filter.dataItem())
+            val newFilters = applyCommonFilterOperators(filterBuilder, filter)
+
+            builder.dataValue(existingFilters + newFilters)
+        }
+    }
+
+    private fun applyCommonFilterOperators(
+        filterBuilder: RepositoryScopeFilterItem.Builder,
+        filter: FilterOperators
+    ): List<RepositoryScopeFilterItem> {
+        return when {
+            filter.eq() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.EQ).value(filter.eq()).build())
+            filter.like() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.LIKE).value(filter.like()).build())
+            filter.le() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.LE).value(filter.le()).build())
+            filter.lt() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.LT).value(filter.lt()).build())
+            filter.ge() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.GE).value(filter.ge()).build())
+            filter.gt() != null ->
+                listOf(filterBuilder.operator(FilterItemOperator.GT).value(filter.gt()).build())
+            filter.`in`() != null ->
+                listOf(
+                    filterBuilder.operator(FilterItemOperator.IN)
+                        .value(FilterOperatorsHelper.listToStr(filter.`in`()!!)).build()
+                )
+            filter.dateFilter() != null -> {
+                val start = dateFilterPeriodHelper.getStartDate(filter.dateFilter()!!)?.let {
+                    filterBuilder.operator(FilterItemOperator.GE).value(DateUtils.DATE_FORMAT.format(it)).build()
+                }
+                val end = dateFilterPeriodHelper.getEndDate(filter.dateFilter()!!)?.let {
+                    filterBuilder.operator(FilterItemOperator.LE).value(DateUtils.DATE_FORMAT.format(it)).build()
+                }
+                listOfNotNull(start, end)
             }
 
-            builder.filter(existingFilters + newFilters)
+            else -> emptyList()
+        }
+    }
+
+    private fun applyOrder(
+        builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
+        order: String
+    ) {
+        val items = order.split(",").mapNotNull { orderItem ->
+            val orderTokens = orderItem.split(":")
+            val columnStr = orderTokens.getOrNull(0)
+            val directionStr = orderTokens.getOrNull(1) ?: "desc"
+
+            val column = when (columnStr) {
+                "created" -> TrackedEntityInstanceQueryScopeOrderColumn.CREATED
+                "lastupdated" -> TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED
+                "ouname" -> TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME
+                else -> null
+            }
+
+            if (column != null) {
+                val direction =
+                    if (directionStr == "desc") RepositoryScope.OrderByDirection.DESC
+                    else RepositoryScope.OrderByDirection.ASC
+
+                TrackedEntityInstanceQueryScopeOrderByItem.builder()
+                    .column(column)
+                    .direction(direction)
+                    .build()
+            } else {
+                null
+            }
+        }
+
+        if (items.isNotEmpty()) {
+            val existingOrder = builder.build().order()
+            builder.order(existingOrder + items)
         }
     }
 }

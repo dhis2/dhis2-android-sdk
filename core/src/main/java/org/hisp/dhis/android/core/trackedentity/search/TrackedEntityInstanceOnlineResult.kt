@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.mockito.ArgumentMatcher
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-internal class QueryUserModeMatcher(
-    private val assignedUserMode: AssignedUserMode
-) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
-
-    override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
-        return query?.let {
-            it.assignedUserMode == assignedUserMode
-        } ?: false
-    }
-}
+data class TrackedEntityInstanceOnlineResult(
+    val items: List<Result<TrackedEntityInstance, D2Error>>,
+    val exhausted: Boolean
+)

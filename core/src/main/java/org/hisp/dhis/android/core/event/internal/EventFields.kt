@@ -46,6 +46,7 @@ internal object EventFields {
     private const val COORDINATE = "coordinate"
     const val ORGANISATION_UNIT = "orgUnit"
     const val TRACKED_ENTITY_DATA_VALUES = "dataValues"
+    const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
     private const val GEOMETRY = "geometry"
     const val NOTES = "notes"
     const val RELATIONSHIPS = "relationships"
@@ -61,6 +62,10 @@ internal object EventFields {
         ).build()
 
     val asRelationshipFields: Fields<Event> = commonFields().build()
+
+    val teiQueryFields: Fields<Event> = commonFields()
+        .fields(fh.field<String>(TRACKED_ENTITY_INSTANCE))
+        .build()
 
     private fun commonFields(): Fields.Builder<Event> {
         return Fields.builder<Event>().fields(

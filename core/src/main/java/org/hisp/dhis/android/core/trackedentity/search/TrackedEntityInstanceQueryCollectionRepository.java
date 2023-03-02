@@ -59,6 +59,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -92,11 +94,12 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
     private final DHISVersionManager versionManager;
     private final TrackedEntityInstanceFilterCollectionRepository filtersRepository;
+    private final ProgramStageWorkingListCollectionRepository workingListRepository;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper;
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache;
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
     private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
@@ -109,7 +112,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper,
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
-            final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache,
+            final ProgramStageWorkingListCollectionRepository workingListRepository,
+            final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache,
             final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
             final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
@@ -119,12 +123,13 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.scopeHelper = scopeHelper;
         this.versionManager = versionManager;
         this.filtersRepository = filtersRepository;
+        this.workingListRepository = workingListRepository;
         this.onlineCache = onlineCache;
         this.onlineHelper = onlineHelper;
         this.localQueryHelper = localQueryHelper;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, trackerParentCallFactory, childrenAppenders,
-                        s, scopeHelper, versionManager, filtersRepository, onlineCache,
+                        s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
                         onlineHelper, localQueryHelper));
     }
 
@@ -170,7 +175,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
-     * Add an "attribute" filter to the query. If this method is call several times, conditions are appended with
+     * Add an "attribute" filter to the query. If this method is called several times, conditions are appended with
      * AND connector.
      * <p>
      * For example,
@@ -190,7 +195,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
-     * Add an "filter" to the query. If this method is call several times, conditions are appended with
+     * Add a "filter" to the query. If this method is called several times, conditions are appended with
      * AND connector.
      * <p>
      * For example,
@@ -216,6 +221,21 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byQuery() {
         return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
+    }
+
+    /**
+     * Filter the tracked entity for those matching this filter. If this method is called several times, conditions
+     * are appended with AND connector.
+     *
+     * @param dataElement DataElement uid to use in the filter
+     * @return Repository connector
+     */
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byDataValue(String dataElement) {
+        return connectorFactory.eqLikeItemC(dataElement, filterItem -> {
+            List<RepositoryScopeFilterItem> dataValues = new ArrayList<>(scope.dataValue());
+            dataValues.add(filterItem);
+            return scope.toBuilder().dataValue(dataValues).build();
+        });
     }
 
     /**
@@ -442,6 +462,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             .withAttributeValueFilters()
                             .uid(id).blockingGet();
             return scopeHelper.addTrackedEntityInstanceFilter(scope, filter);
+        });
+    }
+
+    /**
+     * Apply the filters defined in a {@link ProgramStageWorkingList}. It will overwrite previous filters in case
+     * they overlap. In the same way, they could be overwritten by subsequent filters.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byProgramStageWorkingList() {
+        return connectorFactory.eqConnector(id -> {
+            ProgramStageWorkingList workingList =
+                    workingListRepository
+                            .withDataFilters()
+                            .withAttributeValueFilters()
+                            .uid(id).blockingGet();
+            return scopeHelper.addProgramStageWorkingList(scope, workingList);
         });
     }
 

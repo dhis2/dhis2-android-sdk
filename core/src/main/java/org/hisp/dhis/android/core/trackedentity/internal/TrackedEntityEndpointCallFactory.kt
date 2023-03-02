@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
+import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
 internal abstract class TrackedEntityEndpointCallFactory {
@@ -43,7 +44,7 @@ internal abstract class TrackedEntityEndpointCallFactory {
 
     abstract fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>>
 
-    abstract fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<List<TrackedEntityInstance>>
+    abstract fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult>
 
     protected fun getUidStr(query: TrackerAPIQuery): String? {
         return if (query.uids.isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids, ";")

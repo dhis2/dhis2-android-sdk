@@ -37,4 +37,5 @@ class TrackedEntityOnlineQueryCollectionRepositoryNewIntegrationShould :
 
     override val importerVersion = TrackerImporterVersion.V2
     override val responseFile = "trackedentity/new_tracker_importer_tracked_entities.json"
+    override val filterByEventFile = "trackedentity/search/new_tracker_importer_filter_by_events.json"
 }

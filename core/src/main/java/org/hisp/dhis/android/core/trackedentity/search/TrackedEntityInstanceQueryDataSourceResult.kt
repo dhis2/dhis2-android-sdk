@@ -41,7 +41,7 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
-    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>>,
+    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper
 ) : PageKeyedDataSource<

@@ -46,5 +46,6 @@ public enum ValueTypeRenderingType {
     AUTOCOMPLETE,
     QR_CODE,
     BAR_CODE,
-    GS1_DATAMATRIX
+    GS1_DATAMATRIX,
+    CANVAS,
 }

@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 internal object NewEnrollmentFields {
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
+    private const val CREATED_AT_CLIENT = "createdAtClient"
+    private const val UPDATED_AT_CLIENT = "updatedAtClient"
     private const val PROGRAM = "program"
     private const val ENROLLED_AT = "enrolledAt"
     private const val OCCURRED_AT = "occurredAt"
@@ -73,6 +75,8 @@ internal object NewEnrollmentFields {
             fh.field<String>(UID),
             fh.field<String>(CREATED_AT),
             fh.field<String>(UPDATED_AT),
+            fh.field<String>(CREATED_AT_CLIENT),
+            fh.field<String>(UPDATED_AT_CLIENT),
             fh.field<String>(ORGANISATION_UNIT),
             fh.field<String>(PROGRAM),
             fh.field<String>(ENROLLED_AT),

@@ -43,6 +43,8 @@ internal object NewTrackedEntityInstanceFields {
     private const val UID = "trackedEntity"
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
+    private const val CREATED_AT_CLIENT = "createdAtClient"
+    private const val UPDATED_AT_CLIENT = "updatedAtClient"
     private const val ORGANISATION_UNIT = "orgUnit"
     private const val TRACKED_ENTITY_TYPE = "trackedEntityType"
     private const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
@@ -70,6 +72,8 @@ internal object NewTrackedEntityInstanceFields {
             fh.field<String>(UID),
             fh.field<Date>(CREATED_AT),
             fh.field<Date>(UPDATED_AT),
+            fh.field<Date>(CREATED_AT_CLIENT),
+            fh.field<Date>(UPDATED_AT_CLIENT),
             fh.field<String>(ORGANISATION_UNIT),
             fh.field<String>(TRACKED_ENTITY_TYPE),
             fh.field<Geometry>(GEOMETRY),

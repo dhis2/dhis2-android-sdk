@@ -68,6 +68,8 @@ internal object EventFields {
             fh.field<String>(EventTableInfo.Columns.ENROLLMENT),
             fh.field<String>(EventTableInfo.Columns.CREATED),
             fh.field<String>(EventTableInfo.Columns.LAST_UPDATED),
+            fh.field<String>(EventTableInfo.Columns.CREATED_AT_CLIENT),
+            fh.field<String>(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
             fh.field<EventStatus>(EventTableInfo.Columns.STATUS),
             fh.field<Coordinates>(COORDINATE),
             fh.field<Geometry>(GEOMETRY),

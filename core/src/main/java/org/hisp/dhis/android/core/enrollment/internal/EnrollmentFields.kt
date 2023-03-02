@@ -66,6 +66,8 @@ internal object EnrollmentFields {
             fh.field<String>(UID),
             fh.field<String>(EnrollmentTableInfo.Columns.CREATED),
             fh.field<String>(EnrollmentTableInfo.Columns.LAST_UPDATED),
+            fh.field<String>(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT),
+            fh.field<String>(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
             fh.field<String>(ORGANISATION_UNIT),
             fh.field<String>(EnrollmentTableInfo.Columns.PROGRAM),
             fh.field<String>(EnrollmentTableInfo.Columns.ENROLLMENT_DATE),

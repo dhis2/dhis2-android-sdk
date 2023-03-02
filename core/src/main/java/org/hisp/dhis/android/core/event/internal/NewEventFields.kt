@@ -44,6 +44,8 @@ internal object NewEventFields {
     private const val ENROLLMENT = "enrollment"
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
+    private const val CREATED_AT_CLIENT = "createdAtClient"
+    private const val UPDATED_AT_CLIENT = "updatedAtClient"
     private const val PROGRAM = "program"
     private const val PROGRAM_STAGE = "programStage"
     private const val ORGANISATION_UNIT = "orgUnit"
@@ -77,6 +79,8 @@ internal object NewEventFields {
             fh.field<String>(ENROLLMENT),
             fh.field<String>(CREATED_AT),
             fh.field<String>(UPDATED_AT),
+            fh.field<String>(CREATED_AT_CLIENT),
+            fh.field<String>(UPDATED_AT_CLIENT),
             fh.field<EventStatus>(STATUS),
             fh.field<Geometry>(GEOMETRY),
             fh.field<String>(PROGRAM),

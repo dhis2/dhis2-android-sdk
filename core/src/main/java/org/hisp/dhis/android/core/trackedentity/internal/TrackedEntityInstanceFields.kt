@@ -68,6 +68,8 @@ internal object TrackedEntityInstanceFields {
             fh.field<String>(UID),
             fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.CREATED),
             fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED),
+            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT),
+            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
             fh.field<String>(ORGANISATION_UNIT),
             fh.field<String>(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
             fh.field<String>(COORDINATES),

@@ -69,7 +69,7 @@ val rxJava = "2.2.12"
 val rxAndroid = "2.1.1"
 val sqlCipher = "4.4.3"
 val smsCompression = "0.2.0"
-val expressionParser = "1.0.29"
+val expressionParser = "1.0.33"
 
 // Kotlin
 val kotlinxDatetime = "0.4.0"

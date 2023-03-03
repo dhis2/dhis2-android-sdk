@@ -31,7 +31,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
-    id("org.jetbrains.dokka") version "1.6.10" apply false
+    id("org.jetbrains.dokka") version "1.7.20" apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -59,34 +59,34 @@ val annotation = "1.4.0"
 val paging = "2.1.2"
 
 // java
-val jackson = "2.11.2"
-val autoValue = "1.7.4"
+val jackson = "2.14.2"
+val autoValue = "1.10.1"
 val autoValueCursor = "2.0.1"
 val retrofit = "2.9.0"
-val okHttp = "3.12.0"
+val okHttp = "3.14.9"
 val dagger = "2.44.2"
-val rxJava = "2.2.12"
+val rxJava = "2.2.21"
 val rxAndroid = "2.1.1"
 val sqlCipher = "4.4.3"
 val smsCompression = "0.2.0"
-val expressionParser = "1.0.29"
+val expressionParser = "1.0.33"
 
 // Kotlin
 val kotlinxDatetime = "0.4.0"
 val coroutines = "1.6.4"
 
 // test dependencies
-val coreTesting = "2.1.0"
+val coreTesting = "2.2.0"
 val jUnit = "4.13.2"
 val mockito = "3.4.6"
 val mockitoKotlin = "2.2.0"
-val truth = "1.1.2"
-val testRunner = "1.4.0"
-val equalsVerifier = "3.4.1"
+val truth = "1.1.3"
+val testRunner = "1.5.2"
+val testRules = "1.5.0"
+val equalsVerifier = "3.14"
 val flipper = "0.83.0"
-val soloader = "0.10.1"
-val liveDataTesting = "1.2.0"
-val commonsLogging = "1.2"
+val soloader = "0.10.5"
+val liveDataTesting = "1.3.0"
 
 // open id
 val appauth = "0.8.1"
@@ -209,15 +209,13 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
     testImplementation("androidx.test:runner:$testRunner")
-    testImplementation("commons-logging:commons-logging:$commonsLogging")
 
     // Android test dependencies
-    androidTestImplementation("commons-logging:commons-logging:$commonsLogging")
     androidTestImplementation("org.mockito:mockito-core:$mockito")
     androidTestImplementation("com.jraska.livedata:testing-ktx:$liveDataTesting")
     androidTestImplementation("androidx.arch.core:core-testing:$coreTesting")
     androidTestImplementation("androidx.test:runner:$testRunner")
-    androidTestImplementation("androidx.test:rules:$testRunner")
+    androidTestImplementation("androidx.test:rules:$testRules")
     androidTestImplementation("com.squareup.okhttp3:logging-interceptor:$okHttp")
     androidTestImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.

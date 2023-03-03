@@ -12,5 +12,4 @@ Compatibility table between DHIS2 Android SDK library, DHIS2 core and Android SD
 | 1.5.X    | 2.29 -> 2.37     | 19 - 29     | 2.0.25 - 2.0.27   |
 | 1.6.X    | 2.30 -> 2.38     | 21 - 31     | 2.0.34 - 2.0.35   |
 | 1.7.X    | 2.30 -> 2.39     | 21 - 31     | 2.0.42 - 2.0.43   |
-
-Check Rule Engine compatibility table in [Program rule engine section](#android_sdk_program_rule_engine).
+| 1.8.X    | 2.30 -> 2.40     | 21 - 33     | 2.0.47 - 2.0.48   |

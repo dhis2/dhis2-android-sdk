@@ -88,6 +88,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     public abstract List<EnrollmentStatus> enrollmentStatus();
 
     @Nullable
+    public abstract DateFilterPeriod eventCreatedDate();
+
+    @Nullable
     public abstract DateFilterPeriod eventDate();
 
     @Nullable
@@ -174,6 +177,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder incidentDate(DateFilterPeriod incidentDate);
 
         public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
+
+        public abstract Builder eventCreatedDate(DateFilterPeriod eventCreatedDate);
 
         public abstract Builder eventDate(DateFilterPeriod eventDate);
 

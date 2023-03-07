@@ -63,7 +63,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
             .withConstraints()
             .blockingGet()
 
-        assertThat(relationshipType.size).isEqualTo(2)
+        assertThat(relationshipType.size).isEqualTo(1)
     }
 
     @Test

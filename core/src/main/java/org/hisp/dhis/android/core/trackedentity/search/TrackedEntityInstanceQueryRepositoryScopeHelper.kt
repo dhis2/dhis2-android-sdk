@@ -145,7 +145,8 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
         workingList.programStageQueryCriteria()?.let { criteria ->
             criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
-            criteria.eventCreatedAt()?.let { builder.eventDate(it) }
+            criteria.eventCreatedAt()?.let { builder.eventCreatedDate(it) }
+            criteria.eventOccurredAt()?.let { builder.eventDate(it) }
             criteria.eventScheduledAt()?.let { builder.dueDate(it) }
             criteria.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
             criteria.enrolledAt()?.let { builder.programDate(it) }

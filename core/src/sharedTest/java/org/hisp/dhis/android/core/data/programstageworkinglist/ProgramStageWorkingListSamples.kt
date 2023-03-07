@@ -49,7 +49,7 @@ object ProgramStageWorkingListSamples {
             .programStage(ObjectWithUid.create("programStage"))
             .programStageQueryCriteria(
                 ProgramStageQueryCriteria.builder()
-                    .status(EventStatus.COMPLETED)
+                    .eventStatus(EventStatus.COMPLETED)
                     .eventCreatedAt(
                         DateFilterPeriod.builder()
                             .startDate(parseDate("2014-05-01"))
@@ -57,7 +57,7 @@ object ProgramStageWorkingListSamples {
                             .type(DatePeriodType.ABSOLUTE)
                             .build()
                     )
-                    .scheduledAt(
+                    .eventScheduledAt(
                         DateFilterPeriod.builder()
                             .startBuffer(-5)
                             .endBuffer(5)

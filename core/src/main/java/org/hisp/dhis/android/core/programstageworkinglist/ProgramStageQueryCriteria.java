@@ -64,7 +64,7 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
     @Nullable
     @JsonProperty()
     @ColumnAdapter(EventStatusColumnAdapter.class)
-    public abstract EventStatus status();
+    public abstract EventStatus eventStatus();
 
     @Nullable
     @JsonProperty()
@@ -74,7 +74,7 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
-    public abstract DateFilterPeriod scheduledAt();
+    public abstract DateFilterPeriod eventScheduledAt();
 
     @Nullable
     @JsonProperty()
@@ -142,11 +142,11 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
 
         public abstract Builder id(Long id);
 
-        public abstract Builder status(EventStatus status);
+        public abstract Builder eventStatus(EventStatus eventStatus);
 
         public abstract Builder eventCreatedAt(DateFilterPeriod eventCreatedAt);
 
-        public abstract Builder scheduledAt(DateFilterPeriod scheduledAt);
+        public abstract Builder eventScheduledAt(DateFilterPeriod eventScheduledAt);
 
         public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
 

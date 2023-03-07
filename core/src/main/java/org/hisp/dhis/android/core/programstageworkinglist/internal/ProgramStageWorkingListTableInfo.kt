@@ -50,9 +50,9 @@ internal object ProgramStageWorkingListTableInfo {
                 DESCRIPTION,
                 PROGRAM,
                 PROGRAM_STAGE,
-                STATUS,
+                EVENT_STATUS,
                 EVENT_CREATED_AT,
-                SCHEDULED_AT,
+                EVENT_SCHEDULED_AT,
                 ENROLLMENT_STATUS,
                 ENROLLMENT_AT,
                 ENROLLMENT_OCCURRED_AT,
@@ -68,9 +68,9 @@ internal object ProgramStageWorkingListTableInfo {
             const val DESCRIPTION = "description"
             const val PROGRAM = "program"
             const val PROGRAM_STAGE = "programStage"
-            const val STATUS = "status"
+            const val EVENT_STATUS = "eventStatus"
             const val EVENT_CREATED_AT = "eventCreatedAt"
-            const val SCHEDULED_AT = "scheduledAt"
+            const val EVENT_SCHEDULED_AT = "eventScheduledAt"
             const val ENROLLMENT_STATUS = "enrollmentStatus"
             const val ENROLLMENT_AT = "enrolledAt"
             const val ENROLLMENT_OCCURRED_AT = "enrollmentOccurredAt"

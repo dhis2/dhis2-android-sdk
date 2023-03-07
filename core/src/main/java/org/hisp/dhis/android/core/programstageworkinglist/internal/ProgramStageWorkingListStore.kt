@@ -47,12 +47,12 @@ internal object ProgramStageWorkingListStore {
                 w.bind(7, o.description())
                 w.bind(8, o.program()?.uid())
                 w.bind(9, o.programStage()?.uid())
-                w.bind(10, o.programStageQueryCriteria()?.status())
+                w.bind(10, o.programStageQueryCriteria()?.eventStatus())
                 w.bind(
                     11,
                     DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventCreatedAt())
                 )
-                w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.scheduledAt()))
+                w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventScheduledAt()))
                 w.bind(13, o.programStageQueryCriteria()?.enrollmentStatus())
                 w.bind(14, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrolledAt()))
                 w.bind(

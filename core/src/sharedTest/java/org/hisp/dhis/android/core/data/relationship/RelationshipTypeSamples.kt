@@ -61,8 +61,6 @@ object RelationshipTypeSamples {
         .id(400L)
         .constraintType(RelationshipConstraintType.TO)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
-        .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-        .trackedEntityType(ObjectWithUid.create(TET_FOR_RELATIONSHIP_3_UID))
         .build()
     var FROM_CONSTRAINT_3 = RelationshipConstraint
         .builder()

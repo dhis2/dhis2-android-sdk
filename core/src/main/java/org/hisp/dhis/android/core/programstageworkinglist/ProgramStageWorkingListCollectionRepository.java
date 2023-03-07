@@ -75,7 +75,7 @@ public final class ProgramStageWorkingListCollectionRepository
     }
 
     public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EventStatus> byEventStatus() {
-        return cf.enumC(Columns.STATUS);
+        return cf.enumC(Columns.EVENT_STATUS);
     }
 
     public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EnrollmentStatus> byEnrollmentStatus() {

@@ -13,13 +13,17 @@
   },
   "description": "Test WL definition",
   "programStageQueryCriteria": {
-    "status": "ACTIVE",
+    "eventStatus": "ACTIVE",
     "eventCreatedAt": {
       "type": "ABSOLUTE",
       "startDate": "2020-03-01",
       "endDate": "2022-12-30"
     },
-    "scheduledAt": {
+    "eventOccurredAt": {
+      "type": "RELATIVE",
+      "period": "TODAY"
+    },
+    "eventScheduledAt": {
       "type": "RELATIVE",
       "period": "TODAY"
     },

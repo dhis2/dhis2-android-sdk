@@ -47,23 +47,24 @@ internal object ProgramStageWorkingListStore {
                 w.bind(7, o.description())
                 w.bind(8, o.program()?.uid())
                 w.bind(9, o.programStage()?.uid())
-                w.bind(10, o.programStageQueryCriteria()?.status())
+                w.bind(10, o.programStageQueryCriteria()?.eventStatus())
                 w.bind(
                     11,
                     DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventCreatedAt())
                 )
-                w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.scheduledAt()))
-                w.bind(13, o.programStageQueryCriteria()?.enrollmentStatus())
-                w.bind(14, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrolledAt()))
+                w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventOccurredAt()))
+                w.bind(13, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventScheduledAt()))
+                w.bind(14, o.programStageQueryCriteria()?.enrollmentStatus())
+                w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrolledAt()))
                 w.bind(
-                    15,
+                    16,
                     DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrollmentOccurredAt())
                 )
-                w.bind(16, o.programStageQueryCriteria()?.order())
-                w.bind(17, StringListColumnAdapter.serialize(o.programStageQueryCriteria()?.displayColumnOrder()))
-                w.bind(18, o.programStageQueryCriteria()?.orgUnit())
-                w.bind(19, o.programStageQueryCriteria()?.ouMode())
-                w.bind(20, o.programStageQueryCriteria()?.assignedUserMode())
+                w.bind(17, o.programStageQueryCriteria()?.order())
+                w.bind(18, StringListColumnAdapter.serialize(o.programStageQueryCriteria()?.displayColumnOrder()))
+                w.bind(19, o.programStageQueryCriteria()?.orgUnit())
+                w.bind(20, o.programStageQueryCriteria()?.ouMode())
+                w.bind(21, o.programStageQueryCriteria()?.assignedUserMode())
             }
         }
 

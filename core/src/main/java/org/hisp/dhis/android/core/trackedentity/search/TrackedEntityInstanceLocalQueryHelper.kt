@@ -195,7 +195,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
         return scope.eventFilters().isNotEmpty() || scope.dataValue().isNotEmpty() || scope.programStage() != null ||
-            scope.eventDate() != null || scope.dueDate() != null || scope.assignedUserMode() != null
+            scope.eventDate() != null || scope.dueDate() != null || scope.eventCreatedDate() != null ||
+            scope.assignedUserMode() != null
     }
 
     @Suppress("LongMethod")
@@ -379,7 +380,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         scope.programStage()?.let { programStage ->
             where.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
         }
-        appendEventStatusAndDates(where, scope.eventStatus(), scope.eventDate(), scope.dueDate())
+        appendEventStatusAndDates(
+            where = where,
+            eventCreatedDate = scope.eventCreatedDate(),
+            eventStatusList = scope.eventStatus(),
+            eventDate = scope.eventDate(),
+            dueDate = scope.dueDate()
+        )
 
         val innerClause = WhereClauseBuilder()
         scope.eventFilters().forEach { eventFilter ->
@@ -403,13 +410,20 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         eventFilter.programStage()?.let { programStage ->
             innerClause.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.PROGRAM_STAGE), programStage)
         }
-        appendEventStatusAndDates(innerClause, eventFilter.eventStatus(), eventFilter.eventDate(), dueDate = null)
+        appendEventStatusAndDates(
+            where = innerClause,
+            eventCreatedDate = null,
+            eventStatusList = eventFilter.eventStatus(),
+            eventDate = eventFilter.eventDate(),
+            dueDate = null
+        )
 
         return if (innerClause.isEmpty) null else innerClause.build()
     }
 
     private fun appendEventStatusAndDates(
         where: WhereClauseBuilder,
+        eventCreatedDate: DateFilterPeriod?,
         eventStatusList: List<EventStatus>?,
         eventDate: DateFilterPeriod?,
         dueDate: DateFilterPeriod?
@@ -417,6 +431,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         if (eventStatusList == null) {
             appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
             appendEventDates(where, dueDate, EventTableInfo.Columns.DUE_DATE)
+            appendEventDates(where, eventCreatedDate, EventTableInfo.Columns.CREATED)
         } else if (eventStatusList.isNotEmpty() && eventDate != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
@@ -462,6 +477,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     }
                 }
                 appendEventDates(statusWhere, dueDate, EventTableInfo.Columns.DUE_DATE)
+                appendEventDates(statusWhere, eventCreatedDate, EventTableInfo.Columns.CREATED)
                 statusListWhere.appendOrComplexQuery(statusWhere.build())
             }
             where.appendComplexQuery(statusListWhere.build())
@@ -470,14 +486,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendEventDates(
         where: WhereClauseBuilder,
-        eventDate: DateFilterPeriod?,
+        date: DateFilterPeriod?,
         refDate: String
     ) {
-        if (eventDate != null) {
+        if (date != null) {
             appendDateFilter(
                 where = where,
                 column = dot(eventAlias, refDate),
-                dateFilterPeriod = eventDate
+                dateFilterPeriod = date
             )
         }
     }

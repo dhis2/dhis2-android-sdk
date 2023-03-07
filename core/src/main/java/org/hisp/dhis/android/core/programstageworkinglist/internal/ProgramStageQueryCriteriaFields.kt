@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
@@ -44,9 +45,10 @@ internal object ProgramStageQueryCriteriaFields {
     private val fh = FieldsHelper<ProgramStageQueryCriteria>()
     val allFields: Fields<ProgramStageQueryCriteria> = Fields.builder<ProgramStageQueryCriteria>()
         .fields(
-            fh.field<String>(Columns.STATUS),
+            fh.field<EventStatus>(Columns.EVENT_STATUS),
             fh.field<DateFilterPeriod>(Columns.EVENT_CREATED_AT),
-            fh.field<DateFilterPeriod>(Columns.SCHEDULED_AT),
+            fh.field<DateFilterPeriod>(Columns.EVENT_OCCURRED_AT),
+            fh.field<DateFilterPeriod>(Columns.EVENT_SCHEDULED_AT),
             fh.field<EnrollmentStatus>(Columns.ENROLLMENT_STATUS),
             fh.field<DateFilterPeriod>(Columns.ENROLLMENT_AT),
             fh.field<DateFilterPeriod>(Columns.ENROLLMENT_OCCURRED_AT),

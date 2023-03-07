@@ -57,6 +57,12 @@ object ProgramStageWorkingListSamples {
                             .type(DatePeriodType.ABSOLUTE)
                             .build()
                     )
+                    .eventOccurredAt(
+                        DateFilterPeriod.builder()
+                            .period(RelativePeriod.LAST_10_FINANCIAL_YEARS)
+                            .type(DatePeriodType.RELATIVE)
+                            .build()
+                    )
                     .eventScheduledAt(
                         DateFilterPeriod.builder()
                             .startBuffer(-5)

@@ -55,6 +55,7 @@ class ProgramStageWorkingListShould :
         assertThat(workingList.description()).isEqualTo("Test WL definition")
         assertThat(workingList.programStageQueryCriteria()?.eventStatus()).isEqualTo(EventStatus.ACTIVE)
         assertThat(workingList.programStageQueryCriteria()?.eventCreatedAt()).isNotNull()
+        assertThat(workingList.programStageQueryCriteria()?.eventOccurredAt()).isNotNull()
         assertThat(workingList.programStageQueryCriteria()?.eventScheduledAt()).isNotNull()
         assertThat(workingList.programStageQueryCriteria()?.enrollmentStatus()).isEqualTo(EnrollmentStatus.COMPLETED)
         assertThat(workingList.programStageQueryCriteria()?.enrolledAt()).isNotNull()

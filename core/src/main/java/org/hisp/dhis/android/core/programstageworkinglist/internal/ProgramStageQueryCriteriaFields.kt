@@ -47,6 +47,7 @@ internal object ProgramStageQueryCriteriaFields {
         .fields(
             fh.field<EventStatus>(Columns.EVENT_STATUS),
             fh.field<DateFilterPeriod>(Columns.EVENT_CREATED_AT),
+            fh.field<DateFilterPeriod>(Columns.EVENT_OCCURRED_AT),
             fh.field<DateFilterPeriod>(Columns.EVENT_SCHEDULED_AT),
             fh.field<EnrollmentStatus>(Columns.ENROLLMENT_STATUS),
             fh.field<DateFilterPeriod>(Columns.ENROLLMENT_AT),

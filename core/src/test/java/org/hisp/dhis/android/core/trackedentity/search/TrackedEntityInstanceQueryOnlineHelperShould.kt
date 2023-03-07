@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,56 +63,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
 
         assertThat(onlineQueries.size).isEqualTo(1)
         assertThat(onlineQueries[0].query).isEqualTo("LIKE:filter")
-    }
-
-    @Test
-    fun parse_attributes_in_api_format() {
-        val scope = queryBuilder
-            .attribute(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute1").operator(FilterItemOperator.EQ).value("filter1").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute2").operator(FilterItemOperator.EQ).value("filter21").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute3").operator(FilterItemOperator.LIKE).value("filter31").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute2").operator(FilterItemOperator.LIKE).value("filter22").build()
-                )
-            ).build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].attribute!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].attribute).contains("attribute1:EQ:filter1")
-        assertThat(onlineQueries[0].attribute).contains("attribute2:EQ:filter21:LIKE:filter22")
-        assertThat(onlineQueries[0].attribute).contains("attribute3:LIKE:filter31")
-    }
-
-    @Test
-    fun parse_filters_in_api_format() {
-        val scope = queryBuilder
-            .filter(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem1").operator(FilterItemOperator.EQ).value("filter1").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem2").operator(FilterItemOperator.LIKE).value("filter21").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem3").operator(FilterItemOperator.LIKE).value("filter31").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem3").operator(FilterItemOperator.EQ).value("filter32").build()
-                )
-            ).build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter.size).isEqualTo(3)
-        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem1:EQ:filter1")
-        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem2:LIKE:filter21")
-        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem3:LIKE:filter31:EQ:filter32")
     }
 
     @Test

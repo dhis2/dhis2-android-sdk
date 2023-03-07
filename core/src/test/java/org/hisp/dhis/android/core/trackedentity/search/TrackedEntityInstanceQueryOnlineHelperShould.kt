@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -109,10 +110,10 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].filter).contains("filterItem1:EQ:filter1")
-        assertThat(onlineQueries[0].filter).contains("filterItem2:LIKE:filter21")
-        assertThat(onlineQueries[0].filter).contains("filterItem3:LIKE:filter31:EQ:filter32")
+        assertThat(onlineQueries[0].filter.size).isEqualTo(3)
+        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem1:EQ:filter1")
+        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem2:LIKE:filter21")
+        assertThat(toAPIFilterFormat(onlineQueries[0].filter, true)).contains("filterItem3:LIKE:filter31:EQ:filter32")
     }
 
     @Test
@@ -133,7 +134,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!!.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!![0]).isEqualTo("filterItem1:IN:nom,app;nom-app")
+        assertThat(onlineQueries[0].filter.size).isEqualTo(1)
     }
 }

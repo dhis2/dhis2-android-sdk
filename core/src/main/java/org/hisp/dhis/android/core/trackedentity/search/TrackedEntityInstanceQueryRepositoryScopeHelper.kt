@@ -115,19 +115,9 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
     ) {
         filter?.let {
             val existingFilters = builder.build().filter()
-
             val filterBuilder = RepositoryScopeFilterItem.builder().key(filter.attribute())
-
-            val newFilters = applyCommonFilterOperators(filterBuilder, filter)
-                .ifEmpty {
-                    when {
-                        filter.sw() != null ->
-                            listOf(filterBuilder.operator(FilterItemOperator.SW).value(filter.sw()).build())
-                        filter.ew() != null ->
-                            listOf(filterBuilder.operator(FilterItemOperator.EW).value(filter.ew()).build())
-                        else -> emptyList()
-                    }
-                }
+            val newFilters = getCommonFilterOperators(filterBuilder, filter) +
+                getAttributeValueFilterOperators(filterBuilder, filter)
 
             builder.filter(existingFilters + newFilters)
         }
@@ -171,46 +161,70 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
         filter?.let {
             val existingFilters = builder.build().dataValue()
             val filterBuilder = RepositoryScopeFilterItem.builder().key(filter.dataItem())
-            val newFilters = applyCommonFilterOperators(filterBuilder, filter)
+            val newFilters = getCommonFilterOperators(filterBuilder, filter)
 
             builder.dataValue(existingFilters + newFilters)
         }
     }
 
-    private fun applyCommonFilterOperators(
+    private fun getCommonFilterOperators(
         filterBuilder: RepositoryScopeFilterItem.Builder,
         filter: FilterOperators
     ): List<RepositoryScopeFilterItem> {
-        return when {
-            filter.eq() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.EQ).value(filter.eq()).build())
-            filter.like() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.LIKE).value(filter.like()).build())
-            filter.le() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.LE).value(filter.le()).build())
-            filter.lt() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.LT).value(filter.lt()).build())
-            filter.ge() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.GE).value(filter.ge()).build())
-            filter.gt() != null ->
-                listOf(filterBuilder.operator(FilterItemOperator.GT).value(filter.gt()).build())
-            filter.`in`() != null ->
-                listOf(
-                    filterBuilder.operator(FilterItemOperator.IN)
-                        .value(FilterOperatorsHelper.listToStr(filter.`in`()!!)).build()
-                )
-            filter.dateFilter() != null -> {
-                val start = dateFilterPeriodHelper.getStartDate(filter.dateFilter()!!)?.let {
-                    filterBuilder.operator(FilterItemOperator.GE).value(DateUtils.DATE_FORMAT.format(it)).build()
-                }
-                val end = dateFilterPeriodHelper.getEndDate(filter.dateFilter()!!)?.let {
-                    filterBuilder.operator(FilterItemOperator.LE).value(DateUtils.DATE_FORMAT.format(it)).build()
-                }
-                listOfNotNull(start, end)
-            }
+        val filterItems: MutableList<RepositoryScopeFilterItem> = mutableListOf()
 
-            else -> emptyList()
+        filter.eq()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.EQ).value(it).build())
         }
+        filter.like()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.LIKE).value(it).build())
+        }
+        filter.le()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.LE).value(it).build())
+        }
+        filter.lt()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.LT).value(it).build())
+        }
+        filter.ge()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.GE).value(it).build())
+        }
+        filter.gt()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.GT).value(it).build())
+        }
+        filter.`in`()?.let {
+            if (it.isNotEmpty()) {
+                val strValue = FilterOperatorsHelper.listToStr(it)
+                filterItems.add(filterBuilder.operator(FilterItemOperator.IN).value(strValue).build())
+            }
+        }
+        filter.dateFilter()?.let { dateFilter ->
+            dateFilterPeriodHelper.getStartDate(dateFilter)?.let {
+                val dateValue = DateUtils.DATE_FORMAT.format(it)
+                filterItems.add(filterBuilder.operator(FilterItemOperator.GE).value(dateValue).build())
+            }
+            dateFilterPeriodHelper.getEndDate(dateFilter)?.let {
+                val dateValue = DateUtils.DATE_FORMAT.format(it)
+                filterItems.add(filterBuilder.operator(FilterItemOperator.LE).value(dateValue).build())
+            }
+        }
+
+        return filterItems
+    }
+
+    private fun getAttributeValueFilterOperators(
+        filterBuilder: RepositoryScopeFilterItem.Builder,
+        filter: AttributeValueFilter
+    ): List<RepositoryScopeFilterItem> {
+        val filterItems: MutableList<RepositoryScopeFilterItem> = mutableListOf()
+
+        filter.sw()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.SW).value(it).build())
+        }
+        filter.ew()?.let {
+            filterItems.add(filterBuilder.operator(FilterItemOperator.EW).value(it).build())
+        }
+
+        return filterItems
     }
 
     private fun applyOrder(

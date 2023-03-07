@@ -111,9 +111,9 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             orgUnitMode = scope.orgUnitMode(),
             program = scope.program(),
             query = query,
-            attribute = toAPIFilterFormat(scope.attribute()),
-            filter = toAPIFilterFormat(scope.filter()),
-            dataValue = toAPIFilterFormat(scope.dataValue()),
+            attribute = scope.attribute(),
+            filter = scope.filter(),
+            dataValue = scope.dataValue(),
             lastUpdatedStartDate = scope.lastUpdatedDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
             lastUpdatedEndDate = scope.lastUpdatedDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
             enrollmentStatus = enrollmentStatus,
@@ -149,30 +149,36 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         } else null
     }
 
-    private fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>): List<String>? {
-        return items
-            .groupBy { it.key() }
-            .map { (key, items) ->
-                val clause = items.map { item -> ":" + item.operator().apiUpperOperator + ":" + getAPIValue(item) }
-
-                key + clause.joinToString(separator = "")
-            }
-    }
-
-    private fun getAPIValue(item: RepositoryScopeFilterItem): String {
-        return if (item.operator() == FilterItemOperator.IN) {
-            val list = FilterOperatorsHelper.strToList(item.value())
-            list.joinToString(";")
-        } else {
-            item.value()
-        }
-    }
-
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
         return if (orders.isNotEmpty()) {
             orders.mapNotNull { it.toAPIString() }.joinToString(",")
         } else {
             null
+        }
+    }
+
+    companion object {
+        fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
+            return items
+                .groupBy { it.key() }
+                .map { (key, items) ->
+                    val clause = items.map { item ->
+                        val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
+
+                        ":" + operator + ":" + getAPIValue(item)
+                    }
+
+                    key + clause.joinToString(separator = "")
+                }
+        }
+
+        private fun getAPIValue(item: RepositoryScopeFilterItem): String {
+            return if (item.operator() == FilterItemOperator.IN) {
+                val list = FilterOperatorsHelper.strToList(item.value())
+                list.joinToString(";")
+            } else {
+                item.value()
+            }
         }
     }
 }

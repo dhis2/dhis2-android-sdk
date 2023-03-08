@@ -541,19 +541,23 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         where: WhereClauseBuilder,
         dataValues: List<RepositoryScopeFilterItem>
     ) {
-        dataValues.forEach { item ->
-            val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
-                TrackedEntityDataValueTableInfo.TABLE_INFO.name(), tedvAlias,
-                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT), dot(eventAlias, IdentifiableColumns.UID),
-                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT), escapeQuotes(item.key()),
-                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator,
-                getFilterItemValueStr(item)
-            )
+        dataValues
+            .groupBy { it.key() }
+            .forEach { (key, items) ->
+                val sub = "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
+                    "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
+                    "${dot(eventAlias, IdentifiableColumns.UID)} " +
+                    "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
+                    "'${escapeQuotes(key)}' " +
 
-            where.appendExistsSubQuery(sub)
-        }
+                    items.joinToString("") { item ->
+                        "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE)} " +
+                            "${item.operator().sqlOperator} " +
+                            "${getFilterItemValueStr(item)} "
+                    }
+
+                where.appendExistsSubQuery(sub)
+            }
     }
 
     private fun getFilterItemValueStr(item: RepositoryScopeFilterItem): String {

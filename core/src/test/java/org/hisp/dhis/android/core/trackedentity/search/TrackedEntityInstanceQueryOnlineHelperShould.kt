@@ -66,56 +66,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     }
 
     @Test
-    fun parse_attributes_in_api_format() {
-        val scope = queryBuilder
-            .attribute(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute1").operator(FilterItemOperator.EQ).value("filter1").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute2").operator(FilterItemOperator.EQ).value("filter21").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute3").operator(FilterItemOperator.LIKE).value("filter31").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attribute2").operator(FilterItemOperator.LIKE).value("filter22").build()
-                )
-            ).build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].attribute!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].attribute).contains("attribute1:EQ:filter1")
-        assertThat(onlineQueries[0].attribute).contains("attribute2:EQ:filter21:LIKE:filter22")
-        assertThat(onlineQueries[0].attribute).contains("attribute3:LIKE:filter31")
-    }
-
-    @Test
-    fun parse_filters_in_api_format() {
-        val scope = queryBuilder
-            .filter(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem1").operator(FilterItemOperator.EQ).value("filter1").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem2").operator(FilterItemOperator.LIKE).value("filter21").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem3").operator(FilterItemOperator.LIKE).value("filter31").build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("filterItem3").operator(FilterItemOperator.EQ).value("filter32").build()
-                )
-            ).build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!!.size).isEqualTo(3)
-        assertThat(onlineQueries[0].filter).contains("filterItem1:EQ:filter1")
-        assertThat(onlineQueries[0].filter).contains("filterItem2:LIKE:filter21")
-        assertThat(onlineQueries[0].filter).contains("filterItem3:LIKE:filter31:EQ:filter32")
-    }
-
-    @Test
     fun parse_filters_using_in_operator() {
         val list = listOf(
             "nom,app",
@@ -133,7 +83,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!!.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter!![0]).isEqualTo("filterItem1:IN:nom,app;nom-app")
+        assertThat(onlineQueries[0].filter.size).isEqualTo(1)
     }
 }

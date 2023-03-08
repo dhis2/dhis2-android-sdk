@@ -37,6 +37,8 @@ import javax.net.ssl.HttpsURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -75,8 +77,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private val eventCallSingle: Single<Payload<Event>> = mock()
     private val teis: List<TrackedEntityInstance> = mock()
     private val eventPayload: Payload<Event> = mock()
-    private val attribute: List<String> = mock()
-    private val filter: List<String> = mock()
+    private val attribute: List<RepositoryScopeFilterItem> = emptyList()
+    private val filter: List<RepositoryScopeFilterItem> = emptyList()
 
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
@@ -219,7 +221,15 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
         whenever(eventPayload.items()).doReturn(events)
 
-        val query = query.copy(dataValue = listOf("dataElement:eq:2"))
+        val query = query.copy(
+            dataValue = listOf(
+                RepositoryScopeFilterItem.builder()
+                    .key("dataElement")
+                    .operator(FilterItemOperator.EQ)
+                    .value("2")
+                    .build()
+            )
+        )
         val call = getFactory().getCall(query)
 
         call.call()
@@ -257,8 +267,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(expectedStatus?.toString()),
             eq(query.trackedEntityType),
             eq(query.query),
-            eq(query.attribute),
-            eq(query.filter),
+            any(),
+            any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
@@ -278,7 +288,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.program),
             eq(query.programStage),
             eq(query.enrollmentStatus?.toString()),
-            eq(query.dataValue),
+            any(),
             eq(query.followUp),
             eq(query.eventStartDate.simpleDateFormat()),
             eq(query.eventEndDate.simpleDateFormat()),

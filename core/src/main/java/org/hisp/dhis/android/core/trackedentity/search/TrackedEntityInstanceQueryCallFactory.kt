@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.util.simpleDateFormat
 
 @Reusable
@@ -61,17 +62,24 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     }
 
     private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
-        val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty() ||
+        val shouldCallEventsFirst = query.dataValue.isNotEmpty() ||
             query.dueStartDate != null || query.dueEndDate != null
 
         return if (shouldCallEventsFirst) {
             val events = getEventQuery(query)
-            val teiQuery = getPostEventTeiQuery(query, events)
-            val instances = getTrackedEntityQuery(teiQuery)
-            TrackerQueryResult(
-                trackedEntities = instances,
-                exhausted = events.size < query.pageSize
-            )
+            if (events.isEmpty()) {
+                TrackerQueryResult(
+                    trackedEntities = emptyList(),
+                    exhausted = true
+                )
+            } else {
+                val teiQuery = getPostEventTeiQuery(query, events)
+                val instances = getTrackedEntityQuery(teiQuery)
+                TrackerQueryResult(
+                    trackedEntities = instances,
+                    exhausted = events.size < query.pageSize
+                )
+            }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
@@ -91,7 +99,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 program = query.program,
                 programStage = query.programStage,
                 programStatus = query.enrollmentStatus?.toString(),
-                filter = query.dataValue,
+                filter = toAPIFilterFormat(query.dataValue, upper = true),
                 followUp = query.followUp,
                 startDate = query.eventStartDate.simpleDateFormat(),
                 endDate = query.eventEndDate.simpleDateFormat(),
@@ -130,8 +138,8 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
             eventStatus = getEventStatus(query),
             trackedEntityType = query.trackedEntityType,
             query = query.query,
-            attribute = query.attribute,
-            filter = query.filter,
+            attribute = toAPIFilterFormat(query.attribute, upper = true),
+            filter = toAPIFilterFormat(query.filter, upper = true),
             assignedUserMode = query.assignedUserMode?.toString(),
             lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
             lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
@@ -179,7 +187,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         ): TrackedEntityInstanceQueryOnline {
             return query.copy(
                 uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
-                dataValue = null,
+                dataValue = emptyList(),
                 eventStatus = null,
                 eventStartDate = null,
                 eventEndDate = null,

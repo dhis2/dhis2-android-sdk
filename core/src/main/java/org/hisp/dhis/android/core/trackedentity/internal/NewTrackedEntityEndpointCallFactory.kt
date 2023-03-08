@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityT
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryErrorCatcher
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
@@ -109,17 +110,24 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
         return Callable {
             runBlocking {
-                val shouldCallEventsFirst = !query.dataValue.isNullOrEmpty() ||
+                val shouldCallEventsFirst = query.dataValue.isNotEmpty() ||
                     query.dueStartDate != null || query.dueEndDate != null
 
                 if (shouldCallEventsFirst) {
                     val events = getEventQuery(query)
-                    val teiQuery = getPostEventTeiQuery(query, events)
-                    val instances = getTrackedEntityQuery(teiQuery)
-                    TrackerQueryResult(
-                        trackedEntities = instances,
-                        exhausted = events.size < query.pageSize
-                    )
+                    if (events.isEmpty()) {
+                        TrackerQueryResult(
+                            trackedEntities = emptyList(),
+                            exhausted = true
+                        )
+                    } else {
+                        val teiQuery = getPostEventTeiQuery(query, events)
+                        val instances = getTrackedEntityQuery(teiQuery)
+                        TrackerQueryResult(
+                            trackedEntities = instances,
+                            exhausted = events.size < query.pageSize
+                        )
+                    }
                 } else {
                     val instances = getTrackedEntityQuery(query)
                     TrackerQueryResult(
@@ -141,8 +149,8 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 program = query.program,
                 programStage = query.programStage,
                 programStatus = query.enrollmentStatus?.toString(),
-                filter = query.dataValue,
-                filterAttributes = query.filter,
+                filter = toAPIFilterFormat(query.dataValue, upper = false),
+                filterAttributes = toAPIFilterFormat(query.filter, upper = false),
                 followUp = query.followUp,
                 occurredAfter = query.eventStartDate.simpleDateFormat(),
                 occurredBefore = query.eventStartDate.simpleDateFormat(),
@@ -172,7 +180,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             val uidsStr = query.uids?.joinToString(";")
 
             val payload = trackedExporterService.getTrackedEntityInstances(
-                fields = NewTrackedEntityInstanceFields.allFields,
+                fields = NewTrackedEntityInstanceFields.asRelationshipFields,
                 trackedEntityInstances = uidsStr,
                 orgUnits = getOrgunits(query.orgUnits),
                 orgUnitMode = query.orgUnitMode?.toString(),
@@ -189,8 +197,8 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 eventStatus = query.eventStatus?.toString(),
                 trackedEntityType = query.trackedEntityType,
                 query = query.query,
-                attribute = query.attribute,
-                filter = query.filter,
+                attribute = toAPIFilterFormat(query.attribute, upper = true),
+                filter = toAPIFilterFormat(query.filter, upper = true),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),

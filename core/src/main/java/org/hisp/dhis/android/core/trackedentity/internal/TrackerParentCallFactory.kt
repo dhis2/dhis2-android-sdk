@@ -49,7 +49,7 @@ internal class TrackerParentCallFactory @Inject constructor(
 ) {
 
     fun getTrackedEntityCall(): TrackedEntityEndpointCallFactory {
-        return if (trackerParentCallHelper.useNewTrackerImporter()) {
+        return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newTrackedEntityEndpointCallFactory
         } else {
             oldTrackedEntityCallFactory
@@ -57,7 +57,7 @@ internal class TrackerParentCallFactory @Inject constructor(
     }
 
     fun getEnrollmentCall(): EnrollmentEndpointCallFactory {
-        return if (trackerParentCallHelper.useNewTrackerImporter()) {
+        return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newEnrollmentEndpointCallFactory
         } else {
             oldEnrollmentEndpointCallFactory
@@ -65,7 +65,7 @@ internal class TrackerParentCallFactory @Inject constructor(
     }
 
     fun getEventCall(): EventEndpointCallFactory {
-        return if (trackerParentCallHelper.useNewTrackerImporter()) {
+        return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newEventEndpointCallFactory
         } else {
             oldEventEndpointCallFactory

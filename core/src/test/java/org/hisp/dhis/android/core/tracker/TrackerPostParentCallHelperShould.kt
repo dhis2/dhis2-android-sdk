@@ -72,23 +72,44 @@ class TrackerPostParentCallHelperShould {
     }
 
     @Test
-    fun should_return_true_if_explicitly_set() {
+    fun should_return_true_if_explicitly_set_in_importer() {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V2)
         assertThat(helper.useNewTrackerImporter()).isTrue()
     }
 
     @Test
-    fun should_return_false_if_explicitly_unset() {
+    fun should_return_false_if_explicitly_unset_in_importer() {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V1)
         assertThat(helper.useNewTrackerImporter()).isFalse()
     }
 
     @Test
-    fun should_always_return_false_if_less_than_38() {
+    fun should_always_return_false_if_less_than_38_in_importer() {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_37_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V2)
         assertThat(helper.useNewTrackerImporter()).isFalse()
+    }
+
+    @Test
+    fun should_return_true_if_explicitly_set_in_exporter() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
+        whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
+        assertThat(helper.useNewTrackerExporter()).isTrue()
+    }
+
+    @Test
+    fun should_return_false_if_explicitly_unset_in_exporter() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
+        whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V1)
+        assertThat(helper.useNewTrackerExporter()).isFalse()
+    }
+
+    @Test
+    fun should_always_return_false_if_less_than_40_in_exporter() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
+        whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
+        assertThat(helper.useNewTrackerExporter()).isFalse()
     }
 }

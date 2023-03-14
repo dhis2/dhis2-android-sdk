@@ -39,10 +39,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerExporterVersionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterVersionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.DataSetSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.ProgramSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 @AutoValue
@@ -60,6 +62,10 @@ public abstract class SynchronizationSettings implements CoreObject {
     @Nullable
     @ColumnAdapter(TrackerImporterVersionColumnAdapter.class)
     public abstract TrackerImporterVersion trackerImporterVersion();
+
+    @Nullable
+    @ColumnAdapter(TrackerExporterVersionColumnAdapter.class)
+    public abstract TrackerExporterVersion trackerExporterVersion();
 
     @Nullable
     @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
@@ -91,6 +97,8 @@ public abstract class SynchronizationSettings implements CoreObject {
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
         public abstract Builder trackerImporterVersion(TrackerImporterVersion trackerImporterVersion);
+
+        public abstract Builder trackerExporterVersion(TrackerExporterVersion trackerExporterVersion);
 
         public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 

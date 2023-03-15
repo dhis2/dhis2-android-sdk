@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.trackedentity.search
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -43,6 +44,7 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     BaseMockIntegrationTestMetadataEnqueable() {
 
     abstract val importerVersion: TrackerImporterVersion
+    abstract val exporterVersion: TrackerExporterVersion
 
     abstract val filterByEventFile: String
     abstract val responseFile: String
@@ -53,7 +55,8 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     @Before
     fun setUp() {
         initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+            .trackerExporterVersion(exporterVersion).build()
         syncStore.delete()
         syncStore.insert(testParams)
     }

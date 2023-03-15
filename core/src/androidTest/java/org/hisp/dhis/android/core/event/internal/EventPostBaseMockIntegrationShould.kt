@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
@@ -44,6 +45,7 @@ import org.junit.Test
 
 abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
     abstract val importerVersion: TrackerImporterVersion
+    abstract val exporterVersion: TrackerExporterVersion
     abstract val importConflictsFile1: List<String>
     abstract val importConflictsFile2: List<String>
 
@@ -58,7 +60,8 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     @Before
     fun setUp() {
         initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+            .trackerExporterVersion(exporterVersion).build()
         syncStore.delete()
         syncStore.insert(testParams)
     }

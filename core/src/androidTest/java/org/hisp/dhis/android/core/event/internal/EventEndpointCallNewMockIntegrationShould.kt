@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -35,6 +36,7 @@ import org.junit.runner.RunWith
 class EventEndpointCallNewMockIntegrationShould : EventEndpointCallBaseMockIntegrationShould() {
 
     override val importerVersion: TrackerImporterVersion = TrackerImporterVersion.V2
+    override val exporterVersion = TrackerExporterVersion.V2
     override val events1File: String = "event/new_tracker_importer_events_1.json"
     override val eventsFirstGoodSecondWrongFKFile: String =
         "event/new_tracker_importer_two_events_first_good_second_wrong_foreign_key.json"

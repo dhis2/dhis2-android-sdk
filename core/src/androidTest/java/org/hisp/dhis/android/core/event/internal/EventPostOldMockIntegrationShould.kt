@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -34,6 +35,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class EventPostOldMockIntegrationShould : EventPostBaseMockIntegrationShould() {
     override val importerVersion = TrackerImporterVersion.V1
+    override val exporterVersion = TrackerExporterVersion.V1
     override val importConflictsFile1 = listOf("imports/web_response_with_event_import_conflicts.json")
     override val importConflictsFile2 = listOf("imports/web_response_with_event_import_conflicts2.json")
 }

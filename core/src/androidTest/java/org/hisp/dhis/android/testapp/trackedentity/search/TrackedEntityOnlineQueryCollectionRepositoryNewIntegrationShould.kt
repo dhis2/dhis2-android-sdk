@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.trackedentity.search
 
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -36,6 +37,7 @@ class TrackedEntityOnlineQueryCollectionRepositoryNewIntegrationShould :
     TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould() {
 
     override val importerVersion = TrackerImporterVersion.V2
+    override val exporterVersion = TrackerExporterVersion.V2
     override val responseFile = "trackedentity/new_tracker_importer_tracked_entities.json"
     override val filterByEventFile = "trackedentity/search/new_tracker_importer_filter_by_events.json"
 }

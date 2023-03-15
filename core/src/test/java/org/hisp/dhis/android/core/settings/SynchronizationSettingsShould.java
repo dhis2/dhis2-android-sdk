@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 import org.junit.Test;
 
@@ -52,7 +53,7 @@ public class SynchronizationSettingsShould extends BaseObjectShould implements O
         assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
         assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS);
         assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V2);
-        assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerImporterVersion.V2);
+        assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerExporterVersion.V2);
 
         assertThat(syncSettings.dataSetSettings()).isNotNull();
         assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();

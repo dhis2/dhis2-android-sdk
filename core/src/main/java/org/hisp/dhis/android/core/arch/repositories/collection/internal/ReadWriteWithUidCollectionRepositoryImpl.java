@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -89,7 +90,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
         M object = transformer.transform(projection);
         try {
             store.insert(object);
-            propagateState(object);
+            propagateState(object, HandleAction.Insert);
             return object.uid();
         } catch (Exception e) {
             throw D2Error
@@ -103,7 +104,7 @@ public abstract class ReadWriteWithUidCollectionRepositoryImpl
     }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void propagateState(M m) {
+    protected void propagateState(M m, HandleAction action) {
         // Method is empty because is the default action.
     }
 }

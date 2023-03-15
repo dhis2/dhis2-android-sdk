@@ -157,8 +157,8 @@ class SmsReader {
     }
 
     @SuppressWarnings({"PMD.UnusedFormalParameter"})
-    private boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
-                                            int submissionId, SubmissionType submissionType)
+    public boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
+                                           int submissionId, SubmissionType submissionType)
             throws SmsRepository.ResultResponseException {
         if (requiredSender != null &&
                 (sender == null || !sender.toLowerCase(Locale.ROOT)
@@ -176,10 +176,12 @@ class SmsReader {
         if (!message.substring(0, firstSeparator).equals(Integer.toString(submissionId))) {
             return false;
         }
+
         // it's awaited message
         if (message.substring(firstSeparator + 1, secondSeparator).equals("0")) {
             return true;
+        } else {
+            throw new SmsRepository.ResultResponseException(RECEIVED_ERROR);
         }
-        throw new SmsRepository.ResultResponseException(RECEIVED_ERROR);
     }
 }

@@ -44,6 +44,9 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -103,10 +106,13 @@ object BaseEvaluatorSamples {
 
     val category: Category = Category.builder()
         .uid(generator.generate())
+        .displayName("Category 1")
+        .dataDimensionType(CategoryDataDimensionType.DISAGGREGATION.name)
         .build()
 
     val categoryOption: CategoryOption = CategoryOption.builder()
         .uid(generator.generate())
+        .displayName("Category Option 1")
         .build()
 
     val categoryCategoryOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
@@ -132,6 +138,42 @@ object BaseEvaluatorSamples {
     val categoryOptionComboCategoryOptionLink = CategoryOptionComboCategoryOptionLink.builder()
         .categoryOption(categoryOption.uid())
         .categoryOptionCombo(categoryOptionCombo.uid())
+        .build()
+
+    val attribute: Category = Category.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 1")
+        .dataDimensionType(CategoryDataDimensionType.ATTRIBUTE.name)
+        .build()
+
+    val attributeOption: CategoryOption = CategoryOption.builder()
+        .uid(generator.generate())
+        .displayName("Attribute Option 1")
+        .build()
+
+    val attributeAttributeOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+        .category(attribute.uid())
+        .categoryOption(attributeOption.uid())
+        .build()
+
+    val attributeCombo: CategoryCombo = CategoryCombo.builder()
+        .uid(generator.generate())
+        .build()
+
+    val attributeOptionCombo: CategoryOptionCombo = CategoryOptionCombo.builder()
+        .uid(generator.generate())
+        .displayName("Coc")
+        .categoryCombo(ObjectWithUid.fromIdentifiable(attributeCombo))
+        .build()
+
+    val attributeAttributeComboLink: CategoryCategoryComboLink = CategoryCategoryComboLink.builder()
+        .category(attribute.uid())
+        .categoryCombo(attributeCombo.uid())
+        .build()
+
+    val attributeOptionComboAttributeOptionLink = CategoryOptionComboCategoryOptionLink.builder()
+        .categoryOption(attributeOption.uid())
+        .categoryOptionCombo(attributeOptionCombo.uid())
         .build()
 
     val dataElement1 = DataElement.builder()
@@ -178,21 +220,35 @@ object BaseEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .build()
 
-    val periodNov: Period = Period.builder()
+    val period201911: Period = Period.builder()
         .periodId("201911")
         .periodType(PeriodType.Monthly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000"))
         .endDate(DateUtils.DATE_FORMAT.parse("2019-11-30T23:59:59.999"))
         .build()
 
-    val periodDec: Period = Period.builder()
+    val period201912: Period = Period.builder()
         .periodId("201912")
         .periodType(PeriodType.Monthly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-12-01T00:00:00.000"))
         .endDate(DateUtils.DATE_FORMAT.parse("2019-12-31T23:59:59.999"))
         .build()
 
-    val periodQ4: Period = Period.builder()
+    val period202001: Period = Period.builder()
+        .periodId("202001")
+        .periodType(PeriodType.Monthly)
+        .startDate(DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2020-01-31T23:59:59.999"))
+        .build()
+
+    val period202012: Period = Period.builder()
+        .periodId("202012")
+        .periodType(PeriodType.Monthly)
+        .startDate(DateUtils.DATE_FORMAT.parse("2020-12-01T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2020-12-31T23:59:59.999"))
+        .build()
+
+    val period2019Q4: Period = Period.builder()
         .periodId("2019Q4")
         .periodType(PeriodType.Quarterly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-10-01T00:00:00.000"))
@@ -232,15 +288,32 @@ object BaseEvaluatorSamples {
         .trackedEntityType(trackedEntityType.uid())
         .build()
 
-    val firstNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
-
-    val secondNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
-
-    val secondDecember2020 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
+    val day20191101 = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
+    val day20191102 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
+    val day20191110 = DateUtils.DATE_FORMAT.parse("2019-11-10T00:00:00.000")
+    val day20191201 = DateUtils.DATE_FORMAT.parse("2019-12-01T00:00:00.000")
+    val day20200101 = DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+    val day20201202 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
 
     val constant1 = Constant.builder()
         .uid(generator.generate())
         .displayName("Five")
         .value(5.0)
+        .build()
+
+    val relationshipType = RelationshipType.builder()
+        .uid(generator.generate())
+        .name("Relationship type")
+        .bidirectional(false)
+        .build()
+
+    val relationshipTypeFrom = RelationshipConstraint.builder()
+        .relationshipType(ObjectWithUid.create(relationshipType.uid()))
+        .constraintType(RelationshipConstraintType.FROM)
+        .trackedEntityType(ObjectWithUid.create(trackedEntityType.uid()))
+        .build()
+
+    val relationshipTypeTo = relationshipTypeFrom.toBuilder()
+        .constraintType(RelationshipConstraintType.TO)
         .build()
 }

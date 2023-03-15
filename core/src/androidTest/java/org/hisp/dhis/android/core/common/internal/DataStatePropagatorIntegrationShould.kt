@@ -33,6 +33,7 @@ import java.io.IOException
 import java.text.ParseException
 import java.util.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -51,6 +52,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Before
 import org.junit.Test
@@ -65,6 +68,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     private lateinit var relationshipStore: RelationshipStore
     private lateinit var relationshipItemStore: RelationshipItemStore
     private lateinit var relationshipTypeStore: IdentifiableObjectStore<RelationshipType>
+    private lateinit var programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
 
     private val relationshipType = "WiH6923nMtb"
 
@@ -77,10 +81,11 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
         relationshipItemStore = RelationshipItemStoreImpl.create(d2.databaseAdapter())
         relationshipTypeStore = RelationshipTypeStore.create(d2.databaseAdapter())
+        programOwnerStore = ProgramOwnerStore.create(d2.databaseAdapter())
 
         propagator = DataStatePropagatorImpl(
-            trackedEntityInstanceStore, enrollmentStore,
-            eventStore, relationshipStore, relationshipItemStore, relationshipTypeStore
+            trackedEntityInstanceStore, enrollmentStore, eventStore,
+            relationshipStore, relationshipItemStore, relationshipTypeStore, programOwnerStore
         )
     }
 

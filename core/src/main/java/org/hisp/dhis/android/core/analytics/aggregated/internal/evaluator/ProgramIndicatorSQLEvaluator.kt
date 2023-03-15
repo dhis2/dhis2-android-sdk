@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
 
 internal class ProgramIndicatorSQLEvaluator @Inject constructor(
@@ -42,33 +41,13 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
-        val contextWhereClause = getContextWhereClause(evaluationItem, metadata)
-
-        return programIndicatorSQLExecutor.getProgramIndicatorValue(programIndicator, contextWhereClause)
+        return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata)
     }
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String {
-        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
-        val contextWhereClause = getContextWhereClause(evaluationItem, metadata)
-
-        return programIndicatorSQLExecutor.getProgramIndicatorSQL(programIndicator, contextWhereClause)
-    }
-
-    private fun getContextWhereClause(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String {
-        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
-
-        return when (programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
-            AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
-        }
+        return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata)
     }
 }

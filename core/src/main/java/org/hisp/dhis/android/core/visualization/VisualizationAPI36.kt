@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.visualization
 
 import java.util.*
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 
@@ -79,7 +80,8 @@ internal data class VisualizationAPI36(
     val periods: List<ObjectWithUid>?,
     val legendSet: ObjectWithUid?,
     val legendDisplayStyle: LegendStyle?,
-    val legendDisplayStrategy: LegendStrategy?
+    val legendDisplayStrategy: LegendStrategy?,
+    val aggregationType: AggregationType?
 ) {
     fun toVisualization(): Visualization =
         Visualization.builder()
@@ -127,6 +129,7 @@ internal data class VisualizationAPI36(
             .userOrganisationUnitGrandChildren(userOrganisationUnitGrandChildren)
             .organisationUnits(organisationUnits)
             .periods(periods)
+            .aggregationType(aggregationType)
             .legend(
                 VisualizationLegend.builder()
                     .set(legendSet)

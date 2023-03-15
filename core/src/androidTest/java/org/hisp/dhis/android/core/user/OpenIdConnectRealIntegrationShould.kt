@@ -27,23 +27,10 @@
  */
 package org.hisp.dhis.android.core.user
 
-import java.io.IOException
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
-import org.junit.Before
 
 class OpenIdConnectRealIntegrationShould : BaseRealIntegrationTest() {
-
-    private lateinit var d2: D2
-
-    @Before
-    @Throws(IOException::class)
-    override fun setUp() {
-        super.setUp()
-        d2 = D2Factory.forNewDatabase()
-    }
 
     // @Test(expected = D2Error::class)
     fun throw_error_when_not_passing_token() {

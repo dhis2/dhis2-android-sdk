@@ -48,14 +48,14 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void find_all() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits().blockingGet();
-        assertThat(organisationUnits.size()).isEqualTo(1);
+        assertThat(organisationUnits.size()).isEqualTo(3);
     }
 
     @Test
     public void filter_by_parent_uid() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byParentUid().eq("YuQRtpLP10I").blockingGet();
-        assertThat(organisationUnits.size()).isEqualTo(1);
+        assertThat(organisationUnits.size()).isEqualTo(2);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void filter_by_level() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byLevel().eq(4).blockingGet();
-        assertThat(organisationUnits.size()).isEqualTo(1);
+        assertThat(organisationUnits.size()).isEqualTo(2);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(captureOrganisationUnits.size()).isEqualTo(1);
+        assertThat(captureOrganisationUnits.size()).isEqualTo(3);
 
         List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
@@ -109,7 +109,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.FALSE)
                 .blockingGet();
-        assertThat(notRootOrganisationUnits.size()).isEqualTo(0);
+        assertThat(notRootOrganisationUnits.size()).isEqualTo(2);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byDataSetUids(Collections.singletonList("lyLU2wR22tC"))
                 .blockingGet();
-        assertThat(organisationUnits.size()).isEqualTo(1);
+        assertThat(organisationUnits.size()).isEqualTo(2);
     }
 
     @Test
@@ -140,6 +140,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withProgramUids().one().blockingGet();
         assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
@@ -150,6 +151,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_data_sets_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withDataSetUids().one().blockingGet();
         assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
@@ -160,6 +162,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_organisation_unit_groups_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }
@@ -167,7 +170,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
-                .withProgramUids().blockingGet().get(0);
+                .withProgramUids().blockingGet().get(1);
         assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
             assertThat(program.uid()).isNotNull();
@@ -177,7 +180,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
-                .withDataSetUids().blockingGet().get(0);
+                .withDataSetUids().blockingGet().get(1);
         assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
             assertThat(dataSet.uid()).isNotNull();
@@ -187,13 +190,14 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_organisation_unit_groups_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
-                .withOrganisationUnitGroups().blockingGet().get(0);
+                .withOrganisationUnitGroups().blockingGet().get(1);
         assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }
 
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withProgramUids().one().blockingGet();
         assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
@@ -204,6 +208,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withDataSetUids().one().blockingGet();
         assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
@@ -214,6 +219,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void include_organisation_unit_groups_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
+                .byUid().eq("DiszpKrYNg8")
                 .withOrganisationUnitGroups().one().blockingGet();
         assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }

@@ -29,7 +29,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
@@ -40,9 +44,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodQ4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202012
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -64,7 +70,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodDec.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201912.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
@@ -78,13 +84,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_aggregate_value_in_time() {
-        createDataValue("2", periodId = periodNov.periodId()!!)
-        createDataValue("3", periodId = periodDec.periodId()!!)
+        createDataValue("2", periodId = period201911.periodId()!!)
+        createDataValue("3", periodId = period201912.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodQ4.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period2019Q4.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
@@ -98,8 +104,8 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_aggregate_relative_periods() {
-        createDataValue("2", periodId = periodNov.periodId()!!)
-        createDataValue("3", periodId = periodDec.periodId()!!)
+        createDataValue("2", periodId = period201911.periodId()!!)
+        createDataValue("3", periodId = period201912.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -160,7 +166,8 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_disaggregate_by_category_option() {
-        createDataValue("2")
+        createDataValue("2", categoryOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("5", categoryOptionComboUid = attributeOptionCombo.uid())
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
@@ -176,6 +183,27 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
 
         assertThat(value).isEqualTo("2")
+    }
+
+    @Test
+    fun should_disaggregate_by_attribute_option() {
+        createDataValue("2", attributeOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("5", attributeOptionComboUid = attributeOptionCombo.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.CategoryItem(attribute.uid(), attributeOption.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
     }
 
     @Test
@@ -259,13 +287,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_use_organisation_unit_levels() {
-        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
-        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Level(level1.uid())
@@ -279,13 +307,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_use_organisation_unit_groups() {
-        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
-        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Group(organisationUnitGroup.uid())
@@ -297,21 +325,172 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         assertThat(value).isEqualTo("5")
     }
 
+    @Test
+    fun should_aggregate_by_aggregation_types() {
+        createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("5", orgunitUid = orgunitChild1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT
+            )
+        ).isEqualTo("12")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST
+            )
+        ).isEqualTo("11")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST
+            )
+        ).isEqualTo("11")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("5.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("5.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD
+            )
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD
+            )
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo("6.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
+            )
+        ).isEqualTo(null)
+    }
+
+    @Test
+    fun should_override_aggregation_types() {
+        createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
+
+        val defaultEvaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            )
+        )
+
+        assertThat(dataElementEvaluator.evaluate(defaultEvaluationItem, metadata)).isEqualTo("11")
+
+        val overrideEvaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            ),
+            aggregationType = AggregationType.AVERAGE
+        )
+
+        assertThat(dataElementEvaluator.evaluate(overrideEvaluationItem, metadata)).isEqualTo("5.5")
+    }
+
     private fun createDataValue(
         value: String,
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
-        periodId: String = periodDec.periodId()!!
+        periodId: String = period201912.periodId()!!,
+        categoryOptionComboUid: String = categoryOptionCombo.uid(),
+        attributeOptionComboUid: String = attributeOptionCombo.uid()
     ) {
         val dataValue = DataValue.builder()
             .value(value)
             .dataElement(dataElementUid)
             .period(periodId)
             .organisationUnit(orgunitUid)
-            .categoryOptionCombo(categoryOptionCombo.uid())
-            .attributeOptionCombo(categoryOptionCombo.uid())
+            .categoryOptionCombo(categoryOptionComboUid)
+            .attributeOptionCombo(attributeOptionComboUid)
             .build()
 
         dataValueStore.insert(dataValue)
+    }
+
+    private fun evaluateAggregation(
+        periodId: String,
+        aggregator: AggregationType
+    ): String? {
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(periodId)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            )
+        )
+
+        val updatedDataElement = dataElement1.toBuilder().aggregationType(aggregator.name).build()
+        val updatedMetadata = metadata + (dataElement1.uid() to MetadataItem.DataElementItem(updatedDataElement))
+
+        return dataElementEvaluator.evaluate(evaluationItem, updatedMetadata)
     }
 }

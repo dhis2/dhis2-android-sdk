@@ -28,34 +28,27 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-
 public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRealIntegrationTest {
-    private D2 d2;
     private TrackedEntityInstanceQueryCollectionRepository repository;
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-
 
         List<String> orgUnits = new ArrayList<>();
         orgUnits.add("DiszpKrYNg8");

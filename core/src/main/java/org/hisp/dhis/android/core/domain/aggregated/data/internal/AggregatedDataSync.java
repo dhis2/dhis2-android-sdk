@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AggregatedDataSync.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_AggregatedDataSync.Builder.class)
 abstract class AggregatedDataSync extends BaseObject {
 
     @NonNull
@@ -77,7 +77,7 @@ abstract class AggregatedDataSync extends BaseObject {
     }
 
     static Builder builder() {
-        return new AutoValue_AggregatedDataSync.Builder();
+        return new $$AutoValue_AggregatedDataSync.Builder();
     }
 
     abstract Builder toBuilder();

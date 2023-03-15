@@ -134,11 +134,11 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
 
         return trackedEntityAttributeValues
             .filter { it.trackedEntityAttribute() != null }
-            .map { it.trackedEntityAttribute()!! to it }.toMap()
+            .associateBy { it.trackedEntityAttribute()!! }
     }
 
-    private fun getEnrollmentEvents(enrollment: Enrollment?): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment!!.program()).blockingGetUids()
+    private fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).blockingGetUids()
 
         return programStageUids.map { programStageUid ->
             val programStageEvents = eventRepository

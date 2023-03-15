@@ -32,11 +32,13 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 internal data class OldTrackerImporterPayload(
     val trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
     val events: List<Event> = emptyList(),
-    val relationships: List<Relationship> = emptyList()
+    val relationships: List<Relationship> = emptyList(),
+    val programOwners: Map<String, List<ProgramOwner>> = emptyMap()
 ) {
     fun isEmpty(): Boolean = trackedEntityInstances.isEmpty() && events.isEmpty() && relationships.isEmpty()
 

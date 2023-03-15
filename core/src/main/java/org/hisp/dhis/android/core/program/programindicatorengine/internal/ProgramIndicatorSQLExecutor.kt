@@ -29,12 +29,15 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluatorHelper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
-import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -43,7 +46,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -59,10 +61,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 ) {
 
     fun getProgramIndicatorValue(
-        programIndicator: ProgramIndicator,
-        contextWhereClause: String? = null
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
     ): String? {
-        val sqlQuery = getProgramIndicatorSQL(programIndicator, contextWhereClause)
+        val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -71,9 +73,13 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
     }
 
     fun getProgramIndicatorSQL(
-        programIndicator: ProgramIndicator,
-        contextWhereClause: String? = null
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
     ): String {
+        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
+        val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata)
+
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
         }
@@ -85,8 +91,16 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
                 "${EnrollmentTableInfo.TABLE_INFO.name()} as $enrollment"
         }
 
+        val contextWhereClause = when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
+            AnalyticsType.ENROLLMENT, null ->
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
+        }
+
         val context = ProgramIndicatorSQLContext(
-            programIndicator = programIndicator
+            programIndicator = programIndicator,
+            periods = periods
         )
 
         val collector = ProgramIndicatorItemIdsCollector()
@@ -96,7 +110,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         sqlVisitor.itemIds = collector.itemIds.toSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
-        val agg = programIndicator.aggregationType()?.sql ?: AggregationType.SUM.sql!!
+        val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"
@@ -105,11 +119,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
-        return "SELECT $agg($selectExpression) " +
+        return "SELECT ${aggregator.sql}($selectExpression) " +
             "FROM $targetTable " +
-            "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
-            "AND $filterExpression " +
-            (contextWhereClause?.let { "AND $it" } ?: "")
+            "WHERE $filterExpression " +
+            "AND $contextWhereClause"
     }
 
     private fun constantMap(): Map<String, Constant> {

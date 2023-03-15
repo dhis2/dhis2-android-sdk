@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.object.internal;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
@@ -131,11 +132,11 @@ public abstract class ReadWriteWithUidDataObjectRepositoryImpl
     @Override
     protected Unit updateObject(M m) throws D2Error {
         super.updateObject(m);
-        propagateState(m);
+        propagateState(m, HandleAction.Update);
         return new Unit();
     }
 
-    protected abstract void propagateState(M m);
+    protected abstract void propagateState(M m, HandleAction action);
 
     protected abstract void deleteObject(M m);
 }

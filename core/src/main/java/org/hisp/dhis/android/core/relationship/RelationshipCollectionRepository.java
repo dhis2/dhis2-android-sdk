@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
@@ -128,7 +129,7 @@ public class RelationshipCollectionRepository
                         .syncState(State.TO_POST)
                         .deleted(false)
                         .build());
-                trackerDataManager.propagateRelationshipUpdate(relationship);
+                trackerDataManager.propagateRelationshipUpdate(relationship, HandleAction.Insert);
             } else {
                 throw D2Error
                         .builder()

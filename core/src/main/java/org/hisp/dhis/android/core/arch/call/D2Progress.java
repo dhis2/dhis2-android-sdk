@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.call;
 
-import com.google.auto.value.AutoValue;
-
-import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-@AutoValue
 public abstract class D2Progress {
 
     @NonNull
@@ -67,31 +63,11 @@ public abstract class D2Progress {
         }
     }
 
-    public static Builder builder() {
-        return new AutoValue_D2Progress.Builder();
-    }
+    public abstract static class Builder<T extends Builder> {
+        public abstract T isComplete(Boolean isComplete);
 
-    public abstract Builder toBuilder();
+        public abstract T totalCalls(Integer totalCalls);
 
-    public static D2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
-        }
-        return D2Progress.builder()
-            .isComplete(totalCalls != null && totalCalls == 0)
-            .totalCalls(totalCalls)
-            .doneCalls(Collections.emptyList())
-            .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder isComplete(Boolean isComplete);
-
-        public abstract Builder totalCalls(Integer totalCalls);
-
-        public abstract Builder doneCalls(List<String> doneCalls);
-
-        public abstract D2Progress build();
+        public abstract T doneCalls(List<String> doneCalls);
     }
 }

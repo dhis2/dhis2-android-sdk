@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -48,15 +50,12 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             scope.eventFilters().map { eventFilter ->
                 val baseBuilder = getBaseBuilder(scope)
 
-                val eventStatus = getEventStatus(eventFilter)
-
-                baseBuilder
-                    .eventStatus(eventStatus)
-                    .assignedUserMode(eventFilter.assignedUserMode())
-
-                if (eventFilter.eventDate() != null) {
-                    baseBuilder.eventStartDate(dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!))
-                    baseBuilder.eventEndDate(dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!))
+                eventFilter.eventStatus()?.let { baseBuilder.eventStatus(getEventStatus(it, eventFilter.eventDate())) }
+                eventFilter.assignedUserMode()?.let { baseBuilder.assignedUserMode(it) }
+                eventFilter.programStage()?.let { baseBuilder.programStage(it) }
+                eventFilter.eventDate()?.let {
+                    baseBuilder.eventStartDate(dateFilterPeriodHelper.getStartDate(it))
+                    baseBuilder.eventEndDate(dateFilterPeriodHelper.getEndDate(it))
                 }
 
                 baseBuilder.build()
@@ -94,12 +93,14 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         val enrollmentStatus = scope.enrollmentStatus()?.getOrNull(0)
 
         val builder = TrackedEntityInstanceQueryOnline.builder()
+            .uids(scope.uids())
             .query(query)
             .attribute(toAPIFilterFormat(scope.attribute()))
             .filter(toAPIFilterFormat(scope.filter()))
             .orgUnits(scope.orgUnits())
             .orgUnitMode(scope.orgUnitMode())
             .program(scope.program())
+            .programStage(scope.programStage())
             .enrollmentStatus(enrollmentStatus)
             .followUp(scope.followUp())
             .trackedEntityType(scope.trackedEntityType())
@@ -109,37 +110,58 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             .pageSize(BaseQuery.DEFAULT_PAGE_SIZE)
             .paging(true)
 
-        if (scope.programDate() != null) {
-            builder.programStartDate(dateFilterPeriodHelper.getStartDate(scope.programDate()!!))
-            builder.programEndDate(dateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+        scope.lastUpdatedDate()?.let {
+            builder.lastUpdatedStartDate(dateFilterPeriodHelper.getStartDate(it))
+            builder.lastUpdatedEndDate(dateFilterPeriodHelper.getEndDate(it))
+        }
+
+        if (scope.program() != null) {
+            scope.programDate()?.let {
+                builder.programStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.programEndDate(dateFilterPeriodHelper.getEndDate(it))
+            }
+            scope.incidentDate()?.let {
+                builder.incidentStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.incidentEndDate(dateFilterPeriodHelper.getEndDate(it))
+            }
+            scope.eventStatus()?.let { builder.eventStatus(getEventStatus(it, scope.eventDate())) }
+            scope.assignedUserMode()?.let { builder.assignedUserMode(it) }
+            scope.programStage()?.let { builder.programStage(it) }
+            scope.eventDate()?.let {
+                builder.eventStartDate(dateFilterPeriodHelper.getStartDate(it))
+                builder.eventEndDate(dateFilterPeriodHelper.getEndDate(it))
+            }
         }
 
         return builder
     }
 
-    private fun getEventStatus(eventFilter: TrackedEntityInstanceQueryEventFilter): EventStatus? {
+    private fun getEventStatus(eventStatus: List<EventStatus>, eventDate: DateFilterPeriod?): EventStatus? {
         // EventStatus does not accepts a list of status but a single value in web API.
         // Additionally, it requires that eventStartDate and eventEndDate are defined.
-        val eventStatus = eventFilter.eventStatus()
-        val hasEventDate = eventFilter.eventDate()?.startDate() != null && eventFilter.eventDate()?.endDate() != null
-        return if (!eventStatus.isNullOrEmpty() && hasEventDate) {
+        val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
+        return if (eventStatus.isNotEmpty() && hasEventDate) {
             eventStatus[0]
         } else null
     }
 
     private fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>): List<String>? {
-        val itemMap: MutableMap<String, String> = HashMap()
-        for (item in items) {
-            val filterClause = ":" + item.operator().apiUpperOperator + ":" + item.value()
-            val existingClause = itemMap[item.key()]
-            val newClause = (existingClause ?: "") + filterClause
-            itemMap[item.key()] = newClause
+        return items
+            .groupBy { it.key() }
+            .map { (key, items) ->
+                val clause = items.map { item -> ":" + item.operator().apiUpperOperator + ":" + getAPIValue(item) }
+
+                key + clause.joinToString(separator = "")
+            }
+    }
+
+    private fun getAPIValue(item: RepositoryScopeFilterItem): String {
+        return if (item.operator() == FilterItemOperator.IN) {
+            val list = FilterOperatorsHelper.strToList(item.value())
+            list.joinToString(";")
+        } else {
+            item.value()
         }
-        val itemList: MutableList<String> = ArrayList()
-        for ((key, value) in itemMap) {
-            itemList.add(key + value)
-        }
-        return itemList
     }
 
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {

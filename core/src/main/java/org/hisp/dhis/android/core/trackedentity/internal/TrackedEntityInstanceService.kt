@@ -94,12 +94,16 @@ internal interface TrackedEntityInstanceService {
 
     @GET("$TRACKED_ENTITY_INSTANCES/query")
     fun query(
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,
+        @Query(PROGRAM_STAGE) programStage: String?,
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(PROGRAM_END_DATE) programEndDate: String?,
         @Query(PROGRAM_STATUS) enrollmentStatus: String?,
+        @Query(PROGRAM_INCIDENT_START_DATE) programIncidentStartDate: String?,
+        @Query(PROGRAM_INCIDENT_END_DATE) programIncidentEndDate: String?,
         @Query(FOLLOW_UP) followUp: Boolean?,
         @Query(EVENT_START_DATE) eventStartDate: String?,
         @Query(EVENT_END_DATE) eventEndDate: String?,
@@ -109,6 +113,8 @@ internal interface TrackedEntityInstanceService {
         @Query(ATTRIBUTE) attribute: List<String?>?,
         @Query(FILTER) filter: List<String?>?,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String?,
+        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
+        @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String?,
         @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
@@ -127,9 +133,12 @@ internal interface TrackedEntityInstanceService {
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"
         const val PROGRAM = "program"
+        const val PROGRAM_STAGE = "programStage"
         const val PROGRAM_START_DATE = "programStartDate"
         const val PROGRAM_END_DATE = "programEndDate"
         const val PROGRAM_STATUS = "programStatus"
+        const val PROGRAM_INCIDENT_START_DATE = "programIncidentStartDate"
+        const val PROGRAM_INCIDENT_END_DATE = "programIncidentEndDate"
         const val FOLLOW_UP = "followUp"
         const val EVENT_STATUS = "eventStatus"
         const val EVENT_START_DATE = "eventStartDate"
@@ -139,6 +148,7 @@ internal interface TrackedEntityInstanceService {
         const val FILTER = "filter"
         const val STRATEGY = "strategy"
         const val LAST_UPDATED_START_DATE = "lastUpdatedStartDate"
+        const val LAST_UPDATED_END_DATE = "lastUpdatedEndDate"
         const val INCLUDE_DELETED = "includeDeleted"
         const val ASSIGNED_USER_MODE = "assignedUserMode"
         const val ORDER = "order"

@@ -32,25 +32,22 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
 
 object IntegerNegativeValidator : IntegerValidatorBase<IntegerNegativeFailure>() {
-    override fun validate(value: String): Result<String, IntegerNegativeFailure> {
-        return try {
-            val convertedValue = value.toInt()
-            when {
-                convertedValue == 0 -> {
-                    Result.Failure(IntegerNegativeFailure.ValueIsZero)
-                }
-                convertedValue > 0 -> {
-                    Result.Failure(IntegerNegativeFailure.ValueIsPositive)
-                }
-                else -> {
-                    Result.Success(value)
-                }
+    override fun validateInteger(value: String): Result<String, IntegerNegativeFailure> {
+        val convertedValue = value.toInt()
+        return when {
+            convertedValue == 0 -> {
+                Result.Failure(IntegerNegativeFailure.ValueIsZero)
             }
-        } catch (e: NumberFormatException) {
-            catchOverflowFailure(
-                value, IntegerNegativeFailure.IntegerOverflow,
-                IntegerNegativeFailure.NumberFormatException
-            )
+            convertedValue > 0 -> {
+                Result.Failure(IntegerNegativeFailure.ValueIsPositive)
+            }
+            else -> {
+                Result.Success(value)
+            }
         }
     }
+
+    override val formatFailure = IntegerNegativeFailure.NumberFormatException
+    override val overflowFailure = IntegerNegativeFailure.IntegerOverflow
+    override val leadingZeroException = IntegerNegativeFailure.LeadingZeroException
 }

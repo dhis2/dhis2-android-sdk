@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 @Reusable
@@ -37,21 +37,49 @@ class CategoryOptionComboService @Inject constructor(
     private val categoryOptionRepository: CategoryOptionCollectionRepository
 ) {
 
-    fun blockingHasAccess(categoryOptionComboUid: String, date: Date?): Boolean {
+    fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
         val categoryOptions = categoryOptionRepository
             .byCategoryOptionComboUid(categoryOptionComboUid)
             .blockingGet()
 
-        return categoryOptions.none { it.access().data().write() == false } &&
-            date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true
+        return blockingIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) &&
+            blockingHasWriteAccess(categoryOptions) &&
+            isInOptionRange(categoryOptions, date)
+    }
+
+    fun blockingHasWriteAccess(
+        categoryOptions: List<CategoryOption>,
+    ): Boolean {
+        return categoryOptions.none { it.access().data().write() == false }
+    }
+
+    fun blockingIsAssignedToOrgUnit(
+        categoryOptionComboUid: String,
+        orgUnitUid: String?
+    ): Boolean {
+        return orgUnitUid?.let {
+            val categoryOptions = categoryOptionRepository
+                .byCategoryOptionComboUid(categoryOptionComboUid)
+                .withOrganisationUnits()
+                .blockingGet()
+
+            categoryOptions.all { categoryOption ->
+                categoryOption.organisationUnits()?.any {
+                    it.uid() == orgUnitUid
+                } ?: true
+            }
+        } ?: true
     }
 
     fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
         return Single.fromCallable { blockingHasAccess(categoryOptionComboUid, date) }
     }
 
-    private fun isInOptionRange(option: CategoryOption, date: Date): Boolean {
-        return option.startDate()?.before(date) ?: true &&
-            option.endDate()?.after(date) ?: true
+    fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {
+        return date?.let {
+            options.all { option ->
+                option.startDate()?.before(date) ?: true && option.endDate()?.after(date) ?: true
+            }
+        } ?: true
     }
 }

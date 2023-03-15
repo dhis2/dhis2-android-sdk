@@ -1,0 +1,39 @@
+{
+  "name": "doc.pdf",
+  "created": "2016-08-04T15:15:40.959",
+  "lastUpdated": "2016-08-04T15:15:41.808",
+  "translations": [],
+  "externalAccess": false,
+  "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+  },
+  "userGroupAccesses": [],
+  "userAccesses": [],
+  "favorites": [],
+  "sharing": {
+    "external": false,
+    "users": {},
+    "userGroups": {}
+  },
+  "contentType": "application/pdf",
+  "contentLength": 1238782,
+  "contentMd5": "46ec9974d2077745e169eea20820695c",
+  "domain": "DATA_VALUE",
+  "hasMultipleStorageFiles": false,
+  "storageStatus": "PENDING",
+  "displayName": "doc.pdf",
+  "favorite": false,
+  "user": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+  },
+  "id": "SyPJ9weHqBM",
+  "attributeValues": []
+}

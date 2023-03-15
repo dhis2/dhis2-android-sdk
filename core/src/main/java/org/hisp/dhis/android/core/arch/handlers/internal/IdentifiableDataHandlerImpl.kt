@@ -210,7 +210,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected fun afterCollectionHandled(oCollection: Collection<O>?, params: IdentifiableDataHandlerParams) {
+    protected open fun afterCollectionHandled(oCollection: Collection<O>?, params: IdentifiableDataHandlerParams) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */

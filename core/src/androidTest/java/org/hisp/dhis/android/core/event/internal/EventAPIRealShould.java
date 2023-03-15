@@ -28,23 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.junit.Assert;
-import org.junit.Before;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.event.internal.EventUtils.assertEvent;
 import static org.hisp.dhis.android.core.event.internal.EventUtils.createEventWithFutureDate;
@@ -57,6 +40,20 @@ import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
 import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
 import static org.hisp.dhis.android.core.imports.ImportStatus.WARNING;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.junit.Assert;
+import org.junit.Before;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
 
     // API version dependant parameters
@@ -64,7 +61,6 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     private String strategy;
     private String ouMode = OrganisationUnitMode.ACCESSIBLE.name();
 
-    private D2 d2;
     private APICallExecutor apiCallExecutor;
 
     private EventService eventService;
@@ -76,10 +72,8 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
         apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         eventService = d2.retrofit().create(EventService.class);

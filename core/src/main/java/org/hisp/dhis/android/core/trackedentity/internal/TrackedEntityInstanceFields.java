@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public final class TrackedEntityInstanceFields {
     public final static String COORDINATES = "coordinates";
     public final static String DELETED = "deleted";
     private final static String ENROLLMENTS = "enrollments";
+    public final static String PROGRAM_OWNERS = "programOwners";
     public final static String GEOMETRY = "geometry";
 
     private static final FieldsHelper<TrackedEntityInstance> fh = new FieldsHelper<>();
@@ -64,7 +66,8 @@ public final class TrackedEntityInstanceFields {
                     fh.<Relationship>nestedField(RELATIONSHIPS)
                             .with(RelationshipFields.allFields),
                     fh.<Enrollment>nestedField(ENROLLMENTS)
-                            .with(EnrollmentFields.allFields)
+                            .with(EnrollmentFields.allFields),
+                    fh.<ProgramOwner>nestedField(PROGRAM_OWNERS)
             ).build();
 
     public static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()

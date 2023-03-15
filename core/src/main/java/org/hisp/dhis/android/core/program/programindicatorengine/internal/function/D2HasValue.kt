@@ -66,9 +66,9 @@ internal class D2HasValue : ProgramExpressionItem() {
         val dataElement = ctx.uid1.text
 
         return stageEvents.any { event ->
-            event.trackedEntityDataValues()!!.any { dataValue ->
+            event.trackedEntityDataValues()?.any { dataValue ->
                 dataElement == dataValue.dataElement() && dataValue.value() != null
-            }
+            } ?: false
         }.toString()
     }
 

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -34,13 +35,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal interface TrackerDataManager {
 
-    fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?)
+    fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction)
 
-    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
+    fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction)
 
-    fun propagateEventUpdate(event: Event?)
+    fun propagateEventUpdate(event: Event?, action: HandleAction)
 
-    fun propagateRelationshipUpdate(relationship: Relationship)
+    fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction)
 
     fun deleteTrackedEntity(tei: TrackedEntityInstance?)
 

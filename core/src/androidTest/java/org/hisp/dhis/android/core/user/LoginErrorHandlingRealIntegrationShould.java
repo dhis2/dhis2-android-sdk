@@ -28,35 +28,21 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.truth.ComparableSubject;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import io.reactivex.observers.TestObserver;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @Ignore("Tests with real servers. Depend on server state and network connection.")
 public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
-        d2 = D2Factory.forNewDatabase();
-    }
 
     @Test
     public void succeed_for_android_current() {

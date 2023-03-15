@@ -1,0 +1,20 @@
+{
+  "createdAt": "2017-01-20T10:44:03.231",
+  "updatedAt": "2022-09-28T14:23:29.016",
+  "providedElsewhere": false,
+  "dataElement": "UXz7xuGCEhU",
+  "value": "4322",
+  "storedBy": "xE7jOejl9FI",
+  "createdBy": {
+    "uid": "xE7jOejl9FI",
+    "username": "admin",
+    "firstName": "John",
+    "surname": "Traore"
+  },
+  "updatedBy": {
+    "uid": "xE7jOejl9FI",
+    "username": "admin",
+    "firstName": "John",
+    "surname": "Traore"
+  }
+}

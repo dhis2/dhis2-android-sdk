@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
+import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEnrollments;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEvents;
+import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertTei;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
@@ -54,13 +59,6 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
-import static org.hisp.dhis.android.core.imports.ImportStatus.SUCCESS;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEnrollments;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEvents;
-import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertTei;
 
 public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
 
@@ -92,7 +90,6 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     private String serverUrl = RealServerMother.url2_30;
     private String strategy = "SYNC";
 
-    private D2 d2;
     private APICallExecutor executor;
 
     private TrackedEntityInstanceService trackedEntityInstanceService;
@@ -101,21 +98,15 @@ public class BreakTheGlassAPIShould extends BaseRealIntegrationTest {
     private UidGenerator uidGenerator = new UidGeneratorImpl();
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
 
         executor = APICallExecutorImpl.create(d2.databaseAdapter(), null);
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
         ownershipService = d2.retrofit().create(OwnershipService.class);
 
-        try {
-            login();
-        } catch (Exception e) {
-            throw new IOException();
-        }
+        login();
     }
 
     //@Test

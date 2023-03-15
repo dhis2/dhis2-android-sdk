@@ -29,32 +29,23 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.capture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.MockitoAnnotations
 
 class EventDownloaderShould {
 
     private val call: EventDownloadCall = mock()
 
-    @Captor
-    private val paramsCapture: ArgumentCaptor<ProgramDataDownloadParams> = ArgumentCaptor.forClass(
-        ProgramDataDownloadParams::class.java
-    )
+    private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
     private lateinit var downloader: EventDownloader
 
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
         downloader = EventDownloader(RepositoryScope.empty(), call)
     }
 
@@ -62,8 +53,8 @@ class EventDownloaderShould {
     fun should_parse_uid_eq_params() {
         downloader.byUid().eq("uid").download()
 
-        verify(call).downloadSingleEvents(capture(paramsCapture))
-        val params = paramsCapture.value
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
 
         assertThat(params.uids().size).isEqualTo(1)
         assertThat(params.uids()[0]).isEqualTo("uid")
@@ -73,8 +64,8 @@ class EventDownloaderShould {
     fun should_parse_uid_in_params() {
         downloader.byUid().`in`("uid0", "uid1", "uid2").download()
 
-        verify(call).downloadSingleEvents(capture(paramsCapture))
-        val params = paramsCapture.value
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
 
         assertThat(params.uids().size).isEqualTo(3)
         assertThat(params.uids()[0]).isEqualTo("uid0")

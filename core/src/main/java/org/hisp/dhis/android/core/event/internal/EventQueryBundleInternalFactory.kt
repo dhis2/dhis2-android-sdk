@@ -28,48 +28,31 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
 
 internal class EventQueryBundleInternalFactory constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?
-) : TrackerQueryInternalFactory<EventQueryBundle>(params, programSettings, LimitScope.ALL_ORG_UNITS) {
+) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryPerProgram(
-        programUid: String?
-    ): List<EventQueryBundle> {
-        return queryInternal(listOf(programUid!!), programUid) {
-            commonHelper.getLinkedCaptureOrgUnitUids(programUid)
-        }
-    }
-
-    override fun queryGlobal(
-        programs: List<String>
-    ): List<EventQueryBundle> {
-        return queryInternal(programs, null) {
-            commonHelper.getCaptureOrgUnitUids()
-        }
-    }
-
-    private fun queryInternal(
+    override fun queryInternal(
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(
-            params, programSettings, specificSettingScope, programUid
+            params, programSettings, programUid
         ) { it?.eventsDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
             params, programSettings,
-            programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor
+            programs, programUid, limit, orgUnitByLimitExtractor
         ) { it?.eventDateDownload() }
 
         val builder = EventQueryBundle.builder()

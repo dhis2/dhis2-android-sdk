@@ -66,11 +66,6 @@ object FileResourceDirectoryHelper {
         getRootFileResourceDirectory(context).deleteRecursively()
     }
 
-    internal fun deleteFileResourceDirectory(context: Context, databaseAccount: DatabaseAccount) {
-        val resourcesName = getSubfolderName(databaseAccount.databaseName())
-        getFileResourceDirectory(context, resourcesName).deleteRecursively()
-    }
-
     /**
      * This method returns a [File] object whose path points to the Sdk cache resources directory. This should be
      * the place where volatile files are stored, such as camera photos or images to be resized. Since the directory
@@ -83,8 +78,18 @@ object FileResourceDirectoryHelper {
      * @param context The application context.
      * @return A [File] object whose path points to the Sdk cache resources directory.
      */
+    @JvmStatic
     fun getFileCacheResourceDirectory(context: Context): File {
-        val file = File(context.cacheDir, "$CacheDir/${getSubfolderName()}")
+        return getFileCacheResourceDirectory(context, getSubfolderName())
+    }
+
+    internal fun getRootFileCacheResourceDirectory(context: Context): File {
+        return getFileCacheResourceDirectory(context, null)
+    }
+
+    private fun getFileCacheResourceDirectory(context: Context, subfolder: String?): File {
+        val childPath = subfolder?.let { "$CacheDir/$it" } ?: CacheDir
+        val file = File(context.cacheDir, childPath)
         return if (!file.exists() && file.mkdirs()) {
             file
         } else file
@@ -92,6 +97,12 @@ object FileResourceDirectoryHelper {
 
     internal fun getSubfolderName(databaseName: String): String {
         return databaseName.removeSuffix(DatabaseNameGenerator.DbSuffix)
+    }
+
+    internal fun deleteFileResourceDirectories(context: Context, databaseAccount: DatabaseAccount) {
+        val resourcesName = getSubfolderName(databaseAccount.databaseName())
+        getFileResourceDirectory(context, resourcesName).deleteRecursively()
+        getFileCacheResourceDirectory(context, resourcesName).deleteRecursively()
     }
 
     private fun getSubfolderName(): String {

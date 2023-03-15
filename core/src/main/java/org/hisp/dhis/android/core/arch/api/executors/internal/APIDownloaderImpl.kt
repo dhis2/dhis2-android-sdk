@@ -184,4 +184,19 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         return downloader
             .doOnSuccess { o: P -> handler.handle(o) }
     }
+
+    override fun <P> downloadPagedPayload(
+        pageSize: Int,
+        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>
+    ): Single<Payload<P>> {
+        var page = 1
+        return Single.defer { downloader(page++, pageSize) }
+            .map { it.items() }
+            .repeat()
+            .takeUntil { list -> list.size < pageSize }
+            .reduce(emptyList()) { items: List<P>, items2: List<P> ->
+                items + items2
+            }
+            .map { list -> Payload(list) }
+    }
 }

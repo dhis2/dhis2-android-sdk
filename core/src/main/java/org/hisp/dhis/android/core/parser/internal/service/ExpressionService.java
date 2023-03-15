@@ -181,8 +181,8 @@ public class ExpressionService {
 
         Object value = CommonParser.visit(expression, visitor);
 
-        int itemsFound = visitor.getItemsFound();
-        int itemValuesFound = visitor.getItemValuesFound();
+        int itemsFound = visitor.getState().getItemsFound();
+        int itemValuesFound = visitor.getState().getItemValuesFound();
 
         switch (missingValueStrategy) {
             case SKIP_IF_ANY_VALUE_MISSING:

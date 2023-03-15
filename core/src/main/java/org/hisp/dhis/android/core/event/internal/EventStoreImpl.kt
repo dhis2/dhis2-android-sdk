@@ -108,12 +108,11 @@ internal class EventStoreImpl private constructor(
     }
 
     override fun countTeisWhereEvents(whereClause: String): Int {
-        val whereStatement = if (whereClause == null) "" else " WHERE $whereClause"
         val query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
             "INNER JOIN " +
             "(SELECT DISTINCT " + EventTableInfo.Columns.ENROLLMENT +
-            " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
+            " FROM " + EventTableInfo.TABLE_INFO.name() + " WHERE $whereClause) b " +
             "ON a." + IdentifiableColumns.UID + " = b." + EventTableInfo.Columns.ENROLLMENT
         return processCount(databaseAdapter.rawQuery(query))
     }

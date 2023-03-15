@@ -64,6 +64,6 @@ public class UserShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
 
-        assertThat(user.organisationUnits().get(0).uid()).isEqualTo("DiszpKrYNg8");
+        assertThat(user.organisationUnits().get(0).uid()).isEqualTo("YuQRtpLP10I");
     }
 }

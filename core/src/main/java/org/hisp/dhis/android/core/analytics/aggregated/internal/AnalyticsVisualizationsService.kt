@@ -71,12 +71,13 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             .blockingGet()
     }
 
+    @Suppress("ComplexMethod")
     private fun getDimensionalResponse(
         visualization: Visualization,
         params: AnalyticsVisualizationsRepositoryParams
     ): Result<DimensionalResponse, AnalyticsException> {
 
-        var analyticsRepository = analyticsRepository
+        var queryAnalyticsRepository = analyticsRepository
 
         val queryDimensions =
             (visualization.rowDimensions() ?: emptyList()) +
@@ -119,12 +120,16 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             LegendStrategy.BY_DATA_ITEM, null -> AnalyticsLegendStrategy.ByDataItem
         }
 
-        analyticsRepository = analyticsRepository.withLegendStrategy(legendStrategy)
+        queryAnalyticsRepository = queryAnalyticsRepository.withLegendStrategy(legendStrategy)
 
-        queryItems.forEach { analyticsRepository = analyticsRepository.withDimension(it) }
-        filterItems.forEach { analyticsRepository = analyticsRepository.withFilter(it) }
+        queryItems.forEach { queryAnalyticsRepository = queryAnalyticsRepository.withDimension(it) }
+        filterItems.forEach { queryAnalyticsRepository = queryAnalyticsRepository.withFilter(it) }
 
-        return analyticsRepository.blockingEvaluate()
+        visualization.aggregationType()?.let {
+            queryAnalyticsRepository = queryAnalyticsRepository.withAggregationType(it)
+        }
+
+        return queryAnalyticsRepository.blockingEvaluate()
     }
 
     private fun buildGridResponse(

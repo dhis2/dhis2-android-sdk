@@ -28,30 +28,20 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.junit.Before;
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
 public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
 
     private DataValueStore dataValueStore;
 
     @Before
-    public void setUp() throws IOException {
-
+    public void setUp() {
         super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-
         dataValueStore = DataValueStore.create(d2.databaseAdapter());
     }
 

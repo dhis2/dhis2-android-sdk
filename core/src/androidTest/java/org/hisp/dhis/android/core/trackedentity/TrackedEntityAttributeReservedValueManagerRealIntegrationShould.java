@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -57,19 +62,10 @@ import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -78,7 +74,6 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     private String programUid = "program_uid";
     private String categoryComboUid = "category_combo_uid";
     private String ownerUid = "xs8A6tQJY0s";
-    private D2 d2;
     private OrganisationUnit organisationUnit;
     private String pattern;
 
@@ -94,12 +89,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     private TrackedEntityAttributeReservedValueManager manager;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         super.setUp();
-
-        MockitoAnnotations.initMocks(this);
-
-        d2 = D2Factory.forNewDatabase();
 
         login();
 

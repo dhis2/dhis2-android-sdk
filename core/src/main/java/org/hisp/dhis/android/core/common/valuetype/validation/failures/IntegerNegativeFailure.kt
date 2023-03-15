@@ -33,4 +33,5 @@ sealed class IntegerNegativeFailure : Throwable() {
     object IntegerOverflow : IntegerNegativeFailure()
     object ValueIsZero : IntegerNegativeFailure()
     object ValueIsPositive : IntegerNegativeFailure()
+    object LeadingZeroException : IntegerNegativeFailure()
 }

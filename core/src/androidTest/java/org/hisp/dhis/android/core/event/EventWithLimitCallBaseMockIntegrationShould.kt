@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
@@ -40,6 +41,7 @@ import org.junit.Test
 abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     abstract val importerVersion: TrackerImporterVersion
+    abstract val exporterVersion: TrackerExporterVersion
     abstract val downloadEventsFile: String
     abstract val downloadEventsByUidLimitedByOneFile: String
 
@@ -49,7 +51,8 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     @Before
     fun setUp() {
         initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+            .trackerExporterVersion(exporterVersion).build()
         syncStore.delete()
         syncStore.insert(testParams)
     }

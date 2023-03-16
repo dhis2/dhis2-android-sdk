@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event
 
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -34,6 +35,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class EventWithLimitCallNewMockIntegrationShould : EventWithLimitCallBaseMockIntegrationShould() {
     override val importerVersion = TrackerImporterVersion.V2
+    override val exporterVersion = TrackerExporterVersion.V2
     override val downloadEventsFile = "event/new_tracker_importer_events_1.json"
     override val downloadEventsByUidLimitedByOneFile = "event/new_tracker_events_with_uids.json"
 }

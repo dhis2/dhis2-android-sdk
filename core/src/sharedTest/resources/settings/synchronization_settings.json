@@ -2,6 +2,7 @@
   "dataSync": "24h",
   "metadataSync": "12h",
   "trackerImporterVersion": "V2",
+  "trackerExporterVersion": "V2",
   "dataSetSettings": {
     "globalSettings": {
       "lastUpdated": "2020-01-31T22:42:57.763Z",

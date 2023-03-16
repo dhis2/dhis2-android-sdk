@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -39,6 +40,7 @@ import org.junit.runner.RunWith
 class TrackedEntityInstanceCallOldMockIntegrationShould : TrackedEntityInstanceCallBaseMockIntegrationShould() {
 
     override val importerVersion = TrackerImporterVersion.V1
+    override val exporterVersion = TrackerExporterVersion.V1
     override val teiFile = "trackedentity/tracked_entity_instance.json"
     override val teiCollectionFile = "trackedentity/tracked_entity_instance_collection.json"
     override val teiSingleFile = "trackedentity/tracked_entity_instance_single.json"

@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
@@ -55,6 +56,7 @@ import org.junit.Test
 abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     abstract val importerVersion: TrackerImporterVersion
+    abstract val exporterVersion: TrackerExporterVersion
     abstract val teiFile: String
     abstract val teiCollectionFile: String
     abstract val teiSingleFile: String
@@ -67,7 +69,8 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     @Before
     fun setUp() {
         initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion).build()
+        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+            .trackerExporterVersion(exporterVersion).build()
         syncStore.delete()
         syncStore.insert(testParams)
     }

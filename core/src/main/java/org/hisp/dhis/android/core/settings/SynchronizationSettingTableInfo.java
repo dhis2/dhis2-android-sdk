@@ -54,13 +54,15 @@ public final class SynchronizationSettingTableInfo {
         public static final String DATA_SYNC = "dataSync";
         public static final String METADATA_SYNC = "metadataSync";
         public static final String TRACKER_IMPORTER_VERSION = "trackerImporterVersion";
+        public static final String TRACKER_EXPORTER_VERSION = "trackerExporterVersion";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SYNC,
                     METADATA_SYNC,
-                    TRACKER_IMPORTER_VERSION
+                    TRACKER_IMPORTER_VERSION,
+                    TRACKER_EXPORTER_VERSION
             );
         }
     }

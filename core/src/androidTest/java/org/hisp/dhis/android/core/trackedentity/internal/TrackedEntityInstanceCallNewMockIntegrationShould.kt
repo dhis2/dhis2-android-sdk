@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -40,6 +41,7 @@ import org.junit.runner.RunWith
 class TrackedEntityInstanceCallNewMockIntegrationShould : TrackedEntityInstanceCallBaseMockIntegrationShould() {
 
     override val importerVersion = TrackerImporterVersion.V2
+    override val exporterVersion = TrackerExporterVersion.V2
     override val teiFile = "trackedentity/new_tracker_importer_tracked_entity.json"
     override val teiCollectionFile = "trackedentity/new_tracker_importer_tracked_entity_collection.json"
     override val teiSingleFile = "trackedentity/new_tracker_importer_tracked_entity_single.json"

@@ -51,4 +51,17 @@ internal class TrackerPostParentCallHelper @Inject constructor(
             false
         }
     }
+
+    fun useNewTrackerExporter(): Boolean {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+            val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
+            if (explicitTrackerVersion == null) {
+                dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)
+            } else {
+                explicitTrackerVersion == TrackerExporterVersion.V2
+            }
+        } else {
+            false
+        }
+    }
 }

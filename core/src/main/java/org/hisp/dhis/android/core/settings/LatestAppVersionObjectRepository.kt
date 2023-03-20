@@ -32,13 +32,13 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
-import org.hisp.dhis.android.core.settings.internal.ApkDistributionSettingCall
+import org.hisp.dhis.android.core.settings.internal.LatestAppVersionCall
 
 @Reusable
 class LatestAppVersionObjectRepository @Inject internal constructor(
     private val store: ObjectWithoutUidStore<LatestAppVersion>,
-    apkDistributionSettingCall: ApkDistributionSettingCall
-) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(apkDistributionSettingCall),
+    latestAppVersionCall: LatestAppVersionCall
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(latestAppVersionCall),
     ReadOnlyWithDownloadObjectRepository<LatestAppVersion> {
 
     override fun blockingGet(): LatestAppVersion? {

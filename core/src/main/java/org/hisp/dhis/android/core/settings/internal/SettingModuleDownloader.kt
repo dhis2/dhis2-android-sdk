@@ -41,7 +41,7 @@ internal class SettingModuleDownloader @Inject constructor(
     private val analyticsSettingCall: AnalyticsSettingCall,
     private val userSettingsCall: UserSettingsCall,
     private val appearanceSettingCall: AppearanceSettingCall,
-    private val apkDistributionSettingCall: ApkDistributionSettingCall
+    private val latestAppVersionCall: LatestAppVersionCall
 ) : UntypedModuleDownloader {
 
     @SuppressLint("CheckResult")
@@ -50,7 +50,7 @@ internal class SettingModuleDownloader @Inject constructor(
             downloadFromSettingsApp().blockingAwait()
             userSettingsCall.download().blockingGet()
             systemSettingCall.download().blockingGet()
-            apkDistributionSettingCall.download(false).blockingGet()
+            latestAppVersionCall.download(false).blockingGet()
         }
     }
 

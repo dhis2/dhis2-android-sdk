@@ -73,7 +73,7 @@ internal class SettingAppService @Inject constructor(
         return settingService.analyticsSettings("${getNamespace(version)}/analytics")
     }
 
-    fun apkDistributionLatestVersion(): Single<LatestAppVersion> {
+    fun latestAppVersion(): Single<LatestAppVersion> {
         return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
     }
 

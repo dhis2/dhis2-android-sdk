@@ -30,21 +30,20 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import javax.inject.Inject
 
 @Reusable
-internal class ApkDistributionSettingCall @Inject constructor(
+internal class LatestAppVersionCall @Inject constructor(
     private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor
 ) : BaseSettingCall<LatestAppVersion>() {
 
     override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.apkDistributionLatestVersion(), storeError)
+        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
     }
 
     override fun process(item: LatestAppVersion?) {

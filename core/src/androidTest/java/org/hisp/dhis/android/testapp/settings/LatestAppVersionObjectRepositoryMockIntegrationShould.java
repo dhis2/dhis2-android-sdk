@@ -26,28 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.testapp.settings;
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.LatestAppVersion
+import static com.google.common.truth.Truth.assertThat;
 
-@Reusable
-internal class LatestAppVersionCall @Inject constructor(
-    private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor
-) : BaseSettingCall<LatestAppVersion>() {
+import org.hisp.dhis.android.core.settings.LatestAppVersion;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
-    }
+@RunWith(D2JunitRunner.class)
+public class LatestAppVersionObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    override fun process(item: LatestAppVersion?) {
-        val appVersionList = listOfNotNull(item)
-        latestAppVersionHandler.handleMany(appVersionList)
+    @Test
+    public void find_user_settings() {
+        LatestAppVersion latestAppVersion = d2.settingModule().latestAppVersion().blockingGet();
+        assertThat(latestAppVersion.downloadURL()).isEqualTo(
+                "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk");
+        assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1");
     }
 }

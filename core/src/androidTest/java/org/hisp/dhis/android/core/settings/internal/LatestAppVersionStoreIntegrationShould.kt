@@ -25,29 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.LatestAppVersionSamples.latestAppVersion
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
+import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Reusable
-internal class LatestAppVersionCall @Inject constructor(
-    private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor
-) : BaseSettingCall<LatestAppVersion>() {
-
-    override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
-    }
-
-    override fun process(item: LatestAppVersion?) {
-        val appVersionList = listOfNotNull(item)
-        latestAppVersionHandler.handleMany(appVersionList)
+@RunWith(D2JunitRunner::class)
+class LatestAppVersionStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<LatestAppVersion>(
+    create(TestDatabaseAdapterFactory.get()),
+    LatestAppVersionTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): LatestAppVersion {
+        return latestAppVersion
     }
 }

@@ -73,6 +73,10 @@ internal class SettingAppService @Inject constructor(
         return settingService.analyticsSettings("${getNamespace(version)}/analytics")
     }
 
+    fun apkDistributionLatestVersion(): Single<LatestAppVersion> {
+        return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
+    }
+
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {
         return when (version) {
             SettingsAppDataStoreVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
@@ -85,5 +89,6 @@ internal class SettingAppService @Inject constructor(
         const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
         const val SETTINGS_APP_NAME = "Android Settings"
         const val SETTINGS_APP_FILTER = "name:eq:$SETTINGS_APP_NAME"
+        const val APK_DISTRIBUTION_NAMESPACE = "dataStore/APK_DISTRIBUTION"
     }
 }

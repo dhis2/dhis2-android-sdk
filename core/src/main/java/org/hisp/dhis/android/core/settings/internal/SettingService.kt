@@ -66,4 +66,7 @@ internal interface SettingService {
 
     @GET
     fun analyticsSettings(@Url url: String): Single<AnalyticsSettings>
+
+    @GET
+    fun latestAppVersion(@Url url: String): Single<LatestAppVersion>
 }

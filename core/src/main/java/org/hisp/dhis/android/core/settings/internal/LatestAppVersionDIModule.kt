@@ -34,6 +34,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 
 @Module
@@ -47,7 +48,7 @@ internal class LatestAppVersionDIModule {
 
     @Provides
     @Reusable
-    fun handler(store: ObjectWithoutUidStore<LatestAppVersion>): Handler<LatestAppVersion> {
+    fun handler(store: ObjectWithoutUidStore<LatestAppVersion>): ObjectWithoutUidHandlerImpl<LatestAppVersion> {
         return LatestAppVersionHandler(store)
     }
 }

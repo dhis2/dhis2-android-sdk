@@ -43,7 +43,8 @@ import retrofit2.Retrofit
         SynchronizationSettingEntityDIModule::class,
         FilterSettingEntityDIModule::class,
         SystemSettingEntityDIModule::class,
-        ProgramConfigurationSettingEntityDIModule::class
+        ProgramConfigurationSettingEntityDIModule::class,
+        LatestAppVersionDIModule::class
     ]
 )
 internal class SettingPackageDIModule {

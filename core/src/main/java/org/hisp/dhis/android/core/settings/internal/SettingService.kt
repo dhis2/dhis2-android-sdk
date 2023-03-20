@@ -35,6 +35,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
 
+@Suppress("TooManyFunctions")
 internal interface SettingService {
 
     @GET("systemSettings")

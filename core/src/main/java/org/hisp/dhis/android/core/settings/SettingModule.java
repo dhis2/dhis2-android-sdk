@@ -52,4 +52,6 @@ public interface SettingModule {
     UserSettingsObjectRepository userSettings();
 
     AppearanceSettingsObjectRepository appearanceSettings();
+
+    LatestAppVersionObjectRepository latestAppVersion();
 }

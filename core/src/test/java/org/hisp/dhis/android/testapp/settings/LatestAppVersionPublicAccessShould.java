@@ -26,39 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.testapp.settings;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import org.hisp.dhis.android.core.settings.LatestAppVersion;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public class LatestAppVersionPublicAccessShould extends BasePublicAccessShould<LatestAppVersion> {
 
-class BaseDatabaseOpenHelper {
+    @Mock
+    private LatestAppVersion object;
 
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Override
+    public LatestAppVersion object() {
+        return object;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    public void has_public_create_method() {
+        LatestAppVersion.create(null);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Override
+    public void has_public_builder_method() {
+        LatestAppVersion.builder();
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

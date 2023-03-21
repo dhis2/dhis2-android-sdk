@@ -25,40 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.LatestAppVersionCall
 
-import android.content.Context;
-import android.content.res.AssetManager;
+@Reusable
+class LatestAppVersionObjectRepository @Inject internal constructor(
+    private val store: ObjectWithoutUidStore<LatestAppVersion>,
+    latestAppVersionCall: LatestAppVersionCall
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(latestAppVersionCall),
+    ReadOnlyWithDownloadObjectRepository<LatestAppVersion> {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun blockingGet(): LatestAppVersion? {
+        return store.selectAll().firstOrNull()
     }
 }

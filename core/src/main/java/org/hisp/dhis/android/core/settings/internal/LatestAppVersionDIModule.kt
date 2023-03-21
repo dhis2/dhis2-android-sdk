@@ -26,39 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.LatestAppVersion
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@Module
+internal class LatestAppVersionDIModule {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<LatestAppVersion> {
+        return LatestAppVersionStore.create(databaseAdapter)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<LatestAppVersion>): ObjectWithoutUidHandlerImpl<LatestAppVersion> {
+        return LatestAppVersionHandler(store)
     }
 }

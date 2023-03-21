@@ -26,39 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.LatestAppVersion
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@Reusable
+internal class LatestAppVersionCall @Inject constructor(
+    private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
+    private val settingAppService: SettingAppService,
+    private val apiCallExecutor: RxAPICallExecutor
+) : BaseSettingCall<LatestAppVersion>() {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
+        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    override fun process(item: LatestAppVersion?) {
+        val appVersionList = listOfNotNull(item)
+        latestAppVersionHandler.handleMany(appVersionList)
     }
 }

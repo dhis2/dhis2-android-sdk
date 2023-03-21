@@ -25,40 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import android.content.Context;
-import android.content.res.AssetManager;
+class LatestAppVersionSettingsShould : BaseObjectShould("settings/latest_app_version.json"), ObjectShould {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    @Test
+    override fun map_from_json_string() {
+        val latestAppVersion = objectMapper.readValue(jsonStream, LatestAppVersion::class.java)
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        Truth.assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1")
+        Truth.assertThat(latestAppVersion.downloadURL()).isEqualTo(
+            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk"
+        )
     }
 }

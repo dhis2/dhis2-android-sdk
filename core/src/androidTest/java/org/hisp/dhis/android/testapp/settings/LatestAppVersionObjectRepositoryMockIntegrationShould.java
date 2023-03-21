@@ -26,39 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.testapp.settings;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.settings.LatestAppVersion;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-class BaseDatabaseOpenHelper {
+@RunWith(D2JunitRunner.class)
+public class LatestAppVersionObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Test
+    public void find_user_settings() {
+        LatestAppVersion latestAppVersion = d2.settingModule().latestAppVersion().blockingGet();
+        assertThat(latestAppVersion.downloadURL()).isEqualTo(
+                "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk");
+        assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1");
     }
 }

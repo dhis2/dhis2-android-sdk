@@ -26,39 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.settings
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+object LatestAppVersionTableInfo {
 
-class BaseDatabaseOpenHelper {
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "LatestAppVersion"
+        }
 
-    static final int VERSION = 143;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VERSION,
+                DOWNLOAD_URL
+            )
+        }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val VERSION = "version"
+            const val DOWNLOAD_URL = "downloadURL"
+        }
     }
 }

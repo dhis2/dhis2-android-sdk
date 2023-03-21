@@ -26,39 +26,50 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.settings;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.Nullable;
 
-class BaseDatabaseOpenHelper {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 143;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+@JsonDeserialize(builder = $$AutoValue_LatestAppVersion.Builder.class)
+public abstract class LatestAppVersion implements CoreObject {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @JsonProperty()
+    @Nullable
+    public abstract String version();
+
+    @JsonProperty()
+    @Nullable
+    public abstract String downloadURL();
+
+    public static LatestAppVersion create(Cursor cursor) {
+        return $AutoValue_LatestAppVersion.createFromCursor(cursor);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new $AutoValue_LatestAppVersion.Builder();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder version(String version);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder downloadURL(String downloadURL);
+
+        public abstract LatestAppVersion build();
     }
 }

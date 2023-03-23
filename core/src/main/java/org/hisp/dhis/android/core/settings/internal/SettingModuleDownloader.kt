@@ -50,7 +50,7 @@ internal class SettingModuleDownloader @Inject constructor(
             downloadFromSettingsApp().blockingAwait()
             userSettingsCall.download().blockingGet()
             systemSettingCall.download().blockingGet()
-            latestAppVersionCall.download(false).blockingGet()
+            latestAppVersionCall.getCompletable(false).blockingAwait()
         }
     }
 

@@ -59,7 +59,7 @@ val annotation = "1.4.0"
 val paging = "2.1.2"
 
 // java
-val jackson = "2.14.2"
+val jackson = "2.13.4"
 val autoValue = "1.10.1"
 val autoValueCursor = "2.0.1"
 val retrofit = "2.9.0"

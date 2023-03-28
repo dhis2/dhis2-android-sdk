@@ -140,10 +140,23 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     }
 
     private fun getEventQuery(query: TrackedEntityInstanceQueryOnline): List<NewTrackerImporterEvent> {
+        return if (query.orgUnits.size <= 1) {
+            getEventQueryForOrgunit(query, query.orgUnits.firstOrNull())
+        } else {
+            query.orgUnits.foldRight(emptyList()) { orgunit: String, events: List<NewTrackerImporterEvent> ->
+                events + getEventQueryForOrgunit(query, orgunit)
+            }
+        }
+    }
+
+    private fun getEventQueryForOrgunit(
+        query: TrackedEntityInstanceQueryOnline,
+        orgunit: String?
+    ): List<NewTrackerImporterEvent> {
         return rxAPICallExecutor.wrapSingle(
             trackedExporterService.getEvents(
                 fields = NewEventFields.teiQueryFields,
-                orgUnit = getOrgunits(query.orgUnits),
+                orgUnit = orgunit,
                 orgUnitMode = query.orgUnitMode?.toString(),
                 status = query.eventStatus?.toString(),
                 program = query.program,

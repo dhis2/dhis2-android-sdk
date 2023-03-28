@@ -240,6 +240,27 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         verifyService(expectedTeiQuery)
     }
 
+    @Test
+    fun should_query_events_for_multiple_orgunits() {
+        whenever(eventPayload.items()).doReturn(emptyList())
+
+        val query = query.copy(
+            dataValue = listOf(
+                RepositoryScopeFilterItem.builder()
+                    .key("dataElement")
+                    .operator(FilterItemOperator.EQ)
+                    .value("2")
+                    .build()
+            ),
+            orgUnits = listOf("orgunit1", "orgunit2")
+        )
+        val call = getFactory().getCall(query)
+
+        call.call()
+
+        verifyEventService(query)
+    }
+
     private fun getFactory(): TrackedEntityInstanceQueryCallFactory {
         return TrackedEntityInstanceQueryCallFactory(
             trackedEntityService, eventService, mapper, apiCallExecutor, rxAPICallExecutor, dhisVersionManager
@@ -280,9 +301,18 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     private fun verifyEventService(query: TrackedEntityInstanceQueryOnline) {
+        if (query.orgUnits.size <= 1) {
+            verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
+        } else {
+            query.orgUnits.forEach {
+                verifyEventServiceForOrgunit(query, it)
+            }
+        }
+    }
+    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) {
         verify(eventService).getEvents(
             eq(EventFields.teiQueryFields),
-            eq(query.orgUnits[0] + ";" + query.orgUnits[1]),
+            eq(orgunit),
             eq(query.orgUnitMode?.toString()),
             eq(query.eventStatus?.toString()),
             eq(query.program),

@@ -72,6 +72,10 @@ class DHISVersionManagerImpl @Inject internal constructor(
             }
     }
 
+    override fun isVersion(version: DHISVersion): Boolean {
+        return version === getVersion()
+    }
+
     override fun isGreaterThan(version: DHISVersion): Boolean {
         return version < getVersion()
     }

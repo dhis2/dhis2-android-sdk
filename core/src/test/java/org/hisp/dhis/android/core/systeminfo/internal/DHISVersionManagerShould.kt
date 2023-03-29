@@ -52,6 +52,12 @@ class DHISVersionManagerShould {
     @Test
     fun compare_version_when_not_null() {
         whenever(systemInfo.version()).thenReturn("2.31.2")
+
+        assertThat(dhisVersionManager.isVersion(DHISVersion.V2_30)).isFalse()
+        assertThat(dhisVersionManager.isVersion(DHISVersion.V2_31)).isTrue()
+        assertThat(dhisVersionManager.isVersion(DHISVersion.V2_32)).isFalse()
+        assertThat(dhisVersionManager.isVersion(DHISVersion.V2_33)).isFalse()
+
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse()

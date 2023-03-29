@@ -100,6 +100,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setStatus(eventStatus);
         assertThat(repository.blockingGet().status()).isEqualTo(eventStatus);
         assertThat(repository.blockingGet().completedDate()).isNotNull();
+        assertThat(repository.blockingGet().completedBy()).isNotNull();
 
         repository.blockingDelete();
     }
@@ -113,6 +114,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         repository.setStatus(eventStatus);
         assertThat(repository.blockingGet().status()).isEqualTo(eventStatus);
         assertThat(repository.blockingGet().completedDate()).isNull();
+        assertThat(repository.blockingGet().completedBy()).isNull();
 
         repository.blockingDelete();
     }
@@ -125,6 +127,16 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
 
         repository.setCompletedDate(completedDate);
         assertThat(repository.blockingGet().completedDate()).isEqualTo(completedDate);
+
+        repository.blockingDelete();
+    }
+
+    @Test
+    public void update_completed_by() throws D2Error {
+        EventObjectRepository repository = objectRepository();
+
+        repository.setCompletedBy("admin");
+        assertThat(repository.blockingGet().completedBy()).isEqualTo("admin");
 
         repository.blockingDelete();
     }

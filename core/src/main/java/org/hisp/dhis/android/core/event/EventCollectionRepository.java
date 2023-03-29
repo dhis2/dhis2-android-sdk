@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -52,6 +53,7 @@ import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,11 +75,13 @@ public final class EventCollectionRepository
     private final EventPostParentCall postCall;
 
     private final EventStore store;
+    private final IdentifiableObjectStore<User> userStore;
     private final TrackerDataManager trackerDataManager;
     private final JobQueryCall jobQueryCall;
 
     @Inject
     EventCollectionRepository(final EventStore store,
+                              final IdentifiableObjectStore<User> userStore,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
                               final EventPostParentCall postCall,
@@ -85,9 +89,10 @@ public final class EventCollectionRepository
                               final TrackerDataManager trackerDataManager,
                               final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer,
-                new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(
-                        store, childrenAppenders, s, postCall, transformer, trackerDataManager, jobQueryCall)));
+                new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(store, userStore,
+                        childrenAppenders, s, postCall, transformer, trackerDataManager, jobQueryCall)));
         this.store = store;
+        this.userStore = userStore;
         this.postCall = postCall;
         this.trackerDataManager = trackerDataManager;
         this.jobQueryCall = jobQueryCall;
@@ -117,7 +122,7 @@ public final class EventCollectionRepository
     @Override
     public EventObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
+        return new EventObjectRepository(store, userStore, uid, childrenAppenders, updatedScope, trackerDataManager);
     }
 
     public StringFilterConnector<EventCollectionRepository> byUid() {

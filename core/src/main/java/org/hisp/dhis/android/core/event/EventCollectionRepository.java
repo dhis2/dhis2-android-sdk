@@ -176,6 +176,10 @@ public final class EventCollectionRepository
         return cf.simpleDate(Columns.COMPLETE_DATE);
     }
 
+    public StringFilterConnector<EventCollectionRepository> byCompletedBy() {
+        return cf.string(Columns.COMPLETED_BY);
+    }
+
     public DateFilterConnector<EventCollectionRepository> byDueDate() {
         return cf.simpleDate(Columns.DUE_DATE);
     }

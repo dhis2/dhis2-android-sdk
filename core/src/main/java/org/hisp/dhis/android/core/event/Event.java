@@ -140,6 +140,10 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
 
     @Nullable
     @JsonProperty()
+    public abstract String completedBy();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
 
@@ -233,6 +237,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedDate(Date completedDate);
+
+        public abstract Builder completedBy(String completedBy);
 
         public abstract Builder dueDate(Date dueDate);
 

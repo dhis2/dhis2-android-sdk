@@ -33,6 +33,14 @@ interface DHISVersionManager {
     fun getSmsVersion(): SMSVersion?
 
     /**
+     * Check if the current version is equal to the version passed as parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version matches the parameter
+     */
+    fun isVersion(version: DHISVersion): Boolean
+
+    /**
      * Check if the current version is strictly greater than the parameter.
      *
      * @param version Version to compare to

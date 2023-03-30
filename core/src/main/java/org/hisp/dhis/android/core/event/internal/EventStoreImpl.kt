@@ -171,6 +171,7 @@ internal class EventStoreImpl private constructor(
             w.bind(18, o.attributeOptionCombo())
             w.bind(19, o.deleted())
             w.bind(20, o.assignedUser())
+            w.bind(21, o.completedBy())
         }
 
         @JvmStatic

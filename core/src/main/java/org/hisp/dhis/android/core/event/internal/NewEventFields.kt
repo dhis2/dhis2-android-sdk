@@ -59,6 +59,7 @@ internal object NewEventFields {
     private const val RELATIONSHIPS = "relationships"
     private const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
     private const val ASSIGNED_USER = "assignedUser"
+    private const val COMPLETED_BY = "completedBy"
     private const val DELETED = "deleted"
     private const val TRACKED_ENTITY = "trackedEntity"
 
@@ -96,7 +97,8 @@ internal object NewEventFields {
             fh.field<String>(SCHEDULED_AT),
             fh.field<Boolean>(DELETED),
             fh.field<String>(ATTRIBUTE_OPTION_COMBO),
-            fh.field<String>(ASSIGNED_USER)
+            fh.field<String>(ASSIGNED_USER),
+            fh.field<String>(COMPLETED_BY)
         )
     }
 }

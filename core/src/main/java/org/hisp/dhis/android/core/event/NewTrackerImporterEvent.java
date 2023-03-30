@@ -129,6 +129,10 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
     @Nullable
     @JsonProperty()
+    public abstract String completedBy();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date scheduledAt();
 
@@ -208,6 +212,8 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedAt(Date completedAt);
+
+        public abstract Builder completedBy(String completedBy);
 
         public abstract Builder scheduledAt(Date scheduledAt);
 

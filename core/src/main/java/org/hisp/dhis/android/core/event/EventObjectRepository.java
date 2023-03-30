@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Date;
 import java.util.Map;
@@ -47,15 +49,18 @@ public final class EventObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository> {
 
     private final TrackerDataManager trackerDataManager;
+    private final IdentifiableObjectStore<User> userStore;
 
     EventObjectRepository(final EventStore store,
+                          final IdentifiableObjectStore<User> userStore,
                           final String uid,
                           final Map<String, ChildrenAppender<Event>> childrenAppenders,
                           final RepositoryScope scope,
                           final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope,
-                s -> new EventObjectRepository(store, uid, childrenAppenders, s, trackerDataManager));
+                s -> new EventObjectRepository(store, userStore, uid, childrenAppenders, s, trackerDataManager));
         this.trackerDataManager = trackerDataManager;
+        this.userStore = userStore;
     }
 
     public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
@@ -68,11 +73,19 @@ public final class EventObjectRepository
 
     public Unit setStatus(EventStatus eventStatus) throws D2Error {
         Date completedDate = eventStatus.equals(EventStatus.COMPLETED) ? new Date() : null;
-        return updateObject(updateBuilder().status(eventStatus).completedDate(completedDate).build());
+        String completedBy = eventStatus.equals(EventStatus.COMPLETED) ? userStore.selectFirst().username() : null;
+
+        return updateObject(
+                updateBuilder().status(eventStatus).completedDate(completedDate).completedBy(completedBy).build()
+        );
     }
 
     public Unit setCompletedDate(Date completedDate) throws D2Error {
         return updateObject(updateBuilder().completedDate(completedDate).build());
+    }
+
+    public Unit setCompletedBy(String completedBy) throws D2Error {
+        return updateObject(updateBuilder().completedBy(completedBy).build());
     }
 
     public Unit setDueDate(Date dueDate) throws D2Error {

@@ -86,7 +86,8 @@ internal object EventFields {
             fh.field<Boolean>(EventTableInfo.Columns.DELETED),
             fh.field<String>(EventTableInfo.Columns.DUE_DATE),
             fh.field<String>(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
-            fh.field<String>(EventTableInfo.Columns.ASSIGNED_USER)
+            fh.field<String>(EventTableInfo.Columns.ASSIGNED_USER),
+            fh.field<String>(EventTableInfo.Columns.COMPLETED_BY)
         )
     }
 }

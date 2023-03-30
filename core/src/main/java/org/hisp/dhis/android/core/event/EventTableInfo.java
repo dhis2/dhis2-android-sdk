@@ -68,6 +68,7 @@ public final class EventTableInfo {
         public static final String GEOMETRY_TYPE = "geometryType";
         public static final String GEOMETRY_COORDINATES = "geometryCoordinates";
         public static final String ASSIGNED_USER = "assignedUser";
+        public static final String COMPLETED_BY = "completedBy";
 
         @Override
         public String[] all() {
@@ -91,7 +92,8 @@ public final class EventTableInfo {
                     AGGREGATED_SYNC_STATE,
                     ATTRIBUTE_OPTION_COMBO,
                     DELETED,
-                    ASSIGNED_USER
+                    ASSIGNED_USER,
+                    COMPLETED_BY
             );
         }
 

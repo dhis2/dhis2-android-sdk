@@ -13,6 +13,7 @@
       "occurredAt": "2018-02-27T00:00:00.000",
       "createdAt": "2017-08-07T15:47:25.959",
       "completedAt": "2016-02-27T00:00:00.000",
+      "completedBy": "android",
       "updatedAt": "2019-01-05T22:26:39.094",
       "deleted": false,
       "geometry": {

@@ -36,5 +36,5 @@ internal data class FileResourceDownloadParams(
     val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
     val elementTypes: List<FileResourceElementType> = FileResourceElementType.values().asList(),
     val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.values().asList(),
-    val maxContentLength: Int?
+    val maxContentLength: Int? = null
 ) : BaseScope

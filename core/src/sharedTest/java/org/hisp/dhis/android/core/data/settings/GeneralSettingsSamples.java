@@ -42,6 +42,7 @@ public class GeneralSettingsSamples {
                 .smsGateway("+34678456123")
                 .smsResultSender("+34654321456")
                 .matomoID(123)
+                .fileMaxLengthBytes(10240000)
                 .matomoURL("https://www.matomo.org")
                 .allowScreenCapture(true)
                 .messageOfTheDay("Message of the day")

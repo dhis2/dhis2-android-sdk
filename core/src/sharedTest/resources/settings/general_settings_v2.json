@@ -1,5 +1,6 @@
 {
   "matomoID": 123,
+  "fileMaxLengthBytes": 10240000,
   "encryptDB": false,
   "matomoURL": "https://www.matomo.org",
   "smsGateway": "+84566464",

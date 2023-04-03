@@ -66,7 +66,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         val progressManager = D2ProgressManager(2)
         val existingFileResources = fileResourceStore.selectUids()
 
-        val correctedMaxContentLengthParams = params.copy(
+        val paramsWithCorrectedMaxContentLength = params.copy(
             maxContentLength = params.maxContentLength
                 ?: generalSettingsStore.selectFirst()?.fileMaxLengthBytes()
                 ?: defaultDownloadMaxContentLength
@@ -74,10 +74,10 @@ internal class FileResourceDownloadCall @Inject constructor(
 
         return rxCallExecutor.wrapObservableTransactionally(
             Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                downloadAggregatedValues(correctedMaxContentLengthParams, existingFileResources)
+                downloadAggregatedValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
 
-                downloadTrackerValues(correctedMaxContentLengthParams, existingFileResources)
+                downloadTrackerValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
                 fileResourceRoutine.blockingDeleteOutdatedFileResources()
                 emitter.onComplete()

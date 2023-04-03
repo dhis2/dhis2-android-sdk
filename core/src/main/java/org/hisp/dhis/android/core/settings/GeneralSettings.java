@@ -102,6 +102,9 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract Integer matomoID();
 
     @Nullable
+    public abstract Integer fileMaxLengthBytes();
+
+    @Nullable
     public abstract String matomoURL();
 
     @Nullable
@@ -144,6 +147,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder smsResultSender(String smsGateway);
 
         public abstract Builder matomoID(Integer matomoID);
+
+        public abstract Builder fileMaxLengthBytes(Integer fileMaxLengthBytes);
 
         public abstract Builder matomoURL(String matomoURL);
 

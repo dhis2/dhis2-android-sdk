@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal
+package org.hisp.dhis.periodgenerator.generator.parent
 
-import java.util.*
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
+import kotlinx.datetime.LocalDate
+import org.hisp.dhis.periodgenerator.period.Period
+import org.hisp.dhis.periodgenerator.period.PeriodType
+import org.hisp.dhis.periodgenerator.period.RelativePeriod
 
-internal interface ParentPeriodGenerator {
+internal interface PeriodGenerator {
     fun generatePeriods(): List<Period>
     fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
     fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
-    fun generatePeriod(periodId: String): Period?
+    fun generatePeriod(periodType: PeriodType, date: LocalDate, offset: Int): Period?
     fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
 }

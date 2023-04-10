@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.periodgenerator.period
 
-import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.*
 
 enum class PeriodType(
     val defaultStartPeriods: Int,
@@ -53,6 +53,40 @@ enum class PeriodType(
     FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 16),
     FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 17),
     FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 18);
+
+    fun datePeriod(): DatePeriod {
+        val date = LocalDate(2000, 1, 1)
+
+        val dailyPeriod: DatePeriod = date - date.plus(1, DateTimeUnit.DAY)
+        val weeklyPeriod: DatePeriod = date - date.plus(1, DateTimeUnit.WEEK)
+        val biWeeklyPeriod: DatePeriod = date - date.plus(2, DateTimeUnit.WEEK)
+        val monthlyPeriod: DatePeriod = date - date.plus(1, DateTimeUnit.MONTH)
+        val biMonthlyPeriod: DatePeriod = date - date.plus(2, DateTimeUnit.MONTH)
+        val quarterlyPeriod: DatePeriod = date - date.plus(4, DateTimeUnit.MONTH)
+        val sixMonthlyPeriod: DatePeriod = date - date.plus(6, DateTimeUnit.MONTH)
+        val yearlyPeriod: DatePeriod = date - date.plus(1, DateTimeUnit.YEAR)
+
+        return when (this) {
+            Daily -> dailyPeriod
+            Weekly -> weeklyPeriod
+            WeeklySaturday -> weeklyPeriod
+            WeeklySunday -> weeklyPeriod
+            WeeklyThursday -> weeklyPeriod
+            WeeklyWednesday -> weeklyPeriod
+            BiWeekly -> biWeeklyPeriod
+            Monthly -> monthlyPeriod
+            BiMonthly -> biMonthlyPeriod
+            Quarterly -> quarterlyPeriod
+            SixMonthly -> sixMonthlyPeriod
+            SixMonthlyApril -> sixMonthlyPeriod
+            SixMonthlyNov -> sixMonthlyPeriod
+            Yearly -> yearlyPeriod
+            FinancialApril -> yearlyPeriod
+            FinancialJuly -> yearlyPeriod
+            FinancialOct -> yearlyPeriod
+            FinancialNov -> yearlyPeriod
+        }
+    }
 
     companion object {
         fun periodTypeFromPeriodId(periodId: String): PeriodType {

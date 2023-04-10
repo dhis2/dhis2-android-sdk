@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal
 
-import java.util.*
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
+package org.hisp.dhis.periodgenerator.helper
 
-internal interface ParentPeriodGenerator {
-    fun generatePeriods(): List<Period>
-    fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
-    fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
-    fun generatePeriod(periodId: String): Period?
-    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+
+class CalendarHelper {
+    companion object {
+        fun weekOfYearAndYear(date: LocalDate, weekStartDay: DayOfWeek = DayOfWeek.MONDAY): Pair<Int, Int> {
+            val week: Int = (10 + date.dayOfYear + weekStartDay.ordinal - date.dayOfWeek.ordinal) / 7
+            return if (week in 1..52) {
+                Pair(week, date.year)
+            } else if (week < 1) {
+                val week = week
+                Pair(week, date.year - 1)
+            } else if (week > 52) {
+                val year = date.year
+                val week = week
+                Pair(week, year)
+            } else {
+                throw IllegalArgumentException("Error calculating week of year for $date and $weekStartDay")
+            }
+        }
+
+        fun yearIsLeap(year: Int): Boolean {
+            return LocalDate(year, 12, 31).dayOfYear == 366
+        }
+
+        fun weeksInAYear(year: Int, weekStartDay: DayOfWeek = DayOfWeek.MONDAY): Int {
+            val firstDayOfYearDayOfWeek = LocalDate(year, 1, 1).dayOfWeek
+            val lastDayOfYearDayOfWeek = LocalDate(year, 12, 31).dayOfWeek
+            return if (
+                firstDayOfYearDayOfWeek.ordinal == (weekStartDay.ordinal + DayOfWeek.THURSDAY.ordinal) % 7 ||
+                lastDayOfYearDayOfWeek.ordinal == (weekStartDay.ordinal + DayOfWeek.THURSDAY.ordinal) % 7
+            ) 53 else 52
+        }
+    }
 }

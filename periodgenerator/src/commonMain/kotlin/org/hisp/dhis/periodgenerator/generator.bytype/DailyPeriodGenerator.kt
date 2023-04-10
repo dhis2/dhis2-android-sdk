@@ -25,17 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.periodgenerator.generator
+
+package org.hisp.dhis.periodgenerator.generator.bytype
 
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.periodgenerator.period.Period
 import org.hisp.dhis.periodgenerator.period.PeriodType
-import org.hisp.dhis.periodgenerator.period.RelativePeriod
 
-internal interface PeriodGenerator {
-    fun generatePeriods(): List<Period>
-    fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
-    fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: LocalDate, offset: Int): Period?
-    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
+internal class DailyPeriodGenerator : AbstractPeriodGenerator(PeriodType.Daily) {
+    override fun startOfCurrentPeriod(date: LocalDate, periodOffset: Int): LocalDate {
+        TODO("Not yet implemented")
+    }
+
+    override fun moveToStartOfCurrentPeriod() {
+        // do nothing
+    }
+
+    override fun moveToStartOfCurrentYear() {
+        TODO("Not yet implemented")
+    }
+
+    override fun movePeriods(number: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun generateId(date: LocalDate): String {
+        TODO("Not yet implemented")
+        return "test"
+    }
 }

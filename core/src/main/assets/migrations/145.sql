@@ -1,3 +1,3 @@
-# Add fileMaxLengthBytes in GeneralSetting table (ANDROSDK-1664)
+# Add fileMaxLengthBytes in SynchronizationSetting table (ANDROSDK-1664)
 
-ALTER TABLE GeneralSetting ADD COLUMN fileMaxLengthBytes INTEGER;
+ALTER TABLE SynchronizationSetting ADD COLUMN fileMaxLengthBytes INTEGER;

@@ -45,6 +45,7 @@ public class SynchronizationSettingsSamples {
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
                 .trackerImporterVersion(TrackerImporterVersion.V2)
                 .trackerExporterVersion(TrackerExporterVersion.V2)
+                .fileMaxLengthBytes(10240000)
                 .programSettings(ProgramSettings.builder()
                         .globalSettings(ProgramSettingSamples.getProgramSetting())
                         .build())

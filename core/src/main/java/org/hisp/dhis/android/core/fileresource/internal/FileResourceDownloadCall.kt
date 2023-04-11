@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import retrofit2.Call
 
 @Reusable
@@ -58,7 +58,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private val handler: HandlerWithTransformer<FileResource>,
     private val fileResourceRoutine: FileResourceRoutine,
     private val apiCallExecutor: APICallExecutor,
-    private val generalSettingsStore: ObjectWithoutUidStore<GeneralSettings>,
+    private val synchronizationSettingsStore: ObjectWithoutUidStore<SynchronizationSettings>,
     private val context: Context
 ) {
 
@@ -68,7 +68,7 @@ internal class FileResourceDownloadCall @Inject constructor(
 
         val paramsWithCorrectedMaxContentLength = params.copy(
             maxContentLength = params.maxContentLength
-                ?: generalSettingsStore.selectFirst()?.fileMaxLengthBytes()
+                ?: synchronizationSettingsStore.selectFirst()?.fileMaxLengthBytes()
                 ?: defaultDownloadMaxContentLength
         )
 

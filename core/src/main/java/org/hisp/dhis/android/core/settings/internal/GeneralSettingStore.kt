@@ -49,7 +49,6 @@ internal object GeneralSettingStore {
         w.bind(7, o.matomoURL())
         w.bind(8, o.allowScreenCapture())
         w.bind(9, o.messageOfTheDay())
-        w.bind(10, o.fileMaxLengthBytes())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {

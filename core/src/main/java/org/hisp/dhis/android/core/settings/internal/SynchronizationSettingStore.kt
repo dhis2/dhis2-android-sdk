@@ -44,6 +44,7 @@ internal object SynchronizationSettingStore {
         w.bind(2, o.metadataSync())
         w.bind(3, o.trackerImporterVersion())
         w.bind(4, o.trackerExporterVersion())
+        w.bind(5, o.fileMaxLengthBytes())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {

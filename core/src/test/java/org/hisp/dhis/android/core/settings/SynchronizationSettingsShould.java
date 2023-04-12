@@ -54,6 +54,7 @@ public class SynchronizationSettingsShould extends BaseObjectShould implements O
         assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS);
         assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V2);
         assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerExporterVersion.V2);
+        assertThat(syncSettings.fileMaxLengthBytes()).isEqualTo(10240000);
 
         assertThat(syncSettings.dataSetSettings()).isNotNull();
         assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();

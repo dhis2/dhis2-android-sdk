@@ -75,6 +75,9 @@ public abstract class SynchronizationSettings implements CoreObject {
     @ColumnAdapter(ProgramSyncSettingsColumnAdapter.class)
     public abstract ProgramSettings programSettings();
 
+    @Nullable
+    public abstract Integer fileMaxLengthBytes();
+
     public static SynchronizationSettings create(Cursor cursor) {
         return $AutoValue_SynchronizationSettings.createFromCursor(cursor);
     }
@@ -103,6 +106,8 @@ public abstract class SynchronizationSettings implements CoreObject {
         public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 
         public abstract Builder programSettings(ProgramSettings programSettings);
+
+        public abstract Builder fileMaxLengthBytes(Integer fileMaxLengthBytes);
 
         public abstract SynchronizationSettings build();
     }

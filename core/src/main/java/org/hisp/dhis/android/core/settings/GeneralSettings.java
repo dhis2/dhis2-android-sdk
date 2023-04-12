@@ -144,7 +144,6 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder smsResultSender(String smsGateway);
 
         public abstract Builder matomoID(Integer matomoID);
-
         public abstract Builder matomoURL(String matomoURL);
 
         public abstract Builder allowScreenCapture(Boolean allowScreenCapture);

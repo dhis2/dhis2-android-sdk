@@ -55,6 +55,7 @@ public final class SynchronizationSettingTableInfo {
         public static final String METADATA_SYNC = "metadataSync";
         public static final String TRACKER_IMPORTER_VERSION = "trackerImporterVersion";
         public static final String TRACKER_EXPORTER_VERSION = "trackerExporterVersion";
+        public static final String FILE_MAX_LENGTH_BYTES = "fileMaxLengthBytes";
 
         @Override
         public String[] all() {
@@ -62,7 +63,8 @@ public final class SynchronizationSettingTableInfo {
                     DATA_SYNC,
                     METADATA_SYNC,
                     TRACKER_IMPORTER_VERSION,
-                    TRACKER_EXPORTER_VERSION
+                    TRACKER_EXPORTER_VERSION,
+                    FILE_MAX_LENGTH_BYTES
             );
         }
     }

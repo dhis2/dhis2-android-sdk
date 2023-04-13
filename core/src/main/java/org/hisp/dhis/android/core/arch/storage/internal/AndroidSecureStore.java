@@ -63,6 +63,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -123,7 +124,7 @@ public final class AndroidSecureStore implements SecureStore {
                     .setStartDate(start.getTime()).setEndDate(end.getTime())
                     .build();
         } else {
-            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT)
+            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                     .build();
@@ -213,6 +214,11 @@ public final class AndroidSecureStore implements SecureStore {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(key);
         editor.apply();
+    }
+
+    @Override
+    public Set<String> getAllKeys() {
+        return preferences.getAll().keySet();
     }
 
     private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,

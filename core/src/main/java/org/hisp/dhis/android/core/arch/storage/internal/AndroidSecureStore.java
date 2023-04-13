@@ -145,9 +145,8 @@ public final class AndroidSecureStore implements SecureStore {
         if (data == null) {
             return;
         }
-        KeyStore ks = null;
         try {
-            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            KeyStore ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
 
             if (ks.getCertificate(ALIAS) == null) {
@@ -168,19 +167,16 @@ public final class AndroidSecureStore implements SecureStore {
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
-            deleteKeyStoreEntry(ks, ALIAS);
             throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key, e);
         }
     }
 
     public String getData(@NonNull String key) {
-        KeyStore ks = null;
-        PrivateKey privateKey;
         String value = null;
         try {
-            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            KeyStore ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
-            privateKey = (PrivateKey) ks.getKey(ALIAS, null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
             value = preferences.getString(key, null);
 
             return value == null ? null :
@@ -188,7 +184,6 @@ public final class AndroidSecureStore implements SecureStore {
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
-            deleteKeyStoreEntry(ks, ALIAS);
             String valueToDisplay = value == null ? "null" : value;
             String errorMessage = String.format(
                     "Couldn't get value from AndroidSecureStore for key: %s and value: %s",

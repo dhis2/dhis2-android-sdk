@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-data class TrackedEntityInstanceQueryOnline(
+internal data class TrackedEntityInstanceQueryOnline(
     val page: Int,
     val pageSize: Int,
     val paging: Boolean,
@@ -44,9 +44,8 @@ data class TrackedEntityInstanceQueryOnline(
     val program: String? = null,
     val programStage: String? = null,
     val query: String? = null,
-    val attribute: List<RepositoryScopeFilterItem> = emptyList(),
-    val filter: List<RepositoryScopeFilterItem> = emptyList(),
-    val dataValue: List<RepositoryScopeFilterItem> = emptyList(),
+    val attributeFilter: List<RepositoryScopeFilterItem> = emptyList(),
+    val dataValueFilter: List<RepositoryScopeFilterItem> = emptyList(),
     val programStartDate: Date? = null,
     val programEndDate: Date? = null,
     val enrollmentStatus: EnrollmentStatus? = null,

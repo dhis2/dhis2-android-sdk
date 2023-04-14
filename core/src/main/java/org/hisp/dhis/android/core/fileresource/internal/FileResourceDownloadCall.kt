@@ -39,12 +39,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import retrofit2.Call
 
 @Reusable
@@ -56,6 +58,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private val handler: HandlerWithTransformer<FileResource>,
     private val fileResourceRoutine: FileResourceRoutine,
     private val apiCallExecutor: APICallExecutor,
+    private val synchronizationSettingsStore: ObjectWithoutUidStore<SynchronizationSettings>,
     private val context: Context
 ) {
 
@@ -63,12 +66,18 @@ internal class FileResourceDownloadCall @Inject constructor(
         val progressManager = D2ProgressManager(2)
         val existingFileResources = fileResourceStore.selectUids()
 
+        val paramsWithCorrectedMaxContentLength = params.copy(
+            maxContentLength = params.maxContentLength
+                ?: synchronizationSettingsStore.selectFirst()?.fileMaxLengthBytes()
+                ?: defaultDownloadMaxContentLength
+        )
+
         return rxCallExecutor.wrapObservableTransactionally(
             Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                downloadAggregatedValues(params, existingFileResources)
+                downloadAggregatedValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
 
-                downloadTrackerValues(params, existingFileResources)
+                downloadTrackerValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
                 fileResourceRoutine.blockingDeleteOutdatedFileResources()
                 emitter.onComplete()
@@ -188,5 +197,9 @@ internal class FileResourceDownloadCall @Inject constructor(
                 null
             }
         }
+    }
+
+    companion object {
+        const val defaultDownloadMaxContentLength: Int = 6000000
     }
 }

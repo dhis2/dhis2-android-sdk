@@ -78,7 +78,6 @@ internal interface TrackerExporterService {
         @Query(EVENT_STATUS) eventStatus: String? = null,
         @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String? = null,
         @Query(QUERY) query: String? = null,
-        @Query(ATTRIBUTE) attribute: List<String?>? = null,
         @Query(FILTER) filter: List<String?>? = null,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
         @Query(UPDATED_AFTER) lastUpdatedStartDate: String? = null,
@@ -146,7 +145,6 @@ internal interface TrackerExporterService {
         const val OU_MODE = "ouMode"
         const val FIELDS = "fields"
         const val QUERY = "query"
-        const val ATTRIBUTE = "attribute"
         const val PAGING = "paging"
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"

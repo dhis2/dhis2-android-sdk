@@ -33,6 +33,8 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
+import java.util.Set;
+
 public final class AndroidInsecureStore implements InsecureStore {
 
     private static final String PREFERENCES_FILE = "preferences";
@@ -58,5 +60,10 @@ public final class AndroidInsecureStore implements InsecureStore {
         preferences.edit()
                 .remove(key)
                 .apply();
+    }
+
+    @Override
+    public Set<String> getAllKeys() {
+        return preferences.getAll().keySet();
     }
 }

@@ -187,11 +187,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
-        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
-            List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
-            attributes.add(filterItem);
-            return scope.toBuilder().attribute(attributes).build();
-        });
+        return byFilter(attributeId);
     }
 
     /**
@@ -207,11 +203,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFilter(String attributeId) {
-        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
-            List<RepositoryScopeFilterItem> filters = new ArrayList<>(scope.filter());
-            filters.add(filterItem);
-            return scope.toBuilder().filter(filters).build();
-        });
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> scopeHelper.addFilter(scope, filterItem));
     }
 
     /**

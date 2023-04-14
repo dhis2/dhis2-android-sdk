@@ -149,7 +149,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun get_scope() {
         val scope = d2.trackedEntityModule().trackedEntityInstanceQuery().scope
 
-        assertThat(scope.attribute()).isNotNull()
+        assertThat(scope.filter()).isNotNull()
     }
 
     @Test

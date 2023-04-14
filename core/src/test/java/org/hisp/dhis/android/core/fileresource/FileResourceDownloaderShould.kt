@@ -58,7 +58,7 @@ class FileResourceDownloaderShould {
         assertThat(params.domainTypes).isNotEmpty()
         assertThat(params.elementTypes).isNotEmpty()
         assertThat(params.valueTypes).isNotEmpty()
-        assertThat(params.maxContentLength).isNotNull()
+        assertThat(params.maxContentLength).isNull()
     }
 
     @Test

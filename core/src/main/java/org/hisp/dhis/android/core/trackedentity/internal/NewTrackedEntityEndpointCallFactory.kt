@@ -110,7 +110,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
         return Callable {
             runBlocking {
-                val shouldCallEventsFirst = query.dataValue.isNotEmpty() ||
+                val shouldCallEventsFirst = query.dataValueFilter.isNotEmpty() ||
                     query.dueStartDate != null || query.dueEndDate != null
 
                 if (shouldCallEventsFirst) {
@@ -162,8 +162,8 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 program = query.program,
                 programStage = query.programStage,
                 programStatus = query.enrollmentStatus?.toString(),
-                filter = toAPIFilterFormat(query.dataValue, upper = false),
-                filterAttributes = toAPIFilterFormat(query.filter, upper = false),
+                filter = toAPIFilterFormat(query.dataValueFilter, upper = false),
+                filterAttributes = toAPIFilterFormat(query.attributeFilter, upper = false),
                 followUp = query.followUp,
                 occurredAfter = query.eventStartDate.simpleDateFormat(),
                 occurredBefore = query.eventStartDate.simpleDateFormat(),
@@ -210,8 +210,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 eventStatus = query.eventStatus?.toString(),
                 trackedEntityType = query.trackedEntityType,
                 query = query.query,
-                attribute = toAPIFilterFormat(query.attribute, upper = true),
-                filter = toAPIFilterFormat(query.filter, upper = true),
+                filter = toAPIFilterFormat(query.attributeFilter, upper = true),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
@@ -239,8 +238,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             program = query.program,
             uids = events.mapNotNull { it.trackedEntity() }.distinct(),
             query = query.query,
-            attribute = query.attribute,
-            filter = query.filter,
+            attributeFilter = query.attributeFilter,
             order = query.order,
             trackedEntityType = query.trackedEntityType,
             includeDeleted = query.includeDeleted

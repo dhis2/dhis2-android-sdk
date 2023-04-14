@@ -348,13 +348,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     }
 
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
-        // TODO Filter by program attributes in case program is provided
-        appendFilterWhere(where, scope.filter())
-        appendFilterWhere(where, scope.attribute())
-    }
-
-    private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
-        for (item in items) {
+        for (item in scope.filter()) {
             val sub = String.format(
                 "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,

@@ -69,8 +69,11 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     @Nullable
     public abstract RepositoryScopeFilterItem query();
 
+    @Deprecated
     @NonNull
-    public abstract List<RepositoryScopeFilterItem> attribute();
+    public List<RepositoryScopeFilterItem> attribute() {
+        return filter();
+    }
 
     @NonNull
     public abstract List<RepositoryScopeFilterItem> filter();
@@ -136,7 +139,6 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .dataValue(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
@@ -165,8 +167,6 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
         public abstract Builder programStage(String programStage);
 
         public abstract Builder query(RepositoryScopeFilterItem query);
-
-        public abstract Builder attribute(List<RepositoryScopeFilterItem> attribute);
 
         public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
 

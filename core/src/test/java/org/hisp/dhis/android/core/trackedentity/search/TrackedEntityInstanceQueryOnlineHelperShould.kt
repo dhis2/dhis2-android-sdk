@@ -83,6 +83,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val onlineQueries = onlineHelper.fromScope(scope)
 
         assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].filter.size).isEqualTo(1)
+        assertThat(onlineQueries[0].attributeFilter.size).isEqualTo(1)
     }
 }

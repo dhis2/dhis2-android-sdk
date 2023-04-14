@@ -74,20 +74,6 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                     .build()
             )
             .eventStatus(listOf(EventStatus.ACTIVE))
-            .attribute(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("attributeUid1")
-                        .operator(FilterItemOperator.EQ)
-                        .value("value1")
-                        .build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attributeUid2")
-                        .operator(FilterItemOperator.EQ)
-                        .value("value2")
-                        .build()
-                )
-            )
             .filter(
                 listOf(
                     RepositoryScopeFilterItem.builder()

@@ -78,7 +78,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private val teis: List<TrackedEntityInstance> = mock()
     private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
-    private val filter: List<RepositoryScopeFilterItem> = emptyList()
 
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
@@ -104,8 +103,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
             query = "queryStr",
-            attribute = attribute,
-            filter = filter,
+            attributeFilter = attribute,
             includeDeleted = false,
             lastUpdatedStartDate = Date(),
             lastUpdatedEndDate = Date(),
@@ -222,7 +220,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(eventPayload.items()).doReturn(events)
 
         val query = query.copy(
-            dataValue = listOf(
+            dataValueFilter = listOf(
                 RepositoryScopeFilterItem.builder()
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
@@ -245,7 +243,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(eventPayload.items()).doReturn(emptyList())
 
         val query = query.copy(
-            dataValue = listOf(
+            dataValueFilter = listOf(
                 RepositoryScopeFilterItem.builder()
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
@@ -288,7 +286,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(expectedStatus?.toString()),
             eq(query.trackedEntityType),
             eq(query.query),
-            any(),
             any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
@@ -339,7 +336,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
         return whenever(
             trackedEntityService.query(
-                anyOrNull(),
                 anyOrNull(),
                 anyOrNull(),
                 anyOrNull(),

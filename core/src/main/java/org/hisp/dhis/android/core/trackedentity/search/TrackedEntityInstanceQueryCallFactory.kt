@@ -62,7 +62,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     }
 
     private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
-        val shouldCallEventsFirst = query.dataValue.isNotEmpty() ||
+        val shouldCallEventsFirst = query.dataValueFilter.isNotEmpty() ||
             query.dueStartDate != null || query.dueEndDate != null
 
         return if (shouldCallEventsFirst) {
@@ -109,7 +109,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 program = query.program,
                 programStage = query.programStage,
                 programStatus = query.enrollmentStatus?.toString(),
-                filter = toAPIFilterFormat(query.dataValue, upper = true),
+                filter = toAPIFilterFormat(query.dataValueFilter, upper = true),
                 followUp = query.followUp,
                 startDate = query.eventStartDate.simpleDateFormat(),
                 endDate = query.eventEndDate.simpleDateFormat(),
@@ -148,8 +148,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
             eventStatus = getEventStatus(query),
             trackedEntityType = query.trackedEntityType,
             query = query.query,
-            attribute = toAPIFilterFormat(query.attribute, upper = true),
-            filter = toAPIFilterFormat(query.filter, upper = true),
+            filter = toAPIFilterFormat(query.attributeFilter, upper = true),
             assignedUserMode = query.assignedUserMode?.toString(),
             lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
             lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
@@ -197,7 +196,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         ): TrackedEntityInstanceQueryOnline {
             return query.copy(
                 uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
-                dataValue = emptyList(),
+                dataValueFilter = emptyList(),
                 eventStatus = null,
                 eventStartDate = null,
                 eventEndDate = null,

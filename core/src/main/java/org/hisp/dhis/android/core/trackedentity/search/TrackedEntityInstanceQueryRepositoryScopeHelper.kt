@@ -262,4 +262,12 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
             builder.order(existingOrder + items)
         }
     }
+
+    fun addFilter(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        filter: RepositoryScopeFilterItem
+    ): TrackedEntityInstanceQueryRepositoryScope {
+        val otherFilters = scope.filter().filterNot { it.key() == filter.key() && it.operator() == filter.operator() }
+        return scope.toBuilder().filter(otherFilters + filter).build()
+    }
 }

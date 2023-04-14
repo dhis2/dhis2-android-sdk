@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class InMemorySecureStore implements SecureStore {
 
@@ -47,5 +48,10 @@ public final class InMemorySecureStore implements SecureStore {
 
     public void removeData(String key) {
         dataMap.remove(key);
+    }
+
+    @Override
+    public Set<String> getAllKeys() {
+        return dataMap.keySet();
     }
 }

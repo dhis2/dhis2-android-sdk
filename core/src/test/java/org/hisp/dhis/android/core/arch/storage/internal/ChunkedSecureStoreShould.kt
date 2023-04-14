@@ -25,18 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+import com.nhaarman.mockitokotlin2.*
+import org.junit.Before
+import org.junit.Test
 
-import java.util.Set;
+class ChunkedSecureStoreShould {
 
-public interface KeyValueStore {
+    private val internalSecureStore: SecureStore = mock()
 
-    void setData(String key, String data);
+    private lateinit var chunkedSecureStore: ChunkedSecureStore
 
-    String getData(String key);
+    @Before
+    fun setUp() {
+        chunkedSecureStore = ChunkedSecureStore(internalSecureStore)
+    }
 
-    void removeData(String key);
+    @Test
+    fun should_remove_matched_keys() {
+        whenever(internalSecureStore.allKeys).doReturn(
+            setOf(
+                "sampleKey",
+                "sampleKey_[LEN]_",
+                "sampleKey_[0]_",
+                "sampleKey_[1]_",
+                "sampleKey_[11]_",
+                "sampleKey_[110]_",
+                "otherKey",
+                "otherKey_[LEN]_",
+                "otherKey_[1]_",
+                "sampleKey_[3]",
+                "OTHER_CONFIG",
+            )
+        )
 
-    Set<String> getAllKeys();
+        chunkedSecureStore.removeData("sampleKey")
+
+        verify(internalSecureStore).allKeys
+        verify(internalSecureStore).removeData("sampleKey")
+        verify(internalSecureStore).removeData("sampleKey_[LEN]_")
+        verify(internalSecureStore).removeData("sampleKey_[0]_")
+        verify(internalSecureStore).removeData("sampleKey_[1]_")
+        verify(internalSecureStore).removeData("sampleKey_[11]_")
+        verify(internalSecureStore).removeData("sampleKey_[110]_")
+        verifyNoMoreInteractions(internalSecureStore)
+    }
 }

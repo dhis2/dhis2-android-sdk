@@ -60,25 +60,25 @@ internal abstract class ProgramMinMaxFunction : ExpressionItem {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val isDataElement = ctx.uid1.text != null
+        val isDataElement = ctx.uid1 != null
         val programStageId = ctx.uid0.text
 
         return if (isDataElement) {
             val dataElementId = ctx.uid1.text
             "(SELECT ${getSqlAggregator()}(${TrackedEntityDataValueTableInfo.Columns.VALUE}) " +
-                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                    "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
-                    "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
-                    "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-                    "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
-                    "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
-                    ")"
+                "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
+                "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
+                "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
+                "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
+                "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
+                ")"
         } else {
             "(SELECT ${getSqlAggregator()}(${EventTableInfo.Columns.EVENT_DATE}) " +
-                    "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
-                    "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
-                    ")"
+                "FROM ${EventTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
+                "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
+                ")"
         }
     }
 }

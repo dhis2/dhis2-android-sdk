@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -433,6 +434,70 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
+    fun should_evaluate_max_min_functions() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+
+        val event1 = generator.generate()
+        val eventDate1 = DateUtils.SIMPLE_DATE_FORMAT.parse("2023-02-03")
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = eventDate1
+        )
+
+        val event2 = generator.generate()
+        val eventDate2 = DateUtils.SIMPLE_DATE_FORMAT.parse("2023-02-06")
+        helper.createTrackerEvent(
+            event2, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = eventDate2
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "1")
+        helper.insertTrackedEntityDataValue(event1, dataElement2.uid(), "50")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "5")
+        helper.insertTrackedEntityDataValue(event2, dataElement2.uid(), "10")
+        helper.insertTrackedEntityDataValue(event2, dataElement3.uid(), "500")
+
+        listOf(
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement1.uid())})", AnalyticsType.EVENT, "6"),
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement2.uid())})", AnalyticsType.EVENT, "60"),
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement3.uid())})", AnalyticsType.EVENT, "500"),
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement1.uid())})", AnalyticsType.ENROLLMENT, "5"),
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement2.uid())})", AnalyticsType.ENROLLMENT, "50"),
+            Triple("d2:maxValue(${de(programStage1.uid(), dataElement3.uid())})", AnalyticsType.ENROLLMENT, "500"),
+
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement1.uid())})", AnalyticsType.EVENT, "6"),
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement2.uid())})", AnalyticsType.EVENT, "60"),
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement3.uid())})", AnalyticsType.EVENT, "500"),
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement1.uid())})", AnalyticsType.ENROLLMENT, "1"),
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement2.uid())})", AnalyticsType.ENROLLMENT, "10"),
+            Triple("d2:minValue(${de(programStage1.uid(), dataElement3.uid())})", AnalyticsType.ENROLLMENT, "500"),
+        ).forEach {
+            assertThat(
+                evaluateProgramIndicator(
+                    expression = it.first,
+                    analyticsType = it.second
+                )
+            ).isEqualTo(it.third)
+        }
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = "d2:daysBetween('2023-02-01', d2:maxValue(PS_EVENTDATE:${programStage1.uid()}))",
+                analyticsType = AnalyticsType.ENROLLMENT
+            )
+        ).isEqualTo("5")
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = "d2:daysBetween('2023-02-01', d2:minValue(PS_EVENTDATE:${programStage1.uid()}))",
+                analyticsType = AnalyticsType.ENROLLMENT
+            )
+        ).isEqualTo("2")
+    }
+
+    @Test
     fun should_evaluate_null_functions() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
@@ -658,7 +723,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_max_min_functions() {
+    fun should_evaluate_greatest_least_functions() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())

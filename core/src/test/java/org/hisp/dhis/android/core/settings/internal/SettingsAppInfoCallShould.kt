@@ -65,11 +65,11 @@ class SettingsAppInfoCallShould {
     fun setUp() {
         whenever(service.info()) doReturn settingAppInfoSingle
         whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-                Single.just(settingsAppInfo)
+            Single.just(settingsAppInfo)
 
         whenever(service.generalSettings(SettingsAppDataStoreVersion.V1_1)) doReturn generalSettingsSingle
         whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
-                Single.just(generalSettings)
+            Single.just(generalSettings)
 
         dataSetSettingCall = SettingsAppInfoCall(service, apiCallExecutor)
     }
@@ -114,9 +114,9 @@ class SettingsAppInfoCallShould {
     @Test
     fun throws_D2_exception_if_other_error_than_not_found_in_general_settings() {
         whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-                Single.error(D2ErrorSamples.notFound())
+            Single.error(D2ErrorSamples.notFound())
         whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
-                Single.error(D2ErrorSamples.get())
+            Single.error(D2ErrorSamples.get())
 
         val exception = assertThrows(RuntimeException::class.java) {
             dataSetSettingCall.fetch(false).blockingGet()

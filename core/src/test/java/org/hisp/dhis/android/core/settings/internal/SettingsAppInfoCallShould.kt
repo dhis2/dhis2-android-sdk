@@ -35,7 +35,6 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.AppMetadata
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.junit.Assert.assertThrows
@@ -50,14 +49,14 @@ class SettingsAppInfoCallShould {
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
 
-    private val settingAppMetadataSingle: Single<List<AppMetadata>> = mock()
-    private val generalSettingsSingle: Single<GeneralSettings> = mock()
     private val settingAppInfoSingle: Single<SettingsAppInfo> = mock()
+    private val settingsAppInfo = SettingsAppInfo.builder()
+        .dataStoreVersion(SettingsAppDataStoreVersion.V2_0)
+        .build()
 
-    private val appMetadata = AppMetadata.builder()
-        .name("Settings App")
-        .version("1.1.0")
-        .key("android-settings-app")
+    private val generalSettingsSingle: Single<GeneralSettings> = mock()
+    private val generalSettings = GeneralSettings.builder()
+        .encryptDB(true)
         .build()
 
     private lateinit var dataSetSettingCall: SettingsAppInfoCall
@@ -65,16 +64,29 @@ class SettingsAppInfoCallShould {
     @Before
     fun setUp() {
         whenever(service.info()) doReturn settingAppInfoSingle
+        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
+                Single.just(settingsAppInfo)
 
         whenever(service.generalSettings(SettingsAppDataStoreVersion.V1_1)) doReturn generalSettingsSingle
-        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
-            Single.just(listOf(appMetadata))
+        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
+                Single.just(generalSettings)
 
         dataSetSettingCall = SettingsAppInfoCall(service, apiCallExecutor)
     }
 
     @Test
-    fun default_to_version_1_if_not_found() {
+    fun default_to_version_2_if_info_found() {
+        when (val version = dataSetSettingCall.fetch(false).blockingGet()) {
+            is SettingsAppVersion.Valid -> {
+                assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V2_0)
+                assertThat(version.app).isNotEmpty()
+            }
+            else -> fail("Unexpected version")
+        }
+    }
+
+    @Test
+    fun default_to_version_1_if_info_not_found() {
         whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
@@ -88,8 +100,10 @@ class SettingsAppInfoCallShould {
     }
 
     @Test
-    fun return_not_installed() {
-        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
+    fun return_data_store_empty_if_cannot_found_anything() {
+        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
+        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
         val version = dataSetSettingCall.fetch(false).blockingGet()
@@ -98,9 +112,11 @@ class SettingsAppInfoCallShould {
     }
 
     @Test
-    fun throws_D2_exception_if_other_error_than_not_found_in_metadata() {
-        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
-            Single.error(D2ErrorSamples.get())
+    fun throws_D2_exception_if_other_error_than_not_found_in_general_settings() {
+        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
+                Single.error(D2ErrorSamples.notFound())
+        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
+                Single.error(D2ErrorSamples.get())
 
         val exception = assertThrows(RuntimeException::class.java) {
             dataSetSettingCall.fetch(false).blockingGet()

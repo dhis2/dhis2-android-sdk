@@ -29,6 +29,5 @@ package org.hisp.dhis.android.core.settings.internal
 
 internal sealed class SettingsAppVersion {
     class Valid(val dataStore: SettingsAppDataStoreVersion, val app: String) : SettingsAppVersion()
-    object Unsupported : SettingsAppVersion()
-    object NotInstalled : SettingsAppVersion()
+    object DataStoreEmpty : SettingsAppVersion()
 }

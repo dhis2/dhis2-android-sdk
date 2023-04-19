@@ -44,9 +44,6 @@ internal interface SettingService {
     @GET("userSettings")
     fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
 
-    @GET("apps")
-    fun appMetadata(@Query("filter") filter: String): Single<List<AppMetadata>>
-
     @GET
     fun settingsAppInfo(@Url url: String): Single<SettingsAppInfo>
 

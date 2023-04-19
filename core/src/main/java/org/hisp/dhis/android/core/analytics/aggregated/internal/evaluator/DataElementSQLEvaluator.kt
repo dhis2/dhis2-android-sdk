@@ -60,6 +60,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         }
     }
 
+    @Suppress("LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,

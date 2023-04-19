@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppMetadata
+import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
@@ -50,6 +51,7 @@ class SettingsAppInfoCallShould {
     private val apiCallExecutor: RxAPICallExecutor = mock()
 
     private val settingAppMetadataSingle: Single<List<AppMetadata>> = mock()
+    private val generalSettingsSingle: Single<GeneralSettings> = mock()
     private val settingAppInfoSingle: Single<SettingsAppInfo> = mock()
 
     private val appMetadata = AppMetadata.builder()
@@ -64,7 +66,7 @@ class SettingsAppInfoCallShould {
     fun setUp() {
         whenever(service.info()) doReturn settingAppInfoSingle
 
-        whenever(service.appMetadata()) doReturn settingAppMetadataSingle
+        whenever(service.generalSettings(SettingsAppDataStoreVersion.V1_1)) doReturn generalSettingsSingle
         whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
             Single.just(listOf(appMetadata))
 
@@ -92,7 +94,7 @@ class SettingsAppInfoCallShould {
 
         val version = dataSetSettingCall.fetch(false).blockingGet()
 
-        assertThat(version is SettingsAppVersion.NotInstalled).isTrue()
+        assertThat(version is SettingsAppVersion.DataStoreEmpty).isTrue()
     }
 
     @Test

@@ -419,6 +419,11 @@ internal object ProgramIndicatorEvaluatorHelper {
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             AggregationType.DEFAULT -> AggregationType.AVERAGE
 
+            AggregationType.LAST_LAST_ORG_UNIT,
+            AggregationType.FIRST_FIRST_ORG_UNIT,
+            AggregationType.MAX_SUM_ORG_UNIT,
+            AggregationType.MIN_SUM_ORG_UNIT,
+
             AggregationType.VARIANCE,
             AggregationType.STDDEV,
             AggregationType.CUSTOM,

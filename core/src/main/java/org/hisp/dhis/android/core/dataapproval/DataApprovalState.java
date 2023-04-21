@@ -37,7 +37,10 @@ public enum DataApprovalState {
     APPROVED_HERE,
     ACCEPTED_HERE,
 
+    @Deprecated
     UNAPPROVED_ELSEWHERE,
+    @Deprecated
     APPROVED_ELSEWHERE,
+    @Deprecated
     ACCEPTED_ELSEWHERE
 }

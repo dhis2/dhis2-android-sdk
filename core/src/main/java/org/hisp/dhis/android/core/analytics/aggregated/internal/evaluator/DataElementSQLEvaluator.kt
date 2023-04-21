@@ -60,6 +60,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         }
     }
 
+    @Suppress("LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -119,6 +120,11 @@ internal class DataElementSQLEvaluator @Inject constructor(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
+            AggregationType.LAST_LAST_ORG_UNIT,
+            AggregationType.FIRST_FIRST_ORG_UNIT,
+            AggregationType.MAX_SUM_ORG_UNIT,
+            AggregationType.MIN_SUM_ORG_UNIT,
+
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
             AggregationType.VARIANCE,

@@ -36,10 +36,6 @@ internal class SettingAppService @Inject constructor(
     private val settingService: SettingService
 ) {
 
-    fun appMetadata(): Single<List<AppMetadata>> {
-        return settingService.appMetadata(SETTINGS_APP_FILTER)
-    }
-
     fun info(): Single<SettingsAppInfo> {
         return settingService.settingsAppInfo("$ANDROID_APP_NAMESPACE_V2/info")
     }
@@ -87,8 +83,6 @@ internal class SettingAppService @Inject constructor(
     companion object {
         const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
         const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
-        const val SETTINGS_APP_NAME = "Android Settings"
-        const val SETTINGS_APP_FILTER = "name:eq:$SETTINGS_APP_NAME"
         const val APK_DISTRIBUTION_NAMESPACE = "dataStore/APK_DISTRIBUTION"
     }
 }

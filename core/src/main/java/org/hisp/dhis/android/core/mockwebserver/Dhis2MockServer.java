@@ -56,7 +56,6 @@ public class Dhis2MockServer {
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
     private static final String STOCK_USE_CASES_JSON = "usecase.stock/stock_use_cases.json";
-    private static final String ANDROID_SETTINGS_METADATA_JSON = "settings/app_metadata_list.json";
     private static final String ANDROID_SETTINGS_INFO_JSON = "settings/app_info.json";
     private static final String GENERAL_SETTINGS_V1_JSON = "settings/general_settings_v1.json";
     private static final String GENERAL_SETTINGS_V2_JSON = "settings/general_settings_v2.json";
@@ -194,8 +193,6 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
                     return createMockResponse(STOCK_USE_CASES_JSON);
-                } else if (path.startsWith("/api/apps?filter")) {
-                    return createMockResponse(ANDROID_SETTINGS_METADATA_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
                     return createMockResponse(ANDROID_SETTINGS_INFO_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
@@ -312,7 +309,6 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() {
         enqueueMockResponse(USER_JSON);
-        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
@@ -323,7 +319,6 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() {
-        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);

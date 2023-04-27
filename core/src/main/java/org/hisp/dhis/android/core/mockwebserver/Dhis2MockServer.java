@@ -195,11 +195,11 @@ public class Dhis2MockServer {
                     return createMockResponse(STOCK_USE_CASES_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
                     return createMockResponse(ANDROID_SETTINGS_INFO_JSON);
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/general_settings")) {
                     return createMockResponse(GENERAL_SETTINGS_V1_JSON);
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/dataSet_settings")) {
                     return createMockResponse(DATASET_SETTINGS_JSON);
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/program_settings")) {
                     return createMockResponse(PROGRAM_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings")) {
                     return createMockResponse(GENERAL_SETTINGS_V2_JSON);

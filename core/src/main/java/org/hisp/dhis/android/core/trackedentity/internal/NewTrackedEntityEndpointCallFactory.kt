@@ -32,9 +32,9 @@ import io.reactivex.Single
 import java.util.concurrent.Callable
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.wrapRxSingle
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
@@ -60,7 +60,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
 ) : TrackedEntityEndpointCallFactory() {
 
     override fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
-        return rxSingle {
+        return wrapRxSingle {
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.allFields,
                 trackedEntityInstances = getUidStr(query),

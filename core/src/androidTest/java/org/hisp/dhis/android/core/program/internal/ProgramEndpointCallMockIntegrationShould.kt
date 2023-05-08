@@ -58,7 +58,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
     fun persist_program_when_call() {
         val store = ProgramStore.create(databaseAdapter)
 
-        assertThat(store.count()).isEqualTo(2)
+        assertThat(store.count()).isEqualTo(3)
         assertThat(store.selectByUid(programUid)!!.toBuilder().id(null).build())
             .isEqualTo(ProgramSamples.getAntenatalProgram())
     }

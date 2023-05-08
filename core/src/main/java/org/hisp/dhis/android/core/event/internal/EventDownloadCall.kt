@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -63,10 +65,10 @@ internal class EventDownloadCall @Inject internal constructor(
         return eventQueryBundleFactory.getQueries(params)
     }
 
-    override fun getItems(query: TrackerAPIQuery): List<Event> {
+    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<Event>> {
         return rxCallExecutor.wrapSingle(
             trackerParentCallFactory.getEventCall().getCollectionCall(query), true
-        ).blockingGet().items()
+        )
     }
 
     override fun persistItems(

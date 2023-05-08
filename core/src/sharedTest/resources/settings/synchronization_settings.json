@@ -34,7 +34,7 @@
       "teiDBTrimming": 500,
       "eventsDownload": 1000,
       "updateDownload": "ANY",
-      "settingDownload": "PER_ORG_UNIT",
+      "settingDownload": "ALL_ORG_UNITS",
       "eventsDBTrimming": 1000,
       "updateDBTrimming": "ANY",
       "settingDBTrimming": "GLOBAL",

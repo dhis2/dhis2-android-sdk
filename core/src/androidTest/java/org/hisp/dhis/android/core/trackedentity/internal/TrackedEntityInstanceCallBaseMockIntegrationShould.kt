@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -158,7 +158,9 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         dhis2MockServer.enqueueMockResponse(teiWithRelationshipFile)
         dhis2MockServer.enqueueMockResponse(teiCollectionFile)
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
+            .byProgramUid("IpHINAT79UW")
+            .blockingDownload()
 
         val teis = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
 

@@ -39,7 +39,7 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
     fun emit_progress() {
         val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().download().test()
 
-        testObserver.assertValueCount(4)
+        testObserver.assertValueCount(5)
 
         testObserver.assertValueAt(0) { v: TrackerD2Progress ->
             !v.isComplete &&
@@ -47,13 +47,16 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
                 v.programs().all { (_, progress) -> !progress.isComplete && progress.syncStatus == null }
         }
         testObserver.assertValueAt(1) { v ->
-            !v.isComplete && v.doneCalls().size == 2 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 2 && programSucceeded(v.programs(), "IpHINAT79UW")
         }
         testObserver.assertValueAt(2) { v ->
             !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(3) { v ->
-            v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(4) { v ->
+            v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
         }
 
         testObserver.dispose()
@@ -62,6 +65,16 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
     private fun allProgramsSucceeded(programs: Map<String, D2ProgressStatus>): Boolean {
         return programs.all { (_, progress) ->
             progress.isComplete && progress.syncStatus == D2ProgressSyncStatus.SUCCESS
+        }
+    }
+
+    private fun programSucceeded(programs: Map<String, D2ProgressStatus>, program: String): Boolean {
+        return programs.all { (programsProgram, progress) ->
+            if (programsProgram == program) {
+                progress.isComplete && progress.syncStatus == D2ProgressSyncStatus.SUCCESS
+            } else {
+                !progress.isComplete
+            }
         }
     }
 }

@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import io.reactivex.Single
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -64,10 +66,10 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         return queryFactory.getQueries(params)
     }
 
-    override fun getItems(query: TrackerAPIQuery): List<TrackedEntityInstance> {
+    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
         return rxCallExecutor.wrapSingle(
             trackerCallFactory.getTrackedEntityCall().getCollectionCall(query), true
-        ).blockingGet().items()
+        )
     }
 
     override fun persistItems(

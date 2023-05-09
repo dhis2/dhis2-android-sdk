@@ -25,39 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-
-import java.util.Collection;
-
-@AutoValue
-public abstract class DataApprovalQuery extends BaseQuery {
-
-    public abstract Collection<String> workflowsUids();
-
-    public abstract Collection<String> organisationUnistUids();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> attributeOptionCombosUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataApprovalQuery create(Collection<String> workflowsUids,
-                                           Collection<String> organisationUnitsUids,
-                                           Collection<String> periodIds,
-                                           Collection<String> attributeOptionCombosUids,
-                                           String lastUpdatedStr) {
-
-        return new AutoValue_DataApprovalQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, workflowsUids, organisationUnitsUids,
-                periodIds, attributeOptionCombosUids, lastUpdatedStr);
-    }
-}
+internal data class DataSetCompleteRegistrationQuery(
+    val dataSetUids: Collection<String>,
+    val periodIds: Collection<String>,
+    val rootOrgUnitUids: Collection<String>,
+    val lastUpdatedStr: String?,
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false
+)

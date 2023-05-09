@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.common.Unit
@@ -41,7 +40,7 @@ import retrofit2.http.*
 internal interface DataSetCompleteRegistrationService {
 
     @GET("completeDataSetRegistrations")
-    fun getDataSetCompleteRegistrations(
+    suspend fun getDataSetCompleteRegistrations(
         @Query("fields") @Which fields: Fields<DataSetCompleteRegistration>,
         @Query("lastUpdated") lastUpdated: String?,
         @Query("dataSet") dataSetUids: String,
@@ -49,7 +48,7 @@ internal interface DataSetCompleteRegistrationService {
         @Query("orgUnit") organisationUnitIds: String,
         @Query("children") children: Boolean,
         @Query("paging") paging: Boolean
-    ): Single<DataSetCompleteRegistrationPayload>
+    ): DataSetCompleteRegistrationPayload
 
     @POST("completeDataSetRegistrations")
     fun postDataSetCompleteRegistrations(

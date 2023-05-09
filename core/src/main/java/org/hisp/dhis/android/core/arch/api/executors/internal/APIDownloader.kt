@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 
+@Suppress("TooManyFunctions")
 internal interface APIDownloader {
     fun <P> downloadPartitioned(
         uids: Set<String>,
@@ -78,6 +79,9 @@ internal interface APIDownloader {
 
     fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
     fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
+
+    suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P>
+
     fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P>
 
     fun <P> downloadPagedPayload(

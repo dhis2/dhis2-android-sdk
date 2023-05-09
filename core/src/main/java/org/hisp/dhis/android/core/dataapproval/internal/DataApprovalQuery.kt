@@ -25,20 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
-
-@AutoValue
-public abstract class DataValueQuery extends BaseQuery {
-    public abstract AggregatedDataCallBundle bundle();
-
-    public static DataValueQuery create(AggregatedDataCallBundle bundle) {
-        return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                bundle);
-    }
-}
+internal data class DataApprovalQuery(
+    val workflowsUids: Collection<String>,
+    val organisationUnistUids: Collection<String>,
+    val periodIds: Collection<String>,
+    val attributeOptionCombosUids: Collection<String>,
+    val lastUpdatedStr: String?
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false
+)

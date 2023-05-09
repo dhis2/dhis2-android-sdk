@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -43,16 +42,16 @@ import retrofit2.http.Query
 internal interface DataValueService {
 
     @GET("dataValueSets")
-    fun getDataValues(
-        @Query("fields") @Which fields: Fields<DataValue?>?,
+    suspend fun getDataValues(
+        @Query("fields") @Which fields: Fields<DataValue>,
         @Query("lastUpdated") lastUpdated: String?,
-        @Query("dataSet") dataSetUids: String?,
-        @Query("period") periodIds: String?,
-        @Query("orgUnit") orgUnitUids: String?,
-        @Query("children") children: Boolean?,
-        @Query("paging") paging: Boolean?,
+        @Query("dataSet") dataSetUids: String,
+        @Query("period") periodIds: String,
+        @Query("orgUnit") orgUnitUids: String,
+        @Query("children") children: Boolean,
+        @Query("paging") paging: Boolean,
         @Query("includeDeleted") includeDeleted: Boolean?
-    ): Single<DataValueSet>
+    ): DataValueSet
 
     @POST("dataValueSets")
     fun postDataValues(@Body dataValueSet: DataValueSet): Call<DataValueImportSummary>

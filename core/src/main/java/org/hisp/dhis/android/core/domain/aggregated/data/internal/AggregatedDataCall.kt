@@ -28,10 +28,13 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asFlow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -58,105 +61,117 @@ internal class AggregatedDataCall @Inject constructor(
     private val dsCompleteRegistrationCall: QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>,
     private val dataApprovalCall: QueryCall<DataApproval, DataApprovalQuery>,
     private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync>,
     private val aggregatedDataCallBundleFactory: AggregatedDataCallBundleFactory,
     private val resourceHandler: ResourceHandler,
     private val hashHelper: AggregatedDataSyncHashHelper
 ) {
-    fun download(): Observable<AggregatedD2Progress> {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun download(): Flow<AggregatedD2Progress> {
         val progressManager = AggregatedD2ProgressManager(null)
         return systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-            .switchMap { selectDataSetsAndDownload(progressManager) }
+            .asFlow()
+            .flatMapLatest { selectDataSetsAndDownload(progressManager) }
     }
 
     private fun selectDataSetsAndDownload(
         progressManager: AggregatedD2ProgressManager
-    ): Observable<AggregatedD2Progress> {
-        val bundles = aggregatedDataCallBundleFactory.bundles
-        val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
+    ): Flow<AggregatedD2Progress> {
+        return flow {
+            val bundles = aggregatedDataCallBundleFactory.bundles
+            val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
-        progressManager.setTotalCalls(dataSets.size + 1)
-        progressManager.setDataSets(dataSets)
+            progressManager.setTotalCalls(bundles.size + 2)
+            progressManager.setDataSets(dataSets)
+            emit(progressManager.getProgress())
 
-        return Observable.merge(
-            Observable.fromCallable { progressManager.setDataSets(dataSets) },
-            Observable.fromIterable(bundles).flatMap { downloadInternal(it, progressManager) },
-            Observable.fromCallable { progressManager.complete() }
-        )
+            for (bundle in bundles) {
+                downloadBundle(bundle)
+
+                bundle.dataSets.forEach {
+                    progressManager.completeDataSet(it.uid(), D2ProgressSyncStatus.SUCCESS)
+                    progressManager.increaseProgress(DataValue::class.java, false)
+                }
+
+                emit(progressManager.getProgress())
+            }
+            emit(progressManager.complete())
+        }
     }
 
-    private fun downloadInternal(
-        bundle: AggregatedDataCallBundle,
-        progressManager: AggregatedD2ProgressManager
-    ): Observable<AggregatedD2Progress> {
-        val dataValueQuery = DataValueQuery.create(bundle)
+    private suspend fun downloadBundle(
+        bundle: AggregatedDataCallBundle
+    ) {
+        return coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            downloadDataValues(bundle)
+            downloadCompleteRegistration(bundle)
+            downloadApproval(bundle)
+            updateAggregatedDataSync(bundle)
+        }
+    }
 
-        val completeRegistrationQuery = DataSetCompleteRegistrationQuery.create(
-            getUids(bundle.dataSets),
-            bundle.periodIds,
-            bundle.rootOrganisationUnitUids,
-            bundle.key.lastUpdatedStr()
+    private suspend fun downloadDataValues(
+        bundle: AggregatedDataCallBundle
+    ): List<DataValue> {
+        val dataValueQuery = DataValueQuery(bundle)
+        return dataValueCall.download(dataValueQuery)
+    }
+
+    private suspend fun downloadCompleteRegistration(
+        bundle: AggregatedDataCallBundle
+    ): List<DataSetCompleteRegistration> {
+        val completeRegistrationQuery = DataSetCompleteRegistrationQuery(
+            dataSetUids = getUids(bundle.dataSets),
+            periodIds = bundle.periodIds,
+            rootOrgUnitUids = bundle.rootOrganisationUnitUids,
+            lastUpdatedStr = bundle.key.lastUpdatedStr()
         )
 
-        val observable =
-            dataValueCall.download(dataValueQuery)
-                .flatMap { dsCompleteRegistrationCall.download(completeRegistrationQuery) }
-                .flatMap { getApprovalSingle(bundle) }
-                .flatMap { updateAggregatedDataSync(bundle) }
-                .map {
-                    bundle.dataSets.forEach {
-                        progressManager.completeDataSet(it.uid(), D2ProgressSyncStatus.SUCCESS)
-                        progressManager.increaseProgress(DataValue::class.java, false)
-                    }
-                    progressManager.getProgress()
-                }
-                .toObservable()
-
-        return rxCallExecutor.wrapObservableTransactionally(observable, cleanForeignKeys = true)
+        return dsCompleteRegistrationCall.download(completeRegistrationQuery)
     }
 
     private fun updateAggregatedDataSync(
         bundle: AggregatedDataCallBundle
-    ): Single<Unit> {
-        return Single.fromCallable {
-            for (dataSet in bundle.dataSets) {
-                aggregatedDataSyncStore.updateOrInsertWhere(
-                    AggregatedDataSync.builder()
-                        .dataSet(dataSet.uid())
-                        .periodType(dataSet.periodType())
-                        .pastPeriods(bundle.key.pastPeriods)
-                        .futurePeriods(dataSet.openFuturePeriods())
-                        .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
-                        .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
-                        .lastUpdated(resourceHandler.serverDate)
-                        .build()
-                )
-            }
+    ) {
+        for (dataSet in bundle.dataSets) {
+            aggregatedDataSyncStore.updateOrInsertWhere(
+                AggregatedDataSync.builder()
+                    .dataSet(dataSet.uid())
+                    .periodType(dataSet.periodType())
+                    .pastPeriods(bundle.key.pastPeriods)
+                    .futurePeriods(dataSet.openFuturePeriods())
+                    .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
+                    .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
+                    .lastUpdated(resourceHandler.serverDate)
+                    .build()
+            )
         }
     }
 
-    private fun getApprovalSingle(
+    private suspend fun downloadApproval(
         bundle: AggregatedDataCallBundle
-    ): Single<List<DataApproval>> {
+    ): List<DataApproval> {
         val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
-        val workflowUids = dataSetsWithWorkflow.map { it.workflow()!!.uid() }
+        val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }
 
         return if (workflowUids.isEmpty()) {
-            Single.just(emptyList())
+            emptyList()
         } else {
             val attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow)
-            val dataApprovalQuery = DataApprovalQuery.create(
-                workflowUids,
-                bundle.allOrganisationUnitUidsSet, bundle.periodIds, attributeOptionComboUids,
-                bundle.key.lastUpdatedStr()
+            val dataApprovalQuery = DataApprovalQuery(
+                workflowsUids = workflowUids,
+                organisationUnistUids = bundle.allOrganisationUnitUidsSet,
+                periodIds = bundle.periodIds,
+                attributeOptionCombosUids = attributeOptionComboUids,
+                lastUpdatedStr = bundle.key.lastUpdatedStr()
             )
             dataApprovalCall.download(dataApprovalQuery)
         }
     }
 
     private fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
-        val categoryComboUids = dataSetsWithWorkflow.map { it.categoryCombo()!!.uid() }.toSet()
+        val categoryComboUids = dataSetsWithWorkflow.mapNotNull { it.categoryCombo()?.uid() }.toSet()
 
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
@@ -165,9 +180,5 @@ internal class AggregatedDataCall @Inject constructor(
             ).build()
 
         return categoryOptionComboStore.selectWhere(whereClause).map { it.uid() }.toSet()
-    }
-
-    fun blockingDownload() {
-        download().blockingSubscribe()
     }
 }

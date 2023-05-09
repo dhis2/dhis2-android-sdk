@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,16 +44,16 @@ class StockUseCaseCollectionRepository @Inject internal constructor(
     scope: RepositoryScope,
     transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
-    ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
-        StockUseCaseCollectionRepository>(
-        store,
-        childrenAppenders,
-        scope,
-        FilterConnectorFactory(scope) { s: RepositoryScope ->
-            StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
-        },
-        transformer
-    ) {
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
+    StockUseCaseCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
+    },
+    transformer
+) {
     private val cf: FilterConnectorFactory<StockUseCaseCollectionRepository> =
         FilterConnectorFactory(scope) { s: RepositoryScope ->
             StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)

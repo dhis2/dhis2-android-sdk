@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,20 +27,26 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.util.parseDateStr
+import org.hisp.dhis.android.core.util.toLocalDate
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import org.joda.time.DateTime
 
 internal class D2AddDays : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val dateStr = visitor.castStringVisit(ctx.expr(0))
         val days = visitor.castStringVisit(ctx.expr(1))
-        val date = DateTime(dateStr)
+        val date = LocalDateTime.parseDateStr(dateStr).toLocalDate()
 
-        return ParserUtils.getMediumDateString(date.plusDays(days.toDouble().toInt()).toDate())
+        val shiftedDate = date.plus(days.toDouble().toInt(), DateTimeUnit.DAY)
+
+        return ParserUtils.getMediumDateString(shiftedDate)
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

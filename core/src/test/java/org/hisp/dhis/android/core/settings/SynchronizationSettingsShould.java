@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 import org.junit.Test;
 
@@ -51,7 +52,9 @@ public class SynchronizationSettingsShould extends BaseObjectShould implements O
 
         assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
         assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS);
-        assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V1);
+        assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V2);
+        assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerExporterVersion.V2);
+        assertThat(syncSettings.fileMaxLengthBytes()).isEqualTo(10240000);
 
         assertThat(syncSettings.dataSetSettings()).isNotNull();
         assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();
@@ -62,7 +65,7 @@ public class SynchronizationSettingsShould extends BaseObjectShould implements O
         assertThat(syncSettings.programSettings()).isNotNull();
         assertThat(syncSettings.programSettings().globalSettings()).isNotNull();
         assertThat(syncSettings.programSettings().globalSettings().teiDownload()).isEqualTo(500);
-        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.PER_ORG_UNIT);
+        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.ALL_ORG_UNITS);
         assertThat(syncSettings.programSettings().specificSettings()).isNotNull();
         assertThat(syncSettings.programSettings().specificSettings().get("lxAQ7Zs9VYR").eventsDownload()).isEqualTo(10);
     }

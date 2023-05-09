@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.user.UserInfo
 
 internal object NewTrackerImporterTrackedEntityDataValueTransformer :
-    Transformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
+    TwoWayTransformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
 
     override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {
         return NewTrackerImporterTrackedEntityDataValue.builder()
@@ -39,9 +40,22 @@ internal object NewTrackerImporterTrackedEntityDataValueTransformer :
             .createdAt(o.created())
             .updatedAt(o.lastUpdated())
             .dataElement(o.dataElement())
-            .storedBy(o.storedBy())
+            .createdBy(o.storedBy()?.let { UserInfo.builder().username(it).build() })
             .value(o.value())
             .providedElsewhere(o.providedElsewhere())
+            .build()
+    }
+
+    override fun deTransform(t: NewTrackerImporterTrackedEntityDataValue): TrackedEntityDataValue {
+        return TrackedEntityDataValue.builder()
+            .id(t.id())
+            .event(t.event())
+            .created(t.createdAt())
+            .lastUpdated(t.updatedAt())
+            .dataElement(t.dataElement())
+            .storedBy(t.createdBy()?.username())
+            .value(t.value())
+            .providedElsewhere(t.providedElsewhere())
             .build()
     }
 }

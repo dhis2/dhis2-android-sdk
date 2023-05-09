@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,28 @@ internal class TrackerPostParentCallHelper @Inject constructor(
 ) {
 
     fun useNewTrackerImporter(): Boolean {
-        return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38) &&
-            synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+            val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerImporterVersion()
+            if (explicitTrackerVersion == null) {
+                dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)
+            } else {
+                explicitTrackerVersion == TrackerImporterVersion.V2
+            }
+        } else {
+            false
+        }
+    }
+
+    fun useNewTrackerExporter(): Boolean {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+            val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
+            if (explicitTrackerVersion == null) {
+                dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)
+            } else {
+                explicitTrackerVersion == TrackerExporterVersion.V2
+            }
+        } else {
+            false
+        }
     }
 }

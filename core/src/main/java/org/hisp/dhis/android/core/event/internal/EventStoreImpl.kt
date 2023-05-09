@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -171,6 +171,7 @@ internal class EventStoreImpl private constructor(
             w.bind(18, o.attributeOptionCombo())
             w.bind(19, o.deleted())
             w.bind(20, o.assignedUser())
+            w.bind(21, o.completedBy())
         }
 
         @JvmStatic

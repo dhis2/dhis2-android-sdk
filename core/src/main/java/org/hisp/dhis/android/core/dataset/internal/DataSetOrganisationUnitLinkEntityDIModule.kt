@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,6 @@ internal class DataSetOrganisationUnitLinkEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<DataSetOrganisationUnitLink>):
         LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

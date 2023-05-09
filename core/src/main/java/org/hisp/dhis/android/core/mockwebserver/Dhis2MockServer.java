@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,6 @@ public class Dhis2MockServer {
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
     private static final String STOCK_USE_CASES_JSON = "usecase.stock/stock_use_cases.json";
-    private static final String ANDROID_SETTINGS_METADATA_JSON = "settings/app_metadata_list.json";
     private static final String ANDROID_SETTINGS_INFO_JSON = "settings/app_info.json";
     private static final String GENERAL_SETTINGS_V1_JSON = "settings/general_settings_v1.json";
     private static final String GENERAL_SETTINGS_V2_JSON = "settings/general_settings_v2.json";
@@ -66,6 +65,7 @@ public class Dhis2MockServer {
     private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings_v2.json";
     private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
+    private static final String LATEST_APP_VERSION_JSON = "settings/latest_app_version.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAMS_INDICATORS_JSON = "program/program_indicators.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
@@ -73,6 +73,9 @@ public class Dhis2MockServer {
     private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
             "trackedentity/tracked_entity_instance_filters.json";
     private static final String EVENT_FILTERS_JSON = "event/event_filters.json";
+
+    private static final String PROGRAM_STAGE_WORKING_LISTS =
+            "programstageworkinglist/program_stage_working_lists.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
     private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
@@ -92,11 +95,19 @@ public class Dhis2MockServer {
     private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
-    private static final String USER_JSON = "user/user.json";
+    private static final String USER_JSON = "user/user38.json";
     private static final String EVENTS_JSON = "event/events.json";
+    private static final String NEW_EVENTS_JSON = "event/new_tracker_importer_events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
+    private static final String NEW_TRACKED_ENTITY_INSTANCES_JSON =
+            "trackedentity/new_tracker_importer_tracked_entities.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
+    private static final String TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png";
+    private static final String FILE_RESOURCE = "trackedentity/tracked_entity_attribute_value_image_resource.json";
+    private static final String DATA_STORE_NAMESPACES = "datastore/namespaces.json";
+    private static final String DATA_STORE_NAMESPACE_CAPTURE = "datastore/namespace_capture.json";
+    private static final String DATA_STORE_NAMESPACE_SCORECARD = "datastore/namespace_scorecard.json";
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
@@ -180,10 +191,8 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
-                }  else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
+                } else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
                     return createMockResponse(STOCK_USE_CASES_JSON);
-                } else if (path.startsWith("/api/apps?filter")) {
-                    return createMockResponse(ANDROID_SETTINGS_METADATA_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
                     return createMockResponse(ANDROID_SETTINGS_INFO_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
@@ -202,6 +211,8 @@ public class Dhis2MockServer {
                     return createMockResponse(ANALYTICS_SETTINGS_JSON);
                 } else if (path.startsWith("/api/userSettings?")) {
                     return createMockResponse(USER_SETTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
+                    return createMockResponse(LATEST_APP_VERSION_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
                 } else if (path.startsWith("/api/programIndicators?")) {
@@ -218,6 +229,8 @@ public class Dhis2MockServer {
                     return createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
                 } else if (path.startsWith("/api/eventFilters?")) {
                     return createMockResponse(EVENT_FILTERS_JSON);
+                } else if (path.startsWith("/api/programStageWorkingLists?")) {
+                    return createMockResponse(PROGRAM_STAGE_WORKING_LISTS);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
@@ -256,8 +269,12 @@ public class Dhis2MockServer {
                     return createMockResponse(CONSTANTS_JSON);
                 } else if (path.startsWith("/api/trackedEntityInstances?")) {
                     return createMockResponse(TRACKED_ENTITY_INSTANCES_JSON);
+                } else if (path.startsWith("/api/tracker/trackedEntities?")) {
+                    return createMockResponse(NEW_TRACKED_ENTITY_INSTANCES_JSON);
                 } else if (path.startsWith("/api/events?")) {
                     return createMockResponse(EVENTS_JSON);
+                } else if (path.startsWith("/api/tracker/events?")) {
+                    return createMockResponse(NEW_EVENTS_JSON);
                 } else if (path.startsWith("/api/dataValueSets?")) {
                     return createMockResponse(DATA_VALUES_JSON);
                 } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
@@ -270,10 +287,20 @@ public class Dhis2MockServer {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
                     return createMockResponse(SMS_METADATA);
+                } else if (path.startsWith("/api/fileResources")) {
+                    return createMockResponse(FILE_RESOURCE);
+                } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
+                    return createMockResponse(TRACKED_ENTITY_IMAGE);
+                } else if (path.equals("/api/dataStore")) {
+                    return createMockResponse(DATA_STORE_NAMESPACES);
+                } else if (path.startsWith("/api/dataStore/capture")) {
+                    return createMockResponse(DATA_STORE_NAMESPACE_CAPTURE);
+                } else if (path.startsWith("/api/dataStore/scorecard")) {
+                    return createMockResponse(DATA_STORE_NAMESPACE_SCORECARD);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)
-                            .setBody("Path not present in Dhis2MockServer dispatcher");
+                            .setBody("Path not present in Dhis2MockServer dispatcher: " + path);
                 }
             }
         };
@@ -282,7 +309,6 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() {
         enqueueMockResponse(USER_JSON);
-        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
@@ -293,7 +319,6 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() {
-        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
@@ -303,6 +328,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
+        enqueueMockResponse(LATEST_APP_VERSION_JSON);
+        enqueueMockResponse(STOCK_USE_CASES_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);
@@ -313,12 +340,13 @@ public class Dhis2MockServer {
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
-        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
-        enqueueMockResponse(EVENT_FILTERS_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTIONS_JSON);
         enqueueMockResponse(OPTION_GROUPS_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+        enqueueMockResponse(EVENT_FILTERS_JSON);
+        enqueueMockResponse(PROGRAM_STAGE_WORKING_LISTS);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
@@ -382,7 +410,7 @@ public class Dhis2MockServer {
         return server.takeRequest();
     }
 
-    public void addResponse(String method, String path, String responseName, int responseCode){
+    public void addResponse(String method, String path, String responseName, int responseCode) {
         dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
     }
 }

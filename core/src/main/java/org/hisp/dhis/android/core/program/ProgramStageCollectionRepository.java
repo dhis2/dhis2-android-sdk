@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
 
@@ -155,6 +156,10 @@ public final class ProgramStageCollectionRepository
 
     public BooleanFilterConnector<ProgramStageCollectionRepository> byRemindCompleted() {
         return cf.bool(Columns.REMIND_COMPLETED);
+    }
+
+    public EnumFilterConnector<ProgramStageCollectionRepository, ValidationStrategy> byValidationStrategy() {
+        return cf.enumC(Columns.VALIDATION_STRATEGY);
     }
 
     public StringFilterConnector<ProgramStageCollectionRepository> byColor() {

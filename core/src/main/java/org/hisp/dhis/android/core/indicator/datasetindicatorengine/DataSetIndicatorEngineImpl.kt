@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
@@ -78,18 +79,17 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
         val indicatorType = indicatorTypeRepository.uid(indicator.indicatorType()?.uid()).blockingGet()
 
-        val valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId)
-        val constantMap = getConstantMap()
-        val orgunitGroupCountMap = getOrgunitGroupMap()
-        val period = getPeriod(periodId)
+        val context = ExpressionServiceContext(
+            valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId),
+            constantMap = getConstantMap(),
+            orgUnitCountMap = getOrgunitGroupMap(),
+            days = PeriodHelper.getDays(getPeriod(periodId))
+        )
 
         return dataSetIndicatorEvaluator.evaluate(
             indicator = indicator,
             indicatorType = indicatorType,
-            valueMap = valueMap,
-            constantMap = constantMap,
-            orgUnitCountMap = orgunitGroupCountMap,
-            days = PeriodHelper.getDays(period)
+            context = context
         )
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,11 +51,11 @@ internal object AnalyticsTeiSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
+            _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
+            _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {

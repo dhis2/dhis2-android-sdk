@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
@@ -328,7 +329,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             .trackedEntityDataValues(extraData.dataValueMap[event.uid()])
             .notes(getEventNotes(extraData.notes, event))
 
-        if (versionManager.is2_30) {
+        if (versionManager.getVersion() == DHISVersion.V2_30) {
             eventBuilder.geometry(null)
         }
 

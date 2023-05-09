@@ -1,0 +1,6 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Key 'config' deleted from namespace 'android'"
+}

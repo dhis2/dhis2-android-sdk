@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ internal class OpenIDConnectTokenRefresher @Inject constructor(
         val service = AuthorizationService(context)
         return Single.create<String> {
             authState.performActionWithFreshTokens(service) {
-                _: String?, idToken: String?, ex: AuthorizationException? ->
+                    _: String?, idToken: String?, ex: AuthorizationException? ->
                 service.dispose()
                 if (idToken != null) {
                     it.onSuccess(idToken)

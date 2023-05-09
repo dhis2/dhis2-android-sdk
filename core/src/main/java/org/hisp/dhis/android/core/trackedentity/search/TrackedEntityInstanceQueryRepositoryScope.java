@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -69,11 +69,17 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     @Nullable
     public abstract RepositoryScopeFilterItem query();
 
+    @Deprecated
     @NonNull
-    public abstract List<RepositoryScopeFilterItem> attribute();
+    public List<RepositoryScopeFilterItem> attribute() {
+        return filter();
+    }
 
     @NonNull
     public abstract List<RepositoryScopeFilterItem> filter();
+
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> dataValue();
 
     @Nullable
     public abstract DateFilterPeriod programDate();
@@ -85,7 +91,13 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     public abstract List<EnrollmentStatus> enrollmentStatus();
 
     @Nullable
+    public abstract DateFilterPeriod eventCreatedDate();
+
+    @Nullable
     public abstract DateFilterPeriod eventDate();
+
+    @Nullable
+    public abstract DateFilterPeriod dueDate();
 
     @Nullable
     public abstract List<EventStatus> eventStatus();
@@ -127,8 +139,8 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
+                .dataValue(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
                 .eventFilters(Collections.emptyList())
                 .order(Collections.emptyList())
@@ -156,9 +168,9 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         public abstract Builder query(RepositoryScopeFilterItem query);
 
-        public abstract Builder attribute(List<RepositoryScopeFilterItem> attribute);
-
         public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
+
+        public abstract Builder dataValue(List<RepositoryScopeFilterItem> dataValue);
 
         public abstract Builder programDate(DateFilterPeriod dateFilterPeriod);
 
@@ -166,7 +178,11 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
 
+        public abstract Builder eventCreatedDate(DateFilterPeriod eventCreatedDate);
+
         public abstract Builder eventDate(DateFilterPeriod eventDate);
+
+        public abstract Builder dueDate(DateFilterPeriod dueDate);
 
         public abstract Builder eventStatus(List<EventStatus> eventStatus);
 

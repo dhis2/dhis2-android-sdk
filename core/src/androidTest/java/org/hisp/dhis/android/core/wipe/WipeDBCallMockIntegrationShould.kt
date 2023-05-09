@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -101,6 +101,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.eventModule().eventDownloader().limit(1).blockingDownload()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).blockingDownload()
         d2.aggregatedModule().data().blockingDownload()
+        d2.dataStoreModule().dataStoreDownloader().blockingDownload()
     }
 
     private fun givenOthersInDatabase() {

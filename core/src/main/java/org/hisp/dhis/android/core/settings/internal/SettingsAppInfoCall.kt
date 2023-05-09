@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,13 +45,7 @@ internal class SettingsAppInfoCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
-        return isAppInstalled(storeError)
-            .flatMap { isAppInstalled ->
-                return@flatMap if (isAppInstalled)
-                    fetchAppVersion(storeError)
-                else
-                    Single.just(SettingsAppVersion.NotInstalled)
-            }
+        return fetchAppVersion(storeError)
     }
 
     private fun fetchAppVersion(storeError: Boolean): Single<SettingsAppVersion> {
@@ -62,24 +56,28 @@ internal class SettingsAppInfoCall @Inject constructor(
             .onErrorResumeNext { throwable: Throwable ->
                 return@onErrorResumeNext when {
                     throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown))
+                        fetchV1GeneralSettings(storeError)
                     throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.just(SettingsAppVersion.Unsupported)
+                        Single.just(SettingsAppVersion.DataStoreEmpty)
                     else ->
                         Single.error(throwable)
                 }
             }
     }
 
-    private fun isAppInstalled(storeError: Boolean): Single<Boolean> {
-        return apiCallExecutor.wrapSingle(settingAppService.appMetadata(), storeError)
-            .map { appMetadataList ->
-                return@map appMetadataList.size == 1 && appMetadataList.first().key() != null
+    private fun fetchV1GeneralSettings(storeError: Boolean): Single<SettingsAppVersion> {
+        return apiCallExecutor.wrapSingle(
+            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1), storeError
+        )
+            .map<SettingsAppVersion> {
+                SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)
             }
             .onErrorResumeNext { throwable: Throwable ->
                 return@onErrorResumeNext when {
                     throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(false)
+                        Single.just(SettingsAppVersion.DataStoreEmpty)
+                    throwable is D2Error && throwable.originalException() is InvalidFormatException ->
+                        Single.just(SettingsAppVersion.DataStoreEmpty)
                     else ->
                         Single.error(throwable)
                 }

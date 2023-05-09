@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -218,6 +218,20 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .displayName("Attribute 1")
         .valueType(ValueType.INTEGER)
+        .build()
+
+    val period2019SunW25: Period = Period.builder()
+        .periodId("2019SunW25")
+        .periodType(PeriodType.WeeklySunday)
+        .startDate(DateUtils.DATE_FORMAT.parse("2019-06-16T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2019-06-22T23:59:59.999"))
+        .build()
+
+    val period201910: Period = Period.builder()
+        .periodId("201910")
+        .periodType(PeriodType.Monthly)
+        .startDate(DateUtils.DATE_FORMAT.parse("2019-10-01T00:00:00.000"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2019-10-31T23:59:59.999"))
         .build()
 
     val period201911: Period = Period.builder()

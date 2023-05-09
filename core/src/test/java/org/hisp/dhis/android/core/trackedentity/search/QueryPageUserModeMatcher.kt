@@ -38,7 +38,7 @@ internal class QueryPageUserModeMatcher(
 
     override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
         return query?.let {
-            it.page() == page && it.pageSize() == pageSize && it.assignedUserMode() == assignedUserMode
+            it.page == page && it.pageSize == pageSize && it.assignedUserMode == assignedUserMode
         } ?: false
     }
 }

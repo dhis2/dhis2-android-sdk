@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,8 @@ import retrofit2.Retrofit
         SynchronizationSettingEntityDIModule::class,
         FilterSettingEntityDIModule::class,
         SystemSettingEntityDIModule::class,
-        ProgramConfigurationSettingEntityDIModule::class
+        ProgramConfigurationSettingEntityDIModule::class,
+        LatestAppVersionDIModule::class
     ]
 )
 internal class SettingPackageDIModule {

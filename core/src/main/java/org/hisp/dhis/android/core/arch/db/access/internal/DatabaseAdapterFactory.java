@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ public class DatabaseAdapterFactory {
     public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, context, encrypt, version);
+            DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, encrypt, version);
             adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
@@ -100,8 +100,16 @@ public class DatabaseAdapterFactory {
         }
     }
 
-    private DatabaseAdapter newInternalAdapter(String databaseName, Context context,
-                                                      boolean encrypt, int version) {
+    public DatabaseAdapter getDatabaseAdapter(DatabaseAccount databaseAccount) {
+        DatabaseAdapter adapter = newInternalAdapter(databaseAccount.databaseName(), databaseAccount.encrypted(),
+                BaseDatabaseOpenHelper.VERSION);
+        adaptersToPreventNotClosedError.add(adapter);
+        return adapter;
+    }
+
+    private DatabaseAdapter newInternalAdapter(String databaseName,
+                                               boolean encrypt,
+                                               int version) {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -83,5 +83,13 @@ object DateUtils {
     @JvmStatic
     fun getEndDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
+    }
+
+    @JvmStatic
+    fun addMonths(date: Date, amount: Int): Date {
+        val c = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
+        c.time = date
+        c.add(Calendar.MONTH, amount)
+        return c.time
     }
 }

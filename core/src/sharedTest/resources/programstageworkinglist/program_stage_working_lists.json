@@ -1,0 +1,68 @@
+{
+  "programStageWorkingLists": [
+    {
+      "id": "NAgjOfWMXg6",
+      "name": "Test WL",
+      "code": "code",
+      "displayName": "Test WL display",
+      "created": "2023-01-26T19:16:58.712",
+      "lastUpdated": "2023-01-26T19:16:58.712",
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "programStage": {
+        "id": "dBwrot7S420"
+      },
+      "description": "Test WL definition",
+      "programStageQueryCriteria": {
+        "eventStatus": "ACTIVE",
+        "eventCreatedAt": {
+          "type": "ABSOLUTE",
+          "startDate": "2020-03-01",
+          "endDate": "2022-12-30"
+        },
+        "eventOccurredAt": {
+          "type": "RELATIVE",
+          "period": "TODAY"
+        },
+        "eventScheduledAt": {
+          "type": "RELATIVE",
+          "period": "TODAY"
+        },
+        "enrollmentStatus": "COMPLETED",
+        "enrolledAt": {
+          "type": "RELATIVE",
+          "period": "THIS_MONTH"
+        },
+        "enrollmentOccurredAt": {
+          "type": "RELATIVE",
+          "period": "THIS_MONTH"
+        },
+        "orgUnit": "DiszpKrYNg8",
+        "ouMode": "SELECTED",
+        "assignedUserMode": "PROVIDED",
+        "assignedUsers": [
+          "DXyJmlo9rge"
+        ],
+        "order": "w75KJ2mc4zz:asc",
+        "displayColumnOrder": [
+          "w75KJ2mc4zz",
+          "zDhUuAYrxNC"
+        ],
+        "dataFilters": [
+          {
+            "dataItem": "g9eOBujte1U",
+            "ge": "10",
+            "le": "20"
+          }
+        ],
+        "attributeValueFilters": [
+          {
+            "attribute": "cejWyOfXge6",
+            "eq": "15"
+          }
+        ]
+      }
+    }
+  ]
+}

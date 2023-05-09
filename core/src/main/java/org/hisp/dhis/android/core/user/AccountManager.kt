@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 interface AccountManager {
     fun getAccounts(): List<DatabaseAccount>
 
-    fun setMaxAccounts(maxAccounts: Int)
+    fun setMaxAccounts(maxAccounts: Int?)
 
-    fun getMaxAccounts(): Int
+    fun getMaxAccounts(): Int?
 
     @Throws(D2Error::class)
     fun deleteCurrentAccount()

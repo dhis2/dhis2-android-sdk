@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -122,7 +122,7 @@ public final class DataValueCollectionRepository
     }
 
     public DataValueCollectionRepository byDataSetUid(String dataSetUid) {
-        return cf.subQuery(DataValueByDataSetQueryHelper.getKey())
+        return cf.subQuery(DataValueByDataSetQueryHelper.getDataValueKey())
                 .rawSubQuery(DataValueByDataSetQueryHelper.getOperator(),
                         DataValueByDataSetQueryHelper.whereClause(dataSetUid));
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,12 +40,12 @@ internal class VProgramStageName : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return getLatestEvent(visitor)?.programStage()?.let {
-            visitor.programStageStore.selectByUid(it)?.name()
+            visitor.programStageStore!!.selectByUid(it)?.name()
         }
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "(SELECT ${ProgramStageTableInfo.Columns.NAME} " +
                     "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} ps " +

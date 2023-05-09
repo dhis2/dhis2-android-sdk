@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,28 +28,18 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_UserCredentials.Builder.class)
-public abstract class UserCredentials extends BaseIdentifiableObject implements CoreObject {
+@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
+public abstract class UserCredentials {
 
     @Nullable
     @JsonProperty()
@@ -57,34 +47,32 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
-    public abstract List<UserRole> userRoles();
+    public abstract String name();
 
     @Nullable
-    @JsonIgnore
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid user();
+    @JsonProperty()
+    public abstract String displayName();
 
-    public static UserCredentials create(Cursor cursor) {
-        return $AutoValue_UserCredentials.createFromCursor(cursor);
-    }
+    @Nullable
+    @JsonProperty()
+    public abstract List<UserRole> userRoles();
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_UserCredentials.Builder();
+        return new AutoValue_UserCredentials.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder {
         public abstract Builder username(String username);
 
+        public abstract Builder name(String username);
+
+        public abstract Builder displayName(String username);
+
         public abstract Builder userRoles(List<UserRole> userRoles);
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder user(ObjectWithUid user);
 
         public abstract UserCredentials build();
     }

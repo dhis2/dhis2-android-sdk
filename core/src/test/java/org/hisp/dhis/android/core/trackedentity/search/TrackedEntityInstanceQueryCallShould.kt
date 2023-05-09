@@ -29,15 +29,24 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
 import java.text.ParseException
 import java.util.*
 import java.util.concurrent.Callable
 import javax.net.ssl.HttpsURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.event.internal.EventFields
+import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -45,82 +54,84 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
 import org.mockito.stubbing.OngoingStubbing
 import retrofit2.Call
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
-    private val service: TrackedEntityInstanceService = mock()
+    private val trackedEntityService: TrackedEntityInstanceService = mock()
+    private val eventService: EventService = mock()
     private val apiCallExecutor: APICallExecutor = mock()
+    private val rxAPICallExecutor: RxAPICallExecutor = mock()
     private val mapper: SearchGridMapper = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
     private val searchGrid: SearchGrid = mock()
     private val searchGridCall: Call<SearchGrid> = mock()
+    private val eventCallSingle: Single<Payload<Event>> = mock()
     private val teis: List<TrackedEntityInstance> = mock()
-    private val attribute: List<String> = mock()
-    private val filter: List<String> = mock()
+    private val eventPayload: Payload<Event> = mock()
+    private val attribute: List<RepositoryScopeFilterItem> = emptyList()
 
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
     // object to test
-    private lateinit var call: Callable<List<TrackedEntityInstance>>
+    private lateinit var call: Callable<TrackerQueryResult>
 
     @Before
     override fun setUp() {
         super.setUp()
         val orgUnits = listOf("ou1", "ou2")
 
-        query =
-            TrackedEntityInstanceQueryOnline.builder()
-                .uids(listOf("uid1", "uid2"))
-                .orgUnits(orgUnits)
-                .orgUnitMode(OrganisationUnitMode.ACCESSIBLE)
-                .program("program")
-                .programStage("progra_stage")
-                .programStartDate(Date())
-                .programEndDate(Date())
-                .enrollmentStatus(EnrollmentStatus.ACTIVE)
-                .followUp(true)
-                .eventStartDate(Date())
-                .eventEndDate(Date())
-                .eventStatus(EventStatus.OVERDUE)
-                .incidentStartDate(Date())
-                .incidentEndDate(Date())
-                .trackedEntityType("teiTypeStr")
-                .query("queryStr")
-                .attribute(attribute)
-                .filter(filter)
-                .includeDeleted(false)
-                .lastUpdatedStartDate(Date())
-                .lastUpdatedEndDate(Date())
-                .order("lastupdated:desc")
-                .assignedUserMode(AssignedUserMode.ANY)
-                .paging(false)
-                .page(2)
-                .pageSize(33)
-                .build()
+        query = TrackedEntityInstanceQueryOnline(
+            uids = listOf("uid1", "uid2"),
+            orgUnits = orgUnits,
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE,
+            program = "program",
+            programStartDate = Date(),
+            programEndDate = Date(),
+            enrollmentStatus = EnrollmentStatus.ACTIVE,
+            followUp = true,
+            eventStatus = EventStatus.OVERDUE,
+            incidentStartDate = Date(),
+            incidentEndDate = Date(),
+            trackedEntityType = "teiTypeStr",
+            query = "queryStr",
+            attributeFilter = attribute,
+            includeDeleted = false,
+            lastUpdatedStartDate = Date(),
+            lastUpdatedEndDate = Date(),
+            order = "lastupdated:desc",
+            assignedUserMode = AssignedUserMode.ANY,
+            paging = false,
+            page = 2,
+            pageSize = 33
+        )
 
         whenServiceQuery().thenReturn(searchGridCall)
+        whenEventServiceQuery().thenReturn(eventCallSingle)
+
         whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).doReturn(searchGrid)
+        whenever(rxAPICallExecutor.wrapSingle(eq(eventCallSingle), any())).doReturn(eventCallSingle)
+        whenever(eventCallSingle.blockingGet()).doReturn(eventPayload)
+
         whenever(mapper.transform(any())).doReturn(teis)
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
 
         // Metadata call
-        call =
-            TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor, dhisVersionManager).getCall(query)
+        call = getFactory().getCall(query)
     }
 
     @Test
     fun succeed_when_endpoint_calls_succeed() {
         val teisResponse = call.call()
-        assertThat(teisResponse).isEqualTo(teis)
+        assertThat(teisResponse.trackedEntities).isEqualTo(teis)
     }
 
     @Test
@@ -134,7 +145,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     fun call_service_with_query_parameters() {
         call.call()
         verifyService(query)
-        verifyNoMoreInteractions(service)
+        verifyNoMoreInteractions(trackedEntityService)
     }
 
     @Test
@@ -173,10 +184,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     @Test
     fun should_not_map_active_event_status_if_greater_than_2_33() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
-        val activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build()
-        val activeCall = TrackedEntityInstanceQueryCallFactory(
-            service, mapper, apiCallExecutor, dhisVersionManager
-        ).getCall(activeQuery)
+        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
+        val activeCall = getFactory().getCall(activeQuery)
 
         activeCall.call()
 
@@ -187,86 +196,199 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     fun should_map_active_event_status_if_not_greater_than_2_33() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
 
-        val activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build()
-        val activeCall = TrackedEntityInstanceQueryCallFactory(
-            service, mapper, apiCallExecutor, dhisVersionManager
-        ).getCall(activeQuery)
+        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
+        val activeCall = getFactory().getCall(activeQuery)
 
         activeCall.call()
 
         verifyService(activeQuery, EventStatus.VISITED)
 
-        val nonActiveQuery = query.toBuilder().eventStatus(EventStatus.SCHEDULE).build()
-        val nonActiveCall = TrackedEntityInstanceQueryCallFactory(
-            service, mapper, apiCallExecutor, dhisVersionManager
-        ).getCall(nonActiveQuery)
+        val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
+        val nonActiveCall = getFactory().getCall(nonActiveQuery)
 
         nonActiveCall.call()
 
         verifyService(activeQuery, EventStatus.SCHEDULE)
     }
 
+    @Test
+    fun should_query_events_if_data_value_filter() {
+        val events = listOf(
+            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
+            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
+        )
+        whenever(eventPayload.items()).doReturn(events)
+
+        val query = query.copy(
+            dataValueFilter = listOf(
+                RepositoryScopeFilterItem.builder()
+                    .key("dataElement")
+                    .operator(FilterItemOperator.EQ)
+                    .value("2")
+                    .build()
+            )
+        )
+        val call = getFactory().getCall(query)
+
+        call.call()
+
+        val expectedTeiQuery = TrackedEntityInstanceQueryCallFactory.getPostEventTeiQuery(query, events)
+
+        verifyEventService(query)
+        verifyService(expectedTeiQuery)
+    }
+
+    @Test
+    fun should_query_events_for_multiple_orgunits() {
+        whenever(eventPayload.items()).doReturn(emptyList())
+
+        val query = query.copy(
+            dataValueFilter = listOf(
+                RepositoryScopeFilterItem.builder()
+                    .key("dataElement")
+                    .operator(FilterItemOperator.EQ)
+                    .value("2")
+                    .build()
+            ),
+            orgUnits = listOf("orgunit1", "orgunit2")
+        )
+        val call = getFactory().getCall(query)
+
+        call.call()
+
+        verifyEventService(query)
+    }
+
+    private fun getFactory(): TrackedEntityInstanceQueryCallFactory {
+        return TrackedEntityInstanceQueryCallFactory(
+            trackedEntityService, eventService, mapper, apiCallExecutor, rxAPICallExecutor, dhisVersionManager
+        )
+    }
+
     private fun verifyService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus()
+        expectedStatus: EventStatus? = query.eventStatus
     ) {
-        Mockito.verify(service).query(
-            eq(query.uids()!![0] + ";" + query.uids()!![1]),
-            eq(query.orgUnits()[0] + ";" + query.orgUnits()[1]),
-            eq(query.orgUnitMode().toString()),
-            eq(query.program()),
-            eq(query.programStage()),
-            eq(query.formattedProgramStartDate()),
-            eq(query.formattedProgramEndDate()),
-            eq(query.enrollmentStatus().toString()),
-            eq(query.formattedIncidentStartDate()),
-            eq(query.formattedIncidentEndDate()),
-            eq(query.followUp()),
-            eq(query.formattedEventStartDate()),
-            eq(query.formattedEventEndDate()),
-            eq(expectedStatus.toString()),
-            eq(query.trackedEntityType()),
-            eq(query.query()),
-            eq(query.attribute()),
-            eq(query.filter()),
-            eq(query.assignedUserMode().toString()),
-            eq(query.formattedLastUpdatedStartDate()),
-            eq(query.formattedLastUpdatedEndDate()),
-            eq(query.order()),
-            eq(query.paging()),
-            eq(query.page()),
-            eq(query.pageSize())
+        verify(trackedEntityService).query(
+            eq(query.uids?.joinToString(";")),
+            eq(query.orgUnits.joinToString(";")),
+            eq(query.orgUnitMode.toString()),
+            eq(query.program),
+            eq(query.programStage),
+            eq(query.programStartDate.simpleDateFormat()),
+            eq(query.programEndDate.simpleDateFormat()),
+            eq(query.enrollmentStatus?.toString()),
+            eq(query.incidentStartDate.simpleDateFormat()),
+            eq(query.incidentEndDate.simpleDateFormat()),
+            eq(query.followUp),
+            eq(query.eventStartDate.simpleDateFormat()),
+            eq(query.eventEndDate.simpleDateFormat()),
+            eq(expectedStatus?.toString()),
+            eq(query.trackedEntityType),
+            eq(query.query),
+            any(),
+            eq(query.assignedUserMode?.toString()),
+            eq(query.lastUpdatedStartDate.simpleDateFormat()),
+            eq(query.lastUpdatedEndDate.simpleDateFormat()),
+            eq(query.order),
+            eq(query.paging),
+            eq(query.page),
+            eq(query.pageSize)
+        )
+    }
+
+    private fun verifyEventService(query: TrackedEntityInstanceQueryOnline) {
+        if (query.orgUnits.size <= 1) {
+            verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
+        } else {
+            query.orgUnits.forEach {
+                verifyEventServiceForOrgunit(query, it)
+            }
+        }
+    }
+    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) {
+        verify(eventService).getEvents(
+            eq(EventFields.teiQueryFields),
+            eq(orgunit),
+            eq(query.orgUnitMode?.toString()),
+            eq(query.eventStatus?.toString()),
+            eq(query.program),
+            eq(query.programStage),
+            eq(query.enrollmentStatus?.toString()),
+            any(),
+            eq(query.followUp),
+            eq(query.eventStartDate.simpleDateFormat()),
+            eq(query.eventEndDate.simpleDateFormat()),
+            eq(query.dueStartDate.simpleDateFormat()),
+            eq(query.dueEndDate.simpleDateFormat()),
+            eq(query.order),
+            eq(query.assignedUserMode?.toString()),
+            eq(query.paging),
+            eq(query.page),
+            eq(query.pageSize),
+            eq(query.lastUpdatedStartDate.simpleDateFormat()),
+            eq(query.lastUpdatedEndDate.simpleDateFormat()),
+            eq(query.includeDeleted),
+            eq(null),
         )
     }
 
     private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
         return whenever(
-            service.query(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+            trackedEntityService.query(
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull()
+            )
+        )
+    }
+
+    private fun whenEventServiceQuery(): OngoingStubbing<Single<Payload<Event>>> {
+        return whenever(
+            eventService.getEvents(
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
             )
         )
     }

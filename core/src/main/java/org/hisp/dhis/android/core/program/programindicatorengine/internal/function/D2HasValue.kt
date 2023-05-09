@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -55,14 +55,14 @@ internal class D2HasValue : ProgramExpressionItem() {
     private fun hasProgramAttribute(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val attribute = ctx.uid0.text
 
-        return visitor.programIndicatorContext.attributeValues.values.any { attributeValue ->
+        return visitor.programIndicatorContext!!.attributeValues.values.any { attributeValue ->
             attribute == attributeValue.trackedEntityAttribute() && attributeValue.value() != null
         }.toString()
     }
 
     private fun hasProgramItemStageElement(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val programStage = ctx.uid0.text
-        val stageEvents = visitor.programIndicatorContext.events[programStage] ?: emptyList()
+        val stageEvents = visitor.programIndicatorContext!!.events[programStage] ?: emptyList()
         val dataElement = ctx.uid1.text
 
         return stageEvents.any { event ->
@@ -85,7 +85,7 @@ internal class D2HasValue : ProgramExpressionItem() {
     private fun hasProgramAttributeSQL(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
         val attributeUid = ctx.uid0.text
 
-        val enrollmentSelector = getEnrollmentWhereClause(visitor.programIndicatorSQLContext.programIndicator)
+        val enrollmentSelector = getEnrollmentWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)
 
         return "EXISTS(SELECT 1 " +
             "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
@@ -108,7 +108,7 @@ internal class D2HasValue : ProgramExpressionItem() {
             "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
             "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementUid' " +
             "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageUid' " +
-            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext!!.programIndicator)} " +
             "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
             "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} DESC LIMIT 1" +
             ")"

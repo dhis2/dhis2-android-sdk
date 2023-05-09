@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.settings.AppearanceSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.AnalyticsSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
+import org.hisp.dhis.android.core.settings.LatestAppVersionObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.settings.SynchronizationSettingObjectRepository;
@@ -54,6 +55,7 @@ public final class SettingModuleImpl implements SettingModule {
     private final AnalyticsSettingObjectRepository analyticsSetting;
     private final UserSettingsObjectRepository userSettings;
     private final AppearanceSettingsObjectRepository appearanceSettings;
+    private final LatestAppVersionObjectRepository latestAppVersion;
 
     @Inject
     SettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
@@ -63,7 +65,8 @@ public final class SettingModuleImpl implements SettingModule {
                       SynchronizationSettingObjectRepository synchronizationSetting,
                       AnalyticsSettingObjectRepository analyticsSetting,
                       UserSettingsObjectRepository userSettings,
-                      AppearanceSettingsObjectRepository appearanceSettings) {
+                      AppearanceSettingsObjectRepository appearanceSettings,
+                      LatestAppVersionObjectRepository latestAppVersion) {
         this.systemSetting = systemSettingRepository;
         this.generalSetting = generalSetting;
         this.dataSetSetting = dataSetSetting;
@@ -72,6 +75,7 @@ public final class SettingModuleImpl implements SettingModule {
         this.analyticsSetting = analyticsSetting;
         this.userSettings = userSettings;
         this.appearanceSettings = appearanceSettings;
+        this.latestAppVersion = latestAppVersion;
     }
 
     @Override
@@ -112,5 +116,10 @@ public final class SettingModuleImpl implements SettingModule {
     @Override
     public AppearanceSettingsObjectRepository appearanceSettings() {
         return appearanceSettings;
+    }
+
+    @Override
+    public LatestAppVersionObjectRepository latestAppVersion() {
+        return latestAppVersion;
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
+import java.util.Set;
+
 public interface KeyValueStore {
 
     void setData(String key, String data);
@@ -35,4 +37,6 @@ public interface KeyValueStore {
     String getData(String key);
 
     void removeData(String key);
+
+    Set<String> getAllKeys();
 }

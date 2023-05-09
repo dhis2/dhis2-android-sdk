@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,7 @@ public final class TrackedEntityAttributeTableInfo {
         public static final String FIELD_MASK = "fieldMask";
         public static final String FORM_NAME = "formName";
         public static final String DISPLAY_FORM_NAME = "displayFormName";
+        public static final String CONFIDENTIAL = "confidential";
 
         @Override
         public String[] all() {
@@ -86,7 +87,8 @@ public final class TrackedEntityAttributeTableInfo {
                     FORM_NAME,
                     DISPLAY_FORM_NAME,
                     FIELD_MASK,
-                    AGGREGATION_TYPE
+                    AGGREGATION_TYPE,
+                    CONFIDENTIAL
             );
         }
     }

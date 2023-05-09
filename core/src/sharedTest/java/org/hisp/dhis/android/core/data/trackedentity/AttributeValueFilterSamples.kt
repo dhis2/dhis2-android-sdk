@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ internal object AttributeValueFilterSamples {
             .gt("10")
             .lt("20")
             .eq("abc")
-            .`in`(setOf("Norway", "India"))
+            .`in`(setOf("Norway"))
             .like("abc")
             .dateFilter(
                 DateFilterPeriod.builder()

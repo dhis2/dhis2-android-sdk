@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.usecase.stock
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 
 object StockUseCaseTransactionTableInfo {
 
@@ -45,7 +44,7 @@ object StockUseCaseTransactionTableInfo {
         }
     }
 
-    class Columns : DeletableDataColumns() {
+    class Columns : CoreColumns() {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
@@ -55,7 +54,7 @@ object StockUseCaseTransactionTableInfo {
                 DISTRIBUTED_TO,
                 STOCK_DISTRIBUTED,
                 STOCK_DISCARDED,
-                STOCK_CORRECTED
+                STOCK_COUNT
             )
         }
 
@@ -66,7 +65,7 @@ object StockUseCaseTransactionTableInfo {
             const val DISTRIBUTED_TO = "distributedTo"
             const val STOCK_DISTRIBUTED = "stockDistributed"
             const val STOCK_DISCARDED = "stockDiscarded"
-            const val STOCK_CORRECTED = "stockCorrected"
+            const val STOCK_COUNT = "stockCount"
         }
     }
 }

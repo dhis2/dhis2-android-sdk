@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ class UserAuthenticateWithEncryptionMockIntegrationShould {
 
     @Test
     fun return_false_for_is_logged_when_not_logged() {
-        assertThat(d2.userModule().isLogged.blockingGet()).isFalse()
+        assertThat(d2.userModule().isLogged().blockingGet()).isFalse()
     }
 
     @Test

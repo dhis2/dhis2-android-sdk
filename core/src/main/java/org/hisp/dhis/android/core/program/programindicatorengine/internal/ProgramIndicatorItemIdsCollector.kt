@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -51,11 +51,11 @@ internal class ProgramIndicatorItemIdsCollector : ExpressionBaseListener() {
                     val dataElementId = ctx.uid1.text
 
                     itemIds.add(
-                        DimensionalItemId.builder()
-                            .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_DATA_VALUE)
-                            .id0(stageId)
-                            .id1(dataElementId)
-                            .build()
+                        DimensionalItemId(
+                            dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_DATA_VALUE,
+                            id0 = stageId,
+                            id1 = dataElementId
+                        )
                     )
                 }
 
@@ -65,10 +65,10 @@ internal class ProgramIndicatorItemIdsCollector : ExpressionBaseListener() {
                     val attributeId = ctx.uid0.text
 
                     itemIds.add(
-                        DimensionalItemId.builder()
-                            .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE)
-                            .id0(attributeId)
-                            .build()
+                        DimensionalItemId(
+                            dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE,
+                            id0 = attributeId
+                        )
                     )
                 }
             }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class ResponseController {
 
@@ -77,7 +75,7 @@ public class ResponseController {
 
     String getBody(String method, String currentPath){
         Map<String, String> resourcesMap = methodsMap.get(method);
-        String filename = EMPTY;
+        String filename = "";
 
         List<String> paths = new ArrayList<>(resourcesMap.keySet());
         Collections.reverse(paths);
@@ -91,7 +89,7 @@ public class ResponseController {
     }
 
     private String findResponse(Map<String, String> resourcesMap, String path, String currentPath) {
-        String filename = EMPTY;
+        String filename = "";
         Pattern pattern = Pattern.compile(path);
         Matcher matcher = pattern.matcher(currentPath);
 

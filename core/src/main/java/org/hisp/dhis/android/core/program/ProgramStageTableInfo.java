@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,7 @@ public final class ProgramStageTableInfo {
         public static final String PERIOD_TYPE = "periodType";
         public static final String PROGRAM = "program";
         public static final String REMIND_COMPLETED = "remindCompleted";
+        public static final String VALIDATION_STRATEGY = "validationStrategy";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String ENABLE_USER_ASSIGNMENT = "enableUserAssignment";
 
@@ -103,7 +104,8 @@ public final class ProgramStageTableInfo {
                     ACCESS_DATA_WRITE,
                     REMIND_COMPLETED,
                     FEATURE_TYPE,
-                    ENABLE_USER_ASSIGNMENT
+                    ENABLE_USER_ASSIGNMENT,
+                    VALIDATION_STRATEGY
             );
         }
     }

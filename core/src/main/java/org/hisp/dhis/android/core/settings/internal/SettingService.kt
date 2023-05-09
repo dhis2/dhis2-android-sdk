@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
 
+@Suppress("TooManyFunctions")
 internal interface SettingService {
 
     @GET("systemSettings")
@@ -42,9 +43,6 @@ internal interface SettingService {
 
     @GET("userSettings")
     fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
-
-    @GET("apps")
-    fun appMetadata(@Query("filter") filter: String): Single<List<AppMetadata>>
 
     @GET
     fun settingsAppInfo(@Url url: String): Single<SettingsAppInfo>
@@ -66,4 +64,7 @@ internal interface SettingService {
 
     @GET
     fun analyticsSettings(@Url url: String): Single<AnalyticsSettings>
+
+    @GET
+    fun latestAppVersion(@Url url: String): Single<LatestAppVersion>
 }

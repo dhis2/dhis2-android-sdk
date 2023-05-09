@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.*
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryParser
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryTarget
@@ -109,7 +110,8 @@ internal object ProgramIndicatorEvaluatorHelper {
     fun getEventWhereClause(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -135,7 +137,8 @@ internal object ProgramIndicatorEvaluatorHelper {
                             programIndicator = programIndicator,
                             dimensions = entry.value,
                             builder = this,
-                            metadata = metadata
+                            metadata = metadata,
+                            queryMods = queryMods
                         )
                     }
                     is Dimension.OrganisationUnit ->
@@ -163,7 +166,8 @@ internal object ProgramIndicatorEvaluatorHelper {
     fun getEnrollmentWhereClause(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -184,7 +188,8 @@ internal object ProgramIndicatorEvaluatorHelper {
                             programIndicator = programIndicator,
                             dimensions = entry.value,
                             builder = this,
-                            metadata = metadata
+                            metadata = metadata,
+                            queryMods = queryMods
                         )
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
@@ -201,19 +206,22 @@ internal object ProgramIndicatorEvaluatorHelper {
         }.build()
     }
 
+    @Suppress("LongParameterList")
     private fun appendProgramIndicatorPeriodClauses(
         dimensions: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
         programIndicator: ProgramIndicator,
         defaultColumn: String,
         builder: WhereClauseBuilder,
+        queryMods: QueryMods?
     ) {
         if (hasDefaultBoundaries(programIndicator)) {
             builder.appendComplexQuery(
                 buildDefaultBoundariesClause(
                     column = defaultColumn,
                     dimensions = dimensions,
-                    metadata = metadata
+                    metadata = metadata,
+                    queryMods = queryMods
                 )
             )
         } else {
@@ -226,9 +234,10 @@ internal object ProgramIndicatorEvaluatorHelper {
     private fun buildDefaultBoundariesClause(
         column: String,
         dimensions: List<DimensionItem>,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?
     ): String {
-        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata)
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata, queryMods)
 
         return WhereClauseBuilder().apply {
             reportingPeriods.forEach { period ->
@@ -379,10 +388,13 @@ internal object ProgramIndicatorEvaluatorHelper {
 
     fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        programIndicator: ProgramIndicator
+        programIndicator: ProgramIndicator,
+        queryMods: QueryMods?,
     ): AggregationType {
         val aggregationType =
-            if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
+            if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
+                queryMods.aggregationType!!
+            } else if (evaluationItem.aggregationType != AggregationType.DEFAULT) {
                 evaluationItem.aggregationType
             } else {
                 programIndicator.aggregationType()
@@ -406,6 +418,11 @@ internal object ProgramIndicatorEvaluatorHelper {
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             AggregationType.DEFAULT -> AggregationType.AVERAGE
+
+            AggregationType.LAST_LAST_ORG_UNIT,
+            AggregationType.FIRST_FIRST_ORG_UNIT,
+            AggregationType.MAX_SUM_ORG_UNIT,
+            AggregationType.MIN_SUM_ORG_UNIT,
 
             AggregationType.VARIANCE,
             AggregationType.STDDEV,

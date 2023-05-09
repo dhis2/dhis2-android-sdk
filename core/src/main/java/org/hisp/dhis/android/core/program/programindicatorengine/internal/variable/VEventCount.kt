@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,11 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEventCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return visitor.programIndicatorContext.events.values.sumOf { it.size }.toString()
+        return visitor.programIndicatorContext!!.events.values.sumOf { it.size }.toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val eventSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        val eventSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EventTableInfo.Columns.UID}"
             AnalyticsType.ENROLLMENT, null ->

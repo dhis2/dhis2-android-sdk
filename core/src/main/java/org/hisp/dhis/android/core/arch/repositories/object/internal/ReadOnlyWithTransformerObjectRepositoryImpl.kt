@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,13 +31,13 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 
-internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
+internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T, R : ReadOnlyObjectRepository<T>>
 internal constructor(
     private val store: ReadableStore<M>,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
@@ -45,9 +45,9 @@ internal constructor(
     private val transformer: TwoWayTransformer<M, T>
 ) : ReadOnlyObjectRepository<T> {
 
-    fun blockingGetWithoutChildren(): M {
+    fun blockingGetWithoutChildren(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
-        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))!!
+        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
 
     /**

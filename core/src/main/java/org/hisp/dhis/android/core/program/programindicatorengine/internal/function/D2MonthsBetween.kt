@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,13 +27,14 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
-import org.joda.time.Months
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.monthsUntil
+import org.hisp.dhis.android.core.util.toLocalDate
 
 internal class D2MonthsBetween : ProgramBetweenDatesFunction() {
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return Months.monthsBetween(startDate, endDate).months.toString()
+    override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {
+        return startDate.toLocalDate().monthsUntil(endDate.toLocalDate()).toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.option.OptionTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class OptionStore {
+public final class OptionStore {
 
     private OptionStore() {}
 

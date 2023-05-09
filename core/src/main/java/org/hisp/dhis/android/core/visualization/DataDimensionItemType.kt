@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,5 +35,6 @@ enum class DataDimensionItemType {
     PROGRAM_INDICATOR,
     PROGRAM_DATA_ELEMENT,
     PROGRAM_ATTRIBUTE,
+    EXPRESSION_DIMENSION_ITEM,
     VALIDATION_RULE
 }

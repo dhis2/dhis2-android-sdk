@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ internal object StockUseCaseTransactionLinkStore {
             w.bind(4, o.distributedTo())
             w.bind(5, o.stockDistributed())
             w.bind(6, o.stockDiscarded())
-            w.bind(7, o.stockCorrected())
+            w.bind(7, o.stockCount())
         }
 
     val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(

@@ -27,8 +27,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.hisp.dhis.android">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
         <activity

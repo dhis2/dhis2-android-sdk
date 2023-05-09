@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.DataSyncPeriod;
 import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.SynchronizationSettings;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 public class SynchronizationSettingsSamples {
@@ -43,6 +44,8 @@ public class SynchronizationSettingsSamples {
                 .dataSync(DataSyncPeriod.EVERY_24_HOURS)
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
                 .trackerImporterVersion(TrackerImporterVersion.V2)
+                .trackerExporterVersion(TrackerExporterVersion.V2)
+                .fileMaxLengthBytes(10240000)
                 .programSettings(ProgramSettings.builder()
                         .globalSettings(ProgramSettingSamples.getProgramSetting())
                         .build())

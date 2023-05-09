@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RetrofitFactory {
@@ -61,6 +62,7 @@ public class RetrofitFactory {
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
                 .addConverterFactory(FilterConverterFactory.create())
                 .addConverterFactory(FieldsConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 

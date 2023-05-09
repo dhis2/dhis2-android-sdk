@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -66,6 +66,7 @@ public final class TrackedEntityAttributeStore {
             w.bind(26, o.displayFormName());
             w.bind(27, o.fieldMask());
             w.bind(28, o.aggregationType());
+            w.bind(29, o.confidential());
         }
     };
 

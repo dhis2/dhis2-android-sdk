@@ -142,7 +142,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .byUid().eq("DiszpKrYNg8")
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().size()).isEqualTo(2);
+        assertThat(organisationUnit.programs().size()).isEqualTo(3);
         for (ObjectWithUid program : organisationUnit.programs()) {
             assertThat(program.uid()).isNotNull();
         }
@@ -171,7 +171,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().blockingGet().get(1);
-        assertThat(organisationUnit.programs().size()).isEqualTo(2);
+        assertThat(organisationUnit.programs().size()).isEqualTo(3);
         for (ObjectWithUid program : organisationUnit.programs()) {
             assertThat(program.uid()).isNotNull();
         }
@@ -199,7 +199,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .byUid().eq("DiszpKrYNg8")
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().size()).isEqualTo(2);
+        assertThat(organisationUnit.programs().size()).isEqualTo(3);
         for (ObjectWithUid program : organisationUnit.programs()) {
             assertThat(program.uid()).isNotNull();
         }

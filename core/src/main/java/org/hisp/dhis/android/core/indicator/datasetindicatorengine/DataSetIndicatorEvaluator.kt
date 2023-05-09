@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,34 +29,27 @@ package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 
 @Reusable
 internal class DataSetIndicatorEvaluator @Inject constructor(private val expressionService: ExpressionService) {
 
-    @Suppress("LongParameterList")
     fun evaluate(
         indicator: Indicator,
         indicatorType: IndicatorType,
-        valueMap: Map<DimensionalItemObject, Double>,
-        constantMap: Map<String, Constant>,
-        orgUnitCountMap: Map<String, Int>,
-        days: Int
+        context: ExpressionServiceContext
     ): Double {
         val numerator = expressionService.getExpressionValue(
-            indicator.numerator(), valueMap, constantMap,
-            orgUnitCountMap, days, MissingValueStrategy.NEVER_SKIP
+            indicator.numerator(), context, MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val denominator = expressionService.getExpressionValue(
-            indicator.denominator(), valueMap, constantMap,
-            orgUnitCountMap, days, MissingValueStrategy.NEVER_SKIP
+            indicator.denominator(), context, MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"

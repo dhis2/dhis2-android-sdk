@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     @Throws(Exception::class)
     fun download_data_values() {
-        if (!d2.userModule().isLogged.blockingGet()) {
+        if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(username, password, url).blockingGet()
         }
 

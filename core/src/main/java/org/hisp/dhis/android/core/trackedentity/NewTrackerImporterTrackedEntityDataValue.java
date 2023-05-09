@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,9 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserInfoColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.user.UserInfo;
 
 import java.util.Date;
 
@@ -69,7 +71,8 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
 
     @Nullable
     @JsonProperty()
-    public abstract String storedBy();
+    @ColumnAdapter(IgnoreUserInfoColumnAdapter.class)
+    public abstract UserInfo createdBy();
 
     @Nullable
     @JsonProperty()
@@ -103,7 +106,7 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
 
         public abstract Builder dataElement(String dataElement);
 
-        public abstract Builder storedBy(String storedBy);
+        public abstract Builder createdBy(UserInfo createdBy);
 
         public abstract Builder value(String value);
 

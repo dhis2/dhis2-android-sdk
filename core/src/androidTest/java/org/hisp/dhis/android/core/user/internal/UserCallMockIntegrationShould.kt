@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.data.user.UserCredentialsSamples
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
@@ -45,7 +43,6 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     companion object {
         private lateinit var userStore: IdentifiableObjectStore<User>
-        private lateinit var userCredentialsStore: IdentifiableObjectStore<UserCredentials>
 
         @BeforeClass
         @JvmStatic
@@ -54,21 +51,14 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
             BaseMockIntegrationTestEmptyEnqueable.setUpClass()
             val userCall: Callable<User> = objects.d2DIComponent.internalModules().user.userCall
             userStore = UserStore.create(databaseAdapter)
-            userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-            dhis2MockServer.enqueueMockResponse("user/user.json")
+            dhis2MockServer.enqueueMockResponse("user/user38.json")
             userCall.call()
         }
     }
 
     @Test
     fun persist_user_in_database_when_call() {
-        Truth.assertThat(userStore.count()).isEqualTo(1)
-        Truth.assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
-    }
-
-    @Test
-    fun persist_user_credentials_in_database_when_call() {
-        Truth.assertThat(userCredentialsStore.count()).isEqualTo(1)
-        Truth.assertThat(userCredentialsStore.selectFirst()).isEqualTo(UserCredentialsSamples.getUserCredentials())
+        assertThat(userStore.count()).isEqualTo(1)
+        assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VCompletedDate : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val enrollment = visitor.programIndicatorContext.enrollment
+        val enrollment = visitor.programIndicatorContext!!.enrollment
 
         return if (enrollment == null) {
             getLatestEvent(visitor)?.let { ParserUtils.getMediumDateString(it.completedDate()) }
@@ -49,7 +49,7 @@ internal class VCompletedDate : ProgramExpressionItem() {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
             AnalyticsType.ENROLLMENT, null ->

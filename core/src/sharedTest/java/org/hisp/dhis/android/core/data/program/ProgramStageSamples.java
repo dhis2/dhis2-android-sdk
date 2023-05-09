@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -70,7 +71,9 @@ public class ProgramStageSamples {
                 .periodType(PeriodType.BiMonthly)
                 .program(ObjectWithUid.create("program_uid"))
                 .access(Access.create(false, false, DataAccess.create(true, true)))
-                .remindCompleted(Boolean.FALSE).build();
+                .remindCompleted(Boolean.FALSE)
+                .validationStrategy(ValidationStrategy.ON_UPDATE_AND_INSERT)
+                .build();
     }
 
     public static ProgramStage getProgramStage(String name, Program program) {

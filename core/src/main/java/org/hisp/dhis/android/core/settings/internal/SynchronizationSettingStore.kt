@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,14 +43,16 @@ internal object SynchronizationSettingStore {
         w.bind(1, o.dataSync())
         w.bind(2, o.metadataSync())
         w.bind(3, o.trackerImporterVersion())
+        w.bind(4, o.trackerExporterVersion())
+        w.bind(5, o.fileMaxLengthBytes())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: SynchronizationSettings, _: StatementWrapper ->
+            _: SynchronizationSettings, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: SynchronizationSettings, _: StatementWrapper ->
+            _: SynchronizationSettings, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<SynchronizationSettings> {

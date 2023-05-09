@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -54,13 +54,17 @@ public final class SynchronizationSettingTableInfo {
         public static final String DATA_SYNC = "dataSync";
         public static final String METADATA_SYNC = "metadataSync";
         public static final String TRACKER_IMPORTER_VERSION = "trackerImporterVersion";
+        public static final String TRACKER_EXPORTER_VERSION = "trackerExporterVersion";
+        public static final String FILE_MAX_LENGTH_BYTES = "fileMaxLengthBytes";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SYNC,
                     METADATA_SYNC,
-                    TRACKER_IMPORTER_VERSION
+                    TRACKER_IMPORTER_VERSION,
+                    TRACKER_EXPORTER_VERSION,
+                    FILE_MAX_LENGTH_BYTES
             );
         }
     }

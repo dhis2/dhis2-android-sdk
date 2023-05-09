@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class InMemoryUnsecureStore implements InsecureStore {
 
@@ -47,5 +48,10 @@ public final class InMemoryUnsecureStore implements InsecureStore {
 
     public void removeData(String key) {
         dataMap.remove(key);
+    }
+
+    @Override
+    public Set<String> getAllKeys() {
+        return dataMap.keySet();
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.variab
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-abstract class ProgramExpressionItem : ExpressionItem {
+internal abstract class ProgramExpressionItem : ExpressionItem {
 
     protected fun getProgramArgType(ctx: ExprContext): ProgramExpressionItem {
         return when {
@@ -51,7 +51,7 @@ abstract class ProgramExpressionItem : ExpressionItem {
     }
 
     protected fun getLatestEvent(visitor: CommonExpressionVisitor): Event? {
-        val events = visitor.programIndicatorContext.events
+        val events = visitor.programIndicatorContext!!.events
 
         return events.values.flatten().sortedByDescending { it.eventDate() }.firstOrNull()
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ sealed class Result<out S, out F : Throwable> {
 
     val succeeded: Boolean get() = this is Success && value != null
 
-    fun fold(onSuccess: (S) -> Unit, onFailure: (F) -> Unit) {
+    inline fun fold(onSuccess: (S) -> Unit, onFailure: (F) -> Unit) {
         when (this) {
             is Success -> onSuccess(value)
             is Failure -> onFailure(failure)
@@ -55,9 +55,16 @@ sealed class Result<out S, out F : Throwable> {
         }
     }
 
-    fun <T> map(transform: (value: S) -> T): Result<T, F> {
+    inline fun <T> map(transform: (value: S) -> T): Result<T, F> {
         return when (this) {
             is Success -> Success(transform(value))
+            is Failure -> Failure(failure)
+        }
+    }
+
+    inline fun <T> flatMap(transform: (value: S) -> Result<T, @UnsafeVariance F>): Result<T, F> {
+        return when (this) {
+            is Success -> transform(value)
             is Failure -> Failure(failure)
         }
     }

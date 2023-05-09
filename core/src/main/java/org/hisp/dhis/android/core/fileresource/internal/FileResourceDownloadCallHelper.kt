@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -47,24 +49,28 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val dataValueStore: DataValueStore
+    private val dataValueStore: DataValueStore,
+    private val dhisVersionManager: DHISVersionManager
 ) {
 
     fun getMissingTrackerAttributeValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>
-    ): List<TrackedEntityAttributeValue> {
-        // TODO Download files for TrackedEntityAttributes
-        val valueTypes = params.valueTypes.filter { it == FileResourceValueType.IMAGE }
-
-        val attributeUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, valueTypes)
+    ): List<MissingTrackerAttributeValue> {
+        val fileTypes =
+            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+                params.valueTypes
+            } else {
+                params.valueTypes.filter { it == FileResourceValueType.IMAGE }
+            }
+        val attributesWhereClause = WhereClauseBuilder()
+            .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, fileTypes.map { it.valueType })
             .build()
-        val trackedEntityAttributeUids = trackedEntityAttributeStore.selectUidsWhere(attributeUidsWhereClause)
+        val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
         val attributeValuesWhereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids
+                trackedEntityAttributes.map { it.uid() }
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.VALUE,
@@ -72,6 +78,10 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
             )
             .build()
         return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause)
+            .map { av ->
+                val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
+                MissingTrackerAttributeValue(av, type)
+            }
     }
 
     fun getMissingTrackerDataValues(
@@ -79,7 +89,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         existingFileResources: List<String>
     ): List<TrackedEntityDataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes)
+            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
             .build()
         val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)
@@ -95,7 +105,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         existingFileResources: List<String>
     ): List<DataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes)
+            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "AGGREGATE")
             .build()
         val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)

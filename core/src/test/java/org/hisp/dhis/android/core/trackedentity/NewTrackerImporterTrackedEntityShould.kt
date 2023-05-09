@@ -41,16 +41,16 @@ class NewTrackerImporterTrackedEntityShould :
     override fun map_from_json_string() {
         val trackedEntity = objectMapper.readValue(jsonStream, NewTrackerImporterTrackedEntity::class.java)
 
-        assertThat(trackedEntity.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:02.770"))
-        assertThat(trackedEntity.createdAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:02.770"))
-        assertThat(trackedEntity.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:07:34.455"))
-        assertThat(trackedEntity.updatedAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-05-26T11:46:22.372"))
+        assertThat(trackedEntity.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))
+        assertThat(trackedEntity.createdAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))
+        assertThat(trackedEntity.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"))
+        assertThat(trackedEntity.updatedAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"))
 
-        assertThat(trackedEntity.uid()).isEqualTo("vOxUH373fy5")
+        assertThat(trackedEntity.uid()).isEqualTo("PgmUFEQYZdt")
         assertThat(trackedEntity.organisationUnit()).isEqualTo("DiszpKrYNg8")
         assertThat(trackedEntity.trackedEntityType()).isEqualTo("nEenWmSyUEp")
         assertThat(trackedEntity.geometry()!!.type()).isEqualTo(FeatureType.POINT)
-        assertThat(trackedEntity.geometry()!!.coordinates()).isEqualTo("[-11.49169921875, 9.535667170047729]")
+        assertThat(trackedEntity.geometry()!!.coordinates()).isEqualTo("[9.0, 9.0]")
         assertThat(trackedEntity.deleted()).isFalse()
     }
 }

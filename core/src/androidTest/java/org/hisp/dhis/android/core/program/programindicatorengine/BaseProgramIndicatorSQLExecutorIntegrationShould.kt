@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -112,7 +112,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             evaluationItem = evaluationItem,
             metadata = metadata +
                 (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)) +
-                (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap())
+                (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap()),
+            queryMods = null
         )
     }
 

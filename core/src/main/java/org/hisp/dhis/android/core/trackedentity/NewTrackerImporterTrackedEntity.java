@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterProgramOwnerListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.DataColumns;
@@ -50,7 +52,9 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner;
 
 import java.util.Date;
 import java.util.List;
@@ -112,6 +116,16 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
     @ColumnAdapter(IgnoreNewTrackerImporterEnrollmentListColumnAdapter.class)
     public abstract List<NewTrackerImporterEnrollment> enrollments();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreNewTrackerImporterProgramOwnerListAdapter.class)
+    public abstract List<NewTrackerImporterProgramOwner> programOwners();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreNewRelationshipListColumnAdapter.class)
+    abstract List<NewTrackerImporterRelationship> relationships();
+
     public static Builder builder() {
         return new $$AutoValue_NewTrackerImporterTrackedEntity.Builder();
     }
@@ -152,6 +166,10 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
                 List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         public abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
+
+        public abstract Builder programOwners(List<NewTrackerImporterProgramOwner> programOwners);
+
+        public abstract Builder relationships(List<NewTrackerImporterRelationship> relationships);
 
         public abstract NewTrackerImporterTrackedEntity build();
     }

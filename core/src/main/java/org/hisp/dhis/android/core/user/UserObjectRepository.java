@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.user.internal.UserFields;
 
 import java.util.Map;
 
@@ -48,5 +49,9 @@ public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<
                          RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserObjectRepository(store, childrenAppenders, s));
+    }
+
+    public UserObjectRepository withUserRoles() {
+        return cf.withChild(UserFields.USER_ROLES);
     }
 }

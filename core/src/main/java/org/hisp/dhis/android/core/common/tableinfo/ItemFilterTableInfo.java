@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -55,6 +55,7 @@ public final class ItemFilterTableInfo {
         public final static String DATA_ITEM = "dataItem";
         public final static String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
         public final static String ATTRIBUTE = "attribute";
+        public final static String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
         public static final String SW = "sw";
         public static final String EW = "ew";
         public final static String LE = "le";
@@ -73,6 +74,7 @@ public final class ItemFilterTableInfo {
                     DATA_ITEM,
                     TRACKED_ENTITY_INSTANCE_FILTER,
                     ATTRIBUTE,
+                    PROGRAM_STAGE_WORKING_LIST,
                     SW,
                     EW,
                     LE,

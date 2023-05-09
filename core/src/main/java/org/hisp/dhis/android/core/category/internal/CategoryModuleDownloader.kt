@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,13 +44,14 @@ class CategoryModuleDownloader @Inject internal constructor(
     private val categoryOptionCall: UidsCall<CategoryOption>,
     private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
-    private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor
+    private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
+    private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
         return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
             .flatMap { categoryComboCall.download(it) }
-            .flatMapCompletable { comboUids ->
+            .flatMap { comboUids ->
                 val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
                 categoryCall.download(categoryUids).flatMap { categories ->
                     categoryOptionCall.download(categoryUids)
@@ -58,7 +59,9 @@ class CategoryModuleDownloader @Inject internal constructor(
                             categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
                             categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
                         }
-                }.ignoreElement()
+                }
             }
+            .map { categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos() }
+            .ignoreElement()
     }
 }

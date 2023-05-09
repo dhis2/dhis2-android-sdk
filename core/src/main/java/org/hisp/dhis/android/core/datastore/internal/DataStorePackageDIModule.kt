@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,12 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.datastore.DataStoreModule
 
-@Module(includes = [LocalDataStoreEntityDIModule::class])
+@Module(
+    includes = [
+        DataStoreEntityDIModule::class,
+        LocalDataStoreEntityDIModule::class
+    ]
+)
 class DataStorePackageDIModule {
     @Provides
     @Reusable

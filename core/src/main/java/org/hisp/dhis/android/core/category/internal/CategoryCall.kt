@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ internal class CategoryCall @Inject constructor(
             service.getCategories(
                 CategoryFields.allFields,
                 CategoryFields.uid.`in`(partitionUids),
-                false
+                paging = false
             )
         }
     }

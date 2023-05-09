@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
@@ -123,11 +124,13 @@ internal class IndicatorSQLEngine @Inject constructor(
         }
 
     private fun newVisitor(indicatorContext: IndicatorContext): CommonExpressionVisitor {
-        return CommonExpressionVisitor.newBuilder()
-            .withItemMap(IndicatorParserUtils.INDICATOR_EXPRESSION_ITEMS)
-            .withItemMethod(ParserUtils.ITEM_GET_SQL)
-            .withConstantMap(constantMap)
-            .withIndicatorContext(indicatorContext)
-            .buildForAnalyticsIndicator()
+        return CommonExpressionVisitor(
+            CommonExpressionVisitorScope.AnalyticsIndicator(
+                itemMap = IndicatorParserUtils.INDICATOR_EXPRESSION_ITEMS,
+                itemMethod = ParserUtils.ITEM_GET_SQL,
+                constantMap = constantMap,
+                indicatorContext = indicatorContext
+            )
+        )
     }
 }

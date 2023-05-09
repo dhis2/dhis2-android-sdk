@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -66,6 +68,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,45 +88,49 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyWithUidCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstanceStore store;
-    private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
+    private final TrackerParentCallFactory trackerParentCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
     private final DHISVersionManager versionManager;
     private final TrackedEntityInstanceFilterCollectionRepository filtersRepository;
+    private final ProgramStageWorkingListCollectionRepository workingListRepository;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper;
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache;
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
     private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(
             final TrackedEntityInstanceStore store,
-            final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
+            final TrackerParentCallFactory trackerParentCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final TrackedEntityInstanceQueryRepositoryScopeHelper scopeHelper,
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
-            final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache,
+            final ProgramStageWorkingListCollectionRepository workingListRepository,
+            final D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> onlineCache,
             final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
             final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
-        this.onlineCallFactory = onlineCallFactory;
+        this.trackerParentCallFactory = trackerParentCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.scopeHelper = scopeHelper;
         this.versionManager = versionManager;
         this.filtersRepository = filtersRepository;
+        this.workingListRepository = workingListRepository;
         this.onlineCache = onlineCache;
         this.onlineHelper = onlineHelper;
         this.localQueryHelper = localQueryHelper;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders, s,
-                        scopeHelper, versionManager, filtersRepository, onlineCache, onlineHelper, localQueryHelper));
+                new TrackedEntityInstanceQueryCollectionRepository(store, trackerParentCallFactory, childrenAppenders,
+                        s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
+                        onlineHelper, localQueryHelper));
     }
 
     /**
@@ -168,7 +175,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
-     * Add an "attribute" filter to the query. If this method is call several times, conditions are appended with
+     * Add an "attribute" filter to the query. If this method is called several times, conditions are appended with
      * AND connector.
      * <p>
      * For example,
@@ -180,15 +187,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
-        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
-            List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
-            attributes.add(filterItem);
-            return scope.toBuilder().attribute(attributes).build();
-        });
+        return byFilter(attributeId);
     }
 
     /**
-     * Add an "filter" to the query. If this method is call several times, conditions are appended with
+     * Add a "filter" to the query. If this method is called several times, conditions are appended with
      * AND connector.
      * <p>
      * For example,
@@ -200,11 +203,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFilter(String attributeId) {
-        return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
-            List<RepositoryScopeFilterItem> filters = new ArrayList<>(scope.filter());
-            filters.add(filterItem);
-            return scope.toBuilder().filter(filters).build();
-        });
+        return connectorFactory.eqLikeItemC(attributeId, filterItem -> scopeHelper.addFilter(scope, filterItem));
     }
 
     /**
@@ -214,6 +213,21 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byQuery() {
         return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
+    }
+
+    /**
+     * Filter the tracked entity for those matching this filter. If this method is called several times, conditions
+     * are appended with AND connector.
+     *
+     * @param dataElement DataElement uid to use in the filter
+     * @return Repository connector
+     */
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byDataValue(String dataElement) {
+        return connectorFactory.eqLikeItemC(dataElement, filterItem -> {
+            List<RepositoryScopeFilterItem> dataValues = new ArrayList<>(scope.dataValue());
+            dataValues.add(filterItem);
+            return scope.toBuilder().dataValue(dataValues).build();
+        });
     }
 
     /**
@@ -444,6 +458,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Apply the filters defined in a {@link ProgramStageWorkingList}. It will overwrite previous filters in case
+     * they overlap. In the same way, they could be overwritten by subsequent filters.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byProgramStageWorkingList() {
+        return connectorFactory.eqConnector(id -> {
+            ProgramStageWorkingList workingList =
+                    workingListRepository
+                            .withDataFilters()
+                            .withAttributeValueFilters()
+                            .uid(id).blockingGet();
+            return scopeHelper.addProgramStageWorkingList(scope, workingList);
+        });
+    }
+
+    /**
      * Order by created date. If a program is provided, it takes the created of most recent enrollment.
      * Otherwise it takes the value of the tracked entity instance.
      *
@@ -551,12 +582,12 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
-        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
+        return new TrackedEntityInstanceQueryDataSource(store, trackerParentCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
     public DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>> getResultDataSource() {
-        return new TrackedEntityInstanceQueryDataSourceResult(store, onlineCallFactory, scope,
+        return new TrackedEntityInstanceQueryDataSourceResult(store, trackerParentCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
@@ -574,7 +605,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                return onlineHelper.queryOnlineBlocking(onlineCallFactory, scope);
+                return onlineHelper.queryOnlineBlocking(trackerParentCallFactory, scope);
             } catch (D2Error e) {
                 throw new RuntimeException(e);
             } catch (Exception e) {

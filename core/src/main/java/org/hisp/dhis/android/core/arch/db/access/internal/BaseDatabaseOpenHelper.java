@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Build;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 class BaseDatabaseOpenHelper {
 
-    static final int VERSION = 135;
+    static final int VERSION = 145;
 
     private final AssetManager assetManager;
     private final int targetVersion;
@@ -47,11 +46,7 @@ class BaseDatabaseOpenHelper {
     }
 
     void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
+        databaseAdapter.setForeignKeyConstraintsEnabled(true);
         databaseAdapter.enableWriteAheadLogging();
     }
 

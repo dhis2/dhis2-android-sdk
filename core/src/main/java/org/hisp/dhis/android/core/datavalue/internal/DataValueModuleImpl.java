@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
+import org.hisp.dhis.android.core.datavalue.DataValueConflictCollectionRepository;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 
 import javax.inject.Inject;
@@ -39,14 +40,22 @@ import dagger.Reusable;
 public final class DataValueModuleImpl implements DataValueModule {
 
     private final DataValueCollectionRepository dataValues;
+    private final DataValueConflictCollectionRepository dataValueConflicts;
 
     @Inject
-    DataValueModuleImpl(DataValueCollectionRepository dataValueCollectionRepository) {
+    DataValueModuleImpl(DataValueCollectionRepository dataValueCollectionRepository,
+                        DataValueConflictCollectionRepository dataValueConflicts) {
         this.dataValues = dataValueCollectionRepository;
+        this.dataValueConflicts = dataValueConflicts;
     }
 
     @Override
     public DataValueCollectionRepository dataValues() {
         return dataValues;
+    }
+
+    @Override
+    public DataValueConflictCollectionRepository dataValueConflicts() {
+        return dataValueConflicts;
     }
 }

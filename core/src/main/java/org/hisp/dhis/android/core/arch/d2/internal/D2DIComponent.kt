@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,6 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule
-import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule
@@ -79,6 +78,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListPackageDIModule
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule
@@ -89,6 +89,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.usecase.internal.UseCasePackageDIModule
@@ -141,13 +142,15 @@ import retrofit2.Retrofit
         SettingPackageDIModule::class,
         UseCasePackageDIModule::class,
         TrackedEntityPackageDIModule::class,
+        TrackerExporterPackageDIModule::class,
         TrackerImporterPackageDIModule::class,
         SmsDIModule::class,
         UserPackageDIModule::class,
         ValidationPackageDIModule::class,
         VisualizationPackageDIModule::class,
         DataValueConflictDIModule::class,
-        MapPackageDIModule::class
+        MapPackageDIModule::class,
+        ProgramStageWorkingListPackageDIModule::class
     ]
 )
 @Suppress("TooManyFunctions")
@@ -191,9 +194,6 @@ internal interface D2DIComponent {
 
     @VisibleForTesting
     fun oldTrackerImporterPayloadGenerator(): OldTrackerImporterPayloadGenerator
-
-    @VisibleForTesting
-    fun eventPostPayloadGenerator(): EventPostPayloadGenerator
 
     @VisibleForTesting
     fun categoryOptionStore(): IdentifiableObjectStore<CategoryOption>

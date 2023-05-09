@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,9 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
 
     V2_38_0(DHISVersion.V2_38, "2.38.0", SMSVersion.V2),
 
-    V2_39_0(DHISVersion.V2_39, "2.39.0", SMSVersion.V2);
+    V2_39_0(DHISVersion.V2_39, "2.39.0", SMSVersion.V2),
+
+    V2_40_0(DHISVersion.V2_40, "2.40.0", SMSVersion.V2);
 
     companion object {
         @JvmStatic

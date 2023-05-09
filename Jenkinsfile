@@ -63,6 +63,8 @@ pipeline {
                     expression { env.CHANGE_ID == null }
                     anyOf {
                         expression { env.GIT_BRANCH == "master" }
+                        expression { env.GIT_BRANCH == "develop" }
+                        expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+-rc/ }
                     }
                 }
             }

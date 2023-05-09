@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,12 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public class AnalyticsDhisVisualizationsSettingObjectRepository
@@ -52,6 +55,22 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
             AnalyticsSettingCall analyticsSettingCall) {
         super(analyticsSettingCall);
         this.analyticsDhisVisualizationStore = analyticsDhisVisualizationStore;
+    }
+
+    public Single<List<AnalyticsDhisVisualizationsGroup>> getByProgram(String program) {
+        return Single.just(blockingGetByProgram(program));
+    }
+
+    public List<AnalyticsDhisVisualizationsGroup> blockingGetByProgram(String program) {
+        return generateGroups(analyticsDhisVisualizationStore.selectAll()).program().get(program);
+    }
+
+    public Single<List<AnalyticsDhisVisualizationsGroup>> getByDataSet(String dataSet) {
+        return Single.just(blockingGetByProgram(dataSet));
+    }
+
+    public List<AnalyticsDhisVisualizationsGroup> blockingByDataSet(String dataSet) {
+        return generateGroups(analyticsDhisVisualizationStore.selectAll()).dataSet().get(dataSet);
     }
 
     @Override

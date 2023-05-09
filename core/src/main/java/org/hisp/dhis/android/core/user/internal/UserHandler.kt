@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,25 +34,34 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserRole
 
 @Reusable
 internal class UserHandler @Inject constructor(
     userStore: IdentifiableObjectStore<User>,
-    private val userCredentialsHandler: Handler<UserCredentials>,
     private val userRoleHandler: Handler<UserRole>,
     private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
 ) : IdentifiableHandlerImpl<User>(userStore) {
 
+    override fun beforeObjectHandled(o: User): User {
+        return o.toBuilder().run {
+            val userCredentials = UserInternalAccessor.accessUserCredentials(o)
+
+            if (o.username() == null && userCredentials.username() != null) {
+                username(userCredentials.username())
+            }
+            if (o.userRoles() == null && userCredentials.userRoles() != null) {
+                userRoles(userCredentials.userRoles())
+            }
+
+            build()
+        }
+    }
+
     override fun afterObjectHandled(o: User, action: HandleAction) {
-        val credentials: UserCredentials = UserInternalAccessor.accessUserCredentials(o)
-        val credentialsWithUser = credentials.toBuilder().user(ObjectWithUid.create(o.uid())).build()
-        userCredentialsHandler.handle(credentialsWithUser)
-        userRoleCollectionCleaner.deleteNotPresent(credentialsWithUser.userRoles())
-        userRoleHandler.handleMany(credentialsWithUser.userRoles())
+        userRoleCollectionCleaner.deleteNotPresent(o.userRoles())
+        userRoleHandler.handleMany(o.userRoles())
     }
 }

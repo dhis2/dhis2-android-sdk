@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.program;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -312,6 +313,17 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages()
                         .byRemindCompleted()
                         .isTrue()
+                        .blockingGet();
+
+        assertThat(programStages.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_validation_strategy() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages()
+                        .byValidationStrategy()
+                        .eq(ValidationStrategy.ON_UPDATE_AND_INSERT)
                         .blockingGet();
 
         assertThat(programStages.size()).isEqualTo(1);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -60,6 +61,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,
     private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter>,
     private val eventFilterCall: UidsCall<EventFilter>,
+    private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList>,
     private val relationshipTypeCall: ListCall<RelationshipType>,
     private val optionSetCall: UidsCall<OptionSet>,
     private val optionCall: UidsCall<Option>,
@@ -91,8 +93,6 @@ internal class ProgramModuleDownloader @Inject constructor(
                                 Single.merge(
                                     listOf(
                                         programRuleCall.download(programUids),
-                                        trackedEntityInstanceFilterCall.download(programUids),
-                                        eventFilterCall.download(programUids),
                                         relationshipTypeCall.download(),
                                         optionSetCall.download(optionSetUids),
                                         optionCall.download(optionSetUids),
@@ -100,8 +100,19 @@ internal class ProgramModuleDownloader @Inject constructor(
                                     )
                                 ).ignoreElements()
                             }
+                            .concatWith(downloadFiltersAndWorkingLists(programUids))
                     }
                 }
         }
+    }
+
+    private fun downloadFiltersAndWorkingLists(programUids: Set<String>): Completable {
+        return Single.merge(
+            listOf(
+                trackedEntityInstanceFilterCall.download(programUids),
+                eventFilterCall.download(programUids),
+                programStageWorkingListCall.download(programUids)
+            )
+        ).ignoreElements()
     }
 }

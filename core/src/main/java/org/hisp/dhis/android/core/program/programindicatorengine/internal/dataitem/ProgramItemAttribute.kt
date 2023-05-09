@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
 
         val attributeUid = ctx.uid0.text
 
-        val attributeValue = visitor.programIndicatorContext.attributeValues[attributeUid]
+        val attributeValue = visitor.programIndicatorContext!!.attributeValues[attributeUid]
         val attribute = getAttribute(visitor, attributeUid)
 
         val value = attributeValue?.value()
@@ -73,7 +73,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
         val selectExpression = ProgramIndicatorSQLUtils.getAttributeWhereClause(
             column = valueCastExpression,
             attributeUid = attributeUid,
-            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
         )
 
         return if (visitor.state.replaceNulls) {
@@ -85,15 +85,15 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
 
     override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return visitor.itemIds.add(
-            DimensionalItemId.builder()
-                .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE)
-                .id0(ctx.uid0.text)
-                .build()
+            DimensionalItemId(
+                dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE,
+                id0 = ctx.uid0.text
+            )
         )
     }
 
     private fun getAttribute(visitor: CommonExpressionVisitor, uid: String): TrackedEntityAttribute {
-        return visitor.trackedEntityAttributeStore.selectByUid(uid)
+        return visitor.trackedEntityAttributeStore!!.selectByUid(uid)
             ?: throw IllegalArgumentException("Attribute $uid does not exist.")
     }
 }

@@ -61,8 +61,8 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
             query.rootOrgUnitUids
         )
 
-        return partitions.fold(emptyList()) { acc, part ->
-            acc + service.getDataSetCompleteRegistrations(
+        return partitions.flatMap { part ->
+            service.getDataSetCompleteRegistrations(
                 fields = DataSetCompleteRegistrationFields.allFields,
                 lastUpdated = query.lastUpdatedStr,
                 dataSetUids = commaSeparatedCollectionValues(part[0]),

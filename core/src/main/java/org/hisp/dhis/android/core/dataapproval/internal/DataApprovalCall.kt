@@ -59,8 +59,8 @@ internal class DataApprovalCall @Inject constructor(
             query.organisationUnistUids,
             query.attributeOptionCombosUids
         )
-        return partitions.fold(emptyList()) { acc, part ->
-            acc + apiDownloader.downloadListAsCoroutine(handler) {
+        return partitions.flatMap { part ->
+            apiDownloader.downloadListAsCoroutine(handler) {
                 service.getDataApprovals(
                     fields = DataApprovalFields.allFields,
                     lastUpdated = query.lastUpdatedStr,

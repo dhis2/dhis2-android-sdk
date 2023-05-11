@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.tracker.exporter
 
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import io.reactivex.Single
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -36,6 +37,7 @@ import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -338,6 +340,19 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         )
     }
 
+    @Suppress("TooGenericExceptionCaught")
+    protected fun getItems(query: TrackerAPIQuery): List<T> {
+        return try {
+            getItemsAsSingle(query).blockingGet().items()
+        } catch (e: RuntimeException) {
+            if (e.cause is D2Error) {
+                throw e.cause as D2Error
+            } else {
+                throw e
+            }
+        }
+    }
+
     protected class ItemsWithPagingResult(
         var count: Int,
         var successfulSync: Boolean,
@@ -364,7 +379,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected abstract fun getBundles(params: ProgramDataDownloadParams): List<Q>
 
-    protected abstract fun getItems(query: TrackerAPIQuery): List<T>
+    protected abstract fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<T>>
 
     protected abstract fun persistItems(
         items: List<T>,

@@ -32,59 +32,18 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-/**
- * Function if
- * <pre>
- *
- * In-memory Logic:
- *
- * arg0   returns
- * ----   -------
- * true   arg1
- * false  arg2
- * null   null
- *
- * SQL logic (CASE WHEN arg0 THEN arg1 ELSE arg2 END):
- *
- * arg0   returns
- * ----   -------
- * true   arg1
- * false  arg2
- * null   arg2
-</pre> *
- *
- * @author Jim Grace
- */
-internal class  FunctionIf : ExpressionItem {
+internal class FunctionIs : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val arg0 = visitor.castBooleanVisit(ctx.expr(0))
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val values = ctx.expr().map(visitor::visit)
 
-        return when {
-            arg0 == null -> null
-            arg0 -> visitor.visit(ctx.expr(1))
-            else -> visitor.visit(ctx.expr(2))
-        }
-    }
+        val targetValue = values[0]
+        val expectedValues = values.drop(1)
 
-    override fun evaluateAllPaths(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val arg0 = visitor.castBooleanVisit(ctx.expr(0))
-        val arg1 = visitor.visit(ctx.expr(1))
-        val arg2 = visitor.visit(ctx.expr(2))
-
-        if (arg1 != null) {
-            AntlrParserUtils.castClass(arg1.javaClass, arg2)
-        }
-
-        return when {
-            arg0 != null && arg0 -> arg1
-            else -> arg2
-        }
+        return expectedValues.any { AntlrParserUtils.compare(targetValue, it) == 0 }
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return "CASE WHEN ${visitor.castStringVisit(ctx.expr(0))} " +
-            "THEN ${visitor.castStringVisit(ctx.expr(1))} " +
-            "ELSE ${visitor.castStringVisit(ctx.expr(2))} END"
+        return TODO()
     }
 }

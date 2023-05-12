@@ -85,6 +85,7 @@ internal object ParserUtils {
         // Functions
         ExpressionParser.FIRST_NON_NULL to FunctionFirstNonNull(),
         ExpressionParser.GREATEST to FunctionGreatest(),
+        ExpressionParser.IS to FunctionIs(),
         ExpressionParser.IF to FunctionIf(),
         ExpressionParser.IS_NOT_NULL to FunctionIsNotNull(),
         ExpressionParser.IS_NULL to FunctionIsNull(),

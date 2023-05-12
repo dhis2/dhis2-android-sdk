@@ -27,44 +27,40 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data
 
-import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class AggregatedDataCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
+class AggregatedDataCallEnqueableMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     @Test
-    fun emit_progress() {
-        val testObserver = d2.aggregatedModule().data().download().test()
+    fun should_rollback_full_bundles_on_error() {
+        val monthlyDataValues = "datavalue/data_values_monthly.json"
+        val weeklyDataValues = "datavalue/data_values_weekly.json"
+        val weeklyCompleteRegistrations = "dataset/data_set_complete_registrations.json"
+        val weeklyApprovals = "dataapproval/data_approvals_multiple.json"
 
-        testObserver.awaitTerminalEvent()
+        dhis2MockServer.enqueueMockResponse(monthlyDataValues)
+        dhis2MockServer.enqueueMockResponse(403)
+        dhis2MockServer.enqueueMockResponse(weeklyDataValues)
+        dhis2MockServer.enqueueMockResponse(weeklyCompleteRegistrations)
+        dhis2MockServer.enqueueMockResponse(weeklyApprovals)
 
-        testObserver.assertValueCount(4)
+        d2.aggregatedModule().data().blockingDownload()
 
-        testObserver.assertValueAt(0) { v: AggregatedD2Progress ->
-            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 0)
-        }
-        testObserver.assertValueAt(1) { v: AggregatedD2Progress ->
-            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 2)
-        }
-        testObserver.assertValueAt(2) { v: AggregatedD2Progress ->
-            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 3)
-        }
-        testObserver.assertValueAt(3) { v: AggregatedD2Progress ->
-            v.isComplete && hasAllCompletedDataSets(v.dataSets())
-        }
+        val monthlyValues = d2.dataSetModule().dataSetInstances()
+                .byPeriodType().eq(PeriodType.Monthly)
+                .blockingGet()
 
-        testObserver.dispose()
-    }
+        val weeklyValues = d2.dataSetModule().dataSetInstances()
+                .byPeriodType().eq(PeriodType.Weekly)
+                .blockingGet()
 
-    private fun hasNCompletedDataSets(dataSets: Map<String, D2ProgressStatus>, number: Int): Boolean {
-        return dataSets.filter { (_, progress) -> progress.isComplete }.size == number
-    }
-
-    private fun hasAllCompletedDataSets(dataSets: Map<String, D2ProgressStatus>): Boolean {
-        return dataSets.all { (_, progress) -> progress.isComplete }
+        assertThat(monthlyValues).isEmpty()
+        assertThat(weeklyValues).isNotEmpty()
     }
 }

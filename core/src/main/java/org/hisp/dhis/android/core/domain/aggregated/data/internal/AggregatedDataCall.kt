@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
@@ -103,11 +104,14 @@ internal class AggregatedDataCall @Inject constructor(
     private suspend fun downloadBundle(
         bundle: AggregatedDataCallBundle
     ) {
-        return coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
-            downloadDataValues(bundle)
-            downloadCompleteRegistration(bundle)
-            downloadApproval(bundle)
-            updateAggregatedDataSync(bundle)
+        return try {
+            coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+                downloadDataValues(bundle)
+                downloadCompleteRegistration(bundle)
+                downloadApproval(bundle)
+                updateAggregatedDataSync(bundle)
+            }
+        } catch (_: D2Error) {
         }
     }
 

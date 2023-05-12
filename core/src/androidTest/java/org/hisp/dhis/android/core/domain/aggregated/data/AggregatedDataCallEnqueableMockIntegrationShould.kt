@@ -42,25 +42,25 @@ class AggregatedDataCallEnqueableMockIntegrationShould : BaseMockIntegrationTest
         val monthlyDataValues = "datavalue/data_values_monthly.json"
         val weeklyDataValues = "datavalue/data_values_weekly.json"
         val weeklyCompleteRegistrations = "dataset/data_set_complete_registrations.json"
-        val weeklyApprovals = "dataapproval/data_approvals_multiple.json"
+
+        dhis2MockServer.enqueueSystemInfoResponse()
 
         dhis2MockServer.enqueueMockResponse(monthlyDataValues)
         dhis2MockServer.enqueueMockResponse(403)
+
         dhis2MockServer.enqueueMockResponse(weeklyDataValues)
         dhis2MockServer.enqueueMockResponse(weeklyCompleteRegistrations)
-        dhis2MockServer.enqueueMockResponse(weeklyApprovals)
 
         d2.aggregatedModule().data().blockingDownload()
 
         val monthlyValues = d2.dataSetModule().dataSetInstances()
-                .byPeriodType().eq(PeriodType.Monthly)
-                .blockingGet()
+            .byPeriodType().eq(PeriodType.Monthly)
+            .blockingGet()
+        assertThat(monthlyValues).isEmpty()
 
         val weeklyValues = d2.dataSetModule().dataSetInstances()
-                .byPeriodType().eq(PeriodType.Weekly)
-                .blockingGet()
-
-        assertThat(monthlyValues).isEmpty()
+            .byPeriodType().eq(PeriodType.Weekly)
+            .blockingGet()
         assertThat(weeklyValues).isNotEmpty()
     }
 }

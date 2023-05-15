@@ -44,6 +44,11 @@ internal class FunctionIs : ExpressionItem {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return TODO()
+        val values = ctx.expr().map(visitor::castStringVisit)
+
+        val targetValue = values[0]
+        val expectedValues = values.drop(1)
+
+        return "$targetValue IN (${expectedValues.joinToString(", ")})"
     }
 }

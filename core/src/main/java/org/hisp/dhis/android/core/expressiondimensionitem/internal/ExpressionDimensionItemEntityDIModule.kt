@@ -25,40 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import retrofit2.Retrofit
 
-import android.content.Context;
-import android.content.res.AssetManager;
+@Module
+internal class ExpressionDimensionItemEntityDIModule {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ExpressionDimensionItem> {
+        return ExpressionDimensionItemStore.create(databaseAdapter)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    @Provides
+    @Reusable
+    fun handler(handler: ExpressionDimensionItemHandler): Handler<ExpressionDimensionItem> {
+        return handler
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Reusable
+    @Provides
+    fun service(retrofit: Retrofit): ExpressionDimensionItemService {
+        return retrofit.create(ExpressionDimensionItemService::class.java)
     }
 }

@@ -25,40 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo
 
-import android.content.Context;
-import android.content.res.AssetManager;
+@Suppress("MagicNumber")
+internal object ExpressionDimensionItemStore {
+    private val BINDER: StatementBinder<ExpressionDimensionItem> =
+        object : IdentifiableStatementBinder<ExpressionDimensionItem>() {
+            override fun bindToStatement(o: ExpressionDimensionItem, w: StatementWrapper) {
+                super.bindToStatement(o, w)
+                w.bind(7, o.expression())
+            }
+        }
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ExpressionDimensionItem> {
+        return objectWithUidStore(
+                databaseAdapter,
+                ExpressionDimensionItemTableInfo.TABLE_INFO,
+                BINDER
+        ) { cursor: Cursor -> ExpressionDimensionItem.create(cursor) }
     }
 }

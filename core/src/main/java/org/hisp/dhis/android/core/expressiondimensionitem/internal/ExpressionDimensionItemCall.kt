@@ -25,40 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import javax.inject.Inject
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@Reusable
+internal class ExpressionDimensionItemCall @Inject constructor(
+        private val service: ExpressionDimensionItemService,
+        private val handler: Handler<ExpressionDimensionItem>,
+        private val apiDownloader: APIDownloader
+) : UidsCall<ExpressionDimensionItem> {
+    override fun download(uids: Set<String>): Single<List<ExpressionDimensionItem>> {
+        return apiDownloader.downloadPartitioned(
+                uids,
+                MAX_UID_LIST_SIZE,
+                handler
+        ) { partitionUids: Set<String> ->
+            service.getExpressionDimensionItems(
+                    ExpressionDimensionItemFields.uid.`in`(partitionUids),
+                    ExpressionDimensionItemFields.allFields,
+                    false
+            )
+        }
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 50
     }
 }

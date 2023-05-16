@@ -25,40 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-import android.content.Context;
-import android.content.res.AssetManager;
+object ExpressionDimensionItemTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "ExpressionDimensionItem"
+        }
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
+    class Columns : IdentifiableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    EXPRESSION
+            )
+        }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val EXPRESSION = "expression"
+        }
     }
 }

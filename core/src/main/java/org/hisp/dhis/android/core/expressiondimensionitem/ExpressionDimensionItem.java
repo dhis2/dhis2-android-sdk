@@ -26,39 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.expressiondimensionitem;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.Nullable;
 
-class BaseDatabaseOpenHelper {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 146;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+@JsonDeserialize(builder = $$AutoValue_ExpressionDimensionItem.Builder.class)
+public abstract class ExpressionDimensionItem extends BaseIdentifiableObject implements CoreObject {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Nullable
+    @JsonProperty()
+    public abstract String expression();
+
+    public static Builder builder() {
+        return new $$AutoValue_ExpressionDimensionItem.Builder();
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    public static ExpressionDimensionItem create(Cursor cursor) {
+        return $AutoValue_ExpressionDimensionItem.createFromCursor(cursor);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    public abstract Builder toBuilder();
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder expression(String expression);
+
+        public abstract ExpressionDimensionItem build();
     }
 }

@@ -25,40 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns
 
-import android.content.Context;
-import android.content.res.AssetManager;
+internal object ExpressionDimensionItemFields {
+    private val fh = FieldsHelper<ExpressionDimensionItem>()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    val uid = fh.uid()
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+    val allFields: Fields<ExpressionDimensionItem> = Fields.builder<ExpressionDimensionItem>()
+            .fields(fh.getIdentifiableFields())
+            .fields(fh.field<String>(Columns.EXPRESSION))
+            .build()
 }

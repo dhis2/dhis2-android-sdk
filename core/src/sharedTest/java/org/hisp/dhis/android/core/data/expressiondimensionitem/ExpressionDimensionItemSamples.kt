@@ -26,39 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.data.expressiondimensionitem
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+object ExpressionDimensionItemSamples {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 146;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    fun getExpressionDimensionItem(): ExpressionDimensionItem {
+        val builder = ExpressionDimensionItem.builder()
+        fillIdentifiableProperties(builder)
+        return builder
+            .id(1L)
+                .expression("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
+            .build()
     }
 }

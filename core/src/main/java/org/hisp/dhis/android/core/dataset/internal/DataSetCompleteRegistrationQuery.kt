@@ -25,37 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
-import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-@Reusable
-internal class DataValueCall @Inject constructor(
-    private val service: DataValueService,
-    private val handler: Handler<DataValue>,
-    private val apiDownloader: APIDownloader
-) : QueryCall<DataValue, DataValueQuery> {
-
-    override suspend fun download(query: DataValueQuery): List<DataValue> {
-        val b = query.bundle
-        return apiDownloader.downloadListAsCoroutine(handler) {
-            service.getDataValues(
-                fields = DataValueFields.allFields,
-                lastUpdated = b.key.lastUpdatedStr(),
-                dataSetUids = commaSeparatedUids(b.dataSets),
-                periodIds = commaSeparatedCollectionValues(b.periodIds),
-                orgUnitUids = commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
-                children = true,
-                paging = false,
-                includeDeleted = true
-            ).dataValues
-        }
-    }
-}
+internal data class DataSetCompleteRegistrationQuery(
+    val dataSetUids: Collection<String>,
+    val periodIds: Collection<String>,
+    val rootOrgUnitUids: Collection<String>,
+    val lastUpdatedStr: String?,
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false
+)

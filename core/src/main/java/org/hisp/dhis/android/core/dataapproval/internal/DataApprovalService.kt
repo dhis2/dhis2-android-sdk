@@ -25,35 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-
-import java.util.Collection;
-
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
-
-    public abstract Collection<String> dataSetUids();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
-    }
+@Suppress("LongParameterList")
+internal interface DataApprovalService {
+    @GET("dataApprovals/multiple")
+    suspend fun getDataApprovals(
+        @Query("fields") @Which fields: Fields<DataApproval>,
+        @Query("lastUpdated") lastUpdated: String?,
+        @Query("wf") workflow: String,
+        @Query("pe") periods: String,
+        @Query("ou") organisationUnit: String,
+        @Query("aoc") attributeOptionCombo: String
+    ): List<DataApproval>
 }

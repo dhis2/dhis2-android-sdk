@@ -25,20 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import com.google.auto.value.AutoValue;
+@RunWith(D2JunitRunner::class)
+class AggregatedDataCallEnqueableMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
+    @Test
+    fun should_rollback_full_bundles_on_error() {
+        val monthlyDataValues = "datavalue/data_values_monthly.json"
+        val weeklyDataValues = "datavalue/data_values_weekly.json"
+        val weeklyCompleteRegistrations = "dataset/data_set_complete_registrations.json"
 
-@AutoValue
-public abstract class DataValueQuery extends BaseQuery {
-    public abstract AggregatedDataCallBundle bundle();
+        dhis2MockServer.enqueueSystemInfoResponse()
 
-    public static DataValueQuery create(AggregatedDataCallBundle bundle) {
-        return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                bundle);
+        dhis2MockServer.enqueueMockResponse(monthlyDataValues)
+        dhis2MockServer.enqueueMockResponse(403)
+
+        dhis2MockServer.enqueueMockResponse(weeklyDataValues)
+        dhis2MockServer.enqueueMockResponse(weeklyCompleteRegistrations)
+
+        d2.aggregatedModule().data().blockingDownload()
+
+        val monthlyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Monthly)
+            .blockingGet()
+        assertThat(monthlyValues).isEmpty()
+
+        val weeklyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Weekly)
+            .blockingGet()
+        assertThat(weeklyValues).isNotEmpty()
     }
 }

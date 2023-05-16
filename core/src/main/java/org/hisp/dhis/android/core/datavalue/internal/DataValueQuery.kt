@@ -25,28 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
-
-import java.util.List;
-
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface DataApprovalService {
-
-    @GET("dataApprovals/multiple")
-    Single<List<DataApproval>> getDataApprovals(
-            @Query("fields") @Which Fields<DataApproval> fields,
-            @Query("lastUpdated") String lastUpdated,
-            @Query("wf") String workflow,
-            @Query("pe") String periods,
-            @Query("ou") String organisationUnit,
-            @Query("aoc") String attributeOptionCombo
-    );
-}
+internal data class DataValueQuery(
+    val bundle: AggregatedDataCallBundle
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false
+)

@@ -351,6 +351,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(DATA_ELEMENTS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);

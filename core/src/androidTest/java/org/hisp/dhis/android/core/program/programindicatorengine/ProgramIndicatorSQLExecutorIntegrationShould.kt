@@ -536,6 +536,44 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
+    fun should_evaluate_is_function() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement3.uid(), "ONE")
+
+        val textDe = de(programStage1.uid(), dataElement3.uid())
+        val nullD2 = de(programStage1.uid(), dataElement2.uid())
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = "if(is($textDe in 'ONE', 'TWO', 'THREE'), 1, 2)",
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.SUM
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = "if(is($textDe in  'TWO', 'THREE'), 1, 2)",
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.SUM
+            )
+        ).isEqualTo("2")
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = "if(is($nullD2 in  'ONE', 'TWO', 'THREE'), 1, 2)",
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.SUM
+            )
+        ).isEqualTo("2")
+    }
+
+    @Test
     fun should_filter_program_stage_data_values() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()

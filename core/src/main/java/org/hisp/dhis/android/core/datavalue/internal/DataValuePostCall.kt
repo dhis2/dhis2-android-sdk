@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import java.net.HttpURLConnection
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -54,32 +56,27 @@ internal class DataValuePostCall @Inject constructor(
     private val dataValueStore: DataValueStore,
     private val versionManager: DHISVersionManager
 ) {
-    fun uploadDataValues(dataValues: List<DataValue>): Observable<D2Progress> {
-        return Observable.defer {
-            if (dataValues.isEmpty()) {
-                return@defer Observable.empty<D2Progress>()
-            } else {
-                val progressManager = D2ProgressManager(1)
-                return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                    val result = fileResourcePostCall.uploadFileResource(dataValues)
-                    val validDataValues = result.dataValues
-
-                    markObjectsAs(validDataValues, State.UPLOADING)
-                    try {
-                        val dataValueSet = DataValueSet(validDataValues)
-                        val dataValueImportSummary = executePostCall(dataValueSet)
-                        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
-                        fileResourcePostCall.updateFileResourceStates(result.fileResources)
-                    } catch (e: D2Error) {
-                        markObjectsAs(validDataValues, errorIfOnline(e))
-                        fileResourcePostCall.updateFileResourceStates(result.fileResources)
-                        throw e
-                    }
-                    emitter.onNext(progressManager.increaseProgress(DataValue::class.java, true))
-                    emitter.onComplete()
-                }
-            }
+    fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
+        if (dataValues.isEmpty()) {
+            return@flow
         }
+
+        val progressManager = D2ProgressManager(1)
+        val result = withContext(Dispatchers.IO) { fileResourcePostCall.uploadFileResource(dataValues) }
+        val validDataValues = result.dataValues
+
+        markObjectsAs(validDataValues, State.UPLOADING)
+        try {
+            val dataValueSet = DataValueSet(validDataValues)
+            val dataValueImportSummary = executePostCall(dataValueSet)
+            dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
+            fileResourcePostCall.updateFileResourceStates(result.fileResources)
+        } catch (e: D2Error) {
+            markObjectsAs(validDataValues, errorIfOnline(e))
+            fileResourcePostCall.updateFileResourceStates(result.fileResources)
+            throw e
+        }
+        emit(progressManager.increaseProgress(DataValue::class.java, true))
     }
 
     private fun executePostCall(dataValueSet: DataValueSet): DataValueImportSummary? {

@@ -25,143 +25,136 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue
 
-package org.hisp.dhis.android.core.datavalue;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.*
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
+import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operator
+import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
+import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 
 @Reusable
-public final class DataValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>
-        implements ReadOnlyWithUploadCollectionRepository<DataValue> {
+class DataValueCollectionRepository @Inject internal constructor(
+    private val store: DataValueStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<DataValue>>,
+    scope: RepositoryScope,
+    private val postCall: DataValuePostCall
+) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        DataValueCollectionRepository(store, childrenAppenders, s, postCall)
+    }
+),
+    ReadOnlyWithUploadCollectionRepository<DataValue> {
 
-    private final DataValueStore store;
-    private final DataValuePostCall postCall;
+    override fun upload(): Observable<D2Progress> = flow {
+        val dataValues =
+            bySyncState().`in`(State.uploadableStatesIncludingError().toMutableList()).blockingGetWithoutChildren()
+        emitAll(postCall.uploadDataValues(dataValues))
+    }.asObservable()
 
-    @Inject
-    DataValueCollectionRepository(final DataValueStore store,
-                                  final Map<String, ChildrenAppender<DataValue>> childrenAppenders,
-                                  final RepositoryScope scope,
-                                  final DataValuePostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new DataValueCollectionRepository(store, childrenAppenders, s, postCall)));
-        this.store = store;
-        this.postCall = postCall;
+    override fun blockingUpload() {
+        upload().blockingSubscribe()
     }
 
-    @Override
-    public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() ->
-                bySyncState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
-        ).flatMap(postCall::uploadDataValues);
+    fun value(
+        period: String,
+        organisationUnit: String,
+        dataElement: String,
+        categoryOptionCombo: String,
+        attributeOptionCombo: String
+    ): DataValueObjectRepository {
+        val updatedScope = byPeriod().eq(period)
+            .byOrganisationUnitUid().eq(organisationUnit)
+            .byDataElementUid().eq(dataElement)
+            .byCategoryOptionComboUid().eq(categoryOptionCombo)
+            .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+        return DataValueObjectRepository(
+            store, childrenAppenders, updatedScope, period, organisationUnit,
+            dataElement, categoryOptionCombo, attributeOptionCombo
+        )
     }
 
-    @Override
-    public void blockingUpload() {
-        upload().blockingSubscribe();
+    fun byDataElementUid(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.DATA_ELEMENT)
     }
 
-    public DataValueObjectRepository value(String period,
-                                           String organisationUnit,
-                                           String dataElement,
-                                           String categoryOptionCombo,
-                                           String attributeOptionCombo) {
-        RepositoryScope updatedScope = byPeriod().eq(period)
-                .byOrganisationUnitUid().eq(organisationUnit)
-                .byDataElementUid().eq(dataElement)
-                .byCategoryOptionComboUid().eq(categoryOptionCombo)
-                .byAttributeOptionComboUid().eq(attributeOptionCombo)
-                .scope;
-        return new DataValueObjectRepository(store, childrenAppenders, updatedScope, period, organisationUnit,
-                dataElement, categoryOptionCombo, attributeOptionCombo);
+    fun byPeriod(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.PERIOD)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byDataElementUid() {
-        return cf.string(Columns.DATA_ELEMENT);
+    fun byOrganisationUnitUid(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byPeriod() {
-        return cf.string(Columns.PERIOD);
+    fun byCategoryOptionComboUid(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byAttributeOptionComboUid(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byCategoryOptionComboUid() {
-        return cf.string(Columns.CATEGORY_OPTION_COMBO);
+    fun byValue(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
+    fun byDataSetUid(dataSetUid: String?): DataValueCollectionRepository {
+        return cf.subQuery(dataValueKey)
+            .rawSubQuery(
+                operator,
+                whereClause(dataSetUid!!)
+            )!!
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byValue() {
-        return cf.string(Columns.VALUE);
+    fun byStoredBy(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.STORED_BY)
     }
 
-    public DataValueCollectionRepository byDataSetUid(String dataSetUid) {
-        return cf.subQuery(DataValueByDataSetQueryHelper.getDataValueKey())
-                .rawSubQuery(DataValueByDataSetQueryHelper.getOperator(),
-                        DataValueByDataSetQueryHelper.whereClause(dataSetUid));
+    fun byCreated(): DateFilterConnector<DataValueCollectionRepository> {
+        return cf.date(DataValueTableInfo.Columns.CREATED)
     }
 
-    public StringFilterConnector<DataValueCollectionRepository> byStoredBy() {
-        return cf.string(Columns.STORED_BY);
+    fun byLastUpdated(): DateFilterConnector<DataValueCollectionRepository> {
+        return cf.date(DataValueTableInfo.Columns.LAST_UPDATED)
     }
 
-    public DateFilterConnector<DataValueCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byComment(): StringFilterConnector<DataValueCollectionRepository> {
+        return cf.string(DataValueTableInfo.Columns.COMMENT)
     }
 
-    public DateFilterConnector<DataValueCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
-    }
-
-    public StringFilterConnector<DataValueCollectionRepository> byComment() {
-        return cf.string(Columns.COMMENT);
-    }
-
-    public BooleanFilterConnector<DataValueCollectionRepository> byFollowUp() {
-        return cf.bool(Columns.FOLLOW_UP);
+    fun byFollowUp(): BooleanFilterConnector<DataValueCollectionRepository> {
+        return cf.bool(DataValueTableInfo.Columns.FOLLOW_UP)
     }
 
     /**
-     * @deprecated Use {@link #bySyncState()} instead.
-     *
      * @return
      */
-    @Deprecated
-    public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
-        return bySyncState();
+    @Deprecated("Use {@link #bySyncState()} instead.\n" + "     \n" + "      ")
+    fun byState(): EnumFilterConnector<DataValueCollectionRepository, State> {
+        return bySyncState()
     }
 
-    public EnumFilterConnector<DataValueCollectionRepository, State> bySyncState() {
-        return cf.enumC(Columns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<DataValueCollectionRepository, State> {
+        return cf.enumC<State>(DataValueTableInfo.Columns.SYNC_STATE)
     }
 
-    public BooleanFilterConnector<DataValueCollectionRepository> byDeleted() {
-        return cf.bool(Columns.DELETED);
+    fun byDeleted(): BooleanFilterConnector<DataValueCollectionRepository> {
+        return cf.bool(DataValueTableInfo.Columns.DELETED)
     }
 }

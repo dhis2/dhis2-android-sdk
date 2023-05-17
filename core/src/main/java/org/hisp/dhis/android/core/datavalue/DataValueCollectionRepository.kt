@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereC
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 
+@Suppress("TooManyFunctions")
 @Reusable
 class DataValueCollectionRepository @Inject internal constructor(
     private val store: DataValueStore,

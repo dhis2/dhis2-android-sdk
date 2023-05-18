@@ -25,35 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+data class DataValueImportSummaryWebResponse(
+    val response: DataValueImportSummary,
+    val httpStatus: String,
+    val httpStatusCode: Int,
+    val status: String,
+    val message: String
+) : WebResponse() {
+    override fun httpStatus() = httpStatus
 
-import androidx.annotation.Nullable;
+    override fun httpStatusCode() = httpStatusCode
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+    override fun status() = status
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataValueImportSummaryWebResponse.Builder.class)
-public abstract class DataValueImportSummaryWebResponse extends WebResponse {
-
-    private static final String RESPONSE = "response";
-
-    @Nullable
-    @JsonProperty(RESPONSE)
-    public abstract DataValueImportSummary response();
-
-    public static Builder builder() {
-        return new AutoValue_DataValueImportSummaryWebResponse.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(DataValueImportSummary response);
-
-        public abstract DataValueImportSummaryWebResponse build();
-    }
+    override fun message() = message
 }

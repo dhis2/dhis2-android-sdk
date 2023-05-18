@@ -145,7 +145,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload),
                 listOf(HttpURLConnection.HTTP_CONFLICT),
                 DataValueImportSummaryWebResponse::class.java
-            ).response()
+            ).response
         } else {
             apiCallExecutor.executeObjectCall(
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(payload)

@@ -91,7 +91,7 @@ internal class DataValuePostCall @Inject constructor(
                 errorClass = DataValueImportSummaryWebResponse::class.java
             ) {
                 dataValueService.postDataValuesWebResponse(dataValueSet)
-            }.map { it.response()!! } // TODO ("Remove !! after refactor to DataClass")
+            }.map { it.response }
         } else {
             coroutineAPICallExecutor.wrap {
                 dataValueService.postDataValues(dataValueSet)

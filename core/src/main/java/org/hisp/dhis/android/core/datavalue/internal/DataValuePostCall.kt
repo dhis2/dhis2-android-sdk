@@ -93,7 +93,7 @@ internal class DataValuePostCall @Inject constructor(
                 dataValueService.postDataValuesWebResponse(dataValueSet)
             }.map { it.response()!! } // TODO ("Remove !! after refactor to DataClass")
         } else {
-            coroutineAPICallExecutor.wrap() {
+            coroutineAPICallExecutor.wrap {
                 dataValueService.postDataValues(dataValueSet)
             }
         }

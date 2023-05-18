@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.datavalue.internal
 import dagger.Reusable
 import java.net.HttpURLConnection
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
@@ -52,9 +51,9 @@ internal class DataValuePostCall @Inject constructor(
     private val dataValueService: DataValueService,
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,
-    private val apiCallExecutor: APICallExecutor,
     private val dataValueStore: DataValueStore,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -62,34 +61,41 @@ internal class DataValuePostCall @Inject constructor(
         }
 
         val progressManager = D2ProgressManager(1)
-        val result = withContext(Dispatchers.IO) { fileResourcePostCall.uploadFileResource(dataValues) }
+        val result = fileResourcePostCall.uploadFileResource(dataValues)
         val validDataValues = result.dataValues
 
         markObjectsAs(validDataValues, State.UPLOADING)
         try {
             val dataValueSet = DataValueSet(validDataValues)
-            val dataValueImportSummary = executePostCall(dataValueSet)
-            dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
-            fileResourcePostCall.updateFileResourceStates(result.fileResources)
+            executePostCall(dataValueSet).fold(
+                onSuccess = {
+                    dataValueImportHandler.handleImportSummary(dataValueSet, it)
+                },
+                onFailure = {
+                    throw it
+                }
+            )
         } catch (e: D2Error) {
             markObjectsAs(validDataValues, errorIfOnline(e))
-            fileResourcePostCall.updateFileResourceStates(result.fileResources)
             throw e
+        } finally {
+            fileResourcePostCall.updateFileResourceStates(result.fileResources)
         }
         emit(progressManager.increaseProgress(DataValue::class.java, true))
     }
 
-    private fun executePostCall(dataValueSet: DataValueSet): DataValueImportSummary? {
+    private suspend fun executePostCall(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                dataValueService.postDataValuesWebResponse(dataValueSet),
-                listOf(HttpURLConnection.HTTP_CONFLICT),
-                DataValueImportSummaryWebResponse::class.java
-            ).response()
+            coroutineAPICallExecutor.wrap(
+                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
+                errorClass = DataValueImportSummaryWebResponse::class.java
+            ) {
+                dataValueService.postDataValuesWebResponse(dataValueSet)
+            }.map { it.response()!! } // TODO ("Remove !! after refactor to DataClass")
         } else {
-            apiCallExecutor.executeObjectCall(
+            coroutineAPICallExecutor.wrap() {
                 dataValueService.postDataValues(dataValueSet)
-            )
+            }
         }
     }
 

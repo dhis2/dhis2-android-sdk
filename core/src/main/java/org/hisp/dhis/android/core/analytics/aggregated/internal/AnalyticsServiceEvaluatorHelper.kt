@@ -108,6 +108,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
             is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorEvaluator
             is DimensionItem.DataItem.IndicatorItem -> indicatorEvaluator
             is DimensionItem.DataItem.EventDataItem -> eventDataItemEvaluator
+            is DimensionItem.DataItem.ExpressionDimensionItem -> TODO()
         }
     }
 
@@ -142,6 +143,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
                 dimensionDataItem.attribute,
                 value
             )
+            is DimensionItem.DataItem.ExpressionDimensionItem -> TODO()
         }
     }
 }

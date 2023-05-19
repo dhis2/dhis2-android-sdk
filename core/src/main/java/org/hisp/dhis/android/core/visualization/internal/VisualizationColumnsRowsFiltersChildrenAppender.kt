@@ -27,44 +27,55 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.visualization.CategoryDimension
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 
-internal class VisualizationCategoryDimensionChildrenAppender
-private constructor(private val childStore: LinkStore<VisualizationCategoryDimensionLink>) :
-    ChildrenAppender<Visualization>() {
-
+internal class VisualizationColumnsRowsFiltersChildrenAppender private constructor(
+    private val linkChildStore: SingleParentChildStore<Visualization, VisualizationDimensionItem>
+) : ChildrenAppender<Visualization>() {
     override fun appendChildren(visualization: Visualization): Visualization {
-        val builder = visualization.toBuilder()
-        builder.categoryDimensions(getChildren(visualization))
-        return builder.build()
-    }
-
-    private fun getChildren(o: Visualization): List<CategoryDimension> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(VisualizationCategoryDimensionLinkTableInfo.Columns.VISUALIZATION, o.uid())
-            .build()
-        return this.childStore.selectWhere(whereClause)
-            .groupBy { it.category() }
-            .map {
-                CategoryDimension.builder()
-                    .category(ObjectWithUid.create(it.key))
-                    .categoryOptions(it.value.mapNotNull { it.categoryOption()?.let { ObjectWithUid.create(it) } })
-                    .build()
+        val items = linkChildStore.getChildren(visualization)
+        val groupedByPosition = items
+            .groupBy { it.position() }
+            .mapValues { (_, items) ->
+                items
+                    .groupBy { it.dimension() }
+                    .map { (dimension, items) ->
+                        VisualizationDimension.builder()
+                            .id(dimension)
+                            .items(items)
+                            .build()
+                    }
             }
+
+        return visualization.toBuilder()
+            .columns(groupedByPosition[LayoutPosition.COLUMN] ?: emptyList())
+            .rows(groupedByPosition[LayoutPosition.ROW] ?: emptyList())
+            .filters(groupedByPosition[LayoutPosition.FILTER] ?: emptyList())
+            .build()
     }
 
     companion object {
+        private val CHILD_PROJECTION = SingleParentChildProjection(
+            VisualizationDimensionItemTableInfo.TABLE_INFO,
+            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION
+        )
+
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
-            return VisualizationCategoryDimensionChildrenAppender(
-                VisualizationCategoryDimensionLinkStore.create(databaseAdapter)
+            return VisualizationColumnsRowsFiltersChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> VisualizationDimensionItem.create(cursor) }
             )
         }
     }

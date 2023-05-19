@@ -25,30 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
-
-@Suppress("MagicNumber")
-internal object VisualizationCategoryDimensionLinkStore {
-    private val BINDER = StatementBinder { o: VisualizationCategoryDimensionLink, w: StatementWrapper ->
-        w.bind(1, o.visualization())
-        w.bind(2, o.category())
-        w.bind(3, o.categoryOption())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
-            VisualizationCategoryDimensionLinkTableInfo.Columns.VISUALIZATION,
-            BINDER
-        ) { VisualizationCategoryDimensionLink.create(it) }
-    }
+enum class DimensionItemType {
+    INDICATOR,
+    DATA_ELEMENT,
+    DATA_ELEMENT_OPERAND,
+    REPORTING_RATE,
+    PROGRAM_INDICATOR,
+    PROGRAM_DATA_ELEMENT,
+    PROGRAM_ATTRIBUTE,
+    EXPRESSION_DIMENSION_ITEM,
+    VALIDATION_RULE,
+    PERIOD,
+    ORGANISATION_UNIT,
+    CATEGORY_OPTION
 }

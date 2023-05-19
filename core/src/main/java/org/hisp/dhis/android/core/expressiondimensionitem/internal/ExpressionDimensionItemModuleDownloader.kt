@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.visualization;
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import org.hisp.dhis.android.core.visualization.DataDimensionItem;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
-public class DataDimensionItemPublicAccessShould extends BasePublicAccessShould<DataDimensionItem> {
-
-    @Mock
-    private DataDimensionItem object;
-
-    @Override
-    public DataDimensionItem object() {
-        return object;
-    }
-
-    @Override
-    public void has_public_create_method() {
-        DataDimensionItem.create(null);
-    }
-
-    @Override
-    public void has_public_builder_method() {
-        DataDimensionItem.builder();
-    }
-
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+@Reusable
+internal class ExpressionDimensionItemModuleDownloader @Inject internal constructor(
+    private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
+    private val expressionDimensionItemCall: ExpressionDimensionItemCall
+) : UntypedModuleDownloader {
+    override fun downloadMetadata(): Completable {
+        return Single.fromCallable { expressionDimensionItemUidsSeeker.seekUids() }
+            .flatMap { expressionDimensionItemCall.download(it) }
+            .ignoreElement()
     }
 }

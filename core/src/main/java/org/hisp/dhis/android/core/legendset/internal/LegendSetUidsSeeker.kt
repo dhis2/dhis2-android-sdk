@@ -32,6 +32,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
@@ -39,7 +40,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetL
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Reusable
-internal class LegendSetUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+internal class LegendSetUidsSeeker @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : BaseUidsSeeker(databaseAdapter) {
 
     fun seekUids(): Set<String> {
         val tableNames = listOf(
@@ -57,26 +60,6 @@ internal class LegendSetUidsSeeker @Inject constructor(private val databaseAdapt
             .generateQuery(legendSetIdColumnName, listOf(VisualizationTableInfo.TABLE_INFO.name()))
             .build()
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val legendSets = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    legendSets.add(mCursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-
-        val visualisationCursor = databaseAdapter.rawQuery(visualisationLegendSetQuery)
-        visualisationCursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    legendSets.add(mCursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-        return legendSets
+        return readSingleColumnResults(query) + readSingleColumnResults(visualisationLegendSetQuery)
     }
 }

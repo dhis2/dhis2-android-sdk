@@ -75,16 +75,6 @@ object VisualizationTableInfo {
                 SKIP_ROUNDING,
                 DISPLAY_DENSITY,
                 DIGIT_GROUP_SEPARATOR,
-                RELATIVE_PERIODS,
-                FILTER_DIMENSIONS,
-                ROW_DIMENSIONS,
-                COLUMN_DIMENSIONS,
-                ORGANISATION_UNIT_LEVELS,
-                USER_ORGANISATION_UNIT,
-                USER_ORGANISATION_UNIT_CHILDREN,
-                USER_ORGANISATION_UNIT_GRAND_CHILDREN,
-                ORGANISATION_UNITS,
-                PERIODS,
                 LEGEND_SHOW_KEY,
                 LEGEND_STYLE,
                 LEGEND_SET_ID,
@@ -119,16 +109,6 @@ object VisualizationTableInfo {
             const val SKIP_ROUNDING = "skipRounding"
             const val DISPLAY_DENSITY = "displayDensity"
             const val DIGIT_GROUP_SEPARATOR = "digitGroupSeparator"
-            const val RELATIVE_PERIODS = "relativePeriods"
-            const val FILTER_DIMENSIONS = "filterDimensions"
-            const val ROW_DIMENSIONS = "rowDimensions"
-            const val COLUMN_DIMENSIONS = "columnDimensions"
-            const val ORGANISATION_UNIT_LEVELS = "organisationUnitLevels"
-            const val USER_ORGANISATION_UNIT = "userOrganisationUnit"
-            const val USER_ORGANISATION_UNIT_CHILDREN = "userOrganisationUnitChildren"
-            const val USER_ORGANISATION_UNIT_GRAND_CHILDREN = "userOrganisationUnitGrandChildren"
-            const val ORGANISATION_UNITS = "organisationUnits"
-            const val PERIODS = "periods"
             const val LEGEND_SHOW_KEY = "legendShowKey"
             const val LEGEND_STYLE = "legendStyle"
             const val LEGEND_SET_ID = "legendSetId"

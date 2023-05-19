@@ -25,37 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.visualization
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramDataElement
-import org.hisp.dhis.android.core.visualization.DataDimensionItemType
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 
-object DataDimensionItemSamples {
-
-    fun dataDimensionItem(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT)
-            .dataElement(ObjectWithUid.create("data_element_uid"))
-            .build()
-
-    fun dataDimensionItemProgramDataElement(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programDataElement(DataDimensionItemProgramDataElement.builder().uid("program.data_element").build())
-            .build()
-
-    fun dataDimensionItemAttribute(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programAttribute(DataDimensionItemProgramAttribute.builder().uid("program.data_element").build())
-            .build()
+class LayoutPositionColumnAdapter : EnumColumnAdapter<LayoutPosition>() {
+    override fun getEnumClass(): Class<LayoutPosition> {
+        return LayoutPosition::class.java
+    }
 }

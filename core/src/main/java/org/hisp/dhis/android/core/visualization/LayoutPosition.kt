@@ -28,46 +28,8 @@
 
 package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-
-object VisualizationCategoryDimensionLinkTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "VisualizationCategoryDimensionLink"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
-    }
-
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                VISUALIZATION,
-                CATEGORY,
-                CATEGORY_OPTION
-            )
-        }
-
-        override fun whereUpdate(): Array<String?> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                VISUALIZATION,
-                CATEGORY,
-                CATEGORY_OPTION
-            )
-        }
-
-        companion object {
-            const val VISUALIZATION = "visualization"
-            const val CATEGORY = "category"
-            const val CATEGORY_OPTION = "categoryOption"
-        }
-    }
+enum class LayoutPosition {
+    COLUMN,
+    ROW,
+    FILTER
 }

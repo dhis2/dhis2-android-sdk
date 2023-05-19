@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
+import dagger.Module
 
-class VisualizationSimplifiedShould : BaseObjectShould("visualization/visualization_simplified.json"), ObjectShould {
-
-    @Test
-    override fun map_from_json_string() {
-        val jsonVisualization: Visualization = objectMapper.readValue(jsonStream, Visualization::class.java)
-
-        assertThat(jsonVisualization.name()).isEqualTo("Android SDK Visualization sample")
-        assertThat(jsonVisualization.displayName()).isEqualTo("Android SDK Visualization sample")
-    }
-}
+@Module(
+    includes = [
+        ExpressionDimensionItemEntityDIModule::class
+    ]
+)
+internal class ExpressionDimensionItemPackageDIModule

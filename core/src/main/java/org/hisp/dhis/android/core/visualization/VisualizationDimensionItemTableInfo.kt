@@ -26,17 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramDataElement;
+object VisualizationDimensionItemTableInfo {
 
-public class DataDimensionItemProgramDataElementWithUidColumnAdapter
-        extends IdentifiableObjectColumnAdapter<DataDimensionItemProgramDataElement> {
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "VisualizationDimensionItem"
+        }
 
-    @Override
-    protected DataDimensionItemProgramDataElement build(@NonNull String uid) {
-        return DataDimensionItemProgramDataElement.builder().uid(uid).build();
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
+
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                    VISUALIZATION,
+                    POSITION,
+                    DIMENSION,
+                    DIMENSION_ITEM,
+                    DIMENSION_ITEM_TYPE,            )
+        }
+
+        override fun whereUpdate(): Array<String?> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VISUALIZATION,
+                    POSITION,
+                    DIMENSION,
+                    DIMENSION_ITEM,
+                    DIMENSION_ITEM_TYPE,
+            )
+        }
+
+        companion object {
+            const val VISUALIZATION = "visualization"
+            const val POSITION = "position"
+            const val DIMENSION = "dimension"
+            const val DIMENSION_ITEM = "dimensionItem"
+            const val DIMENSION_ITEM_TYPE = "dimensionItemType"
+        }
     }
 }

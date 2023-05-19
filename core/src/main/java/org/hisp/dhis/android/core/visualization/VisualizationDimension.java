@@ -25,34 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.visualization.DataDimensionItemSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.visualization;
 
-@RunWith(D2JunitRunner::class)
-class DataDimensionItemStoreIntegrationShould :
-    LinkStoreAbstractIntegrationShould<DataDimensionItem>(
-        DataDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
-        DataDimensionItemTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
-    ) {
-    override fun addMasterUid(): String {
-        return "visualization_uid"
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import java.util.List;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_VisualizationDimension.Builder.class)
+public abstract class VisualizationDimension {
+
+    @Nullable
+    @JsonProperty()
+    public abstract String id();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<VisualizationDimensionItem> items();
+
+    public static Builder builder() {
+        return new AutoValue_VisualizationDimension.Builder();
     }
 
-    override fun buildObject(): DataDimensionItem {
-        return DataDimensionItemSamples.dataDimensionItem()
-    }
+    public abstract Builder toBuilder();
 
-    override fun buildObjectWithOtherMasterUid(): DataDimensionItem {
-        return DataDimensionItemSamples.dataDimensionItem().toBuilder()
-            .visualization("visualization_uid_2")
-            .build()
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+
+        public abstract Builder id(String id);
+
+        public abstract Builder items(List<VisualizationDimensionItem> items);
+
+        public abstract VisualizationDimension build();
     }
 }

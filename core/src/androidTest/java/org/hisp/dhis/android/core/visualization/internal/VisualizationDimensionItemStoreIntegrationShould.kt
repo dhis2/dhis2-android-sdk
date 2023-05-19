@@ -27,28 +27,32 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.VisualizationDimensionItemSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import org.junit.runner.RunWith
 
-@Module
-internal class DataDimensionItemEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<DataDimensionItem> {
-        return DataDimensionItemStore.create(databaseAdapter)
+@RunWith(D2JunitRunner::class)
+class VisualizationDimensionItemStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<VisualizationDimensionItem>(
+        VisualizationDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        VisualizationDimensionItemTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return "visualization_uid"
     }
 
-    @Provides
-    @Reusable
-    fun handler(store: LinkStore<DataDimensionItem>):
-        LinkHandler<DataDimensionItem, DataDimensionItem> {
-        return LinkHandlerImpl(store)
+    override fun buildObject(): VisualizationDimensionItem {
+        return VisualizationDimensionItemSamples.visualizationDimensionItem()
+    }
+
+    override fun buildObjectWithOtherMasterUid(): VisualizationDimensionItem {
+        return VisualizationDimensionItemSamples.visualizationDimensionItem().toBuilder()
+            .visualization("visualization_uid_2")
+            .build()
     }
 }

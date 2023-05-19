@@ -26,17 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.visualization.VisualizationDimension;
 
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute;
+import java.util.List;
 
-public class DataDimensionItemProgramAttributeWithUidColumnAdapter
-        extends IdentifiableObjectColumnAdapter<DataDimensionItemProgramAttribute> {
-
-    @Override
-    protected DataDimensionItemProgramAttribute build(@NonNull String uid) {
-        return DataDimensionItemProgramAttribute.builder().uid(uid).build();
-    }
+public final class IgnoreVisualizationDimensionListColumnAdapter
+        extends IgnoreColumnAdapter<List<VisualizationDimension>> {
 }

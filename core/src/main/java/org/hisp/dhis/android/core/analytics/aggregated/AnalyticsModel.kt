@@ -104,6 +104,8 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
                 EventDataItem("$program.$dataElement")
             data class Attribute(val program: String, val attribute: String) : EventDataItem("$program.$attribute")
         }
+
+        data class ExpressionDimensionItem(val uid: String) : DataItem(uid)
     }
 
     sealed class PeriodItem(id: String) : DimensionItem(Dimension.Period, id) {

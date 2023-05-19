@@ -39,82 +39,72 @@
           "id": "Yf6UHoPkd57"
         }
       },
-      "relativePeriods": {
-        "thisYear": false,
-        "last12Months": true
-      },
-      "categoryDimensions": [
+      "filters": [
         {
-          "category": {
-            "id": "KfdsGBcoiCa"
-          },
-          "categoryOptions": [
+          "id": "ou",
+          "items": [
             {
-              "id": "TNYQzTHdoxL"
+              "dimensionItem": "YuQRtpLP10I",
+              "dimensionItemType": "ORGANISATION_UNIT"
             },
             {
-              "id": "TXGfLxZlInA"
+              "dimensionItem": "vWbkYPRmKyS",
+              "dimensionItemType": "ORGANISATION_UNIT"
             },
             {
-              "id": "uZUnebiT5DI"
+              "dimensionItem": "LEVEL-3"
             }
           ]
         }
       ],
-      "filterDimensions": [
-        "ou"
-      ],
-      "rowDimensions": [
-        "pe"
-      ],
-      "columnDimensions": [
-        "dx",
-        "fMZEcRHuamy",
-        "fkAkrdC7eJF"
-      ],
-      "dataDimensionItems": [
+      "rows": [
         {
-          "dataDimensionItemType": "INDICATOR",
-          "indicator": {
-            "id": "Uvn6LCg7dVU"
-          }
-        },
-        {
-          "dataDimensionItemType": "DATA_ELEMENT",
-          "dataElement": {
-            "id": "cYeuwXTCPkU"
-          }
-        },
-        {
-          "dataDimensionItemType": "PROGRAM_INDICATOR",
-          "programIndicator": {
-            "id": "p2Zxg0wcPQ3"
-          }
+          "id": "pe",
+          "items": [
+            {
+              "dimensionItem": "202102",
+              "dimensionItemType": "PERIOD"
+            },
+            {
+              "dimensionItem": "202103",
+              "dimensionItemType": "PERIOD"
+            },
+            {
+              "dimensionItem": "2021S2",
+              "dimensionItemType": "PERIOD"
+            },
+            {
+              "dimensionItem": "LAST_12_MONTHS",
+              "dimensionItemType": "PERIOD"
+            }
+          ]
         }
       ],
-      "organisationUnitLevels": [
-        3
-      ],
-      "userOrganisationUnit": false,
-      "userOrganisationUnitChildren": false,
-      "userOrganisationUnitGrandChildren": false,
-      "organisationUnits": [
+      "columns": [
         {
-          "id": "YuQRtpLP10I"
+          "id": "dx",
+          "items": [
+            {
+              "dimensionItem": "Uvn6LCg7dVU",
+              "dimensionItemType": "INDICATOR"
+            },
+            {
+              "dimensionItem": "cYeuwXTCPkU",
+              "dimensionItemType": "DATA_ELEMENT"
+            },
+            {
+              "dimensionItem": "p2Zxg0wcPQ3",
+              "dimensionItemType": "PROGRAM_INDICATOR"
+            }
+          ]
         },
         {
-          "id": "vWbkYPRmKyS"
-        }
-      ],
-      "periods": [
-        {
-          "id": "202102"
+          "id": "fMZEcRHuamy",
+          "items": []
         },
         {
-          "id": "202103"
-        },
-        {
-          "id": "2021S2"
+          "id": "fkAkrdC7eJF",
+          "items": []
         }
       ]
     },
@@ -153,52 +143,53 @@
           "id": "TiOkbpGEud4"
         }
       },
-      "relativePeriods": {
-      },
-      "categoryDimensions": [
-      ],
-      "filterDimensions": [
-        "ou"
-      ],
-      "rowDimensions": [
-        "pe"
-      ],
-      "columnDimensions": [
-        "dx"
-      ],
-      "dataDimensionItems": [
+      "filters": [
         {
-          "dataDimensionItemType": "DATA_ELEMENT",
-          "dataElement": {
-            "id": "g9eOBujte1U"
-          }
-        },
-        {
-          "dataDimensionItemType": "PROGRAM_INDICATOR",
-          "programIndicator": {
-            "id": "GSae40Fyppf"
-          }
+          "id": "ou",
+          "items": [
+            {
+              "dimensionItem": "DiszpKrYNg8",
+              "dimensionItemType": "ORGANISATION_UNIT"
+            }
+          ]
         }
       ],
-      "organisationUnitLevels": [
-      ],
-      "userOrganisationUnit": false,
-      "userOrganisationUnitChildren": false,
-      "userOrganisationUnitGrandChildren": false,
-      "organisationUnits": [
+      "rows": [
         {
-          "id": "DiszpKrYNg8"
+          "id": "pe",
+          "items": [
+            {
+              "dimensionItem": "2016",
+              "dimensionItemType": "PERIOD"
+            },
+            {
+              "dimensionItem": "2017",
+              "dimensionItemType": "PERIOD"
+            },
+            {
+              "dimensionItem": "2018",
+              "dimensionItemType": "PERIOD"
+            }
+          ]
         }
       ],
-      "periods": [
+      "columns": [
         {
-          "id": "2016"
-        },
-        {
-          "id": "2017"
-        },
-        {
-          "id": "2018"
+          "id": "dx",
+          "items": [
+            {
+              "dimensionItem": "g9eOBujte1U",
+              "dimensionItemType": "DATA_ELEMENT"
+            },
+            {
+              "dimensionItem": "GSae40Fyppf",
+              "dimensionItemType": "PROGRAM_INDICATOR"
+            },
+            {
+              "dimensionItem": "yYo5Gy4sZa0",
+              "dimensionItemType": "EXPRESSION_DIMENSION_ITEM"
+            }
+          ]
         }
       ]
     }

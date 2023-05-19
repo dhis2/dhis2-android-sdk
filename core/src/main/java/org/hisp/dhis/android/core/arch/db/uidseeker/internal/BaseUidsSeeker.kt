@@ -25,30 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+package org.hisp.dhis.android.core.arch.db.uidseeker.internal
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 
-@Module
-internal class VisualizationCategoryDimensionEntityDIModule {
+internal open class BaseUidsSeeker constructor(private val databaseAdapter: DatabaseAdapter) {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
-        return VisualizationCategoryDimensionLinkStore.create(databaseAdapter)
-    }
+    fun readSingleColumnResults(query: String): Set<String> {
+        val cursor = databaseAdapter.rawQuery(query)
 
-    @Provides
-    @Reusable
-    fun handler(store: LinkStore<VisualizationCategoryDimensionLink>):
-        LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink> {
-        return LinkHandlerImpl(store)
+        val results: MutableSet<String> = HashSet()
+        cursor.use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
+                do {
+                    results.add(c.getString(0))
+                } while (c.moveToNext())
+            }
+        }
+        return results
     }
 }

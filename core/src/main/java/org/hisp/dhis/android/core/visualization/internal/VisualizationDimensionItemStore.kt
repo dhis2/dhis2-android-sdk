@@ -27,19 +27,30 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramDataElement
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 
-internal object DataDimensionItemProgramDataElementFields {
-    internal const val DIMENSION_ITEM = "dimensionItem"
+@Suppress("MagicNumber")
+internal object VisualizationDimensionItemStore {
+    private val BINDER = StatementBinder { o: VisualizationDimensionItem, w: StatementWrapper ->
+        w.bind(1, o.visualization())
+        w.bind(2, o.position())
+        w.bind(3, o.dimension())
+        w.bind(4, o.dimensionItem())
+        w.bind(5, o.dimensionItemType())
+    }
 
-    private val fh = FieldsHelper<DataDimensionItemProgramDataElement>()
-
-    val allFields: Fields<DataDimensionItemProgramDataElement> =
-        Fields.builder<DataDimensionItemProgramDataElement>()
-            .fields(
-                fh.field<DataDimensionItemProgramDataElement>(DIMENSION_ITEM)
-            )
-            .build()
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationDimensionItem> {
+        return StoreFactory.linkStore(
+            databaseAdapter,
+                VisualizationDimensionItemTableInfo.TABLE_INFO,
+                VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
+            BINDER
+        ) { VisualizationDimensionItem.create(it) }
+    }
 }

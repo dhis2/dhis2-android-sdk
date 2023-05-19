@@ -27,36 +27,23 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
-internal class VisualizationDataDimensionItemChildrenAppender
-private constructor(private val childStore: LinkStore<DataDimensionItem>) :
-    ChildrenAppender<Visualization>() {
+internal object VisualizationDimensionFields {
+    private const val ITEMS = "items"
 
-    override fun appendChildren(visualization: Visualization): Visualization {
-        val builder = visualization.toBuilder()
-        builder.dataDimensionItems(getChildren(visualization))
-        return builder.build()
-    }
+    private val fh = FieldsHelper<VisualizationDimension>()
 
-    private fun getChildren(o: Visualization): List<DataDimensionItem> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataDimensionItemTableInfo.Columns.VISUALIZATION, o.uid())
-            .build()
-        return this.childStore.selectWhere(whereClause)
-    }
-
-    companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
-            return VisualizationDataDimensionItemChildrenAppender(
-                DataDimensionItemStore.create(databaseAdapter)
-            )
-        }
-    }
+    val allFields: Fields<VisualizationDimension> =
+            Fields.builder<VisualizationDimension>()
+                    .fields(
+                            fh.field<String>(BaseIdentifiableObject.UID),
+                            fh.nestedField<VisualizationDimensionItem>(ITEMS)
+                                    .with(VisualizationDimensionItemFields.allFields),
+                    )
+                    .build()
 }

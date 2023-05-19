@@ -166,6 +166,10 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
 
                     MetadataItem.EventAttributeItem(attribute, program)
                 }
+
+                is DimensionItem.DataItem.ExpressionDimensionItem -> {
+                    TODO()
+                }
             }
         )
     }

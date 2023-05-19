@@ -28,61 +28,68 @@
 
 package org.hisp.dhis.android.core.visualization;
 
+import android.database.Cursor;
+
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.visualization.internal.DataDimensionItemProgramAttributeFields;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LayoutPositionColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataDimensionItemProgramAttribute.Builder.class)
-public abstract class DataDimensionItemProgramAttribute implements ObjectWithUidInterface {
+@JsonDeserialize(builder = $$AutoValue_VisualizationDimensionItem.Builder.class)
+public abstract class VisualizationDimensionItem implements CoreObject {
 
     @Nullable
-    @JsonProperty(DataDimensionItemProgramAttributeFields.DIMENSION_ITEM)
-    public abstract String uid();
+    public abstract String visualization();
 
     @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
-    public ObjectWithUid program() {
-        return uid() == null ? null : getTokenAt(0);
-    }
+    @ColumnAdapter(LayoutPositionColumnAdapter.class)
+    public abstract LayoutPosition position();
 
     @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
-    public ObjectWithUid attribute() {
-        return uid() == null ? null : getTokenAt(1);
-    }
+    public abstract String dimension();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String dimensionItem();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String dimensionItemType();
+
 
     public static Builder builder() {
-        return new AutoValue_DataDimensionItemProgramAttribute.Builder();
+        return new $$AutoValue_VisualizationDimensionItem.Builder();
+    }
+
+    public static VisualizationDimensionItem create(Cursor cursor) {
+        return AutoValue_VisualizationDimensionItem.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
-
-    private ObjectWithUid getTokenAt(int position) {
-        String[] tokens = uid() == null ? new String[] {} : uid().split("\\.");
-        String uid = tokens.length > position ? tokens[position] : null;
-        return uid == null ? null : ObjectWithUid.create(uid);
-    }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
 
-        @JsonProperty(DataDimensionItemProgramAttributeFields.DIMENSION_ITEM)
-        public abstract Builder uid(String uid);
+        public abstract Builder id(Long id);
 
-        public abstract DataDimensionItemProgramAttribute build();
+        public abstract Builder visualization(String visualization);
+
+        public abstract Builder position(LayoutPosition position);
+
+        public abstract Builder dimension(String dimension);
+
+        public abstract Builder dimensionItem(String dimensionItem);
+
+        public abstract Builder dimensionItemType(String dimensionItemType);
+
+        public abstract VisualizationDimensionItem build();
     }
 }

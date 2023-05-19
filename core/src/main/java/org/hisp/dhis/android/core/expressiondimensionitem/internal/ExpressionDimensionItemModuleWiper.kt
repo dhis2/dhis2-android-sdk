@@ -25,21 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute
+import dagger.Reusable
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import javax.inject.Inject
 
-internal object DataDimensionItemProgramAttributeFields {
-    internal const val DIMENSION_ITEM = "dimensionItem"
+@Reusable
+internal class ExpressionDimensionItemModuleWiper @Inject constructor(
+    private val tableWiper: TableWiper
+) : ModuleWiper {
+    override fun wipeMetadata() {
+        tableWiper.wipeTable(ExpressionDimensionItemTableInfo.TABLE_INFO)
+    }
 
-    private val fh = FieldsHelper<DataDimensionItemProgramAttribute>()
-
-    val allFields: Fields<DataDimensionItemProgramAttribute> =
-        Fields.builder<DataDimensionItemProgramAttribute>()
-            .fields(
-                fh.field<DataDimensionItemProgramAttribute>(DIMENSION_ITEM)
-            )
-            .build()
+    override fun wipeData() {
+        // No data to wipe
+    }
 }

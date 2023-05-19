@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -55,7 +54,6 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     private val categoryOptionLinkStore: LinkStore<CategoryCategoryOptionLink> = mock()
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val category: Category = mock()
-    private val visualization: Visualization = mock()
     private val orgUnitLevel: OrganisationUnitLevel = mock()
 
     private val uid1 = "GMpWZUg2QUf"
@@ -70,16 +68,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse dataElement dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .dataElement(ObjectWithUid.create(uid1))
-                .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT)
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.DATA_ELEMENT.name)
+                        .build()
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -92,16 +93,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse dataElementOperand dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .dataElementOperand(ObjectWithUid.create("$uid1.$uid2"))
-                .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT_OPERAND)
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem("$uid1.$uid2")
+                        .dimensionItemType(DimensionItemType.DATA_ELEMENT_OPERAND.name)
+                        .build()
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -116,16 +120,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse indicator dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .indicator(ObjectWithUid.create(uid1))
-                .dataDimensionItemType(DataDimensionItemType.INDICATOR)
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.INDICATOR.name)
+                        .build()
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -138,16 +145,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse programIndicator dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .programIndicator(ObjectWithUid.create(uid1))
-                .dataDimensionItemType(DataDimensionItemType.PROGRAM_INDICATOR)
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.PROGRAM_INDICATOR.name)
+                        .build()
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -160,20 +170,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse event dataElements dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .programDataElement(
-                    DataDimensionItemProgramDataElement.builder()
-                        .uid("$uid1.$uid2")
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem("$uid1.$uid2")
+                        .dimensionItemType(DimensionItemType.PROGRAM_DATA_ELEMENT.name)
                         .build()
-                )
-                .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -188,20 +197,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse event attribute dimension items`() {
-        val dataDimensionItems = listOf(
-            DataDimensionItem.builder()
-                .programAttribute(
-                    DataDimensionItemProgramAttribute.builder()
-                        .uid("$uid1.$uid2")
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem("$uid1.$uid2")
+                        .dimensionItemType(DimensionItemType.PROGRAM_ATTRIBUTE.name)
                         .build()
-                )
-                .dataDimensionItemType(DataDimensionItemType.PROGRAM_ATTRIBUTE)
+                ))
                 .build()
         )
 
-        whenever(visualization.dataDimensionItems()) doReturn dataDimensionItems
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("dx"))
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
 
         assertThat(dimensionItems).hasSize(1)
         when (val item = dimensionItems.first()) {
@@ -215,19 +223,56 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse organisation unit uids and levels`() {
-        val orgunitItems = listOf(
-            ObjectWithUid.create(uid1),
-            ObjectWithUid.create(uid2)
+    fun `Should parse expression dimension items`() {
+        val dataDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("dx")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.EXPRESSION_DIMENSION_ITEM.name)
+                        .build()
+                ))
+                .build()
         )
-        val orgunitLevels = listOf(1)
 
-        whenever(visualization.organisationUnits()) doReturn orgunitItems
-        whenever(visualization.organisationUnitLevels()) doReturn orgunitLevels
+        val dimensionItems = helper.getDimensionItems(dataDimensions)
+
+        assertThat(dimensionItems).hasSize(1)
+        when (val item = dimensionItems.first()) {
+            is DimensionItem.DataItem.ExpressionDimensionItem -> {
+                assertThat(item.uid).isEqualTo(uid1)
+            }
+            else ->
+                fail("Unexpected dimension item type")
+        }
+    }
+
+    @Test
+    fun `Should parse organisation unit uids and levels`() {
+        val orgunitDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("ou")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid2)
+                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem("LEVEL-1")
+                        .build()
+                ))
+                .build()
+        )
+
         whenever(organisationUnitLevelStore.selectOneWhere(anyString())) doReturn orgUnitLevel
         whenever(orgUnitLevel.uid()) doReturn uid3
 
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("ou"))
+        val dimensionItems = helper.getDimensionItems(orgunitDimensions)
 
         assertThat(dimensionItems).hasSize(3)
 
@@ -240,11 +285,24 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse relative organisation unit`() {
-        whenever(visualization.userOrganisationUnit()) doReturn true
-        whenever(visualization.userOrganisationUnitChildren()) doReturn true
-        whenever(visualization.userOrganisationUnitGrandChildren()) doReturn true
+        val orgunitDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("ou")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN.name)
+                        .build()
+                ))
+                .build()
+        )
 
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("ou"))
+        val dimensionItems = helper.getDimensionItems(orgunitDimensions)
 
         assertThat(dimensionItems).hasSize(3)
 
@@ -258,19 +316,31 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should parse period dimension items`() {
-        val periods = listOf(
-            ObjectWithUid.create(uid1),
-            ObjectWithUid.create(uid2)
-        )
-        val relativePeriods = mapOf(
-            RelativePeriod.THIS_MONTH to true,
-            RelativePeriod.LAST_MONTH to true
+        val periodDimensions = listOf(
+            VisualizationDimension.builder()
+                .id("pe")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid2)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(RelativePeriod.THIS_MONTH.name)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(RelativePeriod.LAST_MONTH.name)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build()
+                ))
+                .build()
         )
 
-        whenever(visualization.periods()) doReturn periods
-        whenever(visualization.relativePeriods()) doReturn relativePeriods
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("pe"))
+        val dimensionItems = helper.getDimensionItems(periodDimensions)
 
         assertThat(dimensionItems).hasSize(4)
 
@@ -284,16 +354,25 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     @Test
     fun `Should parse category dimension items`() {
         val categoryDimensions = listOf(
-            CategoryDimension.builder()
-                .category(ObjectWithUid.create(uid1))
-                .categoryOptions(listOf(ObjectWithUid.create(uid2), ObjectWithUid.create(uid3)))
+            VisualizationDimension.builder()
+                .id(uid1)
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid2)
+                        .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid3)
+                        .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
+                        .build()
+                ))
                 .build()
         )
 
-        whenever(visualization.categoryDimensions()) doReturn categoryDimensions
         whenever(categoryStore.selectByUid(uid1)) doReturn category
+        whenever(category.uid()) doReturn uid1
 
-        val dimensionItems = helper.getDimensionItems(visualization, listOf(uid1))
+        val dimensionItems = helper.getDimensionItems(categoryDimensions)
 
         assertThat(dimensionItems).hasSize(2)
 
@@ -304,18 +383,32 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
 
     @Test
     fun `Should combine dimensions items`() {
-        val periods = listOf(
-            ObjectWithUid.create(uid1),
-            ObjectWithUid.create(uid2)
-        )
-        val orgunits = listOf(
-            ObjectWithUid.create(uid3)
+        val dimensions = listOf(
+            VisualizationDimension.builder()
+                .id("pe")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid1)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build(),
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid2)
+                        .dimensionItemType(DimensionItemType.PERIOD.name)
+                        .build()
+                ))
+                .build(),
+            VisualizationDimension.builder()
+                .id("ou")
+                .items(listOf(
+                    VisualizationDimensionItem.builder()
+                        .dimensionItem(uid3)
+                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                        .build()
+                ))
+                .build()
         )
 
-        whenever(visualization.periods()) doReturn periods
-        whenever(visualization.organisationUnits()) doReturn orgunits
-
-        val dimensionItems = helper.getDimensionItems(visualization, listOf("pe", "ou"))
+        val dimensionItems = helper.getDimensionItems(dimensions)
 
         assertThat(dimensionItems).hasSize(3)
 

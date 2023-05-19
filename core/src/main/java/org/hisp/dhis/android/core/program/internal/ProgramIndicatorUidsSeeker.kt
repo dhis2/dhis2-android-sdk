@@ -29,32 +29,24 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.core.visualization.DimensionItemType
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
+    databaseAdapter: DatabaseAdapter
+) : BaseUidsSeeker(databaseAdapter) {
 
     fun seekUids(): Set<String> {
-        val tableName = listOf(DataDimensionItemTableInfo.TABLE_INFO.name())
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR, tableName)
-            .build()
+        val query = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
+            "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +
+            "'${DimensionItemType.PROGRAM_INDICATOR.name}'"
 
-        val cursor = databaseAdapter.rawQuery(query)
-        val programIndicators = hashSetOf<String>()
-        cursor.use { mCursor ->
-            if (mCursor.count > 0) {
-                mCursor.moveToFirst()
-                do {
-                    programIndicators.add(cursor.getString(0))
-                } while (mCursor.moveToNext())
-            }
-        }
-        return programIndicators
+        return readSingleColumnResults(query)
     }
 }

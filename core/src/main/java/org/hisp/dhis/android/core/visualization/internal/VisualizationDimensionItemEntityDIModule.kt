@@ -25,22 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
+package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
-internal class IntegerListColumnAdapter : JSONObjectListColumnAdapter<Int>() {
-    override fun getObjectClass(): Class<List<Int>> {
-        return ArrayList<Int>().javaClass
+@Module
+internal class VisualizationDimensionItemEntityDIModule {
+
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationDimensionItem> {
+        return VisualizationDimensionItemStore.create(databaseAdapter)
     }
 
-    override fun serialize(o: List<Int>?): String? = IntegerListColumnAdapter.serialize(o)
-
-    companion object {
-        fun serialize(o: List<Int>?): String? {
-            return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
-            }
-        }
+    @Provides
+    @Reusable
+    fun handler(store: LinkStore<VisualizationDimensionItem>):
+        LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem> {
+        return LinkHandlerImpl(store)
     }
 }

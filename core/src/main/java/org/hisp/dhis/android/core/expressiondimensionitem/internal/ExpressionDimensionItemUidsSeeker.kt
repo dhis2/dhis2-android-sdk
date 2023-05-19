@@ -25,34 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.visualization.DataDimensionItemSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-@RunWith(D2JunitRunner::class)
-class DataDimensionItemProgramDataElementStoreIntegrationShould :
-    LinkStoreAbstractIntegrationShould<DataDimensionItem>(
-        DataDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
-        DataDimensionItemTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
-    ) {
-    override fun addMasterUid(): String {
-        return "visualization_uid"
-    }
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.core.visualization.DimensionItemType
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import javax.inject.Inject
 
-    override fun buildObject(): DataDimensionItem {
-        return DataDimensionItemSamples.dataDimensionItemProgramDataElement()
-    }
+@Reusable
+internal class ExpressionDimensionItemUidsSeeker @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : BaseUidsSeeker(databaseAdapter) {
 
-    override fun buildObjectWithOtherMasterUid(): DataDimensionItem {
-        return DataDimensionItemSamples.dataDimensionItemProgramDataElement().toBuilder()
-            .visualization("visualization_uid_2")
-            .build()
+    fun seekUids(): Set<String> {
+        val query = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
+            "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +
+            "'${DimensionItemType.EXPRESSION_DIMENSION_ITEM.name}'"
+
+        return readSingleColumnResults(query)
     }
 }

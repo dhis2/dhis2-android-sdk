@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -54,8 +53,8 @@ internal interface DataValueService {
     ): DataValueSet
 
     @POST("dataValueSets")
-    fun postDataValues(@Body dataValueSet: DataValueSet): Call<DataValueImportSummary>
+    suspend fun postDataValues(@Body dataValueSet: DataValueSet): DataValueImportSummary
 
     @POST("dataValueSets")
-    fun postDataValuesWebResponse(@Body dataValueSet: DataValueSet): Call<DataValueImportSummaryWebResponse>
+    suspend fun postDataValuesWebResponse(@Body dataValueSet: DataValueSet): DataValueImportSummaryWebResponse
 }

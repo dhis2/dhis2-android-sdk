@@ -48,8 +48,8 @@ internal object VisualizationDimensionItemStore {
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationDimensionItem> {
         return StoreFactory.linkStore(
             databaseAdapter,
-                VisualizationDimensionItemTableInfo.TABLE_INFO,
-                VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
+            VisualizationDimensionItemTableInfo.TABLE_INFO,
+            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
             BINDER
         ) { VisualizationDimensionItem.create(it) }
     }

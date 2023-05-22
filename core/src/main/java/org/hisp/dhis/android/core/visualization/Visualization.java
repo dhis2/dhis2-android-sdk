@@ -53,6 +53,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

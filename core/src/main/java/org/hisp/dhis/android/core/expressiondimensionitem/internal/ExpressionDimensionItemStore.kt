@@ -49,9 +49,9 @@ internal object ExpressionDimensionItemStore {
 
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ExpressionDimensionItem> {
         return objectWithUidStore(
-                databaseAdapter,
-                ExpressionDimensionItemTableInfo.TABLE_INFO,
-                BINDER
+            databaseAdapter,
+            ExpressionDimensionItemTableInfo.TABLE_INFO,
+            BINDER
         ) { cursor: Cursor -> ExpressionDimensionItem.create(cursor) }
     }
 }

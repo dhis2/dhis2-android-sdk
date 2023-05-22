@@ -71,12 +71,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.DATA_ELEMENT.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.DATA_ELEMENT.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -96,12 +98,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem("$uid1.$uid2")
-                        .dimensionItemType(DimensionItemType.DATA_ELEMENT_OPERAND.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem("$uid1.$uid2")
+                            .dimensionItemType(DimensionItemType.DATA_ELEMENT_OPERAND.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -123,12 +127,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.INDICATOR.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.INDICATOR.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -148,12 +154,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.PROGRAM_INDICATOR.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.PROGRAM_INDICATOR.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -173,12 +181,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem("$uid1.$uid2")
-                        .dimensionItemType(DimensionItemType.PROGRAM_DATA_ELEMENT.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem("$uid1.$uid2")
+                            .dimensionItemType(DimensionItemType.PROGRAM_DATA_ELEMENT.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -200,12 +210,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem("$uid1.$uid2")
-                        .dimensionItemType(DimensionItemType.PROGRAM_ATTRIBUTE.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem("$uid1.$uid2")
+                            .dimensionItemType(DimensionItemType.PROGRAM_ATTRIBUTE.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -227,12 +239,14 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.EXPRESSION_DIMENSION_ITEM.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.EXPRESSION_DIMENSION_ITEM.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -253,19 +267,21 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val orgunitDimensions = listOf(
             VisualizationDimension.builder()
                 .id("ou")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid2)
-                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem("LEVEL-1")
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid2)
+                            .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem("LEVEL-1")
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -288,17 +304,19 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val orgunitDimensions = listOf(
             VisualizationDimension.builder()
                 .id("ou")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -319,24 +337,26 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val periodDimensions = listOf(
             VisualizationDimension.builder()
                 .id("pe")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid2)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(RelativePeriod.THIS_MONTH.name)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(RelativePeriod.LAST_MONTH.name)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid2)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(RelativePeriod.THIS_MONTH.name)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(RelativePeriod.LAST_MONTH.name)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -356,16 +376,18 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val categoryDimensions = listOf(
             VisualizationDimension.builder()
                 .id(uid1)
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid2)
-                        .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid3)
-                        .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid2)
+                            .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid3)
+                            .dimensionItemType(DimensionItemType.CATEGORY_OPTION.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 
@@ -386,25 +408,29 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         val dimensions = listOf(
             VisualizationDimension.builder()
                 .id("pe")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid1)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build(),
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid2)
-                        .dimensionItemType(DimensionItemType.PERIOD.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid1)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build(),
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid2)
+                            .dimensionItemType(DimensionItemType.PERIOD.name)
+                            .build()
+                    )
+                )
                 .build(),
             VisualizationDimension.builder()
                 .id("ou")
-                .items(listOf(
-                    VisualizationDimensionItem.builder()
-                        .dimensionItem(uid3)
-                        .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
-                        .build()
-                ))
+                .items(
+                    listOf(
+                        VisualizationDimensionItem.builder()
+                            .dimensionItem(uid3)
+                            .dimensionItemType(DimensionItemType.ORGANISATION_UNIT.name)
+                            .build()
+                    )
+                )
                 .build()
         )
 

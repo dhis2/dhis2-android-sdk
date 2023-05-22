@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
 class ExpressionDimensionItemShould :
-        BaseObjectShould("expressiondimensionitem/expression_dimension_item.json"),
-        ObjectShould {
+    BaseObjectShould("expressiondimensionitem/expression_dimension_item.json"),
+    ObjectShould {
 
     @Test
     override fun map_from_json_string() {

@@ -370,5 +370,4 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected fun cons(constantUid: String): String {
         return "C{$constantUid}"
     }
-
 }

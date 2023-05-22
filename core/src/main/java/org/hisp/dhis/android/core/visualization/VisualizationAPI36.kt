@@ -116,8 +116,8 @@ internal data class VisualizationAPI36(
                     .showKey(false)
                     .build()
             )
-                .columns(columns)
-                .rows(rows)
-                .filters(filters)
+            .columns(columns)
+            .rows(rows)
+            .filters(filters)
             .build()
 }

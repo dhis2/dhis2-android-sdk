@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
@@ -34,7 +35,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyt
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import javax.inject.Inject
 
 internal class ExpressionDimensionItemEngine @Inject constructor(
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
@@ -55,7 +55,7 @@ internal class ExpressionDimensionItemEngine @Inject constructor(
 
         val evaluatedExpression = engine.evaluate(expressionDimensionItem.expression()!!)
 
-        return if (evaluatedExpression != null ) {
+        return if (evaluatedExpression != null) {
             expressionService.getExpressionValue(evaluatedExpression.toString())?.toString()
         } else {
             null

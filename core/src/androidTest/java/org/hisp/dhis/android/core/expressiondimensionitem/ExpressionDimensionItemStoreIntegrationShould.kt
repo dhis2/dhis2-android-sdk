@@ -36,11 +36,11 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class ExpressionDimensionItemStoreIntegrationShould :
-        IdentifiableObjectStoreAbstractIntegrationShould<ExpressionDimensionItem>(
-                ExpressionDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
-                ExpressionDimensionItemTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get()
-        ) {
+    IdentifiableObjectStoreAbstractIntegrationShould<ExpressionDimensionItem>(
+        ExpressionDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        ExpressionDimensionItemTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
 
     override fun buildObject(): ExpressionDimensionItem {
         return ExpressionDimensionItemSamples.getExpressionDimensionItem()
@@ -48,7 +48,7 @@ class ExpressionDimensionItemStoreIntegrationShould :
 
     override fun buildObjectToUpdate(): ExpressionDimensionItem {
         return ExpressionDimensionItemSamples.getExpressionDimensionItem().toBuilder()
-                .expression("#{fbfJHSPpUQD}")
-                .build()
+            .expression("#{fbfJHSPpUQD}")
+            .build()
     }
 }

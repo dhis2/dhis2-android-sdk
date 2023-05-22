@@ -49,21 +49,22 @@ object VisualizationDimensionItemTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                    VISUALIZATION,
-                    POSITION,
-                    DIMENSION,
-                    DIMENSION_ITEM,
-                    DIMENSION_ITEM_TYPE,            )
+                VISUALIZATION,
+                POSITION,
+                DIMENSION,
+                DIMENSION_ITEM,
+                DIMENSION_ITEM_TYPE,
+            )
         }
 
         override fun whereUpdate(): Array<String?> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 VISUALIZATION,
-                    POSITION,
-                    DIMENSION,
-                    DIMENSION_ITEM,
-                    DIMENSION_ITEM_TYPE,
+                POSITION,
+                DIMENSION,
+                DIMENSION_ITEM,
+                DIMENSION_ITEM_TYPE,
             )
         }
 

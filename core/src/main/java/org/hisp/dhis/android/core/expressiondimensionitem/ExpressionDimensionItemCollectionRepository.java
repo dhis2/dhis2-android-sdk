@@ -25,37 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+package org.hisp.dhis.android.core.expressiondimensionitem;
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
 
 @Reusable
-internal class ExpressionDimensionItemCall @Inject constructor(
-    private val service: ExpressionDimensionItemService,
-    private val handler: Handler<ExpressionDimensionItem>,
-    private val apiDownloader: APIDownloader
-) : UidsCall<ExpressionDimensionItem> {
-    override fun download(uids: Set<String>): Single<List<ExpressionDimensionItem>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getExpressionDimensionItems(
-                ExpressionDimensionItemFields.uid.`in`(partitionUids),
-                ExpressionDimensionItemFields.allFields,
-                false
-            )
-        }
+public final class ExpressionDimensionItemCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem,
+        ExpressionDimensionItemCollectionRepository> {
+
+    @Inject
+    ExpressionDimensionItemCollectionRepository(
+            final IdentifiableObjectStore<ExpressionDimensionItem> store,
+            final Map<String, ChildrenAppender<ExpressionDimensionItem>> childrenAppenders,
+            final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new ExpressionDimensionItemCollectionRepository(store, childrenAppenders, s)));
     }
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 50
+    public StringFilterConnector<ExpressionDimensionItemCollectionRepository> byExpression() {
+        return cf.string(Columns.EXPRESSION);
     }
 }

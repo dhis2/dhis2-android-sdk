@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import javax.inject.Inject
 
 @Reusable
 internal class ExpressionDimensionItemHandler @Inject constructor(

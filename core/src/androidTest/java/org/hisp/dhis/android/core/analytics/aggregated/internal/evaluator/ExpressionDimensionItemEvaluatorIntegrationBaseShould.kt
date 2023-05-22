@@ -161,6 +161,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         return evaluator.evaluate(
             evaluationItem,
             metadata +
-                (expressionDimensionItem.uid() to MetadataItem.ExpressionDimensionItemItem(expressionDimensionItem)))
+                (expressionDimensionItem.uid() to MetadataItem.ExpressionDimensionItemItem(expressionDimensionItem))
+        )
     }
 }

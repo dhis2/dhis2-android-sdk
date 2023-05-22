@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
+package org.hisp.dhis.android.testapp.expressiondimensionitem
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-internal class AnalyticExpressionEngine @Inject constructor(
-    private val visitor: CommonExpressionVisitor
-) {
+@RunWith(D2JunitRunner::class)
+class ExpressionDimensionItemCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_all() {
+        val items = d2.expressionDimensionItemModule().expressionDimensionItems()
+            .blockingGet()
 
-    fun evaluate(
-        expression: String,
-    ): Any? {
-        return CommonParser.visit(expression, visitor)
+        assertThat(items.size).isEqualTo(1)
+    }
+
+    @Test
+    fun filter_by_expression() {
+        val items = d2.expressionDimensionItemModule().expressionDimensionItems()
+            .byExpression().like("g9eOBujte1U")
+            .blockingGet()
+
+        assertThat(items.size).isEqualTo(1)
     }
 }

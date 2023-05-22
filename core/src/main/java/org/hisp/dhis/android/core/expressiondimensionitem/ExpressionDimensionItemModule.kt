@@ -25,19 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
+package org.hisp.dhis.android.core.expressiondimensionitem
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
-
-internal class AnalyticExpressionEngine @Inject constructor(
-    private val visitor: CommonExpressionVisitor
-) {
-
-    fun evaluate(
-        expression: String,
-    ): Any? {
-        return CommonParser.visit(expression, visitor)
-    }
+interface ExpressionDimensionItemModule {
+    fun expressionDimensionItems(): ExpressionDimensionItemCollectionRepository
 }

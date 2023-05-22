@@ -38,7 +38,7 @@ object ExpressionDimensionItemSamples {
         fillIdentifiableProperties(builder)
         return builder
             .id(1L)
-                .expression("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
+            .expression("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
             .build()
     }
 }

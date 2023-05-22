@@ -28,10 +28,20 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 
 @Module(
     includes = [
         ExpressionDimensionItemEntityDIModule::class
     ]
 )
-internal class ExpressionDimensionItemPackageDIModule
+internal class ExpressionDimensionItemPackageDIModule {
+
+    @Provides
+    @Reusable
+    fun module(impl: ExpressionDimensionItemModuleImpl): ExpressionDimensionItemModule {
+        return impl
+    }
+}

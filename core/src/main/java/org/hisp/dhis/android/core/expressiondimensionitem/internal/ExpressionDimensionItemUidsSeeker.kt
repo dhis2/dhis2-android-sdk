@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.visualization.DimensionItemType
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class ExpressionDimensionItemUidsSeeker @Inject constructor(

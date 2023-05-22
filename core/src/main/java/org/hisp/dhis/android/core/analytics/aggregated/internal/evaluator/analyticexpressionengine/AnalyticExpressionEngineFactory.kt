@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
@@ -44,7 +45,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMetho
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import javax.inject.Inject
 
 internal class AnalyticExpressionEngineFactory @Inject constructor(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
@@ -92,8 +92,9 @@ internal class AnalyticExpressionEngineFactory @Inject constructor(
             return mapByUid(constants)
         }
 
-    private fun newVisitor(indicatorContext: IndicatorContext,
-                           method: ExpressionItemMethod
+    private fun newVisitor(
+        indicatorContext: IndicatorContext,
+        method: ExpressionItemMethod
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.AnalyticsIndicator(

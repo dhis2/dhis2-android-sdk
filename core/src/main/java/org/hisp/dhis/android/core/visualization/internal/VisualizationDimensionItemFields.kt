@@ -38,10 +38,10 @@ internal object VisualizationDimensionItemFields {
     private val fh = FieldsHelper<VisualizationDimensionItem>()
 
     val allFields: Fields<VisualizationDimensionItem> =
-            Fields.builder<VisualizationDimensionItem>()
-                    .fields(
-                            fh.field<String>(DIMENSION_ITEM),
-                            fh.field<String>(DIMENSION_ITEM_TYPE),
-                    )
-                    .build()
+        Fields.builder<VisualizationDimensionItem>()
+            .fields(
+                fh.field<String>(DIMENSION_ITEM),
+                fh.field<String>(DIMENSION_ITEM_TYPE),
+            )
+            .build()
 }

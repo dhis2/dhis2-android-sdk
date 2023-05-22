@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
@@ -50,7 +49,6 @@ class VisualizationHandlerShould {
         LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem> = mock()
     private val visualizationDimension: VisualizationDimension = mock()
     private val visualization: Visualization = mock()
-    private var categories: List<ObjectWithUid> = mock()
 
     // object to test
     private lateinit var visualizationHandler: VisualizationHandler

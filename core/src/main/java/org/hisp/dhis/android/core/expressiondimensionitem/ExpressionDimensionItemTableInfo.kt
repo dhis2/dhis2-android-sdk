@@ -45,8 +45,9 @@ object ExpressionDimensionItemTableInfo {
 
     class Columns : IdentifiableColumns() {
         override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    EXPRESSION
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                EXPRESSION
             )
         }
 

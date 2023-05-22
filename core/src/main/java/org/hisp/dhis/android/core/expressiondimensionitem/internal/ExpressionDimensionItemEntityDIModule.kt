@@ -33,6 +33,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import retrofit2.Retrofit
 
@@ -55,5 +56,11 @@ internal class ExpressionDimensionItemEntityDIModule {
     @Provides
     fun service(retrofit: Retrofit): ExpressionDimensionItemService {
         return retrofit.create(ExpressionDimensionItemService::class.java)
+    }
+
+    @Reusable
+    @Provides
+    fun childrenAppenders(): Map<String, ChildrenAppender<ExpressionDimensionItem>> {
+        return emptyMap()
     }
 }

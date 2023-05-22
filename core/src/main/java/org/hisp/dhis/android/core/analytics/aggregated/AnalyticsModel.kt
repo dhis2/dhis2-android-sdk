@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -55,6 +56,9 @@ sealed class MetadataItem(val id: String, val displayName: String) {
         MetadataItem("${program.uid()}.${item.uid()}", "${program.displayName()} ${item.displayName()}")
     class EventAttributeItem(val item: TrackedEntityAttribute, val program: Program) :
         MetadataItem("${program.uid()}.${item.uid()}", "${program.displayName()} ${item.displayName()}")
+
+    class ExpressionDimensionItemItem(val item: ExpressionDimensionItem) :
+        MetadataItem(item.uid(), item.displayName()!!)
 
     class CategoryItem(val item: Category) : MetadataItem(item.uid(), item.displayName()!!)
     class CategoryOptionItem(val item: CategoryOption) : MetadataItem(item.uid(), item.displayName()!!)

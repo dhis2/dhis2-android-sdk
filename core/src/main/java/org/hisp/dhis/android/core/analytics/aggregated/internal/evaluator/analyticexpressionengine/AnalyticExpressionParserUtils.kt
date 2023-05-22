@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indica
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramDataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.parser.internal.expression.function.*
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionAggregationType
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMaxDate
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionMinDate
@@ -77,9 +76,9 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-internal object IndicatorParserUtils {
+internal object AnalyticExpressionParserUtils {
 
-    val INDICATOR_EXPRESSION_ITEMS = ParserUtils.COMMON_EXPRESSION_ITEMS +
+    val ANALYTIC_EXPRESSION_ITEMS = ParserUtils.COMMON_EXPRESSION_ITEMS +
         mapOf(
             ExpressionParser.D2_CEIL to D2Ceil(),
             ExpressionParser.D2_CONCATENATE to D2Concatenate(),

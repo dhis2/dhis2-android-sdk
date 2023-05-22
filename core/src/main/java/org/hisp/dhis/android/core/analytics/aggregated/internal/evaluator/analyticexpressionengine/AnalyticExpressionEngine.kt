@@ -25,23 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactoryHelper
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import javax.inject.Inject
 
-@RunWith(D2JunitRunner::class)
-internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
+internal class AnalyticExpressionEngine @Inject constructor(
+    private val visitor: CommonExpressionVisitor
+) {
 
-    private val analyticExpressionEngineFactory = AnalyticExpressionEngineFactoryHelper.getFactory(d2)
-
-    private val indicatorEngine = IndicatorEngine(
-        indicatorTypeStore,
-        analyticExpressionEngineFactory,
-        expressionService
-    )
-
-    override val indicatorEvaluator = IndicatorEvaluator(indicatorEngine)
+    fun evaluate(
+        expression: String,
+    ): Any? {
+        return CommonParser.visit(expression, visitor)
+    }
 }

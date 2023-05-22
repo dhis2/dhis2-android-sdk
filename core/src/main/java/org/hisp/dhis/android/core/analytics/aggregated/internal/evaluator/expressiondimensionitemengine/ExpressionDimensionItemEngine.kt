@@ -25,59 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionParserUtils
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import javax.inject.Inject
 
-internal class IndicatorSQLEngine @Inject constructor(
-    private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
+internal class ExpressionDimensionItemEngine @Inject constructor(
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
-    private val databaseAdapter: DatabaseAdapter
+    private val expressionService: ExpressionService
 ) {
 
     fun evaluateIndicator(
-        indicator: Indicator,
+        expressionDimensionItem: ExpressionDimensionItem,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>
     ): String? {
-        val sqlQuery = getSql(indicator, contextEvaluationItem, contextMetadata)
-
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            val valueStr = c.getString(0)
-            AnalyticExpressionParserUtils.roundValue(valueStr, indicator.decimals())
-        }
-    }
-
-    fun getSql(
-        indicator: Indicator,
-        contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
-    ): String {
         val engine = analyticExpressionEngineFactory.getEngine(
-            method = ParserUtils.ITEM_GET_SQL,
+            method = ParserUtils.ITEM_EVALUATE,
             contextEvaluationItem = contextEvaluationItem,
             contextMetadata = contextMetadata,
             days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata)
         )
 
-        val indicatorType = indicator.indicatorType()?.let {
-            indicatorTypeStore.selectByUid(it.uid())
+        val evaluatedExpression = engine.evaluate(expressionDimensionItem.expression()!!)
+
+        return if (evaluatedExpression != null ) {
+            expressionService.getExpressionValue(evaluatedExpression.toString())?.toString()
+        } else {
+            null
         }
-
-        val numerator = engine.evaluate(indicator.numerator()!!)
-        val denominator = engine.evaluate(indicator.denominator()!!)
-        val factor = indicatorType?.factor() ?: 1
-
-        return "SELECT $factor * ($numerator) / ($denominator)"
     }
 }

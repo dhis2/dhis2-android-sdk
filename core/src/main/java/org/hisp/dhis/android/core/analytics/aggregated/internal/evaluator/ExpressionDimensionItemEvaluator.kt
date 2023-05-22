@@ -27,21 +27,38 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactoryHelper
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine.ExpressionDimensionItemEngine
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 
-@RunWith(D2JunitRunner::class)
-internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
+internal class ExpressionDimensionItemEvaluator @Inject constructor(
+    private val expressionDimensionItemEngine: ExpressionDimensionItemEngine
+) : AnalyticsEvaluator {
 
-    private val analyticExpressionEngineFactory = AnalyticExpressionEngineFactoryHelper.getFactory(d2)
+    override fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
+    ): String? {
+        val item = ExpressionDimensionItemEvaluatorHelper.getItem(evaluationItem, metadata)
+        val contextEvaluationItem = ExpressionDimensionItemEvaluatorHelper
+            .getContextEvaluationItem(evaluationItem, item)
 
-    private val indicatorEngine = IndicatorEngine(
-        indicatorTypeStore,
-        analyticExpressionEngineFactory,
-        expressionService
-    )
+        return expressionDimensionItemEngine.evaluateIndicator(
+            expressionDimensionItem = item,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = metadata
+        )
+    }
 
-    override val indicatorEvaluator = IndicatorEvaluator(indicatorEngine)
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
+    ): String {
+        throw AnalyticsException.SQLException("Method getSql not implemented for ExpressionDimensionItemEvaluator")
+    }
 }

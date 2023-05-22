@@ -27,21 +27,33 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactoryHelper
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 
-@RunWith(D2JunitRunner::class)
-internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
+internal object ExpressionDimensionItemEvaluatorHelper {
 
-    private val analyticExpressionEngineFactory = AnalyticExpressionEngineFactoryHelper.getFactory(d2)
+    fun getItem(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): ExpressionDimensionItem {
+        val expressionDimensionItem = evaluationItem.allDimensionItems
+            .find { it is DimensionItem.DataItem.ExpressionDimensionItem }
+            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no expression dimension item provided.")
 
-    private val indicatorEngine = IndicatorEngine(
-        indicatorTypeStore,
-        analyticExpressionEngineFactory,
-        expressionService
-    )
+        return (metadata[expressionDimensionItem.id] as MetadataItem.ExpressionDimensionItemItem).item
+    }
 
-    override val indicatorEvaluator = IndicatorEvaluator(indicatorEngine)
+    fun getContextEvaluationItem(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        item: ExpressionDimensionItem
+    ): AnalyticsServiceEvaluationItem {
+        return AnalyticsServiceEvaluationItem(
+            dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != item.uid() },
+            filters = evaluationItem.filters.filter { it.id != item.uid() },
+            aggregationType = evaluationItem.aggregationType
+        )
+    }
 }

@@ -32,13 +32,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201910
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
@@ -47,19 +44,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019SunW25
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -358,98 +347,5 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         indicatorStore.updateOrInsert(indicator)
 
         return indicator
-    }
-
-    private fun createDataValue(
-        value: String,
-        dataElementUid: String = dataElement1.uid(),
-        orgunitUid: String = orgunitParent.uid(),
-        periodId: String = period201912.periodId()!!
-    ) {
-        val dataValue = DataValue.builder()
-            .value(value)
-            .dataElement(dataElementUid)
-            .period(periodId)
-            .organisationUnit(orgunitUid)
-            .categoryOptionCombo(categoryOptionCombo.uid())
-            .attributeOptionCombo(attributeOptionCombo.uid())
-            .build()
-
-        dataValueStore.insert(dataValue)
-    }
-
-    private fun createEventAndValue(
-        value: String,
-        dataElementUid: String,
-        enrollmentUid: String? = null
-    ) {
-        val event = Event.builder()
-            .uid(generator.generate())
-            .eventDate(period201912.startDate())
-            .enrollment(enrollmentUid)
-            .program(program.uid())
-            .programStage(programStage1.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .deleted(false)
-            .build()
-
-        eventStore.insert(event)
-
-        val dataValue = TrackedEntityDataValue.builder()
-            .event(event.uid())
-            .dataElement(dataElementUid)
-            .value(value)
-            .build()
-
-        trackedEntityDataValueStore.insert(dataValue)
-    }
-
-    private fun createTEIAndAttribute(
-        value: String?,
-        attributeUid: String
-    ) {
-        val tei = TrackedEntityInstance.builder()
-            .uid(generator.generate())
-            .trackedEntityType(trackedEntityType.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .deleted(false)
-            .build()
-
-        trackedEntityStore.insert(tei)
-
-        val enrollment = Enrollment.builder()
-            .uid(generator.generate())
-            .trackedEntityInstance(tei.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .program(program.uid())
-            .deleted(false)
-            .build()
-
-        enrollmentStore.insert(enrollment)
-
-        val attributeValue = TrackedEntityAttributeValue.builder()
-            .trackedEntityInstance(tei.uid())
-            .trackedEntityAttribute(attributeUid)
-            .value(value)
-            .build()
-
-        trackedEntityAttributeValueStore.insert(attributeValue)
-        createEventAndValue("0", dataElement1.uid(), enrollment.uid())
-    }
-
-    private fun de(dataElementUid: String): String {
-        return "#{$dataElementUid}"
-    }
-
-    private fun eventDE(programUid: String, dataElementUid: String): String {
-        return "D{$programUid.$dataElementUid}"
-    }
-
-    private fun eventAtt(programUid: String, attributeUid: String): String {
-        return "A{$programUid.$attributeUid}"
-    }
-
-    private fun cons(constantUid: String): String {
-        return "C{$constantUid}"
     }
 }

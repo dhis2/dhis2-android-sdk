@@ -39,6 +39,7 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidProgramIndicator(val uid: String) : AnalyticsException("Missing ProgramIndicator $uid")
     class InvalidProgram(val uid: String) : AnalyticsException("Missing Program $uid")
     class InvalidIndicator(val uid: String) : AnalyticsException("Missing Indicator $uid")
+    class InvalidExpressionDimensionItem(val uid: String): AnalyticsException("Missing ExpressionDimensionItem $uid")
     class InvalidOrganisationUnit(val uid: String) : AnalyticsException("Missing organisation unit $uid")
     class InvalidOrganisationUnitGroup(val uid: String) : AnalyticsException("Missing organisation unit group $uid")
     class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")

@@ -145,7 +145,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
                 dimensionDataItem.attribute,
                 value
             )
-            is DimensionItem.DataItem.ExpressionDimensionItem -> TODO()
+            is DimensionItem.DataItem.ExpressionDimensionItem -> null
         }
     }
 }

@@ -57,7 +57,7 @@ public abstract class VisualizationDimension {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract Builder id(String id);
 

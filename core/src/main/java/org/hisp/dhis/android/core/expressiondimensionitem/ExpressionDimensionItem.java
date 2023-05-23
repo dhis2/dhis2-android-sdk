@@ -60,7 +60,7 @@ public abstract class ExpressionDimensionItem extends BaseIdentifiableObject imp
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder expression(String expression);

@@ -69,14 +69,14 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     }
 
     public static VisualizationDimensionItem create(Cursor cursor) {
-        return AutoValue_VisualizationDimensionItem.createFromCursor(cursor);
+        return $AutoValue_VisualizationDimensionItem.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract Builder id(Long id);
 

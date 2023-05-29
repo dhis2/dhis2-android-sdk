@@ -31,8 +31,10 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -46,10 +48,13 @@ internal class VisualizationCall @Inject constructor(
 ) : UidsCall<Visualization> {
 
     companion object {
-        private const val MAX_UID_LIST_SIZE = 90
+        // Workaround for DHIS2-15322. Force queries to entity endpoint instead of list endpoint.
+        private const val MAX_UID_LIST_SIZE = 1
     }
 
     override fun download(uids: Set<String>): Single<List<Visualization>> {
+        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+
         return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
             if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
                 apiDownloader.downloadPartitioned(
@@ -57,26 +62,30 @@ internal class VisualizationCall @Inject constructor(
                     MAX_UID_LIST_SIZE,
                     handler
                 ) { partitionUids: Set<String> ->
-                    service.getVisualizations(
+                    service.getSingleVisualization(
+                        partitionUids.first(),
                         VisualizationFields.allFields,
-                        VisualizationFields.uid.`in`(partitionUids),
+                        accessFilter = accessFilter,
                         paging = false
                     )
+                        .map { Payload(listOf(it)) }
+                        .onErrorReturnItem(Payload())
                 }
             } else {
                 apiDownloader.downloadPartitioned(
                     uids,
                     MAX_UID_LIST_SIZE,
-                    handler,
-                    { partitionUids: Set<String> ->
-                        service.getVisualizations36(
-                            VisualizationFields.allFieldsAPI36,
-                            VisualizationFields.uid.`in`(partitionUids),
-                            paging = false
-                        )
-                    },
-                    { it.toVisualization() }
-                )
+                    handler
+                ) { partitionUids: Set<String> ->
+                    service.getSingleVisualizations36(
+                        partitionUids.first(),
+                        VisualizationFields.allFieldsAPI36,
+                        accessFilter = accessFilter,
+                        paging = false
+                    )
+                        .map { Payload(listOf(it.toVisualization())) }
+                        .onErrorReturnItem(Payload())
+                }
             }
         } else {
             Single.just(listOf())

@@ -174,7 +174,7 @@ class VisualizationCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     fun include_columns_rows_and_filters_as_children() {
         val visualization = d2.visualizationModule().visualizations()
             .withColumnsRowsAndFilters()
-            .one()
+            .uid("PYBH8ZaAQnC")
             .blockingGet()
 
         assertThat(visualization.columns()!![0].id()).isEqualTo("dx")

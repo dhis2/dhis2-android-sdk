@@ -92,7 +92,8 @@ public class Dhis2MockServer {
     private static final String CATEGORIES_JSON = "category/categories.json";
     private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
     private static final String CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json";
-    private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
+    private static final String VISUALIZATIONS_1_JSON = "visualization/visualizations_1.json";
+    private static final String VISUALIZATIONS_2_JSON = "visualization/visualizations_2.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user38.json";
@@ -260,8 +261,10 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_OPTIONS_JSON);
                 } else if (path.startsWith("/api/categoryOptions/orgUnits?")) {
                     return createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
-                } else if (path.startsWith("/api/visualizations?")) {
-                    return createMockResponse(VISUALIZATIONS_JSON);
+                } else if (path.startsWith("/api/visualizations/PYBH8ZaAQnC?")) {
+                    return createMockResponse(VISUALIZATIONS_1_JSON);
+                } else if (path.startsWith("/api/visualizations/FAFa11yFeFe?")) {
+                    return createMockResponse(VISUALIZATIONS_2_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -359,7 +362,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORIES_JSON);
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
-        enqueueMockResponse(VISUALIZATIONS_JSON);
+        enqueueMockResponse(VISUALIZATIONS_1_JSON);
+        enqueueMockResponse(VISUALIZATIONS_2_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(INDICATORS_JSON);

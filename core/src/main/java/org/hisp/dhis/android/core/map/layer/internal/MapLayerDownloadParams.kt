@@ -27,23 +27,8 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
-import org.hisp.dhis.android.core.map.layer.internal.osm.OSMCallFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
-@Reusable
-internal class MapLayerCallFactory @Inject constructor(
-    private val osmCallFactory: OSMCallFactory,
-    private val bingCallFactory: BingCallFactory
-) {
-
-    fun downloadMetadata(params: MapLayerDownloadParams): Single<List<MapLayer>> {
-        return Single.merge(
-            osmCallFactory.download(),
-            bingCallFactory.download(params)
-        ).toList().map { it.flatten() }
-    }
-}
+internal data class MapLayerDownloadParams(
+    val networkTimeoutInSeconds: Int? = null
+) : BaseScope

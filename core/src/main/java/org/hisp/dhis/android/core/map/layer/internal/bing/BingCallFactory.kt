@@ -29,7 +29,10 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import dagger.Reusable
+import io.reactivex.Flowable
 import io.reactivex.Single
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -38,6 +41,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerDownloadParams
 import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -52,13 +56,13 @@ internal class BingCallFactory @Inject constructor(
     private val bingService: BingService
 ) {
 
-    fun download(): Single<List<MapLayer>> {
+    fun download(params: MapLayerDownloadParams): Single<List<MapLayer>> {
         return Single.defer {
             if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
                 rxAPICallExecutor.wrapSingle(settingsService.getSystemSettings(SystemSettingsFields.bingApiKey), true)
                     .flatMap { settings ->
                         settings.keyBingMapsApiKey
-                            ?.let { downloadBingBasemaps(it) }
+                            ?.let { downloadBingBasemaps(it, params) }
                             ?: Single.just(emptyList())
                     }
                     .map { mapLayers ->
@@ -72,14 +76,36 @@ internal class BingCallFactory @Inject constructor(
         }
     }
 
-    private fun downloadBingBasemaps(bingKey: String): Single<List<MapLayer>> {
-        return Single.merge(
-            BingBasemaps.list.map { b -> downloadBasemap(bingKey, b) }
-        ).toList().map { it.flatten() }
+    private fun downloadBingBasemaps(
+        bingKey: String,
+        params: MapLayerDownloadParams
+    ): Single<List<MapLayer>> {
+        return Flowable.fromIterable(BingBasemaps.list)
+            .flatMapSingle { b ->
+                downloadBasemap(bingKey, b, params).onErrorReturn { t ->
+                    when (t) {
+                        is TimeoutException -> throw t
+                        else -> emptyList()
+                    }
+                }
+            }
+            .toList()
+            .map { it.flatten() }
+            .onErrorReturnItem(emptyList())
     }
 
-    private fun downloadBasemap(bingkey: String, basemap: BingBasemap): Single<List<MapLayer>> {
-        return bingService.getBaseMap(getUrl(basemap.style, bingkey))
+    private fun downloadBasemap(
+        bingkey: String,
+        basemap: BingBasemap,
+        params: MapLayerDownloadParams
+    ): Single<List<MapLayer>> {
+        return bingService.getBaseMap(getUrl(basemap.style, bingkey)).run {
+            if (params.networkTimeoutInSeconds != null) {
+                this.timeout(params.networkTimeoutInSeconds.toLong(), TimeUnit.SECONDS)
+            } else {
+                this
+            }
+        }
             .map { m ->
                 m.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
                     listOf(
@@ -113,7 +139,7 @@ internal class BingCallFactory @Inject constructor(
                             .build()
                     )
                 } ?: emptyList()
-            }.onErrorReturnItem(emptyList())
+            }
     }
 
     private fun getUrl(style: String, bingKey: String): String {

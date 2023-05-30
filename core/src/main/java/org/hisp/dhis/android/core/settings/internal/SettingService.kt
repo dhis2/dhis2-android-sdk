@@ -39,7 +39,10 @@ import retrofit2.http.Url
 internal interface SettingService {
 
     @GET("systemSettings")
-    fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): Single<SystemSettings>
+    fun getSystemSettingsSingle(@Query("key") @Which fields: Fields<SystemSettings>): Single<SystemSettings>
+
+    @GET("systemSettings")
+    suspend fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
 
     @GET("userSettings")
     fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>

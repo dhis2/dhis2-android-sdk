@@ -40,10 +40,10 @@ internal class MapLayerCallFactory @Inject constructor(
     private val bingCallFactory: BingCallFactory
 ) {
 
-    fun downloadMetadata(): Single<List<MapLayer>> {
+    fun downloadMetadata(params: MapLayerDownloadParams): Single<List<MapLayer>> {
         return Single.merge(
             osmCallFactory.download(),
-            bingCallFactory.download()
+            bingCallFactory.download(params)
         ).toList().map { it.flatten() }
     }
 }

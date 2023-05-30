@@ -25,49 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.map.layer.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.settings.*
-import retrofit2.http.GET
-import retrofit2.http.Query
-import retrofit2.http.Url
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
-@Suppress("TooManyFunctions")
-internal interface SettingService {
-
-    @GET("systemSettings")
-    fun getSystemSettingsSingle(@Query("key") @Which fields: Fields<SystemSettings>): Single<SystemSettings>
-
-    @GET("systemSettings")
-    suspend fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
-
-    @GET("userSettings")
-    fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
-
-    @GET
-    fun settingsAppInfo(@Url url: String): Single<SettingsAppInfo>
-
-    @GET
-    fun generalSettings(@Url url: String): Single<GeneralSettings>
-
-    @GET
-    fun dataSetSettings(@Url url: String): Single<DataSetSettings>
-
-    @GET
-    fun programSettings(@Url url: String): Single<ProgramSettings>
-
-    @GET
-    fun synchronizationSettings(@Url url: String): Single<SynchronizationSettings>
-
-    @GET
-    fun appearanceSettings(@Url url: String): Single<AppearanceSettings>
-
-    @GET
-    fun analyticsSettings(@Url url: String): Single<AnalyticsSettings>
-
-    @GET
-    fun latestAppVersion(@Url url: String): Single<LatestAppVersion>
-}
+internal data class MapLayerDownloadParams(
+    val networkTimeoutInSeconds: Int? = null
+) : BaseScope

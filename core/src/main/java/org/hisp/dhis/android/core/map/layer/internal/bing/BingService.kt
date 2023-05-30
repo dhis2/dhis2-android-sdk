@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Url
 
 internal interface BingService {
 
     @GET
-    fun getBaseMap(
+    suspend fun getBaseMap(
         @Url url: String
-    ): Single<BingServerResponse>
+    ): BingServerResponse
 }

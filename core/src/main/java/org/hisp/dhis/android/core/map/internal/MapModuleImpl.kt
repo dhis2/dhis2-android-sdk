@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.map.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
 import org.hisp.dhis.android.core.map.layer.MapLayerDownloader
@@ -43,7 +44,7 @@ internal class MapModuleImpl @Inject internal constructor(
         return mapLayerCollectionRepository
     }
 
-    override fun mapLayersDownloader(): MapLayerDownloader {
+    override fun mapLayersDownloader(): UntypedModuleDownloader {
         return mapLayerModuleDownloader
     }
 }

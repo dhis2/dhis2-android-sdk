@@ -28,38 +28,33 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
-import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.hisp.dhis.android.core.visualization.DimensionItemType
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 
 @Reusable
-internal class IndicatorUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+internal class IndicatorUidsSeeker @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : BaseUidsSeeker(databaseAdapter) {
 
     fun seekUids(): Set<String> {
-        val tableNames = Arrays.asList(
+        val tableNames = listOf(
             DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
-            SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
-            DataDimensionItemTableInfo.TABLE_INFO.name()
+            SectionIndicatorLinkTableInfo.TABLE_INFO.name()
         )
-        val query = MultipleTableQueryBuilder()
+        val tablesQuery = MultipleTableQueryBuilder()
             .generateQuery(DataSetIndicatorLinkTableInfo.Columns.INDICATOR, tableNames).build()
 
-        val cursor = databaseAdapter.rawQuery(query)
+        val visualizationQuery = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
+            "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +
+            "'${DimensionItemType.PROGRAM_INDICATOR.name}'"
 
-        val indicators: MutableSet<String> = HashSet()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    indicators.add(c.getString(0))
-                } while (c.moveToNext())
-            }
-        }
-
-        return indicators
+        return readSingleColumnResults(tablesQuery) + readSingleColumnResults(visualizationQuery)
     }
 }

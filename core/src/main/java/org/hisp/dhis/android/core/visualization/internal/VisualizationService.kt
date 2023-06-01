@@ -29,28 +29,33 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationAPI36
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface VisualizationService {
 
-    @GET("visualizations")
-    fun getVisualizations(
+    @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
+    fun getSingleVisualization(
+        @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") @Where uids: Filter<Visualization, String>,
+        @Query("filter") accessFilter: String,
         @Query("paging") paging: Boolean
-    ): Single<Payload<Visualization>>
+    ): Single<Visualization>
 
-    @GET("visualizations")
-    fun getVisualizations36(
+    @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
+    fun getSingleVisualizations36(
+        @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") @Where uids: Filter<Visualization, String>,
+        @Query("filter") accessFilter: String,
         @Query("paging") paging: Boolean
-    ): Single<Payload<VisualizationAPI36>>
+    ): Single<VisualizationAPI36>
+
+    companion object {
+        const val VISUALIZATIONS = "visualizations"
+        const val VISUALIZATION_UID = "visualizationUid"
+    }
 }

@@ -38,9 +38,8 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        DataDimensionItemEntityDIModule.class,
         VisualizationEntityDIModule.class,
-        VisualizationCategoryDimensionEntityDIModule.class
+        VisualizationDimensionItemEntityDIModule.class,
 })
 public final class VisualizationPackageDIModule {
 

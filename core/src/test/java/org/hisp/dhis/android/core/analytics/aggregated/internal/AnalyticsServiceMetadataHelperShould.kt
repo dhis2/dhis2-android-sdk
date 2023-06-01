@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -60,6 +61,7 @@ class AnalyticsServiceMetadataHelperShould {
     private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
     private val categoryOptionComboStore: CategoryOptionComboStore = mock()
     private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
+    private val expressionDimensionItemStore: IdentifiableObjectStore<ExpressionDimensionItem> = mock()
     private val legendStore: IdentifiableObjectStore<Legend> = mock()
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
@@ -77,6 +79,7 @@ class AnalyticsServiceMetadataHelperShould {
         categoryOptionComboStore,
         dataElementStore,
         indicatorStore,
+        expressionDimensionItemStore,
         legendStore,
         organisationUnitStore,
         organisationUnitGroupStore,

@@ -65,8 +65,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
     private fun getVisualization(visualizationId: String): Visualization? {
         return visualizationCollectionRepository
-            .withCategoryDimensions()
-            .withDataDimensionItems()
+            .withColumnsRowsAndFilters()
             .uid(visualizationId)
             .blockingGet()
     }
@@ -80,11 +79,13 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         var queryAnalyticsRepository = analyticsRepository
 
         val queryDimensions =
-            (visualization.rowDimensions() ?: emptyList()) +
-                (visualization.columnDimensions() ?: emptyList())
+            (visualization.rows() ?: emptyList()) +
+                (visualization.columns() ?: emptyList())
 
-        var queryItems = dimensionHelper.getDimensionItems(visualization, queryDimensions)
-        var filterItems = dimensionHelper.getDimensionItems(visualization, visualization.filterDimensions())
+        val filterDimensions = visualization.filters()
+
+        var queryItems = dimensionHelper.getDimensionItems(queryDimensions)
+        var filterItems = dimensionHelper.getDimensionItems(filterDimensions)
 
         // Overwrite periods
         if (!params.periods.isNullOrEmpty()) {

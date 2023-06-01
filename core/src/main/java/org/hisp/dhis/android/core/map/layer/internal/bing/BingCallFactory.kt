@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerDownloadParams
 import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -58,7 +57,7 @@ internal class BingCallFactory @Inject constructor(
 ) {
 
     @Suppress("TooGenericExceptionCaught")
-    fun download(params: MapLayerDownloadParams): Single<List<MapLayer>> {
+    fun download(): Single<List<MapLayer>> {
         return rxSingle {
             if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
                 try {
@@ -67,7 +66,7 @@ internal class BingCallFactory @Inject constructor(
                     }
 
                     val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
-                        ?.let { key -> downloadBingBasemaps(key, params) }
+                        ?.let { key -> downloadBingBasemaps(key) }
                         ?: emptyList()
 
                     mapLayers.also {
@@ -84,17 +83,12 @@ internal class BingCallFactory @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun downloadBingBasemaps(
-        bingKey: String,
-        params: MapLayerDownloadParams
+        bingKey: String
     ): List<MapLayer> {
         return try {
             BingBasemaps.list.map { b ->
                 try {
-                    if (params.networkTimeoutInSeconds != null) {
-                        withTimeout(params.networkTimeoutInSeconds.seconds) {
-                            downloadBasemap(bingKey, b)
-                        }
-                    } else {
+                    withTimeout(TIMEOUT_SECONDS.seconds) {
                         downloadBasemap(bingKey, b)
                     }
                 } catch (e: Exception) {
@@ -160,5 +154,9 @@ internal class BingCallFactory @Inject constructor(
             "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/$style?" +
                 "output=json&include=ImageryProviders&culture=en-GB&uriScheme=https&key=$bingKey"
         }
+    }
+
+    companion object {
+        private const val TIMEOUT_SECONDS = 30
     }
 }

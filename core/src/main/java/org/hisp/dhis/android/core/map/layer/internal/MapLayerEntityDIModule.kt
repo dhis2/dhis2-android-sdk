@@ -66,10 +66,4 @@ internal class MapLayerEntityDIModule {
             MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store)
         )
     }
-
-    @Provides
-    @Reusable
-    fun downloadParams(): MapLayerDownloadParams {
-        return MapLayerDownloadParams()
-    }
 }

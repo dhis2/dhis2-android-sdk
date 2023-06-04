@@ -279,6 +279,13 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(result).isEqualTo("4.0")
     }
 
+    @Test
+    fun should_evaluate_missing_values() {
+        val indicator = createIndicator(numerator = "${de(dataElement1.uid())} / ${de(dataElement2.uid())}")
+        val result = evaluateForThisMonth(indicator)
+        assertThat(result).isEqualTo("0.0")
+    }
+
     private fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT

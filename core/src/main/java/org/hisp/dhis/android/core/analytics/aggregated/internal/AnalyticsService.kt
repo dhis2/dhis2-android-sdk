@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext
+import org.hisp.dhis.antlr.ParserException
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
@@ -85,7 +85,7 @@ internal class AnalyticsService @Inject constructor(
             )
         } catch (e: AnalyticsException) {
             Result.Failure(e)
-        } catch (e: ParserExceptionWithoutContext) {
+        } catch (e: ParserException) {
             Result.Failure(AnalyticsException.ParserException(e.message ?: "Unknown"))
         } catch (e: IllegalArgumentException) {
             Result.Failure(AnalyticsException.InvalidArguments(e.message ?: "Unknown"))

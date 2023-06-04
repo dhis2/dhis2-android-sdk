@@ -64,10 +64,8 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
 
     @Test
     fun should_evaluate_mathematical_expressions() {
-        val item = createExpression(expression = "4 * 5 / 2")
-
+        val item = createExpression(item = "4 * 5 / 2")
         val value = evaluateForThisMonth(item)
-
         assertThat(value).isEqualTo("10.0")
     }
 
@@ -76,10 +74,8 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         createDataValue("2", dataElementUid = dataElement1.uid())
         createDataValue("3", dataElementUid = dataElement2.uid())
 
-        val item = createExpression(expression = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}")
-
+        val item = createExpression(item = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}")
         val value = evaluateForThisMonth(item)
-
         assertThat(value).isEqualTo("5.0")
     }
 
@@ -87,10 +83,8 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     fun should_evaluate_days_variable() {
         createDataValue("62", dataElementUid = dataElement1.uid())
 
-        val item = createExpression(expression = "${de(dataElement1.uid())} + [days]")
-
+        val item = createExpression(item = "${de(dataElement1.uid())} + [days]")
         val value = evaluateForThisMonth(item)
-
         assertThat(value).isEqualTo("93.0")
     }
 
@@ -98,10 +92,8 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     fun should_evaluate_constants() {
         createDataValue("10", dataElementUid = dataElement1.uid())
 
-        val item = createExpression(expression = cons(constant1.uid()))
-
+        val item = createExpression(item = cons(constant1.uid()))
         val value = evaluateForThisMonth(item)
-
         assertThat(value).isEqualTo("5.0")
     }
 
@@ -110,12 +102,8 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         createEventAndValue("5", dataElement1.uid())
         createEventAndValue("15", dataElement1.uid())
 
-        val indicator = createExpression(
-            expression = eventDE(program.uid(), dataElement1.uid())
-        )
-
-        val value = evaluateForThisMonth(indicator)
-
+        val item = createExpression(item = eventDE(program.uid(), dataElement1.uid()))
+        val value = evaluateForThisMonth(item)
         assertThat(value).isEqualTo("20.0")
     }
 
@@ -124,22 +112,25 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         createTEIAndAttribute("10", attribute1.uid())
         createTEIAndAttribute("5", attribute1.uid())
 
-        val indicator = createExpression(
-            expression = eventAtt(program.uid(), attribute1.uid())
-        )
-
-        val value = evaluateForThisMonth(indicator)
-
+        val item = createExpression(item = eventAtt(program.uid(), attribute1.uid()))
+        val value = evaluateForThisMonth(item)
         assertThat(value).isEqualTo("15.0")
     }
 
+    @Test
+    fun should_evaluate_missing_values() {
+        val indicator = createExpression(item = "${de(dataElement1.uid())} / ${de(dataElement2.uid())}")
+        val value = evaluateForThisMonth(indicator)
+        assertThat(value).isEqualTo("0.0")
+    }
+
     private fun createExpression(
-        expression: String
+        item: String
     ): ExpressionDimensionItem {
         val expressionDimensionItem = ExpressionDimensionItem.builder()
             .uid(generator.generate())
             .displayName("Expression Dimension Item")
-            .expression(expression)
+            .expression(item)
             .build()
 
         expressionDimensionItemStore.insert(expressionDimensionItem)

@@ -78,6 +78,6 @@ internal class IndicatorSQLEngine @Inject constructor(
         val denominator = engine.evaluate(indicator.denominator()!!)
         val factor = indicatorType?.factor() ?: 1
 
-        return "SELECT $factor * ($numerator) / ($denominator)"
+        return "SELECT COALESCE($factor * ($numerator) / ($denominator), '0.0')"
     }
 }

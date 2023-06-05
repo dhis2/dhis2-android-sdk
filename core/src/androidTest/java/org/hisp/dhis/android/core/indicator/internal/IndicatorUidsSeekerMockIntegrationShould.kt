@@ -25,36 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
-import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
-import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.visualization.DimensionItemType
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-@Reusable
-internal class IndicatorUidsSeeker @Inject constructor(
-    databaseAdapter: DatabaseAdapter
-) : BaseUidsSeeker(databaseAdapter) {
-
-    fun seekUids(): Set<String> {
-        val tableNames = listOf(
-            DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
-            SectionIndicatorLinkTableInfo.TABLE_INFO.name()
-        )
-        val tablesQuery = MultipleTableQueryBuilder()
-            .generateQuery(DataSetIndicatorLinkTableInfo.Columns.INDICATOR, tableNames).build()
-
-        val visualizationQuery = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
-            "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +
-            "'${DimensionItemType.INDICATOR.name}'"
-
-        return readSingleColumnResults(tablesQuery) + readSingleColumnResults(visualizationQuery)
+@RunWith(D2JunitRunner::class)
+class IndicatorUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun seek_programIndicator_uids() {
+        val indicatorsUids = IndicatorUidsSeeker(databaseAdapter).seekUids()
+        assertThat(indicatorsUids.size).isEqualTo(2)
+        assertThat(indicatorsUids.contains("ReUHfIn0pTQ")).isTrue()
+        assertThat(indicatorsUids.contains("Uvn6LCg7dVU")).isTrue()
     }
 }

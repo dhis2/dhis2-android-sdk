@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
@@ -46,7 +46,24 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
      * metadataSyncCall. It works against the demo server.
      */
 
-    private fun download(): Single<List<DataValue>> {
+    // @Test
+    @Throws(Exception::class)
+    fun download_data_values() {
+        runBlocking {
+            if (!d2.userModule().isLogged().blockingGet()) {
+                d2.userModule().logIn(username, password, url).blockingGet()
+            }
+
+            /*  This test won't pass independently of the sync of metadata, as the foreign keys
+                constraints won't be satisfied.
+                To run the test, you will need to disable foreign key support in database in
+                DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+                uncomment the @Test tag */
+            download()
+        }
+    }
+
+    private suspend fun download(): List<DataValue> {
         val dataValueHandler: Handler<DataValue> = ObjectWithoutUidHandlerImpl(
             DataValueStore.create(d2.databaseAdapter())
         )
@@ -71,20 +88,6 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         val dataValueService = d2.retrofit().create(DataValueService::class.java)
 
         return DataValueCall(dataValueService, dataValueHandler, apiDownloader)
-            .download(DataValueQuery.create(bundle))
-    }
-
-    // @Test
-    @Throws(Exception::class)
-    fun download_data_values() {
-        if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn(username, password, url).blockingGet()
-        }
-
-        /*  This test won't pass independently of the sync of metadata, as the foreign keys
-            constraints won't be satisfied.
-            To run the test, you will need to disable foreign key support in database in
-            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
-            uncomment the @Test tag */download().blockingGet()
+            .download(DataValueQuery(bundle))
     }
 }

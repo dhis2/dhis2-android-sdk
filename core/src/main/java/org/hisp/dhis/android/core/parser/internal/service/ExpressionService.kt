@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataEl
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import org.hisp.dhis.antlr.ParserException
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
 internal class ExpressionService @Inject constructor(
@@ -124,7 +125,12 @@ internal class ExpressionService @Inject constructor(
             visitor.orgUnitCountMap = context.orgUnitCountMap
             visitor.days = context.days?.toDouble()
 
-            val value = visit(expression, visitor)
+            val value = try {
+                visit(expression, visitor)
+            } catch (e: ParserException) {
+                null
+            }
+
             val itemsFound = visitor.state.itemsFound
             val itemValuesFound = visitor.state.itemValuesFound
 

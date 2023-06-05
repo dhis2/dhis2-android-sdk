@@ -65,14 +65,7 @@ internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualiza
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
         return mapOf(
-            Pair(
-                VisualizationFields.CATEGORY_DIMENSIONS,
-                VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
-            ),
-            Pair(
-                VisualizationFields.DATA_DIMENSION_ITEMS,
-                VisualizationDataDimensionItemChildrenAppender.create(databaseAdapter)
-            )
+            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter)
         )
     }
 }

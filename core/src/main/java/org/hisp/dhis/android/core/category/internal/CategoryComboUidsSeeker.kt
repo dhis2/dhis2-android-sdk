@@ -31,6 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
@@ -38,8 +39,8 @@ import org.hisp.dhis.android.core.program.ProgramTableInfo
 
 @Reusable
 internal class CategoryComboUidsSeeker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
-) {
+    databaseAdapter: DatabaseAdapter
+) : BaseUidsSeeker(databaseAdapter) {
     fun seekUids(): Set<String> {
         val tableNames = listOf(
             ProgramTableInfo.TABLE_INFO.name(),
@@ -50,16 +51,6 @@ internal class CategoryComboUidsSeeker @Inject constructor(
         val query = MultipleTableQueryBuilder()
             .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()
 
-        val categoryCombos: MutableSet<String> = HashSet()
-
-        databaseAdapter.rawQuery(query).use { cursor ->
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                do {
-                    categoryCombos.add(cursor.getString(0))
-                } while (cursor.moveToNext())
-            }
-        }
-        return categoryCombos
+        return readSingleColumnResults(query)
     }
 }

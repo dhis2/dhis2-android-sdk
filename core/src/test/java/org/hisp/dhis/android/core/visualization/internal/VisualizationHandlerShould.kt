@@ -30,14 +30,11 @@ package org.hisp.dhis.android.core.visualization.internal
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.visualization.CategoryDimension
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,16 +45,10 @@ class VisualizationHandlerShould {
 
     private val visualizationStore: IdentifiableObjectStore<Visualization> = mock()
     private val visualizationCollectionCleaner: CollectionCleaner<Visualization> = mock()
-    private val dataDimensionItemStore: LinkStore<DataDimensionItem> = mock()
-    private val visualizationCategoryDimensionLinkStore: LinkStore<VisualizationCategoryDimensionLink> = mock()
-    private val visualizationCategoryDimensionLinkHandler:
-        LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink> = mock()
-    private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem> = mock()
-    private val dataDimensionItem: DataDimensionItem = mock()
-    private val categoryDimension: CategoryDimension = mock()
-    private val category: ObjectWithUid = mock()
+    private val visualizationDimensionItemHandler:
+        LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem> = mock()
+    private val visualizationDimension: VisualizationDimension = mock()
     private val visualization: Visualization = mock()
-    private var categories: List<ObjectWithUid> = mock()
 
     // object to test
     private lateinit var visualizationHandler: VisualizationHandler
@@ -67,40 +58,20 @@ class VisualizationHandlerShould {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,
-            visualizationCategoryDimensionLinkStore,
-            dataDimensionItemStore,
-            visualizationCategoryDimensionLinkHandler,
-            dataDimensionItemHandler
+            visualizationDimensionItemHandler
         )
-        val dataDimensionItems = listOf(dataDimensionItem)
-        val categoryDimensions = listOf(categoryDimension)
-        categories = listOf(category)
 
-        whenever(visualization.dataDimensionItems()).doReturn(dataDimensionItems)
+        whenever(visualization.columns()).doReturn(listOf(visualizationDimension))
+        whenever(visualization.rows()).doReturn(listOf(visualizationDimension))
+        whenever(visualization.filters()).doReturn(listOf(visualizationDimension))
         whenever(visualizationStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
         whenever(visualization.uid()).doReturn("visualization_uid")
-        whenever(category.uid()).doReturn("category_uid")
-        whenever(categoryDimension.category()).doReturn(category)
-        whenever(visualization.categoryDimensions()).doReturn(categoryDimensions)
     }
 
     @Test
-    fun call_stores_to_delete_before_collection_handled() {
+    fun call_items_handler() {
         visualizationHandler.handleMany(listOf(visualization))
-        verify(visualizationCategoryDimensionLinkStore).delete()
-        verify(dataDimensionItemStore).delete()
-    }
-
-    @Test
-    fun call_data_dimension_items_handler() {
-        visualizationHandler.handleMany(listOf(visualization))
-        verify(dataDimensionItemHandler).handleMany(any(), any(), any())
-    }
-
-    @Test
-    fun call_category_dimensions_link_handler() {
-        visualizationHandler.handleMany(listOf(visualization))
-        verify(visualizationCategoryDimensionLinkHandler).handleMany(any(), any(), any())
+        verify(visualizationDimensionItemHandler).handleMany(any(), any(), any())
     }
 
     @Test

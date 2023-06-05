@@ -38,11 +38,15 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
@@ -53,134 +57,130 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
     private val orgUnitDimension = "ou"
     private val periodDimension = "pe"
     private val uidRegex = "^\\w{11}\$".toRegex()
-    private val dataElementOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
+    private val composedUidOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
+    private val orgunitLevelRegex = "LEVEL-(\\d+)".toRegex()
 
-    fun getDimensionItems(visualization: Visualization, dimensions: List<String>?): List<DimensionItem> {
+    fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
         return dimensions?.map { dimension ->
-            when (dimension) {
-                dataDimension -> extractDataDimensionItems(visualization)
-                orgUnitDimension -> extractOrgunitDimensionItems(visualization)
-                periodDimension -> extractPeriodDimensionItems(visualization)
+            when (dimension.id()) {
+                dataDimension -> extractDataDimensionItems(dimension.items())
+                orgUnitDimension -> extractOrgunitDimensionItems(dimension.items())
+                periodDimension -> extractPeriodDimensionItems(dimension.items())
                 else -> {
-                    if (uidRegex.matches(dimension)) {
-                        extractUidDimensionItems(visualization, dimension)
-                    } else {
-                        emptyList()
-                    }
+                    dimension.id()?.let {
+                        if (uidRegex.matches(it)) {
+                            extractUidDimensionItems(dimension.items(), it)
+                        } else {
+                            emptyList()
+                        }
+                    } ?: emptyList()
                 }
             }
         }?.flatten() ?: emptyList()
     }
 
     @Suppress("ComplexMethod")
-    private fun extractDataDimensionItems(visualization: Visualization): List<DimensionItem> {
-        return visualization.dataDimensionItems()?.mapNotNull { item ->
-            when (item.dataDimensionItemType()) {
+    private fun extractDataDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
+        return items?.mapNotNull { item ->
+            val dataType = DataDimensionItemType.values().find { it.name == item.dimensionItemType() }
+
+            when (dataType) {
                 DataDimensionItemType.INDICATOR ->
-                    item.indicator()?.let { DimensionItem.DataItem.IndicatorItem(it.uid()) }
+                    item.dimensionItem()?.let { DimensionItem.DataItem.IndicatorItem(it) }
                 DataDimensionItemType.DATA_ELEMENT ->
-                    item.dataElement()?.let { DimensionItem.DataItem.DataElementItem(it.uid()) }
+                    item.dimensionItem()?.let { DimensionItem.DataItem.DataElementItem(it) }
                 DataDimensionItemType.DATA_ELEMENT_OPERAND ->
-                    item.dataElementOperand()?.let {
-                        val (dataElement, coc) = dataElementOperandRegex.find(it.uid())!!.destructured
+                    item.dimensionItem()?.let {
+                        val (dataElement, coc) = composedUidOperandRegex.find(it)!!.destructured
                         DimensionItem.DataItem.DataElementOperandItem(dataElement, coc)
                     }
                 DataDimensionItemType.PROGRAM_INDICATOR ->
-                    item.programIndicator()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it.uid()) }
+                    item.dimensionItem()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it) }
                 DataDimensionItemType.PROGRAM_DATA_ELEMENT ->
-                    item.programDataElement()?.let {
-                        it.program()?.uid()?.let { program ->
-                            it.dataElement()?.uid()?.let { dataElement ->
-                                DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
-                            }
-                        }
+                    item.dimensionItem()?.let {
+                        val (program, dataElement) = composedUidOperandRegex.find(it)!!.destructured
+                        DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
                     }
                 DataDimensionItemType.PROGRAM_ATTRIBUTE ->
-                    item.programAttribute()?.let {
-                        it.program()?.uid()?.let { program ->
-                            it.attribute()?.uid()?.let { attribute ->
-                                DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
-                            }
-                        }
+                    item.dimensionItem()?.let {
+                        val (program, attribute) = composedUidOperandRegex.find(it)!!.destructured
+                        DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
                     }
+                DataDimensionItemType.EXPRESSION_DIMENSION_ITEM ->
+                    item.dimensionItem()?.let { DimensionItem.DataItem.ExpressionDimensionItem(it) }
                 else ->
                     null
             }
         } ?: emptyList()
     }
 
-    private fun extractOrgunitDimensionItems(visualization: Visualization): List<DimensionItem> {
-        val absolute = visualization.organisationUnits()?.map {
-            DimensionItem.OrganisationUnitItem.Absolute(it.uid())
-        } ?: emptyList()
+    private fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
+        return items?.mapNotNull { it.dimensionItem() }?.map { item ->
+            val relativeOrgUnit = RelativeOrganisationUnit.values().find { it.name == item }
 
-        val levels = visualization.organisationUnitLevels()?.map {
-            val level = organisationUnitLevelStore.selectOneWhere(
-                WhereClauseBuilder()
-                    .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, it)
-                    .build()
-            ) ?: throw AnalyticsException.InvalidOrganisationUnitLevel(it.toString())
-            DimensionItem.OrganisationUnitItem.Level(level.uid())
-        } ?: emptyList()
-
-        val relative = listOfNotNull(
-            if (visualization.userOrganisationUnit() == true) USER_ORGUNIT else null,
-            if (visualization.userOrganisationUnitChildren() == true) USER_ORGUNIT_CHILDREN else null,
-            if (visualization.userOrganisationUnitGrandChildren() == true) USER_ORGUNIT_GRANDCHILDREN else null
-        ).map { item ->
-            DimensionItem.OrganisationUnitItem.Relative(item)
-        }
-
-        return absolute + levels + relative
-    }
-
-    private fun extractPeriodDimensionItems(visualization: Visualization): List<DimensionItem> {
-        val absolute = visualization.periods()?.map {
-            DimensionItem.PeriodItem.Absolute(it.uid())
-        } ?: emptyList()
-
-        val relative = visualization.relativePeriods()
-            ?.filter { it.value == true }
-            ?.map {
-                DimensionItem.PeriodItem.Relative(it.key)
-            } ?: emptyList()
-
-        return absolute + relative
-    }
-
-    private fun extractUidDimensionItems(visualization: Visualization, uid: String): List<DimensionItem> {
-        return categoryStore.selectByUid(uid)?.let {
-            visualization.categoryDimensions()
-                ?.find { it.category()?.uid() == uid }
-                ?.let { categoryDimension ->
-                    val categoryOptions =
-                        if (categoryDimension.categoryOptions().isNullOrEmpty()) {
-                            categoryOptionLinkStore.selectLinksForMasterUid(uid).mapNotNull { it.categoryOption() }
-                        } else {
-                            categoryDimension.categoryOptions()!!.map { it.uid() }
-                        }
-
-                    categoryOptions.map { DimensionItem.CategoryItem(uid, it) }
+            when {
+                relativeOrgUnit != null -> {
+                    DimensionItem.OrganisationUnitItem.Relative(relativeOrgUnit)
                 }
+
+                orgunitLevelRegex.matches(item) -> {
+                    val (levelNumber) = orgunitLevelRegex.find(item)!!.destructured
+                    val level = organisationUnitLevelStore.selectOneWhere(
+                        WhereClauseBuilder()
+                            .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, levelNumber.toInt())
+                            .build()
+                    ) ?: throw AnalyticsException.InvalidOrganisationUnitLevel(levelNumber)
+                    DimensionItem.OrganisationUnitItem.Level(level.uid())
+                }
+
+                else -> {
+                    DimensionItem.OrganisationUnitItem.Absolute(item)
+                }
+            }
+        } ?: emptyList()
+    }
+
+    private fun extractPeriodDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
+        return items?.mapNotNull { it.dimensionItem() }?.map { item ->
+            val relativePeriod = RelativePeriod.values().find { it.name == item }
+
+            if (relativePeriod != null) {
+                DimensionItem.PeriodItem.Relative(relativePeriod)
+            } else {
+                DimensionItem.PeriodItem.Absolute(item)
+            }
+        } ?: emptyList()
+    }
+
+    private fun extractUidDimensionItems(items: List<VisualizationDimensionItem>?, uid: String): List<DimensionItem> {
+        return categoryStore.selectByUid(uid)?.let { category ->
+            val categoryOptions =
+                if (items.isNullOrEmpty()) {
+                    categoryOptionLinkStore.selectLinksForMasterUid(category.uid()).mapNotNull { it.categoryOption() }
+                } else {
+                    items.mapNotNull { it.dimensionItem() }
+                }
+
+            categoryOptions.map { DimensionItem.CategoryItem(category.uid(), it) }
         } ?: emptyList()
     }
 
     fun getGridDimensions(visualization: Visualization): GridDimension {
-        val columns = mapDimensions(visualization.columnDimensions())
-        val rows = mapDimensions(visualization.rowDimensions())
+        val columns = mapDimensions(visualization.columns())
+        val rows = mapDimensions(visualization.rows())
 
         return GridDimension(columns, rows)
     }
 
-    private fun mapDimensions(dimensionStrs: List<String>?): List<Dimension> {
-        return dimensionStrs?.mapNotNull {
-            when (it) {
+    private fun mapDimensions(dimensionStrs: List<VisualizationDimension>?): List<Dimension> {
+        return dimensionStrs?.mapNotNull { dimension ->
+            when (dimension.id()) {
                 dataDimension -> Dimension.Data
                 periodDimension -> Dimension.Period
                 orgUnitDimension -> Dimension.OrganisationUnit
                 else -> {
-                    if (uidRegex.matches(it)) {
-                        extractUidDimension(it)
+                    if (uidRegex.matches(dimension.id()!!)) {
+                        extractUidDimension(dimension)
                     } else {
                         null
                     }
@@ -189,11 +189,9 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
         } ?: emptyList()
     }
 
-    private fun extractUidDimension(uid: String): Dimension? {
-        val category = categoryStore.selectByUid(uid)
-
-        return if (category != null) {
-            Dimension.Category(uid)
+    private fun extractUidDimension(dimension: VisualizationDimension): Dimension? {
+        return if (dimension.items()?.all { it.dimensionItemType() == "CATEGORY_OPTION" } == true) {
+            Dimension.Category(dimension.id()!!)
         } else {
             null
         }

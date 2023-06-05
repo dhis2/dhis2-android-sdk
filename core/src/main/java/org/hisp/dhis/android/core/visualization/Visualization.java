@@ -39,29 +39,21 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbVisualizationLegendColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSeparatorColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryDimensionListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataDimensionItemListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreVisualizationDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.RelativePeriod;
 
 import java.util.List;
-import java.util.Map;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -175,65 +167,23 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(RelativePeriodsColumnAdapter.class)
-    public abstract Map<RelativePeriod, Boolean> relativePeriods();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreCategoryDimensionListColumnAdapter.class)
-    public abstract List<CategoryDimension> categoryDimensions();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> filterDimensions();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> rowDimensions();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(StringListColumnAdapter.class)
-    public abstract List<String> columnDimensions();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreDataDimensionItemListColumnAdapter.class)
-    public abstract List<DataDimensionItem> dataDimensionItems();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IntegerListColumnAdapter.class)
-    public abstract List<Integer> organisationUnitLevels();
-
-    @Nullable
-    @JsonProperty()
-    public abstract Boolean userOrganisationUnit();
-
-    @Nullable
-    @JsonProperty()
-    public abstract Boolean userOrganisationUnitChildren();
-
-    @Nullable
-    @JsonProperty()
-    public abstract Boolean userOrganisationUnitGrandChildren();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> organisationUnits();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> periods();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
+    public abstract List<VisualizationDimension> columns();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
+    public abstract List<VisualizationDimension> rows();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
+    public abstract List<VisualizationDimension> filters();
 
     public static Builder builder() {
         return new $$AutoValue_Visualization.Builder();
@@ -303,31 +253,13 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
         public abstract Builder digitGroupSeparator(DigitGroupSeparator digitGroupSeparator);
 
-        public abstract Builder relativePeriods(Map<RelativePeriod, Boolean> relativePeriods);
-
-        public abstract Builder categoryDimensions(List<CategoryDimension> categoryDimensions);
-
-        public abstract Builder filterDimensions(List<String> filterDimensions);
-
-        public abstract Builder rowDimensions(List<String> rowDimensions);
-
-        public abstract Builder columnDimensions(List<String> columnDimensions);
-
-        public abstract Builder dataDimensionItems(List<DataDimensionItem> dataDimensionItems);
-
-        public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
-
-        public abstract Builder userOrganisationUnit(Boolean userOrganisationUnit);
-
-        public abstract Builder userOrganisationUnitChildren(Boolean userOrganisationUnitChildren);
-
-        public abstract Builder userOrganisationUnitGrandChildren(Boolean userOrganisationUnitGrandChildren);
-
-        public abstract Builder organisationUnits(List<ObjectWithUid> organisationUnits);
-
-        public abstract Builder periods(List<ObjectWithUid> periods);
-
         public abstract Builder aggregationType(AggregationType aggregationType);
+
+        public abstract Builder columns(List<VisualizationDimension> columns);
+
+        public abstract Builder rows(List<VisualizationDimension> rows);
+
+        public abstract Builder filters(List<VisualizationDimension> filters);
 
         public abstract Visualization build();
     }

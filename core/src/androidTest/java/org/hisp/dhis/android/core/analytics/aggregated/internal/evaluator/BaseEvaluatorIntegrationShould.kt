@@ -74,18 +74,26 @@ import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.internal.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.*
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
@@ -129,6 +137,15 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected val relationshipConstraintStore = RelationshipConstraintStore.create(databaseAdapter)
 
     protected val constantStore = ConstantStore.create(databaseAdapter)
+
+    protected val expressionDimensionItemStore = ExpressionDimensionItemStore.create(databaseAdapter)
+
+    protected val expressionService = ExpressionService(
+        dataElementStore,
+        categoryOptionComboStore,
+        organisationUnitGroupStore,
+        programStageStore
+    )
 
     protected val metadata: Map<String, MetadataItem> = mapOf(
         orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
@@ -181,6 +198,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @Before
     fun setUpBase() {
+        println("AAAA setUpBase")
         organisationUnitLevelStore.insert(level1)
         organisationUnitLevelStore.insert(level2)
 
@@ -233,6 +251,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @After
     fun tearDown() {
+        println("AAAA tearDown")
         organisationUnitLevelStore.delete()
         organisationUnitStore.delete()
         organisationUnitGroupStore.delete()
@@ -255,5 +274,100 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         relationshipTypeStore.delete()
         relationshipConstraintStore.delete()
         constantStore.delete()
+    }
+
+    protected fun createDataValue(
+        value: String,
+        dataElementUid: String = dataElement1.uid(),
+        orgunitUid: String = orgunitParent.uid(),
+        periodId: String = period201912.periodId()!!,
+        categoryOptionComboUid: String = categoryOptionCombo.uid(),
+        attributeOptionComboUid: String = attributeOptionCombo.uid()
+    ) {
+        val dataValue = DataValue.builder()
+            .value(value)
+            .dataElement(dataElementUid)
+            .period(periodId)
+            .organisationUnit(orgunitUid)
+            .categoryOptionCombo(categoryOptionComboUid)
+            .attributeOptionCombo(attributeOptionComboUid)
+            .build()
+
+        dataValueStore.insert(dataValue)
+    }
+
+    protected fun createEventAndValue(
+        value: String,
+        dataElementUid: String,
+        enrollmentUid: String? = null
+    ) {
+        val event = Event.builder()
+            .uid(BaseEvaluatorSamples.generator.generate())
+            .eventDate(period201912.startDate())
+            .enrollment(enrollmentUid)
+            .program(program.uid())
+            .programStage(programStage1.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .deleted(false)
+            .build()
+
+        eventStore.insert(event)
+
+        val dataValue = TrackedEntityDataValue.builder()
+            .event(event.uid())
+            .dataElement(dataElementUid)
+            .value(value)
+            .build()
+
+        trackedEntityDataValueStore.insert(dataValue)
+    }
+
+    protected fun createTEIAndAttribute(
+        value: String?,
+        attributeUid: String
+    ) {
+        val tei = TrackedEntityInstance.builder()
+            .uid(BaseEvaluatorSamples.generator.generate())
+            .trackedEntityType(trackedEntityType.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .deleted(false)
+            .build()
+
+        trackedEntityStore.insert(tei)
+
+        val enrollment = Enrollment.builder()
+            .uid(BaseEvaluatorSamples.generator.generate())
+            .trackedEntityInstance(tei.uid())
+            .organisationUnit(orgunitChild1.uid())
+            .program(program.uid())
+            .deleted(false)
+            .build()
+
+        enrollmentStore.insert(enrollment)
+
+        val attributeValue = TrackedEntityAttributeValue.builder()
+            .trackedEntityInstance(tei.uid())
+            .trackedEntityAttribute(attributeUid)
+            .value(value)
+            .build()
+
+        trackedEntityAttributeValueStore.insert(attributeValue)
+        createEventAndValue("0", dataElement1.uid(), enrollment.uid())
+    }
+
+    protected fun de(dataElementUid: String): String {
+        return "#{$dataElementUid}"
+    }
+
+    protected fun eventDE(programUid: String, dataElementUid: String): String {
+        return "D{$programUid.$dataElementUid}"
+    }
+
+    protected fun eventAtt(programUid: String, attributeUid: String): String {
+        return "A{$programUid.$attributeUid}"
+    }
+
+    protected fun cons(constantUid: String): String {
+        return "C{$constantUid}"
     }
 }

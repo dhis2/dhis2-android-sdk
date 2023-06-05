@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo.Columns;
@@ -173,43 +172,7 @@ public final class VisualizationCollectionRepository
         return cf.enumC(Columns.DIGIT_GROUP_SEPARATOR);
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byRelativePeriods() {
-        return cf.string(Columns.RELATIVE_PERIODS);
-    }
-
-    public StringFilterConnector<VisualizationCollectionRepository> byFilterDimensions() {
-        return cf.string(Columns.FILTER_DIMENSIONS);
-    }
-
-    public StringFilterConnector<VisualizationCollectionRepository> byRowDimensions() {
-        return cf.string(Columns.ROW_DIMENSIONS);
-    }
-
-    public StringFilterConnector<VisualizationCollectionRepository> byColumnDimensions() {
-        return cf.string(Columns.COLUMN_DIMENSIONS);
-    }
-
-    public IntegerFilterConnector<VisualizationCollectionRepository> byOrganisationUnitLevels() {
-        return cf.integer(Columns.ORGANISATION_UNIT_LEVELS);
-    }
-
-    public BooleanFilterConnector<VisualizationCollectionRepository> byUserOrganisationUnit() {
-        return cf.bool(Columns.USER_ORGANISATION_UNIT);
-    }
-
-    public BooleanFilterConnector<VisualizationCollectionRepository> byUserOrganisationUnitChildren() {
-        return cf.bool(Columns.USER_ORGANISATION_UNIT_CHILDREN);
-    }
-
-    public BooleanFilterConnector<VisualizationCollectionRepository> byUserOrganisationUnitGrandChildren() {
-        return cf.bool(Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN);
-    }
-
-    public VisualizationCollectionRepository withCategoryDimensions() {
-        return cf.withChild(VisualizationFields.CATEGORY_DIMENSIONS);
-    }
-
-    public VisualizationCollectionRepository withDataDimensionItems() {
-        return cf.withChild(VisualizationFields.DATA_DIMENSION_ITEMS);
+    public VisualizationCollectionRepository withColumnsRowsAndFilters() {
+        return cf.withChild(VisualizationFields.ITEMS);
     }
 }

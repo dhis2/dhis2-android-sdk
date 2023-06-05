@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.visualization
 import java.util.*
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.RelativePeriod
 
 internal data class VisualizationAPI36(
     val id: String,
@@ -66,22 +65,13 @@ internal data class VisualizationAPI36(
     val skipRounding: Boolean?,
     val displayDensity: DisplayDensity?,
     val digitGroupSeparator: DigitGroupSeparator?,
-    val relativePeriods: Map<RelativePeriod, Boolean>?,
-    val categoryDimensions: List<CategoryDimension>?,
-    val filterDimensions: List<String>?,
-    val rowDimensions: List<String>?,
-    val columnDimensions: List<String>?,
-    val dataDimensionItems: List<DataDimensionItem>?,
-    val organisationUnitLevels: List<Int>?,
-    val userOrganisationUnit: Boolean?,
-    val userOrganisationUnitChildren: Boolean?,
-    val userOrganisationUnitGrandChildren: Boolean?,
-    val organisationUnits: List<ObjectWithUid>?,
-    val periods: List<ObjectWithUid>?,
     val legendSet: ObjectWithUid?,
     val legendDisplayStyle: LegendStyle?,
     val legendDisplayStrategy: LegendStrategy?,
-    val aggregationType: AggregationType?
+    val aggregationType: AggregationType?,
+    val columns: List<VisualizationDimension>,
+    val rows: List<VisualizationDimension>,
+    val filters: List<VisualizationDimension>,
 ) {
     fun toVisualization(): Visualization =
         Visualization.builder()
@@ -117,18 +107,6 @@ internal data class VisualizationAPI36(
             .skipRounding(skipRounding)
             .displayDensity(displayDensity)
             .digitGroupSeparator(digitGroupSeparator)
-            .relativePeriods(relativePeriods)
-            .categoryDimensions(categoryDimensions)
-            .filterDimensions(filterDimensions)
-            .rowDimensions(rowDimensions)
-            .columnDimensions(columnDimensions)
-            .dataDimensionItems(dataDimensionItems)
-            .organisationUnitLevels(organisationUnitLevels)
-            .userOrganisationUnit(userOrganisationUnit)
-            .userOrganisationUnitChildren(userOrganisationUnitChildren)
-            .userOrganisationUnitGrandChildren(userOrganisationUnitGrandChildren)
-            .organisationUnits(organisationUnits)
-            .periods(periods)
             .aggregationType(aggregationType)
             .legend(
                 VisualizationLegend.builder()
@@ -138,5 +116,8 @@ internal data class VisualizationAPI36(
                     .showKey(false)
                     .build()
             )
+            .columns(columns)
+            .rows(rows)
+            .filters(filters)
             .build()
 }

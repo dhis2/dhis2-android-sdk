@@ -268,6 +268,8 @@ class ExpressionServiceShould {
         assertThat(service.getExpressionValue("log(100)") as Double).isAtLeast(4.6)
         assertThat(service.getExpressionValue("log(100)") as Double).isAtMost(4.7)
         assertThat(service.getExpressionValue("log10(100)")).isEqualTo(2.0)
+        assertThat(service.getExpressionValue("is('one' in 'one', 'two')")).isEqualTo(true)
+        assertThat(service.getExpressionValue("is('three' in 'one', 'two')")).isEqualTo(false)
     }
 
     @Test

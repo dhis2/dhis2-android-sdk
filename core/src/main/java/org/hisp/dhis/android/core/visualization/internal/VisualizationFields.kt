@@ -29,16 +29,27 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
+import org.hisp.dhis.android.core.visualization.DisplayDensity
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationLegend
+import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.hisp.dhis.android.core.visualization.VisualizationType
 
 internal object VisualizationFields {
-    internal const val CATEGORY_DIMENSIONS = "categoryDimensions"
-    internal const val DATA_DIMENSION_ITEMS = "dataDimensionItems"
     internal const val LEGEND = "legend"
+
+    private const val COLUMNS = "columns"
+    private const val ROWS = "rows"
+    private const val FILTERS = "filters"
 
     private const val LEGEND_DISPLAY_STRATEGY = "legendDisplayStrategy"
     private const val LEGEND_DISPLAY_STYLE = "legendDisplayStyle"
     private const val LEGEND_SET = "legendSet"
+
+    internal const val ITEMS = "items"
 
     private val fh = FieldsHelper<Visualization>()
     val uid = fh.uid()
@@ -85,17 +96,8 @@ internal object VisualizationFields {
                 fh.field<Boolean>(VisualizationTableInfo.Columns.SKIP_ROUNDING),
                 fh.field<DisplayDensity>(VisualizationTableInfo.Columns.DISPLAY_DENSITY),
                 fh.field<DigitGroupSeparator>(VisualizationTableInfo.Columns.DIGIT_GROUP_SEPARATOR),
-                fh.field<String>(VisualizationTableInfo.Columns.RELATIVE_PERIODS),
-                fh.nestedField<CategoryDimension>(CATEGORY_DIMENSIONS).with(CategoryDimensionFields.allFields),
-                fh.field<String>(VisualizationTableInfo.Columns.FILTER_DIMENSIONS),
-                fh.field<String>(VisualizationTableInfo.Columns.ROW_DIMENSIONS),
-                fh.field<String>(VisualizationTableInfo.Columns.COLUMN_DIMENSIONS),
-                fh.nestedField<DataDimensionItem>(DATA_DIMENSION_ITEMS).with(DataDimensionItemFields.allFields),
-                fh.field<List<Int>>(VisualizationTableInfo.Columns.ORGANISATION_UNIT_LEVELS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_CHILDREN),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.ORGANISATION_UNITS),
-                fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
+                fh.nestedField<VisualizationDimension>(COLUMNS).with(VisualizationDimensionFields.allFields),
+                fh.nestedField<VisualizationDimension>(ROWS).with(VisualizationDimensionFields.allFields),
+                fh.nestedField<VisualizationDimension>(FILTERS).with(VisualizationDimensionFields.allFields),
             )
 }

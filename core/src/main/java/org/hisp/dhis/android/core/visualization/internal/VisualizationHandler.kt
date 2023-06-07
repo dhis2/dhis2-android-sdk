@@ -31,59 +31,56 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.visualization.CategoryDimension
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 @Reusable
 internal class VisualizationHandler @Inject constructor(
     store: IdentifiableObjectStore<Visualization>,
     private val visualizationCollectionCleaner: CollectionCleaner<Visualization>,
-    private val visualizationCategoryDimensionLinkStore: LinkStore<VisualizationCategoryDimensionLink>,
-    private val dataDimensionItemStore: LinkStore<DataDimensionItem>,
-    private val visualizationCategoryDimensionLinkHandler:
-        LinkHandler<VisualizationCategoryDimensionLink, VisualizationCategoryDimensionLink>,
-    private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem>
+    private val itemHandler: LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem>
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
-    override fun beforeCollectionHandled(
-        oCollection: Collection<Visualization>
-    ): Collection<Visualization> {
-        visualizationCategoryDimensionLinkStore.delete()
-        dataDimensionItemStore.delete()
-        return oCollection
-    }
-
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
-        val links = o.categoryDimensions()?.flatMap { categoryDimension: CategoryDimension ->
-            categoryDimension.category()?.let { category ->
-                val categoryOptions =
-                    if (categoryDimension.categoryOptions().isNullOrEmpty()) listOf(null)
-                    else categoryDimension.categoryOptions()!!.map { it.uid() }
+        val items =
+            toItems(o.columns(), LayoutPosition.COLUMN) +
+                toItems(o.rows(), LayoutPosition.ROW) +
+                toItems(o.filters(), LayoutPosition.FILTER)
 
-                categoryOptions.map {
-                    VisualizationCategoryDimensionLink.builder()
-                        .visualization(o.uid())
-                        .category(category.uid())
-                        .categoryOption(it)
-                        .build()
-                }
-            } ?: emptyList()
-        }
-
-        visualizationCategoryDimensionLinkHandler.handleMany(o.uid(), links) { i -> i }
-
-        dataDimensionItemHandler.handleMany(o.uid(), o.dataDimensionItems()) {
+        itemHandler.handleMany(o.uid(), items) {
             it.toBuilder().visualization(o.uid()).build()
         }
     }
 
     override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
         visualizationCollectionCleaner.deleteNotPresent(oCollection)
+    }
+
+    private fun toItems(
+        dimensions: List<VisualizationDimension>?,
+        position: LayoutPosition
+    ): List<VisualizationDimensionItem> {
+        return dimensions?.map { dimension ->
+            if (dimension.items().isNullOrEmpty()) {
+                listOf(
+                    VisualizationDimensionItem.builder()
+                        .position(position)
+                        .dimension(dimension.id())
+                        .build()
+                )
+            } else {
+                dimension.items()!!.map { item ->
+                    item.toBuilder()
+                        .position(position)
+                        .dimension(dimension.id())
+                        .build()
+                }
+            }
+        }?.flatten() ?: emptyList()
     }
 }

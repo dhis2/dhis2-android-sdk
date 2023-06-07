@@ -31,8 +31,12 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
@@ -45,75 +49,102 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class BingCallFactory @Inject constructor(
-    private val rxAPICallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val mapLayerHandler: Handler<MapLayer>,
     private val versionManager: DHISVersionManager,
     private val settingsService: SettingService,
     private val bingService: BingService
 ) {
 
+    @Suppress("TooGenericExceptionCaught")
     fun download(): Single<List<MapLayer>> {
-        return Single.defer {
+        return rxSingle {
             if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
-                rxAPICallExecutor.wrapSingle(settingsService.getSystemSettings(SystemSettingsFields.bingApiKey), true)
-                    .flatMap { settings ->
-                        settings.keyBingMapsApiKey
-                            ?.let { downloadBingBasemaps(it) }
-                            ?: Single.just(emptyList())
+                try {
+                    val settings = coroutineAPICallExecutor.wrap(storeError = true) {
+                        settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
                     }
-                    .map { mapLayers ->
-                        mapLayerHandler.handleMany(mapLayers)
-                        mapLayers
+
+                    val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
+                        ?.let { key -> downloadBingBasemaps(key) }
+                        ?: emptyList()
+
+                    mapLayers.also {
+                        mapLayerHandler.handleMany(it)
                     }
-                    .onErrorReturnItem(emptyList())
+                } catch (e: Exception) {
+                    emptyList()
+                }
             } else {
-                Single.just(emptyList())
+                emptyList()
             }
         }
     }
 
-    private fun downloadBingBasemaps(bingKey: String): Single<List<MapLayer>> {
-        return Single.merge(
-            BingBasemaps.list.map { b -> downloadBasemap(bingKey, b) }
-        ).toList().map { it.flatten() }
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun downloadBingBasemaps(
+        bingKey: String
+    ): List<MapLayer> {
+        return try {
+            BingBasemaps.list.map { b ->
+                try {
+                    withTimeout(TIMEOUT_SECONDS.seconds) {
+                        downloadBasemap(bingKey, b)
+                    }
+                } catch (e: Exception) {
+                    when (e) {
+                        is TimeoutCancellationException -> throw e
+                        else -> emptyList()
+                    }
+                }
+            }.flatten()
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
-    private fun downloadBasemap(bingkey: String, basemap: BingBasemap): Single<List<MapLayer>> {
-        return bingService.getBaseMap(getUrl(basemap.style, bingkey))
-            .map { m ->
-                m.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
-                    listOf(
-                        MapLayer.builder()
-                            .uid(basemap.id)
-                            .name(basemap.name)
-                            .displayName(basemap.name)
-                            .style(basemap.style)
-                            .mapLayerPosition(MapLayerPosition.BASEMAP)
-                            .external(false)
-                            .imageUrl(resource.imageUrl)
-                            .subdomains(resource.imageUrlSubdomains)
-                            .subdomainPlaceholder("{subdomain}")
-                            .imageryProviders(
-                                resource.imageryProviders.map { i ->
-                                    MapLayerImageryProvider.builder()
-                                        .mapLayer(basemap.id)
-                                        .attribution(i.attribution)
-                                        .coverageAreas(
-                                            i.coverageAreas.map { ca ->
-                                                MapLayerImageryProviderArea.builder()
-                                                    .bbox(ca.bbox)
-                                                    .zoomMax(ca.zoomMax)
-                                                    .zoomMin(ca.zoomMin)
-                                                    .build()
-                                            }
-                                        )
-                                        .build()
-                                }
-                            )
-                            .build()
-                    )
-                } ?: emptyList()
-            }.onErrorReturnItem(emptyList())
+    private suspend fun downloadBasemap(
+        bingkey: String,
+        basemap: BingBasemap
+    ): List<MapLayer> {
+        val bingResponseResult = coroutineAPICallExecutor.wrap(storeError = false) {
+            bingService.getBaseMap(getUrl(basemap.style, bingkey))
+        }
+
+        return bingResponseResult.map { bingResponse ->
+            bingResponse.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
+                listOf(
+                    MapLayer.builder()
+                        .uid(basemap.id)
+                        .name(basemap.name)
+                        .displayName(basemap.name)
+                        .style(basemap.style)
+                        .mapLayerPosition(MapLayerPosition.BASEMAP)
+                        .external(false)
+                        .imageUrl(resource.imageUrl)
+                        .subdomains(resource.imageUrlSubdomains)
+                        .subdomainPlaceholder("{subdomain}")
+                        .imageryProviders(
+                            resource.imageryProviders.map { i ->
+                                MapLayerImageryProvider.builder()
+                                    .mapLayer(basemap.id)
+                                    .attribution(i.attribution)
+                                    .coverageAreas(
+                                        i.coverageAreas.map { ca ->
+                                            MapLayerImageryProviderArea.builder()
+                                                .bbox(ca.bbox)
+                                                .zoomMax(ca.zoomMax)
+                                                .zoomMin(ca.zoomMin)
+                                                .build()
+                                        }
+                                    )
+                                    .build()
+                            }
+                        )
+                        .build()
+                )
+            }
+        }.getOrNull() ?: emptyList()
     }
 
     private fun getUrl(style: String, bingKey: String): String {
@@ -123,5 +154,9 @@ internal class BingCallFactory @Inject constructor(
             "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/$style?" +
                 "output=json&include=ImageryProviders&culture=en-GB&uriScheme=https&key=$bingKey"
         }
+    }
+
+    companion object {
+        private const val TIMEOUT_SECONDS = 30
     }
 }

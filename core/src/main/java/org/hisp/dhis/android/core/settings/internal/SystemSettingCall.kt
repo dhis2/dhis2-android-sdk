@@ -47,7 +47,7 @@ internal class SystemSettingCall @Inject constructor(
     override fun download(): Single<List<SystemSetting>> {
         return apiDownloader.downloadList(
             handler = handler,
-            downloader = service.getSystemSettings(allFields).map(settingsSplitter::splitSettings)
+            downloader = service.getSystemSettingsSingle(allFields).map(settingsSplitter::splitSettings)
         )
     }
 }

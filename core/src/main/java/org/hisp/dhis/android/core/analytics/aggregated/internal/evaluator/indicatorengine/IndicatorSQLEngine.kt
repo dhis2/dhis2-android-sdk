@@ -30,37 +30,17 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indic
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionParserUtils
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
-import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
-@Suppress("LongParameterList")
 internal class IndicatorSQLEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-    private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val programStore: ProgramStoreInterface,
-    private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
-    private val dataElementEvaluator: DataElementSQLEvaluator,
-    private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
-    private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
-    private val constantStore: IdentifiableObjectStore<Constant>,
+    private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
     private val databaseAdapter: DatabaseAdapter
 ) {
 
@@ -74,7 +54,7 @@ internal class IndicatorSQLEngine @Inject constructor(
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
             val valueStr = c.getString(0)
-            IndicatorParserUtils.roundValue(valueStr, indicator.decimals())
+            AnalyticExpressionParserUtils.roundValue(valueStr, indicator.decimals())
         }
     }
 
@@ -83,54 +63,21 @@ internal class IndicatorSQLEngine @Inject constructor(
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>
     ): String {
-        val indicatorContext = IndicatorContext(
-            dataElementStore = dataElementStore,
-            trackedEntityAttributeStore = trackedEntityAttributeStore,
-            categoryOptionComboStore = categoryOptionComboStore,
-            programStore = programStore,
-            programIndicatorRepository = programIndicatorRepository,
-            dataElementEvaluator = dataElementEvaluator,
-            programIndicatorEvaluator = programIndicatorEvaluator,
-            eventDataItemEvaluator = eventDataItemEvaluator,
-            evaluationItem = contextEvaluationItem,
-            contextMetadata = contextMetadata
+        val engine = analyticExpressionEngineFactory.getEngine(
+            method = ParserUtils.ITEM_GET_SQL,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = contextMetadata,
+            days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata)
         )
 
         val indicatorType = indicator.indicatorType()?.let {
             indicatorTypeStore.selectByUid(it.uid())
         }
 
-        val visitor = newVisitor(indicatorContext)
-
-        IndicatorParserUtils.getDays(contextEvaluationItem, contextMetadata)?.let {
-            visitor.days = it.toDouble()
-        }
-
-        val numerator = evaluate(indicator.numerator()!!, visitor)
-        val denominator = evaluate(indicator.denominator()!!, visitor)
+        val numerator = engine.evaluate(indicator.numerator()!!)
+        val denominator = engine.evaluate(indicator.denominator()!!)
         val factor = indicatorType?.factor() ?: 1
 
-        return "SELECT $factor * ($numerator) / ($denominator)"
-    }
-
-    private fun evaluate(expression: String, visitor: CommonExpressionVisitor): Any? {
-        return CommonParser.visit(expression, visitor)
-    }
-
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantStore.selectAll()
-            return mapByUid(constants)
-        }
-
-    private fun newVisitor(indicatorContext: IndicatorContext): CommonExpressionVisitor {
-        return CommonExpressionVisitor(
-            CommonExpressionVisitorScope.AnalyticsIndicator(
-                itemMap = IndicatorParserUtils.INDICATOR_EXPRESSION_ITEMS,
-                itemMethod = ParserUtils.ITEM_GET_SQL,
-                constantMap = constantMap,
-                indicatorContext = indicatorContext
-            )
-        )
+        return "SELECT COALESCE($factor * ($numerator) / ($denominator), '0.0')"
     }
 }

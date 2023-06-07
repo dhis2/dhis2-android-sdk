@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -57,6 +58,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val indicatorStore: IdentifiableObjectStore<Indicator>,
+    private val expressionDimensionItemStore: IdentifiableObjectStore<ExpressionDimensionItem>,
     private val legendStore: IdentifiableObjectStore<Legend>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
@@ -165,6 +167,13 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         ?: throw AnalyticsException.InvalidProgram(item.id)
 
                     MetadataItem.EventAttributeItem(attribute, program)
+                }
+
+                is DimensionItem.DataItem.ExpressionDimensionItem -> {
+                    val expressionItem = expressionDimensionItemStore.selectByUid(item.uid)
+                        ?: throw AnalyticsException.InvalidExpressionDimensionItem(item.uid)
+
+                    MetadataItem.ExpressionDimensionItemItem(expressionItem)
                 }
             }
         )

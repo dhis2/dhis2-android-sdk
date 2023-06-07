@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.datastore.internal.DataStoreModuleWiper
 import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleWiper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceModuleWiper
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleWiper
@@ -74,6 +75,7 @@ internal class D2ModuleWipers @Inject constructor(
     dataValue: DataValueModuleWiper,
     enrollment: EnrollmentModuleWiper,
     event: EventModuleWiper,
+    expressionDimensionItem: ExpressionDimensionItemModuleWiper,
     fileResource: FileResourceModuleWiper,
     importModule: ImportModuleWiper,
     indicator: IndicatorModuleWiper,
@@ -111,6 +113,7 @@ internal class D2ModuleWipers @Inject constructor(
             dataValue,
             enrollment,
             event,
+            expressionDimensionItem,
             fileResource,
             importModule,
             indicator,

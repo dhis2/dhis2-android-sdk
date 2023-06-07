@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.event.EventModule
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
@@ -147,6 +148,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun eventModule(): EventModule {
         return modules.event
+    }
+
+    fun expressionDimensionItemModule(): ExpressionDimensionItemModule {
+        return modules.expressionDimensionItem
     }
 
     fun fileResourceModule(): FileResourceModule {

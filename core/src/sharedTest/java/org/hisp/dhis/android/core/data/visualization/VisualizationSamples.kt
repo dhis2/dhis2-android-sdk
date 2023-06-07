@@ -79,36 +79,85 @@ internal object VisualizationSamples {
         )
         .displayDensity(DisplayDensity.NORMAL)
         .digitGroupSeparator(DigitGroupSeparator.COMMA)
-        .relativePeriods(hashMapOf(RelativePeriod.THIS_YEAR to false, RelativePeriod.LAST_12_MONTHS to true))
-        .categoryDimensions(
+        .columns(
             listOf(
-                CategoryDimension.builder()
-                    .category(ObjectWithUid.create("fMZEcRHuamy"))
-                    .categoryOptions(listOf(ObjectWithUid.create("qkPbeWaFsnU"), ObjectWithUid.create("wbrDrL2aYEc")))
-                    .build()
-            )
-        )
-        .filterDimensions(listOf("ou"))
-        .rowDimensions(listOf("pe"))
-        .columnDimensions(listOf("dx", "fMZEcRHuamy", "fkAkrdC7eJF"))
-        .dataDimensionItems(
-            listOf(
-                DataDimensionItem.builder()
-                    .dataDimensionItemType(DataDimensionItemType.INDICATOR)
-                    .indicator(ObjectWithUid.create("Uvn6LCg7dVU"))
+                VisualizationDimension.builder()
+                    .id("dx")
+                    .items(
+                        listOf(
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("Uvn6LCg7dVU")
+                                .dimensionItemType(DataDimensionItemType.INDICATOR.name)
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("cYeuwXTCPkU")
+                                .dimensionItemType(DataDimensionItemType.DATA_ELEMENT.name)
+                                .build()
+                        )
+                    )
                     .build(),
-                DataDimensionItem.builder()
-                    .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT)
-                    .dataElement(ObjectWithUid.create("cYeuwXTCPkU"))
+                VisualizationDimension.builder()
+                    .id("fMZEcRHuamy")
+                    .items(
+                        listOf(
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("qkPbeWaFsnU")
+                                .dimensionItemType("CATEGORY_OPTION")
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("wbrDrL2aYEc")
+                                .dimensionItemType("CATEGORY_OPTION")
+                                .build()
+                        )
+                    )
                     .build()
             )
         )
-        .organisationUnitLevels(listOf(3))
-        .userOrganisationUnit(false)
-        .userOrganisationUnitChildren(false)
-        .userOrganisationUnitGrandChildren(false)
-        .organisationUnits(listOf(ObjectWithUid.create("YuQRtpLP10I"), ObjectWithUid.create("vWbkYPRmKyS")))
-        .periods(listOf(ObjectWithUid.create("202102"), ObjectWithUid.create("202103"), ObjectWithUid.create("2021S2")))
+        .rows(
+            listOf(
+                VisualizationDimension.builder()
+                    .id("pe")
+                    .items(
+                        listOf(
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("202102")
+                                .dimensionItemType("PERIOD")
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("202103")
+                                .dimensionItemType("PERIOD")
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("2021S2")
+                                .dimensionItemType("PERIOD")
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem(RelativePeriod.LAST_12_MONTHS.name)
+                                .dimensionItemType("PERIOD")
+                                .build()
+                        )
+                    )
+                    .build()
+            )
+        )
+        .filters(
+            listOf(
+                VisualizationDimension.builder()
+                    .id("ou")
+                    .items(
+                        listOf(
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("YuQRtpLP10I")
+                                .dimensionItemType("ORGANISATION_UNIT")
+                                .build(),
+                            VisualizationDimensionItem.builder()
+                                .dimensionItem("USER_ORGUNIT")
+                                .build()
+                        )
+                    )
+                    .build()
+            )
+        )
         .aggregationType(AggregationType.SUM)
         .build()
 }

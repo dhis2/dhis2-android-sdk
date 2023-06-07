@@ -92,13 +92,15 @@ public class Dhis2MockServer {
     private static final String CATEGORIES_JSON = "category/categories.json";
     private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
     private static final String CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json";
-    private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
+    private static final String VISUALIZATIONS_1_JSON = "visualization/visualizations_1.json";
+    private static final String VISUALIZATIONS_2_JSON = "visualization/visualizations_2.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user38.json";
     private static final String EVENTS_JSON = "event/events.json";
     private static final String NEW_EVENTS_JSON = "event/new_tracker_importer_events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
+    private static final String EXPRESSION_DIMENSION_ITEMS = "expressiondimensionitem/expression_dimension_items.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String NEW_TRACKED_ENTITY_INSTANCES_JSON =
             "trackedentity/new_tracker_importer_tracked_entities.json";
@@ -259,8 +261,10 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_OPTIONS_JSON);
                 } else if (path.startsWith("/api/categoryOptions/orgUnits?")) {
                     return createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
-                } else if (path.startsWith("/api/visualizations?")) {
-                    return createMockResponse(VISUALIZATIONS_JSON);
+                } else if (path.startsWith("/api/visualizations/PYBH8ZaAQnC?")) {
+                    return createMockResponse(VISUALIZATIONS_1_JSON);
+                } else if (path.startsWith("/api/visualizations/FAFa11yFeFe?")) {
+                    return createMockResponse(VISUALIZATIONS_2_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -283,6 +287,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
                 } else if (path.startsWith("/api/legendSets?")) {
                     return createMockResponse(LEGEND_SETS_JSON);
+                } else if (path.startsWith("/api/expressionDimensionItems?")) {
+                    return createMockResponse(EXPRESSION_DIMENSION_ITEMS);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
@@ -356,12 +362,14 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORIES_JSON);
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
-        enqueueMockResponse(VISUALIZATIONS_JSON);
+        enqueueMockResponse(VISUALIZATIONS_1_JSON);
+        enqueueMockResponse(VISUALIZATIONS_2_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
         enqueueMockResponse(LEGEND_SETS_JSON);
+        enqueueMockResponse(EXPRESSION_DIMENSION_ITEMS);
     }
 
     private MockResponse createMockResponse(String fileName) {

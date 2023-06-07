@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -452,26 +451,6 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         )
 
         assertThat(dataElementEvaluator.evaluate(overrideEvaluationItem, metadata)).isEqualTo("5.5")
-    }
-
-    private fun createDataValue(
-        value: String,
-        dataElementUid: String = dataElement1.uid(),
-        orgunitUid: String = orgunitParent.uid(),
-        periodId: String = period201912.periodId()!!,
-        categoryOptionComboUid: String = categoryOptionCombo.uid(),
-        attributeOptionComboUid: String = attributeOptionCombo.uid()
-    ) {
-        val dataValue = DataValue.builder()
-            .value(value)
-            .dataElement(dataElementUid)
-            .period(periodId)
-            .organisationUnit(orgunitUid)
-            .categoryOptionCombo(categoryOptionComboUid)
-            .attributeOptionCombo(attributeOptionComboUid)
-            .build()
-
-        dataValueStore.insert(dataValue)
     }
 
     private fun evaluateAggregation(

@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
@@ -90,10 +92,11 @@ internal class MetadataCall @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
+    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
 ) {
 
     companion object {
-        const val CALLS_COUNT = 11
+        const val CALLS_COUNT = 12
     }
 
     fun download(): Observable<D2Progress> {
@@ -161,6 +164,9 @@ internal class MetadataCall @Inject constructor(
                     },
                     legendSetModuleDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(LegendSet::class.java, false)
+                    },
+                    expressionDimensionItemModuleDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(ExpressionDimensionItem::class.java, false)
                     }
                 ).toObservable()
             )

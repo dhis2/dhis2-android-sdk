@@ -174,7 +174,7 @@ public class SmsRepositoryImpl implements SmsRepository {
                     context,
                     uniqueIntentId,
                     new Intent(sendSmsAction).putExtra(SMS_KEY, smsKey),
-                    PendingIntent.FLAG_ONE_SHOT);
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
             sentMessagePIs.add(sentPI);
             uniqueIntentId++;
         }

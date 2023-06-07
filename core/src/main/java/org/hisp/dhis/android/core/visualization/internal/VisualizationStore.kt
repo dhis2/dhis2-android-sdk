@@ -29,10 +29,6 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -71,21 +67,11 @@ internal object VisualizationStore {
             w.bind(29, o.skipRounding())
             w.bind(30, o.displayDensity())
             w.bind(31, o.digitGroupSeparator())
-            w.bind(32, RelativePeriodsColumnAdapter.serialize(o.relativePeriods()))
-            w.bind(33, StringListColumnAdapter.serialize(o.filterDimensions()))
-            w.bind(34, StringListColumnAdapter.serialize(o.rowDimensions()))
-            w.bind(35, StringListColumnAdapter.serialize(o.columnDimensions()))
-            w.bind(36, IntegerListColumnAdapter.serialize(o.organisationUnitLevels()))
-            w.bind(37, o.userOrganisationUnit())
-            w.bind(38, o.userOrganisationUnitChildren())
-            w.bind(39, o.userOrganisationUnitGrandChildren())
-            w.bind(40, ObjectWithUidListColumnAdapter.serialize(o.organisationUnits()))
-            w.bind(41, ObjectWithUidListColumnAdapter.serialize(o.periods()))
-            w.bind(42, o.legend()?.showKey())
-            w.bind(43, o.legend()?.style())
-            w.bind(44, UidsHelper.getUidOrNull(o.legend()?.set()))
-            w.bind(45, o.legend()?.strategy())
-            w.bind(46, o.aggregationType())
+            w.bind(32, o.legend()?.showKey())
+            w.bind(33, o.legend()?.style())
+            w.bind(34, UidsHelper.getUidOrNull(o.legend()?.set()))
+            w.bind(35, o.legend()?.strategy())
+            w.bind(36, o.aggregationType())
         }
     }
 

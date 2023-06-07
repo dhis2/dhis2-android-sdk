@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemPackageDIModule
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule
@@ -123,6 +124,7 @@ import retrofit2.Retrofit
         DataValuePackageDIModule::class,
         EnrollmentPackageDIModule::class,
         EventPackageDIModule::class,
+        ExpressionDimensionItemPackageDIModule::class,
         FileResourcePackageDIModule::class,
         ImportPackageDIModule::class,
         IndicatorPackageDIModule::class,

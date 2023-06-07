@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
@@ -40,8 +39,7 @@ class VisualizationModuleWiper @Inject internal constructor(private val tableWip
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             VisualizationTableInfo.TABLE_INFO,
-            VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
-            DataDimensionItemTableInfo.TABLE_INFO
+            VisualizationDimensionItemTableInfo.TABLE_INFO,
         )
     }
 

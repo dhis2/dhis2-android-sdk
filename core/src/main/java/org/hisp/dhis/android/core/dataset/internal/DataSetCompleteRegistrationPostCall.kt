@@ -59,7 +59,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
     private val versionManager: DHISVersionManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor
 ) {
-    suspend fun uploadDataSetCompleteRegistrations(
+    fun uploadDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
     ): Flow<D2Progress> {
         if (dataSetCompleteRegistrations.isEmpty()) {
@@ -76,7 +76,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
     }
 
     @Throws(D2Error::class)
-    private suspend fun uploadInternal(
+    private fun uploadInternal(
         progressManager: D2ProgressManager,
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>

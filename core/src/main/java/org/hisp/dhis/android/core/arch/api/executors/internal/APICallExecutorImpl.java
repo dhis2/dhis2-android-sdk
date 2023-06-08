@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
@@ -64,40 +63,34 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     @Override
     public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, null, false).items();
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null).items();
     }
 
     @Override
     public <P> P executeObjectCall(Call<P> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, null, false);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null);
     }
 
     @Override
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
                                                          Class<P> errorClass) throws D2Error {
-        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null, false);
+        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
     }
 
     @Override
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher, false);
-    }
-
-    @Override
-    public Unit executeObjectCallWithEmptyResponse(Call<Unit> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, null, true);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher);
     }
 
     private <P> P executeObjectCallInternal(Call<P> call,
                                             List<Integer> acceptedErrorCodes,
                                             Class<P> errorClass,
-                                            APICallErrorCatcher errorCatcher,
-                                            boolean emptyBodyExpected) throws D2Error {
+                                            APICallErrorCatcher errorCatcher) throws D2Error {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                return processSuccessfulResponse(errorBuilder(call), response, emptyBodyExpected);
+                return processSuccessfulResponse(errorBuilder(call), response);
             } else {
                 String errorBody = errorMapper.getErrorBody(response);
                 if (userAccountDisabledErrorCatcher.isUserAccountLocked(response, errorBody)) {
@@ -131,11 +124,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
         }
     }
 
-    private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response,
-                                            boolean emptyBodyExpected) throws D2Error {
-        if (emptyBodyExpected) {
-            return null;
-        } else if (response.body() == null) {
+    private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response) throws D2Error {
+        if (response.body() == null) {
             throw storeAndReturn(errorMapper.responseException(errorBuilder, response, null));
         } else {
             return response.body();

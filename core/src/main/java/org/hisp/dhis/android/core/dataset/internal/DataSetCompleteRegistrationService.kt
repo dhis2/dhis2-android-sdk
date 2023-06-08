@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.Call
 import retrofit2.http.*
 
 @Suppress("LongParameterList")
@@ -51,22 +50,22 @@ internal interface DataSetCompleteRegistrationService {
     ): DataSetCompleteRegistrationPayload
 
     @POST("completeDataSetRegistrations")
-    fun postDataSetCompleteRegistrations(
+    suspend fun postDataSetCompleteRegistrations(
         @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
-    ): Call<DataValueImportSummary>
+    ): DataValueImportSummary
 
     @POST("completeDataSetRegistrations")
-    fun postDataSetCompleteRegistrationsWebResponse(
+    suspend fun postDataSetCompleteRegistrationsWebResponse(
         @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
-    ): Call<DataValueImportSummaryWebResponse>
+    ): DataValueImportSummaryWebResponse
 
     @DELETE("completeDataSetRegistrations")
-    fun deleteDataSetCompleteRegistration(
+    suspend fun deleteDataSetCompleteRegistration(
         @Query("ds") dataSet: String,
         @Query("pe") periodId: String,
         @Query("ou") orgUnit: String,
         @Query("cc") categoryComboUid: String,
         @Query("cp") categoryOptionUids: String,
         @Query("multiOu") multiOrganisationUnit: Boolean
-    ): Call<Unit>
+    ): Unit
 }

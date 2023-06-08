@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
+import java.text.SimpleDateFormat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -37,7 +38,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.text.SimpleDateFormat
 
 @RunWith(D2JunitRunner::class)
 class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
@@ -50,7 +50,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
 
     @Test
     fun post_dataset_complete_registration_success() {
-        //Given a DatasetComplete registration to post
+        // Given a DatasetComplete registration to post
         dhis2MockServer.enqueueMockResponse(200, "imports/data_value_import_summary_web_response.json")
         val dataSetCompleteRegistration = provideDataSetCompleteRegistration()
         d2.dataSetModule().dataSetCompleteRegistrations().value(
@@ -71,10 +71,10 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
         assertEquals(toPostRepository.blockingGet().size, 1)
         assertEquals(syncedRepository.blockingGet().size, 0)
 
-        //When the object is uploaded
+        // When the object is uploaded
         d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload()
 
-        //Then the status is synced
+        // Then the status is synced
         assertEquals(toPostRepository.blockingGet().size, 0)
         assertEquals(syncedRepository.blockingGet().size, 1)
     }
@@ -116,7 +116,8 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
             period = dataSetCompleteRegistration.period(),
             organisationUnit = dataSetCompleteRegistration.organisationUnit(),
             dataSet = dataSetCompleteRegistration.dataSet(),
-            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo())
+            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo()
+        )
         dObject.blockingDelete()
         assertEquals(toUpdateRepository.blockingGet().size, 1)
 

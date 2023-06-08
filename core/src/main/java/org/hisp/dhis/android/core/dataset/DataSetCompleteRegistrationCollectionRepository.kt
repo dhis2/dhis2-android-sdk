@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
@@ -48,9 +49,9 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludi
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
-import javax.inject.Inject
 
 @Reusable
+@Suppress("SpreadOperator", "TooManyFunctions")
 class DataSetCompleteRegistrationCollectionRepository @Inject internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataSetCompleteRegistration>>,
@@ -59,14 +60,17 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     private val postCall: DataSetCompleteRegistrationPostCall,
     private val credentialsRepository: UserCredentialsObjectRepository
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(
-    dataSetCompleteRegistrationStore, childrenAppenders, scope, FilterConnectorFactory(
+    dataSetCompleteRegistrationStore, childrenAppenders, scope,
+    FilterConnectorFactory(
         scope
     ) { s: RepositoryScope ->
         DataSetCompleteRegistrationCollectionRepository(
             dataSetCompleteRegistrationStore, childrenAppenders,
             s, handler, postCall, credentialsRepository
         )
-    }), ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
+    }
+),
+    ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
     fun value(
         period: String,
         organisationUnit: String,

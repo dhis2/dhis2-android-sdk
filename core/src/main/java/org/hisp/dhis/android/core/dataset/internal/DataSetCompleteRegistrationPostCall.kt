@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import java.net.HttpURLConnection
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
@@ -47,8 +49,6 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import java.net.HttpURLConnection
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationPostCall @Inject constructor(
@@ -126,7 +126,9 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
         emit(progressManager.increaseProgress(DataSetCompleteRegistration::class.java, true))
     }
 
-    private suspend fun postCompleteRegistrations(payload: DataSetCompleteRegistrationPayload): Result<DataValueImportSummary, D2Error> {
+    private suspend fun postCompleteRegistrations(
+        payload: DataSetCompleteRegistrationPayload
+    ): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),

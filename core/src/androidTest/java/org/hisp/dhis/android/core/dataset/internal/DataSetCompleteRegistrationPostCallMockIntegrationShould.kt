@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
-import java.text.SimpleDateFormat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.SIMPLE_DATE_FORMAT
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -131,9 +131,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
         .dataSet("BfMAe6Itzgt")
         .attributeOptionCombo("bRowv6yZOF2")
         .organisationUnit("DiszpKrYNg8")
-        .date(dateFormat.parse("2010-03-02"))
+        .date(SIMPLE_DATE_FORMAT.parse("2010-03-02"))
         .storedBy("android")
         .build()
-
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 }

@@ -111,7 +111,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
         assertEquals(toPostRepository.blockingGet().size, 0)
         assertEquals(syncedRepository.blockingGet().size, 1)
 
-        dhis2MockServer.enqueueMockResponse(200)
+        dhis2MockServer.enqueueMockResponse(204)
         dObject = d2.dataSetModule().dataSetCompleteRegistrations().value(
             period = dataSetCompleteRegistration.period(),
             organisationUnit = dataSetCompleteRegistration.organisationUnit(),

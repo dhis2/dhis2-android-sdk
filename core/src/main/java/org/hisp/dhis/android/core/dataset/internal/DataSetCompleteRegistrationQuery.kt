@@ -25,36 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-@Suppress("LongParameterList")
-internal interface DataValueService {
-
-    @GET("dataValueSets")
-    suspend fun getDataValues(
-        @Query("fields") @Which fields: Fields<DataValue>,
-        @Query("lastUpdated") lastUpdated: String?,
-        @Query("dataSet") dataSetUids: String,
-        @Query("period") periodIds: String,
-        @Query("orgUnit") orgUnitUids: String,
-        @Query("children") children: Boolean,
-        @Query("paging") paging: Boolean,
-        @Query("includeDeleted") includeDeleted: Boolean?
-    ): DataValueSet
-
-    @POST("dataValueSets")
-    suspend fun postDataValues(@Body dataValueSet: DataValueSet): DataValueImportSummary
-
-    @POST("dataValueSets")
-    suspend fun postDataValuesWebResponse(@Body dataValueSet: DataValueSet): DataValueImportSummaryWebResponse
-}
+internal data class DataSetCompleteRegistrationQuery(
+    val dataSetUids: Collection<String>,
+    val periodIds: Collection<String>,
+    val rootOrgUnitUids: Collection<String>,
+    val lastUpdatedStr: String?,
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false
+)

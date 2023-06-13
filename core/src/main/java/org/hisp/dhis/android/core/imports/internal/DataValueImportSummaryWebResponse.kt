@@ -25,20 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+data class DataValueImportSummaryWebResponse(
+    val response: DataValueImportSummary,
+    val httpStatus: String,
+    val httpStatusCode: Int,
+    val status: String,
+    val message: String
+) : WebResponse() {
+    override fun httpStatus() = httpStatus
 
-import com.google.auto.value.AutoValue;
+    override fun httpStatusCode() = httpStatusCode
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
+    override fun status() = status
 
-@AutoValue
-public abstract class DataValueQuery extends BaseQuery {
-    public abstract AggregatedDataCallBundle bundle();
-
-    public static DataValueQuery create(AggregatedDataCallBundle bundle) {
-        return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                bundle);
-    }
+    override fun message() = message
 }

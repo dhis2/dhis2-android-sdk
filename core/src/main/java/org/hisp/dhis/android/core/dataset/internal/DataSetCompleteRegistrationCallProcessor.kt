@@ -55,9 +55,9 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
      linked to a particular query before storing the returned values. Only records in "SYNCED" state are removed.
      */
     private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
-        for (rootOrgUnitUid in query.rootOrgUnitUids()) {
+        for (rootOrgUnitUid in query.rootOrgUnitUids) {
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
-                query.dataSetUids(), query.periodIds(), rootOrgUnitUid
+                query.dataSetUids, query.periodIds, rootOrgUnitUid
             )
         }
     }

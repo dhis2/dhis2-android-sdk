@@ -25,35 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.dataset.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import androidx.annotation.Nullable;
+@RunWith(D2JunitRunner::class)
+class AggregatedDataCallEnqueableMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
-import com.google.auto.value.AutoValue;
+    @Test
+    fun should_rollback_full_bundles_on_error() {
+        val monthlyDataValues = "datavalue/data_values_monthly.json"
+        val weeklyDataValues = "datavalue/data_values_weekly.json"
+        val weeklyCompleteRegistrations = "dataset/data_set_complete_registrations.json"
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+        dhis2MockServer.enqueueSystemInfoResponse()
 
-import java.util.Collection;
+        dhis2MockServer.enqueueMockResponse(monthlyDataValues)
+        dhis2MockServer.enqueueMockResponse(403)
 
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+        dhis2MockServer.enqueueMockResponse(weeklyDataValues)
+        dhis2MockServer.enqueueMockResponse(weeklyCompleteRegistrations)
 
-    public abstract Collection<String> dataSetUids();
+        d2.aggregatedModule().data().blockingDownload()
 
-    public abstract Collection<String> periodIds();
+        val monthlyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Monthly)
+            .blockingGet()
+        assertThat(monthlyValues).isEmpty()
 
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+        val weeklyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Weekly)
+            .blockingGet()
+        assertThat(weeklyValues).isNotEmpty()
     }
 }

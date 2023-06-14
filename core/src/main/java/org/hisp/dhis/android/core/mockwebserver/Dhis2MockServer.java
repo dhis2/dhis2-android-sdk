@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.mockwebserver;
 
+import static okhttp3.internal.Util.UTC;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -45,8 +47,6 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-
-import static okhttp3.internal.Util.UTC;
 
 @SuppressWarnings("PMD")
 public class Dhis2MockServer {
@@ -117,23 +117,23 @@ public class Dhis2MockServer {
     private static final String SMS_METADATA = "sms/metadata_ids.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
-    private MockWebServer server;
-    private IFileReader fileReader;
-    private Dhis2Dispatcher dhis2Dispatcher;
+    private final MockWebServer server;
+    private final IFileReader fileReader;
+    private final Dhis2Dispatcher dhis2Dispatcher;
 
-    public Dhis2MockServer(IFileReader fileReader, int port) throws IOException {
+    public Dhis2MockServer(IFileReader fileReader, int port) {
         this.fileReader = fileReader;
         this.server = new MockWebServer();
         dhis2Dispatcher = new Dhis2Dispatcher(fileReader, new ResponseController());
         start(port);
     }
 
-    public Dhis2MockServer(int port) throws IOException {
+    public Dhis2MockServer(int port) {
         this(new ResourcesFileReader(), port);
         dhis2Dispatcher.configInternalResponseController();
     }
 
-    private void start(int port) throws IOException {
+    private void start(int port) {
         try {
             this.server.start(port);
         } catch (IOException e) {
@@ -141,7 +141,7 @@ public class Dhis2MockServer {
         }
     }
 
-    public void shutdown() throws IOException {
+    public void shutdown() {
         try {
             this.server.shutdown();
         } catch (IOException e) {
@@ -155,6 +155,12 @@ public class Dhis2MockServer {
 
     public void enqueueMockResponse(int code) {
         enqueueMockResponseText(code, "{}");
+    }
+
+    public void enqueueMockResponseWithEmptyBody(int code) {
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setResponseCode(code);
+        server.enqueue(mockResponse);
     }
 
     public void enqueueMockResponseText(int code, String response) {

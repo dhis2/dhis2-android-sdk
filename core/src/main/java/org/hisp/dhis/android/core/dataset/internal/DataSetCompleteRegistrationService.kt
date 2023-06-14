@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import retrofit2.Response
 import retrofit2.http.*
 
 @Suppress("LongParameterList")
@@ -67,5 +68,5 @@ internal interface DataSetCompleteRegistrationService {
         @Query("cc") categoryComboUid: String,
         @Query("cp") categoryOptionUids: String,
         @Query("multiOu") multiOrganisationUnit: Boolean
-    ): Unit
+    ): Response<Unit>
 }

@@ -98,26 +98,33 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
         val deletedDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         val withErrorDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         for (dataSetCompleteRegistration in toDeleteDataSetCompleteRegistrations) {
-            try {
-                val coc = categoryOptionComboCollectionRepository
-                    .withCategoryOptions()
-                    .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                    .blockingGet()
-                markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
-                coroutineAPICallExecutor.wrap {
-                    dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
-                        dataSetCompleteRegistration.dataSet(),
-                        dataSetCompleteRegistration.period(),
-                        dataSetCompleteRegistration.organisationUnit(),
-                        coc.categoryCombo()!!.uid(),
-                        CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                        false
-                    )
+            val coc = categoryOptionComboCollectionRepository
+                .withCategoryOptions()
+                .uid(dataSetCompleteRegistration.attributeOptionCombo())
+                .blockingGet()
+            markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
+            coroutineAPICallExecutor.wrap {
+                dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
+                    dataSetCompleteRegistration.dataSet(),
+                    dataSetCompleteRegistration.period(),
+                    dataSetCompleteRegistration.organisationUnit(),
+                    coc.categoryCombo()!!.uid(),
+                    CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
+                    false
+                )
+            }.fold(
+                onSuccess = { result ->
+                    if (result.isSuccessful) {
+                        deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    } else {
+                        withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    }
+                },
+
+                onFailure = {
+                    withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
                 }
-                deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
-            } catch (d2Error: D2Error) {
-                withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
-            }
+            )
         }
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             payload, dataValueImportSummary, deletedDataSetCompleteRegistrations,

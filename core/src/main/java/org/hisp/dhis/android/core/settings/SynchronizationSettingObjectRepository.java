@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingCall;
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore;
 
 import java.util.List;
 
@@ -43,12 +43,12 @@ public class SynchronizationSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>
         implements ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
 
-    private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
+    private final SynchronizationSettingStore syncStore;
     private final DataSetSettingsObjectRepository dataSetSettingsRepository;
     private final ProgramSettingsObjectRepository programSettingsRepository;
 
     @Inject
-    SynchronizationSettingObjectRepository(ObjectWithoutUidStore<SynchronizationSettings> syncStore,
+    SynchronizationSettingObjectRepository(SynchronizationSettingStore syncStore,
                                            DataSetSettingsObjectRepository dataSetSettingsRepository,
                                            ProgramSettingsObjectRepository programSettingsRepository,
                                            SynchronizationSettingCall synchronizationSettingCall) {

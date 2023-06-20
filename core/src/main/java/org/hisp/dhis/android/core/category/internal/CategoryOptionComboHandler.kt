@@ -27,20 +27,15 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
-@Reusable
-internal class CategoryOptionComboHandler @Inject constructor(
+internal class CategoryOptionComboHandler constructor(
     store: CategoryOptionComboStore,
-    private val categoryOptionComboCategoryOptionLinkHandler:
-        LinkHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
+    private val categoryOptionComboCategoryOptionLinkHandler: CategoryOptionComboCategoryOptionHandler
 ) : IdentifiableHandlerImpl<CategoryOptionCombo>(store) {
     override fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
         categoryOptionComboCategoryOptionLinkHandler.handleMany(

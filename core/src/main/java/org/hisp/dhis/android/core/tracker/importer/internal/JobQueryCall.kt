@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
@@ -49,7 +48,7 @@ internal const val ATTEMPTS_INTERVAL = 2L
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
+    private val trackerJobObjectStore: TrackerJobObjectStore,
     private val handler: JobReportHandler,
     private val fileResourceHandler: JobReportFileResourceHandler,
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager

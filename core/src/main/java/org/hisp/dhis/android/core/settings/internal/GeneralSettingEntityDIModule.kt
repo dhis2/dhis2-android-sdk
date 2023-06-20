@@ -31,22 +31,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.GeneralSettings
 
 @Module
 internal class GeneralSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun generalSettingStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {
-        return GeneralSettingStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun dataSetSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>): Handler<GeneralSettings> {
-        return GeneralSettingHandler(store)
+    fun generalSettingStore(databaseAdapter: DatabaseAdapter): GeneralSettingStore {
+        return GeneralSettingStoreImpl(databaseAdapter)
     }
 }

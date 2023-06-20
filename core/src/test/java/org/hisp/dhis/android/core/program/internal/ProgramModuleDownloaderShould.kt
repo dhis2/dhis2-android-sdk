@@ -36,13 +36,12 @@ import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -75,7 +74,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     private val optionSetCall: UidsCall<OptionSet> = mock()
     private val optionCall: UidsCall<Option> = mock()
     private val optionGroupCall: UidsCall<OptionGroup> = mock()
-    private val organisationUnitProgramLinkLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
+    private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
 
     // object to test
     private lateinit var programModuleDownloader: ProgramModuleDownloader

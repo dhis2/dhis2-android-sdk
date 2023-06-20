@@ -32,12 +32,11 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 
 @Reusable
 internal class LatestAppVersionCall @Inject constructor(
-    private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
+    private val latestAppVersionHandler: LatestAppVersionHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor
 ) : BaseSettingCall<LatestAppVersion>() {

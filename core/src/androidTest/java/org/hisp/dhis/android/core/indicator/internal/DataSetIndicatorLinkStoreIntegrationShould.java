@@ -41,7 +41,7 @@ public class DataSetIndicatorLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataSetIndicatorLink> {
 
     public DataSetIndicatorLinkStoreIntegrationShould() {
-        super(DataSetIndicatorLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(DataSetIndicatorLinkStoreImpl.create(TestDatabaseAdapterFactory.get()),
                 DataSetIndicatorLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

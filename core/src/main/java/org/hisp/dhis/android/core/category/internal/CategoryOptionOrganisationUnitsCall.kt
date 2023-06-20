@@ -31,7 +31,6 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
-    private val handler: LinkHandler<CategoryOptionRestriction, CategoryOptionOrganisationUnitLink>,
+    private val handler: CategoryOptionOrganisationUnitLinkHandler,
     private val service: CategoryOptionService,
     private val dhisVersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader

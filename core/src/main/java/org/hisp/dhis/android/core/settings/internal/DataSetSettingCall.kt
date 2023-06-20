@@ -31,13 +31,11 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 
 @Reusable
 internal class DataSetSettingCall @Inject constructor(
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
+    private val dataSetSettingHandler: DataSetSettingHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager

@@ -53,7 +53,7 @@ internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender priva
             return ProgramStageWorkingListAttributeValueFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    ProgramStageWorkingListAttributeValueFilterStore.CHILD_PROJECTION
+                    ProgramStageWorkingListAttributeValueFilterStoreImpl.CHILD_PROJECTION
                 ) { cursor: Cursor -> ProgramStageWorkingListAttributeValueFilter.create(cursor) }
             )
         }

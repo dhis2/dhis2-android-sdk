@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.Assert.assertEquals
@@ -45,7 +45,7 @@ class CoroutineAPICallExecutorShould {
 
     private val errorMapper: APIErrorMapper = mock()
     private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher = mock()
-    private val errorStore: ObjectStore<D2Error> = mock()
+    private val errorStore: D2ErrorStore = mock()
     private val databaseAdapter: DatabaseAdapter = mock()
     private val foreignKeyCleaner: ForeignKeyCleaner = mock()
 

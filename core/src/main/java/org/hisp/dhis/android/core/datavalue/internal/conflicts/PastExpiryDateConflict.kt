@@ -49,12 +49,14 @@ internal class PastExpiryDateConflict(
         val period = conflict.`object`()
         val dataSetUid = regex.find(conflict.value())?.groupValues?.get(2)
         dataValues.forEach { dataValue ->
-            if (dataValue.period() == period && dataValueStore.existsInDataSet(dataValue, dataSetUid)) {
+            if (dataValue.period() == period &&
+                dataSetUid?.let { dataValueStore.existsInDataSet(dataValue, it) } == true
+            ) {
                 foundDataValuesConflicts.add(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid!!)
+                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid)
                     ).build()
                 )
             }

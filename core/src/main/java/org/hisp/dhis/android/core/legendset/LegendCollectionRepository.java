@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
@@ -35,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns;
+import org.hisp.dhis.android.core.legendset.internal.LegendStore;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class LegendCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Legend, LegendCollectionRepository> {
 
     @Inject
-    LegendCollectionRepository(final IdentifiableObjectStore<Legend> store,
+    LegendCollectionRepository(final LegendStore store,
                                final Map<String, ChildrenAppender<Legend>> childrenAppenders,
                                final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

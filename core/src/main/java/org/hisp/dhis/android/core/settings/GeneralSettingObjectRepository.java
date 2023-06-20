@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingStore;
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore;
 
 import java.util.List;
 
@@ -43,12 +44,12 @@ public class GeneralSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
         implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
 
-    private final ObjectWithoutUidStore<GeneralSettings> store;
-    private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
+    private final GeneralSettingStore store;
+    private final SynchronizationSettingStore syncStore;
 
     @Inject
-    GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
-                                   ObjectWithoutUidStore<SynchronizationSettings> syncStore,
+    GeneralSettingObjectRepository(GeneralSettingStore store,
+                                   SynchronizationSettingStore syncStore,
                                    GeneralSettingCall generalSettingCall) {
         super(generalSettingCall);
         this.store = store;

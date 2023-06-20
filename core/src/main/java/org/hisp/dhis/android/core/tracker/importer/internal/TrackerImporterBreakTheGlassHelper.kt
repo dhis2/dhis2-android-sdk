@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.program.AccessLevel
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
@@ -47,7 +47,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val enrollmentStore: EnrollmentStore,
-    private val programStore: ProgramStoreInterface,
+    private val programStore: ProgramStore,
     private val ownershipManagerImpl: OwnershipManagerImpl
 ) {
 

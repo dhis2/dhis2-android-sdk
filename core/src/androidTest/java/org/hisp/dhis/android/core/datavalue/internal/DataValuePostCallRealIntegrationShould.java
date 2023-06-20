@@ -42,7 +42,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     @Before
     public void setUp() {
         super.setUp();
-        dataValueStore = DataValueStore.create(d2.databaseAdapter());
+        dataValueStore = new DataValueStoreImpl(d2.databaseAdapter());
     }
 
     // commented out since it is a flaky test that works against a real server.

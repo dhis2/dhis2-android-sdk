@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 internal class EventFilterStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<EventFilter>(
-    EventFilterStore.create(TestDatabaseAdapterFactory.get()),
+    EventFilterStoreImpl(TestDatabaseAdapterFactory.get()),
     EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
 ) {
     override fun buildObject(): EventFilter {

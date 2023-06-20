@@ -31,25 +31,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
 @Module
 internal class OrganisationUnitProgramLinkEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<OrganisationUnitProgramLink> {
-        return OrganisationUnitProgramLinkStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): OrganisationUnitProgramLinkStore {
+        return OrganisationUnitProgramLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(store: LinkStore<OrganisationUnitProgramLink>):
-        LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> {
-        return LinkHandlerImpl(store)
+    fun handler(store: OrganisationUnitProgramLinkStore): OrganisationUnitProgramLinkHandler {
+        return OrganisationUnitProgramLinkHandler(store)
     }
 }

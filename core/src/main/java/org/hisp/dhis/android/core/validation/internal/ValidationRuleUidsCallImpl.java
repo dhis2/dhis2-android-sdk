@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.validation.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink;
@@ -48,12 +47,12 @@ import io.reactivex.Single;
 final class ValidationRuleUidsCallImpl implements ValidationRuleUidsCall {
 
     private final ValidationRuleService service;
-    private final LinkHandler<ObjectWithUid, DataSetValidationRuleLink> linkHandler;
+    private final DataSetValidationRuleLinkHandler linkHandler;
     private final APIDownloader apiDownloader;
 
     @Inject
     ValidationRuleUidsCallImpl(ValidationRuleService service,
-                               LinkHandler<ObjectWithUid, DataSetValidationRuleLink> linkHandler,
+                               DataSetValidationRuleLinkHandler linkHandler,
                                APIDownloader apiDownloader) {
         this.service = service;
         this.linkHandler = linkHandler;

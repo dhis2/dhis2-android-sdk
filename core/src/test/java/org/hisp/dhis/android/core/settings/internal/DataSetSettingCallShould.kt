@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +39,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class DataSetSettingCallShould {
-    private val handler: Handler<DataSetSetting> = mock()
+    private val handler: DataSetSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val dataSetSettingSingle: Single<DataSetSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()

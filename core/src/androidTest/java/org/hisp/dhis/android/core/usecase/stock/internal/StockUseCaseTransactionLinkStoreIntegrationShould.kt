@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -41,7 +40,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class StockUseCaseTransactionLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<InternalStockUseCaseTransaction>(
-        create(TestDatabaseAdapterFactory.get()),
+        StockUseCaseTransactionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
         StockUseCaseTransactionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
     ) {
     override fun addMasterUid(): String {

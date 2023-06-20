@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStoreImpl
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -107,7 +107,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         }
 
         private fun storeSomeD2Errors() {
-            val d2ErrorStore = D2ErrorStore.create(databaseAdapter)
+            val d2ErrorStore = D2ErrorStoreImpl(databaseAdapter)
             d2ErrorStore.insert(D2ErrorSamples.get())
             d2ErrorStore.insert(
                 D2Error.builder()
@@ -121,7 +121,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         }
 
         private fun storeSomeConflicts() {
-            val trackerImportConflictStore = TrackerImportConflictStoreImpl.create(databaseAdapter)
+            val trackerImportConflictStore = TrackerImportConflictStoreImpl(databaseAdapter)
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
                     .trackedEntityInstance(null)
@@ -142,7 +142,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .build()
             )
 
-            val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
+            val dataValueConflictStore = DataValueConflictStoreImpl(databaseAdapter)
 
             dataValueConflictStore.insert(DataValueConflictSamples.get())
             dataValueConflictStore.insert(
@@ -166,9 +166,8 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         }
 
         private fun storeSomeKeyValuesInLocalDataStore() {
-            val dataStore = create(
-                databaseAdapter
-            )
+            val dataStore = LocalDataStoreStoreImpl(databaseAdapter)
+
             dataStore.insert(
                 KeyValuePair.builder()
                     .key("key1")

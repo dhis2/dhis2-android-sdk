@@ -41,7 +41,7 @@ public class ReservedValueSettingStoreIntegrationShould extends
         IdentifiableObjectStoreAbstractIntegrationShould<ReservedValueSetting> {
 
     public ReservedValueSettingStoreIntegrationShould() {
-        super(ReservedValueSettingStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ReservedValueSettingStoreImpl(TestDatabaseAdapterFactory.get()),
                 ReservedValueSettingTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

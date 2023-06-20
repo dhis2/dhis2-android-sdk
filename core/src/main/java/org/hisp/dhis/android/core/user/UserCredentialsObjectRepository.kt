@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -37,10 +36,11 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepos
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
+import org.hisp.dhis.android.core.user.internal.UserStore
 
 @Reusable
 class UserCredentialsObjectRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<User>,
+    store: UserStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
     scope: RepositoryScope,
     transformer: TwoWayTransformer<User, UserCredentials>

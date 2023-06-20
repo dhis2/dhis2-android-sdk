@@ -41,7 +41,7 @@ public class AuthenticatedUserStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<AuthenticatedUser> {
 
     public AuthenticatedUserStoreIntegrationShould() {
-        super(AuthenticatedUserStore.create(TestDatabaseAdapterFactory.get()), AuthenticatedUserTableInfo.TABLE_INFO,
+        super(new AuthenticatedUserStoreImpl(TestDatabaseAdapterFactory.get()), AuthenticatedUserTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

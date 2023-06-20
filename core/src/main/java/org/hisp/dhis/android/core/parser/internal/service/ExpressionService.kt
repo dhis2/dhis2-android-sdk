@@ -28,13 +28,12 @@
 package org.hisp.dhis.android.core.parser.internal.service
 
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser.visit
@@ -48,16 +47,16 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_RE
 import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateLiteral
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
-import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.antlr.ParserException
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
 internal class ExpressionService @Inject constructor(
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val dataElementStore: DataElementStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore,
+    private val programStageStore: ProgramStageStore
 ) {
     private val validationRuleExpressionItems: Map<Int, ExpressionItem> = getValidationRuleExpressionItems()
 

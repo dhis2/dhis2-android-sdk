@@ -31,14 +31,13 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
 
 @Reusable
 internal class MetadataIdsStore @Inject constructor(
-    private val smsMetadataIdsStore: ObjectWithoutUidStore<SMSMetadataId>,
+    private val smsMetadataIdsStore: SMSMetadataIdStore,
     private val smsConfigStore: SMSConfigStore
 ) {
     fun getMetadataIds(): Single<SMSMetadata> {

@@ -34,13 +34,12 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 
 @Reusable
 internal class OngoingSubmissionsStore @Inject constructor(
-    private val smsOngoingSubmissionStore: ObjectWithoutUidStore<SMSOngoingSubmission>,
+    private val smsOngoingSubmissionStore: SMSOngoingSubmissionStore,
     private val smsConfigStore: SMSConfigStore
 ) {
     private var ongoingSubmissions: Map<Int, SubmissionType>? = null

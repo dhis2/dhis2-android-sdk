@@ -32,14 +32,13 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
 
 @Reusable
 class OptionCall @Inject internal constructor(
     private val service: OptionService,
-    private val handler: Handler<Option>,
+    private val handler: OptionHandler,
     private val apiDownloader: APIDownloader
 ) : UidsCall<Option> {
     override fun download(uids: Set<String>): Single<List<Option>> {

@@ -29,14 +29,12 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserRole
 
 @Reusable
 internal class UserRoleChildrenAppender @Inject constructor(
-    private val store: IdentifiableObjectStore<UserRole>
+    private val store: UserRoleStore
 ) : ChildrenAppender<User>() {
     override fun appendChildren(user: User): User {
         val builder = user.toBuilder()

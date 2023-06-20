@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.resource.internal.Resource
@@ -53,7 +52,7 @@ class SystemInfoCallShould {
     private val databaseAdapter: DatabaseAdapter = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val d2Error: D2Error = mock()
-    private val systemInfoHandler: Handler<SystemInfo> = mock()
+    private val systemInfoHandler: SystemInfoHandler = mock()
     private val resourceHandler: ResourceHandler = mock()
     private val systemInfoSingle: Single<SystemInfo> = mock()
     private val transaction: Transaction = mock()

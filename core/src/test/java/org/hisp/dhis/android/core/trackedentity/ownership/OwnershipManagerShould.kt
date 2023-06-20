@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -47,8 +46,8 @@ class OwnershipManagerShould {
     private val apiCallExecutor: APICallExecutor = mock()
     private val ownershipService: OwnershipService = mock()
     private val dataStatePropagator: DataStatePropagator = mock()
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner> = mock()
+    private val programTempOwnerStore: ProgramTempOwnerStore = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
 
     private val httpResponse: HttpMessageResponse = mock()
     private val call: Call<HttpMessageResponse> = mock()

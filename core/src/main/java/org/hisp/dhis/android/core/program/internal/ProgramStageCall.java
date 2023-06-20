@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -52,12 +51,12 @@ public final class ProgramStageCall implements UidsCall<ProgramStage> {
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ProgramStageService service;
-    private final Handler<ProgramStage> handler;
+    private final ProgramStageHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
     ProgramStageCall(ProgramStageService service,
-                     Handler<ProgramStage> handler,
+                     ProgramStageHandler handler,
                      APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

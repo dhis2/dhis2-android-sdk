@@ -28,6 +28,14 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -38,10 +46,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
@@ -56,14 +63,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class DataSetHandlerShould {
 
@@ -77,14 +76,13 @@ public class DataSetHandlerShould {
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     @Mock
-    private Handler<DataElementOperand> compulsoryDataElementOperandHandler;
+    private DataElementOperandHandler compulsoryDataElementOperandHandler;
 
     @Mock
-    private LinkHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
-            dataSetCompulsoryDataElementOperandLinkHandler;
+    private DataSetCompulsoryDataElementOperandHandler dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
-    private LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
+    private DataInputPeriodHandler dataInputPeriodHandler;
 
     @Mock
     private DataSet dataSet;
@@ -114,7 +112,7 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
+    private DataSetElementHandler dataSetElementHandler;
 
     @Mock
     private LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
@@ -142,7 +140,7 @@ public class DataSetHandlerShould {
                 compulsoryDataElementOperandHandler,
                 dataSetCompulsoryDataElementOperandLinkHandler,
                 dataInputPeriodHandler,
-                dataSetElementLinkHandler,
+                dataSetElementHandler,
                 dataSetIndicatorLinkHandler,
                 collectionCleaner,
                 linkCleaner);
@@ -166,6 +164,8 @@ public class DataSetHandlerShould {
         dataInputPeriods = new ArrayList<>();
         dataInputPeriods.add(dataInputPeriod);
         when(dataSet.dataInputPeriods()).thenReturn(dataInputPeriods);
+
+        when(dataSetStore.updateOrInsert(any(DataSet.class))).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -239,7 +239,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetElementLinkHandler).handleMany(anyString(), anyList(), any());
+        verify(dataSetElementHandler).handleMany(anyString(), anyList(), any());
     }
 
     @Test

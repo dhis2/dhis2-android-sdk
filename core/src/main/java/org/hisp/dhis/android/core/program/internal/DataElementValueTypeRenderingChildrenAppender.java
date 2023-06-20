@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 
 import javax.inject.Inject;
@@ -41,7 +40,7 @@ final class DataElementValueTypeRenderingChildrenAppender
         extends ValueTypeRenderingChildrenAppender<ProgramStageDataElement> {
 
     @Inject
-    DataElementValueTypeRenderingChildrenAppender(ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+    DataElementValueTypeRenderingChildrenAppender(ValueTypeDeviceRenderingStore store) {
         super(store);
     }
 

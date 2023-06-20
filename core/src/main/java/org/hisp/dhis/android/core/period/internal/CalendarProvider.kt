@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.period.internal
 
 import java.util.*
 
-internal interface CalendarProvider {
+interface CalendarProvider {
     val calendar: Calendar
 }

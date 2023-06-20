@@ -34,11 +34,7 @@ import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -50,6 +46,7 @@ import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.junit.Before
@@ -64,8 +61,8 @@ import retrofit2.Call
 class LogInCallUnitShould : BaseCallShould() {
     private val userService: UserService = mock()
     private val apiCallExecutor: APICallExecutor = mock()
-    private val userHandler: Handler<User> = mock()
-    private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser> = mock()
+    private val userHandler: UserHandler = mock()
+    private val authenticatedUserStore: AuthenticatedUserStore = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val userIdStore: UserIdInMemoryStore = mock()
     private val authenticateAPICall: Call<User> = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -80,8 +77,8 @@ class LogInCallUnitShould : BaseCallShould() {
     private val systemInfoFromDb: SystemInfo = mock()
     private val authenticatedUser: AuthenticatedUser = mock()
     private val credentials: Credentials = mock()
-    private val userStore: IdentifiableObjectStore<User> = mock()
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo> = mock()
+    private val userStore: UserStore = mock()
+    private val systemInfoRepository: SystemInfoObjectRepository = mock()
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher = mock()

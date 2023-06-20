@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.programstageworkinglist
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.programstageworkinglist.ProgramStageWorkingListEventDataFilterSamples
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStore
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class ProgramStageWorkingListEventDataFilterStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramStageWorkingListEventDataFilter>(
-        ProgramStageWorkingListEventDataFilterStore.create(TestDatabaseAdapterFactory.get()),
+        ProgramStageWorkingListEventDataFilterStoreImpl(TestDatabaseAdapterFactory.get()),
         ItemFilterTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {

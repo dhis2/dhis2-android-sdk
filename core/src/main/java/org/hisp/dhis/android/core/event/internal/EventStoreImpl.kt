@@ -31,7 +31,6 @@ import android.content.ContentValues
 import android.database.Cursor
 import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -47,12 +46,15 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 
 @Suppress("TooManyFunctions")
-internal class EventStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<Event>,
-    objectFactory: Function1<Cursor, Event>
-) : IdentifiableDeletableDataObjectStoreImpl<Event>(databaseAdapter, builder, binder, objectFactory), EventStore {
+internal class EventStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : EventStore,
+    IdentifiableDeletableDataObjectStoreImpl<Event>(
+        databaseAdapter,
+        EventTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> Event.create(cursor) }
+    ) {
 
     override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
@@ -172,19 +174,6 @@ internal class EventStoreImpl private constructor(
             w.bind(19, o.deleted())
             w.bind(20, o.assignedUser())
             w.bind(21, o.completedBy())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): EventStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                EventTableInfo.TABLE_INFO.name(),
-                EventTableInfo.TABLE_INFO.columns()
-            )
-            return EventStoreImpl(
-                databaseAdapter,
-                statementBuilder,
-                BINDER
-            ) { cursor: Cursor? -> Event.create(cursor) }
         }
     }
 }

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall;
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +45,10 @@ public class DataSetSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>
         implements ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
 
-    private final ObjectWithoutUidStore<DataSetSetting> store;
+    private final DataSetSettingStore store;
 
     @Inject
-    DataSetSettingsObjectRepository(ObjectWithoutUidStore<DataSetSetting> store,
+    DataSetSettingsObjectRepository(DataSetSettingStore store,
                                     DataSetSettingCall dataSetSettingCall) {
         super(dataSetSettingCall);
         this.store = store;

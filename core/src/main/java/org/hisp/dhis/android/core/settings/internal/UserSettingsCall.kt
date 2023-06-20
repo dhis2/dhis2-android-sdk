@@ -32,12 +32,11 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.UserSettings
 
 @Reusable
 class UserSettingsCall @Inject internal constructor(
-    private val handler: Handler<UserSettings>,
+    private val handler: UserSettingsHandler,
     private val service: SettingService,
     private val apiDownloader: APIDownloader
 ) : ObjectCall<UserSettings> {

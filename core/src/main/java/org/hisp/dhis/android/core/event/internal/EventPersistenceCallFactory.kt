@@ -30,18 +30,16 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
 @Reusable
 internal class EventPersistenceCallFactory @Inject constructor(
-    private val eventHandler: IdentifiableDataHandler<Event>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+    private val eventHandler: EventHandler,
+    private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader
 ) {
     fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {

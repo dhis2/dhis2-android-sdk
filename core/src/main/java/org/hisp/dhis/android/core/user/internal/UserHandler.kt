@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -40,8 +38,8 @@ import org.hisp.dhis.android.core.user.UserRole
 
 @Reusable
 internal class UserHandler @Inject constructor(
-    userStore: IdentifiableObjectStore<User>,
-    private val userRoleHandler: Handler<UserRole>,
+    userStore: UserStore,
+    private val userRoleHandler: UserRoleHandler,
     private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
 ) : IdentifiableHandlerImpl<User>(userStore) {
 

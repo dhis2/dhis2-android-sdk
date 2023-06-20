@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.GeneralSettings
 
-internal class GeneralSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>) :
+@Reusable
+internal class GeneralSettingHandler @Inject constructor(store: GeneralSettingStore) :
     ObjectWithoutUidHandlerImpl<GeneralSettings>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<GeneralSettings>): Collection<GeneralSettings> {

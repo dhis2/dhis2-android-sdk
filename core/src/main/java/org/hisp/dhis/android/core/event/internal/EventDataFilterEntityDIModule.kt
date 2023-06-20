@@ -31,23 +31,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.internal.EventDataFilterStore.create
 
 @Module
 internal class EventDataFilterEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<EventDataFilter> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): EventDataFilterStore {
+        return EventDataFilterStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(store: ObjectWithoutUidStore<EventDataFilter>): HandlerWithTransformer<EventDataFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
+    fun handler(store: EventDataFilterStore): EventDataFilterHandler {
+        return EventDataFilterHandler(store)
     }
 }

@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -46,6 +45,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationHandler
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
@@ -56,7 +56,7 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataSetCompleteRegistration>>,
     scope: RepositoryScope,
-    handler: Handler<DataSetCompleteRegistration>,
+    handler: DataSetCompleteRegistrationHandler,
     private val postCall: DataSetCompleteRegistrationPostCall,
     private val credentialsRepository: UserCredentialsObjectRepository
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(

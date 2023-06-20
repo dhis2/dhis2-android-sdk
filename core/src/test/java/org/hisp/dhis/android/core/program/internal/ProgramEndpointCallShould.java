@@ -27,6 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -50,15 +59,6 @@ import java.util.Set;
 
 import io.reactivex.Single;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramEndpointCallShould extends BaseCallShould {
 
@@ -66,7 +66,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ProgramService programService;
 
     @Mock
-    private Handler<Program> programHandler;
+    private ProgramHandler programHandler;
 
     @Captor
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;

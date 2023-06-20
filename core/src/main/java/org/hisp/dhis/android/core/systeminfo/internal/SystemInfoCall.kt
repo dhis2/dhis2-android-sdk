@@ -33,7 +33,6 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -47,7 +46,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 @Reusable
 class SystemInfoCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
-    private val systemInfoHandler: Handler<SystemInfo>,
+    private val systemInfoHandler: SystemInfoHandler,
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,

@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 
-internal class LatestAppVersionHandler(store: ObjectWithoutUidStore<LatestAppVersion>) :
+@Reusable
+internal class LatestAppVersionHandler @Inject constructor(store: LatestAppVersionStore) :
     ObjectWithoutUidHandlerImpl<LatestAppVersion>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<LatestAppVersion>): Collection<LatestAppVersion> {

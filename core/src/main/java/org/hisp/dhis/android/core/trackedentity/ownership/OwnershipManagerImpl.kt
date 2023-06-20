@@ -33,7 +33,6 @@ import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -46,8 +45,8 @@ internal class OwnershipManagerImpl @Inject constructor(
     private val apiCallExecutor: APICallExecutor,
     private val ownershipService: OwnershipService,
     private val dataStatePropagator: DataStatePropagator,
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>,
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
+    private val programTempOwnerStore: ProgramTempOwnerStore,
+    private val programOwnerStore: ProgramOwnerStore
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {

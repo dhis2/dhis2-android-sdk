@@ -31,7 +31,6 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 @Reusable
 internal class DataValueCall @Inject constructor(
     private val service: DataValueService,
-    private val handler: Handler<DataValue>,
+    private val handler: DataValueHandler,
     private val apiDownloader: APIDownloader
 ) : QueryCall<DataValue, DataValueQuery> {
 

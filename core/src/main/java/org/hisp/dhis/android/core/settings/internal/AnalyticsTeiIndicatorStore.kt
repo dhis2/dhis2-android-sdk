@@ -25,31 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo
 
-@Suppress("MagicNumber")
-internal object AnalyticsTeiIndicatorStore {
-
-    private val BINDER = StatementBinder { o: AnalyticsTeiIndicator, w: StatementWrapper ->
-        w.bind(1, o.teiSetting())
-        w.bind(2, o.whoComponent())
-        w.bind(3, o.programStage())
-        w.bind(4, o.indicator())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiIndicator> {
-        return linkStore(
-            databaseAdapter, AnalyticsTeiIndicatorTableInfo.TABLE_INFO,
-            AnalyticsTeiIndicatorTableInfo.Columns.TEI_SETTING, BINDER
-        ) { cursor: Cursor -> AnalyticsTeiIndicator.create(cursor) }
-    }
-}
+internal interface AnalyticsTeiIndicatorStore : LinkStore<AnalyticsTeiIndicator>

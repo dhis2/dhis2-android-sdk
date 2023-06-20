@@ -28,15 +28,22 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.internal.AttributeHandler;
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -60,28 +67,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramHandlerShould {
 
     @Mock
-    private ProgramStoreInterface programStore;
+    private ProgramStore programStore;
 
     @Mock
-    private Handler<ProgramRuleVariable> programRuleVariableHandler;
+    private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
+    private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
 
     @Mock
-    private Handler<ProgramSection> programSectionHandler;
+    private ProgramSectionHandler programSectionHandler;
 
     @Mock
     private ParentOrphanCleaner<Program> orphanCleaner;
@@ -93,10 +92,10 @@ public class ProgramHandlerShould {
     private LinkCleaner<Program> linkCleaner;
 
     @Mock
-    private LinkHandler<Attribute, ProgramAttributeValueLink> programAttributeValueLinkHandler;
+    private ProgramAttributeValueLinkHandler programAttributeValueLinkHandler;
 
     @Mock
-    private Handler<Attribute> attributeHandler;
+    private AttributeHandler attributeHandler;
 
     @Mock
     private Program program;
@@ -201,6 +200,8 @@ public class ProgramHandlerShould {
         attributeValues.add(attValue);
 
         when(program.attributeValues()).thenReturn(attributeValues);
+
+        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -254,6 +255,6 @@ public class ProgramHandlerShould {
     public void call_attribute_handlers() {
         programHandler.handleMany(Collections.singletonList(program));
         verify(attributeHandler).handleMany(eq(Arrays.asList(attribute)));
-        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()),eq(Arrays.asList(attribute)),any());
+        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(Arrays.asList(attribute)), any());
     }
 }

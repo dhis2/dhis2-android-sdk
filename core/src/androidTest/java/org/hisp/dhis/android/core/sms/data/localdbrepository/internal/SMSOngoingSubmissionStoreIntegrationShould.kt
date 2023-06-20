@@ -36,7 +36,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SMSOngoingSubmissionStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSOngoingSubmission>(
-    SMSOngoingSubmissionStore.create(TestDatabaseAdapterFactory.get()),
+    SMSOngoingSubmissionStoreImpl(TestDatabaseAdapterFactory.get()),
     SMSOngoingSubmissionTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

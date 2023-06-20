@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.event.internal
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
@@ -54,7 +54,7 @@ class EventHandlerShould {
     private val eventStore: EventStore = mock()
     private val trackedEntityDataValueHandler: TrackedEntityDataValueHandler = mock()
     private val trackedEntityDataValue: TrackedEntityDataValue = mock()
-    private val noteHandler: Handler<Note> = mock()
+    private val noteHandler: NoteHandler = mock()
     private val noteUniquenessManager: NoteUniquenessManager = mock()
     private val note: Note = mock()
     private val noteVersionManager: NoteDHISVersionManager = mock()

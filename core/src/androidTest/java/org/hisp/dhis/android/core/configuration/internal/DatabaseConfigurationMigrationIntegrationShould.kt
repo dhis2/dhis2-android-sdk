@@ -66,13 +66,13 @@ class DatabaseConfigurationMigrationIntegrationShould {
         .build()
 
     private lateinit var migration: DatabaseConfigurationMigration
-    private lateinit var databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+    private lateinit var databasesConfigurationStore: DatabaseConfigurationInsecureStore
     private lateinit var credentialsSecureStore: CredentialsSecureStore
 
     @Before
     @Throws(IOException::class)
     fun setUp() {
-        databasesConfigurationStore = DatabaseConfigurationInsecureStore[insecureStore]
+        databasesConfigurationStore = DatabaseConfigurationInsecureStoreImpl(insecureStore)
         credentialsSecureStore = CredentialsSecureStoreImpl(chunkedSecureStore)
 
         migration = DatabaseConfigurationMigration(
@@ -181,7 +181,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
         databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")
-        val configurationStore = ConfigurationStore.create(databaseAdapter)
+        val configurationStore = ConfigurationStoreImpl(databaseAdapter)
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
     }
 

@@ -42,7 +42,7 @@ public class TrackedEntityTypeAttributeStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<TrackedEntityTypeAttribute> {
 
     public TrackedEntityTypeAttributeStoreIntegrationShould() {
-        super(TrackedEntityTypeAttributeStore.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackedEntityTypeAttributeStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackedEntityTypeAttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

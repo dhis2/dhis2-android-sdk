@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 
 import java.util.List;
@@ -44,12 +43,12 @@ import io.reactivex.Single;
 final class OrganisationUnitLevelEndpointCall implements ListCall<OrganisationUnitLevel> {
 
     private final OrganisationUnitLevelService service;
-    private final Handler<OrganisationUnitLevel> handler;
+    private final OrganisationUnitLevelHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
     OrganisationUnitLevelEndpointCall(OrganisationUnitLevelService service,
-                                      Handler<OrganisationUnitLevel> handler,
+                                      OrganisationUnitLevelHandler handler,
                                       APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

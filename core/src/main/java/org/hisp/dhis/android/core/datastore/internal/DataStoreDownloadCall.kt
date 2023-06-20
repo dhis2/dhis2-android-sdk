@@ -35,7 +35,6 @@ import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.State
@@ -48,7 +47,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 internal class DataStoreDownloadCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
-    private val dataStoreEntryHandler: LinkHandler<DataStoreEntry, DataStoreEntry>,
+    private val dataStoreEntryHandler: DataStoreHandler,
     private val versionManager: DHISVersionManager
 ) {
     fun download(params: DataStoreDownloadParams): Observable<D2Progress> {

@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 @Reusable
 internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val handler: Handler<DataSetCompleteRegistration>
+    private val handler: DataSetCompleteRegistrationHandler
 ) {
 
     internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {

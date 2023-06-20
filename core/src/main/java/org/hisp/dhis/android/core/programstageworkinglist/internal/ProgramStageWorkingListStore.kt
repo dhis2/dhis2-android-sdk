@@ -25,55 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 
-@Suppress("MagicNumber")
-internal object ProgramStageWorkingListStore {
-    private val BINDER: StatementBinder<ProgramStageWorkingList> =
-        object : IdentifiableStatementBinder<ProgramStageWorkingList>() {
-            override fun bindToStatement(o: ProgramStageWorkingList, w: StatementWrapper) {
-                super.bindToStatement(o, w)
-                w.bind(7, o.description())
-                w.bind(8, o.program()?.uid())
-                w.bind(9, o.programStage()?.uid())
-                w.bind(10, o.programStageQueryCriteria()?.eventStatus())
-                w.bind(
-                    11,
-                    DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventCreatedAt())
-                )
-                w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventOccurredAt()))
-                w.bind(13, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventScheduledAt()))
-                w.bind(14, o.programStageQueryCriteria()?.enrollmentStatus())
-                w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrolledAt()))
-                w.bind(
-                    16,
-                    DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrollmentOccurredAt())
-                )
-                w.bind(17, o.programStageQueryCriteria()?.order())
-                w.bind(18, StringListColumnAdapter.serialize(o.programStageQueryCriteria()?.displayColumnOrder()))
-                w.bind(19, o.programStageQueryCriteria()?.orgUnit())
-                w.bind(20, o.programStageQueryCriteria()?.ouMode())
-                w.bind(21, o.programStageQueryCriteria()?.assignedUserMode())
-            }
-        }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramStageWorkingList> {
-        return objectWithUidStore(
-            databaseAdapter,
-            ProgramStageWorkingListTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> ProgramStageWorkingList.create(cursor) }
-    }
-}
+internal interface ProgramStageWorkingListStore : IdentifiableObjectStore<ProgramStageWorkingList>

@@ -28,32 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
-import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
-internal class IndicatorLegendSetLinkStore private constructor() {
-
-    companion object {
-        private val BINDER = StatementBinder { o: IndicatorLegendSetLink, w: StatementWrapper ->
-            w.bind(1, o.indicator())
-            w.bind(2, o.legendSet())
-            w.bind(3, o.sortOrder())
-        }
-
-        fun create(databaseAdapter: DatabaseAdapter?): LinkStore<IndicatorLegendSetLink> {
-            return linkStore(
-                databaseAdapter!!, IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                BINDER
-            ) { cursor: Cursor? ->
-                IndicatorLegendSetLink.create(cursor)
-            }
-        }
-    }
-}
+internal interface IndicatorLegendSetLinkStore : LinkStore<IndicatorLegendSetLink>

@@ -32,13 +32,12 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.CategoryCombo
 
 @Reusable
 internal class CategoryComboCall @Inject constructor(
     private val service: CategoryComboService,
-    private val handler: Handler<CategoryCombo>,
+    private val handler: CategoryComboHandler,
     private val apiDownloader: APIDownloader
 ) : UidsCall<CategoryCombo> {
     override fun download(uids: Set<String>): Single<List<CategoryCombo>> {

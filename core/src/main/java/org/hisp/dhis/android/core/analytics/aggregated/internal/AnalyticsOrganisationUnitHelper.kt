@@ -30,18 +30,21 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.*
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
 internal class AnalyticsOrganisationUnitHelper @Inject constructor(
     private val userOrganisationUnitStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
-    private val organisationUnitOrganisationUnitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>
+    private val organisationUnitStore: OrganisationUnitStore,
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore,
+    private val organisationUnitOrganisationUnitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore
 ) {
 
     fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {

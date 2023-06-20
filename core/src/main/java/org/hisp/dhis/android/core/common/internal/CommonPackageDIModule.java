@@ -44,7 +44,7 @@ import retrofit2.Retrofit;
         ValueTypeDeviceRenderingEntityDIModule.class,
         ValueTypeRenderingEntityDIModule.class
 })
-public class CommonPackageDIModule {
+class CommonPackageDIModule {
 
     @Provides
     @Reusable

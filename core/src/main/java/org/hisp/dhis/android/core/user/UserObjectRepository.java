@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.user.internal.UserFields;
+import org.hisp.dhis.android.core.user.internal.UserStore;
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ import dagger.Reusable;
 public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository> {
 
     @Inject
-    UserObjectRepository(IdentifiableObjectStore<User> store,
+    UserObjectRepository(UserStore store,
                          Map<String, ChildrenAppender<User>> childrenAppenders,
                          RepositoryScope scope) {
         super(store, childrenAppenders, scope,

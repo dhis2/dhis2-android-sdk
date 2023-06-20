@@ -33,7 +33,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.user.Authority
 import org.junit.Before
@@ -46,7 +45,7 @@ import retrofit2.Response
 @RunWith(JUnit4::class)
 class AuthorityEndpointCallShould : BaseCallShould() {
     private val authorityService: AuthorityService = mock()
-    private val handler: Handler<Authority> = mock()
+    private val handler: AuthorityHandler = mock()
     private val retrofitCall: Call<List<String>> = mock()
     private val payload: List<String> = mock()
     private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher = mock()

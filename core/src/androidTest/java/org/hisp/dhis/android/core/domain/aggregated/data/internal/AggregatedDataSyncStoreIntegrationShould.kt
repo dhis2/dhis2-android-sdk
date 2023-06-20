@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -36,7 +35,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 internal class AggregatedDataSyncStoreIntegrationShould :
     ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync>(
-        create(TestDatabaseAdapterFactory.get()),
+        AggregatedDataSyncStoreImpl(TestDatabaseAdapterFactory.get()),
         AggregatedDataSyncTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {

@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage> {
 
     public ProgramStageStoreIntegrationShould() {
-        super(ProgramStageStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()),
                 ProgramStageTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

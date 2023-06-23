@@ -85,6 +85,14 @@ public final class IndicatorCollectionRepository
         return cf.string(Columns.URL);
     }
 
+    public StringFilterConnector<IndicatorCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<IndicatorCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
+    }
+
     public IndicatorCollectionRepository withLegendSets() {
         return cf.withChild(IndicatorFields.LEGEND_SETS);
     }

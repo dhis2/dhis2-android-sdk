@@ -56,7 +56,9 @@ public final class IndicatorFields {
                     fh.<String>field(Columns.DENOMINATOR_DESCRIPTION),
                     fh.<String>field(Columns.URL),
                     fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
-                    fh.<Integer>field(Columns.DECIMALS)
+                    fh.<Integer>field(Columns.DECIMALS),
+                    fh.<String>field(Columns.COLOR),
+                    fh.<String>field(Columns.ICON)
             ).build();
 
     private IndicatorFields() {

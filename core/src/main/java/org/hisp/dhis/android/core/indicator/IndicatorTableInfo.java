@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.indicator;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns;
 
 public final class IndicatorTableInfo {
 
@@ -51,7 +51,7 @@ public final class IndicatorTableInfo {
         }
     };
 
-    public static class Columns extends NameableColumns {
+    public static class Columns extends NameableWithStyleColumns {
 
         public final static String ANNUALIZED = "annualized";
         public final static String INDICATOR_TYPE = "indicatorType";
@@ -59,6 +59,7 @@ public final class IndicatorTableInfo {
         public final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
         public final static String DENOMINATOR = "denominator";
         public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
+
         public final static String URL = "url";
         public final static String DECIMALS = "decimals";
 

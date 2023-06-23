@@ -117,6 +117,22 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     }
 
     @Test
+    public void filter_by_color() {
+        List<Indicator> indicators = d2.indicatorModule().indicators()
+                .byColor().eq("#FF0000")
+                .blockingGet();
+        assertThat(indicators.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_icon() {
+        List<Indicator> indicators = d2.indicatorModule().indicators()
+                .byIcon().eq("circle")
+                .blockingGet();
+        assertThat(indicators.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_dataSetUid() {
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byDataSetUid("lyLU2wR22tC")

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.indicator;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Test;
 
@@ -73,5 +74,6 @@ public class IndicatorShould extends BaseObjectShould implements ObjectShould {
         assertThat(indicator.url()).isEqualTo("");
         assertThat(indicator.indicatorType()).isEqualTo(ObjectWithUid.create("bWuNrMHEoZ0"));
         assertThat(indicator.decimals()).isEqualTo(3);
+        assertThat(indicator.style()).isEqualTo(ObjectStyle.builder().color("#FF0000").icon("circle").build());
     }
 }

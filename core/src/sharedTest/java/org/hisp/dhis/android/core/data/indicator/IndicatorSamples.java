@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.indicator;
 
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
@@ -48,7 +49,8 @@ public class IndicatorSamples {
                 .denominator("#{c.d}")
                 .denominatorDescription("den descr")
                 .url("dhis2.org")
-                .decimals(2);
+                .decimals(2)
+                .style(ObjectStyle.builder().color("#FF0000").icon("circle").build());
         return indicatorBuilder.build();
     }
 }

@@ -26,33 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.indicator.IndicatorSamples
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 
-@RunWith(D2JunitRunner.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
-
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(TestDatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Indicator>(
+    IndicatorStore.create(TestDatabaseAdapterFactory.get()),
+    IndicatorTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): Indicator {
+        return IndicatorSamples.getIndicator()
     }
 
-    @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
-    }
-
-    @Override
-    protected Indicator buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): Indicator {
         return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
-                .build();
+            .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
+            .build()
     }
 }

@@ -26,38 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator.internal;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 
-import javax.inject.Inject;
+object IndicatorTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "Indicator"
+        }
 
-import dagger.Reusable;
-
-@Reusable
-public final class IndicatorModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    IndicatorModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                IndicatorTableInfo.INSTANCE.getTABLE_INFO(),
-                IndicatorTypeTableInfo.INSTANCE.getTABLE_INFO(),
-                DataSetIndicatorLinkTableInfo.TABLE_INFO);
-    }
+    class Columns : NameableWithStyleColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                ANNUALIZED,
+                INDICATOR_TYPE,
+                NUMERATOR,
+                NUMERATOR_DESCRIPTION,
+                DENOMINATOR,
+                DENOMINATOR_DESCRIPTION,
+                URL,
+                DECIMALS
+            )
+        }
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        companion object {
+            const val ANNUALIZED = "annualized"
+            const val INDICATOR_TYPE = "indicatorType"
+            const val NUMERATOR = "numerator"
+            const val NUMERATOR_DESCRIPTION = "numeratorDescription"
+            const val DENOMINATOR = "denominator"
+            const val DENOMINATOR_DESCRIPTION = "denominatorDescription"
+            const val URL = "url"
+            const val DECIMALS = "decimals"
+        }
     }
 }

@@ -26,39 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.content.Context
+import android.content.res.AssetManager
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
+    private val assetManager: AssetManager
+    private val targetVersion: Int
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 148;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    init {
+        assetManager = context.assets
+        this.targetVersion = targetVersion
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
+    fun onOpen(databaseAdapter: DatabaseAdapter) {
+        databaseAdapter.setForeignKeyConstraintsEnabled(true)
+        databaseAdapter.enableWriteAheadLogging()
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    fun onCreate(databaseAdapter: DatabaseAdapter) {
+        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
+    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
+        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
     }
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
+        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
+    }
+
+    companion object {
+        const val VERSION = 148
     }
 }

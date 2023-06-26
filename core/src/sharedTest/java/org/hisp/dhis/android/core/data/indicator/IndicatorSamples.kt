@@ -26,41 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.indicator
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties
+import org.hisp.dhis.android.core.indicator.Indicator
 
-public final class IndicatorTypeTableInfo {
-
-    private IndicatorTypeTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "IndicatorType";
+object IndicatorSamples {
+    val indicator: Indicator
+        get() {
+            val indicatorBuilder = Indicator.builder()
+            fillNameableProperties(indicatorBuilder)
+            indicatorBuilder
+                .id(1L)
+                .annualized(false)
+                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
+                .numerator("#{a.b}")
+                .numeratorDescription("num descr")
+                .denominator("#{c.d}")
+                .denominatorDescription("den descr")
+                .url("dhis2.org")
+                .decimals(2)
+                .style(ObjectStyle.builder().color("#FF0000").icon("circle").build())
+            return indicatorBuilder.build()
         }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableColumns {
-        public final static String NUMBER = "number";
-        public final static String FACTOR = "factor";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    NUMBER,
-                    FACTOR
-            );
-        }
-    }
 }

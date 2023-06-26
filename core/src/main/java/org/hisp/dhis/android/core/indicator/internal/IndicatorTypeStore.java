@@ -53,7 +53,7 @@ public final class IndicatorTypeStore {
     };
 
     public static IdentifiableObjectStore<IndicatorType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTypeTableInfo.TABLE_INFO, BINDER,
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTypeTableInfo.INSTANCE.getTABLE_INFO(), BINDER,
                 IndicatorType::create);
     }
 }

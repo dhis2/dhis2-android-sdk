@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
+
 
 public final class IndicatorFields {
 

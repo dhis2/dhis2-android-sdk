@@ -26,31 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+object IndicatorTypeTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "IndicatorType"
+        }
 
-public class IndicatorSamples {
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
 
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
+    class Columns : IdentifiableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NUMBER,
+                FACTOR
+            )
+        }
 
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
-                .id(1L)
-                .annualized(false)
-                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .numerator("#{a.b}")
-                .numeratorDescription("num descr")
-                .denominator("#{c.d}")
-                .denominatorDescription("den descr")
-                .url("dhis2.org")
-                .decimals(2)
-                .style(ObjectStyle.builder().color("#FF0000").icon("circle").build());
-        return indicatorBuilder.build();
+        companion object {
+            const val NUMBER = "number"
+            const val FACTOR = "factor"
+        }
     }
 }

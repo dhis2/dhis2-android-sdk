@@ -41,11 +41,11 @@ class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrati
     TestDatabaseAdapterFactory.get()
 ) {
     override fun buildObject(): Indicator {
-        return IndicatorSamples.getIndicator()
+        return IndicatorSamples.indicator
     }
 
     override fun buildObjectToUpdate(): Indicator {
-        return IndicatorSamples.getIndicator().toBuilder()
+        return IndicatorSamples.indicator.toBuilder()
             .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
             .build()
     }

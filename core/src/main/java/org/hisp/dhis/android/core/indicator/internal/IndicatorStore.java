@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 
+
 public final class IndicatorStore {
 
     private IndicatorStore() {
@@ -61,7 +62,7 @@ public final class IndicatorStore {
     };
 
     public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER,
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.INSTANCE.getTABLE_INFO(), BINDER,
                 Indicator::create);
     }
 }

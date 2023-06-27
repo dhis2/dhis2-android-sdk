@@ -233,7 +233,7 @@ dependencies {
     implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
     // until this dependency has been added the errors to build were not clear
-    kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0"
+    kapt ("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
 }
 
 detekt {

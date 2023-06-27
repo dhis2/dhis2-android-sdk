@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.arch.repositories.object.internal;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> {
+public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> extends BaseRepositoryFactory<R> {
     R updated(RepositoryScope updatedScope);
 }

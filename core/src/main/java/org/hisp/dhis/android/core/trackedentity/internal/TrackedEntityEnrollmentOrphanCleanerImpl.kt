@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -49,21 +49,22 @@ internal class TrackedEntityEnrollmentOrphanCleanerImpl @Inject constructor(
         program: String?
     ): Boolean {
         return if (parent != null && children != null) {
-            val orphanEnrollmentsClause = WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, parent.uid())
-                .appendNotInKeyStringValues(EnrollmentTableInfo.Columns.UID, children.map { it.uid() })
-                .appendInKeyEnumValues(
+            val orphanEnrollmentsClause = WhereClauseBuilder().run {
+                appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, parent.uid())
+                appendNotInKeyStringValues(EnrollmentTableInfo.Columns.UID, children.map { it.uid() })
+                appendInKeyEnumValues(
                     EnrollmentTableInfo.Columns.SYNC_STATE,
                     listOf(State.SYNCED, State.SYNCED_VIA_SMS)
-                ).build()
+                )
+                if (program != null) {
+                    appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, program)
+                }
+                build()
+            }
 
             val orphanEnrollments = enrollmentStore.selectWhere(orphanEnrollmentsClause)
 
-            val deletedEnrollments = orphanEnrollments.filter { e ->
-                val isProtected = breakTheGlassHelper.isProtectedInSearchScope(e.program(), e.organisationUnit())
-
-                !isProtected || e.program() == program
-            }
+            val deletedEnrollments = orphanEnrollments.filter { e -> isAccessibleByGlass(e, program) }
 
             if (deletedEnrollments.isNotEmpty()) {
                 val deleteWhereClause = WhereClauseBuilder()
@@ -77,5 +78,14 @@ internal class TrackedEntityEnrollmentOrphanCleanerImpl @Inject constructor(
         } else {
             false
         }
+    }
+
+    private fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
+        val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
+            program = enrollment.program(),
+            organisationUnit = enrollment.organisationUnit()
+        )
+
+        return !isProtected || enrollment.program() == program
     }
 }

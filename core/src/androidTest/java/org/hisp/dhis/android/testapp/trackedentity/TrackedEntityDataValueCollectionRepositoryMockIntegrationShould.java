@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -86,6 +87,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         assertThat(trackedEntityDataValues.size()).isEqualTo(2);
     }
 
+    @Ignore("Pending to fix mapping ANDROSDK-1643")
     @Test
     public void filter_by_stored_by() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()

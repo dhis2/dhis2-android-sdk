@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 import org.hisp.dhis.android.core.user.AuthorityTableInfo;
-import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.user.UserRoleTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
@@ -55,7 +54,6 @@ public final class UserModuleWiper implements ModuleWiper {
     public void wipeMetadata() {
         tableWiper.wipeTables(
                 UserTableInfo.TABLE_INFO,
-                UserCredentialsTableInfo.TABLE_INFO,
                 UserOrganisationUnitLinkTableInfo.TABLE_INFO,
                 AuthenticatedUserTableInfo.TABLE_INFO,
                 AuthorityTableInfo.TABLE_INFO,

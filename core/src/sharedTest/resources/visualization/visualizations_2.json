@@ -1,0 +1,85 @@
+{
+  "id": "FAFa11yFeFe",
+  "name": "Android SDK Visualization sample 2",
+  "displayName": "Android SDK Visualization sample 2",
+  "description": "Sample visualization for the Android SDK 2",
+  "displayDescription": "Sample visualization for the Android SDK 2",
+  "displayFormName": "Android SDK Visualization sample 2",
+  "lastUpdated": "2021-06-16T14:26:50.195",
+  "created": "2021-06-16T14:26:50.195",
+  "type": "COLUMN",
+  "hideTitle": true,
+  "hideSubtitle": false,
+  "hideEmptyColumns": false,
+  "hideEmptyRows": false,
+  "hideEmptyRowItems": "NONE",
+  "hideLegend": false,
+  "showHierarchy": false,
+  "rowTotals": true,
+  "rowSubTotals": false,
+  "colTotals": false,
+  "colSubTotals": false,
+  "showDimensionLabels": false,
+  "percentStackedValues": false,
+  "noSpaceBetweenColumns": false,
+  "skipRounding": false,
+  "displayDensity": "NORMAL",
+  "digitGroupSeparator": "COMMA",
+  "legend": {
+    "showKey": false,
+    "style": "TEXT",
+    "strategy": "FIXED",
+    "set": {
+      "id": "TiOkbpGEud4"
+    }
+  },
+  "filters": [
+    {
+      "id": "ou",
+      "items": [
+        {
+          "dimensionItem": "DiszpKrYNg8",
+          "dimensionItemType": "ORGANISATION_UNIT"
+        }
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "id": "pe",
+      "items": [
+        {
+          "dimensionItem": "2016",
+          "dimensionItemType": "PERIOD"
+        },
+        {
+          "dimensionItem": "2017",
+          "dimensionItemType": "PERIOD"
+        },
+        {
+          "dimensionItem": "2018",
+          "dimensionItemType": "PERIOD"
+        }
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "id": "dx",
+      "items": [
+        {
+          "dimensionItem": "g9eOBujte1U",
+          "dimensionItemType": "DATA_ELEMENT"
+        },
+        {
+          "dimensionItem": "GSae40Fyppf",
+          "dimensionItemType": "PROGRAM_INDICATOR"
+        },
+        {
+          "dimensionItem": "yYo5Gy4sZa0",
+          "dimensionItemType": "EXPRESSION_DIMENSION_ITEM"
+        }
+      ]
+    }
+  ]
+}

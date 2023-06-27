@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,9 +38,8 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        DataDimensionItemEntityDIModule.class,
         VisualizationEntityDIModule.class,
-        VisualizationCategoryDimensionEntityDIModule.class
+        VisualizationDimensionItemEntityDIModule.class,
 })
 public final class VisualizationPackageDIModule {
 

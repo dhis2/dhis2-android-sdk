@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -37,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -49,6 +51,9 @@ import androidx.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject implements CoreObject {
+
+    @Nullable
+    public abstract String username();
 
     @Nullable
     public abstract String birthday();
@@ -101,6 +106,11 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
+    public abstract List<UserRole> userRoles();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -117,6 +127,8 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
+
+        public abstract Builder username(String username);
 
         public abstract Builder birthday(String birthday);
 
@@ -149,6 +161,8 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
         public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 
         public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
+
+        public abstract Builder userRoles(List<UserRole> userRoles);
 
         public abstract User build();
     }

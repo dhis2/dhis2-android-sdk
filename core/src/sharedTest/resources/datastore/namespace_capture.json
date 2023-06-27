@@ -1,0 +1,37 @@
+{
+  "pager": {
+    "page": 1,
+    "pageSize": 50
+  },
+  "entries": [
+    {
+      "key": "summary",
+      "value": [
+        {
+          "id": "fKHBpN5v8Sj",
+          "user": "xE7jOejl9FI",
+          "title": "data",
+          "description": "learni ng",
+          "publicAccess": {
+            "id": "public",
+            "type": "public",
+            "access": "------",
+            "displayName": "Public"
+          },
+          "userAccesses": [],
+          "additionalLabels": [],
+          "userGroupAccesses": []
+        },
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "key": "settings",
+      "value": {
+        "skipMigration": true
+      }
+    }
+  ]
+}

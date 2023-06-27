@@ -207,6 +207,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void filter_by_complete_by() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byCompletedBy().eq("android")
+                        .blockingGet();
+
+        assertThat(events.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_due_date() throws ParseException {
         List<Event> events =
                 d2.eventModule().events()

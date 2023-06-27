@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -111,10 +111,10 @@ object D2Manager {
 
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(
-                    testingServerUrl,
-                    testingDatabaseName,
+                    testingServerUrl!!,
+                    testingDatabaseName!!,
                     false,
-                    testingUsername
+                    testingUsername!!
                 )
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials)
@@ -181,7 +181,7 @@ object D2Manager {
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {
-        return testingDatabaseName != null && testingUsername != null
+        return testingServerUrl != null && testingDatabaseName != null && testingUsername != null
     }
 
     @JvmStatic

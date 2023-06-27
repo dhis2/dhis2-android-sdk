@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -52,11 +52,11 @@ internal object GeneralSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {
-        _: GeneralSettings, _: StatementWrapper ->
+            _: GeneralSettings, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder<GeneralSettings> {
-        _: GeneralSettings, _: StatementWrapper ->
+            _: GeneralSettings, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {

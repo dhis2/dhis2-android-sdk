@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,18 +44,29 @@ internal interface EventService {
     @SuppressWarnings("LongParameterList")
     @GET(EVENTS)
     fun getEvents(
-        @Query(ORG_UNIT) orgUnit: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(PROGRAM) program: String?,
-        @Query(START_DATE) startDate: String?,
         @Query(FIELDS) @Which fields: Fields<Event>,
+        @Query(ORG_UNIT) orgUnit: String? = null,
+        @Query(OU_MODE) orgUnitMode: String? = null,
+        @Query(STATUS) status: String? = null,
+        @Query(PROGRAM) program: String? = null,
+        @Query(PROGRAM_STAGE) programStage: String? = null,
+        @Query(PROGRAM_STATUS) programStatus: String? = null,
+        @Query(FILTER) filter: List<String>? = null,
+        @Query(FOLLOW_UP) followUp: Boolean? = null,
+        @Query(EVENT_START_DATE) startDate: String? = null,
+        @Query(EVENT_END_DATE) endDate: String? = null,
+        @Query(DUE_START_DATE) dueDateStart: String? = null,
+        @Query(DUE_END_DATE) dueDateEnd: String? = null,
+        @Query(ORDER) order: String? = null,
+        @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
+        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String? = null,
+        @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String?
-    ): Call<Payload<Event>>
+        @Query(EVENT) eventUid: String? = null,
+    ): Single<Payload<Event>>
 
     @GET("$EVENTS/{$EVENT_UID}")
     fun getEvent(
@@ -74,9 +85,19 @@ internal interface EventService {
     companion object {
         const val ORG_UNIT = "orgUnit"
         const val OU_MODE = "ouMode"
+        const val STATUS = "status"
         const val PROGRAM = "program"
+        const val PROGRAM_STAGE = "programStage"
+        const val PROGRAM_STATUS = "programStatus"
         const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
-        const val START_DATE = "startDate"
+        const val FILTER = "filter"
+        const val FOLLOW_UP = "followUp"
+        const val EVENT_START_DATE = "startDate"
+        const val EVENT_END_DATE = "endDate"
+        const val DUE_START_DATE = "dueDateStart"
+        const val DUE_END_DATE = "dueDateEnd"
+        const val ORDER = "order"
+        const val ASSIGNED_USER_MODE = "assignedUserMode"
         const val FIELDS = "fields"
         const val PAGING = "paging"
         const val PAGE_SIZE = "pageSize"
@@ -86,6 +107,7 @@ internal interface EventService {
         const val EVENT_UID = "eventUid"
         const val EVENT = "event"
         const val LAST_UPDATED_START_DATE = "lastUpdatedStartDate"
+        const val LAST_UPDATED_END_DATE = "lastUpdatedEndDate"
         const val INCLUDE_DELETED = "includeDeleted"
     }
 }

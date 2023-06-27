@@ -104,6 +104,7 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .build();
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
+
         assertThat(d2Errors.size()).isEqualTo(2);
     }
 }

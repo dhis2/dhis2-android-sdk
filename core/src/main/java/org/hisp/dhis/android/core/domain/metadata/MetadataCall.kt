@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
@@ -61,6 +63,8 @@ import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
+import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -72,6 +76,7 @@ internal class MetadataCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
+    private val useCaseDownloader: UseCaseModuleDownloader,
     private val userModuleDownloader: UserModuleDownloader,
     private val categoryDownloader: CategoryModuleDownloader,
     private val programDownloader: ProgramModuleDownloader,
@@ -87,10 +92,11 @@ internal class MetadataCall @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
+    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
 ) {
 
     companion object {
-        const val CALLS_COUNT = 11
+        const val CALLS_COUNT = 12
     }
 
     fun download(): Observable<D2Progress> {
@@ -116,6 +122,9 @@ internal class MetadataCall @Inject constructor(
                 },
                 systemSettingDownloader.downloadMetadata().toSingle {
                     progressManager.increaseProgress(SystemSetting::class.java, false)
+                },
+                useCaseDownloader.downloadMetadata().toSingle {
+                    progressManager.increaseProgress(StockUseCase::class.java, false)
                 },
                 constantModuleDownloader.downloadMetadata().map {
                     progressManager.increaseProgress(Constant::class.java, false)
@@ -155,6 +164,9 @@ internal class MetadataCall @Inject constructor(
                     },
                     legendSetModuleDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(LegendSet::class.java, false)
+                    },
+                    expressionDimensionItemModuleDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(ExpressionDimensionItem::class.java, false)
                     }
                 ).toObservable()
             )

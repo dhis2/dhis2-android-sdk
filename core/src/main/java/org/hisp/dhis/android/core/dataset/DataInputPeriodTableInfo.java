@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.DeletableDataColumns;
 
 public class DataInputPeriodTableInfo {
 
@@ -50,7 +49,7 @@ public class DataInputPeriodTableInfo {
         }
     };
 
-    public static class Columns extends DeletableDataColumns {
+    public static class Columns extends CoreColumns {
 
         public static final String DATA_SET = "dataSet";
         public static final String PERIOD = "period";

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -74,20 +74,6 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                     .build()
             )
             .eventStatus(listOf(EventStatus.ACTIVE))
-            .attribute(
-                listOf(
-                    RepositoryScopeFilterItem.builder()
-                        .key("attributeUid1")
-                        .operator(FilterItemOperator.EQ)
-                        .value("value1")
-                        .build(),
-                    RepositoryScopeFilterItem.builder()
-                        .key("attributeUid2")
-                        .operator(FilterItemOperator.EQ)
-                        .value("value2")
-                        .build()
-                )
-            )
             .filter(
                 listOf(
                     RepositoryScopeFilterItem.builder()

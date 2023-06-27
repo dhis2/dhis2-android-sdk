@@ -1,0 +1,11 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Tracker job added",
+  "response": {
+    "responseType": "TrackerJob",
+    "id": "LkXBUdIgbe3",
+    "location": "https://play.dhis2.org/dev/api/tracker/jobs/LkXBUdIgbe3"
+  }
+}

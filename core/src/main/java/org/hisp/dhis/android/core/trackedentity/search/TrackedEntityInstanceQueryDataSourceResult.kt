@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,20 +34,21 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     store: TrackedEntityInstanceStore,
-    onlineCallFactory: TrackedEntityInstanceQueryCallFactory,
+    trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
-    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>>,
+    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper
 ) : PageKeyedDataSource<
     TrackedEntityInstance, Result<@JvmSuppressWildcards TrackedEntityInstance, @JvmSuppressWildcards D2Error>>() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
-        store, onlineCallFactory, scope, childrenAppenders,
+        store, trackerParentCallFactory, scope, childrenAppenders,
         onlineCache, onlineHelper, localQueryHelper
     )
 

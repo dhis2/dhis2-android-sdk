@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,14 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
+import kotlinx.datetime.*
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.util.parseDateStr
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import org.joda.time.DateTime
 
 internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
 
-    abstract fun evaluate(startDate: DateTime, endDate: DateTime): Any
+    abstract fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any
 
     abstract fun getSql(startExpression: String, endExpression: String): Any
 
@@ -46,8 +47,8 @@ internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
             return 0.toString()
         }
 
-        val startDate = DateTime(start)
-        val endDate = DateTime(end)
+        val startDate = LocalDateTime.parseDateStr(start)
+        val endDate = LocalDateTime.parseDateStr(end)
 
         return evaluate(startDate, endDate)
     }

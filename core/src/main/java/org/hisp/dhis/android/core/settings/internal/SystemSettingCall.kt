@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ internal class SystemSettingCall @Inject constructor(
     override fun download(): Single<List<SystemSetting>> {
         return apiDownloader.downloadList(
             handler = handler,
-            downloader = service.getSystemSettings(allFields).map(settingsSplitter::splitSettings)
+            downloader = service.getSystemSettingsSingle(allFields).map(settingsSplitter::splitSettings)
         )
     }
 }

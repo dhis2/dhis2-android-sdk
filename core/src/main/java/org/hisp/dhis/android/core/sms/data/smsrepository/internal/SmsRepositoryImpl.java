@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -174,7 +174,7 @@ public class SmsRepositoryImpl implements SmsRepository {
                     context,
                     uniqueIntentId,
                     new Intent(sendSmsAction).putExtra(SMS_KEY, smsKey),
-                    PendingIntent.FLAG_ONE_SHOT);
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
             sentMessagePIs.add(sentPI);
             uniqueIntentId++;
         }

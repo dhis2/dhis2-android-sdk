@@ -51,4 +51,30 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
         assertThat(analyticsDhisVisualizationsSetting.program().size).isEqualTo(1)
         assertThat(analyticsDhisVisualizationsSetting.dataSet().size).isEqualTo(1)
     }
+
+    @Test
+    fun find_analytics_settings_by_program() {
+        val programSettings = d2
+            .settingModule()
+            .analyticsSetting()
+            .visualizationsSettings()
+            .blockingGetByProgram("IpHINAT79UW")
+
+        assertThat(programSettings.size).isEqualTo(1)
+        assertThat(programSettings.first().visualizations().size).isEqualTo(2)
+        assertThat(programSettings.first().visualizations().first().uid()).isEqualTo("PYBH8ZaAQnC")
+    }
+
+    @Test
+    fun find_analytics_settings_by_data_set() {
+        val programSettings = d2
+            .settingModule()
+            .analyticsSetting()
+            .visualizationsSettings()
+            .blockingByDataSet("BfMAe6Itzgt")
+
+        assertThat(programSettings.size).isEqualTo(1)
+        assertThat(programSettings.first().visualizations().size).isEqualTo(1)
+        assertThat(programSettings.first().visualizations().first().uid()).isEqualTo("FAFa11yFeFe")
+    }
 }

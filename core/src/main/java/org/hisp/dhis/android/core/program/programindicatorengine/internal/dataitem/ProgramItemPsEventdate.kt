@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ internal class ProgramItemPsEventdate : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val programStageUid = ctx.uid0.text
-        val eventList = visitor.programIndicatorContext.events[programStageUid]
+        val eventList = visitor.programIndicatorContext!!.events[programStageUid]
 
         return if (eventList == null) {
             null
@@ -52,7 +52,7 @@ internal class ProgramItemPsEventdate : ProgramExpressionItem() {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val programStageId = ctx.uid0.text
 
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "$event.${EventTableInfo.Columns.EVENT_DATE}"
             AnalyticsType.ENROLLMENT, null ->

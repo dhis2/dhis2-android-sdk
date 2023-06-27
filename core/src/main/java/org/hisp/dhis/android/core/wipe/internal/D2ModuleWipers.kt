@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,11 @@ import org.hisp.dhis.android.core.common.internal.CommonModuleWiper
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper
 import org.hisp.dhis.android.core.dataelement.internal.DataElementModuleWiper
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleWiper
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreModuleWiper
+import org.hisp.dhis.android.core.datastore.internal.DataStoreModuleWiper
 import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleWiper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceModuleWiper
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleWiper
@@ -49,6 +50,7 @@ import org.hisp.dhis.android.core.option.internal.OptionModuleWiper
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleWiper
 import org.hisp.dhis.android.core.period.internal.PeriodModuleWiper
 import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListModuleWiper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper
 import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper
@@ -73,17 +75,19 @@ internal class D2ModuleWipers @Inject constructor(
     dataValue: DataValueModuleWiper,
     enrollment: EnrollmentModuleWiper,
     event: EventModuleWiper,
+    expressionDimensionItem: ExpressionDimensionItemModuleWiper,
     fileResource: FileResourceModuleWiper,
     importModule: ImportModuleWiper,
     indicator: IndicatorModuleWiper,
     legendSet: LegendSetModuleWiper,
-    localDataStore: LocalDataStoreModuleWiper,
+    dataStore: DataStoreModuleWiper,
     maintenance: MaintenanceModuleWiper,
     map: MapModuleWiper,
     option: OptionModuleWiper,
     organisationUnit: OrganisationUnitModuleWiper,
     period: PeriodModuleWiper,
     program: ProgramModuleWiper,
+    programStageWorkingList: ProgramStageWorkingListModuleWiper,
     useCase: UseCaseModuleWiper,
     relationship: RelationshipModuleWiper,
     resource: ResourceModuleWiper,
@@ -109,17 +113,19 @@ internal class D2ModuleWipers @Inject constructor(
             dataValue,
             enrollment,
             event,
+            expressionDimensionItem,
             fileResource,
             importModule,
             indicator,
             legendSet,
-            localDataStore,
+            dataStore,
             maintenance,
             map,
             option,
             organisationUnit,
             period,
             program,
+            programStageWorkingList,
             useCase,
             relationship,
             resource,

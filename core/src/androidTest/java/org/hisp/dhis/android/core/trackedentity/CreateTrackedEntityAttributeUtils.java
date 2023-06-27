@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -66,6 +66,7 @@ public class CreateTrackedEntityAttributeUtils {
     private static final Integer ORG_UNIT_SCOPE = 0; // false
     private static final Integer UNIQUE = 1; // true
     private static final Integer INHERIT = 0; // false
+    private static final Integer CONFIDENTIAL = 0; // false
 
     public static ContentValues create(long id, String uid, String optionSetUid) {
 
@@ -91,6 +92,7 @@ public class CreateTrackedEntityAttributeUtils {
         values.put(Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
         values.put(Columns.GENERATED, GENERATED);
         values.put(Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
+        values.put(Columns.CONFIDENTIAL, CONFIDENTIAL);
         values.put(Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
         values.put(Columns.UNIQUE, UNIQUE);
         values.put(Columns.INHERIT, INHERIT);

@@ -69,11 +69,11 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
                 .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
 
-        assertThat(tei.trackedEntityAttributeValues().size()).isEqualTo(2);
+        assertThat(tei.trackedEntityAttributeValues().size()).isEqualTo(1);
 
 
-        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("aejWyOfXge6");
-        assertThat(tei.trackedEntityAttributeValues().get(0).value()).isEqualTo("123456");
+        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("cejWyOfXge6");
+        assertThat(tei.trackedEntityAttributeValues().get(0).value()).isEqualTo("654321");
     }
 
     @Test

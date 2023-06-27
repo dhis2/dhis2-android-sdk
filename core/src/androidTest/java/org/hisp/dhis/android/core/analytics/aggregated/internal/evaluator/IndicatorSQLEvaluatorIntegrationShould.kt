@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,42 +27,19 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactoryHelper
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.constant.internal.ConstantStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 internal class IndicatorSQLEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
 
-    private val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
-    private val programIndicatorExecutor = ProgramIndicatorSQLExecutor(
-        ConstantStore.create(databaseAdapter),
-        DataElementStore.create(databaseAdapter),
-        TrackedEntityAttributeStore.create(databaseAdapter),
-        databaseAdapter
-    )
-    private val programIndicatorEvaluator = ProgramIndicatorSQLEvaluator(
-        programIndicatorExecutor
-    )
-    private val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
+    private val analyticExpressionEngineFactory = AnalyticExpressionEngineFactoryHelper.getFactory(d2)
 
     private val indicatorEngine = IndicatorSQLEngine(
         indicatorTypeStore,
-        DataElementStore.create(databaseAdapter),
-        TrackedEntityAttributeStore.create(databaseAdapter),
-        CategoryOptionComboStoreImpl.create(databaseAdapter),
-        ProgramStore.create(databaseAdapter),
-        d2.programModule().programIndicators(),
-        dataElementEvaluator,
-        programIndicatorEvaluator,
-        eventDataItemEvaluator,
-        ConstantStore.create(databaseAdapter),
+        analyticExpressionEngineFactory,
         databaseAdapter
     )
 

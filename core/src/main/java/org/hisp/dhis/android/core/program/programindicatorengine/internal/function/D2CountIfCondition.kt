@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ internal class D2CountIfCondition : ProgramCountFunction() {
 
     override fun countIf(ctx: ExprContext, visitor: CommonExpressionVisitor, value: String?): Boolean {
         val expression = value + trimQuotes(ctx.stringLiteral().text)
-        val result = visitor.programIndicatorExecutor.getProgramIndicatorExpressionValue(expression)
+        val result = visitor.programIndicatorExecutor!!.getProgramIndicatorExpressionValue(expression)
 
         return "true" == result
     }

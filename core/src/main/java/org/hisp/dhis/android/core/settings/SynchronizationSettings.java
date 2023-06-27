@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerExporterVersionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterVersionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.DataSetSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.ProgramSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 @AutoValue
@@ -62,12 +64,19 @@ public abstract class SynchronizationSettings implements CoreObject {
     public abstract TrackerImporterVersion trackerImporterVersion();
 
     @Nullable
+    @ColumnAdapter(TrackerExporterVersionColumnAdapter.class)
+    public abstract TrackerExporterVersion trackerExporterVersion();
+
+    @Nullable
     @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
     public abstract DataSetSettings dataSetSettings();
 
     @Nullable
     @ColumnAdapter(ProgramSyncSettingsColumnAdapter.class)
     public abstract ProgramSettings programSettings();
+
+    @Nullable
+    public abstract Integer fileMaxLengthBytes();
 
     public static SynchronizationSettings create(Cursor cursor) {
         return $AutoValue_SynchronizationSettings.createFromCursor(cursor);
@@ -92,9 +101,13 @@ public abstract class SynchronizationSettings implements CoreObject {
 
         public abstract Builder trackerImporterVersion(TrackerImporterVersion trackerImporterVersion);
 
+        public abstract Builder trackerExporterVersion(TrackerExporterVersion trackerExporterVersion);
+
         public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 
         public abstract Builder programSettings(ProgramSettings programSettings);
+
+        public abstract Builder fileMaxLengthBytes(Integer fileMaxLengthBytes);
 
         public abstract SynchronizationSettings build();
     }

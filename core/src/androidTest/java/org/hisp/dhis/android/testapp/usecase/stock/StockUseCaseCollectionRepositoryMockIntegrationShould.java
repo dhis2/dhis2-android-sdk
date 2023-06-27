@@ -45,10 +45,10 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
     public void find_all() {
         List<StockUseCase> stockUseCases = d2.useCaseModule().stockUseCases()
                 .blockingGet();
-        assertThat(stockUseCases.size()).isEqualTo(0);
+        assertThat(stockUseCases.size()).isEqualTo(1);
     }
 
-    //@Test
+    @Test
     public void filter_by_uid() {
         StockUseCase stockUseCase = d2.useCaseModule().stockUseCases()
                 .uid("IpHINAT79UW")
@@ -57,7 +57,7 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(stockUseCase.getStockOnHand()).isEqualTo("ypCQAFr1a5l");
     }
 
-    //@Test
+    @Test
     public void filter_by_number() {
         List<StockUseCase> stockUseCases = d2.useCaseModule().stockUseCases()
                 .withTransactions()
@@ -66,4 +66,16 @@ public class StockUseCaseCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(stockUseCases.get(0).getTransactions().size()).isEqualTo(3);
     }
 
+    @Test
+    public void return_false_when_use_case_does_not_exist() {
+        boolean stockUseCaseExists = d2.useCaseModule().stockUseCases()
+                .uid("IpHINAT79UW")
+                .blockingExists();
+
+        boolean stockUseCaseDoesNotExist = d2.useCaseModule().stockUseCases()
+                .uid("false_uid")
+                .blockingExists();
+        assertThat(stockUseCaseExists).isEqualTo(true);
+        assertThat(stockUseCaseDoesNotExist).isEqualTo(false);
+    }
 }

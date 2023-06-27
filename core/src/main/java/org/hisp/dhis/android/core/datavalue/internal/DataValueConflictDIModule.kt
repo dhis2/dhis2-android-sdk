@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 
 @Module
@@ -42,5 +43,11 @@ internal class DataValueConflictDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
         return DataValueConflictStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(): Map<String, ChildrenAppender<DataValueConflict>> {
+        return emptyMap()
     }
 }

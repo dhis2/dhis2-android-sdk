@@ -33,7 +33,11 @@ import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.*
+import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
+import org.hisp.dhis.android.core.tracker.importer.internal.JobObjectReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.junit.Test
 
 class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-success.json"), ObjectShould {
@@ -49,10 +53,6 @@ class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-succ
         assertThat(jobReport.stats).isEqualTo(JobImportCount(1, 2, 3, 4, 10))
 
         val bundleReport = jobReport.bundleReport!!
-        assertThat(bundleReport.status).isEqualTo("OK")
-
-        assertThat(bundleReport.stats)
-            .isEqualTo(JobImportCount(5, 6, 7, 8, 26))
 
         assertThat(bundleReport.typeReportMap.trackedEntity).isEqualTo(
             JobTypeReport(

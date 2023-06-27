@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -61,8 +61,6 @@ object RelationshipTypeSamples {
         .id(400L)
         .constraintType(RelationshipConstraintType.TO)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
-        .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-        .trackedEntityType(ObjectWithUid.create(TET_FOR_RELATIONSHIP_3_UID))
         .build()
     var FROM_CONSTRAINT_3 = RelationshipConstraint
         .builder()

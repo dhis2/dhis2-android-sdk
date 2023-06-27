@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,31 +32,23 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201910
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019Q4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period2019SunW25
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -176,6 +168,124 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         assertThat(overrideValue).isEqualTo("2.5")
     }
 
+    @Test
+    fun should_evaluate_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val indicator = createIndicator(numerator = "(${de(dataElement1.uid())}.periodOffset(-2)).periodOffset(+1)")
+
+        val value = evaluateForAbsolute(indicator, periodId = period201912.periodId()!!)
+        assertThat(value).isEqualTo("2.0")
+    }
+
+    @Test
+    fun should_evaluate_relative_period_offset() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("20", dataElementUid = dataElement2.uid(), periodId = period201911.periodId()!!)
+        createDataValue("30", dataElementUid = dataElement2.uid(), periodId = period201912.periodId()!!)
+
+        val expression = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}.periodOffset(-1)"
+        val indicator = createIndicator(numerator = expression)
+
+        val value = evaluateForThisMonth(indicator)
+        assertThat(value).isEqualTo("23.0")
+    }
+
+    @Test
+    fun should_evaluate_aggregation_type_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        val sumIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(SUM)")
+        val sumResult = evaluateForAbsolute(sumIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(sumResult).isEqualTo("5.0")
+
+        val avgIndicator = createIndicator(numerator = "${de(dataElement1.uid())}.aggregationType(AVERAGE)")
+        val avgResult = evaluateForAbsolute(avgIndicator, periodId = period2019Q4.periodId()!!)
+        assertThat(avgResult).isEqualTo("2.5")
+    }
+
+    @Test
+    fun should_evaluate_min_date_function() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
+        createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+
+        mapOf(
+            "${de(dataElement1.uid())}.minDate(2019-10-05)" to "12.0",
+            "${de(dataElement1.uid())}.maxDate(2019-12-01)" to "6.0",
+            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0",
+        ).forEach { (numerator, expected) ->
+            val indicator = createIndicator(numerator = numerator)
+            val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_yearly_period_count_item() {
+        val indicator = createIndicator(numerator = "[yearlyPeriodCount]")
+
+        mapOf(
+            period201910 to "12.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "52.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_period_in_year() {
+        val indicator = createIndicator(numerator = "[periodInYear]")
+
+        mapOf(
+            period201910 to "10.0",
+            period2019Q4 to "4.0",
+            period2019SunW25 to "25.0"
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_year_to_date() {
+        createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
+        createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
+        createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
+        createDataValue("16", dataElementUid = dataElement1.uid(), periodId = period202001.periodId()!!)
+
+        val indicator = createIndicator(numerator = "${de(dataElement1.uid())}.yearToDate()")
+
+        mapOf(
+            period201910 to "2.0",
+            period201911 to "6.0",
+            period201912 to "14.0",
+            period202001 to "16.0",
+        ).forEach { (period, expected) ->
+            val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
+            assertThat(result).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun should_evaluate_null_literal() {
+        val indicator = createIndicator(numerator = "firstNonNull(null, 4, 2)")
+        val result = evaluateForThisMonth(indicator)
+        assertThat(result).isEqualTo("4.0")
+    }
+
+    @Test
+    fun should_evaluate_missing_values() {
+        val indicator = createIndicator(numerator = "${de(dataElement1.uid())} / ${de(dataElement2.uid())}")
+        val result = evaluateForThisMonth(indicator)
+        assertThat(result).isEqualTo("0.0")
+    }
+
     private fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT
@@ -244,98 +354,5 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         indicatorStore.updateOrInsert(indicator)
 
         return indicator
-    }
-
-    private fun createDataValue(
-        value: String,
-        dataElementUid: String = dataElement1.uid(),
-        orgunitUid: String = orgunitParent.uid(),
-        periodId: String = period201912.periodId()!!
-    ) {
-        val dataValue = DataValue.builder()
-            .value(value)
-            .dataElement(dataElementUid)
-            .period(periodId)
-            .organisationUnit(orgunitUid)
-            .categoryOptionCombo(categoryOptionCombo.uid())
-            .attributeOptionCombo(attributeOptionCombo.uid())
-            .build()
-
-        dataValueStore.insert(dataValue)
-    }
-
-    private fun createEventAndValue(
-        value: String,
-        dataElementUid: String,
-        enrollmentUid: String? = null
-    ) {
-        val event = Event.builder()
-            .uid(generator.generate())
-            .eventDate(period201912.startDate())
-            .enrollment(enrollmentUid)
-            .program(program.uid())
-            .programStage(programStage1.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .deleted(false)
-            .build()
-
-        eventStore.insert(event)
-
-        val dataValue = TrackedEntityDataValue.builder()
-            .event(event.uid())
-            .dataElement(dataElementUid)
-            .value(value)
-            .build()
-
-        trackedEntityDataValueStore.insert(dataValue)
-    }
-
-    private fun createTEIAndAttribute(
-        value: String?,
-        attributeUid: String
-    ) {
-        val tei = TrackedEntityInstance.builder()
-            .uid(generator.generate())
-            .trackedEntityType(trackedEntityType.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .deleted(false)
-            .build()
-
-        trackedEntityStore.insert(tei)
-
-        val enrollment = Enrollment.builder()
-            .uid(generator.generate())
-            .trackedEntityInstance(tei.uid())
-            .organisationUnit(orgunitChild1.uid())
-            .program(program.uid())
-            .deleted(false)
-            .build()
-
-        enrollmentStore.insert(enrollment)
-
-        val attributeValue = TrackedEntityAttributeValue.builder()
-            .trackedEntityInstance(tei.uid())
-            .trackedEntityAttribute(attributeUid)
-            .value(value)
-            .build()
-
-        trackedEntityAttributeValueStore.insert(attributeValue)
-        createEventAndValue("0", dataElement1.uid(), enrollment.uid())
-    }
-
-    private fun de(dataElementUid: String): String {
-        return "#{$dataElementUid}"
-    }
-
-    private fun eventDE(programUid: String, dataElementUid: String): String {
-        return "D{$programUid.$dataElementUid}"
-    }
-
-    private fun eventAtt(programUid: String, attributeUid: String): String {
-        return "A{$programUid.$attributeUid}"
-    }
-
-    private fun cons(constantUid: String): String {
-        return "C{$constantUid}"
     }
 }

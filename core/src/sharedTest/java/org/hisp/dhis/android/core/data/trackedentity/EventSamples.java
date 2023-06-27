@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,7 @@ public class EventSamples {
                 .status(EventStatus.ACTIVE)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[23.23, 21.21]").build())
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
+                .completedBy("system")
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
                 .attributeOptionCombo(attributeOptionCombo)
                 .syncState(State.TO_POST)

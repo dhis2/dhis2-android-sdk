@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ internal class VProgramStageId : ProgramExpressionItem() {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "${ProgramIndicatorSQLUtils.event}.${EventTableInfo.Columns.PROGRAM_STAGE}"
             AnalyticsType.ENROLLMENT, null ->

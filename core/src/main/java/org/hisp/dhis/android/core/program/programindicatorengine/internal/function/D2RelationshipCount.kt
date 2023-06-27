@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ internal class D2RelationshipCount : ExpressionItem {
 
         val rTypeUid = ctx.uid0?.text
 
-        val queries = getQueries(visitor.programIndicatorSQLContext.programIndicator)
+        val queries = getQueries(visitor.programIndicatorSQLContext!!.programIndicator)
 
         return "(SELECT COUNT(*) " +
             "FROM ${RelationshipItemTableInfo.TABLE_INFO.name()} $riAlias " +

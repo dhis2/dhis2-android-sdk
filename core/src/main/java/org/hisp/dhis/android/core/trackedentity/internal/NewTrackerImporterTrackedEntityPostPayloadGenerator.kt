@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTranckedEntityTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
@@ -104,7 +104,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         tetAttributeMap: Map<String, List<String>>
     ) {
         if (instance.syncState() != State.SYNCED) {
-            val transformed = NewTrackerImporterTranckedEntityTransformer.transform(instance, tetAttributeMap)
+            val transformed = NewTrackerImporterTrackedEntityTransformer.transform(instance, tetAttributeMap)
 
             transformed.let {
                 when (it.deleted()) {

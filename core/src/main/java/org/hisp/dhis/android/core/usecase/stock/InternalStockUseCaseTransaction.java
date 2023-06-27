@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
 
     @Nullable
     @JsonProperty()
-    public abstract String stockCorrected();
+    public abstract String stockCount();
 
     public static InternalStockUseCaseTransaction create(Cursor cursor) {
         return AutoValue_InternalStockUseCaseTransaction.createFromCursor(cursor);
@@ -100,7 +100,7 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
 
         public abstract Builder stockDiscarded(String stockDiscarded);
 
-        public abstract Builder stockCorrected(String stockCorrected);
+        public abstract Builder stockCount(String stockCount);
 
         public abstract InternalStockUseCaseTransaction build();
     }

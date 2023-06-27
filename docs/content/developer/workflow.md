@@ -143,6 +143,7 @@ Based on that, metadata sync includes the following elements:
 | OptionGroups                  | Only if server is greater than 2.29 |
 | EventFilters                  | Those related to downloaded programs |
 | TrackedEntityInstanceFilters  | Those related to downloaded programs |
+| ProgramStageWorkingList       | Those related to downloaded programs |
 | DataSet                       | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
 | Validation rules              | Validation rules associated to the dataSets |
 | OrganisationUnit              | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
@@ -340,6 +341,7 @@ Additionally, the repository offers different strategies to fetch data:
 
 - `byQuery()`. Search tracked entity instances with **any** attribute
   matching the query.
+- `byDataValue()`. Search tracked entity instances based on the values of their events. This filter is usually used along with `programStage()` filter.
 - `byProgram()`. Filter by enrollment program. Only one program can be
   specified.
 - `byOrgUnits()`. Filter by tracked entity instance organisation units.
@@ -394,13 +396,30 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
 In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntityInstanceQuery repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
 
 
-*Working lists / Tracked entity instance filters*
+ ### Working lists / Tracker filters
 
-Tracked entity instance filters are a predefined set of search parameters. They are defined in the server and can be used to create task-oriented filters for end-users.
+There are three concepts related to building a predifined filter for tracker objects:
+
+- **TrackedEntityInstanceFilters**: they define filters to be used against TrackedEntity objects and have some limited capabilities to filter by event-related data, such as eventDate or eventStatus.
+- **EventFilters**: they define filters to be used against Event objects.
+- **ProgramStageWorkingList**: they define filters to be used against TrackedEntity objects and they add support to filter by event-related data. It is mandatory to specify a particular ProgramStage.
+
+As usual, they have their own collection repository and can be applied in "query" repositories. For example:
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceFilters()
-    .[ filters ]
+// Get the filters
+List<TrackedEntityInstanceFilter> filters = d2.trackedEntityModule().trackedEntityInstanceFilters().blockingGet();
+List<EventFilter> filters = d2.eventModule().eventFilters().blockingGet();
+List<ProgramStageWorkingList> workingLists = d2.programModule().programStageWorkingLists().blockingGet();
+
+// Apply the filters
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .byTrackedEntityInstanceFilter().eq("filterUid")
+    .byProgramStageWorkingList().eq("workingListUid")
+    .get()
+
+d2.eventModule().eventQuery()
+    .byEventFilter().eq("filterUid")
     .get();
 ```
 

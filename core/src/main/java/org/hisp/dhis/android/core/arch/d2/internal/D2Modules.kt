@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreModule
 import org.hisp.dhis.android.core.datavalue.DataValueModule
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.event.EventModule
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
@@ -71,6 +72,7 @@ internal class D2Modules @Inject constructor(
     val dataValue: DataValueModule,
     val enrollment: EnrollmentModule,
     val event: EventModule,
+    val expressionDimensionItem: ExpressionDimensionItemModule,
     val fileResource: FileResourceModule,
     val importModule: ImportModule,
     val indicator: IndicatorModule,

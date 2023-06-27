@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import android.annotation.SuppressLint
 import dagger.Reusable
 import io.reactivex.Completable
 import javax.inject.Inject
@@ -39,14 +40,17 @@ internal class SettingModuleDownloader @Inject constructor(
     private val synchronizationSettingCall: SynchronizationSettingCall,
     private val analyticsSettingCall: AnalyticsSettingCall,
     private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall
+    private val appearanceSettingCall: AppearanceSettingCall,
+    private val latestAppVersionCall: LatestAppVersionCall
 ) : UntypedModuleDownloader {
 
+    @SuppressLint("CheckResult")
     override fun downloadMetadata(): Completable {
         return Completable.fromAction {
             downloadFromSettingsApp().blockingAwait()
             userSettingsCall.download().blockingGet()
             systemSettingCall.download().blockingGet()
+            latestAppVersionCall.getCompletable(false).blockingAwait()
         }
     }
 

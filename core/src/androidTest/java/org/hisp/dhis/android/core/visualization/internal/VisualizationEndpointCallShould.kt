@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,8 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
 
-        dhis2MockServer.enqueueMockResponse("visualization/visualizations.json")
+        dhis2MockServer.enqueueMockResponse("visualization/visualizations_1.json")
+        dhis2MockServer.enqueueMockResponse("visualization/visualizations_2.json")
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
 
         var visualizations = visualizationsSingle.blockingGet()

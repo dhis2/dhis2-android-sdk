@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -59,15 +59,17 @@ class ChunkedSecureStore @Inject constructor(private val internalStore: SecureSt
     }
 
     override fun removeData(key: String) {
-        val len = getLen(key)
-        if (len == null) {
-            internalStore.removeData(key)
-        } else {
-            (0 until len).forEach {
-                internalStore.removeData(chunkKey(key, it))
+        allKeys
+            .filter {
+                it == key || it == lenKey(key) || chunkKeyRegex(key).matches(it)
             }
-            internalStore.removeData(lenKey(key))
-        }
+            .forEach {
+                internalStore.removeData(it)
+            }
+    }
+
+    override fun getAllKeys(): MutableSet<String> {
+        return internalStore.allKeys
     }
 
     private fun getLen(key: String): Int? {
@@ -85,5 +87,9 @@ class ChunkedSecureStore @Inject constructor(private val internalStore: SecureSt
 
     private fun chunkKey(key: String, i: Int): String {
         return "${key}_[$i]_"
+    }
+
+    private fun chunkKeyRegex(key: String): Regex {
+        return "${key}_\\[\\d+]_".toRegex()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ internal class RxAPICallExecutorImpl @Inject constructor(
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {
         var d2Error =
             if (throwable is D2Error) throwable
-            else errorMapper.mapRetrofitException(throwable, errorMapper.rxObjectErrorBuilder)
+            else errorMapper.mapRetrofitException(throwable, errorMapper.getBaseErrorBuilder())
         if (userAccountDisabledErrorCatcher.isUserAccountLocked(throwable)) {
             val errorCode = userAccountDisabledErrorCatcher.catchError(throwable)
             d2Error = d2Error.toBuilder().errorCode(errorCode).build()

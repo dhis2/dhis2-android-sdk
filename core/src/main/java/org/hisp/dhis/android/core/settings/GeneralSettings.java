@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -144,7 +144,6 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder smsResultSender(String smsGateway);
 
         public abstract Builder matomoID(Integer matomoID);
-
         public abstract Builder matomoURL(String matomoURL);
 
         public abstract Builder allowScreenCapture(Boolean allowScreenCapture);

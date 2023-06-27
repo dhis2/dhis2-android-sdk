@@ -46,6 +46,7 @@ class NewTrackerImporterEventShould : BaseObjectShould("event/new_tracker_import
         assertThat(event.program()).isEqualTo("IpHINAT79UW")
         assertThat(event.programStage()).isEqualTo("A03MvHHogjR")
         assertThat(event.enrollment()).isEqualTo("KpknKHptul0")
+        assertThat(event.trackedEntity()).isEqualTo("SBjuNw0Xtkn")
         assertThat(event.geometry()!!.type()).isEqualTo(FeatureType.POINT)
         assertThat(event.geometry()!!.coordinates()).isEqualTo("[-11.618041992187502, 9.508486893003065]")
         assertThat(event.deleted()).isFalse()

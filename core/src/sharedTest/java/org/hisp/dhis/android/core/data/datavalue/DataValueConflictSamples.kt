@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,17 +32,20 @@ import java.text.ParseException
 import java.util.Date
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.imports.ImportStatus
 
 object DataValueConflictSamples {
 
     fun get(): DataValueConflict {
         return DataValueConflict.builder()
             .value("KKK")
-            .attributeOptionCombo("HllvX50cXC0")
-            .categoryOptionCombo("Prlt0C1RF0s")
+            .attributeOptionCombo("bRowv6yZOF2")
+            .categoryOptionCombo("Gmbgme7z9BF")
             .created(getDate("021-06-02T12:38:53.743"))
-            .dataElement("UOlfIjgN8X6")
+            .dataElement("g9eOBujte1U")
             .period("202101")
+            .status(ImportStatus.SUCCESS)
+            .displayDescription("display_description")
             .orgUnit("DiszpKrYNg8").build()
     }
 

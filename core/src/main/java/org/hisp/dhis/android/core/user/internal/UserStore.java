@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.user.UserTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class UserStore {
+public final class UserStore {
     private UserStore() {}
 
     private static StatementBinder<User> BINDER = new IdentifiableStatementBinder<User>() {
@@ -60,6 +60,7 @@ final class UserStore {
             w.bind(17, o.email());
             w.bind(18, o.phoneNumber());
             w.bind(19, o.nationality());
+            w.bind(20, o.username());
         }
     };
 

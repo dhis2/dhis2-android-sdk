@@ -187,17 +187,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
+    public EqLikeInItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
         return byFilter(attributeId);
     }
-    /* TODO: simprints
-    public EqLikeInItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
-        return connectorFactory.eqLikeInItemC(attributeId, filterItem -> {
-            List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
-            attributes.add(filterItem);
-            return scope.toBuilder().attribute(attributes).build();
-        });
-    }*/
 
     /**
      * Add a "filter" to the query. If this method is called several times, conditions are appended with
@@ -211,8 +203,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFilter(String attributeId) {
-        return connectorFactory.eqLikeItemC(attributeId, filterItem -> scopeHelper.addFilter(scope, filterItem));
+    public EqLikeInItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFilter(String attributeId) {
+        return connectorFactory.eqLikeInItemC(attributeId, filterItem -> scopeHelper.addFilter(scope, filterItem));
     }
 
     /**

@@ -363,38 +363,6 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
     }
 
-    /*
-    private fun appendFilterWhere(where: WhereClauseBuilder, items: List<RepositoryScopeFilterItem>) {
-        for (item in items) {
-            val valueStr = when (item.operator()) {
-                FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
-                FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
-                FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
-                FilterItemOperator.IN -> {
-                    // TODO: Review this for Simprints
-                    // They have implemented in with other operator
-                    //val options = item.value().split(";").joinToString { "'${escapeQuotes(it)}'" }
-                    //"($options)"
-                    val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
-                    "($value)"
-                }
-                else -> "'${escapeQuotes(item.value())}'"
-            }
-
-            val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
-                dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
-                dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
-                dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator,
-                getFilterItemValueStr(item)
-            )
-
-            where.appendExistsSubQuery(sub)
-        }
-    }*/
-
     private fun appendExcludeList(where: WhereClauseBuilder, excludeList: Set<String>?) {
         if (!excludeList.isNullOrEmpty()) {
             where.appendNotInKeyStringValues(teiUid, excludeList.toList())

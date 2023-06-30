@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.indicator.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -38,29 +40,29 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 
-import androidx.annotation.NonNull;
 
 public final class IndicatorStore {
 
-    private IndicatorStore() {}
+    private IndicatorStore() {
+    }
 
-    private static StatementBinder<Indicator> BINDER = new NameableStatementBinder<Indicator>() {
+    private static StatementBinder<Indicator> BINDER = new NameableWithStyleStatementBinder<Indicator>() {
         @Override
         public void bindToStatement(@NonNull Indicator o, @NonNull StatementWrapper w) {
             super.bindToStatement(o, w);
-            w.bind(11, o.annualized());
-            w.bind(12, UidsHelper.getUidOrNull(o.indicatorType()));
-            w.bind(13, o.numerator());
-            w.bind(14, o.numeratorDescription());
-            w.bind(15, o.denominator());
-            w.bind(16, o.denominatorDescription());
-            w.bind(17, o.url());
-            w.bind(18, o.decimals());
+            w.bind(13, o.annualized());
+            w.bind(14, UidsHelper.getUidOrNull(o.indicatorType()));
+            w.bind(15, o.numerator());
+            w.bind(16, o.numeratorDescription());
+            w.bind(17, o.denominator());
+            w.bind(18, o.denominatorDescription());
+            w.bind(19, o.url());
+            w.bind(20, o.decimals());
         }
     };
 
     public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER,
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.INSTANCE.getTABLE_INFO(), BINDER,
                 Indicator::create);
     }
 }

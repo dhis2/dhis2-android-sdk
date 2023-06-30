@@ -26,41 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.indicator.IndicatorSamples
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 
-public final class IndicatorTypeTableInfo {
-
-    private IndicatorTypeTableInfo() {
+class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Indicator>(
+    IndicatorStore.create(TestDatabaseAdapterFactory.get()),
+    IndicatorTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): Indicator {
+        return IndicatorSamples.indicator
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "IndicatorType";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableColumns {
-        public final static String NUMBER = "number";
-        public final static String FACTOR = "factor";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    NUMBER,
-                    FACTOR
-            );
-        }
+    override fun buildObjectToUpdate(): Indicator {
+        return IndicatorSamples.indicator.toBuilder()
+            .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
+            .build()
     }
 }

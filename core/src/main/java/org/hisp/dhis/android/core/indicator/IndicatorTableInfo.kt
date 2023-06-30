@@ -26,33 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator.internal;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 
-@RunWith(D2JunitRunner.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
+object IndicatorTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "Indicator"
+        }
 
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(TestDatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
-    }
+    class Columns : NameableWithStyleColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                ANNUALIZED,
+                INDICATOR_TYPE,
+                NUMERATOR,
+                NUMERATOR_DESCRIPTION,
+                DENOMINATOR,
+                DENOMINATOR_DESCRIPTION,
+                URL,
+                DECIMALS
+            )
+        }
 
-    @Override
-    protected Indicator buildObjectToUpdate() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
-                .build();
+        companion object {
+            const val ANNUALIZED = "annualized"
+            const val INDICATOR_TYPE = "indicatorType"
+            const val NUMERATOR = "numerator"
+            const val NUMERATOR_DESCRIPTION = "numeratorDescription"
+            const val DENOMINATOR = "denominator"
+            const val DENOMINATOR_DESCRIPTION = "denominatorDescription"
+            const val URL = "url"
+            const val DECIMALS = "decimals"
+        }
     }
 }

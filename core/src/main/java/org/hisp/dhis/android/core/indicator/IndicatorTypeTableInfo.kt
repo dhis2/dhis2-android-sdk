@@ -26,54 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-public final class IndicatorTableInfo {
+object IndicatorTypeTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "IndicatorType"
+        }
 
-    private IndicatorTableInfo() {
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "Indicator";
+    class Columns : IdentifiableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                NUMBER,
+                FACTOR
+            )
         }
 
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends NameableColumns {
-
-        public final static String ANNUALIZED = "annualized";
-        public final static String INDICATOR_TYPE = "indicatorType";
-        public final static String NUMERATOR = "numerator";
-        public final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-        public final static String DENOMINATOR = "denominator";
-        public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-        public final static String URL = "url";
-        public final static String DECIMALS = "decimals";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    ANNUALIZED,
-                    INDICATOR_TYPE,
-                    NUMERATOR,
-                    NUMERATOR_DESCRIPTION,
-                    DENOMINATOR,
-                    DENOMINATOR_DESCRIPTION,
-                    URL,
-                    DECIMALS
-            );
+        companion object {
+            const val NUMBER = "number"
+            const val FACTOR = "factor"
         }
     }
 }

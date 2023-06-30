@@ -26,39 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.data.indicator
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties
+import org.hisp.dhis.android.core.indicator.Indicator
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 147;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+object IndicatorSamples {
+    val indicator: Indicator
+        get() {
+            val indicatorBuilder = Indicator.builder()
+            fillNameableProperties(indicatorBuilder)
+            indicatorBuilder
+                .id(1L)
+                .annualized(false)
+                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
+                .numerator("#{a.b}")
+                .numeratorDescription("num descr")
+                .denominator("#{c.d}")
+                .denominatorDescription("den descr")
+                .url("dhis2.org")
+                .decimals(2)
+                .style(ObjectStyle.builder().color("#FF0000").icon("circle").build())
+            return indicatorBuilder.build()
+        }
 }

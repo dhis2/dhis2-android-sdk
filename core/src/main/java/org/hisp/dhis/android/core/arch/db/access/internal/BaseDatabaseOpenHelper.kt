@@ -26,29 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import android.content.Context
+import android.content.res.AssetManager
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
+    private val assetManager: AssetManager
+    private val targetVersion: Int
 
-public class IndicatorSamples {
+    init {
+        assetManager = context.assets
+        this.targetVersion = targetVersion
+    }
 
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
+    fun onOpen(databaseAdapter: DatabaseAdapter) {
+        databaseAdapter.setForeignKeyConstraintsEnabled(true)
+        databaseAdapter.enableWriteAheadLogging()
+    }
 
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
-                .id(1L)
-                .annualized(false)
-                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .numerator("#{a.b}")
-                .numeratorDescription("num descr")
-                .denominator("#{c.d}")
-                .denominatorDescription("den descr")
-                .url("dhis2.org")
-                .decimals(2);
-        return indicatorBuilder.build();
+    fun onCreate(databaseAdapter: DatabaseAdapter) {
+        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
+    }
+
+    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
+        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
+    }
+
+    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
+        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
+    }
+
+    companion object {
+        const val VERSION = 148
     }
 }

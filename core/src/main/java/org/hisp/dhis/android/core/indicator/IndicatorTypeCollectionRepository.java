@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
 
+
 import java.util.Map;
 
 import javax.inject.Inject;

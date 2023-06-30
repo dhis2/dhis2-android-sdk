@@ -78,7 +78,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return selectWhere(whereClauseBuilder.build())
     }
 
-    override fun querySingleEventsTrackedEntityDataValues(): Map<String, MutableList<TrackedEntityDataValue>> {
+    override fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
         val queryStatement = "SELECT TrackedEntityDataValue.* " +
             " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
             " WHERE Event.enrollment ISNULL " +
@@ -103,7 +103,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return "(Event." + EventTableInfo.Columns.AGGREGATED_SYNC_STATE + " IN (" + states + "))"
     }
 
-    override fun queryTrackerTrackedEntityDataValues(): Map<String, MutableList<TrackedEntityDataValue>> {
+    override fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
         val queryStatement = "SELECT TrackedEntityDataValue.* " +
             " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
             " WHERE Event.enrollment IS NOT NULL " +
@@ -111,32 +111,21 @@ internal class TrackedEntityDataValueStoreImpl(
         return queryTrackedEntityDataValues(queryStatement)
     }
 
-    override fun queryByUploadableEvents(): Map<String, MutableList<TrackedEntityDataValue>> {
+    override fun queryByUploadableEvents(): Map<String, List<TrackedEntityDataValue>> {
         val queryStatement = "SELECT TrackedEntityDataValue.* " +
             " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
             " WHERE " + eventInUploadableState() + ";"
         return queryTrackedEntityDataValues(queryStatement)
     }
 
-    private fun queryTrackedEntityDataValues(queryStatement: String): Map<String, MutableList<TrackedEntityDataValue>> {
+    private fun queryTrackedEntityDataValues(queryStatement: String): Map<String, List<TrackedEntityDataValue>> {
         val dataValueList: MutableList<TrackedEntityDataValue> = ArrayList()
         val cursor = databaseAdapter.rawQuery(queryStatement)
         addObjectsToCollection(cursor, dataValueList)
-        val dataValuesMap: MutableMap<String, MutableList<TrackedEntityDataValue>> = HashMap()
-        for (dataValue in dataValueList) {
-            addDataValuesToMap(dataValuesMap, dataValue)
-        }
-        return dataValuesMap
-    }
 
-    private fun addDataValuesToMap(
-        dataValuesMap: MutableMap<String, MutableList<TrackedEntityDataValue>>,
-        dataValue: TrackedEntityDataValue
-    ) {
-        if (dataValuesMap[dataValue.event()] == null) {
-            dataValuesMap[dataValue.event()!!] = ArrayList()
-        }
-        dataValuesMap[dataValue.event()]!!.add(dataValue)
+        return dataValueList
+            .filter { it.event() != null }
+            .groupBy { it.event()!! }
     }
 
     companion object {

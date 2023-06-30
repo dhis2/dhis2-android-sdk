@@ -49,7 +49,7 @@ internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private con
             return TrackedEntityInstanceFilterEvenFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    TrackedEntityInstanceEventFilterStore.CHILD_PROJECTION
+                    TrackedEntityInstanceEventFilterStoreImpl.CHILD_PROJECTION
                 ) { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) }
             )
         }

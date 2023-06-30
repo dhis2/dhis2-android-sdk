@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class UserStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<User>(
-    UserStore.create(TestDatabaseAdapterFactory.get()),
+    UserStoreImpl(TestDatabaseAdapterFactory.get()),
     UserTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
 ) {
     override fun buildObject(): User {

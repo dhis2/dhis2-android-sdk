@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl.Companion.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -41,7 +40,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem>(
-    create(TestDatabaseAdapterFactory.get()),
+    RelationshipItemStoreImpl(TestDatabaseAdapterFactory.get()),
     RelationshipItemTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

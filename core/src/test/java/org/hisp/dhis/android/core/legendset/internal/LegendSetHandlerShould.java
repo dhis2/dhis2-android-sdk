@@ -27,11 +27,14 @@
  */
 package org.hisp.dhis.android.core.legendset.internal;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.junit.Before;
@@ -44,20 +47,14 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class LegendSetHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<LegendSet> legendSetStore;
+    private LegendSetStore legendSetStore;
 
     @Mock
-    private HandlerWithTransformer<Legend> legendHandler;
+    private LegendHandler legendHandler;
 
     @Mock
     private Legend legend;
@@ -81,12 +78,14 @@ public class LegendSetHandlerShould {
         legends = new ArrayList<>();
         legends.add(legend);
         when(legendSet.legends()).thenReturn(legends);
+
+        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Insert);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableHandlerImpl<LegendSet> genericHandler = new LegendSetHandler
-                (legendSetStore, null, null);
+        LegendSetHandler genericHandler = new LegendSetHandler
+                (legendSetStore, legendHandler, legendCleaner);
     }
 
     @Test

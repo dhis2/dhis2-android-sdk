@@ -29,18 +29,35 @@ package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.*
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.imports.internal.conflicts.BadAttributePatternConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.EnrollmentHasInvalidProgramConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.EnrollmentNotFoundConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.EventHasInvalidProgramConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.EventHasInvalidProgramStageConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.EventNotFoundConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.FileResourceAlreadyAssignedConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.FileResourceReferenceNotFoundConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidAttributeValueTypeConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidDataValueConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidTrackedEntityTypeConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.LackingEnrollmentCascadeDeleteAuthorityConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.LackingTEICascadeDeleteAuthorityConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.MissingDataElementConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.NonUniqueAttributeConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.TrackedEntityInstanceNotFoundConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
+import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(
-    attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-    dataElementStore: IdentifiableObjectStore<DataElement>,
+    attributeStore: TrackedEntityAttributeStore,
+    dataElementStore: DataElementStore,
     private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
     private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository
 ) {

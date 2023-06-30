@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.map.layer.internal.osm
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 
 @Reusable
 internal class OSMCallFactory @Inject constructor(
-    private val mapLayerHandler: Handler<MapLayer>
+    private val mapLayerHandler: MapLayerHandler
 ) {
 
     fun download(): Single<List<MapLayer>> {

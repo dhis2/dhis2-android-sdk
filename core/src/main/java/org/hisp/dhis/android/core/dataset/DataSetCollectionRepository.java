@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
@@ -51,14 +53,12 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
-
 @Reusable
 public class DataSetCollectionRepository
-            extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
     @Inject
-    DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
+    DataSetCollectionRepository(final DataSetStore store,
                                 final Map<String, ChildrenAppender<DataSet>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

@@ -28,20 +28,17 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
 
 class SynchronizationSettingsHandlerShould {
 
-    private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings> = mock()
-    private val dataSetSettingHandler: Handler<DataSetSetting> = mock()
-    private val programSettingHandler: Handler<ProgramSetting> = mock()
+    private val synchronizationSettingStore: SynchronizationSettingStore = mock()
+    private val dataSetSettingHandler: DataSetSettingHandler = mock()
+    private val programSettingHandler: ProgramSettingHandler = mock()
 
     private val synchronizationSettings: SynchronizationSettings = SynchronizationSettings.builder().build()
 

@@ -75,7 +75,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload()
-        val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter())
+        val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
         var hasTrackedEntities = trackedEntityInstanceStore.count() > 0
         assertThat(hasTrackedEntities).isTrue()
         d2.wipeModule().wipeData()

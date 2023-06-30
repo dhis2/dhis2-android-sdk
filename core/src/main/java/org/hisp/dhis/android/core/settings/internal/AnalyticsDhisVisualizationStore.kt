@@ -28,38 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationTableInfo
 
-@Suppress("MagicNumber")
-internal object AnalyticsDhisVisualizationStore {
-
-    private val BINDER = StatementBinder { o: AnalyticsDhisVisualization, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.scopeUid())
-        w.bind(3, o.scope())
-        w.bind(4, o.groupUid())
-        w.bind(5, o.groupName())
-        w.bind(6, o.name())
-        w.bind(7, o.timestamp())
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AnalyticsDhisVisualization, _: StatementWrapper ->
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: AnalyticsDhisVisualization, _: StatementWrapper -> }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsDhisVisualization> {
-        return objectWithoutUidStore(
-            databaseAdapter, AnalyticsDhisVisualizationTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> AnalyticsDhisVisualization.create(cursor) }
-    }
-}
+internal interface AnalyticsDhisVisualizationStore : ObjectWithoutUidStore<AnalyticsDhisVisualization>

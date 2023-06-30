@@ -31,10 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
 import retrofit2.Retrofit
 
 @Module
@@ -47,13 +43,7 @@ internal class TrackerImporterPackageDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackerJobObject> {
-        return create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<TrackerJobObject>): Handler<TrackerJobObject> {
-        return ObjectWithoutUidHandlerImpl(store)
+    fun store(databaseAdapter: DatabaseAdapter): TrackerJobObjectStore {
+        return TrackerJobObjectStoreImpl(databaseAdapter)
     }
 }

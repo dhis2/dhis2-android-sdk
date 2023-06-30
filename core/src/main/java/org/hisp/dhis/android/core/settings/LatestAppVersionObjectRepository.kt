@@ -29,14 +29,14 @@ package org.hisp.dhis.android.core.settings
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.LatestAppVersionCall
+import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore
 
 @Reusable
 class LatestAppVersionObjectRepository @Inject internal constructor(
-    private val store: ObjectWithoutUidStore<LatestAppVersion>,
+    private val store: LatestAppVersionStore,
     latestAppVersionCall: LatestAppVersionCall
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(latestAppVersionCall),
     ReadOnlyWithDownloadObjectRepository<LatestAppVersion> {

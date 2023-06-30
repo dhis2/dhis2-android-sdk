@@ -32,14 +32,13 @@ import io.reactivex.Single
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 @Reusable
 internal class SynchronizationSettingCall @Inject constructor(
-    private val synchronizationSettingHandler: Handler<SynchronizationSettings>,
+    private val synchronizationSettingHandler: SynchronizationSettingHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,

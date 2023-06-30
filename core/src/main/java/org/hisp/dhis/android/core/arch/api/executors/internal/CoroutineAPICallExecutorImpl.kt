@@ -32,10 +32,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import retrofit2.HttpException
@@ -45,7 +45,7 @@ import retrofit2.Response
 internal class CoroutineAPICallExecutorImpl @Inject constructor(
     private val errorMapper: APIErrorMapper,
     private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher,
-    private val errorStore: ObjectStore<D2Error>,
+    private val errorStore: D2ErrorStore,
     private val databaseAdapter: DatabaseAdapter,
     private val foreignKeyCleaner: ForeignKeyCleaner,
 ) : CoroutineAPICallExecutor {

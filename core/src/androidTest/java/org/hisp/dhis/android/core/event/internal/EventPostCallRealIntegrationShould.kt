@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -59,8 +58,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        eventStore = create(d2.databaseAdapter())
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter())
+        eventStore = EventStoreImpl(d2.databaseAdapter())
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
         val uidGenerator: UidGenerator = UidGeneratorImpl()
         eventUid1 = uidGenerator.generate()
         eventUid2 = uidGenerator.generate()

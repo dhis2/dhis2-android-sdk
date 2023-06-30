@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl.Companion.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -41,7 +40,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<UserOrganisationUnitLink>(
-    create(TestDatabaseAdapterFactory.get()),
+    UserOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
     UserOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
 ) {
     private var linkStore: UserOrganisationUnitLinkStore = store as UserOrganisationUnitLinkStore

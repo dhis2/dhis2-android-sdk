@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -91,7 +91,7 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     fun should_fail_if_unsupported_aggregation_type() {
-        val dataElementStore = DataElementStore.create(databaseAdapter)
+        val dataElementStore = DataElementStoreImpl(databaseAdapter)
         val dataElement = dataElementStore.selectByUid("g9eOBujte1U")!!
 
         val varianceDataElement = dataElement.toBuilder().aggregationType(AggregationType.VARIANCE.name).build()

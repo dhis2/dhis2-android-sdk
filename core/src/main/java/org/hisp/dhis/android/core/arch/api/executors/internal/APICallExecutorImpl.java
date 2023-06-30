@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.arch.api.executors.internal;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl;
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 
 import java.io.IOException;
@@ -50,12 +50,12 @@ import retrofit2.Response;
 @Reusable
 public final class APICallExecutorImpl implements APICallExecutor {
 
-    private final ObjectStore<D2Error> errorStore;
+    private final D2ErrorStore errorStore;
     private final UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher;
     private final APIErrorMapper errorMapper = new APIErrorMapper();
 
     @Inject
-    public APICallExecutorImpl(ObjectStore<D2Error> errorStore,
+    public APICallExecutorImpl(D2ErrorStore errorStore,
                                UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher) {
         this.errorStore = errorStore;
         this.userAccountDisabledErrorCatcher = userAccountDisabledErrorCatcher;
@@ -145,6 +145,6 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     public static APICallExecutor create(DatabaseAdapter databaseAdapter,
                                          UserAccountDisabledErrorCatcher userAccountDisabledErrorCatcher) {
-        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter), userAccountDisabledErrorCatcher);
+        return new APICallExecutorImpl(new D2ErrorStoreImpl(databaseAdapter), userAccountDisabledErrorCatcher);
     }
 }

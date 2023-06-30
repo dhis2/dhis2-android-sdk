@@ -31,15 +31,16 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class MapLayerImageryProviderStoreIntegrationShould : LinkStoreAbstractIntegrationShould<MapLayerImageryProvider>(
-    MapLayerImageryProviderStore.create(TestDatabaseAdapterFactory.get()),
-    MapLayerImageryProviderTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    MapLayerImageryProviderStoreImpl(TestDatabaseAdapterFactory.get()),
+    MapLayerImageryProviderTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
 ) {
 
     override fun addMasterUid(): String {

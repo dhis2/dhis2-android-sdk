@@ -30,18 +30,17 @@ package org.hisp.dhis.android.core.configuration.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.*
+import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 
 @Module
 internal class ConfigurationPackageDIModule {
     @Provides
     @Reusable
-    fun configurationSecureStore(secureStore: InsecureStore): ObjectKeyValueStore<DatabasesConfiguration> {
-        return DatabaseConfigurationInsecureStore.get(secureStore)
+    fun configurationSecureStore(secureStore: InsecureStore): DatabaseConfigurationInsecureStore {
+        return DatabaseConfigurationInsecureStoreImpl(secureStore)
     }
 
     @Provides

@@ -33,7 +33,6 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -41,7 +40,7 @@ import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
 internal class VisualizationCall @Inject constructor(
-    private val handler: Handler<Visualization>,
+    private val handler: VisualizationHandler,
     private val service: VisualizationService,
     private val dhis2VersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader

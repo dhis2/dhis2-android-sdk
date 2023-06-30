@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.program.AnalyticsPeriodBoundarySamples
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -39,7 +38,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 internal class AnalyticsPeriodBoundaryStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<AnalyticsPeriodBoundary>(
-        create(TestDatabaseAdapterFactory.get()), AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
+        AnalyticsPeriodBoundaryStoreImpl(TestDatabaseAdapterFactory.get()), AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {
     override fun buildObject(): AnalyticsPeriodBoundary {

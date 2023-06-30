@@ -46,7 +46,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
 
     private val calendarProvider = CalendarProviderFactory.calendarProvider
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))

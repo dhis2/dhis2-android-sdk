@@ -31,7 +31,6 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval
 @Reusable
 internal class DataApprovalCall @Inject constructor(
     private val service: DataApprovalService,
-    private val handler: Handler<DataApproval>,
+    private val handler: DataApprovalHandler,
     private val apiDownloader: APIDownloader,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner
 ) : QueryCall<DataApproval, DataApprovalQuery> {

@@ -27,22 +27,21 @@
  */
 package org.hisp.dhis.android.core.common.valuetype.rendering.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ValueTypeRenderingHandlerShould {
@@ -51,7 +50,7 @@ public class ValueTypeRenderingHandlerShould {
     private static final String TABLE = "table";
     
     @Mock
-    private HandlerWithTransformer<ValueTypeDeviceRendering> deviceRenderingHandler;
+    private ValueTypeDeviceRenderingHandler deviceRenderingHandler;
     
     @Mock
     private ValueTypeDeviceRendering desktopRenderType;
@@ -63,7 +62,7 @@ public class ValueTypeRenderingHandlerShould {
     private ValueTypeRendering renderType;
 
     // object to test
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+    private ValueTypeRenderingHandler renderTypeHandler;
 
     @Before
     public void setUp() throws Exception {

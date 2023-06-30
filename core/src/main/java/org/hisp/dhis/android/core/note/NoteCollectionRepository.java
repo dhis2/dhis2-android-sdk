@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.note;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
+import org.hisp.dhis.android.core.note.internal.NoteStore;
 
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public final class NoteCollectionRepository
     private final DataStatePropagator dataStatePropagator;
 
     @Inject
-    NoteCollectionRepository(final IdentifiableObjectStore<Note> store,
+    NoteCollectionRepository(final NoteStore store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
                              final RepositoryScope scope,
                              final Transformer<NoteCreateProjection, Note> transformer,

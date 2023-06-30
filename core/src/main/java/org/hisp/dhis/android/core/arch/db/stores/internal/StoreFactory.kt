@@ -30,76 +30,13 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal object StoreFactory {
-
-    @JvmStatic
-    fun <O> objectWithUidStore(
-        databaseAdapter: DatabaseAdapter,
-        tableInfo: TableInfo,
-        binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
-    ): IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
-        val statementBuilder: SQLStatementBuilder =
-            SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf())
-        return IdentifiableObjectStoreImpl(databaseAdapter, statementBuilder, binder, objectFactory)
-    }
-
-    @JvmStatic
-    fun <O : CoreObject> objectStore(
-        databaseAdapter: DatabaseAdapter,
-        tableInfo: TableInfo,
-        binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
-    ): ObjectStore<O> {
-        val statementBuilder: SQLStatementBuilder =
-            SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf())
-        return ObjectStoreImpl(databaseAdapter, statementBuilder, binder, objectFactory)
-    }
-
-    @Suppress("LongParameterList")
-    @JvmStatic
-    fun <O : CoreObject> objectWithoutUidStore(
-        databaseAdapter: DatabaseAdapter,
-        tableInfo: TableInfo,
-        binder: StatementBinder<O>,
-        whereUpdateBinder: WhereStatementBinder<O>,
-        whereDeleteBinder: WhereStatementBinder<O>,
-        objectFactory: (Cursor) -> O
-    ): ObjectWithoutUidStore<O> {
-        val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
-            tableInfo.name(), tableInfo.columns().all(),
-            tableInfo.columns().whereUpdate()
-        )
-        return ObjectWithoutUidStoreImpl(
-            databaseAdapter, statementBuilder, binder, whereUpdateBinder,
-            whereDeleteBinder, objectFactory
-        )
-    }
-
-    @JvmStatic
-    fun <O : CoreObject> linkStore(
-        databaseAdapter: DatabaseAdapter,
-        tableInfo: TableInfo,
-        masterColumn: String,
-        binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
-    ): LinkStore<O> {
-        val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
-            tableInfo.name(), tableInfo.columns().all(),
-            tableInfo.columns().whereUpdate()
-        )
-        return LinkStoreImpl(databaseAdapter, statementBuilder, masterColumn, binder, objectFactory)
-    }
 
     @JvmStatic
     fun <P : ObjectWithUidInterface, C : ObjectWithUidInterface> linkChildStore(

@@ -32,22 +32,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
 @Module
 internal class ProgramConfigurationSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramConfigurationSetting> {
-        return ProgramConfigurationSettingStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<ProgramConfigurationSetting>): Handler<ProgramConfigurationSetting> {
-        return ProgramConfigurationSettingHandler(store)
+    fun store(databaseAdapter: DatabaseAdapter): ProgramConfigurationSettingStore {
+        return ProgramConfigurationSettingStoreImpl(databaseAdapter)
     }
 }

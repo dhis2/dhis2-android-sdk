@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -44,11 +43,12 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
 @Reusable
 class RelationshipTypeCollectionRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<RelationshipType>,
+    store: RelationshipTypeStore,
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
@@ -58,7 +58,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     store,
     childrenAppenders,
     scope,
-    FilterConnectorFactory<RelationshipTypeCollectionRepository>(scope) { s: RepositoryScope ->
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
         RelationshipTypeCollectionRepository(
             store, teiStore, enrollmentStore, eventStore,
             childrenAppenders, s
@@ -147,8 +147,10 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         return when (relationshipEntityType) {
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE
+
             RelationshipEntityType.PROGRAM_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.PROGRAM
+
             RelationshipEntityType.PROGRAM_STAGE_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE
         }

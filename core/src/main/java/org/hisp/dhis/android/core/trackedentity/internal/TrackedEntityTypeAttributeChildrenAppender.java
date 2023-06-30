@@ -55,7 +55,7 @@ public final class TrackedEntityTypeAttributeChildrenAppender extends ChildrenAp
         return new TrackedEntityTypeAttributeChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        TrackedEntityTypeAttributeStore.CHILD_PROJECTION,
+                        TrackedEntityTypeAttributeStoreImpl.Companion.getCHILD_PROJECTION(),
                         TrackedEntityTypeAttribute::create)
         );
     }

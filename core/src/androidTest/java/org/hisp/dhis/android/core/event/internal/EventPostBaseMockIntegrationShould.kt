@@ -31,9 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
@@ -55,7 +54,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     private val event4Id = "event4Id"
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
     fun setUp() {
@@ -169,7 +168,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
         eventStore.insert(event3)
         eventStore.insert(event4)
 
-        val tedvStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
+        val tedvStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
         tedvStore.insert(dataValue1)
         tedvStore.insert(dataValue2)
         tedvStore.insert(dataValue3)
@@ -185,9 +184,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
         @JvmStatic
         fun setUpClass() {
             BaseMockIntegrationTestMetadataEnqueable.setUpClass()
-            eventStore = create(
-                objects.databaseAdapter
-            )
+            eventStore = EventStoreImpl(objects.databaseAdapter)
         }
     }
 }

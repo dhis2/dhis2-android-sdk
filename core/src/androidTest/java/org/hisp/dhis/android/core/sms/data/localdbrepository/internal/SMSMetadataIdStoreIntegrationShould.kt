@@ -35,7 +35,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SMSMetadataIdStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSMetadataId>(
-    SMSMetadataIdStore.create(TestDatabaseAdapterFactory.get()),
+    SMSMetadataIdStoreImpl(TestDatabaseAdapterFactory.get()),
     SMSMetadataIdTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

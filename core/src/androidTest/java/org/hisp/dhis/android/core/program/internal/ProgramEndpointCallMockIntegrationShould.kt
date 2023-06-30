@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
@@ -56,7 +56,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_when_call() {
-        val store = ProgramStore.create(databaseAdapter)
+        val store = ProgramStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(3)
         assertThat(store.selectByUid(programUid)!!.toBuilder().id(null).build())
@@ -65,7 +65,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_rule_variables_on_call() {
-        val store = ProgramRuleVariableStore.create(databaseAdapter)
+        val store = ProgramRuleVariableStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("omrL0gtPpDL")).isEqualTo(ProgramRuleVariableSamples.getHemoglobin())
@@ -73,7 +73,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_tracker_entity_attributes_when_call() {
-        val store = ProgramTrackedEntityAttributeStore.create(databaseAdapter)
+        val store = ProgramTrackedEntityAttributeStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("YhqgQ6Iy4c4"))
@@ -82,7 +82,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun not_persist_relationship_type_when_call() {
-        val store = RelationshipTypeStore.create(databaseAdapter)
+        val store = RelationshipTypeStoreImpl(databaseAdapter)
         assertThat(store.count()).isEqualTo(0)
     }
 

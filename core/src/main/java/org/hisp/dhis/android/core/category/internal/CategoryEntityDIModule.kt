@@ -31,26 +31,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.internal.CategoryStore.create
 
 @Module
-internal class CategoryEntityDIModule : IdentifiableStoreProvider<Category> {
+internal class CategoryEntityDIModule {
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Category> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): CategoryStore {
+        return CategoryStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(store: IdentifiableObjectStore<Category>): Handler<Category> {
-        return IdentifiableHandlerImpl(store)
+    fun handler(store: CategoryStore): CategoryHandler {
+        return CategoryHandler(store)
     }
 
     @Provides

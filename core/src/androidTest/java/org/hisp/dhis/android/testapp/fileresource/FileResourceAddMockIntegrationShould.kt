@@ -66,7 +66,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
         assertThat(savedFile.exists()).isTrue()
 
         savedFile.delete()
-        FileResourceStoreImpl.create(databaseAdapter).delete(fileResource.uid()!!)
+        FileResourceStoreImpl(databaseAdapter).delete(fileResource.uid()!!)
     }
 
     private fun storeFile(): File {

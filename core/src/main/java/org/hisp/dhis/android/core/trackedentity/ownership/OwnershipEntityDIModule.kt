@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import retrofit2.Retrofit
 
 @Module
@@ -52,19 +50,13 @@ internal class OwnershipEntityDIModule {
 
     @Provides
     @Reusable
-    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return ProgramTempOwnerStore.create(databaseAdapter)
+    fun programTempOwnerStore(databaseAdapter: DatabaseAdapter): ProgramTempOwnerStore {
+        return ProgramTempOwnerStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return ProgramOwnerStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun programOwnerHandler(store: ObjectWithoutUidStore<ProgramOwner>): HandlerWithTransformer<ProgramOwner> {
-        return ProgramOwnerHandler(store)
+    fun programOwnerStore(databaseAdapter: DatabaseAdapter): ProgramOwnerStore {
+        return ProgramOwnerStoreImpl(databaseAdapter)
     }
 }

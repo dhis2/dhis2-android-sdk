@@ -71,7 +71,7 @@ internal class Migration260(
             ?.filter { it.isFile }
             ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
 
-        val fileResourcesStore = FileResourceStoreImpl.create(databaseAdapter)
+        val fileResourcesStore = FileResourceStoreImpl(databaseAdapter)
         val fileResources = fileResourcesStore.selectAll()
         fileResources.forEach {
             val newPath = it.path()?.replace(
@@ -95,7 +95,7 @@ internal class Migration260(
         val keyWaitForResult = "wait_for_result"
 
         val smsPrefs = context.getSharedPreferences(configFile, Context.MODE_PRIVATE)
-        val smsConfigStore = SMSConfigStoreImpl.create(databaseAdapter)
+        val smsConfigStore = SMSConfigStoreImpl(databaseAdapter)
 
         smsPrefs.getBoolean(keyModuleEnabled, false).let {
             smsConfigStore.set(SMSConfigKey.MODULE_ENABLED, it.toString())

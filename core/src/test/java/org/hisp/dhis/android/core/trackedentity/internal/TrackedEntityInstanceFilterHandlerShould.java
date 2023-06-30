@@ -35,13 +35,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter;
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -59,16 +56,16 @@ import java.util.List;
 public class TrackedEntityInstanceFilterHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<TrackedEntityInstanceFilter> trackedEntityInstanceFilterStore;
+    private TrackedEntityInstanceFilterStore trackedEntityInstanceFilterStore;
 
     @Mock
     private ObjectStyle objectStyle;
 
     @Mock
-    private HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
+    private TrackedEntityInstanceEventFilterHandler trackedEntityInstanceEventFilterHandler;
 
     @Mock
-    private HandlerWithTransformer<AttributeValueFilter> attributeValueFilterHandler;
+    private AttributeValueFilterHandler attributeValueFilterHandler;
 
     @Mock
     private TrackedEntityInstanceEventFilter eventFilter;

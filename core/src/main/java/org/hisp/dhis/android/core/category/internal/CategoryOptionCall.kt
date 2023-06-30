@@ -32,7 +32,6 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 
 @Reusable
 internal class CategoryOptionCall @Inject constructor(
-    private val handler: Handler<CategoryOption>,
+    private val handler: CategoryOptionHandler,
     private val service: CategoryOptionService,
     private val apiDownloader: APIDownloader
 ) : UidsCall<CategoryOption> {

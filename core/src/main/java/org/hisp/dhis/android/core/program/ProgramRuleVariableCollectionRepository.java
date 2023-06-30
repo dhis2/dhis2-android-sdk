@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableStore;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
         <ProgramRuleVariable, ProgramRuleVariableCollectionRepository> {
 
     @Inject
-    ProgramRuleVariableCollectionRepository(final IdentifiableObjectStore<ProgramRuleVariable> store,
+    ProgramRuleVariableCollectionRepository(final ProgramRuleVariableStore store,
                                             final Map<String, ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
                                             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

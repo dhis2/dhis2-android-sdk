@@ -31,7 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
 
 @Module
@@ -45,7 +44,7 @@ internal class AggregatedDataPackageDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AggregatedDataSync> {
-        return AggregatedDataSyncStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): AggregatedDataSyncStore {
+        return AggregatedDataSyncStoreImpl(databaseAdapter)
     }
 }

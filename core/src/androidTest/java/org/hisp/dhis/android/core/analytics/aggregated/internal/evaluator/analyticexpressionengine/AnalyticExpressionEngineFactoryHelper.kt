@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataEl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.constant.internal.ConstantStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 
 internal object AnalyticExpressionEngineFactoryHelper {
 
@@ -46,9 +46,9 @@ internal object AnalyticExpressionEngineFactoryHelper {
         val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
 
         val programIndicatorExecutor = ProgramIndicatorSQLExecutor(
-            ConstantStore.create(databaseAdapter),
-            DataElementStore.create(databaseAdapter),
-            TrackedEntityAttributeStore.create(databaseAdapter),
+            ConstantStoreImpl(databaseAdapter),
+            DataElementStoreImpl(databaseAdapter),
+            TrackedEntityAttributeStoreImpl(databaseAdapter),
             databaseAdapter
         )
 
@@ -59,15 +59,15 @@ internal object AnalyticExpressionEngineFactoryHelper {
         val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
 
         return AnalyticExpressionEngineFactory(
-            DataElementStore.create(databaseAdapter),
-            TrackedEntityAttributeStore.create(databaseAdapter),
-            CategoryOptionComboStoreImpl.create(databaseAdapter),
-            ProgramStore.create(databaseAdapter),
+            DataElementStoreImpl(databaseAdapter),
+            TrackedEntityAttributeStoreImpl(databaseAdapter),
+            CategoryOptionComboStoreImpl(databaseAdapter),
+            ProgramStoreImpl(databaseAdapter),
             d2.programModule().programIndicators(),
             dataElementEvaluator,
             programIndicatorEvaluator,
             eventDataItemEvaluator,
-            ConstantStore.create(databaseAdapter),
+            ConstantStoreImpl(databaseAdapter),
         )
     }
 }

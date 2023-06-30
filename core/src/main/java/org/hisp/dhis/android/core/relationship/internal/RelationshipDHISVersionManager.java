@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -50,10 +49,10 @@ import dagger.Reusable;
 @Reusable
 public class RelationshipDHISVersionManager {
 
-    private final IdentifiableObjectStore<RelationshipType> relationshipTypeStore;
+    private final RelationshipTypeStore relationshipTypeStore;
 
     @Inject
-    public RelationshipDHISVersionManager(IdentifiableObjectStore<RelationshipType> relationshipTypeStore) {
+    public RelationshipDHISVersionManager(RelationshipTypeStore relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }
 

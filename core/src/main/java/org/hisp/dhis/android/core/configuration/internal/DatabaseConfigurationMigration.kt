@@ -36,14 +36,13 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
     private val context: Context,
-    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
     private val credentialsStore: CredentialsSecureStore,
     private val insecureStore: InsecureStore,
     private val nameGenerator: DatabaseNameGenerator,
@@ -149,7 +148,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
     }
 
     private fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
-        val store = ConfigurationStore.create(databaseAdapter)
+        val store = ConfigurationStoreImpl(databaseAdapter)
         return store.selectFirst()?.serverUrl()
     }
 

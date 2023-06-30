@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +39,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ProgramSettingCallShould {
-    private val handler: Handler<ProgramSetting> = mock()
+    private val handler: ProgramSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val programSettingSingle: Single<ProgramSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()

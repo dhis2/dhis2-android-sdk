@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal interface ParentPeriodGenerator {
+interface ParentPeriodGenerator {
     fun generatePeriods(): List<Period>
     fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
     fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>

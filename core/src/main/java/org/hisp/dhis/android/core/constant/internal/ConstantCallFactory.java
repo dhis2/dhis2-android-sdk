@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceC
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.constant.Constant;
 
 import javax.inject.Inject;
@@ -47,13 +46,13 @@ import dagger.Reusable;
 final class ConstantCallFactory extends ListCallFactoryImpl<Constant> {
 
     private final ConstantService service;
-    private final Handler<Constant> handler;
+    private final ConstantHandler handler;
 
     @Inject
     ConstantCallFactory(GenericCallData data,
                         APICallExecutor apiCallExecutor,
                         ConstantService service,
-                        Handler<Constant> handler) {
+                        ConstantHandler handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

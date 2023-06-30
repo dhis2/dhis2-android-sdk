@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -85,7 +85,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun set_state_to_delete_if_state_is_not_to_post() {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR)
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet(), State.ERROR)
 
         assertThat(repository.blockingExists()).isTrue()
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR)
@@ -100,7 +100,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun set_not_deleted_when_updating_deleted_value() {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE)
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE)
         repository.blockingDelete()
 
         assertThat(repository.blockingGet().deleted()).isTrue()

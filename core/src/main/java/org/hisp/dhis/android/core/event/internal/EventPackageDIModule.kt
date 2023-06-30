@@ -25,55 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.indicator.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventModule
+import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorModule;
-import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.indicator.datasetindicatorengine.IndicatorEngineEntityDIModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class,
-        IndicatorEngineEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
-
+@Module(
+    includes = [
+        EventEntityDIModule::class,
+        EventFilterEntityDIModule::class,
+        EventDataFilterEntityDIModule::class,
+        EventSyncEntityDIModule::class,
+        EventQueryEntityDIModule::class
+    ]
+)
+internal class EventPackageDIModule {
     @Provides
     @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
+    fun service(retrofit: Retrofit): EventService {
+        return retrofit.create(EventService::class.java)
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
+    fun module(impl: EventModuleImpl): EventModule {
+        return impl
     }
 
     @Provides
     @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
+    fun trackedEntityInstanceFilterCall(impl: EventFilterCall): UidsCall<EventFilter> {
+        return impl
     }
 
     @Provides
     @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorModule module(IndicatorModuleImpl impl) {
-        return impl;
+    fun eventFilterService(retrofit: Retrofit): EventFilterService {
+        return retrofit.create(EventFilterService::class.java)
     }
 }

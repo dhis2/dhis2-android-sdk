@@ -25,49 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        EventEntityDIModule.class,
-        EventFilterEntityDIModule.class,
-        EventDataFilterEntityDIModule.class,
-        EventSyncEntityDIModule.class,
-        EventQueryEntityDIModule.class
-})
-public final class EventPackageDIModule {
-
+@Module(includes = [DataApprovalEntityDIModule::class])
+internal class DataApprovalPackageDIModule {
     @Provides
     @Reusable
-    EventService service(Retrofit retrofit) {
-        return retrofit.create(EventService.class);
+    fun dataApprovalCallFactory(dataApprovalCall: DataApprovalCall): QueryCall<DataApproval, DataApprovalQuery> {
+        return dataApprovalCall
     }
 
     @Provides
     @Reusable
-    EventModule module(EventModuleImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    EventFilterService eventFilterService(Retrofit retrofit) {
-        return retrofit.create(EventFilterService.class);
+    fun dataApprovalService(retrofit: Retrofit): DataApprovalService {
+        return retrofit.create(DataApprovalService::class.java)
     }
 }

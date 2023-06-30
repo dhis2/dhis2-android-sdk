@@ -25,40 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal
 
-package org.hisp.dhis.android.core.legendset.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.LegendSetModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
-
+@Module(
+    includes = [
+        LegendEntityDIModule::class,
+        LegendSetEntityDIModule::class,
+        IndicatorLegendSetEntityDIModule::class
+    ]
+)
+internal class LegendPackageDIModule {
     @Provides
     @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    fun module(impl: LegendSetModuleImpl): LegendSetModule {
+        return impl
     }
 
     @Provides
     @Reusable
-    UidsCall<LegendSet> legendSetCall(LegendSetCall impl) {
-        return impl;
+    fun legendSetCall(impl: LegendSetCall): UidsCall<LegendSet> {
+        return impl
     }
 
     @Provides
     @Reusable
-    LegendSetService legendSetService(Retrofit retrofit) {
-        return retrofit.create(LegendSetService.class);
+    fun legendSetService(retrofit: Retrofit): LegendSetService {
+        return retrofit.create(LegendSetService::class.java)
     }
 }

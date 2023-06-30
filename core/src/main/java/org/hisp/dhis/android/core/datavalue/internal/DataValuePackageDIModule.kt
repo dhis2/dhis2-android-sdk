@@ -25,39 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.visualization.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.visualization.Visualization;
-import org.hisp.dhis.android.core.visualization.VisualizationModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        VisualizationEntityDIModule.class,
-        VisualizationDimensionItemEntityDIModule.class,
-})
-public final class VisualizationPackageDIModule {
-
+@Module(includes = [DataValueEntityDIModule::class])
+internal class DataValuePackageDIModule {
     @Provides
     @Reusable
-    UidsCall<Visualization> visualizationCall(VisualizationCall impl) {
-        return impl;
+    fun service(retrofit: Retrofit): DataValueService {
+        return retrofit.create(DataValueService::class.java)
     }
 
     @Provides
     @Reusable
-    VisualizationService visualizationService(Retrofit retrofit) {
-        return retrofit.create(VisualizationService.class);
+    fun dataValueCall(callImpl: DataValueCall): QueryCall<DataValue, DataValueQuery> {
+        return callImpl
     }
 
     @Provides
     @Reusable
-    VisualizationModule module(VisualizationModuleImpl impl) {
-        return impl;
+    fun module(impl: DataValueModuleImpl): DataValueModule {
+        return impl
     }
 }

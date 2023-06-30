@@ -39,10 +39,7 @@ import static org.mockito.Mockito.when;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -51,8 +48,7 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,10 +63,10 @@ import java.util.List;
 public class DataSetHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<DataSet> dataSetStore;
+    private DataSetStore dataSetStore;
 
     @Mock
-    private Handler<Section> sectionHandler;
+    private SectionHandler sectionHandler;
 
     @Mock
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -115,7 +111,7 @@ public class DataSetHandlerShould {
     private DataSetElementHandler dataSetElementHandler;
 
     @Mock
-    private LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
+    private DataSetIndicatorLinkHandler dataSetIndicatorLinkHandler;
 
     @Mock
     private CollectionCleaner<DataSet> collectionCleaner;

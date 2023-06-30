@@ -25,23 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance.internal
 
-package org.hisp.dhis.android.core.note.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule
 
-import org.hisp.dhis.android.core.note.NoteModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        NoteEntityDIModule.class
-})
-public final class NotePackageDIModule {
+@Module(
+    includes = [
+        D2ErrorEntityDIModule::class,
+        ForeignKeyViolationEntityDIModule::class
+    ]
+)
+internal class MaintenancePackageDIModule {
+    @Provides
+    @Reusable
+    fun cleaner(
+        databaseAdapter: DatabaseAdapter,
+        foreignKeyViolationStore: ForeignKeyViolationStore
+    ): ForeignKeyCleaner {
+        return ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore)
+    }
 
     @Provides
     @Reusable
-    NoteModule module(NoteModuleImpl impl) {
-        return impl;
+    fun module(impl: MaintenanceModuleImpl): MaintenanceModule {
+        return impl
     }
 }

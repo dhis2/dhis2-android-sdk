@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkHandler
-import javax.inject.Inject
 
 @Reusable
 internal class IndicatorHandler @Inject constructor(

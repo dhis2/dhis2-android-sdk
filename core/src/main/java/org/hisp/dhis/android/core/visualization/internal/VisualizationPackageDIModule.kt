@@ -25,33 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataApprovalEntityDIModule.class
-})
-
-public class DataApprovalPackageDIModule {
-
+@Module(
+    includes = [
+        VisualizationEntityDIModule::class,
+        VisualizationDimensionItemEntityDIModule::class
+    ]
+)
+internal class VisualizationPackageDIModule {
     @Provides
     @Reusable
-    QueryCall<DataApproval, DataApprovalQuery> dataApprovalCallFactory(DataApprovalCall dataApprovalCall) {
-        return dataApprovalCall;
+    fun visualizationCall(impl: VisualizationCall): UidsCall<Visualization> {
+        return impl
     }
 
     @Provides
     @Reusable
-    DataApprovalService dataApprovalService(Retrofit retrofit) {
-        return retrofit.create(DataApprovalService.class);
+    fun visualizationService(retrofit: Retrofit): VisualizationService {
+        return retrofit.create(VisualizationService::class.java)
     }
 
+    @Provides
+    @Reusable
+    fun module(impl: VisualizationModuleImpl): VisualizationModule {
+        return impl
+    }
 }

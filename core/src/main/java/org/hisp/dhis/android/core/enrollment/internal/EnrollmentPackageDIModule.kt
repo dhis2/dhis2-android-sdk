@@ -25,32 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.maintenance.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        D2ErrorEntityDIModule.class,
-        ForeignKeyViolationEntityDIModule.class
-})
-public final class MaintenancePackageDIModule {
-
+@Module(includes = [EnrollmentEntityDIModule::class])
+internal class EnrollmentPackageDIModule {
     @Provides
     @Reusable
-    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
-                              ForeignKeyViolationStore foreignKeyViolationStore) {
-        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    fun service(retrofit: Retrofit): EnrollmentService {
+        return retrofit.create(EnrollmentService::class.java)
     }
 
     @Provides
     @Reusable
-    MaintenanceModule module(MaintenanceModuleImpl impl) {
-        return impl;
+    fun module(impl: EnrollmentModuleImpl): EnrollmentModule {
+        return impl
     }
 }

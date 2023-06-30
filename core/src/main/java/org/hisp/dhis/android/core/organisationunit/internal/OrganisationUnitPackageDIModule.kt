@@ -25,21 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
+import retrofit2.Retrofit
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        TrackerImportConflictEntityDIModule.class
-})
-public final class ImportPackageDIModule {
+@Module(
+    includes = [
+        OrganisationUnitEntityDIModule::class,
+        OrganisationUnitLevelEntityDIModule::class,
+        OrganisationUnitGroupEntityDIModule::class,
+        OrganisationUnitProgramLinkEntityDIModule::class,
+        OrganisationUnitOrganisationUnitGroupLinkEntityDIModule::class
+    ]
+)
+internal class OrganisationUnitPackageDIModule {
+    @Provides
+    @Reusable
+    fun service(retrofit: Retrofit): OrganisationUnitService {
+        return retrofit.create(OrganisationUnitService::class.java)
+    }
 
     @Provides
     @Reusable
-    ImportModule module(ImportModuleImpl impl) {
-        return impl;
+    fun module(impl: OrganisationUnitModuleImpl): OrganisationUnitModule {
+        return impl
     }
 }

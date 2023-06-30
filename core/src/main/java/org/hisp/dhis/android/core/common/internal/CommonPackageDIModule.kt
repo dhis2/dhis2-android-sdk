@@ -25,30 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingEntityDIModule
+import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingEntityDIModule
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        EnrollmentEntityDIModule.class
-})
-public final class EnrollmentPackageDIModule {
-
+@Module(
+    includes = [
+        ValueTypeDeviceRenderingEntityDIModule::class,
+        ValueTypeRenderingEntityDIModule::class
+    ]
+)
+internal class CommonPackageDIModule {
     @Provides
     @Reusable
-    EnrollmentService service(Retrofit retrofit) {
-        return retrofit.create(EnrollmentService.class);
+    fun genericCallData(
+        databaseAdapter: DatabaseAdapter,
+        retrofit: Retrofit,
+        resourceHandler: ResourceHandler,
+        versionManager: DHISVersionManager
+    ): GenericCallData {
+        return GenericCallData.create(
+            databaseAdapter,
+            retrofit,
+            resourceHandler,
+            versionManager
+        )
     }
 
     @Provides
     @Reusable
-    EnrollmentModule module(EnrollmentModuleImpl impl) {
-        return impl;
+    fun dataStatePropagator(impl: DataStatePropagatorImpl): DataStatePropagator {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun trackerDataManager(impl: TrackerDataManagerImpl): TrackerDataManager {
+        return impl
     }
 }

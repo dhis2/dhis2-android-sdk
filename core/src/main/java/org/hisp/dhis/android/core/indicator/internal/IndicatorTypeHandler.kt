@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import javax.inject.Inject
 
 @Reusable
 internal class IndicatorTypeHandler @Inject constructor(

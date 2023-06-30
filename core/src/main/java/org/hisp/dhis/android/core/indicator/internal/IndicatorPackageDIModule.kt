@@ -25,41 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal
 
-package org.hisp.dhis.android.core.dataelement.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorModule
+import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.datasetindicatorengine.IndicatorEngineEntityDIModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class,
-        DataElementLegendSetEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
+@Module(
+    includes = [
+        DataSetIndicatorEntityDIModule::class,
+        IndicatorEntityDIModule::class,
+        IndicatorTypeEntityDIModule::class,
+        IndicatorEngineEntityDIModule::class
+    ]
+)
+internal class IndicatorPackageDIModule {
     @Provides
     @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
+    fun indicatorCallFactory(impl: IndicatorEndpointCallFactory): UidsCallFactory<Indicator> {
+        return impl
     }
 
     @Provides
     @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
+    fun indicatorTypeCallFactory(impl: IndicatorTypeEndpointCallFactory): UidsCallFactory<IndicatorType> {
+        return impl
     }
 
     @Provides
     @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    fun indicatorService(retrofit: Retrofit): IndicatorService {
+        return retrofit.create(IndicatorService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun indicatorTypeService(retrofit: Retrofit): IndicatorTypeService {
+        return retrofit.create(IndicatorTypeService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: IndicatorModuleImpl): IndicatorModule {
+        return impl
     }
 }

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 
+@Suppress("MagicNumber")
 internal class IndicatorStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : IndicatorStore,

@@ -25,45 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.common.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingEntityDIModule;
-import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingEntityDIModule;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        ValueTypeDeviceRenderingEntityDIModule.class,
-        ValueTypeRenderingEntityDIModule.class
-})
-class CommonPackageDIModule {
-
+@Module(
+    includes = [
+        PingEntityDIModule::class,
+        SystemInfoEntityDIModule::class
+    ]
+)
+internal class SystemInfoPackageDIModule {
     @Provides
     @Reusable
-    GenericCallData genericCallData(DatabaseAdapter databaseAdapter,
-                                    Retrofit retrofit,
-                                    ResourceHandler resourceHandler,
-                                    DHISVersionManager versionManager) {
-        return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
+    fun service(retrofit: Retrofit): SystemInfoService {
+        return retrofit.create(SystemInfoService::class.java)
     }
 
     @Provides
     @Reusable
-    public DataStatePropagator dataStatePropagator(DataStatePropagatorImpl impl) {
-        return impl;
+    fun systemInfoModule(impl: SystemInfoModuleImpl): SystemInfoModule {
+        return impl
     }
 
     @Provides
     @Reusable
-    public TrackerDataManager trackerDataManager(TrackerDataManagerImpl impl) {
-        return impl;
+    fun versionManager(impl: DHISVersionManagerImpl): DHISVersionManager {
+        return impl
     }
 }

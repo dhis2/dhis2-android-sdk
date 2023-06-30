@@ -141,8 +141,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected val programStore = ProgramStoreImpl(databaseAdapter)
     protected val programStageStore = ProgramStageStoreImpl(databaseAdapter)
 
-    protected val indicatorTypeStore = IndicatorTypeStoreImpl.create(databaseAdapter)
-    protected val indicatorStore = IndicatorStoreImpl.create(databaseAdapter)
+    protected val indicatorTypeStore = IndicatorTypeStoreImpl(databaseAdapter)
+    protected val indicatorStore = IndicatorStoreImpl(databaseAdapter)
 
     protected val relationshipTypeStore = RelationshipTypeStoreImpl(databaseAdapter)
     protected val relationshipConstraintStore = RelationshipConstraintStoreImpl(databaseAdapter)

@@ -25,38 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.note.NoteModule
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.datavalue.DataValueModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataValueEntityDIModule.class
-})
-public final class DataValuePackageDIModule {
-
+@Module(includes = [NoteEntityDIModule::class])
+internal class NotePackageDIModule {
     @Provides
     @Reusable
-    DataValueService service(Retrofit retrofit) {
-        return retrofit.create(DataValueService.class);
-    }
-
-    @Provides
-    @Reusable
-    QueryCall<DataValue, DataValueQuery> dataValueCall(DataValueCall callImpl) {
-        return callImpl;
-    }
-
-    @Provides
-    @Reusable
-    DataValueModule module(DataValueModuleImpl impl) {
-        return impl;
+    fun module(impl: NoteModuleImpl): NoteModule {
+        return impl
     }
 }

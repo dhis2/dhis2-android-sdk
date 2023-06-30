@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 
 class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Indicator>(
-    IndicatorStoreImpl.create(TestDatabaseAdapterFactory.get()),
+    IndicatorStoreImpl(TestDatabaseAdapterFactory.get()),
     IndicatorTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

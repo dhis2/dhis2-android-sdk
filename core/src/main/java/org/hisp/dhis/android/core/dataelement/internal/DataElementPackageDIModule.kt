@@ -25,34 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.DataElementModule
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        OrganisationUnitEntityDIModule.class,
-        OrganisationUnitLevelEntityDIModule.class,
-        OrganisationUnitGroupEntityDIModule.class,
-        OrganisationUnitProgramLinkEntityDIModule.class,
-        OrganisationUnitOrganisationUnitGroupLinkEntityDIModule.class
-})
-public final class OrganisationUnitPackageDIModule {
-
+@Module(
+    includes = [
+        DataElementEntityDIModule::class,
+        DataElementOperandEntityDIModule::class,
+        DataElementAttributeValueEntityDIModule::class,
+        DataElementLegendSetEntityDIModule::class
+    ]
+)
+internal class DataElementPackageDIModule {
     @Provides
     @Reusable
-    OrganisationUnitService service(Retrofit retrofit) {
-        return retrofit.create(OrganisationUnitService.class);
+    fun dataElementEndpointCallFactory(impl: DataElementEndpointCallFactory): UidsCallFactory<DataElement> {
+        return impl
     }
 
     @Provides
     @Reusable
-    OrganisationUnitModule module(OrganisationUnitModuleImpl impl) {
-        return impl;
+    fun service(retrofit: Retrofit): DataElementService {
+        return retrofit.create(DataElementService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: DataElementModuleImpl): DataElementModule {
+        return impl
     }
 }

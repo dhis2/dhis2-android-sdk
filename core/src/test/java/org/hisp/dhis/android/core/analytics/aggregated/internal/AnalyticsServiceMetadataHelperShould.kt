@@ -33,13 +33,12 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
-import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.legendset.internal.LegendStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
@@ -60,7 +59,7 @@ class AnalyticsServiceMetadataHelperShould {
     private val categoryOptionStore: CategoryOptionStore = mock()
     private val dataElementStore: DataElementStore = mock()
     private val categoryOptionComboStore: CategoryOptionComboStore = mock()
-    private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
+    private val indicatorStore: IndicatorStore = mock()
     private val expressionDimensionItemStore: ExpressionDimensionItemStore = mock()
     private val legendStore: LegendStore = mock()
     private val organisationUnitStore: OrganisationUnitStore = mock()

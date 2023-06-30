@@ -25,47 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionModule
+import org.hisp.dhis.android.core.option.OptionSet
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        RelationshipConstraintEntityDIModule.class,
-        RelationshipEntityDIModule.class,
-        RelationshipItemEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
-
+@Module(
+    includes = [
+        OptionEntityDIModule::class,
+        OptionGroupEntityDIModule::class,
+        OptionGroupOptionEntityDIModule::class,
+        OptionSetEntityDIModule::class
+    ]
+)
+internal class OptionPackageDIModule {
     @Provides
     @Reusable
-    ListCall<RelationshipType> relationshipCall(RelationshipTypeCall impl) {
-        return impl;
+    fun optionSetCall(impl: OptionSetCall): UidsCall<OptionSet> {
+        return impl
     }
 
     @Provides
     @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    fun optionSetService(retrofit: Retrofit): OptionSetService {
+        return retrofit.create(OptionSetService::class.java)
     }
 
     @Provides
     @Reusable
-    RelationshipService relationshipService(Retrofit retrofit) {
-        return retrofit.create(RelationshipService.class);
+    fun optionCall(impl: OptionCall): UidsCall<Option> {
+        return impl
     }
 
     @Provides
     @Reusable
-    RelationshipModule module(RelationshipModuleImpl impl) {
-        return impl;
+    fun optionService(retrofit: Retrofit): OptionService {
+        return retrofit.create(OptionService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun optionGroupCall(impl: OptionGroupCall): UidsCall<OptionGroup> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun optionGroupService(retrofit: Retrofit): OptionGroupService {
+        return retrofit.create(OptionGroupService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: OptionModuleImpl): OptionModule {
+        return impl
     }
 }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Observable
+import kotlinx.coroutines.rx2.asObservable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
@@ -56,7 +57,7 @@ class FileResourceDownloader @Inject internal constructor(
      * @return -
      */
     fun download(): Observable<D2Progress> {
-        return call.download(params)
+        return call.download(params).asObservable()
     }
 
     fun blockingDownload() {

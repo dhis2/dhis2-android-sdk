@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Response
+import java.net.ConnectException
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -51,6 +52,7 @@ internal class APIErrorMapper @Inject constructor() {
         return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)
+            is ConnectException -> socketConnectException(errorBuilder, throwable)
             is HttpException -> httpException(errorBuilder, throwable)
             is SSLException -> sslException(errorBuilder, throwable)
             is IOException -> ioException(errorBuilder, throwable)
@@ -75,6 +77,13 @@ internal class APIErrorMapper @Inject constructor() {
         return logAndAppendOriginal(errorBuilder, e)
             .errorCode(D2ErrorCode.UNKNOWN_HOST)
             .errorDescription("API call failed due to UnknownHostException")
+            .build()
+    }
+
+    private fun socketConnectException(errorBuilder: D2Error.Builder, e: ConnectException): D2Error {
+        return logAndAppendOriginal(errorBuilder, e)
+            .errorCode(D2ErrorCode.CONNECTION_ERROR)
+            .errorDescription("API call failed due to a ConnectException.")
             .build()
     }
 

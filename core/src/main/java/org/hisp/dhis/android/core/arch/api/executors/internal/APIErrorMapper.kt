@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import android.util.Log
 import dagger.Reusable
 import java.io.IOException
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -42,7 +43,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Response
-import java.net.ConnectException
 
 @Reusable
 @Suppress("TooManyFunctions")

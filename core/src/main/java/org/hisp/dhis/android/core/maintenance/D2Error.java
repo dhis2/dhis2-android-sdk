@@ -87,7 +87,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     public boolean isOffline() {
         return errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
                 errorCode() == D2ErrorCode.UNKNOWN_HOST ||
-                errorCode() == D2ErrorCode.CONNECTION_ERROR;
+                errorCode() == D2ErrorCode.SERVER_CONNECTION_ERROR;
     }
 
     @AutoValue.Builder

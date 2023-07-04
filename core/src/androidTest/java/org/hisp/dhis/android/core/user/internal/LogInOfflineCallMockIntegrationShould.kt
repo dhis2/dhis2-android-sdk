@@ -25,44 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.MockIntegrationTestObjects
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMethodScopedEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Assert.fail
+import org.junit.Test
+import org.junit.runner.RunWith
 
-internal object MockIntegrationTestObjectsFactory {
-    private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
+@RunWith(D2JunitRunner::class)
+class LogInOfflineCallMockIntegrationShould : BaseMockIntegrationTestMethodScopedEmptyEnqueable() {
 
-    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
-        val instance = instances[content]
-        return if (instance != null) {
-            IntegrationTestObjectsWithIsNewInstance(instance, false)
-        } else {
-            val newInstance = MockIntegrationTestObjects(content)
-            instances[content] = newInstance
-            IntegrationTestObjectsWithIsNewInstance(newInstance, true)
+    @Test
+    fun login_offline_on_connection_error() {
+        dhis2MockServer.enqueueLoginResponses()
+
+        login()
+        assertThat(getUser()).isNotNull()
+
+        logout()
+        assertThrowsException { getUser() }
+
+        dhis2MockServer.shutdown()
+
+        login()
+        assertThat(d2.userModule().user().blockingGet()).isNotNull()
+    }
+
+    private fun login(): User {
+        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.baseEndpoint)
+    }
+
+    private fun logout() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
         }
     }
 
-    fun removeObjects(content: MockIntegrationTestDatabaseContent) {
-        val instance = instances[content]
-        if (instance != null) {
-            instance.tearDown()
-            instances.remove(content)
-        }
+    private fun getUser(): User? {
+        return d2.userModule().user().blockingGet()
     }
 
-    @JvmStatic
-    fun tearDown() {
-        if (instances.isNotEmpty()) {
-            for (objects in instances.values) {
-                objects.tearDown()
-            }
-            instances.clear()
+    private fun assertThrowsException(block: () -> Any?) {
+        try {
+            block()
+            fail("Get user should fail after logout")
+        } catch (_: RuntimeException) {
+            //
         }
     }
-
-    internal class IntegrationTestObjectsWithIsNewInstance(
-        val objects: MockIntegrationTestObjects,
-        val isNewInstance: Boolean
-    )
 }

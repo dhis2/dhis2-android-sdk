@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields;
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore;
 
 import java.util.Collections;
 import java.util.Map;
@@ -50,7 +50,7 @@ public final class IndicatorCollectionRepository
         extends ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository> {
 
     @Inject
-    IndicatorCollectionRepository(final IdentifiableObjectStore<Indicator> store,
+    IndicatorCollectionRepository(final IndicatorStore store,
                                   final Map<String, ChildrenAppender<Indicator>> childrenAppenders,
                                   final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
@@ -83,6 +83,14 @@ public final class IndicatorCollectionRepository
 
     public StringFilterConnector<IndicatorCollectionRepository> byUrl() {
         return cf.string(Columns.URL);
+    }
+
+    public StringFilterConnector<IndicatorCollectionRepository> byColor() {
+        return cf.string(Columns.COLOR);
+    }
+
+    public StringFilterConnector<IndicatorCollectionRepository> byIcon() {
+        return cf.string(Columns.ICON);
     }
 
     public IndicatorCollectionRepository withLegendSets() {

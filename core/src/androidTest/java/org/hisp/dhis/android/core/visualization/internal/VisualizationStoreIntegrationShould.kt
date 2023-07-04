@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
-    VisualizationStore.create(TestDatabaseAdapterFactory.get()),
+    VisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
     VisualizationTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

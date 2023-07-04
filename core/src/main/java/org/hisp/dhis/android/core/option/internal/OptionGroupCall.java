@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.option.OptionGroup;
 
 import java.util.List;
@@ -47,12 +46,12 @@ final class OptionGroupCall implements UidsCall<OptionGroup> {
     private static final int MAX_UID_LIST_SIZE = 130;
 
     private final OptionGroupService service;
-    private final Handler<OptionGroup> handler;
+    private final OptionGroupHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
     OptionGroupCall(OptionGroupService service,
-                    Handler<OptionGroup> handler,
+                    OptionGroupHandler handler,
                     APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

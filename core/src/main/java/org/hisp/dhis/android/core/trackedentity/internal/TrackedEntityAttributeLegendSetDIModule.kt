@@ -31,39 +31,24 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.Collections
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkStore
 
 @Module
 internal class TrackedEntityAttributeLegendSetDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<TrackedEntityAttributeLegendSetLink> {
-        return TrackedEntityAttributeLegendSetLinkStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(
-        store: LinkStore<TrackedEntityAttributeLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
+    fun store(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeLegendSetLinkStore {
+        return TrackedEntityAttributeLegendSetLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityAttribute>> {
-        return Collections.singletonMap(
-            TrackedEntityAttributeFields.LEGEND_SETS,
-            TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter)
+        return mapOf(
+            TrackedEntityAttributeFields.LEGEND_SETS to
+                TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter)
         )
     }
 }

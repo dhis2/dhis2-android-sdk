@@ -36,8 +36,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
@@ -47,14 +45,17 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
@@ -77,14 +78,14 @@ public final class TrackedEntityAttributeReservedValueManager {
     private static final Double FACTOR_TO_REFILL = 0.5;
 
 
-    private final TrackedEntityAttributeReservedValueStoreInterface store;
-    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
-    private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
-    private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
+    private final TrackedEntityAttributeReservedValueStore store;
+    private final OrganisationUnitStore organisationUnitStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final GeneralSettingObjectRepository generalSettingObjectRepository;
-    private final IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore;
+    private final ReservedValueSettingStore reservedValueSettingStore;
     private final D2CallExecutor executor;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory;
@@ -93,14 +94,14 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
-            TrackedEntityAttributeReservedValueStoreInterface store,
-            IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-            IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore,
-            LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
+            TrackedEntityAttributeReservedValueStore store,
+            OrganisationUnitStore organisationUnitStore,
+            TrackedEntityAttributeStore trackedEntityAttributeStore,
+            ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+            OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             GeneralSettingObjectRepository generalSettingObjectRepository,
-            IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore,
+            ReservedValueSettingStore reservedValueSettingStore,
             D2CallExecutor executor,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
@@ -117,11 +118,10 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * @see #getValue(String, String)
-     *
-     * @param attributeUid          Attribute uid
-     * @param organisationUnitUid   Organisation unit uid
+     * @param attributeUid        Attribute uid
+     * @param organisationUnitUid Organisation unit uid
      * @return Value of tracked entity attribute
+     * @see #getValue(String, String)
      */
     public String blockingGetValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
         return getValue(attributeUid, organisationUnitUid).blockingGet();
@@ -131,8 +131,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      * Get a reserved value and remove it from database. If the number of available values is below a threshold
      * (default {@link #FILL_UP_TO} * {@link #FACTOR_TO_REFILL}) it tries to download before returning a value.
      *
-     * @param attributeUid          Attribute uid
-     * @param organisationUnitUid   Organisation unit uid
+     * @param attributeUid        Attribute uid
+     * @param organisationUnitUid Organisation unit uid
      * @return Single with value of tracked entity attribute
      */
     public Single<String> getValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
@@ -158,10 +158,9 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
+     * @param attributeUid           Attribute uid
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @see #downloadReservedValues(String, Integer)
-     *
-     * @param attributeUid              Attribute uid
-     * @param numberOfValuesToFillUp    An optional maximum number of values to reserve
      */
     public void blockingDownloadReservedValues(@NonNull String attributeUid,
                                                Integer numberOfValuesToFillUp) {
@@ -179,8 +178,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      * reserves values for each orgunit assigned to the programs with this attribute. It applies the limit
      * per orgunit. Otherwise the limit is applied per attribute.
      *
-     * @param attributeUid              Attribute uid
-     * @param numberOfValuesToFillUp    An optional maximum number of values to reserve
+     * @param attributeUid           Attribute uid
+     * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @return An Observable that notifies about the progress.
      */
     public Observable<D2Progress> downloadReservedValues(@NonNull String attributeUid,
@@ -190,9 +189,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * @see #downloadAllReservedValues(Integer)
-     *
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
+     * @see #downloadAllReservedValues(Integer)
      */
     public void blockingDownloadAllReservedValues(Integer numberOfValuesToFillUp) {
         downloadAllReservedValues(numberOfValuesToFillUp).blockingSubscribe();
@@ -221,8 +219,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      * Get the count of the reserved values by attribute. If a organisation unit uid is inserted as parameter the method
      * will return the count of the reserved values by attribute and organisation unit.
      *
-     * @param attributeUid          Attribute uid
-     * @param organisationUnitUid   An optional organisation unit uid
+     * @param attributeUid        Attribute uid
+     * @param organisationUnitUid An optional organisation unit uid
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
     public Single<Integer> count(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
@@ -230,11 +228,10 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * @see #count(String, String)
-     *
-     * @param attributeUid          Attribute uid
-     * @param organisationUnitUid   An optional organisation unit uid
+     * @param attributeUid        Attribute uid
+     * @param organisationUnitUid An optional organisation unit uid
      * @return The reserved value count by attribute or by attribute and organisation unit.
+     * @see #count(String, String)
      */
     public int blockingCount(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
         return store.count(attributeUid, organisationUnitUid, null);
@@ -250,9 +247,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     /**
-     * @see #getReservedValueSummaries()
-     *
      * @return List of the reserved value summaries
+     * @see #getReservedValueSummaries()
      */
     public List<ReservedValueSummary> blockingGetReservedValueSummaries() {
         String whereClause = new WhereClauseBuilder()

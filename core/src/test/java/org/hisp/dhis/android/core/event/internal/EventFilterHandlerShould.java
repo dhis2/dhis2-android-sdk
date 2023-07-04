@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.event.EventQueryCriteria;
@@ -47,19 +49,14 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class EventFilterHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<EventFilter> eventFilterStore;
+    private EventFilterStore eventFilterStore;
 
     @Mock
-    private HandlerWithTransformer<EventDataFilter> eventDataFilterHandler;
+    private EventDataFilterHandler eventDataFilterHandler;
 
     @Mock
     private EventQueryCriteria eventQueryCriteria;
@@ -98,8 +95,7 @@ public class EventFilterHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<EventFilter> genericHandler =
-                new EventFilterHandler(eventFilterStore, eventDataFilterHandler);
+        EventFilterHandler genericHandler = new EventFilterHandler(eventFilterStore, eventDataFilterHandler);
     }
 
     @Test

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class EventSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<EventSync> {
 
     public EventSyncStoreIntegrationShould() {
-        super(EventSyncStore.create(TestDatabaseAdapterFactory.get()), EventSyncTableInfo.TABLE_INFO,
+        super(new EventSyncStoreImpl(TestDatabaseAdapterFactory.get()), EventSyncTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

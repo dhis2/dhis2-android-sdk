@@ -25,36 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-@Suppress("MagicNumber")
-internal object AggregatedDataSyncStore {
-    private val BINDER = StatementBinder { o: AggregatedDataSync, w: StatementWrapper ->
-        w.bind(1, o.dataSet())
-        w.bind(2, o.periodType())
-        w.bind(3, o.pastPeriods())
-        w.bind(4, o.futurePeriods())
-        w.bind(5, o.dataElementsHash())
-        w.bind(6, o.organisationUnitsHash())
-        w.bind(7, o.lastUpdated())
-    }
-    private val WHERE_UPDATE_BINDER =
-        WhereStatementBinder { o: AggregatedDataSync, w: StatementWrapper -> w.bind(8, o.dataSet()) }
-    private val DELETE_UPDATE_BINDER =
-        WhereStatementBinder { o: AggregatedDataSync, w: StatementWrapper -> w.bind(1, o.dataSet()) }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AggregatedDataSync> {
-        return objectWithoutUidStore(
-            databaseAdapter, AggregatedDataSyncTableInfo.TABLE_INFO,
-            BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER
-        ) { cursor: Cursor -> AggregatedDataSync.create(cursor) }
-    }
-}
+internal interface AggregatedDataSyncStore : ObjectWithoutUidStore<AggregatedDataSync>

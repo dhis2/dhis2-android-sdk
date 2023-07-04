@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataapproval;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public class DataApprovalCollectionRepository extends ReadOnlyCollectionReposito
 
 
     @Inject
-    DataApprovalCollectionRepository(final ObjectWithoutUidStore<DataApproval> dataApprovalStore,
+    DataApprovalCollectionRepository(final DataApprovalStore dataApprovalStore,
                                      final Map<String, ChildrenAppender<DataApproval>> childrenAppenders,
                                      final RepositoryScope repositoryScope) {
 

@@ -29,27 +29,24 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor.accessEvents
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
-    private val programTrackedEntityAttributeStore: IdentifiableObjectStore<ProgramTrackedEntityAttribute>,
-    private val trackedEntityTypeAttributeStore: LinkStore<TrackedEntityTypeAttribute>,
+    private val programTrackedEntityAttributeStore: ProgramTrackedEntityAttributeStore,
+    private val trackedEntityTypeAttributeStore: TrackedEntityTypeAttributeStore,
     private val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator
 ) {
 

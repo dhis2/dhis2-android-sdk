@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SynchronizationSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<SynchronizationSettings>(
-    SynchronizationSettingStore.create(TestDatabaseAdapterFactory.get()),
+    SynchronizationSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     SynchronizationSettingTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

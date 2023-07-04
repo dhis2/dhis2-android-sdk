@@ -25,36 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 
-@Suppress("MagicNumber")
-internal object OrganisationUnitLevelStore {
-
-    private val BINDER: StatementBinder<OrganisationUnitLevel> =
-        object : IdentifiableStatementBinder<OrganisationUnitLevel>() {
-            override fun bindToStatement(
-                organisationUnitLevel: OrganisationUnitLevel,
-                w: StatementWrapper
-            ) {
-                super.bindToStatement(organisationUnitLevel, w)
-                w.bind(7, organisationUnitLevel.level())
-            }
-        }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnitLevel> {
-        return objectWithUidStore(
-            databaseAdapter, OrganisationUnitLevelTableInfo.TABLE_INFO, BINDER
-        ) { cursor: Cursor -> OrganisationUnitLevel.create(cursor) }
-    }
-}
+internal interface OrganisationUnitLevelStore : IdentifiableObjectStore<OrganisationUnitLevel>

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.validation.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 
@@ -48,11 +47,13 @@ final class ValidationRuleCall implements UidsCall<ValidationRule> {
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ValidationRuleService service;
-    private final Handler<ValidationRule> handler;
+    private final ValidationRuleHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
-    ValidationRuleCall(ValidationRuleService service, Handler<ValidationRule> handler, APIDownloader apiDownloader) {
+    ValidationRuleCall(ValidationRuleService service,
+                       ValidationRuleHandler handler,
+                       APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;

@@ -25,39 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
-@Suppress("MagicNumber")
-internal object OrganisationUnitStore {
-    private val BINDER = object : NameableStatementBinder<OrganisationUnit>() {
-        override fun bindToStatement(o: OrganisationUnit, w: StatementWrapper) {
-            super.bindToStatement(o, w)
-            w.bind(11, o.path())
-            w.bind(12, o.openingDate())
-            w.bind(13, o.closedDate())
-            w.bind(14, o.level())
-            w.bind(15, o.geometry()?.type())
-            w.bind(16, o.geometry()?.coordinates())
-            w.bind(17, getUidOrNull(o.parent()))
-            w.bind(18, StringArrayColumnAdapter.serialize(o.displayNamePath()))
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnit> {
-        return StoreFactory.objectWithUidStore(
-            databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER
-        ) { cursor: Cursor -> OrganisationUnit.create(cursor) }
-    }
-}
+internal interface OrganisationUnitStore : IdentifiableObjectStore<OrganisationUnit>

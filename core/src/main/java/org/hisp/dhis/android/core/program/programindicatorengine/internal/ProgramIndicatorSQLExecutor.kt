@@ -35,25 +35,30 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluatorHelper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.parser.internal.expression.*
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.antlr.Parser
 
 @Reusable
 internal class ProgramIndicatorSQLExecutor @Inject constructor(
-    private val constantStore: IdentifiableObjectStore<Constant>,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    private val constantStore: ConstantStore,
+    private val dataElementStore: DataElementStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val databaseAdapter: DatabaseAdapter
 ) {
 

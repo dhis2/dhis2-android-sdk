@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 
 class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
@@ -65,20 +64,20 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
-        val eventStore = create(d2.databaseAdapter())
+        val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
         return downloadedEvents.any { it.attributeOptionCombo() != null }
     }
 
     private fun verifyNumberOfDownloadedEvents(numEvents: Int) {
-        val eventStore = create(d2.databaseAdapter())
+        val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
 
         assertThat(downloadedEvents.size).isEqualTo(numEvents)
     }
 
     private fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
-        val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter())
+        val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
         val numPersisted = trackedEntityDataValueStore.selectAll().size
 
         assertThat(numPersisted).isEqualTo(num)

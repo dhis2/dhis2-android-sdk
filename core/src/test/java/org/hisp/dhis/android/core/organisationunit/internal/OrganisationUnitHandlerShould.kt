@@ -28,17 +28,12 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.junit.Before
@@ -48,15 +43,13 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class OrganisationUnitHandlerShould {
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
-    private val organisationUnitProgramLinkHandler: LinkHandler<ObjectWithUid, OrganisationUnitProgramLink> = mock()
-    private val dataSetDataSetOrganisationUnitLinkHandler: LinkHandler<ObjectWithUid, DataSetOrganisationUnitLink> =
-        mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
+    private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler = mock()
+    private val dataSetDataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler = mock()
     private val userOrganisationUnitLinkHandler: LinkHandler<OrganisationUnit, UserOrganisationUnitLink> = mock()
-    private val organisationUnitGroupHandler: Handler<OrganisationUnitGroup> = mock()
-    private val organisationUnitGroupLinkHandler:
-        LinkHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink> = mock()
+    private val organisationUnitGroupHandler: OrganisationUnitGroupHandler = mock()
+    private val organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler = mock()
     private val organisationUnitGroup: OrganisationUnitGroup = mock()
     private val program: ObjectWithUid = mock()
     private val user: User = mock()
@@ -71,7 +64,7 @@ class OrganisationUnitHandlerShould {
     fun setUp() {
         val programUid = "test_program_uid"
         pathTransformer = OrganisationUnitDisplayPathTransformer()
-        organisationUnitHandler = OrganisationUnitHandlerImpl(
+        organisationUnitHandler = OrganisationUnitHandler(
             organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,
             dataSetDataSetOrganisationUnitLinkHandler, organisationUnitGroupHandler,
             organisationUnitGroupLinkHandler

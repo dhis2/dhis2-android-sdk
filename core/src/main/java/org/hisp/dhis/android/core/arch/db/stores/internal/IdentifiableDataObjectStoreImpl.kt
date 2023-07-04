@@ -31,11 +31,17 @@ import android.content.ContentValues
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DataObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 
 internal open class IdentifiableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
@@ -44,6 +50,18 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     objectFactory: (Cursor) -> O
 ) : IdentifiableObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDataObjectStore<O> where O : ObjectWithUidInterface, O : DataObject {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
+        objectFactory: (Cursor) -> O
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(tableInfo),
+        binder,
+        objectFactory
+    )
 
     private var selectStateQuery: String? = null
     private var existsQuery: String? = null

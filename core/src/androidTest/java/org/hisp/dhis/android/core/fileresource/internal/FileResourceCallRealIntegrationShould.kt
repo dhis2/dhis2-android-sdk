@@ -191,8 +191,8 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         d2.dataValueModule().dataValues()
             .value(
-                nextPeriod.periodId()!!, dataValue.organisationUnit(), dataValue.dataElement(),
-                dataValue.categoryOptionCombo(), dataValue.attributeOptionCombo()
+                nextPeriod.periodId()!!, dataValue.organisationUnit()!!, dataValue.dataElement()!!,
+                dataValue.categoryOptionCombo()!!, dataValue.attributeOptionCombo()!!
             )
             .blockingSet(uid)
 

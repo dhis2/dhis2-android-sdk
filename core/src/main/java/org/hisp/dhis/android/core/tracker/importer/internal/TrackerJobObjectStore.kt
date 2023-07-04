@@ -25,45 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-@Suppress("MagicNumber")
-internal object TrackerJobObjectStore {
-
-    private val BINDER = StatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(1, o.trackerType())
-        w.bind(2, o.objectUid())
-        w.bind(3, o.jobUid())
-        w.bind(4, o.lastUpdated())
-        w.bind(5, StringArrayColumnAdapter.serialize(o.fileResources()))
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(6, o.trackerType())
-        w.bind(7, o.objectUid())
-    }
-
-    private val DELETE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(1, o.trackerType())
-        w.bind(2, o.objectUid())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackerJobObject> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            TrackerJobObjectTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            DELETE_UPDATE_BINDER
-        ) { TrackerJobObject.create(it) }
-    }
-}
+internal interface TrackerJobObjectStore : ObjectWithoutUidStore<TrackerJobObject>

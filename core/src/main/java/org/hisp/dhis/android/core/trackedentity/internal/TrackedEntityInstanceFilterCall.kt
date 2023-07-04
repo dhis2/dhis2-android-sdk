@@ -32,7 +32,6 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -41,7 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 @Reusable
 class TrackedEntityInstanceFilterCall @Inject internal constructor(
     private val service: TrackedEntityInstanceFilterService,
-    private val handler: Handler<TrackedEntityInstanceFilter>,
+    private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager
 ) : UidsCall<TrackedEntityInstanceFilter> {

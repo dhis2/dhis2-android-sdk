@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields;
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore;
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns;
 
 import java.util.Map;
@@ -55,7 +55,7 @@ public final class ProgramStageWorkingListCollectionRepository
 
     @Inject
     ProgramStageWorkingListCollectionRepository(
-            final IdentifiableObjectStore<ProgramStageWorkingList> store,
+            final ProgramStageWorkingListStore store,
             final Map<String, ChildrenAppender<ProgramStageWorkingList>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

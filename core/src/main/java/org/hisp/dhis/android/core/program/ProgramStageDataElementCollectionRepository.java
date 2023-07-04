@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore;
 
 import java.util.Map;
 
@@ -50,7 +50,7 @@ public final class ProgramStageDataElementCollectionRepository extends ReadOnlyI
         <ProgramStageDataElement, ProgramStageDataElementCollectionRepository> {
 
     @Inject
-    ProgramStageDataElementCollectionRepository(final IdentifiableObjectStore<ProgramStageDataElement> store,
+    ProgramStageDataElementCollectionRepository(final ProgramStageDataElementStore store,
                                                 final Map<String, ChildrenAppender<ProgramStageDataElement>>
                                                         childrenAppenders,
                                                 final RepositoryScope scope) {

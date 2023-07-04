@@ -31,23 +31,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
 @Module
 internal class StockUseCaseTransactionEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<InternalStockUseCaseTransaction> {
-        return StockUseCaseTransactionLinkStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: LinkStore<InternalStockUseCaseTransaction>):
-        LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction> {
-        return LinkHandlerImpl(store)
+    fun store(databaseAdapter: DatabaseAdapter): StockUseCaseTransactionLinkStore {
+        return StockUseCaseTransactionLinkStoreImpl(databaseAdapter)
     }
 }

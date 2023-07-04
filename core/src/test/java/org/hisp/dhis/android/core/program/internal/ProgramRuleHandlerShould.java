@@ -27,11 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -47,19 +51,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramRuleHandlerShould {
     @Mock
-    private IdentifiableObjectStore<ProgramRule> programRuleStore;
+    private ProgramRuleStore programRuleStore;
 
     @Mock
-    private HandlerWithTransformer<ProgramRuleAction> programRuleActionHandler;
+    private ProgramRuleActionHandler programRuleActionHandler;
 
     @Mock
     private ProgramRule programRule;
@@ -85,11 +83,17 @@ public class ProgramRuleHandlerShould {
         when(programRule.uid()).thenReturn("test_program_rule_uid");
         when(programRule.program()).thenReturn(ObjectWithUid.create("program"));
         when(programRule.programRuleActions()).thenReturn(programRuleActions);
+
+        when(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Insert);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(programRuleStore, null, null, null);
+        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(
+                programRuleStore,
+                programRuleActionHandler,
+                programRuleCleaner,
+                programRuleActionCleaner);
     }
 
     @Test

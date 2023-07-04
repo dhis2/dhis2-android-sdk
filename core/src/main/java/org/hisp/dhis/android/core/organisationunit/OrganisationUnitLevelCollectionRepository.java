@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo.Columns;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class OrganisationUnitLevelCollectionRepository extends ReadOnlyIde
 
     @Inject
     OrganisationUnitLevelCollectionRepository(
-            final IdentifiableObjectStore<OrganisationUnitLevel> store,
+            final OrganisationUnitLevelStore store,
             final Map<String, ChildrenAppender<OrganisationUnitLevel>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

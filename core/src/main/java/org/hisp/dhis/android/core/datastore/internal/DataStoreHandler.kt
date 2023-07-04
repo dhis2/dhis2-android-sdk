@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
@@ -39,8 +37,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
-@Reusable
-internal class DataStoreHandler @Inject constructor(
+internal class DataStoreHandler constructor(
     private val store: DataStoreEntryStore
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 

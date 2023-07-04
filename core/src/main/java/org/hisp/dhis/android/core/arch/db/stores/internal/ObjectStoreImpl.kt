@@ -31,8 +31,10 @@ import android.content.ContentValues
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.CoreObject
@@ -44,6 +46,18 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     protected val binder: StatementBinder<O>,
     objectFactory: (Cursor) -> O
 ) : ReadableStoreImpl<O>(databaseAdapter, builder, objectFactory), ObjectStore<O> {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
+        objectFactory: (Cursor) -> O
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(tableInfo),
+        binder,
+        objectFactory
+    )
 
     private var insertStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null

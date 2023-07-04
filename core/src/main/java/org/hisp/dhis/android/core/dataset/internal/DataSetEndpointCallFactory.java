@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.resource.internal.Resource;
@@ -54,14 +53,14 @@ final class DataSetEndpointCallFactory extends UidsCallFactoryImpl<DataSet> {
     private static final int MAX_UID_LIST_SIZE = 50;
 
     private final DataSetService dataSetService;
-    private final Handler<DataSet> dataSetHandler;
+    private final DataSetHandler dataSetHandler;
     private final Resource.Type resourceType = Resource.Type.DATA_SET;
 
     @Inject
     DataSetEndpointCallFactory(GenericCallData data,
                                APICallExecutor apiCallExecutor,
                                DataSetService dataSetService,
-                               Handler<DataSet> dataSetHandler) {
+                               DataSetHandler dataSetHandler) {
         super(data, apiCallExecutor);
         this.dataSetService = dataSetService;
         this.dataSetHandler = dataSetHandler;

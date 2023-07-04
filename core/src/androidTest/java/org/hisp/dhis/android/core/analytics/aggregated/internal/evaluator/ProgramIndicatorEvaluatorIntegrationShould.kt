@@ -59,8 +59,8 @@ import org.junit.runner.RunWith
 internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
-        EventStoreImpl.create(databaseAdapter),
-        EnrollmentStoreImpl.create(databaseAdapter),
+        EventStoreImpl(databaseAdapter),
+        EnrollmentStoreImpl(databaseAdapter),
         d2.programModule().programIndicatorEngine()
     )
 

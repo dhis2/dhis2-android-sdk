@@ -27,12 +27,63 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-internal interface RelationshipHandler : HandlerWithTransformer<Relationship> {
-    fun doesRelationshipExist(relationship: Relationship): Boolean
-    fun doesRelationshipItemExist(item: RelationshipItem): Boolean
-    fun deleteLinkedRelationships(entityUid: String)
+@Reusable
+internal class RelationshipHandler @Inject constructor(
+    relationshipStore: RelationshipStore,
+    private val relationshipItemStore: RelationshipItemStore,
+    private val relationshipItemHandler: RelationshipItemHandler,
+    private val storeSelector: RelationshipItemElementStoreSelector
+) : IdentifiableHandlerImpl<Relationship>(relationshipStore) {
+
+    override fun afterObjectHandled(o: Relationship, action: HandleAction) {
+        relationshipItemHandler.handle(
+            o.from()!!.toBuilder()
+                .relationship(ObjectWithUid.create(o.uid()))
+                .relationshipItemType(RelationshipConstraintType.FROM).build()
+        )
+        relationshipItemHandler.handle(
+            o.to()!!.toBuilder()
+                .relationship(ObjectWithUid.create(o.uid()))
+                .relationshipItemType(RelationshipConstraintType.TO).build()
+        )
+    }
+
+    fun doesRelationshipExist(relationship: Relationship): Boolean {
+        return getExistingRelationshipUid(relationship) != null
+    }
+
+    fun doesRelationshipItemExist(item: RelationshipItem): Boolean {
+        return storeSelector.getElementStore(item).exists(item.elementUid())
+    }
+
+    fun deleteLinkedRelationships(entityUid: String) {
+        relationshipItemStore.getByEntityUid(entityUid)
+            .mapNotNull { it.relationship()?.uid() }
+            .distinct()
+            .forEach { store.deleteIfExists(it) }
+    }
+
+    private fun getExistingRelationshipUid(relationship: Relationship): String? {
+        val existingRelationshipUidsForPair = relationshipItemStore.getRelationshipUidsForItems(
+            relationship.from()!!, relationship.to()!!
+        )
+        for (existingRelationshipUid in existingRelationshipUidsForPair) {
+            val existingRelationship = store.selectByUid(existingRelationshipUid)
+            if (existingRelationship != null && relationship.relationshipType()
+                == existingRelationship.relationshipType()
+            ) {
+                return existingRelationship.uid()
+            }
+        }
+        return null
+    }
 }

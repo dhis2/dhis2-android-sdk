@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -40,22 +37,17 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 
 @Suppress("MagicNumber")
-internal class SMSConfigStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilder,
-    binder: StatementBinder<KeyValuePair>,
-    whereUpdateBinder: WhereStatementBinder<KeyValuePair>,
-    whereDeleteBinder: WhereStatementBinder<KeyValuePair>,
-    objectFactory: (Cursor) -> KeyValuePair
-) : ObjectWithoutUidStoreImpl<KeyValuePair>(
-    databaseAdapter,
-    builder,
-    binder,
-    whereUpdateBinder,
-    whereDeleteBinder,
-    objectFactory
-),
-    SMSConfigStore {
+internal class SMSConfigStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : SMSConfigStore,
+    ObjectWithoutUidStoreImpl<KeyValuePair>(
+        databaseAdapter,
+        SMSConfigTableInfo.TABLE_INFO,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        { cursor -> KeyValuePair.create(cursor) }
+    ) {
 
     override fun get(key: SMSConfigKey): String? {
         val whereClause = WhereClauseBuilder()
@@ -94,18 +86,6 @@ internal class SMSConfigStoreImpl private constructor(
 
         private val WHERE_DELETE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
             w.bind(1, o.key())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): SMSConfigStore {
-            val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
-                SMSConfigTableInfo.TABLE_INFO.name(), SMSConfigTableInfo.TABLE_INFO.columns().all(),
-                SMSConfigTableInfo.TABLE_INFO.columns().whereUpdate()
-            )
-            return SMSConfigStoreImpl(
-                databaseAdapter, statementBuilder, BINDER, WHERE_UPDATE_BINDER,
-                WHERE_DELETE_BINDER
-            ) { cursor -> KeyValuePair.create(cursor) }
         }
     }
 }

@@ -31,24 +31,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLinkStore.create
-import org.hisp.dhis.android.core.indicator.Indicator
 
 @Module
 internal class SectionIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<SectionIndicatorLink> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): SectionIndicatorLinkStore {
+        return SectionIndicatorLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(store: LinkStore<SectionIndicatorLink>): LinkHandler<Indicator, SectionIndicatorLink> {
-        return LinkHandlerImpl(store)
+    fun handler(store: SectionIndicatorLinkStore): SectionIndicatorLinkHandler {
+        return SectionIndicatorLinkHandler(store)
     }
 }

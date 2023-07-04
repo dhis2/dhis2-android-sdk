@@ -36,13 +36,12 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
 @Reusable
 internal class MultiUserDatabaseManager @Inject internal constructor(
     private val context: Context,
     private val databaseAdapter: DatabaseAdapter,
-    private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val configurationHelper: DatabaseConfigurationHelper,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val databaseExport: DatabaseExport

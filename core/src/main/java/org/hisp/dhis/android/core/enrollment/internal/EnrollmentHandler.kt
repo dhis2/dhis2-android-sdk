@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import android.util.Log
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -49,8 +47,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
-@Reusable
-internal class EnrollmentHandler @Inject constructor(
+internal class EnrollmentHandler constructor(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     private val noteVersionManager: NoteDHISVersionManager,

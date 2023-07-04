@@ -41,7 +41,7 @@ public class OrganisationUnitGroupStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnitGroup> {
 
     public OrganisationUnitGroupStoreIntegrationShould() {
-        super(OrganisationUnitGroupStore.create(TestDatabaseAdapterFactory.get()),
+        super(new OrganisationUnitGroupStoreImpl(TestDatabaseAdapterFactory.get()),
                 OrganisationUnitGroupTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

@@ -42,13 +42,16 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
-public abstract class Indicator extends BaseNameableObject implements CoreObject {
+public abstract class Indicator extends BaseNameableObject
+        implements CoreObject, ObjectWithStyle<Indicator, Indicator.Builder> {
 
     @Nullable
     @JsonProperty()
@@ -86,7 +89,7 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid>  legendSets();
+    public abstract List<ObjectWithUid> legendSets();
 
     public static Builder builder() {
         return new $$AutoValue_Indicator.Builder();
@@ -100,7 +103,8 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder annualized(Boolean annualized);
@@ -121,6 +125,20 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
 
         public abstract Builder decimals(Integer decimals);
 
-        public abstract Indicator build();
+        abstract Indicator autoBuild();
+
+        // Auxiliary fields
+        abstract ObjectStyle style();
+
+        public Indicator build() {
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
+
     }
 }

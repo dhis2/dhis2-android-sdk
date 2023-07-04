@@ -51,7 +51,7 @@ internal class ProgramStageWorkingListDataFilterChildrenAppender private constru
             return ProgramStageWorkingListDataFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    ProgramStageWorkingListEventDataFilterStore.CHILD_PROJECTION
+                    ProgramStageWorkingListEventDataFilterStoreImpl.CHILD_PROJECTION
                 ) { cursor: Cursor -> ProgramStageWorkingListEventDataFilter.create(cursor) }
             )
         }

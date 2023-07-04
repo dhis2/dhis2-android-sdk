@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
-    create(TestDatabaseAdapterFactory.get()),
+    TrackerJobObjectStoreImpl(TestDatabaseAdapterFactory.get()),
     TrackerJobObjectTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

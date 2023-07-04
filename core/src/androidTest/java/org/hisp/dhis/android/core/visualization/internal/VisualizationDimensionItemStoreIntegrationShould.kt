@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class VisualizationDimensionItemStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<VisualizationDimensionItem>(
-        VisualizationDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        VisualizationDimensionItemStoreImpl(TestDatabaseAdapterFactory.get()),
         VisualizationDimensionItemTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {

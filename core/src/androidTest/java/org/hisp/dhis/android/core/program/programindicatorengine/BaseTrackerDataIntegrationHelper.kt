@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStoreImpl
 import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
@@ -52,7 +52,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
 
     fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
-        val teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+        val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
         val trackedEntityInstance = TrackedEntityInstance.builder()
             .uid(teiUid)
             .created(Date())
@@ -77,7 +77,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
             .created(created).lastUpdated(lastUpdated).status(status).build()
-        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
+        EnrollmentStoreImpl(databaseAdapter).insert(enrollment)
     }
 
     fun createEvent(
@@ -95,7 +95,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
             .eventDate(eventDate).deleted(deleted).status(status).build()
-        EventStoreImpl.create(databaseAdapter).insert(event)
+        EventStoreImpl(databaseAdapter).insert(event)
     }
 
     fun createTrackerEvent(
@@ -167,7 +167,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
     }
 
     fun setProgramIndicator(programIndicator: ProgramIndicator) {
-        ProgramIndicatorStore.create(databaseAdapter).updateOrInsert(programIndicator)
+        ProgramIndicatorStoreImpl(databaseAdapter).updateOrInsert(programIndicator)
     }
 
     fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
@@ -175,20 +175,20 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             .event(eventUid)
             .dataElement(dataElementUid)
             .value(value).build()
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
+        TrackedEntityDataValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
     }
 
     fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
-        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
+        TrackedEntityAttributeValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
     fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
         val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
 
-        RelationshipStoreImpl.create(databaseAdapter).insert(relationship)
-        RelationshipItemStoreImpl.create(databaseAdapter).let {
+        RelationshipStoreImpl(databaseAdapter).insert(relationship)
+        RelationshipItemStoreImpl(databaseAdapter).let {
             val r = ObjectWithUid.create(relationship.uid())
             it.insert(
                 relationship.from()!!.toBuilder()

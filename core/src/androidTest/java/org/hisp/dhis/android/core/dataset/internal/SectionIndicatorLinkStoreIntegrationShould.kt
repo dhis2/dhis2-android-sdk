@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.dataset.SectionIndicatorLinkSamples
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLinkStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SectionIndicatorLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<SectionIndicatorLink>(
-    create(TestDatabaseAdapterFactory.get()),
+    SectionIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
     SectionIndicatorLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
 ) {
 

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore;
 
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public final class TrackedEntityInstanceFilterCollectionRepository
 
     @Inject
     TrackedEntityInstanceFilterCollectionRepository(
-            final IdentifiableObjectStore<TrackedEntityInstanceFilter> store,
+            final TrackedEntityInstanceFilterStore store,
             final Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

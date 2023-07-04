@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
+import org.hisp.dhis.android.core.option.internal.OptionSetStore;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public final class OptionSetCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<OptionSet, OptionSetCollectionRepository> {
 
     @Inject
-    OptionSetCollectionRepository(final IdentifiableObjectStore<OptionSet> store,
+    OptionSetCollectionRepository(final OptionSetStore store,
                                   final Map<String, ChildrenAppender<OptionSet>> childrenAppenders,
                                   final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

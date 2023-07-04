@@ -27,12 +27,16 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.junit.Before;
@@ -45,14 +49,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramTrackedEntityAttribute> store;
+    private ProgramTrackedEntityAttributeStore store;
 
     @Mock
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
@@ -61,7 +62,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
 
     @Mock
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+    private ValueTypeRenderingHandler renderTypeHandler;
 
     @Mock
     private ObjectWithUid program;
@@ -88,12 +89,14 @@ public class ProgramTrackedEntityAttributeHandlerShould {
         when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
         when(programTrackedEntityAttribute.program()).thenReturn(program);
         when(program.uid()).thenReturn("program_uid");
+
+        when(store.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
-                new ProgramTrackedEntityAttributeHandler(store, null);
+                new ProgramTrackedEntityAttributeHandler(store, renderTypeHandler);
     }
 
     @Test

@@ -31,25 +31,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
 @Module
 internal class ProgramStageWorkingListEventDataFilterEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
-        return ProgramStageWorkingListEventDataFilterStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): ProgramStageWorkingListEventDataFilterStore {
+        return ProgramStageWorkingListEventDataFilterStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(
-        store: ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter>
-    ): HandlerWithTransformer<ProgramStageWorkingListEventDataFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
+    fun handler(store: ProgramStageWorkingListEventDataFilterStore): ProgramStageWorkingListEventDataFilterHandler {
+        return ProgramStageWorkingListEventDataFilterHandler(store)
     }
 }

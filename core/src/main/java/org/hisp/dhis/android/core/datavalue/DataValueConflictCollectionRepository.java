@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Map;
@@ -55,7 +56,7 @@ public final class DataValueConflictCollectionRepository
     ObjectStore<DataValueConflict> store;
 
     @Inject
-    DataValueConflictCollectionRepository(final ObjectStore<DataValueConflict> store,
+    DataValueConflictCollectionRepository(final DataValueConflictStore store,
                                           final Map<String, ChildrenAppender<DataValueConflict>> childrenAppenders,
                                           final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

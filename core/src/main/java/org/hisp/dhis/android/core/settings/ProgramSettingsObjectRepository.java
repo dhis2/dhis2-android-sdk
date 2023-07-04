@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall;
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +45,10 @@ public class ProgramSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>
         implements ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
 
-    private final ObjectWithoutUidStore<ProgramSetting> store;
+    private final ProgramSettingStore store;
 
     @Inject
-    ProgramSettingsObjectRepository(ObjectWithoutUidStore<ProgramSetting> store,
+    ProgramSettingsObjectRepository(ProgramSettingStore store,
                                     ProgramSettingCall programSettingCall) {
         super(programSettingCall);
         this.store = store;

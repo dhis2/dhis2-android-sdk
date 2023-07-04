@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -64,7 +64,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     abstract val teiWithRelationshipFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
     fun setUp() {
@@ -215,15 +215,15 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     }
 
     private fun getDownloadedTei(teiUid: String): TrackedEntityInstance? {
-        val teiAttributeValuesStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter)
+        val teiAttributeValuesStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
         val attValuesWithoutIdAndTEI = attValues.map {
             it.toBuilder().id(null).trackedEntityInstance(null).build()
         }
 
-        val teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+        val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
         val downloadedTei = teiStore.selectByUid(teiUid)
-        val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
+        val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
         val downloadedEnrollments = enrollmentStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build()
@@ -232,13 +232,13 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             it.toBuilder().id(null).deleted(false).notes(ArrayList()).build()
         }
 
-        val eventStore = EventStoreImpl.create(databaseAdapter)
+        val eventStore = EventStoreImpl(databaseAdapter)
         val downloadedEventsWithoutValues = eventStore.selectAll()
         val downloadedEventsWithoutValuesAndDeleteFalse = downloadedEventsWithoutValues.map {
             it.toBuilder().id(null).deleted(false).build()
         }
 
-        val dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter).selectAll()
+        val dataValueList = TrackedEntityDataValueStoreImpl(databaseAdapter).selectAll()
         val downloadedValues = dataValueList.groupBy { it.event() }
 
         return createTei(

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class AnalyticsTeiSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiSetting>(
-    AnalyticsTeiSettingStore.create(TestDatabaseAdapterFactory.get()),
+    AnalyticsTeiSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     AnalyticsTeiSettingTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

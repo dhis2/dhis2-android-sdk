@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
@@ -38,11 +37,11 @@ import java.util.List;
 
 final class RelationshipConstraintChildrenAppender extends ChildrenAppender<RelationshipType> {
 
-    private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
+    private final RelationshipConstraintStore constraintStore;
     private List<RelationshipConstraint> constraints;
 
 
-    RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore) {
+    RelationshipConstraintChildrenAppender(RelationshipConstraintStore constraintStore) {
         this.constraintStore = constraintStore;
     }
 

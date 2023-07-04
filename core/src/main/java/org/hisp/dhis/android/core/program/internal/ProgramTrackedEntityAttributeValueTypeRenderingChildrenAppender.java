@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
 import javax.inject.Inject;
@@ -42,7 +41,7 @@ final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
 
     @Inject
     ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
-            ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+            ValueTypeDeviceRenderingStore store) {
         super(store);
     }
 

@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleanerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
@@ -71,14 +68,6 @@ internal class TrackedEntityInstanceEntityDIModule {
     @Provides
     @Reusable
     fun enrollmentOrphanCleaner(impl: TrackedEntityEnrollmentOrphanCleanerImpl): TrackedEntityEnrollmentOrphanCleaner {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun relationshipOrphanCleaner(
-        impl: TEIRelationshipOrphanCleanerImpl
-    ): OrphanCleaner<TrackedEntityInstance, Relationship> {
         return impl
     }
 

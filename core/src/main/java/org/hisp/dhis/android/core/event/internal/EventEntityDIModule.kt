@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -40,8 +39,7 @@ import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleanerImpl
+import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
@@ -66,7 +64,7 @@ internal class EventEntityDIModule {
         noteHandler: NoteHandler,
         noteVersionManager: NoteDHISVersionManager,
         noteUniquenessManager: NoteUniquenessManager,
-        relationshipOrphanCleaner: OrphanCleaner<Event, Relationship>
+        relationshipOrphanCleaner: EventRelationshipOrphanCleaner
     ): EventHandler {
         return EventHandler(
             relationshipVersionManager,
@@ -84,12 +82,6 @@ internal class EventEntityDIModule {
     @Reusable
     fun transformer(): Transformer<EventCreateProjection, Event> {
         return EventProjectionTransformer()
-    }
-
-    @Provides
-    @Reusable
-    fun relationshipOrphanCleaner(impl: EventRelationshipOrphanCleanerImpl): OrphanCleaner<Event, Relationship> {
-        return impl
     }
 
     @Provides

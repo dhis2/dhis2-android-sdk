@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Module
+import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import javax.inject.Inject
 
-@Module
+@Reusable
 internal class CategoryOptionComboOrphanCleaner @Inject constructor(
     databaseAdapter: DatabaseAdapter
 ) : OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(

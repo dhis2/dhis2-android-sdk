@@ -27,40 +27,19 @@
  */
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.LegendTableInfo
+import javax.inject.Inject
 
-@Module
-internal class LegendSetEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LegendSetStore {
-        return LegendSetStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(
-        legendSetStore: LegendSetStore,
-        legendHandler: LegendHandler,
-        legendCleaner: LegendSetLegendOrphanCleaner
-    ): LegendSetHandler {
-        return LegendSetHandler(
-            legendSetStore,
-            legendHandler,
-            legendCleaner
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<LegendSet>> {
-        return mapOf(
-            LegendSetFields.LEGENDS to LegendChildrenAppender.create(databaseAdapter)
-        )
-    }
-}
+@Reusable
+internal class LegendSetLegendOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : OrphanCleanerImpl<LegendSet, Legend>(
+    tableName = LegendTableInfo.TABLE_INFO.name(),
+    parentColumn = LegendTableInfo.Columns.LEGEND_SET,
+    databaseAdapter = databaseAdapter
+)

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -37,7 +36,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 internal class LegendSetHandler constructor(
     legendSetStore: LegendSetStore,
     private val legendHandler: LegendHandler,
-    private val legendCleaner: OrphanCleaner<LegendSet, Legend>
+    private val legendCleaner: LegendSetLegendOrphanCleaner
 ) : IdentifiableHandlerImpl<LegendSet>(legendSetStore) {
 
     override fun afterObjectHandled(o: LegendSet, action: HandleAction) {

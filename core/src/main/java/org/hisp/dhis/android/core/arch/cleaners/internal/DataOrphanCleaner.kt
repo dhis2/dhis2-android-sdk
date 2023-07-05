@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 
-internal open class DataOrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+internal open class DataOrphanCleaner<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
     private val stateColumn: String,

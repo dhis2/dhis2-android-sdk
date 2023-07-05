@@ -39,7 +39,7 @@ import javax.inject.Inject
 internal class TEIRelationshipOrphanCleaner @Inject internal constructor(
     relationshipStore: RelationshipStore,
     relationshipRepository: RelationshipCollectionRepository
-) : RelationshipOrphanCleanerImpl<TrackedEntityInstance, Relationship>(relationshipStore, relationshipRepository) {
+) : RelationshipOrphanCleaner<TrackedEntityInstance, Relationship>(relationshipStore, relationshipRepository) {
     override fun getItem(uid: String): RelationshipItem {
         return RelationshipHelper.teiItem(uid)
     }

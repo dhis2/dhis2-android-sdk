@@ -39,7 +39,7 @@ import javax.inject.Inject
 internal class EnrollmentRelationshipOrphanCleaner @Inject constructor(
     relationshipStore: RelationshipStore,
     relationshipRepository: RelationshipCollectionRepository
-) : RelationshipOrphanCleanerImpl<Enrollment, Relationship>(relationshipStore, relationshipRepository) {
+) : RelationshipOrphanCleaner<Enrollment, Relationship>(relationshipStore, relationshipRepository) {
     override fun getItem(uid: String): RelationshipItem {
         return RelationshipHelper.enrollmentItem(uid)
     }

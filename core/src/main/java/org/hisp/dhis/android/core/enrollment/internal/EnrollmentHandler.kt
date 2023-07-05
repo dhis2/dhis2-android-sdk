@@ -53,7 +53,7 @@ internal class EnrollmentHandler constructor(
     private val noteVersionManager: NoteDHISVersionManager,
     enrollmentStore: EnrollmentStore,
     private val eventHandler: IdentifiableDataHandler<Event>,
-    private val eventOrphanCleaner: OrphanCleaner<Enrollment, Event>,
+    private val eventOrphanCleaner: EventOrphanCleaner,
     private val noteHandler: Handler<Note>,
     private val noteUniquenessManager: NoteUniquenessManager,
     private val relationshipOrphanCleaner: OrphanCleaner<Enrollment, Relationship>

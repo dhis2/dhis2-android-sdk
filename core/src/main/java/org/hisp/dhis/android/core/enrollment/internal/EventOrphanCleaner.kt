@@ -25,33 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.cleaners.internal
+package org.hisp.dhis.android.core.enrollment.internal
 
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventTableInfo
+import javax.inject.Inject
 
-internal open class DataOrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
-    private val tableName: String,
-    private val parentColumn: String,
-    private val stateColumn: String,
-    private val databaseAdapter: DatabaseAdapter
-) : OrphanCleaner<P, C> {
-
-    override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
-        if (parent == null || children == null) {
-            return false
-        }
-        val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(children)
-        val clause = (
-            parentColumn + "='" + parent.uid() + "'" +
-                " AND " +
-                stateColumn + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "')" +
-                " AND " +
-                IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
-            )
-        return databaseAdapter.delete(tableName, clause, null) > 0
-    }
-}
+@Reusable
+internal class EventOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : DataOrphanCleanerImpl<Enrollment, Event>(
+    tableName = EventTableInfo.TABLE_INFO.name(),
+    parentColumn = EventTableInfo.Columns.ENROLLMENT,
+    stateColumn = DataColumns.SYNC_STATE,
+    databaseAdapter = databaseAdapter
+)

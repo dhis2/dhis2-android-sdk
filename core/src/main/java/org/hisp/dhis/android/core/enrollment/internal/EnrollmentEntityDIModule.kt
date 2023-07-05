@@ -67,7 +67,7 @@ internal class EnrollmentEntityDIModule {
         noteVersionManager: NoteDHISVersionManager,
         enrollmentStore: EnrollmentStore,
         eventHandler: EventHandler,
-        eventOrphanCleaner: OrphanCleaner<Enrollment, Event>,
+        eventOrphanCleaner: EventOrphanCleaner,
         noteHandler: NoteHandler,
         noteUniquenessManager: NoteUniquenessManager,
         relationshipOrphanCleaner: OrphanCleaner<Enrollment, Relationship>
@@ -105,16 +105,5 @@ internal class EnrollmentEntityDIModule {
         impl: EnrollmentRelationshipOrphanCleanerImpl
     ): OrphanCleaner<Enrollment, Relationship> {
         return impl
-    }
-
-    @Provides
-    @Reusable
-    fun eventOrphanCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<Enrollment, Event> {
-        return DataOrphanCleanerImpl(
-            EventTableInfo.TABLE_INFO.name(),
-            EventTableInfo.Columns.ENROLLMENT,
-            DataColumns.SYNC_STATE,
-            databaseAdapter
-        )
     }
 }

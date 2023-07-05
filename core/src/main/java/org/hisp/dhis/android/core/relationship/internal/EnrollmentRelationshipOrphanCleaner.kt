@@ -25,37 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
-
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-
-import java.util.Collection;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import javax.inject.Inject
 
 @Reusable
-public class EnrollmentRelationshipOrphanCleanerImpl extends RelationshipOrphanCleanerImpl<Enrollment, Relationship> {
-
-    @Inject
-    EnrollmentRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                            RelationshipCollectionRepository relationshipRepository) {
-        super(relationshipStore, relationshipRepository);
+internal class EnrollmentRelationshipOrphanCleaner @Inject constructor(
+    relationshipStore: RelationshipStore,
+    relationshipRepository: RelationshipCollectionRepository
+) : RelationshipOrphanCleanerImpl<Enrollment, Relationship>(relationshipStore, relationshipRepository) {
+    override fun getItem(uid: String): RelationshipItem {
+        return RelationshipHelper.enrollmentItem(uid)
     }
 
-    @Override
-    public RelationshipItem getItem(String uid) {
-        return RelationshipHelper.enrollmentItem(uid);
-    }
-
-    @Override
-    public Collection<Relationship> relationships(Collection<Relationship> relationships) {
-        return relationships;
+    override fun relationships(relationships: Collection<Relationship>): Collection<Relationship> {
+        return relationships
     }
 }

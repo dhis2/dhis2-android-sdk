@@ -30,23 +30,17 @@ package org.hisp.dhis.android.core.enrollment.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleanerImpl
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventHandler
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleanerImpl
+import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 
@@ -70,7 +64,7 @@ internal class EnrollmentEntityDIModule {
         eventOrphanCleaner: EventOrphanCleaner,
         noteHandler: NoteHandler,
         noteUniquenessManager: NoteUniquenessManager,
-        relationshipOrphanCleaner: OrphanCleaner<Enrollment, Relationship>
+        relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner
     ): EnrollmentHandler {
         return EnrollmentHandler(
             relationshipVersionManager,
@@ -97,13 +91,5 @@ internal class EnrollmentEntityDIModule {
         return mapOf(
             EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender.create(databaseAdapter)
         )
-    }
-
-    @Provides
-    @Reusable
-    fun relationshipOrphanCleaner(
-        impl: EnrollmentRelationshipOrphanCleanerImpl
-    ): OrphanCleaner<Enrollment, Relationship> {
-        return impl
     }
 }

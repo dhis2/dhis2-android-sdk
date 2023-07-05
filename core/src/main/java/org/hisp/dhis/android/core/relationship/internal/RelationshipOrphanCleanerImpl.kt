@@ -25,74 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.*
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.relationship.BaseRelationship;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-
-import java.util.Collection;
-import java.util.List;
-
-import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItemsEqual;
-
-abstract class RelationshipOrphanCleanerImpl<O extends ObjectWithUidInterface, R extends BaseRelationship>
-        implements OrphanCleaner<O, R> {
-
-    private final RelationshipStore relationshipStore;
-    private final RelationshipCollectionRepository relationshipRepository;
-
-    RelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                  RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipStore = relationshipStore;
-        this.relationshipRepository = relationshipRepository;
-    }
-
-    abstract RelationshipItem getItem(String uid);
-
-    abstract Collection<Relationship> relationships(Collection<R> relationships);
-
-    public boolean deleteOrphan(O instance, Collection<R> relationships) {
-        if (instance == null || relationships == null) {
-            return false;
+internal abstract class RelationshipOrphanCleanerImpl<O : ObjectWithUidInterface, R : BaseRelationship>(
+    private val relationshipStore: RelationshipStore,
+    private val relationshipRepository: RelationshipCollectionRepository
+) : OrphanCleaner<O, R> {
+    abstract fun getItem(uid: String): RelationshipItem
+    abstract fun relationships(relationships: Collection<R>): Collection<Relationship>
+    override fun deleteOrphan(parent: O?, children: Collection<R>?): Boolean {
+        if (parent == null || children == null) {
+            return false
         }
-
-        List<Relationship> existingRelationships =
-                relationshipRepository.getByItem(getItem(instance.uid()), true, false);
-
-        int count = 0;
-        for (Relationship existingRelationship : existingRelationships) {
-            if (isSynced(existingRelationship.syncState()) &&
-                    !isInRelationshipList(existingRelationship, relationships(relationships))) {
-                relationshipStore.delete(existingRelationship.uid());
-                count++;
+        val existingRelationships = relationshipRepository.getByItem(getItem(parent.uid()), true, false)
+        var count = 0
+        for (existingRelationship in existingRelationships) {
+            if (isSynced(existingRelationship.syncState()!!) &&
+                !isInRelationshipList(existingRelationship, relationships(children))
+            ) {
+                relationshipStore.delete(existingRelationship.uid()!!)
+                count++
             }
         }
-
-        return count > 0;
+        return count > 0
     }
 
-    private boolean isSynced(State state) {
-        return State.SYNCED.equals(state) || State.SYNCED_VIA_SMS.equals(state);
+    private fun isSynced(state: State): Boolean {
+        return State.SYNCED == state || State.SYNCED_VIA_SMS == state
     }
 
-    private boolean isInRelationshipList(Relationship target,
-                                         Collection<Relationship> list) {
-        for (Relationship relationship : list) {
+    private fun isInRelationshipList(
+        target: Relationship,
+        list: Collection<Relationship>
+    ): Boolean {
+        for (relationship in list) {
             if (target.from() == null || target.to() == null || relationship.from() == null || target.to() == null) {
-                continue;
+                continue
             }
-            if (areItemsEqual(target.from(), relationship.from()) &&
-                    areItemsEqual(target.to(), relationship.to()) &&
-                    target.relationshipType().equals(relationship.relationshipType())) {
-                return true;
+            if (RelationshipHelper.areItemsEqual(target.from(), relationship.from()) &&
+                RelationshipHelper.areItemsEqual(
+                    target.to(),
+                    relationship.to()
+                ) && target.relationshipType() == relationship.relationshipType()
+            ) {
+                return true
             }
         }
-        return false;
+        return false
     }
 }

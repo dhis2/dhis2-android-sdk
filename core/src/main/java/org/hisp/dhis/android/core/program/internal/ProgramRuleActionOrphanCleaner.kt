@@ -27,44 +27,19 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
+import javax.inject.Inject
 
-@Module
-internal class ProgramRuleEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ProgramRuleStore {
-        return ProgramRuleStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun ruleCleaner(databaseAdapter: DatabaseAdapter): SubCollectionCleaner<ProgramRule> {
-        return SubCollectionCleanerImpl(
-            ProgramRuleTableInfo.TABLE_INFO.name(),
-            ProgramRuleTableInfo.Columns.PROGRAM, databaseAdapter,
-            object : Transformer<ProgramRule, String> {
-                override fun transform(o: ProgramRule): String {
-                    return o.program()!!.uid()
-                }
-            }
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramRule>> {
-        return mapOf(
-            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender.create(databaseAdapter)
-        )
-    }
-}
+@Reusable
+internal class ProgramRuleActionOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(
+    ProgramRuleActionTableInfo.TABLE_INFO.name(),
+    ProgramRuleActionTableInfo.Columns.PROGRAM_RULE,
+    databaseAdapter = databaseAdapter
+)

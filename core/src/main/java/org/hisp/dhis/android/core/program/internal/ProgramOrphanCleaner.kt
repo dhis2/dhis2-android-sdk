@@ -25,53 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
-
-final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
-
-    private final OrphanCleaner<Program, ProgramRuleVariable> programRuleVariableCleaner;
-    private final OrphanCleaner<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributeCleaner;
-    private final OrphanCleaner<Program, ProgramSection> programSectionCleaner;
-
-    private ProgramOrphanCleaner(
-            OrphanCleaner<Program, ProgramRuleVariable> programRuleVariableCleaner,
-            OrphanCleaner<Program, ProgramTrackedEntityAttribute>
-                    programTrackedEntityAttributeCleaner,
-            OrphanCleaner<Program, ProgramSection> programSectionCleaner) {
-        this.programRuleVariableCleaner = programRuleVariableCleaner;
-        this.programTrackedEntityAttributeCleaner = programTrackedEntityAttributeCleaner;
-        this.programSectionCleaner = programSectionCleaner;
-    }
-
-    @Override
-    public void deleteOrphan(Program program) {
-        programRuleVariableCleaner.deleteOrphan(program, ProgramInternalAccessor.accessProgramRuleVariables(program));
-        programTrackedEntityAttributeCleaner.deleteOrphan(program,
-                ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program));
-        programSectionCleaner.deleteOrphan(program, ProgramInternalAccessor.accessProgramSections(program));
-    }
-
-    public static ProgramOrphanCleaner create(DatabaseAdapter databaseAdapter) {
-        return new ProgramOrphanCleaner(
-                new OrphanCleanerImpl<>(ProgramRuleVariableTableInfo.TABLE_INFO.name(),
-                        ProgramRuleVariableTableInfo.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<>(ProgramTrackedEntityAttributeTableInfo.
-                        TABLE_INFO.name(), ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<>(ProgramSectionTableInfo.TABLE_INFO.name(),
-                        ProgramSectionTableInfo.Columns.PROGRAM, databaseAdapter));
+@Reusable
+internal class ProgramOrphanCleaner @Inject constructor(
+    private val programRuleVariableCleaner: ProgramRuleVariableOrphanCleaner,
+    private val programTrackedEntityAttributeCleaner: ProgramTrackedEntityAttributeOrphanCleaner,
+    private val programSectionCleaner: ProgramSectionOrphanCleaner
+) : ParentOrphanCleaner<Program> {
+    override fun deleteOrphan(parent: Program?) {
+        programRuleVariableCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramRuleVariables(parent))
+        programTrackedEntityAttributeCleaner.deleteOrphan(
+            parent,
+            ProgramInternalAccessor.accessProgramTrackedEntityAttributes(parent)
+        )
+        programSectionCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramSections(parent))
     }
 }

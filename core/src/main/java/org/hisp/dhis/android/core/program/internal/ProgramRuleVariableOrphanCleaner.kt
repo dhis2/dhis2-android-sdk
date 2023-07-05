@@ -27,52 +27,19 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.core.program.ProgramRuleVariable
+import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
+import javax.inject.Inject
 
-@Module
-internal class ProgramEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ProgramStore {
-        return ProgramStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        trackedEntityTypeChildrenAppender: ProgramTrackedEntityTypeChildrenAppender
-    ): Map<String, ChildrenAppender<Program>> {
-        return mapOf(
-            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<Program> {
-        return CollectionCleanerImpl(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun linkCleaner(
-        programStore: ProgramStore,
-        databaseAdapter: DatabaseAdapter
-    ): LinkCleaner<Program> {
-        return LinkCleanerImpl(
-            OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programStore, databaseAdapter
-        )
-    }
-}
+@Reusable
+internal class ProgramRuleVariableOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : OrphanCleanerImpl<Program, ProgramRuleVariable>(
+    tableName = ProgramRuleVariableTableInfo.TABLE_INFO.name(),
+    parentColumn = ProgramRuleVariableTableInfo.Columns.PROGRAM,
+    databaseAdapter = databaseAdapter
+)

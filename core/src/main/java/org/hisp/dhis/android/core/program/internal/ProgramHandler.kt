@@ -28,10 +28,8 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
@@ -42,6 +40,7 @@ import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHa
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramHandler @Inject constructor(
@@ -49,7 +48,7 @@ internal class ProgramHandler @Inject constructor(
     private val programRuleVariableHandler: ProgramRuleVariableHandler,
     private val programTrackedEntityAttributeHandler: ProgramTrackedEntityAttributeHandler,
     private val programSectionHandler: ProgramSectionHandler,
-    private val orphanCleaner: ParentOrphanCleaner<Program>,
+    private val orphanCleaner: ProgramOrphanCleaner,
     private val collectionCleaner: CollectionCleaner<Program>,
     private val linkCleaner: LinkCleaner<Program>,
     private val attributeHandler: AttributeHandler,

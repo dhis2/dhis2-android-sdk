@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -49,7 +48,7 @@ internal class ProgramStageHandler @Inject constructor(
     private val programStageSectionHandler: ProgramStageSectionHandler,
     private val programStageDataElementHandler: ProgramStageDataElementHandler,
     private val programStageDataElementCleaner: ProgramStageDataElementOrphanCleaner,
-    private val programStageSectionCleaner: OrphanCleaner<ProgramStage, ProgramStageSection>,
+    private val programStageSectionCleaner: ProgramStageSectionOrphanCleaner,
     private val programStageCleaner: SubCollectionCleaner<ProgramStage>,
     private val attributeHandler: AttributeHandler,
     private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler

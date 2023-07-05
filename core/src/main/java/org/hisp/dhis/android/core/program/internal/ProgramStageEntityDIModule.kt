@@ -38,8 +38,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageDataElement
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo
@@ -50,17 +48,6 @@ internal class ProgramStageEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ProgramStageStore {
         return ProgramStageStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun dataElementOrphanCleaner(
-        databaseAdapter: DatabaseAdapter
-    ): OrphanCleaner<ProgramStage, ProgramStageDataElement> {
-        return OrphanCleanerImpl(
-            ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-            ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE, databaseAdapter
-        )
     }
 
     @Provides

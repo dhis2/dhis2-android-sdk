@@ -25,45 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import dagger.Module
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
+import javax.inject.Inject
 
-internal class CategoryComboHandler constructor(
-    store: CategoryComboStore,
-    private val optionComboHandler: CategoryOptionComboHandler,
-    private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner
-) : IdentifiableHandlerImpl<CategoryCombo>(store) {
-
-    override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
-        optionComboHandler.handleMany(
-            CategoryComboInternalAccessor.accessCategoryOptionCombos(o)
-        ) { optionCombo: CategoryOptionCombo ->
-            optionCombo.toBuilder()
-                .categoryCombo(ObjectWithUid.create(o.uid()))
-                .build()
-        }
-        categoryCategoryComboLinkHandler.handleMany(
-            o.uid(), o.categories()
-        ) { category: Category, sortOrder: Int? ->
-            CategoryCategoryComboLink.builder()
-                .categoryCombo(o.uid())
-                .category(category.uid())
-                .sortOrder(sortOrder)
-                .build()
-        }
-        if (action === HandleAction.Update) {
-            categoryOptionCleaner.deleteOrphan(o, CategoryComboInternalAccessor.accessCategoryOptionCombos(o))
-        }
-    }
-}
+@Module
+internal class CategoryOptionComboOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(
+    tableName = CategoryOptionComboTableInfo.TABLE_INFO.name(),
+    parentColumn = CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO,
+    databaseAdapter = databaseAdapter
+)

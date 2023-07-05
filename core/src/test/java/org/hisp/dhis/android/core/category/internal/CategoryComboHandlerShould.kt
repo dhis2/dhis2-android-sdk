@@ -35,7 +35,6 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.same
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.Category
@@ -49,7 +48,7 @@ class CategoryComboHandlerShould {
     private val categoryComboStore: CategoryComboStore = mock()
     private val optionComboHandler: CategoryOptionComboHandler = mock()
     private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler = mock()
-    private val categoryOptionCleaner: OrphanCleaner<CategoryCombo, CategoryOptionCombo> = mock()
+    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner = mock()
 
     private val comboUid = "comboId"
 

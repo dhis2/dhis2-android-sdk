@@ -52,19 +52,9 @@ internal class CategoryComboEntityDIModule {
         store: CategoryComboStore,
         optionComboHandler: CategoryOptionComboHandler,
         categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-        categoryOptionCleaner: OrphanCleaner<CategoryCombo, CategoryOptionCombo>
+        categoryOptionCleaner: CategoryOptionComboOrphanCleaner
     ): CategoryComboHandler {
         return CategoryComboHandler(store, optionComboHandler, categoryCategoryComboLinkHandler, categoryOptionCleaner)
-    }
-
-    @Provides
-    @Reusable
-    fun orphanCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<CategoryCombo, CategoryOptionCombo> {
-        return OrphanCleanerImpl(
-            CategoryOptionComboTableInfo.TABLE_INFO.name(),
-            CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO,
-            databaseAdapter
-        )
     }
 
     @Provides

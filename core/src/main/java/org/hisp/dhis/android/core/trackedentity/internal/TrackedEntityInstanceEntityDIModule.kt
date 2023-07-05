@@ -67,12 +67,6 @@ internal class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    fun enrollmentOrphanCleaner(impl: TrackedEntityEnrollmentOrphanCleanerImpl): TrackedEntityEnrollmentOrphanCleaner {
-        return impl
-    }
-
-    @Provides
-    @Reusable
     fun childrenAppenders(
         databaseAdapter: DatabaseAdapter,
         programOwnerStore: ProgramOwnerStore

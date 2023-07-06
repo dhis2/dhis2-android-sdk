@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.ProgramStageTableInfo
+import javax.inject.Inject
 
-@Module
-internal class ProgramStageEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ProgramStageStore {
-        return ProgramStageStoreImpl(databaseAdapter)
+@Reusable
+internal class ProgramStageSubCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : SubCollectionCleanerImpl<ProgramStage>(
+    tableName = ProgramStageTableInfo.TABLE_INFO.name(),
+    parentColumn = ProgramStageTableInfo.Columns.PROGRAM,
+    databaseAdapter = databaseAdapter,
+    keyExtractor = object : Transformer<ProgramStage, String> {
+        override fun transform(o: ProgramStage): String {
+            return o.program()!!.uid()
+        }
     }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<ProgramStage>> {
-        return emptyMap()
-    }
-}
+)

@@ -50,19 +50,13 @@ internal class OptionGroupEntityDIModule {
     fun handler(
         optionStore: OptionGroupStore,
         optionGroupOptionLinkHandler: OptionGroupOptionLinkHandler,
-        collectionCleaner: CollectionCleaner<OptionGroup>
+        collectionCleaner: OptionGroupCollectionCleaner
     ): OptionGroupHandler {
         return OptionGroupHandler(
             optionStore,
             optionGroupOptionLinkHandler,
             collectionCleaner
         )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<OptionGroup> {
-        return CollectionCleanerImpl(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

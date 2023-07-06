@@ -27,28 +27,17 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupOptionLink
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo
+import javax.inject.Inject
 
-internal class OptionGroupHandler(
-    optionStore: OptionGroupStore,
-    private val optionGroupOptionLinkHandler: LinkHandler<ObjectWithUid, OptionGroupOptionLink>,
-    private val collectionCleaner: OptionGroupCollectionCleaner
-) : IdentifiableHandlerImpl<OptionGroup>(optionStore) {
-
-    override fun afterObjectHandled(o: OptionGroup, action: HandleAction) {
-        optionGroupOptionLinkHandler.handleMany(
-            o.uid(), o.options()
-        ) { option: ObjectWithUid ->
-            OptionGroupOptionLink.builder().optionGroup(o.uid()).option(option.uid()).build()
-        }
-    }
-
-    override fun afterCollectionHandled(oCollection: Collection<OptionGroup>?) {
-        collectionCleaner.deleteNotPresent(oCollection)
-    }
-}
+@Reusable
+internal class OptionGroupCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<OptionGroup>(
+    tableName = OptionGroupTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

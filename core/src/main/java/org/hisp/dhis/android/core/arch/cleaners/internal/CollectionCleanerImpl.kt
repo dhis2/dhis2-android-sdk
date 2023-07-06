@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class CollectionCleanerImpl<P : ObjectWithUidInterface>(
+internal open class CollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val databaseAdapter: DatabaseAdapter
 ) : CollectionCleaner<P> {

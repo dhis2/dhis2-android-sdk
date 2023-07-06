@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.cleaners.internal
+package org.hisp.dhis.android.core.program.internal
 
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.program.Program
+import javax.inject.Inject
 
-internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
-    private val tableName: String,
-    private val applicableColumn: String,
-    private val parentStore: ObjectStore<P>,
-    private val databaseAdapter: DatabaseAdapter
-) : LinkCleaner<P> {
-
-    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
-        if (objects == null) {
-            return false
-        }
-        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
-        val clause = "$applicableColumn NOT IN ($objectUids);"
-        return databaseAdapter.delete(tableName, clause, null) > 0
-    }
-
-    override fun deleteNotPresentInDb(): Boolean {
-        return deleteNotPresent(parentStore.selectAll())
-    }
-}
+@Reusable
+internal class ProgramOrganisationUnitLinkCleaner @Inject constructor(
+    programStore: ProgramStore,
+    databaseAdapter: DatabaseAdapter
+) : LinkCleanerImpl<Program>(
+    tableName = OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+    applicableColumn = OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+    parentStore = programStore,
+    databaseAdapter = databaseAdapter
+)

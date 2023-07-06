@@ -31,13 +31,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantModule
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
 import retrofit2.Retrofit
 
 @Module
@@ -52,7 +49,7 @@ internal class ConstantPackageDIModule {
     @Reusable
     fun handler(
         optionStore: ConstantStore,
-        collectionCleaner: CollectionCleaner<Constant>
+        collectionCleaner: ConstantCollectionCleaner
     ): ConstantHandler {
         return ConstantHandler(optionStore, collectionCleaner)
     }
@@ -73,12 +70,6 @@ internal class ConstantPackageDIModule {
     @Reusable
     fun childrenAppenders(): Map<String, ChildrenAppender<Constant>> {
         return emptyMap()
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter?): CollectionCleaner<Constant> {
-        return CollectionCleanerImpl(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter!!)
     }
 
     @Provides

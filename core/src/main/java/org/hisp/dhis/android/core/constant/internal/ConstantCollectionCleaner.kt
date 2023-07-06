@@ -27,15 +27,17 @@
  */
 package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import javax.inject.Inject
 
-@Suppress("MagicNumber")
-internal class ConstantHandler constructor(
-    optionStore: ConstantStore,
-    private val collectionCleaner: ConstantCollectionCleaner
-) : IdentifiableHandlerImpl<Constant>(optionStore) {
-    override fun afterCollectionHandled(oCollection: Collection<Constant>?) {
-        collectionCleaner.deleteNotPresent(oCollection)
-    }
-}
+@Reusable
+internal class ConstantCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<Constant>(
+    tableName = ConstantTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

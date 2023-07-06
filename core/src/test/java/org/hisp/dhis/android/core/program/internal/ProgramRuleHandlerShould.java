@@ -33,7 +33,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
@@ -66,7 +65,7 @@ public class ProgramRuleHandlerShould {
     private SubCollectionCleaner<ProgramRule> programRuleCleaner;
 
     @Mock
-    private OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
+    private ProgramRuleActionOrphanCleaner programRuleActionCleaner;
 
     @Mock
     private List<ProgramRuleAction> programRuleActions;

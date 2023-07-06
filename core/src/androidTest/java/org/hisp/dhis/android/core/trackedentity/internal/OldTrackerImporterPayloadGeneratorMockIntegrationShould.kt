@@ -205,7 +205,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_with_non_accessible_adta() {
+    fun build_payload_with_non_accessible_data() {
         storeTrackerData()
         val previousTrackedEntityType = trackedEntityTypeStore.selectFirst()!!
         val previousProgram = programStore.selectFirst()!!
@@ -227,5 +227,23 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
 
         trackedEntityTypeStore.update(previousTrackedEntityType)
         programStore.update(previousProgram)
+    }
+
+    @Test
+    fun do_not_include_data_values_not_assigned_to_program_stage() {
+        storeTrackerData()
+        d2.trackedEntityModule().trackedEntityDataValues()
+            .value(event1Id, unassignedDataElementId)
+            .blockingSet("value")
+
+        val instance = teiStore.selectByUid(teiId)!!
+        val payload = oldTrackerPayloadGenerator.getTrackedEntityInstancePayload(listOf(instance))
+
+        val events = getEvents(getEnrollments(payload.trackedEntityInstances.first()).first())
+        val event1 = events.find { it.uid() == event1Id }
+        assertThat(event1).isNotNull()
+
+        val eventValues = event1!!.trackedEntityDataValues()!!
+        assertThat(eventValues.any { it.dataElement() == unassignedDataElementId}).isFalse()
     }
 }

@@ -27,29 +27,17 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramTableInfo
+import javax.inject.Inject
 
-@Module
-internal class ProgramEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ProgramStore {
-        return ProgramStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        trackedEntityTypeChildrenAppender: ProgramTrackedEntityTypeChildrenAppender
-    ): Map<String, ChildrenAppender<Program>> {
-        return mapOf(
-            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender
-        )
-    }
-}
+@Reusable
+internal class ProgramCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<Program>(
+    tableName = ProgramTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

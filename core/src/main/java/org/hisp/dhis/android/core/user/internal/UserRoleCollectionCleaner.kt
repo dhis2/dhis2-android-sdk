@@ -27,24 +27,17 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.core.user.UserRoleTableInfo
+import javax.inject.Inject
 
-@Module
-internal class UserRoleEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): UserRoleStore {
-        return UserRoleStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<UserRole>> {
-        return emptyMap()
-    }
-}
+@Reusable
+internal class UserRoleCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<UserRole>(
+    tableName = UserRoleTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

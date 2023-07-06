@@ -28,34 +28,23 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo
 import javax.inject.Inject
 
 @Reusable
-internal class ProgramRuleHandler @Inject constructor(
-    programRuleStore: ProgramRuleStore,
-    private val programRuleActionHandler: ProgramRuleActionHandler,
-    private val programRuleCleaner: ProgramRuleSubCollectionCleaner,
-    private val programRuleActionCleaner: ProgramRuleActionOrphanCleaner
-) : IdentifiableHandlerImpl<ProgramRule>(programRuleStore) {
-
-    override fun afterObjectHandled(o: ProgramRule, action: HandleAction) {
-        programRuleActionHandler.handleMany(
-            o.programRuleActions()
-        ) { pra: ProgramRuleAction ->
-            pra.toBuilder().programRule(ObjectWithUid.create(o.uid())).build()
-        }
-
-        if (action === HandleAction.Update) {
-            programRuleActionCleaner.deleteOrphan(o, o.programRuleActions())
+internal class ProgramRuleSubCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : SubCollectionCleanerImpl<ProgramRule>(
+    tableName = ProgramRuleTableInfo.TABLE_INFO.name(),
+    parentColumn = ProgramRuleTableInfo.Columns.PROGRAM,
+    databaseAdapter = databaseAdapter,
+    keyExtractor = object : Transformer<ProgramRule, String> {
+        override fun transform(o: ProgramRule): String {
+            return o.program()!!.uid()
         }
     }
-
-    override fun afterCollectionHandled(oCollection: Collection<ProgramRule>?) {
-        programRuleCleaner.deleteNotPresent(oCollection)
-    }
-}
+)

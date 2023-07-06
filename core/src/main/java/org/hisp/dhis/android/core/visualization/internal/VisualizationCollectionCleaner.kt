@@ -27,27 +27,17 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import javax.inject.Inject
 
-@Module
-internal class VisualizationEntityDIModule {
-
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): VisualizationStore {
-        return VisualizationStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
-        return mapOf(
-            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter)
-        )
-    }
-}
+@Reusable
+internal class VisualizationCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<Visualization>(
+    tableName = VisualizationTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

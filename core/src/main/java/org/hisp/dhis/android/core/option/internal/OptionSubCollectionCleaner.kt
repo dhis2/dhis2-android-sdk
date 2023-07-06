@@ -27,36 +27,24 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionTableInfo
+import javax.inject.Inject
 
-@Module
-internal class OptionEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): OptionStore {
-        return OptionStoreImpl(databaseAdapter)
+@Reusable
+internal class OptionSubCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : SubCollectionCleanerImpl<Option>(
+    tableName = OptionTableInfo.TABLE_INFO.name(),
+    parentColumn = OptionTableInfo.Columns.OPTION_SET,
+    databaseAdapter = databaseAdapter,
+    keyExtractor = object : Transformer<Option, String> {
+        override fun transform(o: Option): String {
+            return o.optionSet()!!.uid()
+        }
     }
-
-    @Provides
-    @Reusable
-    fun handler(
-        optionStore: OptionStore,
-        optionCleaner: OptionSubCollectionCleaner
-    ): OptionHandler {
-        return OptionHandler(
-            optionStore,
-            optionCleaner
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<Option>> {
-        return emptyMap()
-    }
-}
+)

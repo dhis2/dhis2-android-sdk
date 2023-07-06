@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.option.Option
 
 internal class OptionHandler constructor(
     optionStore: OptionStore,
-    private val optionCleaner: SubCollectionCleaner<Option>
+    private val optionCleaner: OptionSubCollectionCleaner
 ) : IdentifiableHandlerImpl<Option>(optionStore) {
 
     override fun afterCollectionHandled(oCollection: Collection<Option>?) {

@@ -36,7 +36,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -112,7 +111,7 @@ public class DataSetHandlerShould {
     private DataSetIndicatorLinkHandler dataSetIndicatorLinkHandler;
 
     @Mock
-    private CollectionCleaner<DataSet> collectionCleaner;
+    private DataSetCollectionCleaner collectionCleaner;
 
     @Mock
     private DataSetOrganisationUnitLinkCleaner linkCleaner;

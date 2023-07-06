@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -48,7 +47,7 @@ internal class DataSetHandler constructor(
     private val dataInputPeriodHandler: DataInputPeriodHandler,
     private val dataSetElementLinkHandler: DataSetElementHandler,
     private val dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
-    private val collectionCleaner: CollectionCleaner<DataSet>,
+    private val collectionCleaner: DataSetCollectionCleaner,
     private val linkCleaner: DataSetOrganisationUnitLinkCleaner
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 

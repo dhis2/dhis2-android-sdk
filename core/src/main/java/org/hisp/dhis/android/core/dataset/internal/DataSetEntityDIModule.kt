@@ -30,13 +30,10 @@ package org.hisp.dhis.android.core.dataset.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
 
@@ -60,7 +57,7 @@ internal class DataSetEntityDIModule {
         dataInputPeriodHandler: DataInputPeriodHandler,
         dataSetElementLinkHandler: DataSetElementHandler,
         dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
-        collectionCleaner: CollectionCleaner<DataSet>,
+        collectionCleaner: DataSetCollectionCleaner,
         linkCleaner: DataSetOrganisationUnitLinkCleaner
     ): DataSetHandler {
         return DataSetHandler(
@@ -75,12 +72,6 @@ internal class DataSetEntityDIModule {
             collectionCleaner,
             linkCleaner
         )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<DataSet> {
-        return CollectionCleanerImpl(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

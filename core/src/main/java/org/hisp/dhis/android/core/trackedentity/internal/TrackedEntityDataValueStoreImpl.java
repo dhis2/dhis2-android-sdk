@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
@@ -157,13 +158,23 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     }
 
     @Override
-    public Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents() {
+    public List<TrackedEntityDataValue> queryToPostByEvent(@NonNull String eventUid) {
+        String psDataElementName = ProgramStageDataElementTableInfo.TABLE_INFO.name();
+        String eventName = EventTableInfo.TABLE_INFO.name();
 
-        String queryStatement = "SELECT TrackedEntityDataValue.* " +
-                " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
-                " WHERE " + eventInUploadableState() + ";";
+        String psDataElementQuery = "SELECT " + ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT +
+                " FROM " + psDataElementName +
+                " INNER JOIN " + eventName +
+                " ON " + psDataElementName + "." + ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE  +
+                " = " + eventName + "." + EventTableInfo.Columns.PROGRAM_STAGE +
+                " WHERE " + eventName + "." + EventTableInfo.Columns.UID + " = '" + eventUid + "'";
 
-        return queryTrackedEntityDataValues(queryStatement);
+        String queryStatement = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .appendInSubQuery(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, psDataElementQuery)
+                .build();
+
+        return selectWhere(queryStatement);
     }
 
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {

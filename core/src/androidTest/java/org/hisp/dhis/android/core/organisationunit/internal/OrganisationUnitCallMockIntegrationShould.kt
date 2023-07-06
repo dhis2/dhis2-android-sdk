@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Completable
-import java.io.IOException
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
@@ -42,7 +39,6 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -54,6 +50,7 @@ import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
@@ -96,8 +93,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
                 OrganisationUnitOrganisationUnitGroupLinkStoreImpl(databaseAdapter)
             )
         )
-        val organisationUnitCollectionCleaner: CollectionCleaner<OrganisationUnit> =
-            CollectionCleanerImpl(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter)
+        val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
         val pathTransformer = OrganisationUnitDisplayPathTransformer()
         organisationUnitCall = OrganisationUnitCall(
             organisationUnitService,

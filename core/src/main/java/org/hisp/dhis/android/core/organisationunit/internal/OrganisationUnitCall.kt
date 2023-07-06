@@ -31,9 +31,6 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
@@ -41,6 +38,8 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 @Reusable
 internal class OrganisationUnitCall @Inject constructor(
@@ -49,7 +48,7 @@ internal class OrganisationUnitCall @Inject constructor(
     private val pathTransformer: OrganisationUnitDisplayPathTransformer,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
-    private val collectionCleaner: CollectionCleaner<OrganisationUnit>
+    private val collectionCleaner: OrganisationUnitCollectionCleaner
 ) {
     fun download(user: User): Completable {
         return Completable.defer {

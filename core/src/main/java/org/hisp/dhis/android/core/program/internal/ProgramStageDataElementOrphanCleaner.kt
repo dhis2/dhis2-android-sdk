@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageDataElementOrphanCleaner @Inject constructor(

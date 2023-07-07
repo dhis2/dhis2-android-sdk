@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Completable
+import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
@@ -50,7 +51,6 @@ import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {

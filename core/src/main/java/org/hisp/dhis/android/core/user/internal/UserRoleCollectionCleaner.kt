@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class UserRoleCollectionCleaner @Inject constructor(

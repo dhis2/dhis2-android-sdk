@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetOrganisationUnitLinkCleaner @Inject constructor(

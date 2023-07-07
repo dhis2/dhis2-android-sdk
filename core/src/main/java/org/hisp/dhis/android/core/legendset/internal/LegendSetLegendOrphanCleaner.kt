@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.LegendTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class LegendSetLegendOrphanCleaner @Inject constructor(

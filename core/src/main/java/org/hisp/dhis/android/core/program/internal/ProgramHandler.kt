@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHa
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramHandler @Inject constructor(

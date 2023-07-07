@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramOrphanCleaner @Inject constructor(

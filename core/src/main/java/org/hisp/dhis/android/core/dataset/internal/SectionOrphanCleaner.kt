@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class SectionOrphanCleaner @Inject constructor(

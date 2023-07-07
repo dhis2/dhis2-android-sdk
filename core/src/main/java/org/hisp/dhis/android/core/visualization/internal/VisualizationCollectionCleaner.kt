@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class VisualizationCollectionCleaner @Inject constructor(

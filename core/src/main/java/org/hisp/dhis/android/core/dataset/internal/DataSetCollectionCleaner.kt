@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetCollectionCleaner @Inject constructor(

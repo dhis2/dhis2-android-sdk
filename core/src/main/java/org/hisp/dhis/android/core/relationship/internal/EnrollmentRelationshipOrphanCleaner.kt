@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentRelationshipOrphanCleaner @Inject constructor(

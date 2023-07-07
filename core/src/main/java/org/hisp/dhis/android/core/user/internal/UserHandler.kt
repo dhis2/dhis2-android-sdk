@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import javax.inject.Inject
 
 @Reusable
 internal class UserHandler @Inject constructor(

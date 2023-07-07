@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.constant.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantTableInfo
-import javax.inject.Inject
 
 @Reusable
 internal class ConstantCollectionCleaner @Inject constructor(

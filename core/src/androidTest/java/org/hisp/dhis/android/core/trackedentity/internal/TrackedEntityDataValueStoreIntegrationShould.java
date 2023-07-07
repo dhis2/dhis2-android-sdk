@@ -83,7 +83,12 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @After
     public void tearDown() {
+        super.tearDown();
+        TrackedEntityInstanceStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
+        EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
         EventStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
+        ProgramStageStore.create(TestDatabaseAdapterFactory.get()).delete();
+        ProgramStageDataElementStore.create(TestDatabaseAdapterFactory.get()).delete();
     }
 
     @Override
@@ -192,7 +197,7 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void remove_unassigned_event_values() {
-        ProgramStage stage = ProgramStageSamples.getProgramStage();
+        ProgramStage stage = ProgramStageSamples.getProgramStage().toBuilder().uid("stage_uid").build();
         IdentifiableObjectStore<ProgramStage> stageStore = ProgramStageStore.create(TestDatabaseAdapterFactory.get());
         stageStore.insert(stage);
 
@@ -205,6 +210,7 @@ public class TrackedEntityDataValueStoreIntegrationShould
         IdentifiableObjectStore<ProgramStageDataElement> psStore =
                 ProgramStageDataElementStore.create(TestDatabaseAdapterFactory.get());
         psStore.insert(ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
+                .uid(dataElement1)
                 .dataElement(DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build())
                 .programStage(ObjectWithUid.create(stage.uid()))
                 .build());

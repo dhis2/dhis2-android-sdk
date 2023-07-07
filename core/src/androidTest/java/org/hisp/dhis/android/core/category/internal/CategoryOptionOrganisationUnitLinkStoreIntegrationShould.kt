@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class CategoryOptionOrganisationUnitLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<CategoryOptionOrganisationUnitLink>(
-        CategoryOptionOrganisationUnitLinkStore.create(TestDatabaseAdapterFactory.get()),
+        CategoryOptionOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
         CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {

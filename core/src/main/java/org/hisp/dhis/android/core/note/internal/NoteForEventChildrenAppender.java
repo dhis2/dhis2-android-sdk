@@ -53,7 +53,7 @@ public final class NoteForEventChildrenAppender extends ChildrenAppender<Event> 
         return new NoteForEventChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        NoteStore.EVENT_CHILD_PROJECTION,
+                        NoteStoreImpl.Companion.getEVENT_CHILD_PROJECTION(),
                         Note::create)
         );
     }

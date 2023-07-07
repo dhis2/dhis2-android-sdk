@@ -41,7 +41,7 @@ public class SectionDataElementLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<SectionDataElementLink> {
 
     public SectionDataElementLinkStoreIntegrationShould() {
-        super(SectionDataElementLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new SectionDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 SectionDataElementLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

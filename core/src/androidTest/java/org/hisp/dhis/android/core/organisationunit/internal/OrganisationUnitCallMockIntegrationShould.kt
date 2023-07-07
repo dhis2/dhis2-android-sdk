@@ -34,13 +34,13 @@ import java.io.IOException
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
@@ -86,13 +86,15 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         // inserting dataSets for creating OrgUnitDataSetLinks
         insertDataSet()
-        val organisationUnitHandler = OrganisationUnitHandlerImpl(
-            OrganisationUnitStore.create(databaseAdapter),
-            LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
-            LinkHandlerImpl(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-            LinkHandlerImpl(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-            IdentifiableHandlerImpl(OrganisationUnitGroupStore.create(databaseAdapter)),
-            LinkHandlerImpl(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter))
+        val organisationUnitHandler = OrganisationUnitHandler(
+            OrganisationUnitStoreImpl(databaseAdapter),
+            LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl(databaseAdapter)),
+            OrganisationUnitProgramLinkHandler(OrganisationUnitProgramLinkStoreImpl(databaseAdapter)),
+            DataSetOrganisationUnitLinkHandler(DataSetOrganisationUnitLinkStoreImpl(databaseAdapter)),
+            OrganisationUnitGroupHandler(OrganisationUnitGroupStoreImpl(databaseAdapter)),
+            OrganisationUnitOrganisationUnitGroupLinkHandler(
+                OrganisationUnitOrganisationUnitGroupLinkStoreImpl(databaseAdapter)
+            )
         )
         val organisationUnitCollectionCleaner: CollectionCleaner<OrganisationUnit> =
             CollectionCleanerImpl(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter)
@@ -101,8 +103,8 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
             organisationUnitService,
             organisationUnitHandler,
             pathTransformer,
-            UserOrganisationUnitLinkStoreImpl.create(databaseAdapter),
-            OrganisationUnitStore.create(databaseAdapter),
+            UserOrganisationUnitLinkStoreImpl(databaseAdapter),
+            OrganisationUnitStoreImpl(databaseAdapter),
             organisationUnitCollectionCleaner
         )
             .download(user)
@@ -127,7 +129,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     @Test
     fun persist_organisation_unit_tree() {
         organisationUnitCall.blockingAwait()
-        val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
+        val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
 
@@ -138,7 +140,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     @Test
     fun persist_organisation_unit_user_links() {
         organisationUnitCall.blockingAwait()
-        val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
+        val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl(databaseAdapter)
         val userOrganisationUnitLinks = userOrganisationUnitStore.selectAll()
         val linkOrganisationUnits: MutableSet<String> = HashSet(2)
 

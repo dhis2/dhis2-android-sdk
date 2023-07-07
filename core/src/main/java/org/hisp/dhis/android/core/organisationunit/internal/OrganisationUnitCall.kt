@@ -34,7 +34,6 @@ import io.reactivex.Single
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
@@ -49,7 +48,7 @@ internal class OrganisationUnitCall @Inject constructor(
     private val handler: OrganisationUnitHandler,
     private val pathTransformer: OrganisationUnitDisplayPathTransformer,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+    private val organisationUnitStore: OrganisationUnitStore,
     private val collectionCleaner: CollectionCleaner<OrganisationUnit>
 ) {
     fun download(user: User): Completable {

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.legendset
 
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class DataElementLegendSetLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<DataElementLegendSetLink>(
-        DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        DataElementLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
         DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
     ) {
     override fun addMasterUid(): String {

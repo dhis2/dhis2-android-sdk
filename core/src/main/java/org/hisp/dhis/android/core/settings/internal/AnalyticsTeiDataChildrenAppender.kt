@@ -29,17 +29,20 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
 
 @Reusable
 internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
-    private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
-    private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
-    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>,
-    private val analyticsTeiWHONutritionDataStore: LinkStore<AnalyticsTeiWHONutritionData>
+    private val analyticsTeiDataElementStore: AnalyticsTeiDataElementStore,
+    private val analyticsTeiIndicatorStore: AnalyticsTeiIndicatorStore,
+    private val analyticsTeiAttributeStore: AnalyticsTeiAttributeStore,
+    private val analyticsTeiWHONutritionDataStore: AnalyticsTeiWHONutritionDataStore
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
 
     companion object {

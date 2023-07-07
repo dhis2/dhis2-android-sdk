@@ -53,7 +53,7 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void create_period_in_database_if_not_exist() throws ParseException {
-        PeriodStore periodStore = PeriodStoreImpl.create(databaseAdapter);
+        PeriodStore periodStore = new PeriodStoreImpl(databaseAdapter);
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2010-12-24T12:24:25.319");
 
@@ -73,7 +73,7 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_periods() {
-        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(206);
+        assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(225);
     }
 
     @Test

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.junit.Before
@@ -40,7 +39,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class GeneralSettingCallShould {
-    private val handler: Handler<GeneralSettings> = mock()
+    private val handler: GeneralSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val generalSettingSingle: Single<GeneralSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()

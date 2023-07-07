@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl;
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
@@ -40,7 +40,7 @@ public class ValueTypeDeviceRenderingStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<ValueTypeDeviceRendering> {
 
     public ValueTypeDeviceRenderingStoreIntegrationShould() {
-        super(ValueTypeDeviceRenderingStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ValueTypeDeviceRenderingStoreImpl(TestDatabaseAdapterFactory.get()),
                 ValueTypeDeviceRenderingTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

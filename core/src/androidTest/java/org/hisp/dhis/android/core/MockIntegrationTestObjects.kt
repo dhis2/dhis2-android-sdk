@@ -44,8 +44,9 @@ class MockIntegrationTestObjects(val content: MockIntegrationTestDatabaseContent
 
     val d2: D2 = forNewDatabase()
     val databaseAdapter: DatabaseAdapter = d2.databaseAdapter()
-    var serverDate = Date()
-    var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
+
+    private var serverDate = Date()
+    private var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
 
     @JvmField
     internal val d2DIComponent: D2DIComponent = d2.d2DIComponent

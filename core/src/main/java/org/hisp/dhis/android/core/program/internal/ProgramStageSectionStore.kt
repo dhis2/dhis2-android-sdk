@@ -25,38 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
 
-@Suppress("MagicNumber")
-internal object ProgramStageSectionStore {
-
-    private val BINDER: StatementBinder<ProgramStageSection> =
-        object : IdentifiableStatementBinder<ProgramStageSection>() {
-            override fun bindToStatement(o: ProgramStageSection, w: StatementWrapper) {
-                super.bindToStatement(o, w)
-                w.bind(7, o.sortOrder())
-                w.bind(8, getUidOrNull(o.programStage()))
-                w.bind(9, o.renderType()?.desktop()?.type())
-                w.bind(10, o.renderType()?.mobile()?.type())
-            }
-        }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramStageSection> {
-        return objectWithUidStore(
-            databaseAdapter, ProgramStageSectionTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> ProgramStageSection.create(cursor) }
-    }
-}
+internal interface ProgramStageSectionStore : IdentifiableObjectStore<ProgramStageSection>

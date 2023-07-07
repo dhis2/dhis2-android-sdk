@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
@@ -49,12 +48,12 @@ public final class TrackedEntityTypeCall implements UidsCall<TrackedEntityType> 
     private static final int MAX_UID_LIST_SIZE = 140;
 
     private final TrackedEntityTypeService service;
-    private final Handler<TrackedEntityType> handler;
+    private final TrackedEntityTypeHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
     TrackedEntityTypeCall(TrackedEntityTypeService service,
-                          Handler<TrackedEntityType> handler,
+                          TrackedEntityTypeHandler handler,
                           APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

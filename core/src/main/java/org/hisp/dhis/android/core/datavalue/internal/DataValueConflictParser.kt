@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.IndexedDataValueConflict
@@ -46,9 +45,9 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class DataValueConflictParser @Inject constructor(
-    dataElementStore: IdentifiableObjectStore<DataElement>,
+    dataElementStore: DataElementStore,
     dataValueStore: DataValueStore,
-    dataSetStore: IdentifiableObjectStore<DataSet>,
+    dataSetStore: DataSetStore,
     val versionManager: DHISVersionManager
 ) {
 

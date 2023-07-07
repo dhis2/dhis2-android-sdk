@@ -31,105 +31,46 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 
 @Module
-@Suppress("TooManyFunctions")
 internal class AnalyticsSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun analyticsSettingStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
-        return AnalyticsTeiSettingStore.create(databaseAdapter)
+    fun analyticsSettingStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiSettingStore {
+        return AnalyticsTeiSettingStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun analyticsDhisVisualizationStore(
-        databaseAdapter: DatabaseAdapter
-    ): ObjectWithoutUidStore<AnalyticsDhisVisualization> {
-        return AnalyticsDhisVisualizationStore.create(databaseAdapter)
+    fun analyticsDhisVisualizationStore(databaseAdapter: DatabaseAdapter): AnalyticsDhisVisualizationStore {
+        return AnalyticsDhisVisualizationStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun analyticsTeiDataElementStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiDataElement> {
-        return AnalyticsTeiDataElementStore.create(databaseAdapter)
+    fun analyticsTeiDataElementStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiDataElementStore {
+        return AnalyticsTeiDataElementStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun analyticsTeiIndicatorStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiIndicator> {
-        return AnalyticsTeiIndicatorStore.create(databaseAdapter)
+    fun analyticsTeiIndicatorStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiIndicatorStore {
+        return AnalyticsTeiIndicatorStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun analyticsTeiAttributeStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {
-        return AnalyticsTeiAttributeStore.create(databaseAdapter)
+    fun analyticsTeiAttributeStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiAttributeStore {
+        return AnalyticsTeiAttributeStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun analyticsTeiWHONutritionDataStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiWHONutritionData> {
-        return AnalyticsTeiWHONutritionDataStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsTeiSettingHandler(impl: AnalyticsTeiSettingHandler): Handler<AnalyticsTeiSetting> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsDhisVisualizationsHandler(
-        impl: AnalyticsDhisVisualizationSettingHandler
-    ): Handler<AnalyticsDhisVisualization> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsTeiDataElementHandler(
-        store: LinkStore<AnalyticsTeiDataElement>
-    ): LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> {
-        return LinkHandlerImpl(store)
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsTeiIndicatorHandler(
-        store: LinkStore<AnalyticsTeiIndicator>
-    ): LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> {
-        return LinkHandlerImpl(store)
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsTeiAttributeHandler(
-        store: LinkStore<AnalyticsTeiAttribute>
-    ): LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
-        return LinkHandlerImpl(store)
-    }
-
-    @Provides
-    @Reusable
-    fun analyticsTeiWhoNutritionDataHandler(
-        impl: AnalyticsTeiWHONutritionDataHandler
-    ): LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData> {
-        return impl
+    fun analyticsTeiWHONutritionDataStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiWHONutritionDataStore {
+        return AnalyticsTeiWHONutritionDataStoreImpl(databaseAdapter)
     }
 
     @Provides

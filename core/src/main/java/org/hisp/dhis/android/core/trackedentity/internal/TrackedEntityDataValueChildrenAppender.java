@@ -54,7 +54,7 @@ public final class TrackedEntityDataValueChildrenAppender extends ChildrenAppend
         return new TrackedEntityDataValueChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        TrackedEntityDataValueStoreImpl.CHILD_PROJECTION,
+                        TrackedEntityDataValueStoreImpl.Companion.getCHILD_PROJECTION(),
                         TrackedEntityDataValue::create)
         );
     }

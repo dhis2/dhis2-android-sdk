@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 public class ConfigurationStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Configuration> {
 
     public ConfigurationStoreIntegrationShould() {
-        super(ConfigurationStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ConfigurationStoreImpl(TestDatabaseAdapterFactory.get()),
                 ConfigurationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

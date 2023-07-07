@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class GeneralSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<GeneralSettings>(
-    GeneralSettingStore.create(TestDatabaseAdapterFactory.get()),
+    GeneralSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     GeneralSettingTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

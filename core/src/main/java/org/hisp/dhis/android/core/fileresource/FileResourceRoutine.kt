@@ -34,12 +34,12 @@ import java.io.File
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -54,7 +54,7 @@ internal class FileResourceRoutine @Inject constructor(
     private val fileResourceCollectionRepository: FileResourceCollectionRepository,
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
     private val trackedEntityDataValueCollectionRepository: TrackedEntityDataValueCollectionRepository,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceStore: FileResourceStore,
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {

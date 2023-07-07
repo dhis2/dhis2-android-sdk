@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
+import org.hisp.dhis.android.core.settings.internal.UserSettingsStore;
 
 import java.util.List;
 
@@ -42,10 +42,10 @@ import dagger.Reusable;
 public class UserSettingsObjectRepository extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>
         implements ReadOnlyWithDownloadObjectRepository<UserSettings> {
 
-    private final ObjectWithoutUidStore<UserSettings> store;
+    private final UserSettingsStore store;
 
     @Inject
-    UserSettingsObjectRepository(ObjectWithoutUidStore<UserSettings> store,
+    UserSettingsObjectRepository(UserSettingsStore store,
                                  GeneralSettingCall generalSettingCall) {
         super(generalSettingCall);
         this.store = store;

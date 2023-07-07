@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.enrollment.internal
 import android.content.ContentValues
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -44,13 +43,15 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
-internal class EnrollmentStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<Enrollment>,
-    objectFactory: Function1<Cursor, Enrollment>
-) : IdentifiableDeletableDataObjectStoreImpl<Enrollment>(databaseAdapter, builder, binder, objectFactory),
-    EnrollmentStore {
+internal class EnrollmentStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : EnrollmentStore,
+    IdentifiableDeletableDataObjectStoreImpl<Enrollment>(
+        databaseAdapter,
+        EnrollmentTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> Enrollment.create(cursor) }
+    ) {
 
     override fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
         val enrollmentsToPostQuery = WhereClauseBuilder()
@@ -125,19 +126,6 @@ internal class EnrollmentStoreImpl private constructor(
             w.bind(16, o.syncState())
             w.bind(17, o.aggregatedSyncState())
             w.bind(18, o.deleted())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): EnrollmentStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentTableInfo.TABLE_INFO.columns()
-            )
-            return EnrollmentStoreImpl(
-                databaseAdapter,
-                statementBuilder,
-                BINDER
-            ) { cursor: Cursor? -> Enrollment.create(cursor) }
         }
     }
 }

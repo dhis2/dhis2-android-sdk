@@ -31,7 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactory
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryComm
 
 @Reusable
 internal class EventQueryBundleFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
+    programStore: ProgramStore,
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: EventLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper

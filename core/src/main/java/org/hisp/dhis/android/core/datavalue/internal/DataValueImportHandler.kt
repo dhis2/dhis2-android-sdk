@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datavalue.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.ERROR
 import org.hisp.dhis.android.core.common.State.SYNCED
@@ -46,7 +45,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal class DataValueImportHandler @Inject constructor(
     private val dataValueStore: DataValueStore,
     private val dataValueConflictParser: DataValueConflictParser,
-    private val dataValueConflictStore: ObjectStore<DataValueConflict>
+    private val dataValueConflictStore: DataValueConflictStore
 ) {
 
     fun handleImportSummary(

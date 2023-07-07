@@ -32,39 +32,38 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
+import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.core.legendset.internal.LegendStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
-    private val categoryStore: IdentifiableObjectStore<Category>,
-    private val categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
+    private val categoryStore: CategoryStore,
+    private val categoryOptionStore: CategoryOptionStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val indicatorStore: IdentifiableObjectStore<Indicator>,
-    private val expressionDimensionItemStore: IdentifiableObjectStore<ExpressionDimensionItem>,
-    private val legendStore: IdentifiableObjectStore<Legend>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
-    private val programStore: ProgramStoreInterface,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    private val dataElementStore: DataElementStore,
+    private val indicatorStore: IndicatorStore,
+    private val expressionDimensionItemStore: ExpressionDimensionItemStore,
+    private val legendStore: LegendStore,
+    private val organisationUnitStore: OrganisationUnitStore,
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore,
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore,
+    private val programStore: ProgramStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val parentPeriodGenerator: ParentPeriodGenerator,

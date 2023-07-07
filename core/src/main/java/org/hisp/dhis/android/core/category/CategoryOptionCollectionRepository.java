@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -35,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionFields;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 import java.util.Collections;
@@ -49,7 +49,7 @@ public final class CategoryOptionCollectionRepository
         extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
 
     @Inject
-    CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,
+    CategoryOptionCollectionRepository(final CategoryOptionStore store,
                                        final Map<String, ChildrenAppender<CategoryOption>> childrenAppenders,
                                        final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

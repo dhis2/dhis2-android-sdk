@@ -30,18 +30,19 @@ package org.hisp.dhis.android.core.parser.internal.expression
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
-import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.junit.Assert.fail
 import org.junit.Before
@@ -56,7 +57,7 @@ class ExpressionServiceShould {
     private val orgunitGroupId = "RAL7YE4KJ58"
     private val days = "[days]"
 
-    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+    private val dataElementStore: DataElementStore = mock()
     private val dataElement1: DataElement = mock()
     private val dataElement2: DataElement = mock()
 
@@ -64,10 +65,10 @@ class ExpressionServiceShould {
     private val categoryOptionCombo1: CategoryOptionCombo = mock()
     private val categoryOptionCombo2: CategoryOptionCombo = mock()
 
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore = mock()
     private val organisationUnitGroup: OrganisationUnitGroup = mock()
 
-    private val programStageStore: IdentifiableObjectStore<ProgramStage> = mock()
+    private val programStageStore: ProgramStageStore = mock()
 
     private val constant: Constant = mock()
 

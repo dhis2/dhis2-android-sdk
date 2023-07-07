@@ -33,15 +33,14 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -66,7 +65,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val optionSetCall: UidsCall<OptionSet>,
     private val optionCall: UidsCall<Option>,
     private val optionGroupCall: UidsCall<OptionGroup>,
-    private val programOrganisationUnitLinkStore: LinkStore<OrganisationUnitProgramLink>
+    private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

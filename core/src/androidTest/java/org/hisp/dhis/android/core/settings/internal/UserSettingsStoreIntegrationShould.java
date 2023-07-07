@@ -41,7 +41,7 @@ public class UserSettingsStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<UserSettings> {
 
     public UserSettingsStoreIntegrationShould() {
-        super(UserSettingsStore.create(TestDatabaseAdapterFactory.get()), UserSettingsTableInfo.TABLE_INFO,
+        super(new UserSettingsStoreImpl(TestDatabaseAdapterFactory.get()), UserSettingsTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

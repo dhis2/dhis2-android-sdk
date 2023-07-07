@@ -32,14 +32,13 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleanerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import retrofit2.Retrofit
 
 @Module
@@ -47,8 +46,8 @@ internal class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter?): TrackedEntityInstanceStore {
-        return TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): TrackedEntityInstanceStore {
+        return TrackedEntityInstanceStoreImpl(databaseAdapter)
     }
 
     @Provides
@@ -87,7 +86,7 @@ internal class TrackedEntityInstanceEntityDIModule {
     @Reusable
     fun childrenAppenders(
         databaseAdapter: DatabaseAdapter,
-        programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
+        programOwnerStore: ProgramOwnerStore
     ): Map<String, ChildrenAppender<TrackedEntityInstance>> {
         return mapOf(
             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES to

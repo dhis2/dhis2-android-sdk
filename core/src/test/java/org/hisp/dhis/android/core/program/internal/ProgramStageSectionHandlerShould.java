@@ -27,14 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,25 +46,18 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramStageSectionHandlerShould {
     private static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
 
     @Mock
-    private IdentifiableObjectStore<ProgramStageSection> programStageSectionStore;
+    private ProgramStageSectionStoreImpl programStageSectionStore;
 
     @Mock
-    private LinkHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
-            programStageSectionProgramIndicatorLinkHandler;
+    private ProgramStageSectionProgramIndicatorLinkHandler programStageSectionProgramIndicatorLinkHandler;
 
     @Mock
-    private OrderedLinkHandler<DataElement, ProgramStageSectionDataElementLink>
-            programStageSectionDataElementLinkHandler;
+    private ProgramStageSectionDataElementLinkHandler programStageSectionDataElementLinkHandler;
 
     @Mock
     private ProgramStageSection programStageSection;
@@ -96,6 +90,8 @@ public class ProgramStageSectionHandlerShould {
         when(programStageSection.programIndicators()).thenReturn(programIndicators);
         when(dataElement.uid()).thenReturn("data_element_uid");
         when(programIndicator.uid()).thenReturn("program_indicator_uid");
+
+        when(programStageSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test

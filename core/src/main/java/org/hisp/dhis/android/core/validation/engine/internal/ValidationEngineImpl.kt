@@ -29,15 +29,14 @@ package org.hisp.dhis.android.core.validation.engine.internal
 
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper.getValueMap
@@ -56,7 +55,7 @@ internal class ValidationEngineImpl @Inject constructor(
     private val constantRepository: ConstantCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val periodHelper: PeriodHelper,
-    private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>
+    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore
 ) : ValidationEngine {
     override fun validate(
         dataSetUid: String,

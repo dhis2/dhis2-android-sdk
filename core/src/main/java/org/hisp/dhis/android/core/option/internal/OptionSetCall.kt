@@ -32,13 +32,12 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.option.OptionSet
 
 @Reusable
 internal class OptionSetCall @Inject constructor(
     private val service: OptionSetService,
-    private val handler: Handler<OptionSet>,
+    private val handler: OptionSetHandler,
     private val apiDownloader: APIDownloader
 ) : UidsCall<OptionSet> {
 

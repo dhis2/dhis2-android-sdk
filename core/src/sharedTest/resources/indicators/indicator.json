@@ -17,5 +17,9 @@
   "indicatorType": {
     "id": "bWuNrMHEoZ0"
   },
-  "decimals": 3
+  "decimals": 3,
+  "style": {
+    "color": "#FF0000",
+    "icon": "circle"
+  }
 }

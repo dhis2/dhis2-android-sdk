@@ -31,14 +31,13 @@ import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationSh
 import org.hisp.dhis.android.core.data.settings.LatestAppVersionSamples.latestAppVersion
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
-import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class LatestAppVersionStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<LatestAppVersion>(
-    create(TestDatabaseAdapterFactory.get()),
+    LatestAppVersionStoreImpl(TestDatabaseAdapterFactory.get()),
     LatestAppVersionTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

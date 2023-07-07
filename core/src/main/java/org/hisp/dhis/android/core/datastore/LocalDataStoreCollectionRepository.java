@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore;
 
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public final class LocalDataStoreCollectionRepository
     private final ObjectWithoutUidStore<KeyValuePair> store;
 
     @Inject
-    LocalDataStoreCollectionRepository(final ObjectWithoutUidStore<KeyValuePair> store,
+    LocalDataStoreCollectionRepository(final LocalDataStoreStore store,
                                        final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
                                        final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.today
@@ -52,8 +52,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerData
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.*
 import org.junit.runner.RunWith
@@ -91,10 +91,10 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             setUpClass()
 
             val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
-            OrganisationUnitStore.create(databaseAdapter).insert(orgunit)
+            OrganisationUnitStoreImpl(databaseAdapter).insert(orgunit)
 
             val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
-            TrackedEntityTypeStore.create(databaseAdapter).insert(trackedEntityType)
+            TrackedEntityTypeStoreImpl(databaseAdapter).insert(trackedEntityType)
 
             val categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID)
             databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
@@ -104,24 +104,24 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 .access(access)
                 .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
                 .build()
-            ProgramStore.create(databaseAdapter).insert(program)
+            ProgramStoreImpl(databaseAdapter).insert(program)
 
             val stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build()
             val stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build()
-            val programStageStore = ProgramStageStore.create(databaseAdapter)
+            val programStageStore = ProgramStageStoreImpl(databaseAdapter)
             programStageStore.insert(stage1)
             programStageStore.insert(stage2)
 
             val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
             val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
-            val dataElementStore = DataElementStore.create(databaseAdapter)
+            val dataElementStore = DataElementStoreImpl(databaseAdapter)
             dataElementStore.insert(de1)
             dataElementStore.insert(de2)
 
             val tea = TrackedEntityAttribute.builder().uid(attribute1).build()
-            TrackedEntityAttributeStore.create(databaseAdapter).insert(tea)
+            TrackedEntityAttributeStoreImpl(databaseAdapter).insert(tea)
         }
 
         @AfterClass

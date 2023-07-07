@@ -31,15 +31,14 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
 internal class VisualizationModuleDownloader @Inject internal constructor(
     private val visualizationCall: UidsCall<Visualization>,
-    private val analyticsDhisVisualizationStore: ObjectWithoutUidStore<AnalyticsDhisVisualization>
+    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore
 ) :
     TypedModuleDownloader<List<Visualization>> {
 

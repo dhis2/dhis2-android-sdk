@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
 
     public D2ErrorStoreIntegrationShould() {
-        super(D2ErrorStore.create(TestDatabaseAdapterFactory.get()),
+        super(new D2ErrorStoreImpl(TestDatabaseAdapterFactory.get()),
                 D2ErrorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

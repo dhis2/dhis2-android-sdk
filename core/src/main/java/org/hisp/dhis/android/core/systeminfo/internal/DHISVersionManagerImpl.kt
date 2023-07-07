@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.systeminfo.*
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SMSVersion
 
 @Singleton
 class DHISVersionManagerImpl @Inject internal constructor(
-    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
+    private val systemInfoStore: SystemInfoStore
 ) : DHISVersionManager {
     private var version: DHISVersion? = null
     private var patchVersion: DHISPatchVersion? = null

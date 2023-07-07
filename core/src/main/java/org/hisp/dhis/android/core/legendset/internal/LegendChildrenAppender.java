@@ -53,7 +53,7 @@ final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
         return new LegendChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        LegendStore.CHILD_PROJECTION,
+                        LegendStoreImpl.Companion.getCHILD_PROJECTION(),
                         Legend::create)
         );
     }

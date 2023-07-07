@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
+import org.hisp.dhis.android.core.event.internal.EventFilterStore;
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
@@ -53,7 +53,7 @@ public final class EventFilterCollectionRepository
 
     @Inject
     EventFilterCollectionRepository(
-            final IdentifiableObjectStore<EventFilter> store,
+            final EventFilterStore store,
             final Map<String, ChildrenAppender<EventFilter>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore;
 
 import java.util.Map;
 
@@ -50,7 +50,7 @@ public final class TrackedEntityTypeAttributeCollectionRepository
 
     @Inject
     TrackedEntityTypeAttributeCollectionRepository(
-            final LinkStore<TrackedEntityTypeAttribute> store,
+            final TrackedEntityTypeAttributeStore store,
             final Map<String, ChildrenAppender<TrackedEntityTypeAttribute>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

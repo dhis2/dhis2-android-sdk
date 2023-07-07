@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public final class ProgramIndicatorCollectionRepository
 
     @Inject
     ProgramIndicatorCollectionRepository(
-        final IdentifiableObjectStore<ProgramIndicator> store,
+        final ProgramIndicatorStore store,
         final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
         final RepositoryScope scope
     ) {

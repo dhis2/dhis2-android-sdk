@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore;
 
 import javax.inject.Inject;
 
@@ -39,10 +39,10 @@ import dagger.Reusable;
 @Reusable
 final class ProgramTrackedEntityTypeChildrenAppender extends ChildrenAppender<Program> {
 
-    private final IdentifiableObjectStore<TrackedEntityType> store;
+    private final TrackedEntityTypeStore store;
 
     @Inject
-    ProgramTrackedEntityTypeChildrenAppender(IdentifiableObjectStore<TrackedEntityType> store) {
+    ProgramTrackedEntityTypeChildrenAppender(TrackedEntityTypeStore store) {
         this.store = store;
     }
 

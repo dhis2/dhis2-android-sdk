@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.expressiondimensionitem;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns;
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class ExpressionDimensionItemCollectionRepository
 
     @Inject
     ExpressionDimensionItemCollectionRepository(
-            final IdentifiableObjectStore<ExpressionDimensionItem> store,
+            final ExpressionDimensionItemStore store,
             final Map<String, ChildrenAppender<ExpressionDimensionItem>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

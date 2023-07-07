@@ -42,7 +42,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        authenticatedUserStore = AuthenticatedUserStore.create(d2.databaseAdapter())
+        authenticatedUserStore = AuthenticatedUserStoreImpl(d2.databaseAdapter())
     }
 
     // @Test

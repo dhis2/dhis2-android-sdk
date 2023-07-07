@@ -51,8 +51,8 @@ public final class IndicatorModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                IndicatorTableInfo.TABLE_INFO,
-                IndicatorTypeTableInfo.TABLE_INFO,
+                IndicatorTableInfo.INSTANCE.getTABLE_INFO(),
+                IndicatorTypeTableInfo.INSTANCE.getTABLE_INFO(),
                 DataSetIndicatorLinkTableInfo.TABLE_INFO);
     }
 

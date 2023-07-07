@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 
@@ -48,11 +47,11 @@ final class ProgramRuleCall implements UidsCall<ProgramRule> {
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ProgramRuleService service;
-    private final Handler<ProgramRule> handler;
+    private final ProgramRuleHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
-    ProgramRuleCall(ProgramRuleService service, Handler<ProgramRule> handler, APIDownloader apiDownloader) {
+    ProgramRuleCall(ProgramRuleService service, ProgramRuleHandler handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;

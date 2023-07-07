@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -66,7 +65,7 @@ class OrganisationUnitCallUnitShould {
     private val collectionCleaner: CollectionCleaner<OrganisationUnit> = mock()
     private val organisationUnitHandler: OrganisationUnitHandler = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
-    private val organisationUnitIdentifiableObjectStore: IdentifiableObjectStore<OrganisationUnit> = mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
     private val organisationUnitDisplayPathTransformer: OrganisationUnitDisplayPathTransformer = mock()
 
     // the call we are testing:
@@ -120,7 +119,7 @@ class OrganisationUnitCallUnitShould {
             organisationUnitHandler,
             organisationUnitDisplayPathTransformer,
             userOrganisationUnitLinkStore,
-            organisationUnitIdentifiableObjectStore,
+            organisationUnitStore,
             collectionCleaner
         )
             .download(user)

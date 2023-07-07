@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before
@@ -39,13 +40,13 @@ import org.junit.Test
 
 class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
-    private lateinit var dataSetInstanceStore: DataSetInstanceStore
+    private lateinit var dataSetInstanceStore: DataSetInstanceStoreImpl
     private lateinit var dataValueStore: DataValueStore
 
     @Before
     fun setUp() {
-        dataSetInstanceStore = DataSetInstanceStore.create(databaseAdapter)
-        dataValueStore = DataValueStore.create(databaseAdapter)
+        dataSetInstanceStore = DataSetInstanceStoreImpl(databaseAdapter)
+        dataValueStore = DataValueStoreImpl(databaseAdapter)
 
         dataValueStore.delete()
     }

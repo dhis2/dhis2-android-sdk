@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.ProgramSetting
 
-internal class ProgramSettingHandler(store: ObjectWithoutUidStore<ProgramSetting>) :
+@Reusable
+internal class ProgramSettingHandler @Inject constructor(store: ProgramSettingStore) :
     ObjectWithoutUidHandlerImpl<ProgramSetting>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<ProgramSetting>): Collection<ProgramSetting> {

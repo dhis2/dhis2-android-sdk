@@ -58,6 +58,6 @@ class PeriodHelperIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
         assertThat(periods.size).isEqualTo(1)
 
-        PeriodStoreImpl.create(databaseAdapter).delete()
+        PeriodStoreImpl(databaseAdapter).delete()
     }
 }

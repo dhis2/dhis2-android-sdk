@@ -25,34 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryTableInfo
 
-@Suppress("MagicNumber")
-internal object CategoryStore {
-
-    private val BINDER: StatementBinder<Category> = object : IdentifiableStatementBinder<Category>() {
-        override fun bindToStatement(o: Category, w: StatementWrapper) {
-            super.bindToStatement(o, w)
-            w.bind(7, o.dataDimensionType())
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Category> {
-        return objectWithUidStore(
-            databaseAdapter,
-            CategoryTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> Category.create(cursor) }
-    }
-}
+internal interface CategoryStore : IdentifiableObjectStore<Category>

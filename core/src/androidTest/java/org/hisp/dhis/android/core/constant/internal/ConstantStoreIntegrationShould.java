@@ -41,7 +41,7 @@ public class ConstantStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
 
     public ConstantStoreIntegrationShould() {
-        super(ConstantStore.create(TestDatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
+        super(new ConstantStoreImpl(TestDatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

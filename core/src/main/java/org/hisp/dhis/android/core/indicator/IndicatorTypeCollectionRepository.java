@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -35,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class IndicatorTypeCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository> {
 
     @Inject
-    IndicatorTypeCollectionRepository(final IdentifiableObjectStore<IndicatorType> store,
+    IndicatorTypeCollectionRepository(final IndicatorTypeStore store,
                                       final Map<String, ChildrenAppender<IndicatorType>> childrenAppenders,
                                       final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

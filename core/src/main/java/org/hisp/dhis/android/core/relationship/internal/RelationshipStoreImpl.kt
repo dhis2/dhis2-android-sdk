@@ -28,25 +28,26 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl
-import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
 
-internal class RelationshipStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    statementBuilder: SQLStatementBuilderImpl
-) : IdentifiableDeletableDataObjectStoreImpl<Relationship>(
-    databaseAdapter,
-    statementBuilder,
-    BINDER,
-    { cursor: Cursor -> Relationship.create(cursor) }
-),
-    RelationshipStore {
+internal class RelationshipStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : RelationshipStore,
+    IdentifiableDeletableDataObjectStoreImpl<Relationship>(
+        databaseAdapter,
+        RelationshipTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> Relationship.create(cursor) }
+    ) {
 
     override fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
@@ -109,12 +110,6 @@ internal class RelationshipStoreImpl private constructor(
             w.bind(5, o.relationshipType())
             w.bind(6, o.syncState())
             w.bind(7, o.deleted())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): RelationshipStore {
-            val statementBuilder = SQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO)
-            return RelationshipStoreImpl(databaseAdapter, statementBuilder)
         }
     }
 }

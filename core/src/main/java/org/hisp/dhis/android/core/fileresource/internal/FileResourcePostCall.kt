@@ -39,8 +39,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
@@ -60,8 +58,8 @@ internal class FileResourcePostCall @Inject constructor(
     private val dataValueStore: DataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val fileResourceHandler: HandlerWithTransformer<FileResource>,
+    private val fileResourceStore: FileResourceStore,
+    private val fileResourceHandler: FileResourceHandler,
     private val pingCall: PingCall,
     private val context: Context
 ) {

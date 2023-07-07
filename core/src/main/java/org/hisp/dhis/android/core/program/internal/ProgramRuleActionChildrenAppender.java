@@ -53,7 +53,7 @@ final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRu
         return new ProgramRuleActionChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        ProgramRuleActionStore.CHILD_PROJECTION,
+                        ProgramRuleActionStoreImpl.Companion.getCHILD_PROJECTION(),
                         ProgramRuleAction::create)
         );
     }

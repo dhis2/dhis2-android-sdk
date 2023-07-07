@@ -159,22 +159,38 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
     @Override
     public List<TrackedEntityDataValue> queryToPostByEvent(@NonNull String eventUid) {
+        String queryStatement = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .appendInSubQuery(
+                        TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                        getInProgramStageDataElementsSubQuery(eventUid)
+                ).build();
+
+        return selectWhere(queryStatement);
+    }
+
+    @Override
+    public void removeUnassignedDataValuesByEvent(@NonNull String eventUid) {
+        String queryStatement = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .appendNotInSubQuery(
+                        TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                        getInProgramStageDataElementsSubQuery(eventUid)
+                ).build();
+
+        deleteWhere(queryStatement);
+    }
+
+    private String getInProgramStageDataElementsSubQuery(@NonNull String eventUid) {
         String psDataElementName = ProgramStageDataElementTableInfo.TABLE_INFO.name();
         String eventName = EventTableInfo.TABLE_INFO.name();
 
-        String psDataElementQuery = "SELECT " + ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT +
+        return "SELECT " + ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT +
                 " FROM " + psDataElementName +
                 " INNER JOIN " + eventName +
                 " ON " + psDataElementName + "." + ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE  +
                 " = " + eventName + "." + EventTableInfo.Columns.PROGRAM_STAGE +
                 " WHERE " + eventName + "." + EventTableInfo.Columns.UID + " = '" + eventUid + "'";
-
-        String queryStatement = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendInSubQuery(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, psDataElementQuery)
-                .build();
-
-        return selectWhere(queryStatement);
     }
 
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {

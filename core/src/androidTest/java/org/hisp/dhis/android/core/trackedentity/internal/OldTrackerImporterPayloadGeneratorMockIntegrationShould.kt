@@ -244,6 +244,6 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         assertThat(event1).isNotNull()
 
         val eventValues = event1!!.trackedEntityDataValues()!!
-        assertThat(eventValues.any { it.dataElement() == unassignedDataElementId}).isFalse()
+        assertThat(eventValues.any { it.dataElement() == unassignedDataElementId }).isFalse()
     }
 }

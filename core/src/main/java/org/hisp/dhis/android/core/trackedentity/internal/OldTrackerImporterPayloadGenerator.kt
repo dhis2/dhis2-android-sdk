@@ -41,8 +41,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository

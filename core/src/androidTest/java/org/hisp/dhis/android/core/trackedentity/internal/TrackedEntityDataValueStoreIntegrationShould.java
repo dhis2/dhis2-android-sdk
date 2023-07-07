@@ -30,15 +30,25 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataelement.DataElementSamples;
+import org.hisp.dhis.android.core.data.program.ProgramStageDataElementSamples;
+import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -178,5 +188,36 @@ public class TrackedEntityDataValueStoreIntegrationShould
         assertThat(trackerDataValues.get("event_1").size()).isEqualTo(2);
         assertThat(trackerDataValues.get("event_1").iterator().next().event()).isEqualTo("event_1");
         assertThat(trackerDataValues.get("event_2")).isNull();
+    }
+
+    @Test
+    public void remove_unassigned_event_values() {
+        ProgramStage stage = ProgramStageSamples.getProgramStage();
+        IdentifiableObjectStore<ProgramStage> stageStore = ProgramStageStore.create(TestDatabaseAdapterFactory.get());
+        stageStore.insert(stage);
+
+        Event event = EventSamples.get().toBuilder().uid("event_1").programStage(stage.uid()).build();
+        EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
+        eventStore.insert(event);
+
+        String dataElement1 = "data_element_1";
+        String dataElement2 = "data_element_2";
+        IdentifiableObjectStore<ProgramStageDataElement> psStore =
+                ProgramStageDataElementStore.create(TestDatabaseAdapterFactory.get());
+        psStore.insert(ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
+                .dataElement(DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build())
+                .programStage(ObjectWithUid.create(stage.uid()))
+                .build());
+
+        store.insert(TrackedEntityDataValueSamples.get()
+                .toBuilder().event(event.uid()).dataElement(dataElement1).build());
+        store.insert(TrackedEntityDataValueSamples.get()
+                .toBuilder().event(event.uid()).dataElement(dataElement2).build());
+        assertThat(store.queryTrackedEntityDataValuesByEventUid(event.uid()).size()).isEqualTo(2);
+
+        store.removeUnassignedDataValuesByEvent(event.uid());
+        List<TrackedEntityDataValue> values = store.queryTrackedEntityDataValuesByEventUid(event.uid());
+        assertThat(values.size()).isEqualTo(1);
+        assertThat(values.get(0).dataElement()).isEqualTo(dataElement1);
     }
 }

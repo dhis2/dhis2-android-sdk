@@ -51,4 +51,6 @@ public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<Track
     List<TrackedEntityDataValue> queryToPostByEvent(@NonNull String eventUid);
 
     void removeDeletedDataValuesByEvent(@NonNull String eventUid);
+
+    void removeUnassignedDataValuesByEvent(@NonNull String eventUid);
 }

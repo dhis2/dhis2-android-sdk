@@ -47,7 +47,6 @@ internal class ProgramStageDataElementStoreImpl(
         BINDER,
         { cursor: Cursor -> ProgramStageDataElement.create(cursor) }
     ) {
-
     companion object {
         private val BINDER: StatementBinder<ProgramStageDataElement> =
             object : IdentifiableStatementBinder<ProgramStageDataElement>() {

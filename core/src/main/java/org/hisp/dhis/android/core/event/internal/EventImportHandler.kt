@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
 
 @Reusable
@@ -54,7 +53,6 @@ internal class EventImportHandler @Inject constructor(
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
     private val dataStatePropagator: DataStatePropagator,
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore
 ) {
 
     @Suppress("NestedBlockDepth")
@@ -88,7 +86,7 @@ internal class EventImportHandler @Inject constructor(
                 if (state == State.SYNCED &&
                     (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
                 ) {
-                    handleIfSynced(eventUid, state)
+                    jobReportEventHandler.handleSyncedEvent(eventUid)
                 }
             }
         }
@@ -121,14 +119,6 @@ internal class EventImportHandler @Inject constructor(
             trackerImportConflictStore.deleteEventConflicts(event.uid())
             eventStore.setSyncStateOrDelete(event.uid(), state)
         }
-    }
-
-    private fun handleIfSynced(
-        eventUid: String,
-        state: State
-    ) {
-        jobReportEventHandler.handleEventNotes(eventUid, state)
-        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
     }
 
     private fun storeEventImportConflicts(

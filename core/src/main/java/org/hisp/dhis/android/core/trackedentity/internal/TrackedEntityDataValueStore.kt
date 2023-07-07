@@ -36,6 +36,7 @@ internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEn
     fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue>
     fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
     fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
-    fun queryByUploadableEvents(): Map<String, List<TrackedEntityDataValue>>
+    fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue>
     fun removeDeletedDataValuesByEvent(eventUid: String)
+    fun removeUnassignedDataValuesByEvent(eventUid: String)
 }

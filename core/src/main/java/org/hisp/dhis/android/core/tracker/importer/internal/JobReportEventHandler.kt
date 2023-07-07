@@ -54,25 +54,12 @@ internal class JobReportEventHandler @Inject internal constructor(
     relationshipStore: RelationshipStore
 ) : JobReportTypeHandler(relationshipStore) {
 
-    fun handleEventNotes(eventUid: String, state: State) {
-        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
-        val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
-            )
-            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
-        for (note in noteStore.selectWhere(whereClause)) {
-            noteStore.update(note.toBuilder().syncState(newNoteState).build())
-        }
-    }
-
     override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
         if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
-            handleEventNotes(uid, state)
-            trackedEntityDataValueStore.removeDeletedDataValuesByEvent(uid)
+            handleSyncedEvent(uid)
         }
 
         return handleAction
@@ -100,5 +87,23 @@ internal class JobReportEventHandler @Inject internal constructor(
 
     override fun getRelatedRelationships(uid: String): List<String> {
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
+    }
+
+    fun handleSyncedEvent(eventUid: String) {
+        handleEventNotes(eventUid, State.SYNCED)
+        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
+        trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
+    }
+
+    private fun handleEventNotes(eventUid: String, state: State) {
+        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+            )
+            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
+        for (note in noteStore.selectWhere(whereClause)) {
+            noteStore.update(note.toBuilder().syncState(newNoteState).build())
+        }
     }
 }

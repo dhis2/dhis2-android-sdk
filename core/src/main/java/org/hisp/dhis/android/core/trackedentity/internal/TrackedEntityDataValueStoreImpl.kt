@@ -38,10 +38,12 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
+@Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : TrackedEntityDataValueStore,
@@ -94,6 +96,17 @@ internal class TrackedEntityDataValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
+    override fun removeUnassignedDataValuesByEvent(eventUid: String) {
+        val queryStatement = WhereClauseBuilder()
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+            .appendNotInSubQuery(
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                getInProgramStageDataElementsSubQuery(eventUid)
+            ).build()
+
+        deleteWhere(queryStatement)
+    }
+
     private fun eventInUploadableState(): String {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
             CollectionsHelper.withSingleQuotationMarksArray(
@@ -111,11 +124,26 @@ internal class TrackedEntityDataValueStoreImpl(
         return queryTrackedEntityDataValues(queryStatement)
     }
 
-    override fun queryByUploadableEvents(): Map<String, List<TrackedEntityDataValue>> {
-        val queryStatement = "SELECT TrackedEntityDataValue.* " +
-            " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
-            " WHERE " + eventInUploadableState() + ";"
-        return queryTrackedEntityDataValues(queryStatement)
+    override fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue> {
+        val queryStatement = WhereClauseBuilder()
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+            .appendInSubQuery(
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                getInProgramStageDataElementsSubQuery(eventUid)
+            ).build()
+
+        return selectWhere(queryStatement)
+    }
+
+    private fun getInProgramStageDataElementsSubQuery(eventUid: String): String {
+        val psDataElementName = ProgramStageDataElementTableInfo.TABLE_INFO.name()
+        val eventName = EventTableInfo.TABLE_INFO.name()
+
+        return "SELECT ${ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT}" +
+            " FROM $psDataElementName INNER JOIN $eventName " +
+            " ON $psDataElementName.${ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE}" +
+            " = $eventName.${EventTableInfo.Columns.PROGRAM_STAGE}" +
+            " WHERE $eventName.${EventTableInfo.Columns.UID} = '$eventUid'"
     }
 
     private fun queryTrackedEntityDataValues(queryStatement: String): Map<String, List<TrackedEntityDataValue>> {

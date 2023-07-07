@@ -63,19 +63,11 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
         target: Relationship,
         list: Collection<Relationship>
     ): Boolean {
-        for (relationship in list) {
-            if (target.from() == null || target.to() == null || relationship.from() == null || target.to() == null) {
-                continue
-            }
-            if (RelationshipHelper.areItemsEqual(target.from(), relationship.from()) &&
-                RelationshipHelper.areItemsEqual(
-                    target.to(),
-                    relationship.to()
-                ) && target.relationshipType() == relationship.relationshipType()
-            ) {
-                return true
-            }
+        return list.any { relationship ->
+            target.from() != null && target.to() != null && relationship.from() != null && relationship.to() != null &&
+                RelationshipHelper.areItemsEqual(target.from(), relationship.from()) &&
+                RelationshipHelper.areItemsEqual(target.to(), relationship.to()) &&
+                target.relationshipType() == relationship.relationshipType()
         }
-        return false
     }
 }

@@ -25,37 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event
 
-import static org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.event.internal.EventDownloadCall;
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
-import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.event.internal.EventDownloadCall
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 
 @Reusable
-public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
-
-    private final RepositoryScope scope;
-
-    private final EventDownloadCall callFactory;
-
-    @Inject
-    EventDownloader(final RepositoryScope scope,
-                    final EventDownloadCall callFactory) {
-        super(scope, new FilterConnectorFactory<>(scope, s -> new EventDownloader(s, callFactory)));
-        this.scope = scope;
-        this.callFactory = callFactory;
-    }
+class EventDownloader @Inject internal constructor(
+    scope: RepositoryScope,
+    private val callFactory: EventDownloadCall
+) : BaseRepositoryImpl<EventDownloader>(
+    scope,
+    FilterConnectorFactory(scope) { s: RepositoryScope -> EventDownloader(s, callFactory) }
+) {
 
     /**
      * Downloads and persists Events from the server. Only instances in capture scope are downloaded.
@@ -66,33 +60,32 @@ public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
      *
      * @return -
      */
-    public Observable<TrackerD2Progress> download() {
-        ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
-        return this.callFactory.download(params);
+    fun download(): Observable<TrackerD2Progress> = flow {
+        val params = ProgramDataDownloadParams.fromRepositoryScope(scope)
+        emitAll(callFactory.download(params))
+    }.asObservable()
+
+    fun blockingDownload() {
+        download().blockingSubscribe()
     }
 
-    public void blockingDownload() {
-        download().blockingSubscribe();
+    fun byUid(): UnwrappedEqInFilterConnector<EventDownloader> {
+        return cf.unwrappedEqIn(QueryParams.UID)
     }
 
-    public UnwrappedEqInFilterConnector<EventDownloader> byUid() {
-        return cf.unwrappedEqIn(QueryParams.UID);
+    fun byProgramUid(programUid: String): EventDownloader {
+        return cf.baseString(QueryParams.PROGRAM).eq(programUid)!!
     }
 
-    public EventDownloader byProgramUid(String programUid) {
-        return cf.baseString(QueryParams.PROGRAM).eq(programUid);
+    fun limitByOrgunit(limitByOrgunit: Boolean): EventDownloader {
+        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)!!
     }
 
-    public EventDownloader limitByOrgunit(Boolean limitByOrgunit) {
-        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit);
+    fun limitByProgram(limitByProgram: Boolean): EventDownloader {
+        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)!!
     }
 
-    public EventDownloader limitByProgram(Boolean limitByProgram) {
-        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram);
+    fun limit(limit: Int): EventDownloader {
+        return cf.integer(QueryParams.LIMIT).eq(limit)!!
     }
-
-    public EventDownloader limit(Integer limit) {
-        return cf.integer(QueryParams.LIMIT).eq(limit);
-    }
-
 }

@@ -25,31 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 
 @Reusable
-final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
-        extends ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute> {
-
-    @Inject
-    ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
-            ValueTypeDeviceRenderingStore store) {
-        super(store);
-    }
-
-    @Override
-    public ProgramTrackedEntityAttribute appendChildren(
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
-        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programTrackedEntityAttribute);
-
-        return programTrackedEntityAttribute.toBuilder().renderType(valueTypeRendering).build();
+internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender @Inject constructor(
+    store: ValueTypeDeviceRenderingStore
+) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(store) {
+    override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
+        val valueTypeRendering = getValueTypeDeviceRendering(m)
+        return m.toBuilder().renderType(valueTypeRendering).build()
     }
 }

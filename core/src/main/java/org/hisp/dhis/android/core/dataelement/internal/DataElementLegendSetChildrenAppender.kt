@@ -25,36 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 
-public final class NoteForEventChildrenAppender extends ChildrenAppender<Event> {
-
-    private final SingleParentChildStore<Event, Note> childStore;
-
-    private NoteForEventChildrenAppender(SingleParentChildStore<Event, Note> childStore) {
-        this.childStore = childStore;
+internal class DataElementLegendSetChildrenAppender private constructor(
+    private val linkChildStore: ObjectWithUidChildStore<DataElement>
+) : ChildrenAppender<DataElement>() {
+    override fun appendChildren(m: DataElement): DataElement {
+        return m.toBuilder()
+            .legendSets(linkChildStore.getChildren(m))
+            .build()
     }
 
-    @Override
-    public Event appendChildren(Event event) {
-        Event.Builder builder = event.toBuilder();
-        builder.notes(childStore.getChildren(event));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<Event> create(DatabaseAdapter databaseAdapter) {
-        return new NoteForEventChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        NoteStoreImpl.Companion.getEVENT_CHILD_PROJECTION(),
-                        Note::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
+            return DataElementLegendSetChildrenAppender(
+                objectWithUidChildStore(
+                    databaseAdapter,
+                    DataElementLegendSetLinkTableInfo.TABLE_INFO,
+                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION
+                )
+            )
+        }
     }
 }

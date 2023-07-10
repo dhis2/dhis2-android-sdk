@@ -25,38 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
-final class DataElementLegendSetChildrenAppender extends ChildrenAppender<DataElement> {
-
-    private final ObjectWithUidChildStore<DataElement> linkChildStore;
-
-    private DataElementLegendSetChildrenAppender(
-            ObjectWithUidChildStore<DataElement> linkChildStore) {
-        this.linkChildStore = linkChildStore;
+internal class TrackedEntityTypeAttributeChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<TrackedEntityType, TrackedEntityTypeAttribute>
+) : ChildrenAppender<TrackedEntityType>() {
+    override fun appendChildren(m: TrackedEntityType): TrackedEntityType {
+        val builder = m.toBuilder()
+        builder.trackedEntityTypeAttributes(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public DataElement appendChildren(DataElement dataElement) {
-        DataElement.Builder builder = dataElement.toBuilder();
-        builder.legendSets(linkChildStore.getChildren(dataElement));
-        return builder.build();
-    }
-
-    static ChildrenAppender<DataElement> create(DatabaseAdapter databaseAdapter) {
-        return new DataElementLegendSetChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                        databaseAdapter,
-                        DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                        DataElementLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityType> {
+            return TrackedEntityTypeAttributeChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    TrackedEntityTypeAttributeStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> TrackedEntityTypeAttribute.create(cursor) }
+            )
+        }
     }
 }

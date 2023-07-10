@@ -25,37 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-public final class TrackedEntityDataValueChildrenAppender extends ChildrenAppender<Event> {
-
-
-    private final SingleParentChildStore<Event, TrackedEntityDataValue> childStore;
-
-    private TrackedEntityDataValueChildrenAppender(SingleParentChildStore<Event, TrackedEntityDataValue> childStore) {
-        this.childStore = childStore;
+internal class TrackedEntityAttributeValueChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<TrackedEntityInstance, TrackedEntityAttributeValue>
+) : ChildrenAppender<TrackedEntityInstance>() {
+    override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
+        val builder = m.toBuilder()
+        builder.trackedEntityAttributeValues(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public Event appendChildren(Event event) {
-        Event.Builder builder = event.toBuilder();
-        builder.trackedEntityDataValues(childStore.getChildren(event));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<Event> create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityDataValueChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        TrackedEntityDataValueStoreImpl.Companion.getCHILD_PROJECTION(),
-                        TrackedEntityDataValue::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstance> {
+            return TrackedEntityAttributeValueChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    TrackedEntityAttributeValueStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) }
+            )
+        }
     }
 }

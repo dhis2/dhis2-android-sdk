@@ -25,14 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children.internal
+package org.hisp.dhis.android.core.note.internal
 
-internal abstract class ChildrenAppender<M> {
-    open fun prepareChildren(collection: Collection<M>) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.note.Note
+
+internal class NoteForEnrollmentChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<Enrollment, Note>
+) : ChildrenAppender<Enrollment>() {
+    override fun appendChildren(m: Enrollment): Enrollment {
+        val builder = m.toBuilder()
+        builder.notes(childStore.getChildren(m))
+        return builder.build()
     }
 
-    abstract fun appendChildren(m: M): M
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Enrollment> {
+            return NoteForEnrollmentChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    NoteStoreImpl.ENROLLMENT_CHILD_PROJECTION
+                ) { cursor: Cursor -> Note.create(cursor) }
+            )
+        }
+    }
 }

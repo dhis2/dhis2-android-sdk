@@ -25,36 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 
-final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRule> {
-
-    private final SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore;
-
-    private ProgramRuleActionChildrenAppender(SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore) {
-        this.childStore = childStore;
-    }
-
-    @Override
-    public ProgramRule appendChildren(ProgramRule programRule) {
-        ProgramRule.Builder builder = programRule.toBuilder();
-        builder.programRuleActions(childStore.getChildren(programRule));
-        return builder.build();
-    }
-
-    static ChildrenAppender<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleActionChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        ProgramRuleActionStoreImpl.Companion.getCHILD_PROJECTION(),
-                        ProgramRuleAction::create)
-        );
+@Reusable
+internal class ProgramTrackedEntityTypeChildrenAppender @Inject constructor(
+    private val store: TrackedEntityTypeStore
+) : ChildrenAppender<Program>() {
+    override fun appendChildren(m: Program): Program {
+        val builder = m.toBuilder()
+        val trackedEntityType = m.trackedEntityType()
+        if (trackedEntityType != null) {
+            builder.trackedEntityType(store.selectByUid(trackedEntityType.uid()))
+        }
+        return builder.build()
     }
 }

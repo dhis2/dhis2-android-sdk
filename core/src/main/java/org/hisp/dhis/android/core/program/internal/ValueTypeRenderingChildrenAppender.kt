@@ -25,49 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
+import org.hisp.dhis.android.core.common.ValueTypeRendering
 
-@Module
-internal class DataElementEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): DataElementStore {
-        return DataElementStoreImpl(databaseAdapter)
-    }
+internal abstract class ValueTypeRenderingChildrenAppender<M : ObjectWithUidInterface>(
+    private val store: ObjectWithoutUidStore<ValueTypeDeviceRendering>
+) : ChildrenAppender<M>() {
+    fun getValueTypeDeviceRendering(model: M): ValueTypeRendering {
+        val desktopWhereClause = WhereClauseBuilder()
+            .appendKeyStringValue(IdentifiableColumns.UID, model.uid())
+            .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.DESKTOP)
+            .build()
+        val desktop = store.selectOneWhere(desktopWhereClause)
 
-    @Provides
-    @Reusable
-    fun handler(
-        dataElementStore: DataElementStore,
-        attributeHandler: AttributeHandler,
-        dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
-        dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler
-    ): DataElementHandler {
-        return DataElementHandler(
-            dataElementStore,
-            attributeHandler,
-            dataElementAttributeLinkHandler,
-            dataElementLegendSetLinkHandler
-        )
-    }
+        val mobileWhereClause = WhereClauseBuilder()
+            .appendKeyStringValue(IdentifiableColumns.UID, model.uid())
+            .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.MOBILE)
+            .build()
+        val mobile = store.selectOneWhere(mobileWhereClause)
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataElement>> {
-        return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
-            DataElementLegendSetChildrenAppender.create(databaseAdapter)
-        )
+        return ValueTypeRendering.create(desktop, mobile)
     }
 }

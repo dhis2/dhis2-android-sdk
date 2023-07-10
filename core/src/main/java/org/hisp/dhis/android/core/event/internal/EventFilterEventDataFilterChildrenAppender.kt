@@ -25,37 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.DataInputPeriod;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.EventFilter
 
-final class DataInputPeriodChildrenAppender extends ChildrenAppender<DataSet> {
-
-
-    private final SingleParentChildStore<DataSet, DataInputPeriod> childStore;
-
-    private DataInputPeriodChildrenAppender(SingleParentChildStore<DataSet, DataInputPeriod> childStore) {
-        this.childStore = childStore;
+internal class EventFilterEventDataFilterChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<EventFilter, EventDataFilter>
+) : ChildrenAppender<EventFilter>() {
+    override fun appendChildren(m: EventFilter): EventFilter {
+        return if (m.eventQueryCriteria() != null) {
+            val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder()
+            criteriaBuilder.dataFilters(childStore.getChildren(m))
+            return m.toBuilder().eventQueryCriteria(criteriaBuilder.build()).build()
+        } else {
+            m
+        }
     }
 
-    @Override
-    public DataSet appendChildren(DataSet dataSet) {
-        DataSet.Builder builder = dataSet.toBuilder();
-        builder.dataInputPeriods(childStore.getChildren(dataSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
-        return new DataInputPeriodChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        DataInputPeriodStoreImpl.Companion.getCHILD_PROJECTION(),
-                        DataInputPeriod::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<EventFilter> {
+            return EventFilterEventDataFilterChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    EventDataFilterStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> EventDataFilter.create(cursor) }
+            )
+        }
     }
 }

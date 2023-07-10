@@ -25,36 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
-final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
-
-    private final SingleParentChildStore<LegendSet, Legend> childStore;
-
-    private LegendChildrenAppender(SingleParentChildStore<LegendSet, Legend> childStore) {
-        this.childStore = childStore;
+internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
+    private val linkChildStore: ObjectWithUidChildStore<ProgramIndicator>
+) : ChildrenAppender<ProgramIndicator>() {
+    override fun appendChildren(m: ProgramIndicator): ProgramIndicator {
+        val builder = m.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public LegendSet appendChildren(LegendSet legendSet) {
-        LegendSet.Builder builder = legendSet.toBuilder();
-        builder.legends(childStore.getChildren(legendSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return new LegendChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        LegendStoreImpl.Companion.getCHILD_PROJECTION(),
-                        Legend::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorLegendSetChildrenAppender(
+                objectWithUidChildStore(
+                    databaseAdapter,
+                    ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                    ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
+                )
+            )
+        }
     }
 }

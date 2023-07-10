@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-class ChildrenSelection(val children: Set<String>) {
+internal class ChildrenSelection(val children: Set<String>) {
 
     fun withChild(child: String): ChildrenSelection {
         return ChildrenSelection(children + child)

@@ -25,29 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.program.ProgramRuleAction
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class DataElementValueTypeRenderingChildrenAppender
-        extends ValueTypeRenderingChildrenAppender<ProgramStageDataElement> {
-
-    @Inject
-    DataElementValueTypeRenderingChildrenAppender(ValueTypeDeviceRenderingStore store) {
-        super(store);
+internal class ProgramRuleActionChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<ProgramRule, ProgramRuleAction>
+) : ChildrenAppender<ProgramRule>() {
+    override fun appendChildren(m: ProgramRule): ProgramRule {
+        val builder = m.toBuilder()
+        builder.programRuleActions(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
-        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programStageDataElement);
-
-        return programStageDataElement.toBuilder().renderType(valueTypeRendering).build();
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramRule> {
+            return ProgramRuleActionChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    ProgramRuleActionStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> ProgramRuleAction.create(cursor) }
+            )
+        }
     }
 }

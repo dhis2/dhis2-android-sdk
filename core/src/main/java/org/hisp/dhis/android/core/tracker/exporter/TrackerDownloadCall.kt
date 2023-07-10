@@ -28,13 +28,23 @@
 package org.hisp.dhis.android.core.tracker.exporter
 
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.asFlowable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -50,88 +60,95 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
 @Suppress("TooManyFunctions")
 internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory
 ) {
 
-    fun download(params: ProgramDataDownloadParams): Observable<TrackerD2Progress> {
-        return Observable.defer {
-            val progressManager = TrackerD2ProgressManager(null)
-            if (userOrganisationUnitLinkStore.count() == 0) {
-                return@defer Observable.fromCallable {
-                    progressManager.setTotalCalls(1)
-                    progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = flow {
+        val progressManager = TrackerD2ProgressManager(null)
+        if (userOrganisationUnitLinkStore.count() == 0) {
+            progressManager.setTotalCalls(1)
+            emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
+        } else {
+            systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+                .asFlow()
+                .flatMapLatest {
+                    downloadBundle(params, progressManager)
                 }
-            } else {
-                val relatives = RelationshipItemRelatives()
-                return@defer systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-                    .switchMap {
-                        rxCallExecutor.wrapObservableTransactionally(
-                            Observable.merge(
-                                Observable.defer { downloadInternal(params, progressManager, relatives) },
-                                Observable.defer { downloadRelationships(progressManager, relatives) },
-                                Observable.fromCallable { progressManager.complete() }
-                            ),
-                            cleanForeignKeys = true
-                        )
-                    }
-            }
         }
+    }
+
+    private fun downloadBundle(
+        params: ProgramDataDownloadParams,
+        progressManager: TrackerD2ProgressManager
+    ): Flow<TrackerD2ProgressManager> = flow {
+        val relatives = RelationshipItemRelatives()
+
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            merge(
+                downloadInternal(params, progressManager, relatives),
+                downloadRelationships(progressManager, relatives),
+                flowOf(progressManager.complete())
+            )
+        }.asFlowable()
     }
 
     private fun downloadInternal(
         params: ProgramDataDownloadParams,
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives
-    ): Observable<TrackerD2Progress> {
-        return Observable.create { emitter ->
-            val bundles: List<Q> = getBundles(params)
-            val programs = bundles.flatMap { it.commonParams().programs }
+    ): Flow<TrackerD2Progress> = flow {
+        val bundles: List<Q> = getBundles(params)
+        val programs = bundles.flatMap { it.commonParams().programs }
 
-            progressManager.setTotalCalls(programs.size + 2)
-            progressManager.setPrograms(programs)
-            emitter.onNext(progressManager.getProgress())
+        progressManager.setTotalCalls(programs.size + 2)
+        progressManager.setPrograms(programs)
+        emit(progressManager.getProgress())
 
-            for (bundle in bundles) {
-                if (bundle.commonParams().uids.isNotEmpty()) {
-                    val result = queryByUids(bundle, params.overwrite(), relatives)
+        for (bundle in bundles) {
+            if (bundle.commonParams().uids.isNotEmpty()) {
+                val result = queryByUids(bundle, params.overwrite(), relatives)
 
-                    result.d2Error?.let {
-                        emitter.onError(it)
+                result.d2Error?.let {
+                    // TODO (Not sure how to return this)
+                }
+            } else {
+                val orgunitPrograms = bundle.orgUnits()
+                    .associateWith {
+                        bundle.commonParams().programs
+                            .map { ItemsByProgramCount(it, 0) }
+                            .toMutableList()
+                    }.toMutableMap()
+
+                val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits().toMutableList())
+
+                var iterationCount = 0
+                var successfulSync: Boolean
+
+                do {
+                    val result = iterateBundle(bundle, params, bundleResult, relatives, progressManager)
+
+                    successfulSync = result.fold(true) { accumulative, value ->
+                        accumulative && value.successfulSync
                     }
-                } else {
-                    val orgunitPrograms = bundle.orgUnits()
-                        .associateWith {
-                            bundle.commonParams().programs
-                                .map { ItemsByProgramCount(it, 0) }
-                                .toMutableList()
-                        }.toMutableMap()
 
-                    val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits().toMutableList())
+                    iterationCount++
+                } while (iterationNotFinished(bundle, params, bundleResult, iterationCount))
 
-                    var iterationCount = 0
-                    var successfulSync = true
-
-                    do {
-                        val result = iterateBundle(bundle, params, bundleResult, relatives, emitter, progressManager)
-                        successfulSync = successfulSync && result.successfulSync
-                        iterationCount++
-                    } while (iterationNotFinished(bundle, params, bundleResult, iterationCount))
-
-                    if (successfulSync) {
-                        updateLastUpdated(bundle)
-                    }
+                if (successfulSync) {
+                    updateLastUpdated(bundle)
                 }
             }
-
-            if (progressManager.getProgress().programs().any { !it.value.isComplete }) {
-                emitter.onNext(progressManager.completePrograms())
-            }
-
-            emitter.onComplete()
         }
+
+        if (progressManager.getProgress().programs().any { !it.value.isComplete }) {
+            emit(progressManager.completePrograms())
+        }
+
+        emit(progressManager.complete())
     }
 
     private fun iterationNotFinished(
@@ -146,15 +163,18 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
+    /*
+    it uses a callbackFlow to create a flow that can emit the IterationResult asynchronously
+     */
+
     @Suppress("LongParameterList")
     private fun iterateBundle(
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
         relatives: RelationshipItemRelatives,
-        emitter: ObservableEmitter<TrackerD2Progress>,
         progressManager: TrackerD2ProgressManager
-    ): IterationResult {
+    ): Flow<IterationResult> = callbackFlow {
         val iterationResult = IterationResult()
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
 
@@ -174,13 +194,13 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 bundleResult,
                 bundleLimit,
                 relatives,
-                emitter,
                 progressManager
             )
             iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
         }
 
-        return iterationResult
+        trySend(iterationResult)
+        awaitClose()
     }
 
     @Suppress("LongParameterList", "NestedBlockDepth")
@@ -191,46 +211,46 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
         limit: Int,
         relatives: RelationshipItemRelatives,
-        emitter: ObservableEmitter<TrackerD2Progress>,
         progressManager: TrackerD2ProgressManager
     ): IterationResult {
         val iterationResult = IterationResult()
 
-        for (bundleProgram in bundleResult.bundleOrgUnitPrograms[orgUnitUid]!!) {
-            if (bundleResult.bundleCount < bundle.commonParams().limit) {
-                val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
+        bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
+            for (bundleProgram in bundlePrograms) {
+                if (bundleResult.bundleCount < bundle.commonParams().limit) {
+                    val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
 
-                val result = getItemsForOrgUnitProgramCombination(
-                    trackerQuery,
-                    limit,
-                    bundleProgram.itemCount,
-                    params.overwrite(),
-                    relatives
-                )
+                    val result = getItemsForOrgUnitProgramCombination(
+                        trackerQuery,
+                        limit,
+                        bundleProgram.itemCount,
+                        params.overwrite(),
+                        relatives
+                    )
 
-                bundleResult.bundleCount += result.count
-                bundleProgram.itemCount += result.count
-                iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
+                    bundleResult.bundleCount += result.count
+                    bundleProgram.itemCount += result.count
+                    iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
 
-                val syncStatus =
-                    if (result.successfulSync) D2ProgressSyncStatus.SUCCESS
-                    else D2ProgressSyncStatus.ERROR
+                    val syncStatus =
+                        if (result.successfulSync) D2ProgressSyncStatus.SUCCESS
+                        else D2ProgressSyncStatus.ERROR
 
-                progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
+                    progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
 
-                if (result.emptyProgram || !result.successfulSync) {
-                    bundleResult.bundleOrgUnitPrograms[orgUnitUid] =
-                        bundleResult.bundleOrgUnitPrograms[orgUnitUid]!!
-                            .filter { it.program != bundleProgram.program }.toMutableList()
+                    if (result.emptyProgram || !result.successfulSync) {
+                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = bundlePrograms
+                            .filter { it.program != bundleProgram.program }
+                            .toMutableList()
 
-                    val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
-                        list.any { it.program == bundleProgram.program }
-                    }
+                        val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
+                            list.any { it.program == bundleProgram.program }
+                        }
 
-                    if (!hasOtherOrgunits) {
-                        progressManager.increaseProgress(TrackedEntityInstance::class.java, false)
-                        progressManager.completeProgram(bundleProgram.program)
-                        emitter.onNext(progressManager.getProgress())
+                        if (!hasOtherOrgunits) {
+                            progressManager.increaseProgress(TrackedEntityInstance::class.java, false)
+                            progressManager.completeProgram(bundleProgram.program)
+                        }
                     }
                 }
             }
@@ -252,6 +272,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 if (numOfCombinations == 0 || pendingTeis == 0) 0
                 else ceil(pendingTeis.toDouble() / numOfCombinations.toDouble()).roundToInt()
             }
+
             else -> bundle.commonParams().limit - bundleResult.bundleCount
         }
     }
@@ -330,8 +351,8 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private fun downloadRelationships(
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives
-    ): Observable<TrackerD2Progress> {
-        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
+    ): Flow<TrackerD2Progress> = flow {
+        relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
             Observable.fromCallable {
                 progressManager.increaseProgress(
                     TrackedEntityInstance::class.java, false

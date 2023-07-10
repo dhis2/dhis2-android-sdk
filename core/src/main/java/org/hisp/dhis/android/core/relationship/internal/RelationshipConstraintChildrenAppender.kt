@@ -25,27 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children.internal;
+package org.hisp.dhis.android.core.relationship.internal
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
-public final class ChildrenSelection {
-
-    public final Set<String> children;
-
-    public ChildrenSelection(Set<String> children) {
-        this.children = Collections.unmodifiableSet(children);
+internal class RelationshipConstraintChildrenAppender(private val constraintStore: RelationshipConstraintStore) :
+    ChildrenAppender<RelationshipType>() {
+    private var constraints: List<RelationshipConstraint>? = null
+    override fun prepareChildren(collection: Collection<RelationshipType>) {
+        constraints = constraintStore.selectAll()
     }
 
-    public ChildrenSelection withChild(String child) {
-        Set<String> newSet = new HashSet<>(children);
-        newSet.add(child);
-        return new ChildrenSelection(newSet);
-    }
-
-    public static ChildrenSelection empty() {
-        return new ChildrenSelection(Collections.emptySet());
+    override fun appendChildren(m: RelationshipType): RelationshipType {
+        val builder = m.toBuilder()
+        for (constraint in constraints!!) {
+            if (constraint.relationshipType()!!.uid() == m.uid()) {
+                if (constraint.constraintType() == RelationshipConstraintType.FROM) {
+                    builder.fromConstraint(constraint)
+                } else if (constraint.constraintType() == RelationshipConstraintType.TO) {
+                    builder.toConstraint(constraint)
+                }
+            }
+        }
+        return builder.build()
     }
 }

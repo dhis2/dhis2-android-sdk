@@ -25,43 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.Collection;
-import java.util.List;
-
-final class RelationshipConstraintChildrenAppender extends ChildrenAppender<RelationshipType> {
-
-    private final RelationshipConstraintStore constraintStore;
-    private List<RelationshipConstraint> constraints;
-
-
-    RelationshipConstraintChildrenAppender(RelationshipConstraintStore constraintStore) {
-        this.constraintStore = constraintStore;
-    }
-
-    @Override
-    public void prepareChildren(Collection<RelationshipType> collection) {
-        this.constraints = this.constraintStore.selectAll();
-    }
-
-    @Override
-    public RelationshipType appendChildren(RelationshipType relationshipType) {
-        RelationshipType.Builder builder = relationshipType.toBuilder();
-        for (RelationshipConstraint constraint : this.constraints) {
-            if (constraint.relationshipType().uid().equals(relationshipType.uid())) {
-                if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
-                    builder.fromConstraint(constraint);
-                } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
-                    builder.toConstraint(constraint);
-                }
+internal object ChildrenAppenderExecutor {
+    @JvmStatic
+    fun <M> appendInObject(
+        m: M?,
+        childrenAppenders: Map<String, ChildrenAppender<M>>,
+        childrenSelection: ChildrenSelection
+    ): M? {
+        return m?.let {
+            val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
+            selectedAppenders.fold(m) { nWithChildren: M, appender ->
+                appender.prepareChildren(setOf(nWithChildren))
+                appender.appendChildren(nWithChildren)
             }
         }
-        return builder.build();
+    }
+
+    @JvmStatic
+    fun <M : CoreObject?> appendInObjectCollection(
+        list: List<M>,
+        childrenAppenders: Map<String, ChildrenAppender<M>>,
+        childrenSelection: ChildrenSelection
+    ): List<M> {
+        val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
+
+        selectedAppenders.forEach { it.prepareChildren(list) }
+
+        return list.map { item ->
+            selectedAppenders.fold(item) { itemWithChildren: M, appender ->
+                appender.appendChildren(itemWithChildren)
+            }
+        }
+    }
+
+    private fun <M> getSelectedChildrenAppenders(
+        appendersMap: Map<String, ChildrenAppender<M>>,
+        childrenSelection: ChildrenSelection
+    ): Collection<ChildrenAppender<M>> {
+        return childrenSelection.children.mapNotNull { key -> appendersMap[key] }
     }
 }

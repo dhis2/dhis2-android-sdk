@@ -25,18 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children.internal;
+package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-import java.util.Collection;
+class ChildrenSelection(val children: Set<String>) {
 
-public abstract class ChildrenAppender<M> {
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void prepareChildren(Collection<M> collection) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+    fun withChild(child: String): ChildrenSelection {
+        return ChildrenSelection(children + child)
     }
 
-    public abstract M appendChildren(M m);
+    companion object {
+        @JvmStatic
+        fun empty(): ChildrenSelection {
+            return ChildrenSelection(emptySet())
+        }
+    }
 }

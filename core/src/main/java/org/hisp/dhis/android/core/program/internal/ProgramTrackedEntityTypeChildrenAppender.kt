@@ -25,36 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendSet;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 
-final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
-
-    private final SingleParentChildStore<LegendSet, Legend> childStore;
-
-    private LegendChildrenAppender(SingleParentChildStore<LegendSet, Legend> childStore) {
-        this.childStore = childStore;
-    }
-
-    @Override
-    public LegendSet appendChildren(LegendSet legendSet) {
-        LegendSet.Builder builder = legendSet.toBuilder();
-        builder.legends(childStore.getChildren(legendSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return new LegendChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        LegendStoreImpl.Companion.getCHILD_PROJECTION(),
-                        Legend::create)
-        );
+@Reusable
+internal class ProgramTrackedEntityTypeChildrenAppender @Inject constructor(
+    private val store: TrackedEntityTypeStore
+) : ChildrenAppender<Program>() {
+    override fun appendChildren(m: Program): Program {
+        val builder = m.toBuilder()
+        val trackedEntityType = m.trackedEntityType()
+        if (trackedEntityType != null) {
+            builder.trackedEntityType(store.selectByUid(trackedEntityType.uid()))
+        }
+        return builder.build()
     }
 }

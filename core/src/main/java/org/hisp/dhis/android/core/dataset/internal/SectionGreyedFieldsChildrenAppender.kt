@@ -25,49 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 
-@Module
-internal class DataElementEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): DataElementStore {
-        return DataElementStoreImpl(databaseAdapter)
+internal class SectionGreyedFieldsChildrenAppender private constructor(
+    private val linkChildStore: LinkChildStore<Section, DataElementOperand>
+) : ChildrenAppender<Section>() {
+    override fun appendChildren(m: Section): Section {
+        val builder = m.toBuilder()
+        builder.greyedFields(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(
-        dataElementStore: DataElementStore,
-        attributeHandler: AttributeHandler,
-        dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
-        dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler
-    ): DataElementHandler {
-        return DataElementHandler(
-            dataElementStore,
-            attributeHandler,
-            dataElementAttributeLinkHandler,
-            dataElementLegendSetLinkHandler
+    companion object {
+        private val CHILD_PROJECTION = LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
+            SectionGreyedFieldsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND
         )
-    }
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataElement>> {
-        return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
-            DataElementLegendSetChildrenAppender.create(databaseAdapter)
-        )
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
+            return SectionGreyedFieldsChildrenAppender(
+                linkChildStore(
+                    databaseAdapter,
+                    SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> DataElementOperand.create(cursor) }
+            )
+        }
     }
 }

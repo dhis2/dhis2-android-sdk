@@ -25,27 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
-public final class ChildrenSelection {
-
-    public final Set<String> children;
-
-    public ChildrenSelection(Set<String> children) {
-        this.children = Collections.unmodifiableSet(children);
+internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
+    private val linkChildStore: ObjectWithUidChildStore<ProgramIndicator>
+) : ChildrenAppender<ProgramIndicator>() {
+    override fun appendChildren(m: ProgramIndicator): ProgramIndicator {
+        val builder = m.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    public ChildrenSelection withChild(String child) {
-        Set<String> newSet = new HashSet<>(children);
-        newSet.add(child);
-        return new ChildrenSelection(newSet);
-    }
-
-    public static ChildrenSelection empty() {
-        return new ChildrenSelection(Collections.emptySet());
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorLegendSetChildrenAppender(
+                objectWithUidChildStore(
+                    databaseAdapter,
+                    ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                    ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
+                )
+            )
+        }
     }
 }

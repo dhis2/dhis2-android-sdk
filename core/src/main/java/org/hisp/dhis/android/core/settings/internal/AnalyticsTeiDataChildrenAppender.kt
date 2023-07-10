@@ -61,9 +61,9 @@ internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
         whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
     }
 
-    override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
+    override fun appendChildren(m: AnalyticsTeiSetting): AnalyticsTeiSetting {
         return buildAnalyticsTeiSetting(
-            analyticsTeiSetting,
+            m,
             dataElements!!,
             indicators!!,
             attributes!!,

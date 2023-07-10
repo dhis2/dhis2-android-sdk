@@ -25,36 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.note.Note;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 
-public final class NoteForEnrollmentChildrenAppender extends ChildrenAppender<Enrollment> {
-
-    private final SingleParentChildStore<Enrollment, Note> childStore;
-
-    private NoteForEnrollmentChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
-        this.childStore = childStore;
-    }
-
-    @Override
-    public Enrollment appendChildren(Enrollment enrollment) {
-        Enrollment.Builder builder = enrollment.toBuilder();
-        builder.notes(childStore.getChildren(enrollment));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new NoteForEnrollmentChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        NoteStoreImpl.Companion.getENROLLMENT_CHILD_PROJECTION(),
-                        Note::create)
-        );
+@Reusable
+internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender @Inject constructor(
+    store: ValueTypeDeviceRenderingStore
+) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(store) {
+    override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
+        val valueTypeRendering = getValueTypeDeviceRendering(m)
+        return m.toBuilder().renderType(valueTypeRendering).build()
     }
 }

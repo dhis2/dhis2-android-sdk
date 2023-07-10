@@ -73,7 +73,7 @@ internal class OrganisationUnitEntityDIModule {
 
     @Provides
     @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter?): Map<String, ChildrenAppender<OrganisationUnit>> {
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<OrganisationUnit>> {
         return mapOf(
             OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender.create(databaseAdapter),

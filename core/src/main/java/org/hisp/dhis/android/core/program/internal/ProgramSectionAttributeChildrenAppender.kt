@@ -25,49 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 
-@Module
-internal class DataElementEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): DataElementStore {
-        return DataElementStoreImpl(databaseAdapter)
+internal class ProgramSectionAttributeChildrenAppender private constructor(
+    private val linkChildStore: LinkChildStore<ProgramSection, TrackedEntityAttribute>
+) : ChildrenAppender<ProgramSection>() {
+    override fun appendChildren(m: ProgramSection): ProgramSection {
+        val builder = m.toBuilder()
+        builder.attributes(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(
-        dataElementStore: DataElementStore,
-        attributeHandler: AttributeHandler,
-        dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
-        dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler
-    ): DataElementHandler {
-        return DataElementHandler(
-            dataElementStore,
-            attributeHandler,
-            dataElementAttributeLinkHandler,
-            dataElementLegendSetLinkHandler
+    companion object {
+        val CHILD_PROJECTION = LinkTableChildProjection(
+            TrackedEntityAttributeTableInfo.TABLE_INFO,
+            ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
+            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE
         )
-    }
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataElement>> {
-        return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
-            DataElementLegendSetChildrenAppender.create(databaseAdapter)
-        )
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramSection> {
+            return ProgramSectionAttributeChildrenAppender(
+                linkChildStore(
+                    databaseAdapter,
+                    ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> TrackedEntityAttribute.create(cursor) }
+            )
+        }
     }
 }

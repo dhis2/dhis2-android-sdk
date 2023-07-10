@@ -25,34 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class ProgramTrackedEntityTypeChildrenAppender extends ChildrenAppender<Program> {
-
-    private final TrackedEntityTypeStore store;
-
-    @Inject
-    ProgramTrackedEntityTypeChildrenAppender(TrackedEntityTypeStore store) {
-        this.store = store;
+internal class DataSetElementChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<DataSet, DataSetElement>
+) : ChildrenAppender<DataSet>() {
+    override fun appendChildren(m: DataSet): DataSet {
+        val builder = m.toBuilder()
+        builder.dataSetElements(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public Program appendChildren(Program program) {
-        Program.Builder builder = program.toBuilder();
-        TrackedEntityType trackedEntityType = program.trackedEntityType();
-        if (trackedEntityType != null) {
-            builder.trackedEntityType(store.selectByUid(trackedEntityType.uid()));
+    companion object {
+        private val CHILD_PROJECTION = SingleParentChildProjection(
+            DataSetElementLinkTableInfo.TABLE_INFO,
+            DataSetElementLinkTableInfo.Columns.DATA_SET
+        )
+
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
+            return DataSetElementChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> DataSetElement.create(cursor) }
+            )
         }
-        return builder.build();
     }
 }

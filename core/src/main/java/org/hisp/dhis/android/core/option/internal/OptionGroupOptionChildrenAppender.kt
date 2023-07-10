@@ -25,44 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal;
+package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
-import org.hisp.dhis.android.core.option.OptionTableInfo;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
+import org.hisp.dhis.android.core.option.OptionTableInfo
 
-final class OptionGroupOptionChildrenAppender extends ChildrenAppender<OptionGroup> {
+internal class OptionGroupOptionChildrenAppender private constructor(
+    private val childStore: ObjectWithUidChildStore<OptionGroup>
+) : ChildrenAppender<OptionGroup>() {
+    override fun appendChildren(m: OptionGroup): OptionGroup {
+        val builder = m.toBuilder()
+        builder.options(childStore.getChildren(m))
+        return builder.build()
+    }
 
-    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+    companion object {
+        private val CHILD_PROJECTION = LinkTableChildProjection(
             OptionTableInfo.TABLE_INFO,
             OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
-            OptionGroupOptionLinkTableInfo.Columns.OPTION);
+            OptionGroupOptionLinkTableInfo.Columns.OPTION
+        )
 
-    private final ObjectWithUidChildStore<OptionGroup> childStore;
-
-    private OptionGroupOptionChildrenAppender(ObjectWithUidChildStore<OptionGroup> childStore) {
-        this.childStore = childStore;
-    }
-
-    @Override
-    public OptionGroup appendChildren(OptionGroup optionGroup) {
-        OptionGroup.Builder builder = optionGroup.toBuilder();
-        builder.options(childStore.getChildren(optionGroup));
-        return builder.build();
-    }
-
-    static ChildrenAppender<OptionGroup> create(DatabaseAdapter databaseAdapter) {
-        return new OptionGroupOptionChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                        databaseAdapter,
-                        OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                        CHILD_PROJECTION
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OptionGroup> {
+            return OptionGroupOptionChildrenAppender(
+                objectWithUidChildStore(
+                    databaseAdapter,
+                    OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
                 )
-        );
+            )
+        }
     }
 }

@@ -25,18 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children.internal;
+package org.hisp.dhis.android.core.dataelement.internal
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 
-public abstract class ChildrenAppender<M> {
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void prepareChildren(Collection<M> collection) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+internal class DataElementLegendSetChildrenAppender private constructor(
+    private val linkChildStore: ObjectWithUidChildStore<DataElement>
+) : ChildrenAppender<DataElement>() {
+    override fun appendChildren(m: DataElement): DataElement {
+        return m.toBuilder()
+            .legendSets(linkChildStore.getChildren(m))
+            .build()
     }
 
-    public abstract M appendChildren(M m);
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
+            return DataElementLegendSetChildrenAppender(
+                objectWithUidChildStore(
+                    databaseAdapter,
+                    DataElementLegendSetLinkTableInfo.TABLE_INFO,
+                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION
+                )
+            )
+        }
+    }
 }

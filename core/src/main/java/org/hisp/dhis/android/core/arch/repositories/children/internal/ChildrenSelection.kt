@@ -25,29 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+internal class ChildrenSelection(val children: Set<String>) {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class DataElementValueTypeRenderingChildrenAppender
-        extends ValueTypeRenderingChildrenAppender<ProgramStageDataElement> {
-
-    @Inject
-    DataElementValueTypeRenderingChildrenAppender(ValueTypeDeviceRenderingStore store) {
-        super(store);
+    fun withChild(child: String): ChildrenSelection {
+        return ChildrenSelection(children + child)
     }
 
-    @Override
-    public ProgramStageDataElement appendChildren(ProgramStageDataElement programStageDataElement) {
-        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programStageDataElement);
-
-        return programStageDataElement.toBuilder().renderType(valueTypeRendering).build();
+    companion object {
+        @JvmStatic
+        fun empty(): ChildrenSelection {
+            return ChildrenSelection(emptySet())
+        }
     }
 }

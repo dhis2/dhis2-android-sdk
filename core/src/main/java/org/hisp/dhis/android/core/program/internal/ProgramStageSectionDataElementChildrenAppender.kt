@@ -25,49 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 
-@Module
-internal class DataElementEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): DataElementStore {
-        return DataElementStoreImpl(databaseAdapter)
+internal class ProgramStageSectionDataElementChildrenAppender private constructor(
+    private val linkChildStore: LinkChildStore<ProgramStageSection, DataElement>
+) : ChildrenAppender<ProgramStageSection>() {
+    override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
+        val builder = m.toBuilder()
+        builder.dataElements(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(
-        dataElementStore: DataElementStore,
-        attributeHandler: AttributeHandler,
-        dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
-        dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler
-    ): DataElementHandler {
-        return DataElementHandler(
-            dataElementStore,
-            attributeHandler,
-            dataElementAttributeLinkHandler,
-            dataElementLegendSetLinkHandler
+    companion object {
+        private val CHILD_PROJECTION = LinkTableChildProjection(
+            DataElementTableInfo.TABLE_INFO,
+            ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
+            ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT
         )
-    }
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataElement>> {
-        return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
-            DataElementLegendSetChildrenAppender.create(databaseAdapter)
-        )
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageSection> {
+            return ProgramStageSectionDataElementChildrenAppender(
+                linkChildStore(
+                    databaseAdapter,
+                    ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> DataElement.create(cursor) }
+            )
+        }
     }
 }

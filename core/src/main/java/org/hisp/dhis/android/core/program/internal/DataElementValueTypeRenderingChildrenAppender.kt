@@ -25,37 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.DataInputPeriod;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
+import org.hisp.dhis.android.core.program.ProgramStageDataElement
 
-final class DataInputPeriodChildrenAppender extends ChildrenAppender<DataSet> {
-
-
-    private final SingleParentChildStore<DataSet, DataInputPeriod> childStore;
-
-    private DataInputPeriodChildrenAppender(SingleParentChildStore<DataSet, DataInputPeriod> childStore) {
-        this.childStore = childStore;
-    }
-
-    @Override
-    public DataSet appendChildren(DataSet dataSet) {
-        DataSet.Builder builder = dataSet.toBuilder();
-        builder.dataInputPeriods(childStore.getChildren(dataSet));
-        return builder.build();
-    }
-
-    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
-        return new DataInputPeriodChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        DataInputPeriodStoreImpl.Companion.getCHILD_PROJECTION(),
-                        DataInputPeriod::create)
-        );
+@Reusable
+internal class DataElementValueTypeRenderingChildrenAppender @Inject constructor(
+    store: ValueTypeDeviceRenderingStore
+) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(store) {
+    override fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
+        val valueTypeRendering = getValueTypeDeviceRendering(m)
+        return m.toBuilder().renderType(valueTypeRendering).build()
     }
 }

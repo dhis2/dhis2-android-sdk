@@ -25,38 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.EventFilter
 
-final class ProgramIndicatorLegendSetChildrenAppender extends ChildrenAppender<ProgramIndicator> {
-
-    private final ObjectWithUidChildStore<ProgramIndicator> linkChildStore;
-
-    private ProgramIndicatorLegendSetChildrenAppender(
-            ObjectWithUidChildStore<ProgramIndicator> linkChildStore) {
-        this.linkChildStore = linkChildStore;
+internal class EventFilterEventDataFilterChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<EventFilter, EventDataFilter>
+) : ChildrenAppender<EventFilter>() {
+    override fun appendChildren(m: EventFilter): EventFilter {
+        return if (m.eventQueryCriteria() != null) {
+            val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder()
+            criteriaBuilder.dataFilters(childStore.getChildren(m))
+            return m.toBuilder().eventQueryCriteria(criteriaBuilder.build()).build()
+        } else {
+            m
+        }
     }
 
-    @Override
-    public ProgramIndicator appendChildren(ProgramIndicator programIndicator) {
-        ProgramIndicator.Builder builder = programIndicator.toBuilder();
-        builder.legendSets(linkChildStore.getChildren(programIndicator));
-        return builder.build();
-    }
-
-    static ChildrenAppender<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorLegendSetChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                        databaseAdapter,
-                        ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                        ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<EventFilter> {
+            return EventFilterEventDataFilterChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    EventDataFilterStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> EventDataFilter.create(cursor) }
+            )
+        }
     }
 }

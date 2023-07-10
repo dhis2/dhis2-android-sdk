@@ -25,31 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
-        extends ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute> {
-
-    @Inject
-    ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
-            ValueTypeDeviceRenderingStore store) {
-        super(store);
+internal abstract class ChildrenAppender<M> {
+    open fun prepareChildren(collection: Collection<M>) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 
-    @Override
-    public ProgramTrackedEntityAttribute appendChildren(
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
-        ValueTypeRendering valueTypeRendering = getValueTypeDeviceRendering(programTrackedEntityAttribute);
-
-        return programTrackedEntityAttribute.toBuilder().renderType(valueTypeRendering).build();
-    }
+    abstract fun appendChildren(m: M): M
 }

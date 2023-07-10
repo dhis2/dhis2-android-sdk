@@ -54,7 +54,7 @@ internal constructor(
      * Returns the object in an asynchronous way, returning a `Single<M>`.
      * @return A `Single` object with the object
      */
-    override fun get(): Single<T> {
+    override fun get(): Single<T?> {
         return Single.fromCallable { blockingGet() }
     }
 
@@ -63,12 +63,12 @@ internal constructor(
      * executed in the main thread. Consider the asynchronous version [.get].
      * @return the object
      */
-    override fun blockingGet(): T {
-        return transformer.transform(
-            ChildrenAppenderExecutor.appendInObject(
-                blockingGetWithoutChildren(), childrenAppenders, scope.children()
-            )
+    override fun blockingGet(): T? {
+        val item = ChildrenAppenderExecutor.appendInObject(
+            blockingGetWithoutChildren(), childrenAppenders, scope.children()
         )
+
+        return item?.let { transformer.transform(it) }
     }
 
     /**

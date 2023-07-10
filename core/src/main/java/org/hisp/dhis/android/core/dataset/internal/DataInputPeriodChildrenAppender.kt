@@ -25,36 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.core.dataset.DataSet
 
-final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRule> {
-
-    private final SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore;
-
-    private ProgramRuleActionChildrenAppender(SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore) {
-        this.childStore = childStore;
+internal class DataInputPeriodChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<DataSet, DataInputPeriod>
+) : ChildrenAppender<DataSet>() {
+    override fun appendChildren(m: DataSet): DataSet {
+        val builder = m.toBuilder()
+        builder.dataInputPeriods(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public ProgramRule appendChildren(ProgramRule programRule) {
-        ProgramRule.Builder builder = programRule.toBuilder();
-        builder.programRuleActions(childStore.getChildren(programRule));
-        return builder.build();
-    }
-
-    static ChildrenAppender<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleActionChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        ProgramRuleActionStoreImpl.Companion.getCHILD_PROJECTION(),
-                        ProgramRuleAction::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
+            return DataInputPeriodChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    DataInputPeriodStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor? -> DataInputPeriod.create(cursor) }
+            )
+        }
     }
 }

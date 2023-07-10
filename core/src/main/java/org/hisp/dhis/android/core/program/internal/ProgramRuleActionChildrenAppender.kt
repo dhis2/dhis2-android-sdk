@@ -25,36 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.note.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.program.ProgramRuleAction
 
-public final class NoteForEventChildrenAppender extends ChildrenAppender<Event> {
-
-    private final SingleParentChildStore<Event, Note> childStore;
-
-    private NoteForEventChildrenAppender(SingleParentChildStore<Event, Note> childStore) {
-        this.childStore = childStore;
+internal class ProgramRuleActionChildrenAppender private constructor(
+    private val childStore: SingleParentChildStore<ProgramRule, ProgramRuleAction>
+) : ChildrenAppender<ProgramRule>() {
+    override fun appendChildren(m: ProgramRule): ProgramRule {
+        val builder = m.toBuilder()
+        builder.programRuleActions(childStore.getChildren(m))
+        return builder.build()
     }
 
-    @Override
-    public Event appendChildren(Event event) {
-        Event.Builder builder = event.toBuilder();
-        builder.notes(childStore.getChildren(event));
-        return builder.build();
-    }
-
-    public static ChildrenAppender<Event> create(DatabaseAdapter databaseAdapter) {
-        return new NoteForEventChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                        databaseAdapter,
-                        NoteStoreImpl.Companion.getEVENT_CHILD_PROJECTION(),
-                        Note::create)
-        );
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramRule> {
+            return ProgramRuleActionChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    ProgramRuleActionStoreImpl.CHILD_PROJECTION
+                ) { cursor: Cursor -> ProgramRuleAction.create(cursor) }
+            )
+        }
     }
 }

@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.UserRole
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
 
 @Module
 internal class UserRoleEntityDIModule {
@@ -49,11 +46,5 @@ internal class UserRoleEntityDIModule {
     @Reusable
     fun childrenAppenders(): Map<String, ChildrenAppender<UserRole>> {
         return emptyMap()
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<UserRole> {
-        return CollectionCleanerImpl(UserRoleTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 }

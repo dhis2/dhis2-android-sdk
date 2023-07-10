@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class LinkCleanerImpl<P : ObjectWithUidInterface>(
+internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val applicableColumn: String,
     private val parentStore: ObjectStore<P>,

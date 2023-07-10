@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -38,7 +37,7 @@ import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 internal class OptionGroupHandler(
     optionStore: OptionGroupStore,
     private val optionGroupOptionLinkHandler: LinkHandler<ObjectWithUid, OptionGroupOptionLink>,
-    private val collectionCleaner: CollectionCleaner<OptionGroup>
+    private val collectionCleaner: OptionGroupCollectionCleaner
 ) : IdentifiableHandlerImpl<OptionGroup>(optionStore) {
 
     override fun afterObjectHandled(o: OptionGroup, action: HandleAction) {

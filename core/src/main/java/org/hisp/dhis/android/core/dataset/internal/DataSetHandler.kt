@@ -27,20 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
-import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
-import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.*
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
@@ -49,14 +41,14 @@ import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
 internal class DataSetHandler constructor(
     dataSetStore: DataSetStore,
     private val sectionHandler: SectionHandler,
-    private val sectionOrphanCleaner: OrphanCleaner<DataSet, Section>,
+    private val sectionOrphanCleaner: SectionOrphanCleaner,
     private val compulsoryDataElementOperandHandler: DataElementOperandHandler,
     private val dataSetCompulsoryDataElementOperandLinkHandler: DataSetCompulsoryDataElementOperandHandler,
     private val dataInputPeriodHandler: DataInputPeriodHandler,
     private val dataSetElementLinkHandler: DataSetElementHandler,
     private val dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
-    private val collectionCleaner: CollectionCleaner<DataSet>,
-    private val linkCleaner: LinkCleaner<DataSet>
+    private val collectionCleaner: DataSetCollectionCleaner,
+    private val linkCleaner: DataSetOrganisationUnitLinkCleaner
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 
     override fun afterObjectHandled(o: DataSet, action: HandleAction) {

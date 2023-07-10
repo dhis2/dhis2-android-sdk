@@ -25,37 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
-
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-
-import java.util.Collection;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.SectionTableInfo
 
 @Reusable
-public class EventRelationshipOrphanCleanerImpl extends RelationshipOrphanCleanerImpl<Event, Relationship> {
-
-    @Inject
-    EventRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                       RelationshipCollectionRepository relationshipRepository) {
-        super(relationshipStore, relationshipRepository);
-    }
-
-    @Override
-    public RelationshipItem getItem(String uid) {
-        return RelationshipHelper.eventItem(uid);
-    }
-
-    @Override
-    public Collection<Relationship> relationships(Collection<Relationship> relationships) {
-        return relationships;
-    }
-}
+internal class SectionOrphanCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : OrphanCleanerImpl<DataSet, Section>(
+    tableName = SectionTableInfo.TABLE_INFO.name(),
+    parentColumn = SectionTableInfo.Columns.DATA_SET,
+    databaseAdapter = databaseAdapter
+)

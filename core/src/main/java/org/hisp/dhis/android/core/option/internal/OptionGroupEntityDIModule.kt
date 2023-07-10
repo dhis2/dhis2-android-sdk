@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.option.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo
 
 @Module
 internal class OptionGroupEntityDIModule {
@@ -50,19 +47,13 @@ internal class OptionGroupEntityDIModule {
     fun handler(
         optionStore: OptionGroupStore,
         optionGroupOptionLinkHandler: OptionGroupOptionLinkHandler,
-        collectionCleaner: CollectionCleaner<OptionGroup>
+        collectionCleaner: OptionGroupCollectionCleaner
     ): OptionGroupHandler {
         return OptionGroupHandler(
             optionStore,
             optionGroupOptionLinkHandler,
             collectionCleaner
         )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<OptionGroup> {
-        return CollectionCleanerImpl(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

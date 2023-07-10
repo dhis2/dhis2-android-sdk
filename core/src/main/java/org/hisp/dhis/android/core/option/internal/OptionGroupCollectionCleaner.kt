@@ -25,37 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
-
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-
-import java.util.Collection;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo
 
 @Reusable
-public class EnrollmentRelationshipOrphanCleanerImpl extends RelationshipOrphanCleanerImpl<Enrollment, Relationship> {
-
-    @Inject
-    EnrollmentRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                            RelationshipCollectionRepository relationshipRepository) {
-        super(relationshipStore, relationshipRepository);
-    }
-
-    @Override
-    public RelationshipItem getItem(String uid) {
-        return RelationshipHelper.enrollmentItem(uid);
-    }
-
-    @Override
-    public Collection<Relationship> relationships(Collection<Relationship> relationships) {
-        return relationships;
-    }
-}
+internal class OptionGroupCollectionCleaner @Inject constructor(
+    databaseAdapter: DatabaseAdapter
+) : CollectionCleanerImpl<OptionGroup>(
+    tableName = OptionGroupTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter
+)

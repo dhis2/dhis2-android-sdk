@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
 
 @Module
 internal class TrackedEntityTypeEntityDIModule {
@@ -52,11 +49,5 @@ internal class TrackedEntityTypeEntityDIModule {
             TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES to
                 TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)
         )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<TrackedEntityType> {
-        return CollectionCleanerImpl(TrackedEntityTypeTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 }

@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.option.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionTableInfo
 
 @Module
 internal class OptionEntityDIModule {
@@ -50,27 +46,11 @@ internal class OptionEntityDIModule {
     @Reusable
     fun handler(
         optionStore: OptionStore,
-        optionCleaner: SubCollectionCleaner<Option>
+        optionCleaner: OptionSubCollectionCleaner
     ): OptionHandler {
         return OptionHandler(
             optionStore,
             optionCleaner
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun optionCleaner(databaseAdapter: DatabaseAdapter): SubCollectionCleaner<Option> {
-        return SubCollectionCleanerImpl(
-            OptionTableInfo.TABLE_INFO.name(),
-            OptionTableInfo.Columns.OPTION_SET,
-            databaseAdapter,
-            object : Transformer<Option, String> {
-                override fun transform(o: Option): String {
-                    return o.optionSet()!!
-                        .uid()
-                }
-            }
         )
     }
 

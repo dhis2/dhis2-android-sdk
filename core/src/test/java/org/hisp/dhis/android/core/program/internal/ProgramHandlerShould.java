@@ -36,9 +36,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
@@ -83,13 +80,13 @@ public class ProgramHandlerShould {
     private ProgramSectionHandler programSectionHandler;
 
     @Mock
-    private ParentOrphanCleaner<Program> orphanCleaner;
+    private ProgramOrphanCleaner orphanCleaner;
 
     @Mock
-    private CollectionCleaner<Program> collectionCleaner;
+    private ProgramCollectionCleaner collectionCleaner;
 
     @Mock
-    private LinkCleaner<Program> linkCleaner;
+    private ProgramOrganisationUnitLinkCleaner linkCleaner;
 
     @Mock
     private ProgramAttributeValueLinkHandler programAttributeValueLinkHandler;

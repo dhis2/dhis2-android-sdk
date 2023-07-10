@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo
 
 @Module
 internal class OrganisationUnitGroupEntityDIModule {
@@ -49,14 +46,6 @@ internal class OrganisationUnitGroupEntityDIModule {
     @Reusable
     fun handler(store: OrganisationUnitGroupStore): OrganisationUnitGroupHandler {
         return OrganisationUnitGroupHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun organisationUnitGroupCollectionCleaner(
-        databaseAdapter: DatabaseAdapter
-    ): CollectionCleaner<OrganisationUnitGroup> {
-        return CollectionCleanerImpl(OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

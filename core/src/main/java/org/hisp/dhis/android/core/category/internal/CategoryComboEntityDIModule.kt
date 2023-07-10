@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 
 @Module
 internal class CategoryComboEntityDIModule {
@@ -52,19 +48,9 @@ internal class CategoryComboEntityDIModule {
         store: CategoryComboStore,
         optionComboHandler: CategoryOptionComboHandler,
         categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-        categoryOptionCleaner: OrphanCleaner<CategoryCombo, CategoryOptionCombo>
+        categoryOptionCleaner: CategoryOptionComboOrphanCleaner
     ): CategoryComboHandler {
         return CategoryComboHandler(store, optionComboHandler, categoryCategoryComboLinkHandler, categoryOptionCleaner)
-    }
-
-    @Provides
-    @Reusable
-    fun orphanCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<CategoryCombo, CategoryOptionCombo> {
-        return OrphanCleanerImpl(
-            CategoryOptionComboTableInfo.TABLE_INFO.name(),
-            CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO,
-            databaseAdapter
-        )
     }
 
     @Provides

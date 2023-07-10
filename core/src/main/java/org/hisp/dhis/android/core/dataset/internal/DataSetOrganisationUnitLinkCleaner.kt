@@ -25,33 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.cleaners.internal
+package org.hisp.dhis.android.core.dataset.internal
 
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 
-internal class DataOrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
-    private val tableName: String,
-    private val parentColumn: String,
-    private val stateColumn: String,
-    private val databaseAdapter: DatabaseAdapter
-) : OrphanCleaner<P, C> {
-
-    override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
-        if (parent == null || children == null) {
-            return false
-        }
-        val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(children)
-        val clause = (
-            parentColumn + "='" + parent.uid() + "'" +
-                " AND " +
-                stateColumn + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "')" +
-                " AND " +
-                IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
-            )
-        return databaseAdapter.delete(tableName, clause, null) > 0
-    }
-}
+@Reusable
+internal class DataSetOrganisationUnitLinkCleaner @Inject constructor(
+    programStore: DataSetStore,
+    databaseAdapter: DatabaseAdapter
+) : LinkCleanerImpl<DataSet>(
+    tableName = DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+    applicableColumn = DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+    parentStore = programStore,
+    databaseAdapter = databaseAdapter
+)

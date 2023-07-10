@@ -33,7 +33,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -66,7 +65,7 @@ public class LegendSetHandlerShould {
     private LegendSet legendSet;
 
     @Mock
-    private OrphanCleaner<LegendSet, Legend> legendCleaner;
+    private LegendSetLegendOrphanCleaner legendCleaner;
 
     // object to test
     private LegendSetHandler legendSetHandler;

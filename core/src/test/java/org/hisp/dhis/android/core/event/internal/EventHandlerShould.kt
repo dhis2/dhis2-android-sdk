@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
@@ -38,7 +37,7 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -62,7 +61,7 @@ class EventHandlerShould {
     private val relationshipItemRelatives: RelationshipItemRelatives = mock()
     private val relationshipHandler: RelationshipHandler = mock()
     private val eventBuilder: Event.Builder = mock()
-    private val relationshipOrphanCleaner: OrphanCleaner<Event, Relationship> = mock()
+    private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner = mock()
     private val event: Event = mock()
 
     // object to test

@@ -36,9 +36,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -69,7 +66,7 @@ public class DataSetHandlerShould {
     private SectionHandler sectionHandler;
 
     @Mock
-    private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
+    private SectionOrphanCleaner sectionOrphanCleaner;
 
     @Mock
     private DataElementOperandHandler compulsoryDataElementOperandHandler;
@@ -114,10 +111,10 @@ public class DataSetHandlerShould {
     private DataSetIndicatorLinkHandler dataSetIndicatorLinkHandler;
 
     @Mock
-    private CollectionCleaner<DataSet> collectionCleaner;
+    private DataSetCollectionCleaner collectionCleaner;
 
     @Mock
-    private LinkCleaner<DataSet> linkCleaner;
+    private DataSetOrganisationUnitLinkCleaner linkCleaner;
 
     @Mock
     private List<DataInputPeriod> dataInputPeriods;

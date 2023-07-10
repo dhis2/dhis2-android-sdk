@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.legendset.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendTableInfo
 
 @Module
 internal class LegendSetEntityDIModule {
@@ -51,22 +47,12 @@ internal class LegendSetEntityDIModule {
     fun handler(
         legendSetStore: LegendSetStore,
         legendHandler: LegendHandler,
-        legendCleaner: OrphanCleaner<LegendSet, Legend>
+        legendCleaner: LegendSetLegendOrphanCleaner
     ): LegendSetHandler {
         return LegendSetHandler(
             legendSetStore,
             legendHandler,
             legendCleaner
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun legendCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<LegendSet, Legend> {
-        return OrphanCleanerImpl(
-            LegendTableInfo.TABLE_INFO.name(),
-            LegendTableInfo.Columns.LEGEND_SET,
-            databaseAdapter
         )
     }
 

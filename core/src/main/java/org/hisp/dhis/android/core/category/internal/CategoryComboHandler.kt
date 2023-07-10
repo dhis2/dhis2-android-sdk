@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.Category
@@ -42,7 +41,7 @@ internal class CategoryComboHandler constructor(
     store: CategoryComboStore,
     private val optionComboHandler: CategoryOptionComboHandler,
     private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-    private val categoryOptionCleaner: OrphanCleaner<CategoryCombo, CategoryOptionCombo>
+    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
     override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {

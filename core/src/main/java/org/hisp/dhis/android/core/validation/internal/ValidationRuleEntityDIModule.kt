@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.validation.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.validation.ValidationRule
-import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo
 
 @Module
 internal class ValidationRuleEntityDIModule {
@@ -43,12 +40,6 @@ internal class ValidationRuleEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ValidationRuleStore {
         return ValidationRuleStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<ValidationRule> {
-        return CollectionCleanerImpl(ValidationRuleTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

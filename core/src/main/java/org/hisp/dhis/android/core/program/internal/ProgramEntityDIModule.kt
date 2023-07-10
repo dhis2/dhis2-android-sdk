@@ -30,14 +30,8 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
-import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 
@@ -57,29 +51,5 @@ internal class ProgramEntityDIModule {
         return mapOf(
             ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender
         )
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<Program> {
-        return CollectionCleanerImpl(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun linkCleaner(
-        programStore: ProgramStore,
-        databaseAdapter: DatabaseAdapter
-    ): LinkCleaner<Program> {
-        return LinkCleanerImpl(
-            OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programStore, databaseAdapter
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun parentOrphanCleaner(databaseAdapter: DatabaseAdapter): ParentOrphanCleaner<Program> {
-        return ProgramOrphanCleaner.create(databaseAdapter)
     }
 }

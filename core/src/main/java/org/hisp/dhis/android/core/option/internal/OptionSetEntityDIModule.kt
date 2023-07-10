@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.option.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionTableInfo
 
 @Module
 internal class OptionSetEntityDIModule {
@@ -50,16 +46,6 @@ internal class OptionSetEntityDIModule {
     @Reusable
     fun handler(store: OptionSetStore): OptionSetHandler {
         return OptionSetHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun optionCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<OptionSet, Option> {
-        return OrphanCleanerImpl(
-            OptionTableInfo.TABLE_INFO.name(),
-            OptionTableInfo.Columns.OPTION_SET,
-            databaseAdapter
-        )
     }
 
     @Provides

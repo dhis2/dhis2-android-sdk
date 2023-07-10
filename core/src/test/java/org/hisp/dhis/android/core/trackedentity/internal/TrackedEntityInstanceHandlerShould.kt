@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -64,7 +64,7 @@ class TrackedEntityInstanceHandlerShould {
     private val relative: TrackedEntityInstance = mock()
     private val relativeBuilder: TrackedEntityInstance.Builder = mock()
     private val enrollmentCleaner: TrackedEntityEnrollmentOrphanCleaner = mock()
-    private val relationshipCleaner: OrphanCleaner<TrackedEntityInstance, Relationship> = mock()
+    private val relationshipCleaner: TEIRelationshipOrphanCleaner = mock()
     private val relatives: RelationshipItemRelatives = mock()
     private val teiBuilder: TrackedEntityInstance.Builder = mock()
 

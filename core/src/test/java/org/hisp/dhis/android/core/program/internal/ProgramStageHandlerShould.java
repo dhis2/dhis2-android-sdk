@@ -35,8 +35,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.attribute.internal.AttributeHandler;
 import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler;
@@ -93,13 +91,13 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
+    private ProgramStageDataElementOrphanCleaner programStageDataElementCleaner;
 
     @Mock
-    private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
+    private ProgramStageSectionOrphanCleaner programStageSectionCleaner;
 
     @Mock
-    private SubCollectionCleaner<ProgramStage> programStageCleaner;
+    private ProgramStageSubCollectionCleaner programStageCleaner;
 
     @Mock
     private ProgramStage.Builder programStageBuilder;

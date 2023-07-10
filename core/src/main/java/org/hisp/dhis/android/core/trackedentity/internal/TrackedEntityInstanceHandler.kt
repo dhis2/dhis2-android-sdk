@@ -30,17 +30,16 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import android.util.Log
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentHandler
-import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -56,7 +55,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     private val enrollmentHandler: EnrollmentHandler,
     private val programOwnerHandler: ProgramOwnerHandler,
     private val enrollmentOrphanCleaner: TrackedEntityEnrollmentOrphanCleaner,
-    private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
+    private val relationshipOrphanCleaner: TEIRelationshipOrphanCleaner
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
     trackedEntityInstanceStore,
     relationshipVersionManager,

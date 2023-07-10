@@ -32,9 +32,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCleaner
+import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserCall
 
@@ -44,8 +43,8 @@ internal class OrganisationUnitModuleDownloader @Inject constructor(
     private val userCall: UserCall,
     private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,
     private val rxCallExecutor: RxAPICallExecutor,
-    private val dataSetLinkCleaner: LinkCleaner<DataSet>,
-    private val programLinkCleaner: LinkCleaner<Program>
+    private val dataSetLinkCleaner: DataSetOrganisationUnitLinkCleaner,
+    private val programLinkCleaner: ProgramOrganisationUnitLinkCleaner
 ) {
     fun downloadMetadata(user: User): Completable {
         return organisationUnitLevelEndpointCall.download()

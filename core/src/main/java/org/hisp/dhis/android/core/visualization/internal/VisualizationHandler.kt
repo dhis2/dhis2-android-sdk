@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.visualization.LayoutPosition
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 @Reusable
 internal class VisualizationHandler @Inject constructor(
     store: VisualizationStore,
-    private val visualizationCollectionCleaner: CollectionCleaner<Visualization>,
+    private val visualizationCollectionCleaner: VisualizationCollectionCleaner,
     private val itemHandler: VisualizationDimensionItemHandler
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 

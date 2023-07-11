@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asFlowable
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -67,7 +68,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = flow {
+    fun download(params: ProgramDataDownloadParams): Observable<TrackerD2Progress> = flow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {
             progressManager.setTotalCalls(1)
@@ -79,7 +80,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     downloadBundle(params, progressManager)
                 }
         }
-    }
+    }.asObservable()
 
     private fun downloadBundle(
         params: ProgramDataDownloadParams,

@@ -40,7 +40,7 @@ internal class DataValueFileResourcePostCall @Inject constructor(
     private val fileResourceHelper: FileResourceHelper,
     private val fileResourcePostCall: FileResourcePostCall
 ) {
-    suspend fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
+    fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
         val fileResources = fileResourceHelper.getUploadableFileResources()
 
         return if (fileResources.isEmpty()) {

@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.event
 import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector
@@ -60,10 +57,10 @@ class EventDownloader @Inject internal constructor(
      *
      * @return -
      */
-    fun download(): Observable<TrackerD2Progress> = flow {
+    fun download(): Observable<TrackerD2Progress> {
         val params = ProgramDataDownloadParams.fromRepositoryScope(scope)
-        emitAll(callFactory.download(params))
-    }.asObservable()
+        return callFactory.download(params)
+    }
 
     fun blockingDownload() {
         download().blockingSubscribe()

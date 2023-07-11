@@ -31,25 +31,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 @Module
 internal class ProgramStageWorkingListAttributeValueFilterEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter> {
-        return ProgramStageWorkingListAttributeValueFilterStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): ProgramStageWorkingListAttributeValueFilterStore {
+        return ProgramStageWorkingListAttributeValueFilterStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun handler(
-        store: ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter>
-    ): HandlerWithTransformer<ProgramStageWorkingListAttributeValueFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
+        store: ProgramStageWorkingListAttributeValueFilterStore
+    ): ProgramStageWorkingListAttributeValueFilterHandler {
+        return ProgramStageWorkingListAttributeValueFilterHandler(store)
     }
 }

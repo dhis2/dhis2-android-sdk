@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class OrganisationUnitCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnit, OrganisationUnitCollectionRepository> {
 
     @Inject
-    OrganisationUnitCollectionRepository(final IdentifiableObjectStore<OrganisationUnit> store,
+    OrganisationUnitCollectionRepository(final OrganisationUnitStore store,
                                          final Map<String, ChildrenAppender<OrganisationUnit>> childrenAppenders,
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

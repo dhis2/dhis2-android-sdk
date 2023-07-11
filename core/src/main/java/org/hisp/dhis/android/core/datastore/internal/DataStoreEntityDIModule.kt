@@ -31,7 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 
@@ -41,13 +40,13 @@ internal class DataStoreEntityDIModule {
     @Provides
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): DataStoreEntryStore {
-        return DataStoreEntryStoreImpl.create(databaseAdapter)
+        return DataStoreEntryStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(impl: DataStoreHandler): LinkHandler<DataStoreEntry, DataStoreEntry> {
-        return impl
+    fun handler(store: DataStoreEntryStore): DataStoreHandler {
+        return DataStoreHandler(store)
     }
 
     @Provides

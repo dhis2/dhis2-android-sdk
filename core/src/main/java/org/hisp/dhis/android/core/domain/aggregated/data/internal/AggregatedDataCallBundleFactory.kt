@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -46,7 +45,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val dataSetSettingsObjectRepository: DataSetSettingsObjectRepository,
     private val periodManager: PeriodForDataSetManager,
-    private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync>,
+    private val aggregatedDataSyncStore: AggregatedDataSyncStore,
     private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator
 ) {
     val bundles: List<AggregatedDataCallBundle>

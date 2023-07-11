@@ -32,7 +32,6 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -41,7 +40,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 @Reusable
 internal class ProgramStageWorkingListCall @Inject internal constructor(
     private val service: ProgramStageWorkingListService,
-    private val handler: Handler<ProgramStageWorkingList>,
+    private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager
 ) : UidsCall<ProgramStageWorkingList> {

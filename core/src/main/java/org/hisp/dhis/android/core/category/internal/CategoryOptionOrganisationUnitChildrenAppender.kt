@@ -64,7 +64,7 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOption> {
             return CategoryOptionOrganisationUnitChildrenAppender(
-                CategoryOptionOrganisationUnitLinkStore.create(databaseAdapter)
+                CategoryOptionOrganisationUnitLinkStoreImpl(databaseAdapter)
             )
         }
     }

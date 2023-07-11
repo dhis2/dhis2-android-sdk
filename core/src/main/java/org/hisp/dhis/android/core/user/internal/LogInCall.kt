@@ -34,10 +34,6 @@ import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -45,7 +41,7 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
@@ -59,10 +55,10 @@ internal class LogInCall @Inject internal constructor(
     private val userService: UserService,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
-    private val userHandler: Handler<User>,
-    private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
-    private val userStore: IdentifiableObjectStore<User>,
+    private val userHandler: UserHandler,
+    private val authenticatedUserStore: AuthenticatedUserStore,
+    private val systemInfoRepository: SystemInfoObjectRepository,
+    private val userStore: UserStore,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,

@@ -53,7 +53,7 @@ final class ProgramCall implements UidsCall<Program> {
 
     @Inject
     ProgramCall(ProgramService service,
-                Handler<Program> handler,
+                ProgramHandler handler,
                 APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

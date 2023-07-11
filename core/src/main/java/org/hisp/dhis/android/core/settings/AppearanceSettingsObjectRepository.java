@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.AppearanceSettingCall;
+import org.hisp.dhis.android.core.settings.internal.FilterSettingStore;
+import org.hisp.dhis.android.core.settings.internal.ProgramConfigurationSettingStore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,13 +48,12 @@ public class AppearanceSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>
         implements ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
 
-    private final ObjectWithoutUidStore<FilterSetting> filterSettingStore;
-    private final ObjectWithoutUidStore<ProgramConfigurationSetting> programConfigurationSettingStore;
+    private final FilterSettingStore filterSettingStore;
+    private final ProgramConfigurationSettingStore programConfigurationSettingStore;
 
     @Inject
-    AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterSetting> filterSettingStore,
-                                       ObjectWithoutUidStore<ProgramConfigurationSetting>
-                                               programConfigurationSettingStore,
+    AppearanceSettingsObjectRepository(FilterSettingStore filterSettingStore,
+                                       ProgramConfigurationSettingStore programConfigurationSettingStore,
                                        AppearanceSettingCall appearanceSettingCall) {
         super(appearanceSettingCall);
         this.filterSettingStore = filterSettingStore;

@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import retrofit2.Retrofit
@@ -42,14 +40,14 @@ internal class ExpressionDimensionItemEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ExpressionDimensionItem> {
-        return ExpressionDimensionItemStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): ExpressionDimensionItemStore {
+        return ExpressionDimensionItemStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(handler: ExpressionDimensionItemHandler): Handler<ExpressionDimensionItem> {
-        return handler
+    fun handler(store: ExpressionDimensionItemStore): ExpressionDimensionItemHandler {
+        return ExpressionDimensionItemHandler(store)
     }
 
     @Reusable

@@ -32,25 +32,22 @@ import dagger.Provides
 import dagger.Reusable
 import java.util.Collections
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
 
 @Module
-internal class CategoryOptionEntityDIModule : IdentifiableStoreProvider<CategoryOption> {
+internal class CategoryOptionEntityDIModule {
 
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<CategoryOption> {
-        return CategoryOptionStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): CategoryOptionStore {
+        return CategoryOptionStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(impl: CategoryOptionHandler): Handler<CategoryOption> {
-        return impl
+    fun handler(store: CategoryOptionStore): CategoryOptionHandler {
+        return CategoryOptionHandler(store)
     }
 
     @Provides

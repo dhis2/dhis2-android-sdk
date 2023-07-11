@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 
 @Reusable
 internal class AnalyticsDhisVisualizationSettingHandler @Inject constructor(
-    store: ObjectWithoutUidStore<AnalyticsDhisVisualization>
+    store: AnalyticsDhisVisualizationStore
 ) : ObjectWithoutUidHandlerImpl<AnalyticsDhisVisualization>(store) {
 
     override fun beforeCollectionHandled(

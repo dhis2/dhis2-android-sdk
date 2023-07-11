@@ -32,12 +32,10 @@ import io.reactivex.Completable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionSet
@@ -54,7 +52,7 @@ internal class DataSetModuleDownloader @Inject internal constructor(
     private val validationRuleCall: UidsCall<ValidationRule>,
     private val validationRuleUidsCall: ValidationRuleUidsCall,
     private val periodHandler: PeriodHandler,
-    private val dataSetOrganisationUnitLinkStore: LinkStore<DataSetOrganisationUnitLink>
+    private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

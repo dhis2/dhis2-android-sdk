@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
@@ -57,7 +56,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
-    private val jobObjectHandler: Handler<TrackerJobObject>,
+    private val jobObjectHandler: TrackerJobObjectHandler,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
 ) {
     fun uploadTrackedEntityInstances(

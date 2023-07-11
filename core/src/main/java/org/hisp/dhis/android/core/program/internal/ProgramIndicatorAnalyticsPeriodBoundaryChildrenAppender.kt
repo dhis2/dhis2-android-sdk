@@ -52,7 +52,7 @@ constructor(private val childStore: LinkStore<AnalyticsPeriodBoundary>) :
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
             return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
-                AnalyticsPeriodBoundaryStore.create(databaseAdapter)
+                AnalyticsPeriodBoundaryStoreImpl(databaseAdapter)
             )
         }
     }

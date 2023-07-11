@@ -32,27 +32,23 @@ import dagger.Provides
 import dagger.Reusable
 import java.io.File
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl.Companion.create
 
 @Module
 internal class FileResourceEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStore<FileResource> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): FileResourceStore {
+        return FileResourceStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(store: IdentifiableDataObjectStore<FileResource>): HandlerWithTransformer<FileResource> {
-        return IdentifiableWithoutDeleteInterfaceHandlerImpl(store)
+    fun handler(store: FileResourceStore): FileResourceHandler {
+        return FileResourceHandler(store)
     }
 
     @Provides

@@ -28,7 +28,8 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import static org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender.KEY;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -36,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore;
 
 import java.util.Map;
 
@@ -43,14 +45,12 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender.KEY;
-
 @Reusable
 public class AnalyticsTeiSettingCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository> {
 
     @Inject
-    AnalyticsTeiSettingCollectionRepository(ObjectWithoutUidStore<AnalyticsTeiSetting> store,
+    AnalyticsTeiSettingCollectionRepository(AnalyticsTeiSettingStore store,
                                             RepositoryScope scope,
                                             Map<String, ChildrenAppender<AnalyticsTeiSetting>> childrenAppenders) {
         super(store,

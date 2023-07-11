@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 internal class ProgramOwnerPostCall @Inject constructor(
     private val ownershipService: OwnershipService,
     private val apiCallExecutor: APICallExecutor,
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>,
+    private val programOwnerStore: ProgramOwnerStore,
     private val dataStatePropagator: DataStatePropagator
 ) {
 

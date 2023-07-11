@@ -31,14 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,10 +49,10 @@ import java.util.List;
 public class TrackedEntityAttributeHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private TrackedEntityAttributeStore trackedEntityAttributeStore;
 
     @Mock
-    private OrderedLinkHandler<ObjectWithUid, TrackedEntityAttributeLegendSetLink> trackedEntityAttributeLegendSetLinkHandler;
+    private TrackedEntityAttributeLegendSetLinkHandler trackedEntityAttributeLegendSetLinkHandler;
 
     @Mock
     private ObjectStyle objectStyle;

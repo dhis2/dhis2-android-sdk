@@ -38,12 +38,12 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionSetTableInfo
 import org.hisp.dhis.android.core.option.OptionTableInfo
-import org.hisp.dhis.android.core.option.internal.OptionStore
+import org.hisp.dhis.android.core.option.internal.OptionStoreImpl
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.ProgramRuleActionType
-import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.Before
 import org.junit.Test
@@ -92,7 +92,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
         val PROGRAM_RULE_UID = "program_rule_uid"
         val program = ObjectWithUid.create("nonexisent-program")
         executor.executeD2CallTransactionally<Any?> {
-            ProgramRuleStore.create(d2.databaseAdapter()).insert(
+            ProgramRuleStoreImpl(d2.databaseAdapter()).insert(
                 ProgramRule.builder()
                     .uid(PROGRAM_RULE_UID).name("Rule").program(program).build()
             )
@@ -102,7 +102,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
                 .programRuleActionType(ProgramRuleActionType.ASSIGN)
                 .programRule(ObjectWithUid.create(PROGRAM_RULE_UID))
                 .build()
-            ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction)
+            ProgramRuleActionStoreImpl(d2.databaseAdapter()).insert(programRuleAction)
             assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(1)
             assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(1)
             val foreignKeyCleaner = ForeignKeyCleanerImpl.create(d2.databaseAdapter())
@@ -124,7 +124,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
                 .optionSet(optionSet)
                 .build()
             val optionStore: IdentifiableObjectStore<Option> =
-                OptionStore.create(d2.databaseAdapter())
+                OptionStoreImpl(d2.databaseAdapter())
             optionStore.insert(option)
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors()
             null

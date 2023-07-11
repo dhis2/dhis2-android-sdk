@@ -25,37 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.settings.LatestAppVersion
-import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
 
-@Suppress("MagicNumber")
-internal object LatestAppVersionStore {
-    private val BINDER = StatementBinder { o: LatestAppVersion, w: StatementWrapper ->
-        w.bind(1, o.version())
-        w.bind(2, o.downloadURL())
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-            _: LatestAppVersion, _: StatementWrapper ->
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-            _: LatestAppVersion, _: StatementWrapper ->
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<LatestAppVersion> {
-        return objectWithoutUidStore(
-            databaseAdapter, LatestAppVersionTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor? -> LatestAppVersion.create(cursor) }
-    }
-}
+internal interface LatestAppVersionStore : ObjectWithoutUidStore<LatestAppVersion>

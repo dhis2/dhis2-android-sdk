@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.dataset.internal.SectionFields;
+import org.hisp.dhis.android.core.dataset.internal.SectionStore;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public final class SectionCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Section, SectionCollectionRepository> {
 
     @Inject
-    SectionCollectionRepository(final IdentifiableObjectStore<Section> store,
+    SectionCollectionRepository(final SectionStore store,
                                 final Map<String, ChildrenAppender<Section>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

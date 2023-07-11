@@ -29,14 +29,13 @@
 package org.hisp.dhis.android.core.tracker
 
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 internal class TrackerPostParentCallHelper @Inject constructor(
     private val dhisVersionManager: DHISVersionManager,
-    private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings>
+    private val synchronizationSettingStore: SynchronizationSettingStore
 ) {
 
     fun useNewTrackerImporter(): Boolean {

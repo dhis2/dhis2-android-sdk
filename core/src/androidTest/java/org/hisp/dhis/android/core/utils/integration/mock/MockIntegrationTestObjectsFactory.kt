@@ -43,6 +43,14 @@ internal object MockIntegrationTestObjectsFactory {
         }
     }
 
+    fun removeObjects(content: MockIntegrationTestDatabaseContent) {
+        val instance = instances[content]
+        if (instance != null) {
+            instance.tearDown()
+            instances.remove(content)
+        }
+    }
+
     @JvmStatic
     fun tearDown() {
         if (instances.isNotEmpty()) {

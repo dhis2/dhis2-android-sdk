@@ -53,7 +53,7 @@ public final class NoteForEnrollmentChildrenAppender extends ChildrenAppender<En
         return new NoteForEnrollmentChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        NoteStore.ENROLLMENT_CHILD_PROJECTION,
+                        NoteStoreImpl.Companion.getENROLLMENT_CHILD_PROJECTION(),
                         Note::create)
         );
     }

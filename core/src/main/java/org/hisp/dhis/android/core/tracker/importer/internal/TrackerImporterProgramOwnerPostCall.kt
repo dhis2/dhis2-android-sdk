@@ -32,17 +32,17 @@ import io.reactivex.Observable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
 internal class TrackerImporterProgramOwnerPostCall @Inject constructor(
     private val programOwnerPostCall: ProgramOwnerPostCall,
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>,
+    private val programOwnerStore: ProgramOwnerStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore
 ) {
 

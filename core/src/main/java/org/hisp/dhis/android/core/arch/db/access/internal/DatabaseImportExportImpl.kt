@@ -34,14 +34,18 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.configuration.internal.*
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import org.hisp.dhis.android.core.configuration.internal.DatabaseRenamer
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStoreImpl
 import org.hisp.dhis.android.core.user.UserModule
-import org.hisp.dhis.android.core.user.internal.UserStore
+import org.hisp.dhis.android.core.user.internal.UserStoreImpl
 
 @Reusable
 internal class DatabaseImportExportImpl @Inject constructor(
@@ -50,7 +54,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
-    private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val databaseRenamer: DatabaseRenamer,
     private val databaseAdapter: DatabaseAdapter
 ) : DatabaseImportExport {
@@ -88,10 +92,10 @@ internal class DatabaseImportExportImpl @Inject constructor(
                     .build()
             }
 
-            val userStore = UserStore.create(databaseAdapter)
+            val userStore = UserStoreImpl(databaseAdapter)
             val username = userStore.selectFirst()!!.username()
 
-            val systemInfoStore = SystemInfoStore.create(databaseAdapter)
+            val systemInfoStore = SystemInfoStoreImpl(databaseAdapter)
             val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
             val serverUrl = ServerUrlParser.parse(contextPath).toString()
 

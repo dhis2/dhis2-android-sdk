@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.usecase.stock
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseHandler
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +41,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class StockUseCaseCallShould {
-    private val handler: IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase> = mock()
+    private val handler: StockUseCaseHandler = mock()
     private val service: StockUseCaseService = mock()
     private val stockUseCaseSingle: Single<List<InternalStockUseCase>> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()

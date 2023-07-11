@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.visualization.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
@@ -41,9 +39,9 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 @Reusable
 internal class VisualizationHandler @Inject constructor(
-    store: IdentifiableObjectStore<Visualization>,
+    store: VisualizationStore,
     private val visualizationCollectionCleaner: CollectionCleaner<Visualization>,
-    private val itemHandler: LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem>
+    private val itemHandler: VisualizationDimensionItemHandler
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {

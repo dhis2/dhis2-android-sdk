@@ -31,8 +31,6 @@ import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
@@ -64,9 +62,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private suspend fun download(): List<DataValue> {
-        val dataValueHandler: Handler<DataValue> = ObjectWithoutUidHandlerImpl(
-            DataValueStore.create(d2.databaseAdapter())
-        )
+        val dataValueHandler = DataValueHandler(DataValueStoreImpl(d2.databaseAdapter()))
 
         val key = AggregatedDataCallBundleKey(
             periodType = PeriodType.Daily,

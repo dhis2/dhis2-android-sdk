@@ -35,11 +35,8 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,8 +44,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class AnalyticsSettingCallShould {
-    private val handler: Handler<AnalyticsTeiSetting> = mock()
-    private val analyticsDhisVisualizationsSettingHandler: Handler<AnalyticsDhisVisualization> = mock()
+    private val handler: AnalyticsTeiSettingHandler = mock()
+    private val analyticsDhisVisualizationsSettingHandler: AnalyticsDhisVisualizationSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val analyticsSettingSingle: Single<AnalyticsSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()

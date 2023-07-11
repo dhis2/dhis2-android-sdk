@@ -37,9 +37,6 @@ import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.common.Access;
@@ -48,16 +45,19 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.internal.ProgramStore;
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl;
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueHandler;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -69,7 +69,7 @@ import java.util.concurrent.Callable;
 
 public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends BaseRealIntegrationTest {
 
-    private TrackedEntityAttributeReservedValueStoreInterface store;
+    private TrackedEntityAttributeReservedValueStore store;
     private String organisationUnitUid = "org_unit_uid";
     private String programUid = "program_uid";
     private String categoryComboUid = "category_combo_uid";
@@ -94,17 +94,17 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         login();
 
-        store = TrackedEntityAttributeReservedValueStore.create(d2.databaseAdapter());
+        store = new TrackedEntityAttributeReservedValueStoreImpl(d2.databaseAdapter());
 
-        IdentifiableObjectStore<OrganisationUnit> organisationUnitStore =
-                OrganisationUnitStore.create(d2.databaseAdapter());
+        OrganisationUnitStore organisationUnitStore =
+                new OrganisationUnitStoreImpl(d2.databaseAdapter());
 
-        IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore =
-                TrackedEntityAttributeStore.create(d2.databaseAdapter());
+        TrackedEntityAttributeStore trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(d2.databaseAdapter());
 
         manager = d2.trackedEntityModule().reservedValueManager();
 
-        Handler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidHandlerImpl<>(store);
+        TrackedEntityAttributeReservedValueHandler handler = new TrackedEntityAttributeReservedValueHandler(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 
@@ -137,7 +137,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         Program program = Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
                 .access(Access.create(null, null, DataAccess.create(true, true))).build();
-        ProgramStore.create(d2.databaseAdapter()).insert(program);
+        new ProgramStoreImpl(d2.databaseAdapter()).insert(program);
 
         ProgramTrackedEntityAttribute programTrackedEntityAttribute =
                 ProgramTrackedEntityAttribute.builder()
@@ -145,11 +145,11 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                         .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
                         .program(ObjectWithUid.create(programUid))
                         .build();
-        ProgramTrackedEntityAttributeStore.create(d2.databaseAdapter()).insert(programTrackedEntityAttribute);
+        new ProgramTrackedEntityAttributeStoreImpl(d2.databaseAdapter()).insert(programTrackedEntityAttribute);
 
         OrganisationUnitProgramLink organisationUnitProgramLink =
                 OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid).program(programUid).build();
-        OrganisationUnitProgramLinkStore.create(d2.databaseAdapter()).insert(organisationUnitProgramLink);
+        new OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(organisationUnitProgramLink);
 
 
         when(trackedEntityAttributeReservedValueQueryCallFactory.create(

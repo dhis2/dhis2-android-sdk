@@ -54,7 +54,7 @@ final class DataInputPeriodChildrenAppender extends ChildrenAppender<DataSet> {
         return new DataInputPeriodChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        DataInputPeriodLinkStore.CHILD_PROJECTION,
+                        DataInputPeriodStoreImpl.Companion.getCHILD_PROJECTION(),
                         DataInputPeriod::create)
         );
     }

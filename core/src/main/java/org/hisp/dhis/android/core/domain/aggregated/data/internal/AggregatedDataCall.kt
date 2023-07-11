@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
@@ -63,7 +62,7 @@ internal class AggregatedDataCall @Inject constructor(
     private val dataApprovalCall: QueryCall<DataApproval, DataApprovalQuery>,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
-    private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync>,
+    private val aggregatedDataSyncStore: AggregatedDataSyncStore,
     private val aggregatedDataCallBundleFactory: AggregatedDataCallBundleFactory,
     private val resourceHandler: ResourceHandler,
     private val hashHelper: AggregatedDataSyncHashHelper

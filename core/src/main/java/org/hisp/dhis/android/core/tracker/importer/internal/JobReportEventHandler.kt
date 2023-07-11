@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -38,8 +37,8 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -47,7 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 @Reusable
 internal class JobReportEventHandler @Inject internal constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: IdentifiableObjectStore<Note>,
+    private val noteStore: NoteStore,
     private val conflictStore: TrackerImportConflictStore,
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,

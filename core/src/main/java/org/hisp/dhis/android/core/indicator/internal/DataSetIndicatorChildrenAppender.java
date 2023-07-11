@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
 public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<DataSet> {
 
     private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            IndicatorTableInfo.TABLE_INFO,
+            IndicatorTableInfo.INSTANCE.getTABLE_INFO(),
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR);
     private final LinkChildStore<DataSet, Indicator> linkChildStore;

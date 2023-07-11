@@ -48,7 +48,7 @@ internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender p
             return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    AttributeValueFilterStore.CHILD_PROJECTION,
+                    AttributeValueFilterStoreImpl.CHILD_PROJECTION,
                     AttributeValueFilter::create
                 )
             )

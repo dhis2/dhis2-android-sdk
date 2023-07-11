@@ -31,7 +31,6 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
@@ -60,7 +60,7 @@ internal class TrackerDataManagerImpl @Inject constructor(
     private val relationshipStore: RelationshipStore,
     private val relationshipChildrenAppender: RelationshipItemChildrenAppender,
     private val dataStatePropagator: DataStatePropagator,
-    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
+    private val programOwner: ProgramOwnerStore
 ) : TrackerDataManager {
 
     override fun deleteTrackedEntity(tei: TrackedEntityInstance?) {

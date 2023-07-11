@@ -58,7 +58,7 @@ public final class EventFilterEventDataFilterChildrenAppender extends ChildrenAp
         return new EventFilterEventDataFilterChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        EventDataFilterStore.CHILD_PROJECTION,
+                        EventDataFilterStoreImpl.Companion.getCHILD_PROJECTION(),
                         EventDataFilter::create)
         );
     }

@@ -42,7 +42,7 @@ public class DataInputPeriodLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataInputPeriod> {
 
     public DataInputPeriodLinkStoreIntegrationShould() {
-        super(DataInputPeriodLinkStore.create(TestDatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        super(new DataInputPeriodStoreImpl(TestDatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

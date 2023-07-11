@@ -50,9 +50,9 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
     private PeriodStore periodStore;
 
     public PeriodStoreIntegrationShould() {
-        super(PeriodStoreImpl.create(TestDatabaseAdapterFactory.get()), PeriodTableInfo.TABLE_INFO,
+        super(new PeriodStoreImpl(TestDatabaseAdapterFactory.get()), PeriodTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
-        this.periodStore = PeriodStoreImpl.create(TestDatabaseAdapterFactory.get());
+        this.periodStore = new PeriodStoreImpl(TestDatabaseAdapterFactory.get());
     }
 
     @Override

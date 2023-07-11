@@ -34,12 +34,12 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 
 @Reusable
 class SystemInfoModuleDownloader @Inject internal constructor(
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>
+    private val systemInfoRepository: SystemInfoObjectRepository
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

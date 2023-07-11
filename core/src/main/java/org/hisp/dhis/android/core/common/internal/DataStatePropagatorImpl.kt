@@ -31,8 +31,6 @@ import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -44,11 +42,13 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
@@ -59,8 +59,8 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
-    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
+    private val relationshipTypeStore: RelationshipTypeStore,
+    private val programOwner: ProgramOwnerStore
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {

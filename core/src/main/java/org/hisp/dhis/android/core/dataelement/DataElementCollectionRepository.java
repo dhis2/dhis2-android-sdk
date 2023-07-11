@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class DataElementCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
 
     @Inject
-    DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
+    DataElementCollectionRepository(final DataElementStore store,
                                     final Map<String, ChildrenAppender<DataElement>> childrenAppenders,
                                     final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

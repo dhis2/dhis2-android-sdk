@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import android.util.Log
 import dagger.Reusable
 import java.io.IOException
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -51,6 +52,7 @@ internal class APIErrorMapper @Inject constructor() {
         return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)
+            is ConnectException -> connectException(errorBuilder, throwable)
             is HttpException -> httpException(errorBuilder, throwable)
             is SSLException -> sslException(errorBuilder, throwable)
             is IOException -> ioException(errorBuilder, throwable)
@@ -75,6 +77,13 @@ internal class APIErrorMapper @Inject constructor() {
         return logAndAppendOriginal(errorBuilder, e)
             .errorCode(D2ErrorCode.UNKNOWN_HOST)
             .errorDescription("API call failed due to UnknownHostException")
+            .build()
+    }
+
+    private fun connectException(errorBuilder: D2Error.Builder, e: ConnectException): D2Error {
+        return logAndAppendOriginal(errorBuilder, e)
+            .errorCode(D2ErrorCode.SERVER_CONNECTION_ERROR)
+            .errorDescription("API call failed due to a ConnectException.")
             .build()
     }
 

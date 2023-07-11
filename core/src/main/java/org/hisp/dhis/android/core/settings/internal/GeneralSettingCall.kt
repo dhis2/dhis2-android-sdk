@@ -31,12 +31,11 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.GeneralSettings
 
 @Reusable
 internal class GeneralSettingCall @Inject constructor(
-    private val generalSettingHandler: Handler<GeneralSettings>,
+    private val generalSettingHandler: GeneralSettingHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager

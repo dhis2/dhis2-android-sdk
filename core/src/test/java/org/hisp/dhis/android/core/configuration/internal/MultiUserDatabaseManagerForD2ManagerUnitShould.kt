@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.configuration.internal
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.junit.Before
 import org.junit.Test
@@ -42,7 +41,7 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
 
     private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
     private val migration: DatabaseConfigurationMigration = mock()
-    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration> = mock()
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore = mock()
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"

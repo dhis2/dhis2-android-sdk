@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.settings;
 
 import static org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsHelperKt.generateGroups;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore;
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
 
 import java.util.List;
@@ -47,11 +47,11 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>
         implements ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
 
-    private final ObjectWithoutUidStore<AnalyticsDhisVisualization> analyticsDhisVisualizationStore;
+    private final AnalyticsDhisVisualizationStore analyticsDhisVisualizationStore;
 
     @Inject
     public AnalyticsDhisVisualizationsSettingObjectRepository(
-            ObjectWithoutUidStore<AnalyticsDhisVisualization> analyticsDhisVisualizationStore,
+            AnalyticsDhisVisualizationStore analyticsDhisVisualizationStore,
             AnalyticsSettingCall analyticsSettingCall) {
         super(analyticsSettingCall);
         this.analyticsDhisVisualizationStore = analyticsDhisVisualizationStore;

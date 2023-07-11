@@ -50,7 +50,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         internal fun setUpClass() {
             BaseMockIntegrationTestEmptyEnqueable.setUpClass()
             val userCall: Callable<User> = objects.d2DIComponent.internalModules().user.userCall
-            userStore = UserStore.create(databaseAdapter)
+            userStore = UserStoreImpl(databaseAdapter)
             dhis2MockServer.enqueueMockResponse("user/user38.json")
             userCall.call()
         }

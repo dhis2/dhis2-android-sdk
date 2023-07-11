@@ -99,9 +99,9 @@ internal class DataValuePostCall @Inject constructor(
         }
     }
 
-    private fun markObjectsAs(dataValues: Collection<DataValue?>, forcedState: State?) {
+    private fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
         for (dataValue in dataValues) {
-            dataValueStore.setState(dataValue, forcedOrOwn(dataValue!!, forcedState))
+            dataValueStore.setState(dataValue, forcedOrOwn(dataValue, forcedState))
         }
     }
 }

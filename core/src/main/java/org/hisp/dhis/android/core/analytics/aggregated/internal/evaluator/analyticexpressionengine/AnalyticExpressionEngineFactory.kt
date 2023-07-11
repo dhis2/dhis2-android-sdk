@@ -34,28 +34,28 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataEl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorContext
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 
 internal class AnalyticExpressionEngineFactory @Inject constructor(
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    private val dataElementStore: DataElementStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val programStore: ProgramStoreInterface,
+    private val programStore: ProgramStore,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
-    private val constantStore: IdentifiableObjectStore<Constant>
+    private val constantStore: ConstantStore
 ) {
 
     fun getEngine(

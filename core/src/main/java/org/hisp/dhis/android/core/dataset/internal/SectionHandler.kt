@@ -30,25 +30,25 @@ package org.hisp.dhis.android.core.dataset.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.*
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
-import org.hisp.dhis.android.core.indicator.Indicator
 
-@Reusable internal class SectionHandler @Inject constructor(
-    sectionStore: IdentifiableObjectStore<Section>,
-    private val sectionDataElementLinkHandler: OrderedLinkHandler<DataElement, SectionDataElementLink>,
-    private val greyedFieldsHandler: Handler<DataElementOperand>,
-    private val sectionGreyedFieldsLinkHandler: LinkHandler<DataElementOperand, SectionGreyedFieldsLink>,
-    private val sectionIndicatorLinkHandler: LinkHandler<Indicator, SectionIndicatorLink>,
-    private val sectionGreyedFieldsStore: LinkStore<SectionGreyedFieldsLink>
+@Reusable
+internal class SectionHandler @Inject constructor(
+    sectionStore: SectionStore,
+    private val sectionDataElementLinkHandler: SectionDataElementLinkHandler,
+    private val greyedFieldsHandler: DataElementOperandHandler,
+    private val sectionGreyedFieldsLinkHandler: SectionGreyedFieldsLinkHandler,
+    private val sectionIndicatorLinkHandler: SectionIndicatorLinkHandler,
+    private val sectionGreyedFieldsStore: SectionGreyedFieldsLinkStore
 ) : IdentifiableHandlerImpl<Section>(sectionStore) {
 
     override fun afterObjectHandled(o: Section, action: HandleAction) {

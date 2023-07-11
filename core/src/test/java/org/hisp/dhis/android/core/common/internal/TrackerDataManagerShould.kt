@@ -27,8 +27,13 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -41,6 +46,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.junit.Before
 import org.junit.Test
 
@@ -52,7 +58,7 @@ class TrackerDataManagerShould {
     private val relationshipStore: RelationshipStore = mock()
     private val relationshipChildrenAppender: RelationshipItemChildrenAppender = mock()
     private val dataStatePropagator: DataStatePropagator = mock()
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner> = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
 
     private val trackedEntity: TrackedEntityInstance = mock()
     private val enrollment: Enrollment = mock()

@@ -32,7 +32,6 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
@@ -56,7 +56,7 @@ internal class EventHandler @Inject constructor(
     relationshipHandler: RelationshipHandler,
     eventStore: EventStore,
     private val trackedEntityDataValueHandler: TrackedEntityDataValueHandler,
-    private val noteHandler: Handler<Note>,
+    private val noteHandler: NoteHandler,
     private val noteVersionManager: NoteDHISVersionManager,
     private val noteUniquenessManager: NoteUniquenessManager,
     private val relationshipOrphanCleaner: OrphanCleaner<Event, Relationship>

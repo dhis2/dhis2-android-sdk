@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Observable
-import kotlinx.coroutines.rx2.asObservable
 import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector

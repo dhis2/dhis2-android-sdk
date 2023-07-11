@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import dagger.Reusable
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
@@ -49,7 +50,6 @@ import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCall @Inject constructor(
@@ -103,7 +103,6 @@ internal class FileResourceDownloadCall @Inject constructor(
                 },
                 getUid = { v -> v.value() }
             )
-
         }
     }
 
@@ -149,7 +148,6 @@ internal class FileResourceDownloadCall @Inject constructor(
                             v.dataElement()!!,
                             FileResizerHelper.Dimension.MEDIUM.name
                         )
-
                     },
                     getUid = { v -> v.value() }
                 )
@@ -172,7 +170,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         }
     }
 
-
+    @Suppress("NestedBlockDepth")
     private suspend fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
@@ -186,8 +184,8 @@ internal class FileResourceDownloadCall @Inject constructor(
                     coroutineAPICallExecutor.wrap { fileResourceService.getFileResource(uid) }.getOrThrow()
 
                 val acceptedContentLength = (maxContentLength == null) ||
-                        (fileResource.contentLength() == null) ||
-                        (fileResource.contentLength()!! <= maxContentLength)
+                    (fileResource.contentLength() == null) ||
+                    (fileResource.contentLength()!! <= maxContentLength)
 
                 if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
@@ -207,9 +205,7 @@ internal class FileResourceDownloadCall @Inject constructor(
                 null
             }
         }
-
     }
-
 
     companion object {
         const val defaultDownloadMaxContentLength: Int = 6000000

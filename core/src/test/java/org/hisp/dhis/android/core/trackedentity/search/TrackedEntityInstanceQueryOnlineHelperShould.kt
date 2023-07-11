@@ -115,5 +115,4 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
 
         assertThat(formattedQueries).isEqualTo(expectedList)
     }
-
 }

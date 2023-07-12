@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VAnalyticsEndDate : ExpressionItem {
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val startDate = visitor.programIndicatorSQLContext.periods
+        val startDate = visitor.programIndicatorSQLContext!!.periods
             ?.mapNotNull { it.endDate() }
             ?.maxByOrNull { it.time }
 

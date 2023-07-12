@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -63,6 +63,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -123,7 +124,7 @@ public final class AndroidSecureStore implements SecureStore {
                     .setStartDate(start.getTime()).setEndDate(end.getTime())
                     .build();
         } else {
-            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT)
+            spec = new KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                     .build();
@@ -144,9 +145,8 @@ public final class AndroidSecureStore implements SecureStore {
         if (data == null) {
             return;
         }
-        KeyStore ks = null;
         try {
-            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            KeyStore ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
 
             if (ks.getCertificate(ALIAS) == null) {
@@ -167,19 +167,16 @@ public final class AndroidSecureStore implements SecureStore {
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
-            deleteKeyStoreEntry(ks, ALIAS);
             throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key, e);
         }
     }
 
     public String getData(@NonNull String key) {
-        KeyStore ks = null;
-        PrivateKey privateKey;
         String value = null;
         try {
-            ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            KeyStore ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
-            privateKey = (PrivateKey) ks.getKey(ALIAS, null);
+            PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, null);
             value = preferences.getString(key, null);
 
             return value == null ? null :
@@ -187,7 +184,6 @@ public final class AndroidSecureStore implements SecureStore {
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
-            deleteKeyStoreEntry(ks, ALIAS);
             String valueToDisplay = value == null ? "null" : value;
             String errorMessage = String.format(
                     "Couldn't get value from AndroidSecureStore for key: %s and value: %s",
@@ -213,6 +209,11 @@ public final class AndroidSecureStore implements SecureStore {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(key);
         editor.apply();
+    }
+
+    @Override
+    public Set<String> getAllKeys() {
+        return preferences.getAll().keySet();
     }
 
     private static String encrypt(PublicKey encryptionKey, byte[] data) throws NoSuchAlgorithmException,

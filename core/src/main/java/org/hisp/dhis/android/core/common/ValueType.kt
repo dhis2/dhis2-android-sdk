@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common
 
-import java.util.*
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
 
 enum class ValueType(val validator: ValueTypeValidator<*>) {
@@ -57,10 +56,13 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     URL(TextValidator),
     FILE_RESOURCE(UidValidator),
     IMAGE(UidValidator),
-    GEOJSON(TextValidator);
+    GEOJSON(TextValidator),
+    MULTI_TEXT(TextValidator);
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)
+    val isDecimal: Boolean
+        get() = DECIMAL_TYPES.contains(this)
     val isNumeric: Boolean
         get() = NUMERIC_TYPES.contains(this)
     val isBoolean: Boolean
@@ -73,22 +75,23 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
         get() = FILE_TYPES.contains(this)
     val isCoordinate: Boolean
         get() = this == COORDINATE
+    val isGeo: Boolean
+        get() = GEO_TYPES.contains(this)
+    val isJson: Boolean
+        get() = JSON_TYPES.contains(this)
 
     companion object {
         private val INTEGER_TYPES: Set<ValueType> =
-            HashSet(listOf(INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE))
-        private val NUMERIC_TYPES: Set<ValueType> =
-            HashSet(
-                listOf(
-                    INTEGER, NUMBER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
-                    UNIT_INTERVAL, PERCENTAGE
-                )
-            )
-        private val BOOLEAN_TYPES: Set<ValueType> = HashSet(listOf(BOOLEAN, TRUE_ONLY))
-        private val TEXT_TYPES: Set<ValueType> = HashSet(listOf(TEXT, LONG_TEXT, LETTER, COORDINATE, TIME))
-        private val DATE_TYPES: Set<ValueType> = HashSet(listOf(DATE, DATETIME))
-
-        // FILE_RESOURCE is not supported yet ANDROSDK-1531
-        private val FILE_TYPES: Set<ValueType> = HashSet(listOf(IMAGE, FILE_RESOURCE))
+            hashSetOf(INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE)
+        private val DECIMAL_TYPES: Set<ValueType> =
+            hashSetOf(NUMBER, UNIT_INTERVAL, PERCENTAGE)
+        private val NUMERIC_TYPES: Set<ValueType> = INTEGER_TYPES + DECIMAL_TYPES
+        private val BOOLEAN_TYPES: Set<ValueType> = hashSetOf(BOOLEAN, TRUE_ONLY)
+        private val TEXT_TYPES: Set<ValueType> =
+            hashSetOf(TEXT, LONG_TEXT, LETTER, TIME, USERNAME, EMAIL, PHONE_NUMBER, URL)
+        private val DATE_TYPES: Set<ValueType> = hashSetOf(DATE, DATETIME, AGE)
+        private val FILE_TYPES: Set<ValueType> = hashSetOf(IMAGE, FILE_RESOURCE)
+        private val GEO_TYPES: Set<ValueType> = hashSetOf(COORDINATE, GEOJSON)
+        private val JSON_TYPES: Set<ValueType> = hashSetOf(GEOJSON)
     }
 }

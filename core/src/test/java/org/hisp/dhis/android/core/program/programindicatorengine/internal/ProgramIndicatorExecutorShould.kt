@@ -300,6 +300,26 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
+    fun evaluate_max_min_functions() {
+        whenever(dataValue2_1.value()) doReturn "4"
+        whenever(dataValue2_2.value()) doReturn "8"
+        whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-05T00:00:00.000")
+        whenever(event2_2.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-10T00:00:00.000")
+
+        setExpression("d2:maxValue(${de(programStage2, dataElementUid2)})")
+        assertThat(programIndicatorExecutor.getProgramIndicatorValue(programIndicator)).isEqualTo("8")
+
+        setExpression("d2:minValue(${de(programStage2, dataElementUid2)})")
+        assertThat(programIndicatorExecutor.getProgramIndicatorValue(programIndicator)).isEqualTo("4")
+
+        setExpression("d2:daysBetween('2020-01-01', d2:maxValue(PS_EVENTDATE:$programStage2))")
+        assertThat(programIndicatorExecutor.getProgramIndicatorValue(programIndicator)).isEqualTo("9")
+
+        setExpression("d2:daysBetween('2020-01-01', d2:minValue(PS_EVENTDATE:$programStage2))")
+        assertThat(programIndicatorExecutor.getProgramIndicatorValue(programIndicator)).isEqualTo("4")
+    }
+
+    @Test
     fun evaluate_boolean_elements() {
         setExpression("${de(programStage1, dataElementUid1)} + ${att(attributeUid1)}")
         whenever(dataValue1.value()) doReturn "true"

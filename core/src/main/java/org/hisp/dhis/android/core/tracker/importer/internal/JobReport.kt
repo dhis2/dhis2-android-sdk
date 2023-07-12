@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -69,10 +69,8 @@ internal data class JobTypeReportMap(
 )
 
 internal data class JobBundleReport(
-    val status: String,
-    val typeReportMap: JobTypeReportMap,
-    val stats: JobImportCount
-) // TODO whats the difference with father
+    val typeReportMap: JobTypeReportMap
+)
 
 internal data class JobReport(
     val status: String,

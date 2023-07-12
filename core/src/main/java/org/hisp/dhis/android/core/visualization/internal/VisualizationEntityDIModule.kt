@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -65,14 +65,7 @@ internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualiza
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
         return mapOf(
-            Pair(
-                VisualizationFields.CATEGORY_DIMENSIONS,
-                VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
-            ),
-            Pair(
-                VisualizationFields.DATA_DIMENSION_ITEMS,
-                VisualizationDataDimensionItemChildrenAppender.create(databaseAdapter)
-            )
+            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter)
         )
     }
 }

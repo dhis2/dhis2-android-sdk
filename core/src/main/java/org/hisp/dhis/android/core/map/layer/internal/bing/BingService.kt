@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Url
 
 internal interface BingService {
 
     @GET
-    fun getBaseMap(
+    suspend fun getBaseMap(
         @Url url: String
-    ): Single<BingServerResponse>
+    ): BingServerResponse
 }

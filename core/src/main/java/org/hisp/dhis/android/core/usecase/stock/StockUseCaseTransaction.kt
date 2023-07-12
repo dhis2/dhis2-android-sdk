@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ sealed class StockUseCaseTransaction {
     data class Correction(
         override val sortOrder: Int,
         override val transactionType: TransactionType,
-        val stockCorrected: String
+        val stockCount: String
     ) : StockUseCaseTransaction()
 
     companion object {
@@ -65,7 +65,7 @@ sealed class StockUseCaseTransaction {
                         t.stockDistributed()!!
                     )
                 TransactionType.DISCARDED -> Discarded(t.sortOrder(), type, t.stockDiscarded()!!)
-                TransactionType.CORRECTED -> Correction(t.sortOrder(), type, t.stockCorrected()!!)
+                TransactionType.CORRECTED -> Correction(t.sortOrder(), type, t.stockCount()!!)
             }
         }
 
@@ -77,7 +77,7 @@ sealed class StockUseCaseTransaction {
 
             when (t) {
                 is Distributed -> builder.distributedTo(t.distributedTo).stockDistributed(t.stockDistributed)
-                is Correction -> builder.stockCorrected(t.stockCorrected)
+                is Correction -> builder.stockCount(t.stockCount)
                 is Discarded -> builder.stockDiscarded(t.stockDiscarded)
             }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,5 +36,5 @@ internal data class FileResourceDownloadParams(
     val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
     val elementTypes: List<FileResourceElementType> = FileResourceElementType.values().asList(),
     val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.values().asList(),
-    val maxContentLength: Int? = 6000000
+    val maxContentLength: Int? = null
 ) : BaseScope

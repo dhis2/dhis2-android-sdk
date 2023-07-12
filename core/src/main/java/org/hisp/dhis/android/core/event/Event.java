@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -140,6 +140,10 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
 
     @Nullable
     @JsonProperty()
+    public abstract String completedBy();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
 
@@ -233,6 +237,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedDate(Date completedDate);
+
+        public abstract Builder completedBy(String completedBy);
 
         public abstract Builder dueDate(Date dueDate);
 

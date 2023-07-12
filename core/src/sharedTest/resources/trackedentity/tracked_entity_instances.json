@@ -51,6 +51,12 @@
           "created": "2019-01-10T13:40:28.000",
           "attribute": "cejWyOfXge6",
           "value": "4081507"
+        },
+        {
+          "lastUpdated": "2019-01-11T13:40:28.000",
+          "created": "2019-01-11T13:40:28.000",
+          "attribute": "aejWyOfXge6",
+          "value": "befryEfXge5"
         }
       ],
       "enrollments": [
@@ -220,12 +226,6 @@
           "created": "2018-01-10T13:40:28.000",
           "attribute": "cejWyOfXge6",
           "value": "654321"
-        },
-        {
-          "lastUpdated": "2017-01-10T13:40:28.000",
-          "created": "2017-01-10T13:40:28.000",
-          "attribute": "aejWyOfXge6",
-          "value": "123456"
         }
       ],
       "enrollments": [

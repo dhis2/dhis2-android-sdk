@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -50,8 +50,8 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
 
-        val eventCall = create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, emptyList())
-        eventCall.call()
+        val eventCall = create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())
+        eventCall.blockingGet()
         assertThat(SqliteCheckerUtility.isDatabaseEmpty(d2.databaseAdapter())).isFalse()
 
         d2.userModule().logOut().blockingAwait()

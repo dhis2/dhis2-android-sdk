@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,15 +39,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
-import org.hisp.dhis.android.core.fileresource.FileResourceElementType
-import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
-import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.fileresource.*
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import retrofit2.Call
 
 @Reusable
@@ -59,6 +58,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private val handler: HandlerWithTransformer<FileResource>,
     private val fileResourceRoutine: FileResourceRoutine,
     private val apiCallExecutor: APICallExecutor,
+    private val synchronizationSettingsStore: ObjectWithoutUidStore<SynchronizationSettings>,
     private val context: Context
 ) {
 
@@ -66,12 +66,18 @@ internal class FileResourceDownloadCall @Inject constructor(
         val progressManager = D2ProgressManager(2)
         val existingFileResources = fileResourceStore.selectUids()
 
+        val paramsWithCorrectedMaxContentLength = params.copy(
+            maxContentLength = params.maxContentLength
+                ?: synchronizationSettingsStore.selectFirst()?.fileMaxLengthBytes()
+                ?: defaultDownloadMaxContentLength
+        )
+
         return rxCallExecutor.wrapObservableTransactionally(
             Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                downloadAggregatedValues(params, existingFileResources)
+                downloadAggregatedValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
 
-                downloadTrackerValues(params, existingFileResources)
+                downloadTrackerValues(paramsWithCorrectedMaxContentLength, existingFileResources)
                 emitter.onNext(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
                 fileResourceRoutine.blockingDeleteOutdatedFileResources()
                 emitter.onComplete()
@@ -110,13 +116,22 @@ internal class FileResourceDownloadCall @Inject constructor(
                     values = attributeDataValues,
                     maxContentLength = params.maxContentLength,
                     download = { v ->
-                        fileResourceService.getFileFromTrackedEntityAttribute(
-                            v.trackedEntityInstance()!!,
-                            v.trackedEntityAttribute()!!,
-                            FileResizerHelper.Dimension.MEDIUM.name
-                        )
+                        when (v.valueType) {
+                            ValueType.IMAGE ->
+                                fileResourceService.getImageFromTrackedEntityAttribute(
+                                    v.value.trackedEntityInstance()!!,
+                                    v.value.trackedEntityAttribute()!!,
+                                    FileResizerHelper.Dimension.MEDIUM.name
+                                )
+                            ValueType.FILE_RESOURCE ->
+                                fileResourceService.getFileFromTrackedEntityAttribute(
+                                    v.value.trackedEntityInstance()!!,
+                                    v.value.trackedEntityAttribute()!!
+                                )
+                            else -> null
+                        }
                     },
-                    getUid = { v -> v.value() }
+                    getUid = { v -> v.value.value() }
                 )
             }
 
@@ -142,7 +157,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private fun <V> downloadAndPersistFiles(
         values: List<V>,
         maxContentLength: Int?,
-        download: (V) -> Call<ResponseBody>,
+        download: (V) -> Call<ResponseBody>?,
         getUid: (V) -> String?
     ) {
         val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
@@ -157,16 +172,16 @@ internal class FileResourceDownloadCall @Inject constructor(
     private fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
-        download: (V) -> Call<ResponseBody>,
+        download: (V) -> Call<ResponseBody>?,
         getUid: (V) -> String?
     ): FileResource? {
         return getUid(value)?.let { uid ->
             try {
                 val fileResource = apiCallExecutor.executeObjectCall(fileResourceService.getFileResource(uid))
 
-                val acceptedContentLength = maxContentLength == null ||
-                    fileResource.contentLength() == null ||
-                    fileResource.contentLength()!! <= maxContentLength
+                val acceptedContentLength = (maxContentLength == null) ||
+                    (fileResource.contentLength() == null) ||
+                    (fileResource.contentLength()!! <= maxContentLength)
 
                 if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
                     val responseBody = apiCallExecutor.executeObjectCall(download(value))
@@ -182,5 +197,9 @@ internal class FileResourceDownloadCall @Inject constructor(
                 null
             }
         }
+    }
+
+    companion object {
+        const val defaultDownloadMaxContentLength: Int = 6000000
     }
 }

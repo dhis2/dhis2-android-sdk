@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ internal class EventPostParentCall @Inject internal constructor(
 
     fun uploadEvents(events: List<Event>): Observable<D2Progress> {
         return if (events.isEmpty()) {
-            Observable.empty<D2Progress>()
+            Observable.empty()
         } else {
             if (trackerParentCallHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadEvents(events)

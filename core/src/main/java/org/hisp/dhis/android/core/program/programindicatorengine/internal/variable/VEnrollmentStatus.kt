@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -38,11 +38,11 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEnrollmentStatus : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return visitor.programIndicatorContext.enrollment?.status()?.name
+        return visitor.programIndicatorContext!!.enrollment?.status()?.name
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+        return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
                     column = EnrollmentTableInfo.Columns.STATUS

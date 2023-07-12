@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -68,8 +68,8 @@ internal class StockUseCaseEntityDIModule {
     @Reusable
     fun childrenAppenders(linkStore: LinkStore<InternalStockUseCaseTransaction>):
         Map<String, ChildrenAppender<InternalStockUseCase>> {
-            val childrenAppender: ChildrenAppender<InternalStockUseCase> =
-                StockUseCaseTransactionChildrenAppender(linkStore)
-            return mapOf(Pair(InternalStockUseCase.TRANSACTIONS, childrenAppender))
-        }
+        val childrenAppender: ChildrenAppender<InternalStockUseCase> =
+            StockUseCaseTransactionChildrenAppender(linkStore)
+        return mapOf(Pair(InternalStockUseCase.TRANSACTIONS, childrenAppender))
+    }
 }

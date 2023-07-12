@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
-import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -234,7 +234,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             null
         } else {
             val startDate = DateUtils.addMonths(Date(), -period.months)
-            org.hisp.dhis.android.core.arch.helpers.DateUtils.DATE_FORMAT.format(startDate)
+            DateUtils.DATE_FORMAT.format(startDate)
         }
     }
 

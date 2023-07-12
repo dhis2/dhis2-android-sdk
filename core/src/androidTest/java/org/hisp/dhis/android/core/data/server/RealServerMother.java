@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,8 @@ public class RealServerMother {
     public static String url2_36 = "https://play.dhis2.org/2.36/";
     public static String url2_37 = "https://play.dhis2.org/2.37/";
     public static String url2_38 = "https://play.dhis2.org/2.38/";
+    public static String url2_39 = "https://play.dhis2.org/2.39/";
+    public static String url2_40 = "https://play.dhis2.org/2.40/";
     public static String url_dev = "https://play.dhis2.org/dev/";
     public static String android_current = "https://play.dhis2.org/android-current/";
     public static String android_previous1 = "https://play.dhis2.org/android-previous1/";

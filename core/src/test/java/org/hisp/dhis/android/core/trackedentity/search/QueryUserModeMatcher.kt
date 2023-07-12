@@ -36,7 +36,7 @@ internal class QueryUserModeMatcher(
 
     override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
         return query?.let {
-            it.assignedUserMode() == assignedUserMode
+            it.assignedUserMode == assignedUserMode
         } ?: false
     }
 }

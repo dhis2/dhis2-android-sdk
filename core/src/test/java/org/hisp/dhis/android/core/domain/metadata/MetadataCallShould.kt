@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -52,6 +53,7 @@ import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
@@ -68,6 +70,7 @@ class MetadataCallShould : BaseCallShould() {
     private val rxAPICallExecutor: RxAPICallExecutor = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
+    private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
     private val userDownloader: UserModuleDownloader = mock()
     private val categoryDownloader: CategoryModuleDownloader = mock()
     private val programDownloader: ProgramModuleDownloader = mock()
@@ -83,9 +86,10 @@ class MetadataCallShould : BaseCallShould() {
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
+    private val expressionDimensIndicatorModuleDownloader: ExpressionDimensionItemModuleDownloader = mock()
 
     // object to test
-    private var metadataCall: MetadataCall? = null
+    private lateinit var metadataCall: MetadataCall
 
     @Before
     @Throws(Exception::class)
@@ -96,6 +100,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemInfoDownloader.downloadWithProgressManager(any()))
             .thenReturn(Observable.just(BaseD2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata()).thenReturn(
             Completable.complete()
@@ -111,6 +116,7 @@ class MetadataCallShould : BaseCallShould() {
             Single.just(emptyList())
         )
         whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
@@ -129,6 +135,7 @@ class MetadataCallShould : BaseCallShould() {
             rxAPICallExecutor,
             systemInfoDownloader,
             systemSettingDownloader,
+            useCaseModuleDownloader,
             userDownloader,
             categoryDownloader,
             programDownloader,
@@ -144,12 +151,13 @@ class MetadataCallShould : BaseCallShould() {
             multiUserDatabaseManager,
             credentialsSecureStore,
             legendSetModuleDownloader,
+            expressionDimensIndicatorModuleDownloader,
         )
     }
 
     @Test
     fun succeed_when_endpoint_calls_succeed() {
-        metadataCall!!.blockingDownload()
+        metadataCall.blockingDownload()
     }
 
     @Test
@@ -165,7 +173,7 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     private fun downloadAndAssertError() {
-        val testObserver = metadataCall!!.download().test()
+        val testObserver = metadataCall.download().test()
         testObserver.assertError(D2Error::class.java)
         testObserver.dispose()
     }
@@ -214,8 +222,8 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun call_wrapObservableTransactionally() {
-        metadataCall!!.blockingDownload()
-        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
+        metadataCall.blockingDownload()
+        verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
             any(),
             eq(true)
         )
@@ -223,7 +231,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun delete_foreign_key_violations_before_calls() {
-        metadataCall!!.blockingDownload()
-        Mockito.verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+        metadataCall.blockingDownload()
+        verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
     }
 }

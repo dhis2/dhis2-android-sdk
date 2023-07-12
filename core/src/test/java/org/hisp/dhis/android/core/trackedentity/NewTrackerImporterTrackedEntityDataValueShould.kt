@@ -43,7 +43,7 @@ class NewTrackerImporterTrackedEntityDataValueShould :
 
         assertThat(dataValue.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:03.231"))
         assertThat(dataValue.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:23:29.016"))
-        assertThat(dataValue.storedBy()).isEqualTo("xE7jOejl9FI")
+        assertThat(dataValue.createdBy()?.uid()).isEqualTo("xE7jOejl9FI")
         assertThat(dataValue.value()).isEqualTo("4322")
         assertThat(dataValue.dataElement()).isEqualTo("UXz7xuGCEhU")
         assertThat(dataValue.providedElsewhere()).isFalse()

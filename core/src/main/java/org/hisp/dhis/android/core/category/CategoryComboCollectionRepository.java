@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
@@ -40,8 +42,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-
-import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
 
 @Reusable
 public final class CategoryComboCollectionRepository
@@ -61,9 +61,5 @@ public final class CategoryComboCollectionRepository
 
     public CategoryComboCollectionRepository withCategories() {
         return cf.withChild(CategoryComboFields.CATEGORIES);
-    }
-
-    public CategoryComboCollectionRepository withCategoryOptionCombos() {
-        return cf.withChild(CategoryComboFields.CATEGORY_OPTION_COMBOS);
     }
 }

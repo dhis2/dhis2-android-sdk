@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class UserCredentialShould extends BaseObjectShould implements ObjectShould {
 
@@ -49,13 +48,7 @@ public class UserCredentialShould extends BaseObjectShould implements ObjectShou
     public void map_from_json_string() throws IOException, ParseException {
         UserCredentials userCredentials = objectMapper.readValue(jsonStream, UserCredentials.class);
 
-        assertThat(userCredentials.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-25T09:21:33.884"));
-        assertThat(userCredentials.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-04-18T17:15:08.401"));
-        assertThat(userCredentials.uid()).isEqualTo("ZyjSDLHGPv4");
         assertThat(userCredentials.username()).isEqualTo("admin");
-        assertThat(userCredentials.code()).isEqualTo("admin");
 
         assertThat(userCredentials.userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
         assertThat(userCredentials.userRoles().get(1).uid()).isEqualTo("UYXOT4A7JMI");

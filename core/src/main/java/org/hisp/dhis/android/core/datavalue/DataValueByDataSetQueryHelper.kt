@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -58,10 +58,17 @@ internal object DataValueByDataSetQueryHelper {
     private const val AOC_CATEGORYCOMBO = "$AOC_ALIAS.${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO}"
 
     @JvmStatic
-    val key = buildKey(
+    val dataValueKey = buildKey(
         DataValueTableInfo.Columns.DATA_ELEMENT,
         DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
         DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO
+    )
+
+    @JvmStatic
+    val dataValueConflictKey = buildKey(
+        DataValueConflictTableInfo.Columns.DATA_ELEMENT,
+        DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
+        DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO
     )
 
     @JvmStatic

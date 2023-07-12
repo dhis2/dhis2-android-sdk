@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -47,23 +47,23 @@ internal interface TrackedEntityInstanceService {
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstance(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(OU_MODE) orgUnitMode: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance?>?,
+        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Single<Payload<TrackedEntityInstance>>
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstanceAsCall(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance?>?,
+        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
+        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Call<Payload<TrackedEntityInstance>>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
-    fun getSingleTrackedEntityInstance(
+    suspend fun getSingleTrackedEntityInstance(
         @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(PROGRAM) program: String?,
@@ -72,7 +72,7 @@ internal interface TrackedEntityInstanceService {
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Call<TrackedEntityInstance>
+    ): TrackedEntityInstance
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstances(
@@ -110,7 +110,6 @@ internal interface TrackedEntityInstanceService {
         @Query(EVENT_STATUS) eventStatus: String?,
         @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String?,
         @Query(QUERY) query: String?,
-        @Query(ATTRIBUTE) attribute: List<String?>?,
         @Query(FILTER) filter: List<String?>?,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String?,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
@@ -128,7 +127,6 @@ internal interface TrackedEntityInstanceService {
         const val OU_MODE = "ouMode"
         const val FIELDS = "fields"
         const val QUERY = "query"
-        const val ATTRIBUTE = "attribute"
         const val PAGING = "paging"
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"

@@ -141,6 +141,16 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     }
 
     @Test
+    public void by_confidential() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .byConfidential().isTrue()
+                        .blockingGet();
+
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+    }
+
+    @Test
     public void by_orgunit_scope() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes()

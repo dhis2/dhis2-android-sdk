@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,9 @@ internal object ProgramIndicatorParserUtils {
         ExpressionParser.D2_COUNT_IF_VALUE to D2CountIfValue(),
         ExpressionParser.D2_DAYS_BETWEEN to D2DaysBetween(),
         ExpressionParser.D2_HAS_VALUE to D2HasValue(),
+        ExpressionParser.D2_MAX_VALUE to D2MaxValue(),
         ExpressionParser.D2_MINUTES_BETWEEN to D2MinutesBetween(),
+        ExpressionParser.D2_MIN_VALUE to D2MinValue(),
         ExpressionParser.D2_MONTHS_BETWEEN to D2MonthsBetween(),
         ExpressionParser.D2_OIZP to D2Oizp(),
         ExpressionParser.D2_RELATIONSHIP_COUNT to D2RelationshipCount(),

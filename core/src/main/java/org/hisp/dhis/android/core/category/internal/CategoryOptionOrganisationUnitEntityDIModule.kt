@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,6 @@ internal class CategoryOptionOrganisationUnitEntityDIModule {
     @Reusable
     fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>):
         LinkHandler<CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction, CategoryOptionOrganisationUnitLink> {
-            return LinkHandlerImpl(store)
-        }
+        return LinkHandlerImpl(store)
+    }
 }

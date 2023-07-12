@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -42,10 +42,7 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.*
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -62,9 +59,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
     fun getProgramIndicatorValue(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata)
+        val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -74,11 +72,12 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
     fun getProgramIndicatorSQL(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
+        queryMods: QueryMods?,
     ): String {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
         val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()
-        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata)
+        val periods = AnalyticsEvaluatorHelper.getReportingPeriods(periodItems, metadata, queryMods)
 
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
@@ -93,9 +92,19 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
         val contextWhereClause = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods
+                )
             AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods
+                )
         }
 
         val context = ProgramIndicatorSQLContext(
@@ -107,10 +116,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         Parser.listen(programIndicator.expression(), collector)
 
         val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
-        sqlVisitor.itemIds = collector.itemIds.toSet()
+        sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
-        val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator)
+        val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"
@@ -134,13 +143,15 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext
     ): CommonExpressionVisitor {
-        return CommonExpressionVisitor.newBuilder()
-            .withItemMap(ProgramIndicatorParserUtils.PROGRAM_INDICATOR_SQL_EXPRESSION_ITEMS)
-            .withItemMethod(itemMethod)
-            .withConstantMap(constantMap())
-            .withProgramIndicatorSQLContext(context)
-            .withDataElementStore(dataElementStore)
-            .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
-            .buildForProgramSQLIndicator()
+        return CommonExpressionVisitor(
+            CommonExpressionVisitorScope.ProgramSQLIndicator(
+                itemMap = ProgramIndicatorParserUtils.PROGRAM_INDICATOR_SQL_EXPRESSION_ITEMS,
+                itemMethod = itemMethod,
+                constantMap = constantMap(),
+                programIndicatorSQLContext = context,
+                dataElementStore = dataElementStore,
+                trackedEntityAttributeStore = trackedEntityAttributeStore
+            )
+        )
     }
 }

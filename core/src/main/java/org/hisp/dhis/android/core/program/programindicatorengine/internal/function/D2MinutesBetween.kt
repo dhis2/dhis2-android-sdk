@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.joda.time.DateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 
 internal class D2MinutesBetween : ProgramBetweenDatesFunction() {
 
-    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return ((endDate.millis - startDate.millis) / MillisInAMinute).toString()
+    override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {
+        val tz = TimeZone.currentSystemDefault()
+        val duration = endDate.toInstant(tz).minus(startDate.toInstant(tz))
+        return duration.inWholeMinutes.toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {
         return "CAST((julianday($endExpression) - julianday($startExpression)) * 24 * 60 AS INTEGER)"
-    }
-
-    private companion object {
-        const val MillisInAMinute = 60 * 1000
     }
 }

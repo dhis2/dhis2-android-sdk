@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,15 +35,19 @@ enum class AggregationType(val sql: String?) {
     AVERAGE_SUM_ORG_UNIT("AVG"),
     LAST(null),
     LAST_AVERAGE_ORG_UNIT(null),
+    LAST_LAST_ORG_UNIT(null),
     LAST_IN_PERIOD(null),
     LAST_IN_PERIOD_AVERAGE_ORG_UNIT(null),
     FIRST(null),
     FIRST_AVERAGE_ORG_UNIT(null),
+    FIRST_FIRST_ORG_UNIT(null),
     COUNT("COUNT"),
     STDDEV(null),
     VARIANCE(null),
     MIN("MIN"),
     MAX("MAX"),
+    MIN_SUM_ORG_UNIT(null),
+    MAX_SUM_ORG_UNIT(null),
     NONE(null),
     CUSTOM(null),
 

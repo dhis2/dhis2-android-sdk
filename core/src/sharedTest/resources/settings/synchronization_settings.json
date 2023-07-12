@@ -1,7 +1,9 @@
 {
   "dataSync": "24h",
   "metadataSync": "12h",
-  "trackerImporterVersion": "V1",
+  "trackerImporterVersion": "V2",
+  "trackerExporterVersion": "V2",
+  "fileMaxLengthBytes": 10240000,
   "dataSetSettings": {
     "globalSettings": {
       "lastUpdated": "2020-01-31T22:42:57.763Z",
@@ -32,7 +34,7 @@
       "teiDBTrimming": 500,
       "eventsDownload": 1000,
       "updateDownload": "ANY",
-      "settingDownload": "PER_ORG_UNIT",
+      "settingDownload": "ALL_ORG_UNITS",
       "eventsDBTrimming": 1000,
       "updateDBTrimming": "ANY",
       "settingDBTrimming": "GLOBAL",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.parser.internal.expression.*
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -66,7 +66,7 @@ internal class ProgramIndicatorExecutor constructor(
             val result = CommonParser.visit(expression, visitor)
             val resultStr = AntlrParserUtils.castString(result)
             if (ParserUtils.isNumeric(resultStr)) {
-                ParserUtils.fromDouble(java.lang.Double.valueOf(resultStr))
+                ParserUtils.fromDouble(resultStr.toDouble())
             } else {
                 resultStr
             }
@@ -108,15 +108,17 @@ internal class ProgramIndicatorExecutor constructor(
     }
 
     private fun newVisitor(itemMethod: ExpressionItemMethod): CommonExpressionVisitor {
-        return CommonExpressionVisitor.newBuilder()
-            .withItemMap(ProgramIndicatorParserUtils.PROGRAM_INDICATOR_EXPRESSION_ITEMS)
-            .withItemMethod(itemMethod)
-            .withConstantMap(constantMap)
-            .withProgramIndicatorContext(programIndicatorContext)
-            .withProgramIndicatorExecutor(this)
-            .withDataElementStore(dataElementStore)
-            .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
-            .withProgramStageStore(programStageStore)
-            .buildForProgramIndicator()
+        return CommonExpressionVisitor(
+            CommonExpressionVisitorScope.ProgramIndicator(
+                itemMap = ProgramIndicatorParserUtils.PROGRAM_INDICATOR_EXPRESSION_ITEMS,
+                itemMethod = itemMethod,
+                constantMap = constantMap,
+                programIndicatorContext = programIndicatorContext,
+                programIndicatorExecutor = this,
+                dataElementStore = dataElementStore,
+                trackedEntityAttributeStore = trackedEntityAttributeStore,
+                programStageStore = programStageStore
+            )
+        )
     }
 }

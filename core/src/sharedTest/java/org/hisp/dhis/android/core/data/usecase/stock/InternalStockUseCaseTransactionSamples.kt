@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ internal object InternalStockUseCaseTransactionSamples {
             .distributedTo("distributed_to")
             .stockDistributed("stock_distributed")
             .stockDiscarded("stock_discarded")
-            .stockCorrected("stock_corrected")
+            .stockCount("stock_count")
             .build()
     }
 }

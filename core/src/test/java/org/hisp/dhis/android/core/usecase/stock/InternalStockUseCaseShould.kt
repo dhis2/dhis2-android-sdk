@@ -58,7 +58,7 @@ class InternalStockUseCaseShould {
         Truth.assertThat(transactions?.get(0)?.transactionType()).isEqualTo("DISTRIBUTED")
         Truth.assertThat(transactions?.get(0)?.distributedTo()).isEqualTo("yfsEseIcEXr")
         Truth.assertThat(transactions?.get(0)?.stockDistributed()).isEqualTo("lpGYJoVUudr")
-        Truth.assertThat(transactions?.get(1)?.stockCorrected()).isEqualTo("ej1YwWaYGmm")
+        Truth.assertThat(transactions?.get(1)?.stockCount()).isEqualTo("ej1YwWaYGmm")
         Truth.assertThat(transactions?.get(2)?.stockDiscarded()).isEqualTo("I7cmT3iXT0y")
     }
 }

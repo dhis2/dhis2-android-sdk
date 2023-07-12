@@ -54,21 +54,33 @@ class D2AddDaysShould {
 
     @Test
     fun return_new_date_with_days_added() {
-        whenever(visitor!!.castStringVisit(mockedDateExpr)).thenReturn("2011-01-01")
+        whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2011-01-01")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("6.0")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2011-01-07")
+
         whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-10-10")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("1")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-10-11")
+
         whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-10-10")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("1.3")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-10-11")
+
         whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-10-31")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("1")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-11-01")
+
         whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01")
         whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("31")
         assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2011-01-01")
+
+        whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01T00:00:00.000")
+        whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("10")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-12-11")
+
+        whenever(visitor.castStringVisit(mockedDateExpr)).thenReturn("2010-12-01T04:35:12.123")
+        whenever(visitor.castStringVisit(mockedIntExpr)).thenReturn("10")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2010-12-11")
     }
 
     @Test(expected = IllegalArgumentException::class)

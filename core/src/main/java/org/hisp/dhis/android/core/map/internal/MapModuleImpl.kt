@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerModuleDownloader
+import org.hisp.dhis.android.core.map.layer.MapLayerDownloader
 
 @Reusable
 internal class MapModuleImpl @Inject internal constructor(
     private val mapLayerCollectionRepository: MapLayerCollectionRepository,
-    private val mapLayerModuleDownloader: MapLayerModuleDownloader
+    private val mapLayerModuleDownloader: MapLayerDownloader
 ) : MapModule {
 
     override fun mapLayers(): MapLayerCollectionRepository {

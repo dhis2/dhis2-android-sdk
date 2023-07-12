@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
     private val parser = DatabaseMigrationParser(assetManager, databaseAdapter)
 
     companion object {
-        private const val SNAPSHOT_VERSION = BaseDatabaseOpenHelper.VERSION
         private val MIGRATIONS_ACCEPTING_ERRORS = setOf(98)
 
         @VisibleForTesting
@@ -47,7 +46,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
     fun upgradeFromTo(oldVersion: Int, newVersion: Int) {
         val transaction = databaseAdapter.beginNewTransaction()
         try {
-            val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion, newVersion) else 0
+            val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion) else 0
             val migrations = parser.parseMigrations(initialMigrationVersion, newVersion)
             migrations.forEach {
                 executeSQLMigration(it)
@@ -62,10 +61,10 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
     }
 
     @Throws(IOException::class)
-    private fun performSnapshotIfRequired(oldVersion: Int, newVersion: Int): Int {
-        return if (oldVersion == 0 && newVersion >= SNAPSHOT_VERSION) {
-            executeFileSQL(parser.parseSnapshot(SNAPSHOT_VERSION))
-            SNAPSHOT_VERSION
+    private fun performSnapshotIfRequired(oldVersion: Int): Int {
+        return if (oldVersion == 0) {
+            executeFileSQL(parser.parseSnapshot())
+            BaseDatabaseOpenHelper.VERSION
         } else {
             oldVersion
         }

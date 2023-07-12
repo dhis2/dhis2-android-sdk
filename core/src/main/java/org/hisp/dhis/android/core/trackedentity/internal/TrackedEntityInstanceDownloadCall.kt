@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -48,9 +51,9 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val rxCallExecutor: RxAPICallExecutor,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val queryFactory: TrackerQueryBundleFactory,
-    private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
+    private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
@@ -63,10 +66,10 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         return queryFactory.getQueries(params)
     }
 
-    override fun getItems(query: TrackerAPIQuery): List<TrackedEntityInstance> {
+    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
         return rxCallExecutor.wrapSingle(
-            endpointCallFactory.getCollectionCall(query), true
-        ).blockingGet().items()
+            trackerCallFactory.getTrackedEntityCall().getCollectionCall(query), true
+        )
     }
 
     override fun persistItems(
@@ -127,13 +130,18 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         query: TrackerAPIQuery
     ): TrackedEntityInstance? {
         return if (useEntityEndpoint) {
-            apiCallExecutor.executeObjectCallWithErrorCatcher(
-                endpointCallFactory.getEntityCall(uid, query), TrackedEntityInstanceCallErrorCatcher()
-            )
+            runBlocking {
+                coroutineCallExecutor.wrap(
+                    storeError = true,
+                    errorCatcher = TrackedEntityInstanceCallErrorCatcher()
+                ) {
+                    trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
+                }
+            }.getOrThrow()
         } else {
             val collectionQuery = query.copy(uids = listOf(uid))
             rxCallExecutor.wrapSingle(
-                endpointCallFactory.getCollectionCall(collectionQuery), true
+                trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery), true
             ).blockingGet().items().firstOrNull()
         }
     }

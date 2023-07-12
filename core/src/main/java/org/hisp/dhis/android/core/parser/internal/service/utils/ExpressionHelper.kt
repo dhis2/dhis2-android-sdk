@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.parser.internal.service.utils
 
 import java.lang.NumberFormatException
-import java.util.*
-import org.apache.commons.lang3.math.NumberUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject
@@ -41,12 +39,15 @@ internal object ExpressionHelper {
     fun getValueMap(dataValues: List<DataValue>): Map<DimensionalItemObject, Double> {
         val valueMap: MutableMap<DimensionalItemObject, Double> = HashMap()
         for (dataValue in dataValues) {
-            val deId = dataValue.dataElement()
-            val cocId = dataValue.categoryOptionCombo()
-            val dataElementItem: DimensionalItemObject = DataElementObject.create(deId)
-            addDimensionalItemValueToMap(dataElementItem, dataValue.value(), valueMap)
-            val dataElementOperandItem: DimensionalItemObject = DataElementOperandObject.create(deId, cocId)
-            addDimensionalItemValueToMap(dataElementOperandItem, dataValue.value(), valueMap)
+            dataValue.dataElement()?.let { deId ->
+                val dataElementItem: DimensionalItemObject = DataElementObject(deId)
+                addDimensionalItemValueToMap(dataElementItem, dataValue.value(), valueMap)
+
+                dataValue.categoryOptionCombo()?.let { cocId ->
+                    val dataElementOperandItem: DimensionalItemObject = DataElementOperandObject(deId, cocId)
+                    addDimensionalItemValueToMap(dataElementOperandItem, dataValue.value(), valueMap)
+                }
+            }
         }
         return valueMap
     }
@@ -57,11 +58,11 @@ internal object ExpressionHelper {
         valueMap: MutableMap<DimensionalItemObject, Double>
     ) {
         try {
-            val newValue = NumberUtils.createDouble(value)
-
-            val existingValue = valueMap[item]
-            val result = (existingValue ?: 0.0) + newValue
-            valueMap[item] = result
+            value?.toDouble()?.let { newValue ->
+                val existingValue = valueMap[item]
+                val result = (existingValue ?: 0.0) + newValue
+                valueMap[item] = result
+            }
         } catch (e: NumberFormatException) {
             // Ignore non-numeric values
         }

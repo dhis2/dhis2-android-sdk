@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -46,16 +46,17 @@ internal object AttributeValueFilterStore {
         w.bindNull(2)
         w.bind(3, o.trackedEntityInstanceFilter())
         w.bind(4, o.attribute())
-        w.bind(5, o.sw())
-        w.bind(6, o.ew())
-        w.bind(7, o.le())
-        w.bind(8, o.ge())
-        w.bind(9, o.gt())
-        w.bind(10, o.lt())
-        w.bind(11, o.eq())
-        w.bind(12, StringSetColumnAdapter.serialize(o.`in`()))
-        w.bind(13, o.like())
-        w.bind(14, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
+        w.bindNull(5)
+        w.bind(6, o.sw())
+        w.bind(7, o.ew())
+        w.bind(8, o.le())
+        w.bind(9, o.ge())
+        w.bind(10, o.gt())
+        w.bind(11, o.lt())
+        w.bind(12, o.eq())
+        w.bind(13, StringSetColumnAdapter.serialize(o.`in`()))
+        w.bind(14, o.like())
+        w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }

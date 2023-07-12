@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoor
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
@@ -57,13 +58,14 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ProgramStage.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
         implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
 
@@ -188,6 +190,11 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ValidationStrategyColumnAdapter.class)
+    public abstract ValidationStrategy validationStrategy();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -265,16 +272,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder remindCompleted(Boolean remindCompleted);
 
+        public abstract Builder validationStrategy(ValidationStrategy validationStrategy);
+
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 
         abstract ProgramStage autoBuild();
 
         // Auxiliary fields
         abstract Boolean captureCoordinates();
+
         abstract FeatureType featureType();
+
         abstract Access access();
+
         abstract ObjectStyle style();
+
         abstract Boolean enableUserAssignment();
+
         public ProgramStage build() {
             if (featureType() == null) {
                 if (captureCoordinates() != null) {

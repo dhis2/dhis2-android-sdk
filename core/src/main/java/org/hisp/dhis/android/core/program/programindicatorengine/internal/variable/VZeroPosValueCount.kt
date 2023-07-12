@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,10 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VZeroPosValueCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val expression = visitor.programIndicatorContext.programIndicator.expression()
+        val expression = visitor.programIndicatorContext!!.programIndicator.expression()
             ?: throw IllegalArgumentException("Expression is null")
 
-        return visitor.programIndicatorExecutor.getZeroPosValueCount(expression).toString()
+        return visitor.programIndicatorExecutor!!.getZeroPosValueCount(expression).toString()
     }
 
     override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
@@ -48,7 +48,7 @@ internal class VZeroPosValueCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return ProgramIndicatorSQLUtils.valueCountExpression(
             itemIds = visitor.itemIds,
-            programIndicator = visitor.programIndicatorSQLContext.programIndicator,
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
             conditionalValueExpression = " >= 0"
         )
     }

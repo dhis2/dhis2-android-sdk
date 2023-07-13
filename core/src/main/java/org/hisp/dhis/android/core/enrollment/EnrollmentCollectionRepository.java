@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 
 import java.util.Map;
@@ -65,7 +65,7 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
             final EnrollmentStore store,
             final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
             final RepositoryScope scope,
-            final Transformer<EnrollmentCreateProjection, Enrollment> transformer,
+            final EnrollmentProjectionTransformer transformer,
             final TrackerDataManager trackerDataManager) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
                 new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, trackerDataManager)));

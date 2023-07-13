@@ -25,38 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import java.util.Date
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Date;
-
-final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCreateProjection, Enrollment> {
-
-    @Override
-    public Enrollment transform(EnrollmentCreateProjection projection) {
-        String generatedUid = new UidGeneratorImpl().generate();
-        Date creationDate = new Date();
-
+@Reusable
+internal class EnrollmentProjectionTransformer : Transformer<EnrollmentCreateProjection, Enrollment> {
+    override fun transform(o: EnrollmentCreateProjection): Enrollment {
+        val generatedUid = UidGeneratorImpl().generate()
+        val creationDate = Date()
         return Enrollment.builder()
-                .uid(generatedUid)
-                .aggregatedSyncState(State.TO_POST)
-                .syncState(State.TO_POST)
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .createdAtClient(creationDate)
-                .lastUpdatedAtClient(creationDate)
-                .organisationUnit(projection.organisationUnit())
-                .program(projection.program())
-                .trackedEntityInstance(projection.trackedEntityInstance())
-                .status(EnrollmentStatus.ACTIVE)
-                .deleted(false)
-                .build();
+            .uid(generatedUid)
+            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.TO_POST)
+            .created(creationDate)
+            .lastUpdated(creationDate)
+            .createdAtClient(creationDate)
+            .lastUpdatedAtClient(creationDate)
+            .organisationUnit(o.organisationUnit())
+            .program(o.program())
+            .trackedEntityInstance(o.trackedEntityInstance())
+            .status(EnrollmentStatus.ACTIVE)
+            .deleted(false)
+            .build()
     }
 }

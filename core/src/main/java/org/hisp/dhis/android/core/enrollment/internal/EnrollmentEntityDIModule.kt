@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.event.internal.EventHandler
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
@@ -77,12 +75,6 @@ internal class EnrollmentEntityDIModule {
             noteUniquenessManager,
             relationshipOrphanCleaner
         )
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): Transformer<EnrollmentCreateProjection, Enrollment> {
-        return EnrollmentProjectionTransformer()
     }
 
     @Provides

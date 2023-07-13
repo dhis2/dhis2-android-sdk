@@ -25,47 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal
 
-package org.hisp.dhis.android.core.note.internal;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteCreateProjection;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.NoteCreateProjection
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
-final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
+internal class NoteProjectionTransformer @Inject constructor(
+    private val credentialsSecureStore: CredentialsSecureStore
+) : Transformer<NoteCreateProjection, Note> {
 
-    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
-
-    @Inject
-    NoteProjectionTransformer(CredentialsSecureStore credentialsSecureStore) {
-        this.credentialsSecureStore = credentialsSecureStore;
-    }
-
-    @Override
-    public Note transform(NoteCreateProjection projection) {
+    override fun transform(o: NoteCreateProjection): Note {
         return Note.builder()
-                .uid(new UidGeneratorImpl().generate())
-                .syncState(State.TO_POST)
-                .noteType(projection.noteType())
-                .event(projection.event())
-                .enrollment(projection.enrollment())
-                .value(projection.value())
-                .storedBy(credentialsSecureStore.get().getUsername())
-                .storedDate(BaseIdentifiableObject.dateToDateStr(new Date()))
-                .deleted(false)
-                .build();
+            .uid(UidGeneratorImpl().generate())
+            .syncState(State.TO_POST)
+            .noteType(o.noteType())
+            .event(o.event())
+            .enrollment(o.enrollment())
+            .value(o.value())
+            .storedBy(credentialsSecureStore.get().username)
+            .storedDate(BaseIdentifiableObject.dateToDateStr(Date()))
+            .deleted(false)
+            .build()
     }
 }

@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
 import org.hisp.dhis.android.core.note.internal.NoteHandler
@@ -76,12 +74,6 @@ internal class EventEntityDIModule {
             noteUniquenessManager,
             relationshipOrphanCleaner
         )
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): Transformer<EventCreateProjection, Event> {
-        return EventProjectionTransformer()
     }
 
     @Provides

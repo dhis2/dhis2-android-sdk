@@ -28,16 +28,18 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import java.util.Date
 
 @Reusable
-internal class EnrollmentProjectionTransformer : Transformer<EnrollmentCreateProjection, Enrollment> {
+internal class EnrollmentProjectionTransformer @Inject constructor() :
+    Transformer<EnrollmentCreateProjection, Enrollment> {
     override fun transform(o: EnrollmentCreateProjection): Enrollment {
         val generatedUid = UidGeneratorImpl().generate()
         val creationDate = Date()

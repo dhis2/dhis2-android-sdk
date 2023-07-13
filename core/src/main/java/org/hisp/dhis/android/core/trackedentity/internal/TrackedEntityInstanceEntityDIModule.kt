@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import retrofit2.Retrofit
 
@@ -55,12 +53,6 @@ internal class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    fun transformer(): Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
-        return TrackedEntityInstanceProjectionTransformer()
-    }
-
-    @Provides
-    @Reusable
     fun uidHelper(impl: TrackedEntityInstanceUidHelperImpl): TrackedEntityInstanceUidHelper {
         return impl
     }
@@ -73,9 +65,9 @@ internal class TrackedEntityInstanceEntityDIModule {
     ): Map<String, ChildrenAppender<TrackedEntityInstance>> {
         return mapOf(
             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES to
-                TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter),
+                    TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter),
             TrackedEntityInstanceFields.PROGRAM_OWNERS to
-                ProgramOwnerChildrenAppender(programOwnerStore)
+                    ProgramOwnerChildrenAppender(programOwnerStore)
         )
     }
 }

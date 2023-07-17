@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 
 @Module
 internal class StockUseCaseEntityDIModule {
@@ -42,12 +40,6 @@ internal class StockUseCaseEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): StockUseCaseStore {
         return StockUseCaseStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): TwoWayTransformer<InternalStockUseCase, StockUseCase> {
-        return StockUseCaseTransformer()
     }
 
     @Provides

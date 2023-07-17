@@ -25,32 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import dagger.Reusable
+import java.io.File
+import java.util.Date
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceDomain
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain;
-
-import java.io.File;
-import java.util.Date;
-
-final class FileResourceProjectionTransformer implements Transformer<File, FileResource> {
-
-    @Override
-    public FileResource transform(File file) {
-        Date creationDate = new Date();
-
+@Reusable
+internal class FileResourceProjectionTransformer @Inject constructor() : Transformer<File, FileResource> {
+    override fun transform(o: File): FileResource {
+        val creationDate = Date()
         return FileResource.builder()
-                .syncState(State.TO_POST)
-                .name(file.getName())
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .contentLength(file.length())
-                .contentType(FileResourceUtil.getContentTypeFromName(file.getName()))
-                .path(file.getAbsolutePath())
-                .domain(FileResourceDomain.DATA_VALUE)
-                .build();
+            .syncState(State.TO_POST)
+            .name(o.name)
+            .created(creationDate)
+            .lastUpdated(creationDate)
+            .contentLength(o.length())
+            .contentType(getContentTypeFromName(o.name))
+            .path(o.absolutePath)
+            .domain(FileResourceDomain.DATA_VALUE)
+            .build()
     }
 }

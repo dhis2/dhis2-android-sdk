@@ -31,7 +31,6 @@ import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
+import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
@@ -84,7 +84,7 @@ public final class EventCollectionRepository
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
                               final EventPostParentCall postCall,
-                              final Transformer<EventCreateProjection, Event> transformer,
+                              final EventProjectionTransformer transformer,
                               final TrackerDataManager trackerDataManager,
                               final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer,

@@ -25,38 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import dagger.Reusable
+import java.util.Date
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Date;
-
-final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCreateProjection, Enrollment> {
-
-    @Override
-    public Enrollment transform(EnrollmentCreateProjection projection) {
-        String generatedUid = new UidGeneratorImpl().generate();
-        Date creationDate = new Date();
-
-        return Enrollment.builder()
-                .uid(generatedUid)
-                .aggregatedSyncState(State.TO_POST)
-                .syncState(State.TO_POST)
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .createdAtClient(creationDate)
-                .lastUpdatedAtClient(creationDate)
-                .organisationUnit(projection.organisationUnit())
-                .program(projection.program())
-                .trackedEntityInstance(projection.trackedEntityInstance())
-                .status(EnrollmentStatus.ACTIVE)
-                .deleted(false)
-                .build();
+@Reusable
+internal class TrackedEntityInstanceProjectionTransformer @Inject constructor() :
+    Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
+    override fun transform(o: TrackedEntityInstanceCreateProjection): TrackedEntityInstance {
+        val generatedUid = UidGeneratorImpl().generate()
+        val creationDate = Date()
+        return TrackedEntityInstance.builder()
+            .uid(generatedUid)
+            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.TO_POST)
+            .created(creationDate)
+            .lastUpdated(creationDate)
+            .createdAtClient(creationDate)
+            .lastUpdatedAtClient(creationDate)
+            .organisationUnit(o.organisationUnit())
+            .trackedEntityType(o.trackedEntityType())
+            .deleted(false)
+            .build()
     }
 }

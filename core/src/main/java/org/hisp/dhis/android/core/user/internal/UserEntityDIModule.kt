@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserCredentials
 
 @Module
 internal class UserEntityDIModule {
@@ -50,11 +48,5 @@ internal class UserEntityDIModule {
         return mapOf(
             UserFields.USER_ROLES to userRoleChildrenAppender
         )
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): TwoWayTransformer<User, UserCredentials> {
-        return UserUserCredentialsTransformer()
     }
 }

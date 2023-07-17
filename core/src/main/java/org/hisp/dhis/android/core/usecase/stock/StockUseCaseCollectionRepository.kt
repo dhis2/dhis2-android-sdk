@@ -29,20 +29,20 @@ package org.hisp.dhis.android.core.usecase.stock
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransformer
 
 @Reusable
 class StockUseCaseCollectionRepository @Inject internal constructor(
     store: StockUseCaseStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockUseCase>>,
     scope: RepositoryScope,
-    transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
+    transformer: StockUseCaseTransformer,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
 ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
     StockUseCaseCollectionRepository>(

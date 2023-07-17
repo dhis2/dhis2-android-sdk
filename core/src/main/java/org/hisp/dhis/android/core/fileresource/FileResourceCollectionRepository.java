@@ -34,7 +34,6 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -75,7 +75,7 @@ public final class FileResourceCollectionRepository
     FileResourceCollectionRepository(final FileResourceStore store,
                                      final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
                                      final RepositoryScope scope,
-                                     final Transformer<File, FileResource> transformer,
+                                     final FileResourceProjectionTransformer transformer,
                                      final DataStatePropagator dataStatePropagator,
                                      final Context context) {
         super(store, childrenAppenders, scope, transformer,

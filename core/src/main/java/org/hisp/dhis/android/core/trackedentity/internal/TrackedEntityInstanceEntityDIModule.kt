@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import retrofit2.Retrofit
 
@@ -51,12 +49,6 @@ internal class TrackedEntityInstanceEntityDIModule {
     @Reusable
     fun service(retrofit: Retrofit): TrackedEntityInstanceService {
         return retrofit.create(TrackedEntityInstanceService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
-        return TrackedEntityInstanceProjectionTransformer()
     }
 
     @Provides

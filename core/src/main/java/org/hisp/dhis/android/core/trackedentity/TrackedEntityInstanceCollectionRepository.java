@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
 
@@ -76,7 +76,7 @@ public final class TrackedEntityInstanceCollectionRepository
             final TrackedEntityInstanceStore store,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
-            final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
+            final TrackedEntityInstanceProjectionTransformer transformer,
             final TrackerDataManager trackerDataManager,
             final TrackedEntityInstancePostParentCall postCall,
             final JobQueryCall jobQueryCall) {

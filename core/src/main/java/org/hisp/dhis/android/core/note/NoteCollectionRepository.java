@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.note;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
+import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer;
 import org.hisp.dhis.android.core.note.internal.NoteStore;
 
 import java.util.Map;
@@ -61,7 +61,7 @@ public final class NoteCollectionRepository
     NoteCollectionRepository(final NoteStore store,
                              final Map<String, ChildrenAppender<Note>> childrenAppenders,
                              final RepositoryScope scope,
-                             final Transformer<NoteCreateProjection, Note> transformer,
+                             final NoteProjectionTransformer transformer,
                              final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
                 s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));

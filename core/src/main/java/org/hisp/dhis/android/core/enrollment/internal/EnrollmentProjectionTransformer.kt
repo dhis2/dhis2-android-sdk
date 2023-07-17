@@ -25,40 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import dagger.Reusable
+import java.util.Date
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventCreateProjection;
-import org.hisp.dhis.android.core.event.EventStatus;
-
-import java.util.Date;
-
-final class EventProjectionTransformer implements Transformer<EventCreateProjection, Event> {
-
-    @Override
-    public Event transform(EventCreateProjection projection) {
-        String generatedUid = new UidGeneratorImpl().generate();
-        Date creationDate = new Date();
-
-        return Event.builder()
-                .uid(generatedUid)
-                .aggregatedSyncState(State.TO_POST)
-                .syncState(State.TO_POST)
-                .created(creationDate)
-                .lastUpdated(creationDate)
-                .createdAtClient(creationDate)
-                .lastUpdatedAtClient(creationDate)
-                .enrollment(projection.enrollment())
-                .program(projection.program())
-                .programStage(projection.programStage())
-                .organisationUnit(projection.organisationUnit())
-                .attributeOptionCombo(projection.attributeOptionCombo())
-                .status(EventStatus.ACTIVE)
-                .deleted(false)
-                .build();
+@Reusable
+internal class EnrollmentProjectionTransformer @Inject constructor() :
+    Transformer<EnrollmentCreateProjection, Enrollment> {
+    override fun transform(o: EnrollmentCreateProjection): Enrollment {
+        val generatedUid = UidGeneratorImpl().generate()
+        val creationDate = Date()
+        return Enrollment.builder()
+            .uid(generatedUid)
+            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.TO_POST)
+            .created(creationDate)
+            .lastUpdated(creationDate)
+            .createdAtClient(creationDate)
+            .lastUpdatedAtClient(creationDate)
+            .organisationUnit(o.organisationUnit())
+            .program(o.program())
+            .trackedEntityInstance(o.trackedEntityInstance())
+            .status(EnrollmentStatus.ACTIVE)
+            .deleted(false)
+            .build()
     }
 }

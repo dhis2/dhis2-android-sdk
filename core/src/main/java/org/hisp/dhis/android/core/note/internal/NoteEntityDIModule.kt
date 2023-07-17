@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteCreateProjection
 
 @Module
 internal class NoteEntityDIModule {
@@ -54,11 +52,5 @@ internal class NoteEntityDIModule {
     @Reusable
     fun childrenAppenders(): Map<String, ChildrenAppender<Note>> {
         return emptyMap()
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(impl: NoteProjectionTransformer): Transformer<NoteCreateProjection, Note> {
-        return impl
     }
 }

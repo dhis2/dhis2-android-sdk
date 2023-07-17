@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.io.File
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.fileresource.FileResource
 
@@ -49,12 +47,6 @@ internal class FileResourceEntityDIModule {
     @Reusable
     fun handler(store: FileResourceStore): FileResourceHandler {
         return FileResourceHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): Transformer<File, FileResource> {
-        return FileResourceProjectionTransformer()
     }
 
     @Provides

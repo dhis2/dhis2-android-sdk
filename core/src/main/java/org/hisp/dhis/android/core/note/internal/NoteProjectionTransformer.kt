@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.note.internal
 
 import dagger.Reusable
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -35,8 +37,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteCreateProjection
-import java.util.Date
-import javax.inject.Inject
 
 @Reusable
 internal class NoteProjectionTransformer @Inject constructor(

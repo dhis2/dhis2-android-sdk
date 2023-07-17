@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.user.internal.UserUserCredentialsTransformer
-import javax.inject.Inject
 
 @Reusable
 class UserCredentialsObjectRepository @Inject internal constructor(

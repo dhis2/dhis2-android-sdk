@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
+import java.io.File
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
-import java.io.File
-import java.util.Date
-import javax.inject.Inject
 
 @Reusable
 internal class FileResourceProjectionTransformer @Inject constructor() : Transformer<File, FileResource> {

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
-import javax.inject.Inject
 
 @Reusable
 internal class UserUserCredentialsTransformer @Inject constructor() : TwoWayTransformer<User, UserCredentials> {

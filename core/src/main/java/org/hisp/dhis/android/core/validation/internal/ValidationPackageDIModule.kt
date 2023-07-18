@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.validation.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.validation.ValidationModule
-import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.engine.internal.ValidationEngineEntityDIModule
 import retrofit2.Retrofit
 
@@ -44,12 +42,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class ValidationPackageDIModule {
-    @Provides
-    @Reusable
-    fun validationRuleCall(impl: ValidationRuleCall): UidsCall<ValidationRule> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun validationRuleUidsCall(impl: ValidationRuleUidsCallImpl): ValidationRuleUidsCall {

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.option.internal.OptionGroupCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -57,7 +57,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,
     private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter>,
     private val eventFilterCall: EventFilterCall,
-    private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList>,
+    private val programStageWorkingListCall: ProgramStageWorkingListCall,
     private val relationshipTypeCall: ListCall<RelationshipType>,
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,

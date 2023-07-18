@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val programStageCall: ProgramStageCall,
     private val programRuleCall: ProgramRuleCall,
     private val trackedEntityTypeCall: TrackedEntityTypeCall,
-    private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,
+    private val trackedEntityAttributeCall: TrackedEntityAttributeCall,
     private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter>,
     private val eventFilterCall: EventFilterCall,
     private val programStageWorkingListCall: ProgramStageWorkingListCall,

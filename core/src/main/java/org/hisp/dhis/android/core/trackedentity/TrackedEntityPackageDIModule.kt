@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEntityDIModule
@@ -79,12 +78,6 @@ internal class TrackedEntityPackageDIModule {
     @Reusable
     fun trackedEntityTypeService(retrofit: Retrofit): TrackedEntityTypeService {
         return retrofit.create(TrackedEntityTypeService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun trackedEntityAttributeCall(impl: TrackedEntityAttributeCall): UidsCall<TrackedEntityAttribute> {
-        return impl
     }
 
     @Provides

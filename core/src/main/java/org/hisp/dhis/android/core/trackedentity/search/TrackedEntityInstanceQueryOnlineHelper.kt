@@ -160,7 +160,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
             // Compatibility for the new Tracker (old Tracker will ignore this format)
             // Following characters need to be escaped escaped with a "/" for backend functionality
-            val charsToEscape = "[;,:]".toRegex()
 
             return items
                 .groupBy { it.key() }
@@ -168,7 +167,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     val clause = items.map { item ->
                         val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
 
-                        ":" + operator + ":" + getAPIValue(item).replace(charsToEscape, "/\$0")
+                        ":" + operator + ":" + getAPIValue(item)
                     }
 
                     key + clause.joinToString(separator = "")
@@ -176,11 +175,13 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
 
         private fun getAPIValue(item: RepositoryScopeFilterItem): String {
+            val charsToEscape = "[;,:]".toRegex()
+
             return if (item.operator() == FilterItemOperator.IN) {
-                val list = FilterOperatorsHelper.strToList(item.value())
+                val list = FilterOperatorsHelper.strToList(item.value()).map { it.replace(charsToEscape, "/\$0") }
                 list.joinToString(";")
             } else {
-                item.value()
+                item.value().replace(charsToEscape, "/\$0")
             }
         }
     }

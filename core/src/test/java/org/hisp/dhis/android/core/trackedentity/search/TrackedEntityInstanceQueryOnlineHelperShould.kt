@@ -97,17 +97,23 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         )
 
         val expectedList = listOf(
-            "filterItem1:in:nom/,app/;nom/:app/;nom/;app",
-            "filterItem2:like:nom/,app%%%<>%%%nom/:app%%%<>%%%nom/;app"
+            "filterItemIN:in:nom/,app;nom/:app;nom/;app",
+            "filterItemLIKE1:like:nom/,app",
+            "filterItemLIKE2:like:nom/:app",
+            "filterItemLIKE3:like:nom/;app",
         )
 
         val scope = queryBuilder
             .filter(
                 listOf(
                     RepositoryScopeFilterItem.builder()
-                        .key("filterItem1").operator(FilterItemOperator.IN).value(listToStr(list)).build(),
+                        .key("filterItemIN").operator(FilterItemOperator.IN).value(listToStr(list)).build(),
                     RepositoryScopeFilterItem.builder()
-                        .key("filterItem2").operator(FilterItemOperator.LIKE).value(listToStr(list)).build()
+                        .key("filterItemLIKE1").operator(FilterItemOperator.LIKE).value(list[0]).build(),
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemLIKE2").operator(FilterItemOperator.LIKE).value(list[1]).build(),
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemLIKE3").operator(FilterItemOperator.LIKE).value(list[2]).build()
                 )
             ).build()
 

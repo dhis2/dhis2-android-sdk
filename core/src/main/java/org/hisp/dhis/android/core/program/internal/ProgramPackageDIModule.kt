@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramModule
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -62,18 +60,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class ProgramPackageDIModule {
-    @Provides
-    @Reusable
-    fun programCall(impl: ProgramCall): UidsCall<Program> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun programIndicatorCall(impl: ProgramIndicatorCall): UidsCall<ProgramIndicator> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun programRuleCall(impl: ProgramRuleCall): UidsCall<ProgramRule> {

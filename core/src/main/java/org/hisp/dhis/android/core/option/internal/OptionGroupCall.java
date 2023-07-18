@@ -41,7 +41,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-final class OptionGroupCall implements UidsCall<OptionGroup> {
+public final class OptionGroupCall implements UidsCall<OptionGroup> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 

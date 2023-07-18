@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.internal.OptionCall
+import org.hisp.dhis.android.core.option.internal.OptionGroupCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
@@ -63,8 +63,8 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList>,
     private val relationshipTypeCall: ListCall<RelationshipType>,
     private val optionSetCall: OptionSetCall,
-    private val optionCall: UidsCall<Option>,
-    private val optionGroupCall: UidsCall<OptionGroup>,
+    private val optionCall: OptionCall,
+    private val optionGroupCall: OptionGroupCall,
     private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore
 ) : UntypedModuleDownloader {
 

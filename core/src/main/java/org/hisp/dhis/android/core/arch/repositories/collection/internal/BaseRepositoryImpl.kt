@@ -25,11 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-public interface ReadWriteWithUploadWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface, C>
-        extends ReadWriteWithUidCollectionRepository<M, C>, CollectionRepositoryUpload {
-}
+open class BaseRepositoryImpl<R : BaseRepository>(
+    @JvmField protected val scope: RepositoryScope,
+    @JvmField protected val cf: FilterConnectorFactory<R>
+) : BaseRepository

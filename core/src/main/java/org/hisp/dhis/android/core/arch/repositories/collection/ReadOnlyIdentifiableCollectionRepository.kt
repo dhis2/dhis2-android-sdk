@@ -25,26 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IdentifiableFilters
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.IdentifiableObject
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-
-import io.reactivex.Completable;
-
-public interface ReadOnlyWithDownloadObjectRepository<M> extends ReadOnlyObjectRepository<M> {
-
-    /**
-     * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable
-     * is completed.
-     * @return a {@code Completable} that completes when the download and processing is finished
-     */
-    Completable download();
-
-    /**
-     * Downloads the resource in scope in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #get()}. The method will finish
-     * with a void as soon as the whole download and processing is finished.
-     */
-    void blockingDownload();
-}
+interface ReadOnlyIdentifiableCollectionRepository<M, R : ReadOnlyCollectionRepository<*>> :
+    ReadOnlyWithUidCollectionRepository<M>, IdentifiableFilters<R> where M : CoreObject, M : IdentifiableObject

@@ -25,12 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public interface BaseRepositoryFactory<R extends BaseRepository> {
-    R updated(RepositoryScope updatedScope);
-}
+interface ReadOnlyWithUploadCollectionRepository<M : CoreObject> : ReadOnlyCollectionRepository<M>,
+    CollectionRepositoryUpload

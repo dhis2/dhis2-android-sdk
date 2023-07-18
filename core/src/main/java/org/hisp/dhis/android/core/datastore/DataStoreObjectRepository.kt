@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.State
 @Reusable
 class DataStoreObjectRepository @Inject internal constructor(
     store: ObjectWithoutUidStore<DataStoreEntry>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
+    childrenAppenders: Map<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope,
     private val namespace: String,
     private val key: String

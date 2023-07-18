@@ -35,31 +35,25 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
-import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSourceWithTransformer
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
-internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
-<M : CoreObject, T : Any, R : ReadOnlyCollectionRepository<T>> internal constructor(
+open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    @JvmField internal val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>,
-    open val transformer: TwoWayTransformer<M, T>
-) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
-
-    fun blockingGetWithoutChildren(): List<M> {
+    cf: FilterConnectorFactory<R>
+) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
+    protected fun blockingGetWithoutChildren(): List<M> {
         return store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(
+            whereClause, OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
                 scope.pagingKey()
             )
@@ -71,8 +65,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
      *
      * @return Object repository
      */
-    override fun one(): ReadOnlyObjectRepository<T> {
-        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, scope, transformer)
+    override fun one(): ReadOnlyOneObjectRepositoryFinalImpl<M> {
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, scope)
     }
 
     /**
@@ -81,11 +75,12 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
      *
      * @return List of objects
      */
-    override fun blockingGet(): List<T> {
+    override fun blockingGet(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             blockingGetWithoutChildren(),
-            childrenAppenders, scope.children()
-        ).map { transformer.transform(it) }
+            childrenAppenders,
+            scope.children()
+        )
     }
 
     /**
@@ -93,7 +88,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
      *
      * @return A `Single` object with the list of objects.
      */
-    override fun get(): Single<List<T>> {
+    override fun get(): Single<List<M>> {
         return Single.fromCallable { blockingGet() }
     }
 
@@ -103,17 +98,17 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
      */
-    override fun getPaged(pageSize: Int): LiveData<PagedList<T>> {
-        val factory: DataSource.Factory<M, T> = object : DataSource.Factory<M, T>() {
-            override fun create(): DataSource<M, T> {
+    override fun getPaged(pageSize: Int): LiveData<PagedList<M>> {
+        val factory: DataSource.Factory<M, M> = object : DataSource.Factory<M, M>() {
+            override fun create(): DataSource<M, M> {
                 return dataSource
             }
         }
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
-    val dataSource: DataSource<M, T>
-        get() = RepositoryDataSourceWithTransformer(store, scope, childrenAppenders, transformer)
+    val dataSource: DataSource<M, M>
+        get() = RepositoryDataSource(store, scope, childrenAppenders)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.
@@ -153,6 +148,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl
         return !one().blockingExists()
     }
 
-    val whereClause: String
+    protected val whereClause: String
         get() = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
 }

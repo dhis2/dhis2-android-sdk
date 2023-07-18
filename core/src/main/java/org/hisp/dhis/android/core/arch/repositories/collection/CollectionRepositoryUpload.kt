@@ -25,13 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.NameableFilters;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.NameableObject;
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
 
-public interface ReadOnlyNameableCollectionRepository
-        <M extends CoreObject & NameableObject, R extends ReadOnlyCollectionRepository<?>>
-        extends ReadOnlyIdentifiableCollectionRepository<M, R>, NameableFilters<R> {
+interface CollectionRepositoryUpload {
+    /**
+     * Uploads the resources in scope in an asynchronous way. An `Observable<D2Progress>` is returned, which
+     * will emit progress until the whole upload is finished and the `Observable` is completed.
+     * @return the `Observable<D2Progress>` emitting the progress
+     */
+    fun upload(): Observable<D2Progress>
+
+    /**
+     * Uploads the resources in scope in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.upload].
+     * The method will finish as soon as the whole upload an processing is finished.
+     */
+    fun blockingUpload()
 }

@@ -25,26 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-
-import io.reactivex.Observable;
-
-public interface CollectionRepositoryUpload {
+interface ReadOnlyWithUidCollectionRepository<M : ObjectWithUidInterface> : ReadOnlyCollectionRepository<M> {
+    /**
+     * Returns a new [ReadOnlyObjectRepository] whose scope is the one of the current repository plus the
+     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
+     * @param uid to compare
+     * @return the [ReadOnlyObjectRepository]
+     */
+    fun uid(uid: String?): ReadOnlyObjectRepository<M>
 
     /**
-     * Uploads the resources in scope in an asynchronous way. An {@code Observable<D2Progress>} is returned, which
-     * will emit progress until the whole upload is finished and the {@code Observable} is completed.
-     * @return the {@code Observable<D2Progress>} emitting the progress
+     * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
+     *
+     * @return A `Single` object with the list of uids.
      */
-    Observable<D2Progress> upload();
+    fun getUids(): Single<List<String>>
 
     /**
-     * Uploads the resources in scope in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #upload()}.
-     * The method will finish as soon as the whole upload an processing is finished.
+     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
+     * not be executed in the main thread. Consider the asynchronous version [.getUids].
+     *
+     * @return List of uids
      */
-    void blockingUpload();
+    fun blockingGetUids(): List<String>
 }

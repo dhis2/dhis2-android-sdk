@@ -25,11 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-package org.hisp.dhis.android.core.arch.repositories.collection;
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-import org.hisp.dhis.android.core.common.CoreObject;
+interface ReadOnlyWithDownloadObjectRepository<M> : ReadOnlyObjectRepository<M> {
+    /**
+     * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable
+     * is completed.
+     * @return a `Completable` that completes when the download and processing is finished
+     */
+    fun download(): Completable
 
-public interface ReadOnlyWithUploadCollectionRepository<M extends CoreObject> extends ReadOnlyCollectionRepository<M>,
-        CollectionRepositoryUpload {
+    /**
+     * Downloads the resource in scope in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.get]. The method will finish
+     * with a void as soon as the whole download and processing is finished.
+     */
+    fun blockingDownload()
 }

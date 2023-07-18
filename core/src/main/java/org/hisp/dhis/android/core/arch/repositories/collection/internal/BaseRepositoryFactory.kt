@@ -25,21 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-public class BaseRepositoryImpl<R extends BaseRepository>
-        implements BaseRepository {
-
-    protected final RepositoryScope scope;
-    protected final FilterConnectorFactory<R> cf;
-
-    public BaseRepositoryImpl(RepositoryScope scope,
-                              FilterConnectorFactory<R> cf) {
-        this.scope = scope;
-        this.cf = cf;
-    }
+internal fun interface BaseRepositoryFactory<R : BaseRepository> {
+    fun updated(updatedScope: RepositoryScope): R
 }

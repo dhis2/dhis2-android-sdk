@@ -25,8 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection
 
-public interface BaseRepository {
+import io.reactivex.Single
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.maintenance.D2Error
 
+interface ReadWriteWithUidCollectionRepository<M, C> :
+    ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
+    /**
+     * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
+     * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
+     * database. It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
+     * upload.
+     * @param c the CreateProjection of the object to add
+     * @return the Single with the UID
+     */
+    fun add(c: C): Single<String>
+
+    /**
+     * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
+     * It blocks the current thread and returns the generated UID.
+     * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
+     * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
+     * asynchronous version [.add].
+     * @param c the CreateProjection of the object to add
+     * @return the UID
+     */
+    @Throws(D2Error::class)
+    fun blockingAdd(c: C): String
 }

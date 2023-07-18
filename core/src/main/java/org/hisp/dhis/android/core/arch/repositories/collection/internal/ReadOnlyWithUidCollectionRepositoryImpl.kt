@@ -25,38 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import java.util.List;
-
-import io.reactivex.Single;
-
-public interface ReadOnlyWithUidCollectionRepository<M extends ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
-
+open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
+    store: IdentifiableObjectStore<M>,
+    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope,
+    cf: FilterConnectorFactory<R>
+) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
+    store, childrenAppenders, scope, cf
+) where M : CoreObject, M : ObjectWithUidInterface {
     /**
-     * Returns a new {@link ReadOnlyObjectRepository} whose scope is the one of the current repository plus the
+     * Returns a new [ReadOnlyObjectRepository] whose scope is the one of the current repository plus the
      * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
      * @param uid to compare
-     * @return the {@link ReadOnlyObjectRepository}
+     * @return the ReadOnlyObjectRepository
      */
-    ReadOnlyObjectRepository<M> uid(String uid);
-
-    /**
-     * Get the list of uids of objects in scope in an asynchronous way, returning a {@code Single<List<String>>}.
-     *
-     * @return A {@code Single} object with the list of uids.
-     */
-    Single<List<String>> getUids();
-
-    /**
-     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version {@link #getUids()}.
-     *
-     * @return List of uids
-     */
-    List<String> blockingGetUids();
+    override fun uid(uid: String?): ReadOnlyOneObjectRepositoryFinalImpl<M> {
+        val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
+    }
 }

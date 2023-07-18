@@ -30,28 +30,22 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
-import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
-<M, T, R : ReadOnlyCollectionRepository<T>> internal constructor(
-    private val store: IdentifiableObjectStore<M>,
+abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
+    @JvmField internal val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>,
-    override val transformer: TwoWayTransformer<M, T>
-) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
-    ReadOnlyWithUidCollectionRepository<T>
-        where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
+    cf: FilterConnectorFactory<R>
+) : ReadOnlyCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
+    ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
+
     /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
      *
@@ -71,19 +65,9 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
-                scope.orderBy(), scope.pagingKey()
+                scope.orderBy(),
+                scope.pagingKey()
             )
         )
-    }
-
-    /**
-     * Returns a new [ReadOnlyObjectRepository] whose scope is the one of the current repository plus the
-     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
-     * @param uid to compare
-     * @return the ReadOnlyObjectRepository
-     */
-    override fun uid(uid: String?): ReadOnlyObjectRepository<T> {
-        val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, updatedScope, transformer)
     }
 }

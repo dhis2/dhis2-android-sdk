@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.option.internal.OptionGroupCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
-import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -52,7 +51,7 @@ import javax.inject.Inject
 @Suppress("LongParameterList")
 internal class ProgramModuleDownloader @Inject constructor(
     private val programCall: ProgramCall,
-    private val programStageCall: UidsCall<ProgramStage>,
+    private val programStageCall: ProgramStageCall,
     private val programRuleCall: ProgramRuleCall,
     private val trackedEntityTypeCall: UidsCall<TrackedEntityType>,
     private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,

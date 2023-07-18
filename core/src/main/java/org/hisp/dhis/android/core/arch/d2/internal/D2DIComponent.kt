@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.d2.internal
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Component
-import javax.inject.Singleton
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
@@ -70,8 +69,8 @@ import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModul
 import org.hisp.dhis.android.core.map.internal.MapPackageDIModule
 import org.hisp.dhis.android.core.note.internal.NotePackageDIModule
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
@@ -98,6 +97,7 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationPackageDIM
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Singleton
 @Component(
@@ -175,7 +175,7 @@ internal interface D2DIComponent {
     fun programCall(): UidsCall<Program>
 
     @VisibleForTesting
-    fun optionSetCall(): UidsCall<OptionSet>
+    fun optionSetCall(): OptionSetCall
 
     @VisibleForTesting
     fun optionCall(): UidsCall<Option>

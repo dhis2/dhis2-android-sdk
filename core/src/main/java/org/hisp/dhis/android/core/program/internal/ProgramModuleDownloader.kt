@@ -30,15 +30,14 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.internal.EventFilterCall
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.Program
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -59,10 +59,10 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val trackedEntityTypeCall: UidsCall<TrackedEntityType>,
     private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,
     private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter>,
-    private val eventFilterCall: UidsCall<EventFilter>,
+    private val eventFilterCall: EventFilterCall,
     private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList>,
     private val relationshipTypeCall: ListCall<RelationshipType>,
-    private val optionSetCall: UidsCall<OptionSet>,
+    private val optionSetCall: OptionSetCall,
     private val optionCall: UidsCall<Option>,
     private val optionGroupCall: UidsCall<OptionGroup>,
     private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore

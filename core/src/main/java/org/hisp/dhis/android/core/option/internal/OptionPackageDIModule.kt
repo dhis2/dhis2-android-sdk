@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionModule
-import org.hisp.dhis.android.core.option.OptionSet
 import retrofit2.Retrofit
 
 @Module(
@@ -46,12 +45,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class OptionPackageDIModule {
-    @Provides
-    @Reusable
-    fun optionSetCall(impl: OptionSetCall): UidsCall<OptionSet> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun optionSetService(retrofit: Retrofit): OptionSetService {

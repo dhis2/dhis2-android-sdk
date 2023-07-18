@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
@@ -38,16 +37,17 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCall
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetModuleDownloader @Inject internal constructor(
     private val dataSetCallFactory: UidsCallFactory<DataSet>,
     private val dataElementCallFactory: UidsCallFactory<DataElement>,
-    private val optionSetCall: UidsCall<OptionSet>,
+    private val optionSetCall: OptionSetCall,
     private val optionCall: UidsCall<Option>,
     private val validationRuleCall: UidsCall<ValidationRule>,
     private val validationRuleUidsCall: ValidationRuleUidsCall,

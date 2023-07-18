@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector
@@ -64,7 +65,7 @@ class TrackedEntityInstanceDownloader @Inject internal constructor(
      */
     fun download(): Observable<TrackerD2Progress> {
         val params = ProgramDataDownloadParams.fromRepositoryScope(scope)
-        return downloadCall.download(params)
+        return downloadCall.download(params).asObservable()
     }
 
     fun blockingDownload() {

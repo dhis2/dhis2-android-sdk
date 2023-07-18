@@ -34,17 +34,11 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.asFlowable
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -68,33 +62,27 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun download(params: ProgramDataDownloadParams): Observable<TrackerD2Progress> = flow {
+    fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = flow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {
             progressManager.setTotalCalls(1)
             emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
         } else {
+            val relatives = RelationshipItemRelatives()
             systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
                 .asFlow()
                 .flatMapLatest {
-                    downloadBundle(params, progressManager)
+                    coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+                        merge(
+                            downloadInternal(params, progressManager, relatives),
+                            downloadRelationships(progressManager, relatives),
+                            flow { emit(progressManager.complete()) }
+                        )
+                    }
+                }.collect { progress ->
+                    emit(progress)
                 }
         }
-    }.asObservable()
-
-    private fun downloadBundle(
-        params: ProgramDataDownloadParams,
-        progressManager: TrackerD2ProgressManager
-    ): Flow<TrackerD2ProgressManager> = flow {
-        val relatives = RelationshipItemRelatives()
-
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
-            merge(
-                downloadInternal(params, progressManager, relatives),
-                downloadRelationships(progressManager, relatives),
-                flowOf(progressManager.complete())
-            )
-        }.asFlowable()
     }
 
     private fun downloadInternal(
@@ -114,7 +102,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 val result = queryByUids(bundle, params.overwrite(), relatives)
 
                 result.d2Error?.let {
-                    // TODO (Not sure how to return this)
+                    throw it
                 }
             } else {
                 val orgunitPrograms = bundle.orgUnits()
@@ -127,15 +115,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits().toMutableList())
 
                 var iterationCount = 0
-                var successfulSync: Boolean
+                var successfulSync = true
 
                 do {
                     val result = iterateBundle(bundle, params, bundleResult, relatives, progressManager)
-
-                    successfulSync = result.fold(true) { accumulative, value ->
-                        accumulative && value.successfulSync
-                    }
-
+                    successfulSync = successfulSync && result.successfulSync
                     iterationCount++
                 } while (iterationNotFinished(bundle, params, bundleResult, iterationCount))
 
@@ -169,13 +153,13 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
      */
 
     @Suppress("LongParameterList")
-    private fun iterateBundle(
+    private suspend fun iterateBundle(
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
         relatives: RelationshipItemRelatives,
         progressManager: TrackerD2ProgressManager
-    ): Flow<IterationResult> = callbackFlow {
+    ): IterationResult {
         val iterationResult = IterationResult()
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
 
@@ -200,8 +184,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
         }
 
-        trySend(iterationResult)
-        awaitClose()
+        return iterationResult
     }
 
     @Suppress("LongParameterList", "NestedBlockDepth")
@@ -352,14 +335,14 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private fun downloadRelationships(
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives
-    ): Flow<TrackerD2Progress> = flow {
-        relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
+    ): Flow<TrackerD2Progress> {
+        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
             Observable.fromCallable {
                 progressManager.increaseProgress(
                     TrackedEntityInstance::class.java, false
                 )
             }
-        )
+        ).asFlow()
     }
 
     @Suppress("TooGenericExceptionCaught")

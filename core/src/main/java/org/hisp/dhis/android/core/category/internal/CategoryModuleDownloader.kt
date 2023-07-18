@@ -33,14 +33,13 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOption
 import javax.inject.Inject
 
 @Reusable
 class CategoryModuleDownloader @Inject internal constructor(
     private val categoryCall: CategoryCall,
     private val categoryComboCall: UidsCall<CategoryCombo>,
-    private val categoryOptionCall: UidsCall<CategoryOption>,
+    private val categoryOptionCall: CategoryOptionCall,
     private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,

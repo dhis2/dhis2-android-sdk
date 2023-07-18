@@ -33,7 +33,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -43,7 +42,7 @@ import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
-import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
@@ -70,7 +69,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     private val trackedEntityInstanceFilterCall: TrackedEntityInstanceFilterCall = mock()
     private val eventFilterCall: EventFilterCall = mock()
     private val programStageWorkingListCall: ProgramStageWorkingListCall = mock()
-    private val relationshipTypeCall: ListCall<RelationshipType> = mock()
+    private val relationshipTypeCall: RelationshipTypeCall = mock()
     private val optionSetCall: OptionSetCall = mock()
     private val optionCall: OptionCall = mock()
     private val optionGroupCall: OptionGroupCall = mock()

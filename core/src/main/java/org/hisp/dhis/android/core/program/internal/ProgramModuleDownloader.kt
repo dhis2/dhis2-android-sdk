@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
-import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
@@ -57,7 +56,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val trackedEntityInstanceFilterCall: TrackedEntityInstanceFilterCall,
     private val eventFilterCall: EventFilterCall,
     private val programStageWorkingListCall: ProgramStageWorkingListCall,
-    private val relationshipTypeCall: ListCall<RelationshipType>,
+    private val relationshipTypeCall: RelationshipTypeCall,
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
     private val optionGroupCall: OptionGroupCall,

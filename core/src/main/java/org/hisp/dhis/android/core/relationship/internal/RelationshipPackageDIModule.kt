@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.relationship.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.relationship.RelationshipModule
-import org.hisp.dhis.android.core.relationship.RelationshipType
 import retrofit2.Retrofit
 
 @Module(
@@ -44,12 +42,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class RelationshipPackageDIModule {
-    @Provides
-    @Reusable
-    fun relationshipCall(impl: RelationshipTypeCall): ListCall<RelationshipType> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun relationshipTypeService(retrofit: Retrofit): RelationshipTypeService {

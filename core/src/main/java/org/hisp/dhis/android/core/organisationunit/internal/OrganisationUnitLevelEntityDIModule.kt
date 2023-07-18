@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -54,12 +53,6 @@ internal class OrganisationUnitLevelEntityDIModule {
     @Reusable
     fun organisationUnitLevelService(retrofit: Retrofit): OrganisationUnitLevelService {
         return retrofit.create(OrganisationUnitLevelService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun organisationUnitLevelCallFactory(impl: OrganisationUnitLevelEndpointCall): ListCall<OrganisationUnitLevel> {
-        return impl
     }
 
     @Provides

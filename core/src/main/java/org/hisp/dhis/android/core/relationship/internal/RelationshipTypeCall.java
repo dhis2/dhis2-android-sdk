@@ -42,7 +42,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-final class RelationshipTypeCall implements ListCall<RelationshipType> {
+public final class RelationshipTypeCall implements ListCall<RelationshipType> {
 
     private final Resource.Type resourceType = Resource.Type.RELATIONSHIP_TYPE;
 

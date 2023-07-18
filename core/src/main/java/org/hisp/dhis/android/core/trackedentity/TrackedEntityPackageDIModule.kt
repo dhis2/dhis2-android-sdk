@@ -31,7 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule
@@ -43,7 +42,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterEntityDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncEntityDIModule
@@ -91,12 +89,6 @@ internal class TrackedEntityPackageDIModule {
     fun dataValueCallFactory(
         impl: TrackedEntityAttributeReservedValueEndpointCallFactory
     ): QueryCallFactory<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun trackedEntityInstanceFilterCall(impl: TrackedEntityInstanceFilterCall): UidsCall<TrackedEntityInstanceFilter> {
         return impl
     }
 

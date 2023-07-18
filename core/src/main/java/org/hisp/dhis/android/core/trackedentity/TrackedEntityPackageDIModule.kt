@@ -50,7 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipEntityDIModule
@@ -76,12 +75,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class TrackedEntityPackageDIModule {
-    @Provides
-    @Reusable
-    fun trackedEntityTypeCall(impl: TrackedEntityTypeCall): UidsCall<TrackedEntityType> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun trackedEntityTypeService(retrofit: Retrofit): TrackedEntityTypeService {

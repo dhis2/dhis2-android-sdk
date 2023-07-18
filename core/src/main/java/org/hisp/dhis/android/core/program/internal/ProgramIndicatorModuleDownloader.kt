@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
 @Reusable
 internal class ProgramIndicatorModuleDownloader @Inject constructor(

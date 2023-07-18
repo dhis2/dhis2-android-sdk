@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -53,7 +54,6 @@ import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")

@@ -31,6 +31,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
+import javax.net.ssl.HttpsURLConnection
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
@@ -54,7 +55,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
 import retrofit2.Response
-import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 class ProgramModuleDownloaderShould : BaseCallShould() {

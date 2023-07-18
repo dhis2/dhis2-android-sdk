@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.d2.internal
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Component
+import javax.inject.Singleton
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
@@ -96,7 +97,6 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationPackageDIM
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import retrofit2.Retrofit
-import javax.inject.Singleton
 
 @Singleton
 @Component(

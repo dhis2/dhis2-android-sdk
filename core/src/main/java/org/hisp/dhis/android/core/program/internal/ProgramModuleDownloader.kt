@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")

@@ -36,5 +36,4 @@ import dagger.Module
         ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
     ]
 )
-internal class ProgramStageWorkingListPackageDIModule {
-}
+internal class ProgramStageWorkingListPackageDIModule

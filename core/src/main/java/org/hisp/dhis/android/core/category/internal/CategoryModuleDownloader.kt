@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
 @Reusable
 class CategoryModuleDownloader @Inject internal constructor(

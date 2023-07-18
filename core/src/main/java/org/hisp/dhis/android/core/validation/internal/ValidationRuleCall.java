@@ -42,7 +42,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-final class ValidationRuleCall implements UidsCall<ValidationRule> {
+public final class ValidationRuleCall implements UidsCall<ValidationRule> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 

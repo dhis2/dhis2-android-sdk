@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
-import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCall
 import javax.inject.Inject
 
@@ -49,7 +48,7 @@ internal class DataSetModuleDownloader @Inject internal constructor(
     private val dataElementCallFactory: UidsCallFactory<DataElement>,
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
-    private val validationRuleCall: UidsCall<ValidationRule>,
+    private val validationRuleCall: ValidationRuleCall,
     private val validationRuleUidsCall: ValidationRuleUidsCall,
     private val periodHandler: PeriodHandler,
     private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore

@@ -25,24 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.`object`
 
-package org.hisp.dhis.android.core.arch.repositories.object;
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import io.reactivex.Completable;
-
-
-public interface ReadWriteObjectRepository<M extends CoreObject> extends ReadOnlyObjectRepository<M> {
-
+interface ReadWriteObjectRepository<M : CoreObject> : ReadOnlyObjectRepository<M> {
     /**
      * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
-     * is performed. It returns a {@code Completable} that completes as soon as the object is deleted in the database.
-     * The {@code Completable} fails if the object doesn't exist.
-     * @return the {@code Completable} which notifies the completion
+     * is performed. It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * The `Completable` fails if the object doesn't exist.
+     * @return the `Completable` which notifies the completion
      */
-    Completable delete();
+    fun delete(): Completable
 
     /**
      * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
@@ -50,20 +46,21 @@ public interface ReadWriteObjectRepository<M extends CoreObject> extends ReadOnl
      * It throws an exception if the object doesn't exist.
      * @throws D2Error if any errors occur, including when the object doesn't exist.
      */
-    void blockingDelete() throws D2Error;
+    @Throws(D2Error::class)
+    fun blockingDelete()
 
     /**
      * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
-     * is performed. Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
-     * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
-     * @return the {@code Completable} which notifies the completion
+     * is performed. Unlike [.delete], it doesn't throw an exception if the object doesn't exist.
+     * It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * @return the `Completable` which notifies the completion
      */
-    Completable deleteIfExist();
+    fun deleteIfExist(): Completable
 
     /**
      * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
-     * is performed. Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
+     * is performed. Unlike [.blockingDelete], it doesn't throw an exception if the object doesn't exist.
      * It blocks the thread and finishes as soon as the object is deleted in the database.
      */
-    void blockingDeleteIfExist();
+    fun blockingDeleteIfExist()
 }

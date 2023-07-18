@@ -50,7 +50,8 @@ internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadO
     cf: FilterConnectorFactory<R>
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
     store, childrenAppenders, scope, cf
-), ReadWriteWithUidCollectionRepository<M, P> where M : CoreObject, M : ObjectWithUidInterface {
+),
+    ReadWriteWithUidCollectionRepository<M, P> where M : CoreObject, M : ObjectWithUidInterface {
     /**
      * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
      * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
@@ -69,16 +70,17 @@ internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadO
      * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
      * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
      * asynchronous version [.add].
-     * @param projection the CreateProjection of the object to add
+     * @param c the CreateProjection of the object to add
      * @return the UID
      */
     @Throws(D2Error::class)
-    override fun blockingAdd(projection: P): String {
-        val `object` = transformer.transform(projection)
+    @Suppress("TooGenericExceptionCaught")
+    override fun blockingAdd(c: P): String {
+        val obj = transformer.transform(c)
         return try {
-            store.insert(`object`)
-            propagateState(`object`, HandleAction.Insert)
-            `object`.uid()
+            store.insert(obj)
+            propagateState(obj, HandleAction.Insert)
+            obj.uid()
         } catch (e: Exception) {
             throw D2Error
                 .builder()

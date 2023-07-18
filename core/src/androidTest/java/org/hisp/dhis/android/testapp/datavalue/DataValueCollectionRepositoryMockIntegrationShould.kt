@@ -191,6 +191,6 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("10")
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("10")
     }
 }

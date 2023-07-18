@@ -45,7 +45,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .value("settings", "new_key")
         repository.blockingSet(value)
 
-        assertThat(repository.blockingGet().value()).isEqualTo(value)
+        assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
         repository.blockingDelete()
     }
 
@@ -56,7 +56,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .value("new_namespace", "new_key")
         repository.blockingSet(value)
 
-        assertThat(repository.blockingGet().value()).isEqualTo(value)
+        assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
         repository.blockingDelete()
     }
 
@@ -67,7 +67,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         repository.blockingSet("new_value")
 
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST)
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_POST)
 
         repository.blockingDelete()
         assertThat(repository.blockingExists()).isFalse()
@@ -80,18 +80,18 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         repository.blockingSet("value")
 
         DataStoreEntryStoreImpl(databaseAdapter)
-            .updateWhere(repository.blockingGet().toBuilder().syncState(State.ERROR).build())
+            .updateWhere(repository.blockingGet()!!.toBuilder().syncState(State.ERROR).build())
 
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR)
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.ERROR)
 
         repository.blockingDelete()
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().deleted()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isTrue()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
         DataStoreEntryStoreImpl(databaseAdapter)
-            .deleteWhere(repository.blockingGet())
+            .deleteWhere(repository.blockingGet()!!)
     }
 
     @Test
@@ -101,18 +101,18 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         repository.blockingSet("value")
 
         DataStoreEntryStoreImpl(databaseAdapter)
-            .updateWhere(repository.blockingGet().toBuilder().syncState(State.TO_UPDATE).build())
+            .updateWhere(repository.blockingGet()!!.toBuilder().syncState(State.TO_UPDATE).build())
 
         repository.blockingDelete()
 
-        assertThat(repository.blockingGet().deleted()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isTrue()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
         repository.blockingSet("new_value")
-        assertThat(repository.blockingGet().deleted()).isFalse()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isFalse()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
         DataStoreEntryStoreImpl(databaseAdapter)
-            .deleteWhere(repository.blockingGet())
+            .deleteWhere(repository.blockingGet()!!)
     }
 }

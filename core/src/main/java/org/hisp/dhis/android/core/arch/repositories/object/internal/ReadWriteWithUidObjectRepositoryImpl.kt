@@ -25,11 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection
+package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.Unit
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
-interface ReadWriteWithUploadWithUidCollectionRepository<M, C> :
-    ReadWriteWithUidCollectionRepository<M, C>,
-    CollectionRepositoryUpload where M : CoreObject, M : ObjectWithUidInterface
+open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
+    private val store: IdentifiableObjectStore<M>,
+    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope,
+    repositoryFactory: ObjectRepositoryFactory<R>
+) : ReadOnlyOneObjectRepositoryImpl<M, R>(
+    store,
+    childrenAppenders,
+    scope,
+    repositoryFactory
+) where M : CoreObject, M : ObjectWithUidInterface {
+
+    @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    protected open fun updateObject(m: M): Unit {
+        return try {
+            store.update(m)
+            Unit()
+        } catch (e: Exception) {
+            throw D2Error
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
+                .errorDescription("Object property can't be updated")
+                .originalException(e)
+                .build()
+        }
+    }
+}

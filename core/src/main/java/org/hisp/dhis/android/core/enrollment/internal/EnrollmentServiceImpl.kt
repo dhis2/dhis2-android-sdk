@@ -98,7 +98,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
 
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .uid(tei.organisationUnit())
+            .uid(tei?.organisationUnit())
             .blockingExists()
     }
 
@@ -110,7 +110,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
             .toList()
             .flatMap { currentProgramStagesUids: List<String?> ->
                 val repository = programStagesCollectionRepository.byProgramUid().eq(
-                    enrollmentRepository.uid(enrollmentUid).blockingGet().program()
+                    enrollmentRepository.uid(enrollmentUid).blockingGet()?.program()
                 ).byAccessDataWrite().isTrue
 
                 repository.get().toFlowable()

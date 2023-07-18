@@ -58,7 +58,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
 
         val fileResource = d2.fileResourceModule().fileResources()
             .uid(fileResourceUid)
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(fileResource.uid()).isEqualTo(fileResourceUid)
 

@@ -25,21 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-package org.hisp.dhis.android.core.arch.repositories.di.internal;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+open class ReadOnlyOneObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
+    private val store: ReadableStore<M>,
+    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope,
+    repositoryFactory: ObjectRepositoryFactory<R>
+) : ReadOnlyObjectRepositoryImpl<M, R>(childrenAppenders, scope, repositoryFactory) {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module()
-public final class RepositoriesDIModule {
-
-    @Provides
-    @Reusable
-    RepositoryScope emptyScope() {
-        return RepositoryScope.empty();
+    override fun blockingGetWithoutChildren(): M? {
+        val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
+        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
 }

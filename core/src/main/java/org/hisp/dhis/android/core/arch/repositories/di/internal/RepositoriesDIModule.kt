@@ -25,23 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.di.internal
 
-package org.hisp.dhis.android.core.arch.repositories.object;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import io.reactivex.Completable;
-
-public interface ReadWriteValueObjectRepository<M extends CoreObject> extends ReadWriteObjectRepository<M> {
-
-    /**
-     * Sets the object in scope in an asynchronous way. It returns a {@code Completable} which
-     * is completed when the object is updated to the database. It adds an object with a ASDASDASDASDASD
-     * which will be uploaded to the server in the next upload.
-     * @param value the object to add
-     * @return the Completable which notifies the completion
-     */
-    Completable set(String value);
-    void blockingSet(String value) throws D2Error;
+@Module
+class RepositoriesDIModule {
+    @Provides
+    @Reusable
+    fun emptyScope(): RepositoryScope {
+        return RepositoryScope.empty()
+    }
 }

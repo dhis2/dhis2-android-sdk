@@ -79,19 +79,19 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected fun storeTrackerData() {
-        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()
-        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()
-        val program = d2.programModule().programs().one().blockingGet()
-        val programStage = ProgramStageStoreImpl(databaseAdapter).selectFirst()
+        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()!!
+        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()!!
+        val program = d2.programModule().programs().one().blockingGet()!!
+        val programStage = ProgramStageStoreImpl(databaseAdapter).selectFirst()!!
 
         val dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build()
 
         val event1 = Event.builder()
             .uid(event1Id)
             .enrollment(enrollment1Id)
-            .organisationUnit(orgUnit!!.uid())
+            .organisationUnit(orgUnit.uid())
             .program(program.uid())
-            .programStage(programStage!!.uid())
+            .programStage(programStage.uid())
             .syncState(State.TO_UPDATE)
             .aggregatedSyncState(State.TO_UPDATE)
             .trackedEntityDataValues(listOf(dataValue1))
@@ -153,7 +153,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             TrackedEntityInstance.builder(), listOf(enrollment1, enrollment2, enrollment3)
         )
             .uid(teiId)
-            .trackedEntityType(teiType!!.uid())
+            .trackedEntityType(teiType.uid())
             .organisationUnit(orgUnit.uid())
             .syncState(State.TO_POST)
             .aggregatedSyncState(State.TO_POST)

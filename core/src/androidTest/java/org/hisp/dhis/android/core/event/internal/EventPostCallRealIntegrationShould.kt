@@ -110,7 +110,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     fun pull_events_delete_with_repository_and_post() {
         downloadMetadata()
         d2.eventModule().eventDownloader().limit(10).blockingDownload()
-        val uid = d2.eventModule().events().one().blockingGet().uid()
+        val uid = d2.eventModule().events().one().blockingGet()!!.uid()
         d2.eventModule().events().uid(uid).blockingDelete()
         d2.eventModule().events().blockingUpload()
     }
@@ -187,25 +187,25 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         orgUnitUid = d2.organisationUnitModule().organisationUnits()
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
         programUid = d2.programModule().programs()
             .byOrganisationUnitUid(orgUnitUid)
             .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
 
         // Before running, make sure no data elements are compulsory
         programStageUid = d2.programModule().programStages()
             .byProgramUid().eq(programUid)
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
         dataElementUid = d2.programModule().programStageDataElements()
             .byProgramStage().eq(programStageUid)
-            .one().blockingGet().dataElement()
+            .one().blockingGet()!!.dataElement()
             ?.uid()
         attributeOptionCombo = d2.categoryModule().categoryOptionCombos()
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
     }
 

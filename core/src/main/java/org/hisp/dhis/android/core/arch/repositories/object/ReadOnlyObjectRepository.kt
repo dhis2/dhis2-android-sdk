@@ -25,13 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.`object`
 
-package org.hisp.dhis.android.core.arch.repositories.object.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+interface ReadOnlyObjectRepository<M> : BaseRepository {
+    /**
+     * Returns the object in an asynchronous way, returning a `Single<M>`.
+     * @return A `Single` object with the object
+     */
+    fun get(): Single<M?>
 
-public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> extends BaseRepositoryFactory<R> {
-    R updated(RepositoryScope updatedScope);
+    /**
+     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.get].
+     * @return the object
+     */
+    fun blockingGet(): M?
+
+    /**
+     * Returns if the object exists in an asynchronous way, returning a `Single<Boolean>`.
+     * @return if the object exists, wrapped in a `Single`
+     */
+    fun exists(): Single<Boolean>
+
+    /**
+     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.exists].
+     * @return if the object exists
+     */
+    fun blockingExists(): Boolean
 }

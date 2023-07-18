@@ -62,7 +62,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_combo_by_uid_without_children() {
-        val combo = d2.categoryModule().categoryCombos().uid("m2jTvAj5kkm").blockingGet()
+        val combo = d2.categoryModule().categoryCombos().uid("m2jTvAj5kkm").blockingGet()!!
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm")
         assertThat(combo.code()).isEqualTo("BIRTHS")
         assertThat(combo.name()).isEqualTo("Births")
@@ -72,7 +72,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_combo_by_uid_with_category_option_combos() {
-        val combo = d2.categoryModule().categoryCombos().uid("m2jTvAj5kkm").blockingGet()
+        val combo = d2.categoryModule().categoryCombos().uid("m2jTvAj5kkm").blockingGet()!!
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm")
         assertThat(combo.code()).isEqualTo("BIRTHS")
         assertThat(combo.name()).isEqualTo("Births")
@@ -96,7 +96,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_combo_by_uid_with_sorted_categories() {
-        val combo = d2.categoryModule().categoryCombos().withCategories().uid("m2jTvAj5kkm").blockingGet()
+        val combo = d2.categoryModule().categoryCombos().withCategories().uid("m2jTvAj5kkm").blockingGet()!!
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm")
         assertThat(combo.code()).isEqualTo("BIRTHS")
         assertThat(combo.name()).isEqualTo("Births")
@@ -122,7 +122,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_category_by_uid_without_children() {
-        val category = d2.categoryModule().categories().uid("vGs6omsRekv").blockingGet()
+        val category = d2.categoryModule().categories().uid("vGs6omsRekv").blockingGet()!!
         assertThat(category.uid()).isEqualTo("vGs6omsRekv")
         assertThat(category.name()).isEqualTo("default")
         assertThat(category.dataDimensionType()).isEqualTo("DISAGGREGATION")
@@ -139,7 +139,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_category_by_uid_with_sorted_category_options() {
-        val category = d2.categoryModule().categories().withCategoryOptions().uid("KfdsGBcoiCa").blockingGet()
+        val category = d2.categoryModule().categories().withCategoryOptions().uid("KfdsGBcoiCa").blockingGet()!!
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa")
         assertThat(category.name()).isEqualTo("Births attended by")
         assertThat(category.dataDimensionType()).isEqualTo("DISAGGREGATION")
@@ -179,7 +179,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_category_option_combo_by_uid_without_children() {
-        val categoryOptionCombo = d2.categoryModule().categoryOptionCombos().uid("Gmbgme7z9BF").blockingGet()
+        val categoryOptionCombo = d2.categoryModule().categoryOptionCombos().uid("Gmbgme7z9BF").blockingGet()!!
         assertThat(categoryOptionCombo.uid()).isEqualTo("Gmbgme7z9BF")
         assertThat(categoryOptionCombo.name()).isEqualTo("Trained TBA, At PHU")
     }
@@ -187,7 +187,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
     @Test
     fun allow_access_to_category_option_combo_by_uid_with_category_options() {
         val categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
-            .withCategoryOptions().uid("Gmbgme7z9BF").blockingGet()
+            .withCategoryOptions().uid("Gmbgme7z9BF").blockingGet()!!
         assertThat(categoryOptionCombo.uid()).isEqualTo("Gmbgme7z9BF")
         assertThat(categoryOptionCombo.name()).isEqualTo("Trained TBA, At PHU")
 
@@ -213,7 +213,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_category_combo_by_uid_without_children() {
-        val categoryOption = d2.categoryModule().categoryOptions().uid("apsOixVZlf1").blockingGet()
+        val categoryOption = d2.categoryModule().categoryOptions().uid("apsOixVZlf1").blockingGet()!!
         assertThat(categoryOption.uid()).isEqualTo("apsOixVZlf1")
         assertThat(categoryOption.name()).isEqualTo("Female")
         assertThat(categoryOption.code()).isEqualTo("FMLE")

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.IdentifiableObject
 
+@Suppress("TooManyFunctions")
 open class ReadOnlyIdentifiableCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,

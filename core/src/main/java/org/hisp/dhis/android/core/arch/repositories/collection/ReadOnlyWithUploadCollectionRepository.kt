@@ -29,5 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection
 
 import org.hisp.dhis.android.core.common.CoreObject
 
-interface ReadOnlyWithUploadCollectionRepository<M : CoreObject> : ReadOnlyCollectionRepository<M>,
+interface ReadOnlyWithUploadCollectionRepository<M : CoreObject> :
+    ReadOnlyCollectionRepository<M>,
     CollectionRepositoryUpload

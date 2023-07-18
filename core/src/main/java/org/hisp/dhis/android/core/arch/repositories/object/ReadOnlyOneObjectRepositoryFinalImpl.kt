@@ -25,37 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.`object`
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import io.reactivex.Single;
-
-public interface ReadOnlyObjectRepository<M> extends BaseRepository {
-
-    /**
-     * Returns the object in an asynchronous way, returning a {@code Single<M>}.
-     * @return A {@code Single} object with the object
-     */
-    Single<M> get();
-
-    /**
-     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #get()}.
-     * @return the object
-     */
-    M blockingGet();
-
-    /**
-     * Returns if the object exists in an asynchronous way, returning a {@code Single<Boolean>}.
-     * @return if the object exists, wrapped in a {@code Single}
-     */
-    Single<Boolean> exists();
-
-    /**
-     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version {@link #exists()}.
-     * @return if the object exists
-     */
-    boolean blockingExists();
-}
+class ReadOnlyOneObjectRepositoryFinalImpl<M> internal constructor(
+    store: ReadableStore<M>,
+    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    scope: RepositoryScope
+) : ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>>(
+    store, childrenAppenders, scope,
+    ObjectRepositoryFactory { s: RepositoryScope ->
+        ReadOnlyOneObjectRepositoryFinalImpl(
+            store,
+            childrenAppenders,
+            s
+        )
+    }
+)

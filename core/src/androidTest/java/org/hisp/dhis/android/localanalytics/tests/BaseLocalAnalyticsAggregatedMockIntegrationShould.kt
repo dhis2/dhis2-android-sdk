@@ -51,7 +51,7 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
 
     @Test
     fun count_data_values_for_data_element() {
-        val firstDataValue = d2.dataValueModule().dataValues().one().blockingGet()
+        val firstDataValue = d2.dataValueModule().dataValues().one().blockingGet()!!
         val dataValuesCount = d2.dataValueModule().dataValues()
             .byDataElementUid().eq(firstDataValue.dataElement())
             .blockingCount()
@@ -60,7 +60,7 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
 
     @Test
     fun sum_data_values_for_data_element() {
-        val dv = d2.dataValueModule().dataValues().one().blockingGet()
+        val dv = d2.dataValueModule().dataValues().one().blockingGet()!!
         val dataValues = d2.dataValueModule().dataValues()
             .byDataElementUid().eq(dv.dataElement())
             .blockingGet()
@@ -70,7 +70,7 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
 
     @Test
     fun avg_data_values_for_data_element() {
-        val dv = d2.dataValueModule().dataValues().one().blockingGet()
+        val dv = d2.dataValueModule().dataValues().one().blockingGet()!!
         val dataValues = d2.dataValueModule().dataValues()
             .byDataElementUid().eq(dv.dataElement())
             .blockingGet()
@@ -86,9 +86,9 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     fun count_data_values_for_data_element_for_ou_level_3() {
         val ou = d2.organisationUnitModule().organisationUnits()
             .byLevel().eq(3)
-            .one().blockingGet()
+            .one().blockingGet()!!
         val firstDataValue = d2.dataValueModule().dataValues()
-            .one().blockingGet()
+            .one().blockingGet()!!
         val dataValuesCount = d2.dataValueModule().dataValues()
             .byOrganisationUnitUid().eq(ou.uid())
             .byDataElementUid().eq(firstDataValue.dataElement())
@@ -137,13 +137,13 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     private fun dataValuesForDataElementForOuAndDescendentsRepository(level: Int): DataValueCollectionRepository {
         val ou3 = d2.organisationUnitModule().organisationUnits()
             .byLevel().eq(3)
-            .one().blockingGet()
+            .one().blockingGet()!!
         val level2Uid = ou3.path()!!.split("/")[level]
         val ous2AndChildren = d2.organisationUnitModule().organisationUnits()
             .byPath().like(level2Uid)
             .blockingGet()
         val firstDataValue = d2.dataValueModule().dataValues()
-            .one().blockingGet()
+            .one().blockingGet()!!
         return d2.dataValueModule().dataValues()
             .byOrganisationUnitUid().`in`(ous2AndChildren.map { it.uid() })
             .byDataElementUid().eq(firstDataValue.dataElement())
@@ -153,9 +153,9 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     fun count_data_values_for_data_element_for_ou_level_3_per_period() {
         val ou = d2.organisationUnitModule().organisationUnits()
             .byLevel().eq(3)
-            .one().blockingGet()
+            .one().blockingGet()!!
         val firstDataValue = d2.dataValueModule().dataValues()
-            .one().blockingGet()
+            .one().blockingGet()!!
         val dataValues = d2.dataValueModule().dataValues()
             .byOrganisationUnitUid().eq(ou.uid())
             .byDataElementUid().eq(firstDataValue.dataElement())

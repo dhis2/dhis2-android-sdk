@@ -25,40 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object.internal;
+package org.hisp.dhis.android.core.arch.repositories.`object`
 
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider;
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
+interface ReadWriteValueObjectRepository<M : CoreObject> : ReadWriteObjectRepository<M> {
+    /**
+     * Sets the object in scope in an asynchronous way. It returns a `Completable` which
+     * is completed when the object is updated to the database. It adds an object with a ASDASDASDASDASD
+     * which will be uploaded to the server in the next upload.
+     * @param value the object to add
+     * @return the Completable which notifies the completion
+     */
+    fun set(value: String?): Completable
 
-public abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> {
-
-    private final CompletableProvider downloadCompletableProvider;
-
-    public ReadOnlyAnyObjectWithDownloadRepositoryImpl(CompletableProvider downloadCompletableProvider) {
-        this.downloadCompletableProvider = downloadCompletableProvider;
-    }
-
-    public Single<M> get() {
-        return Single.fromCallable(this::blockingGet);
-    }
-
-    public abstract M blockingGet();
-
-    public Single<Boolean> exists() {
-        return Single.fromCallable(this::blockingExists);
-    }
-
-    public boolean blockingExists() {
-        return blockingGet() != null;
-    }
-
-    public Completable download() {
-        return downloadCompletableProvider.getCompletable(false);
-    }
-
-    public void blockingDownload() {
-        download().blockingAwait();
-    }
+    @Throws(D2Error::class)
+    fun blockingSet(value: String?)
 }

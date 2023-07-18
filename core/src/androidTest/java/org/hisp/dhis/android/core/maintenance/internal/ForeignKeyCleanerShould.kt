@@ -68,7 +68,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
     fun add_foreign_key_violation_to_table() {
         addOptionForeignKeyViolation()
         assertThat(d2.maintenanceModule().foreignKeyViolations().blockingCount()).isEqualTo(1)
-        val foreignKeyViolation = d2.maintenanceModule().foreignKeyViolations().one().blockingGet()
+        val foreignKeyViolation = d2.maintenanceModule().foreignKeyViolations().one().blockingGet()!!
         val expectedViolation = ForeignKeyViolation.builder()
             .toTable(OptionSetTableInfo.TABLE_INFO.name())
             .toColumn(IdentifiableColumns.UID)

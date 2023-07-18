@@ -112,9 +112,9 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     }
 
     private fun storeEvents() {
-        val orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()
-        val program = d2.programModule().programs().one().blockingGet()
-        val programStage = d2.programModule().programStages().one().blockingGet()
+        val orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
+        val program = d2.programModule().programs().one().blockingGet()!!
+        val programStage = d2.programModule().programStages().one().blockingGet()!!
         val dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build()
 
         val event1 = Event.builder()

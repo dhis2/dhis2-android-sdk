@@ -53,7 +53,8 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
     protected fun blockingGetWithoutChildren(): List<M> {
         return store.selectWhere(
-            whereClause, OrderByClauseBuilder.orderByFromItems(
+            whereClause,
+            OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
                 scope.pagingKey()
             )

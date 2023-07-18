@@ -25,32 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object.internal;
+package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 
-import java.util.Map;
-
-public class ReadOnlyOneObjectRepositoryImpl<M, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
-
-    private final ReadableStore<M> store;
-
-    public ReadOnlyOneObjectRepositoryImpl(ReadableStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
+abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M>(
+    private val downloadCompletableProvider: CompletableProvider
+) {
+    fun get(): Single<M?> {
+        return Single.fromCallable { blockingGet() }
     }
 
-    protected M blockingGetWithoutChildren() {
-        WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+    abstract fun blockingGet(): M?
+
+    fun exists(): Single<Boolean> {
+        return Single.fromCallable { blockingExists() }
+    }
+
+    fun blockingExists(): Boolean {
+        return blockingGet() != null
+    }
+
+    fun download(): Completable {
+        return downloadCompletableProvider.getCompletable(false)
+    }
+
+    fun blockingDownload() {
+        download().blockingAwait()
     }
 }

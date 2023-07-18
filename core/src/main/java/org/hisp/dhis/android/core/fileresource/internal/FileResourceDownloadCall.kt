@@ -37,9 +37,6 @@ import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -49,19 +46,19 @@ import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 
+@SuppressWarnings("LongParameterList")
 @Reusable
 internal class FileResourceDownloadCall @Inject constructor(
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
+    private val fileResourceStore: FileResourceStore,
     private val helper: FileResourceDownloadCallHelper,
     private val fileResourceService: FileResourceService,
-    private val handler: HandlerWithTransformer<FileResource>,
+    private val handler: FileResourceHandler,
     private val fileResourceRoutine: FileResourceRoutine,
-    private val synchronizationSettingsStore: ObjectWithoutUidStore<SynchronizationSettings>,
+    private val synchronizationSettingsStore: SynchronizationSettingStore,
     private val context: Context,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor
-
 ) {
 
     fun download(params: FileResourceDownloadParams): Flow<D2Progress> = flow {
@@ -161,6 +158,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         download: suspend (V) -> ResponseBody?,
         getUid: (V) -> String?
     ) {
+
         val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
 
         handler.handleMany(fileResources) { fileResource: FileResource ->

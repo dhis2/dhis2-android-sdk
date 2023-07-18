@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryModule
 import retrofit2.Retrofit
 
@@ -65,12 +63,6 @@ internal class CategoryPackageDIModule {
     @Reusable
     fun categoryComboService(retrofit: Retrofit): CategoryComboService {
         return retrofit.create(CategoryComboService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun categoryComboCall(impl: CategoryComboCall): UidsCall<CategoryCombo> {
-        return impl
     }
 
     @Provides

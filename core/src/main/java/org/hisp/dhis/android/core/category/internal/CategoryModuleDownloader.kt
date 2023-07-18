@@ -30,15 +30,13 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.category.CategoryCombo
 import javax.inject.Inject
 
 @Reusable
 class CategoryModuleDownloader @Inject internal constructor(
     private val categoryCall: CategoryCall,
-    private val categoryComboCall: UidsCall<CategoryCombo>,
+    private val categoryComboCall: CategoryComboCall,
     private val categoryOptionCall: CategoryOptionCall,
     private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,

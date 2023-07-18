@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -36,30 +35,33 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asFlow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalCall
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalQuery
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.internal.DataValueCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
 internal class AggregatedDataCall @Inject constructor(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
-    private val dataValueCall: QueryCall<DataValue, DataValueQuery>,
-    private val dsCompleteRegistrationCall: QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>,
-    private val dataApprovalCall: QueryCall<DataApproval, DataApprovalQuery>,
+    private val dataValueCall: DataValueCall,
+    private val dsCompleteRegistrationCall: DataSetCompleteRegistrationCall,
+    private val dataApprovalCall: DataApprovalCall,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val aggregatedDataSyncStore: AggregatedDataSyncStore,

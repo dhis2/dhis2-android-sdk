@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.datavalue.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueModule
 import retrofit2.Retrofit
 
@@ -41,12 +39,6 @@ internal class DataValuePackageDIModule {
     @Reusable
     fun service(retrofit: Retrofit): DataValueService {
         return retrofit.create(DataValueService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun dataValueCall(callImpl: DataValueCall): QueryCall<DataValue, DataValueQuery> {
-        return callImpl
     }
 
     @Provides

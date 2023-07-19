@@ -25,302 +25,314 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueHandler
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
+import org.junit.Before
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl;
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueHandler;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl;
-import org.junit.Before;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private TrackedEntityAttributeReservedValueStore store;
-    private String organisationUnitUid = "org_unit_uid";
-    private String programUid = "program_uid";
-    private String categoryComboUid = "category_combo_uid";
-    private String ownerUid = "xs8A6tQJY0s";
-    private OrganisationUnit organisationUnit;
-    private String pattern;
+@SuppressWarnings("MaxLineLength")
+class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
+    private var store: TrackedEntityAttributeReservedValueStore? = null
+    private val organisationUnitUid = "org_unit_uid"
+    private val programUid = "program_uid"
+    private val categoryComboUid = "category_combo_uid"
+    private val ownerUid = "xs8A6tQJY0s"
+    private var organisationUnit: OrganisationUnit? = null
+    private var pattern: String? = null
 
     @Mock
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
+    var trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
+        TrackedEntityAttributeReservedValueQuery>? =
+        null
+
     @Mock
-    Callable<List<TrackedEntityAttributeReservedValue>> trackedEntityAttributeReservedValueCall;
+    var trackedEntityAttributeReservedValueCall: Callable<List<TrackedEntityAttributeReservedValue>>? =
+        null
 
     @Captor
-    private ArgumentCaptor<TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCaptor;
-
-    private TrackedEntityAttributeReservedValueManager manager;
+    private val trackedEntityAttributeReservedValueQueryCaptor:
+        ArgumentCaptor<TrackedEntityAttributeReservedValueQuery>? = null
+    private var manager: TrackedEntityAttributeReservedValueManager? = null
 
     @Before
-    public void setUp() {
-        super.setUp();
+    override fun setUp() {
+        super.setUp()
+        login()
+        store = TrackedEntityAttributeReservedValueStoreImpl(d2.databaseAdapter())
+        val organisationUnitStore: OrganisationUnitStore =
+            OrganisationUnitStoreImpl(d2.databaseAdapter())
+        val trackedEntityAttributeStore: TrackedEntityAttributeStore =
+            TrackedEntityAttributeStoreImpl(d2.databaseAdapter())
+        manager = d2.trackedEntityModule().reservedValueManager()
+        val handler = TrackedEntityAttributeReservedValueHandler(store as TrackedEntityAttributeReservedValueStoreImpl)
+        val trackedEntityAttributeReservedValues: MutableList<TrackedEntityAttributeReservedValue> =
+            ArrayList()
+        val reservedValueBuilder = TrackedEntityAttributeReservedValue.builder()
+            .ownerObject("owner_obj")
+            .ownerUid(ownerUid)
+            .key("key")
+            .created(CREATED)
+            .expiryDate(FUTURE_DATE)
+            .organisationUnit(organisationUnitUid)
+        val reservedValue1 = reservedValueBuilder.value("value1").build()
+        val reservedValue2 = reservedValueBuilder.value("value2").build()
+        val reservedValue3 = reservedValueBuilder.value("value3").build()
+        trackedEntityAttributeReservedValues.add(reservedValue1)
+        trackedEntityAttributeReservedValues.add(reservedValue2)
+        trackedEntityAttributeReservedValues.add(reservedValue3)
 
-        login();
+        organisationUnit =
+            OrganisationUnit.builder().uid(organisationUnitUid).code("org_unit_code").build()
+        organisationUnitStore.insert(organisationUnit as OrganisationUnit)
 
-        store = new TrackedEntityAttributeReservedValueStoreImpl(d2.databaseAdapter());
-
-        OrganisationUnitStore organisationUnitStore =
-                new OrganisationUnitStoreImpl(d2.databaseAdapter());
-
-        TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(d2.databaseAdapter());
-
-        manager = d2.trackedEntityModule().reservedValueManager();
-
-        TrackedEntityAttributeReservedValueHandler handler = new TrackedEntityAttributeReservedValueHandler(store);
-
-        List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
-
-        TrackedEntityAttributeReservedValue.Builder reservedValueBuilder =
-                TrackedEntityAttributeReservedValue.builder()
-                        .ownerObject("owner_obj")
-                        .ownerUid(ownerUid)
-                        .key("key")
-                        .created(CREATED)
-                        .expiryDate(FUTURE_DATE)
-                        .organisationUnit(organisationUnitUid);
-
-        TrackedEntityAttributeReservedValue reservedValue1 = reservedValueBuilder.value("value1").build();
-        TrackedEntityAttributeReservedValue reservedValue2 = reservedValueBuilder.value("value2").build();
-        TrackedEntityAttributeReservedValue reservedValue3 = reservedValueBuilder.value("value3").build();
-
-        trackedEntityAttributeReservedValues.add(reservedValue1);
-        trackedEntityAttributeReservedValues.add(reservedValue2);
-        trackedEntityAttributeReservedValues.add(reservedValue3);
-
-        organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).code("org_unit_code").build();
-        organisationUnitStore.insert(organisationUnit);
-
-        pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)";
-
-        trackedEntityAttributeStore.updateOrInsert(TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build());
-
-        CategoryCombo categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build();
-        d2.databaseAdapter().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues());
-
-        Program program = Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
-                .access(Access.create(null, null, DataAccess.create(true, true))).build();
-        new ProgramStoreImpl(d2.databaseAdapter()).insert(program);
-
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute =
-                ProgramTrackedEntityAttribute.builder()
-                        .uid("ptea_uid")
-                        .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
-                        .program(ObjectWithUid.create(programUid))
-                        .build();
-        new ProgramTrackedEntityAttributeStoreImpl(d2.databaseAdapter()).insert(programTrackedEntityAttribute);
-
-        OrganisationUnitProgramLink organisationUnitProgramLink =
-                OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid).program(programUid).build();
-        new OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(organisationUnitProgramLink);
-
-
-        when(trackedEntityAttributeReservedValueQueryCallFactory.create(
-                any(TrackedEntityAttributeReservedValueQuery.class)))
-                .thenReturn(trackedEntityAttributeReservedValueCall);
-
-
-        handler.handleMany(trackedEntityAttributeReservedValues);
+        pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)"
+        trackedEntityAttributeStore.updateOrInsert(
+            TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build()
+        )
+        val categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build()
+        d2.databaseAdapter()
+            .insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues())
+        val program = Program.builder().uid(programUid)
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .access(Access.create(null, null, DataAccess.create(true, true))).build()
+        ProgramStoreImpl(d2.databaseAdapter()).insert(program)
+        val programTrackedEntityAttribute = ProgramTrackedEntityAttribute.builder()
+            .uid("ptea_uid")
+            .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
+            .program(ObjectWithUid.create(programUid))
+            .build()
+        ProgramTrackedEntityAttributeStoreImpl(d2.databaseAdapter()).insert(
+            programTrackedEntityAttribute
+        )
+        val organisationUnitProgramLink =
+            OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid)
+                .program(programUid).build()
+        OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(
+            organisationUnitProgramLink
+        )
+        Mockito.`when`(
+            trackedEntityAttributeReservedValueQueryCallFactory!!.create(
+                ArgumentMatchers.any(
+                    TrackedEntityAttributeReservedValueQuery::class.java
+                )
+            )
+        )
+            .thenReturn(trackedEntityAttributeReservedValueCall)
+        handler.handleMany(trackedEntityAttributeReservedValues)
     }
 
-//    @Test
-    public void get_one_reserved_value() throws D2Error {
-
-        assertThat(selectAll().size()).isEqualTo(3);
-
-        String value1 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-
-        assertThat(value1).isEqualTo("value1");
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun get_one_reserved_value() {
+        Truth.assertThat(selectAll().size).isEqualTo(3)
+        val value1 = d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(value1).isEqualTo("value1")
     }
 
-//    @Test
-    public void get_more_than_one_reserved_value() throws D2Error {
-        String value1 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        String value2 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        String value3 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-
-        assertThat(value1).isEqualTo("value1");
-        assertThat(value2).isEqualTo("value2");
-        assertThat(value3).isEqualTo("value3");
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun get_more_than_one_reserved_value() {
+        val value1 = d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        val value2 = d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        val value3 = d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(value1).isEqualTo("value1")
+        Truth.assertThat(value2).isEqualTo("value2")
+        Truth.assertThat(value3).isEqualTo("value3")
     }
 
-//    @Test
-    public void sync_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
-        assertThat(selectAll().size()).isEqualTo(100);
+    //    @Test
+    suspend fun sync_reserved_values_for_one_tracked_entity_attribute() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, 100)
+        Truth.assertThat(selectAll().size).isEqualTo(100)
     }
 
-//    @Test
-    public void sync_20_reserved_values_for_one_tracked_entity_attribute() {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
-        assertThat(selectAll().size()).isEqualTo(20);
+    //    @Test
+    suspend fun sync_20_reserved_values_for_one_tracked_entity_attribute() {
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20)
+        Truth.assertThat(selectAll().size).isEqualTo(20)
     }
 
-//    @Test
-    public void sync_100_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size()).isEqualTo(100);
+    //    @Test
+    suspend fun sync_100_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, null)
+        Truth.assertThat(selectAll().size).isEqualTo(100)
     }
 
-//    @Test
-    public void sync_pop_sync_again_and_have_99_reserved_values_when_not_number_of_values_to_reserve_is_specified()
-            throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size()).isEqualTo(100);
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size()).isEqualTo(99);
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size()).isEqualTo(99);
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun sync_pop_sync_again_and_have_99_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, null)
+        Truth.assertThat(selectAll().size).isEqualTo(100)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(selectAll().size).isEqualTo(99)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, null)
+        Truth.assertThat(selectAll().size).isEqualTo(99)
     }
 
-//    @Test
-    public void fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified()
-            throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 50);
-        assertThat(selectAll().size()).isEqualTo(50);
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size()).isEqualTo(50);
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size()).isEqualTo(49);
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size()).isEqualTo(100);
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified() {
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 50)
+        Truth.assertThat(selectAll().size).isEqualTo(50)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, null)
+        Truth.assertThat(selectAll().size).isEqualTo(50)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(selectAll().size).isEqualTo(49)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, null)
+        Truth.assertThat(selectAll().size).isEqualTo(100)
     }
 
-//    @Test
-    public void sync_pop_sync_again_and_have_99_reserved_values_if_less_than_existing_values_are_requested()
-            throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
-        assertThat(selectAll().size()).isEqualTo(100);
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size()).isEqualTo(99);
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
-        assertThat(selectAll().size()).isEqualTo(99);
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun sync_pop_sync_again_and_have_99_reserved_values_if_less_than_existing_values_are_requested() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingDownloadReservedValues(ownerUid, 100)
+        Truth.assertThat(selectAll().size).isEqualTo(100)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(selectAll().size).isEqualTo(99)
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20)
+        Truth.assertThat(selectAll().size).isEqualTo(99)
     }
 
-//    @Test
-    public void reserve_100_new_values_and_take_one() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size()).isEqualTo(99);
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun reserve_100_new_values_and_take_one() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(selectAll().size).isEqualTo(99)
     }
 
-//    @Test
-    public void have_98_values_after_sync_and_take_two() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size()).isEqualTo(98);
+    //    @Test
+    @Throws(D2Error::class)
+    suspend fun have_98_values_after_sync_and_take_two() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, organisationUnitUid)
+        Truth.assertThat(selectAll().size).isEqualTo(98)
     }
 
-//    @Test
-    public void sync_all_tracked_entity_instances() throws Exception {
-        assertThat(selectAll().size()).isEqualTo(3);
-        d2.metadataModule().blockingDownload();
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(null);
+    //    @Test
+    @Throws(Exception::class)
+    suspend fun sync_all_tracked_entity_instances() {
+        Truth.assertThat(selectAll().size).isEqualTo(3)
+        d2.metadataModule().blockingDownload()
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(null)
 
-        /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
-        assertThat(selectAll().size()).isEqualTo(200);
+        /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */Truth.assertThat(
+            selectAll().size
+        ).isEqualTo(200)
     }
 
-//    @Test
-    public void create_the_right_query_when_nothing_is_passed() {
-        manager.blockingDownloadAllReservedValues(null);
-        assertQueryIsCreatedRight(97);
+    //    @Test
+    suspend fun create_the_right_query_when_nothing_is_passed() {
+        manager!!.blockingDownloadAllReservedValues(null)
+        assertQueryIsCreatedRight(97)
     }
 
-//    @Test
-    public void create_the_right_query_when_only_an_attribute_is_passed() {
-        manager.blockingDownloadReservedValues(ownerUid, null);
-        assertQueryIsCreatedRight(97);
+    //    @Test
+    suspend fun create_the_right_query_when_only_an_attribute_is_passed() {
+        manager!!.blockingDownloadReservedValues(ownerUid, null)
+        assertQueryIsCreatedRight(97)
     }
 
-//    @Test
-    public void create_the_right_query_when_only_a_organisation_unit_is_passed() {
-        manager.blockingDownloadAllReservedValues(null);
-        assertQueryIsCreatedRight(97);
+    //    @Test
+    suspend fun create_the_right_query_when_only_a_organisation_unit_is_passed() {
+        manager!!.blockingDownloadAllReservedValues(null)
+        assertQueryIsCreatedRight(97)
     }
 
-//    @Test
-    public void create_the_right_query_when_an_attribute_and_a_organisation_unit_is_passed() {
-        manager.blockingDownloadReservedValues(ownerUid, null);
-        assertQueryIsCreatedRight(97);
+    //    @Test
+    suspend fun create_the_right_query_when_an_attribute_and_a_organisation_unit_is_passed() {
+        manager!!.blockingDownloadReservedValues(ownerUid, null)
+        assertQueryIsCreatedRight(97)
     }
 
-//    @Test
-    public void create_the_right_query_when_a_number_of_values_to_fill_up_is_passed() {
-        manager.blockingDownloadReservedValues(null, 20);
-        assertQueryIsCreatedRight(17);
+    //    @Test
+    suspend fun create_the_right_query_when_a_number_of_values_to_fill_up_is_passed() {
+        manager!!.blockingDownloadReservedValues("", 20)
+        assertQueryIsCreatedRight(17)
     }
 
-
-//    @Test
-    public void create_the_right_query_when_a_number_of_values_to_fill_up_and_an_attribute_is_passed() {
-        manager.blockingDownloadReservedValues(ownerUid, 20);
-        assertQueryIsCreatedRight(17);
+    //    @Test
+    suspend fun create_the_right_query_when_a_number_of_values_to_fill_up_and_an_attribute_is_passed() {
+        manager!!.blockingDownloadReservedValues(ownerUid, 20)
+        assertQueryIsCreatedRight(17)
     }
 
-//    @Test
-    public void create_the_right_query_when_a_number_of_values_to_fill_up_and_a_organisation_unit_is_passed() {
-        manager.blockingDownloadAllReservedValues(20);
-        assertQueryIsCreatedRight(17);
+    //    @Test
+    suspend fun create_the_right_query_when_a_number_of_values_to_fill_up_and_a_organisation_unit_is_passed() {
+        manager!!.blockingDownloadAllReservedValues(20)
+        assertQueryIsCreatedRight(17)
     }
 
-//    @Test
-    public void create_the_right_query_when_all_arguments_are_passed() {
-        manager.blockingDownloadReservedValues(ownerUid, 20);
-        assertQueryIsCreatedRight(17);
+    //    @Test
+    suspend fun create_the_right_query_when_all_arguments_are_passed() {
+        manager!!.blockingDownloadReservedValues(ownerUid, 20)
+        assertQueryIsCreatedRight(17)
     }
 
-//    @Test (expected = D2Error.class)
-    public void return_d2_call_exception_if_no_valid_org_unit() throws D2Error {
-        d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, "not_stored_organisation_unit_uid");
+    //    @Test (expected = D2Error.class)
+    @Throws(D2Error::class)
+    suspend fun return_d2_call_exception_if_no_valid_org_unit() {
+        d2.trackedEntityModule().reservedValueManager()
+            .blockingGetValue(ownerUid, "not_stored_organisation_unit_uid")
     }
 
-    private List<TrackedEntityAttributeReservedValue> selectAll() {
-        return store.selectAll();
+    private fun selectAll(): List<TrackedEntityAttributeReservedValue> {
+        return store!!.selectAll()
     }
 
-    private void login() {
+    private fun login() {
         try {
             if (!d2.userModule().isLogged().blockingGet()) {
-                d2.userModule().logIn(username, password, url).blockingGet();
+                d2.userModule().logIn(username, password, url).blockingGet()
             }
-        } catch (Exception ignored) {
+        } catch (ignored: Exception) {
         }
     }
 
@@ -328,14 +340,15 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
      * This method stopped working because QueryCallFactory mock instance differs from Dagger's injected one,
      * so the code is calling .create() on Dagger's instance and .verify() is trying to catch the call from Mockito's instace.
      */
-    private void assertQueryIsCreatedRight(Integer numberOfValuesExpected) {
-        verify(trackedEntityAttributeReservedValueQueryCallFactory).create(trackedEntityAttributeReservedValueQueryCaptor.capture());
-
-        TrackedEntityAttributeReservedValueQuery query = trackedEntityAttributeReservedValueQueryCaptor.getValue();
-        assertThat(query.organisationUnit().uid()).isEqualTo(organisationUnit.uid());
-        assertThat(query.numberToReserve()).isEqualTo(numberOfValuesExpected); // values expected - 3 that it had before.
-        assertThat(query.trackedEntityAttributePattern()).isEqualTo(pattern);
-        assertThat(query.trackedEntityAttributeUid()).isEqualTo(ownerUid);
+    private fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
+        Mockito.verify(trackedEntityAttributeReservedValueQueryCallFactory)!!.create(
+            trackedEntityAttributeReservedValueQueryCaptor!!.capture()
+        )
+        val query = trackedEntityAttributeReservedValueQueryCaptor.value
+        Truth.assertThat(query.organisationUnit()!!.uid()).isEqualTo(organisationUnit!!.uid())
+        Truth.assertThat(query.numberToReserve())
+            .isEqualTo(numberOfValuesExpected) // values expected - 3 that it had before.
+        Truth.assertThat(query.trackedEntityAttributePattern()).isEqualTo(pattern)
+        Truth.assertThat(query.trackedEntityAttributeUid()).isEqualTo(ownerUid)
     }
-
 }

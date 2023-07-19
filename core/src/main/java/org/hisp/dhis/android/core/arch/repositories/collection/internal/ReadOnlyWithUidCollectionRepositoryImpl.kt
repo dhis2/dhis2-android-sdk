@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
@@ -39,11 +38,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     store: IdentifiableObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
-    store, childrenAppenders, scope, cf
+    store, scope, cf
 ) where M : CoreObject, M : ObjectWithUidInterface {
     /**
      * Returns a new [ReadOnlyObjectRepository] whose scope is the one of the current repository plus the
@@ -53,6 +51,6 @@ open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepo
      */
     override fun uid(uid: String?): ReadOnlyOneObjectRepositoryFinalImpl<M> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenderGetter(), updatedScope)
     }
 }

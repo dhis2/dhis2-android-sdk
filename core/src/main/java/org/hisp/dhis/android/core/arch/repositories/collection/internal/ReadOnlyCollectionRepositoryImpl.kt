@@ -35,8 +35,8 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
@@ -47,10 +47,12 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    @JvmField internal val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
+
+    internal open val childrenAppenderGetter: ChildrenAppenderGetter<M> = { mapOf() }
+
     protected fun blockingGetWithoutChildren(): List<M> {
         return store.selectWhere(
             whereClause,
@@ -67,7 +69,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return Object repository
      */
     override fun one(): ReadOnlyOneObjectRepositoryFinalImpl<M> {
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, scope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenderGetter(), scope)
     }
 
     /**
@@ -79,7 +81,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     override fun blockingGet(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             blockingGetWithoutChildren(),
-            childrenAppenders,
+            childrenAppenderGetter(),
             scope.children()
         )
     }
@@ -109,7 +111,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     val dataSource: DataSource<M, M>
-        get() = RepositoryDataSource(store, scope, childrenAppenders)
+        get() = RepositoryDataSource(store, scope, childrenAppenderGetter())
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

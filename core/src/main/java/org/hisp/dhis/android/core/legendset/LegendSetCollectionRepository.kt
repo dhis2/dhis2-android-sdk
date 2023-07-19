@@ -28,33 +28,39 @@
 package org.hisp.dhis.android.core.legendset
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
+import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
 import javax.inject.Inject
 
 @Reusable
 class LegendSetCollectionRepository @Inject internal constructor(
     store: LegendSetStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<LegendSet>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository>(
     store,
-    childrenAppenders,
     scope,
     FilterConnectorFactory(
         scope
-    ) { s: RepositoryScope -> LegendSetCollectionRepository(store, childrenAppenders, s) }) {
+    ) { s: RepositoryScope -> LegendSetCollectionRepository(store, databaseAdapter, s) }) {
+
+    override val childrenAppenderGetter: ChildrenAppenderGetter<LegendSet> = {
+        mapOf(
+            LegendChildrenAppender.TAG to LegendChildrenAppender.create(databaseAdapter)
+        )
+    }
 
     fun bySymbolizer(): StringFilterConnector<LegendSetCollectionRepository> {
         return cf.string(LegendSetTableInfo.Columns.SYMBOLIZER)
     }
 
     fun withLegends(): LegendSetCollectionRepository {
-        return cf.withChild(LegendSetFields.LEGENDS)
+        return cf.withChild(LegendChildrenAppender.TAG)
     }
 }

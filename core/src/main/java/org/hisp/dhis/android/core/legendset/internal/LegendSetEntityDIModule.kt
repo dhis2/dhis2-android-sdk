@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.legendset.LegendSet
 
 @Module
 internal class LegendSetEntityDIModule {
@@ -53,14 +51,6 @@ internal class LegendSetEntityDIModule {
             legendSetStore,
             legendHandler,
             legendCleaner
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<LegendSet>> {
-        return mapOf(
-            LegendSetFields.LEGENDS to LegendChildrenAppender.create(databaseAdapter)
         )
     }
 }

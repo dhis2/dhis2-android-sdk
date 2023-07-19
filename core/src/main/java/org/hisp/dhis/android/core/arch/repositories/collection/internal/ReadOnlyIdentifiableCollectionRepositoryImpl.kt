@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -43,10 +42,9 @@ import org.hisp.dhis.android.core.common.IdentifiableObject
 @Suppress("TooManyFunctions")
 open class ReadOnlyIdentifiableCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     store: IdentifiableObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>
-) : ReadOnlyWithUidCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
+) : ReadOnlyWithUidCollectionRepositoryImpl<M, R>(store, scope, cf),
     ReadOnlyIdentifiableCollectionRepository<M, R> where M : CoreObject, M : IdentifiableObject {
     override fun byUid(): StringFilterConnector<R> {
         return cf.string(IdentifiableColumns.UID)

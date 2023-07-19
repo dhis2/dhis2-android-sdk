@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_user() {
-        val userCredentials = d2.userModule().userCredentials().blockingGet()
+        val userCredentials = d2.userModule().userCredentials().blockingGet()!!
         assertThat(userCredentials.username()).isEqualTo("android")
         assertThat(userCredentials.name()).isEqualTo("John Barnes")
         assertThat(userCredentials.displayName()).isEqualTo("John Barnes")
@@ -45,7 +45,7 @@ class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegration
 
     @Test
     fun return_user_roles_as_children() {
-        val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()
+        val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()!!
         assertThat(userCredentials.userRoles()!!.size).isEqualTo(1)
         assertThat(userCredentials.userRoles()!![0].name()).isEqualTo("Superuser")
     }

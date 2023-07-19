@@ -72,7 +72,7 @@ internal class RelationshipServiceImpl @Inject constructor(
         }
         RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> {
             val teTypeUid = constraint.trackedEntityType()?.uid()
-            trackedEntityTypeRepository.uid(teTypeUid).blockingGet().access().data().write()
+            trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()!!
         }
         else -> false
     }

@@ -108,7 +108,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
                     dataSetCompleteRegistration.dataSet(),
                     dataSetCompleteRegistration.period(),
                     dataSetCompleteRegistration.organisationUnit(),
-                    coc.categoryCombo()!!.uid(),
+                    coc!!.categoryCombo()!!.uid(),
                     CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
                     false
                 )

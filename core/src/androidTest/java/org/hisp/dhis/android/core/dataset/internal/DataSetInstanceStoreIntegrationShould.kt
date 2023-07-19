@@ -78,7 +78,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
             .byUid().eq("lyLU2wR22tC")
             .withDataSetElements()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         val dataElements = dataset.dataSetElements()!!
 
@@ -88,15 +88,15 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
         val categoryOption1 = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataElements[0]?.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val categoryOption2 = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataElements[1]?.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val attributeOption = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataset.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val baseBuilder = DataValue.builder()
             .value("")

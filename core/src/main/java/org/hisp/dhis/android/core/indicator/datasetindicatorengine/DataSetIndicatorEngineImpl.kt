@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
@@ -76,20 +77,24 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         attributeOptionComboUid: String
     ): Double {
         val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
-        val indicatorType = indicatorTypeRepository.uid(indicator.indicatorType()?.uid()).blockingGet()
+        val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).blockingGet()
 
-        val context = ExpressionServiceContext(
-            valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId),
-            constantMap = getConstantMap(),
-            orgUnitCountMap = getOrgunitGroupMap(),
-            days = PeriodHelper.getDays(getPeriod(periodId))
-        )
+        return if (indicator != null && indicatorType != null) {
+            val context = ExpressionServiceContext(
+                valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId),
+                constantMap = getConstantMap(),
+                orgUnitCountMap = getOrgunitGroupMap(),
+                days = PeriodHelper.getDays(getPeriod(periodId))
+            )
 
-        return dataSetIndicatorEvaluator.evaluate(
-            indicator = indicator,
-            indicatorType = indicatorType,
-            context = context
-        )
+            dataSetIndicatorEvaluator.evaluate(
+                indicator = indicator,
+                indicatorType = indicatorType,
+                context = context
+            )
+        } else {
+            ParserUtils.DOUBLE_VALUE_IF_NULL
+        }
     }
 
     private fun getValueMap(

@@ -81,7 +81,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
 ) : LocalDbRepository {
 
     override fun getUserName(): Single<String> {
-        return Single.fromCallable { userRepository.blockingGet().user() }
+        return Single.fromCallable { userRepository.blockingGet()?.user() }
     }
 
     override fun getGatewayNumber(): Single<String> {
@@ -146,7 +146,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
 
     override fun getTeiEnrollmentToSubmit(enrollmentUid: String): Single<TrackedEntityInstance> {
         return Single.fromCallable {
-            val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet()
+            val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet()!!
             val events = getEventsForEnrollment(enrollmentUid).blockingGet()
             val enrollmentWithEvents = EnrollmentInternalAccessor
                 .insertEvents(enrollment.toBuilder(), events)

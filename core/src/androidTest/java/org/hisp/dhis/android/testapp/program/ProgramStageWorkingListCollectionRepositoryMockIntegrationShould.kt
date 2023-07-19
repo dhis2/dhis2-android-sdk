@@ -142,7 +142,7 @@ class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould : BaseMoc
         val lists = d2.programModule().programStageWorkingLists()
             .withDataFilters()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(lists.programStageQueryCriteria()?.dataFilters()?.size).isEqualTo(1)
     }
@@ -152,7 +152,7 @@ class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould : BaseMoc
         val lists = d2.programModule().programStageWorkingLists()
             .withAttributeValueFilters()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(lists.programStageQueryCriteria()?.attributeValueFilters()?.size).isEqualTo(1)
     }

@@ -48,7 +48,7 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicator = d2.indicatorModule().indicators()
             .withLegendSets()
             .one()
-            .blockingGet()
+            .blockingGet()!!
         Truth.assertThat(indicator.legendSets()!!.size).isEqualTo(1)
         Truth.assertThat(indicator.legendSets()!![0].uid()).isEqualTo("rtOkbpGEud4")
     }

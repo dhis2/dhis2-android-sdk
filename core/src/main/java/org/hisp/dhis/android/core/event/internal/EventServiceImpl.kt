@@ -95,19 +95,19 @@ internal class EventServiceImpl @Inject constructor(
 
     @Suppress("ComplexMethod")
     override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
-        val event = eventRepository.uid(eventUid).blockingGet()
+        val event = eventRepository.uid(eventUid).blockingGet()!!
         val program = programRepository.uid(event.program()).blockingGet()
         val programStage = programStageRepository.uid(event.programStage()).blockingGet()
 
         return when {
-            event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() == true ->
+            event.status() == EventStatus.COMPLETED && programStage?.blockEntryForm() == true ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.BLOCKED_BY_COMPLETION)
 
             eventDateUtils.isEventExpired(
                 event = event,
-                completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
-                programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
-                expiryDays = program.expiryDays() ?: 0
+                completeExpiryDays = program?.completeEventsExpiryDays() ?: 0,
+                programPeriodType = programStage?.periodType() ?: program?.expiryPeriodType(),
+                expiryDays = program?.expiryDays() ?: 0
             ) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.EXPIRED)
 

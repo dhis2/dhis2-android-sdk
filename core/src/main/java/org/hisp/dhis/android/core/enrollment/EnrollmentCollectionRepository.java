@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -78,6 +80,7 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         trackerDataManager.propagateEnrollmentUpdate(enrollment, action);
     }
 
+    @NonNull
     @Override
     public EnrollmentObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);

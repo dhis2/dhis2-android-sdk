@@ -86,7 +86,7 @@ internal class EventLineListServiceImpl @Inject constructor(
 
         return events.mapNotNull {
             (it.eventDate() ?: it.dueDate())?.let { referenceDate ->
-                val periodType = programStage.periodType() ?: PeriodType.Daily
+                val periodType = programStage?.periodType() ?: PeriodType.Daily
                 val eventPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, referenceDate)
 
                 val eventDataValues = params.dataElements.map { de ->

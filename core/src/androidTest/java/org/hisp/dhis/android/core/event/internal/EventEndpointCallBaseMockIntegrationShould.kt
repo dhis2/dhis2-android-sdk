@@ -107,7 +107,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
         enqueue(events1File)
         d2.eventModule().eventDownloader().blockingDownload()
 
-        val event1 = d2.eventModule().events().one().blockingGet()
+        val event1 = d2.eventModule().events().one().blockingGet()!!
         assertThat(event1.uid()).isEqualTo("V1CerIi3sdL")
         assertThat(event1.status()).isEqualTo(finalStatus)
     }

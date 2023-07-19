@@ -43,7 +43,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-final class ProgramCall implements UidsCall<Program> {
+public final class ProgramCall implements UidsCall<Program> {
 
     private static final int MAX_UID_LIST_SIZE = 50;
 

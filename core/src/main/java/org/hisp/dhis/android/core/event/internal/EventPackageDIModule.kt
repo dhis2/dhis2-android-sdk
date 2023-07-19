@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule
 import retrofit2.Retrofit
@@ -55,12 +53,6 @@ internal class EventPackageDIModule {
     @Provides
     @Reusable
     fun module(impl: EventModuleImpl): EventModule {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun trackedEntityInstanceFilterCall(impl: EventFilterCall): UidsCall<EventFilter> {
         return impl
     }
 

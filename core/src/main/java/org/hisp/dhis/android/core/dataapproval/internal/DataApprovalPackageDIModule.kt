@@ -30,18 +30,10 @@ package org.hisp.dhis.android.core.dataapproval.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.dataapproval.DataApproval
 import retrofit2.Retrofit
 
 @Module(includes = [DataApprovalEntityDIModule::class])
 internal class DataApprovalPackageDIModule {
-    @Provides
-    @Reusable
-    fun dataApprovalCallFactory(dataApprovalCall: DataApprovalCall): QueryCall<DataApproval, DataApprovalQuery> {
-        return dataApprovalCall
-    }
-
     @Provides
     @Reusable
     fun dataApprovalService(retrofit: Retrofit): DataApprovalService {

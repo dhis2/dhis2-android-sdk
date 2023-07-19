@@ -34,22 +34,21 @@ import io.reactivex.Single
 import javax.net.ssl.HttpsURLConnection
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.event.internal.EventFilterCall
+import org.hisp.dhis.android.core.option.internal.OptionCall
+import org.hisp.dhis.android.core.option.internal.OptionGroupCall
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,18 +61,18 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     private val program: Program = mock()
     private val trackedEntityType: TrackedEntityType = mock()
     private val trackedEntityAttribute: TrackedEntityAttribute = mock()
-    private val programCall: UidsCall<Program> = mock()
-    private val programStageCall: UidsCall<ProgramStage> = mock()
-    private val programRuleCall: UidsCall<ProgramRule> = mock()
-    private val trackedEntityTypeCall: UidsCall<TrackedEntityType> = mock()
-    private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute> = mock()
-    private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter> = mock()
-    private val eventFilterCall: UidsCall<EventFilter> = mock()
-    private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList> = mock()
-    private val relationshipTypeCall: ListCall<RelationshipType> = mock()
-    private val optionSetCall: UidsCall<OptionSet> = mock()
-    private val optionCall: UidsCall<Option> = mock()
-    private val optionGroupCall: UidsCall<OptionGroup> = mock()
+    private val programCall: ProgramCall = mock()
+    private val programStageCall: ProgramStageCall = mock()
+    private val programRuleCall: ProgramRuleCall = mock()
+    private val trackedEntityTypeCall: TrackedEntityTypeCall = mock()
+    private val trackedEntityAttributeCall: TrackedEntityAttributeCall = mock()
+    private val trackedEntityInstanceFilterCall: TrackedEntityInstanceFilterCall = mock()
+    private val eventFilterCall: EventFilterCall = mock()
+    private val programStageWorkingListCall: ProgramStageWorkingListCall = mock()
+    private val relationshipTypeCall: RelationshipTypeCall = mock()
+    private val optionSetCall: OptionSetCall = mock()
+    private val optionCall: OptionCall = mock()
+    private val optionGroupCall: OptionGroupCall = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
 
     // object to test

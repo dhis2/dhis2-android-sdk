@@ -31,10 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEntityDIModule
@@ -44,13 +42,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterEntityDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipEntityDIModule
@@ -78,20 +74,8 @@ import retrofit2.Retrofit
 internal class TrackedEntityPackageDIModule {
     @Provides
     @Reusable
-    fun trackedEntityTypeCall(impl: TrackedEntityTypeCall): UidsCall<TrackedEntityType> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
     fun trackedEntityTypeService(retrofit: Retrofit): TrackedEntityTypeService {
         return retrofit.create(TrackedEntityTypeService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun trackedEntityAttributeCall(impl: TrackedEntityAttributeCall): UidsCall<TrackedEntityAttribute> {
-        return impl
     }
 
     @Provides
@@ -105,12 +89,6 @@ internal class TrackedEntityPackageDIModule {
     fun dataValueCallFactory(
         impl: TrackedEntityAttributeReservedValueEndpointCallFactory
     ): QueryCallFactory<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun trackedEntityInstanceFilterCall(impl: TrackedEntityInstanceFilterCall): UidsCall<TrackedEntityInstanceFilter> {
         return impl
     }
 

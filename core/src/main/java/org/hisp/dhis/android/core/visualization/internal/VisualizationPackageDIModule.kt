@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.visualization.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationModule
 import retrofit2.Retrofit
 
@@ -42,12 +40,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class VisualizationPackageDIModule {
-    @Provides
-    @Reusable
-    fun visualizationCall(impl: VisualizationCall): UidsCall<Visualization> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun visualizationService(retrofit: Retrofit): VisualizationService {

@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.dataset.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.DataSetModule
 import retrofit2.Retrofit
 
@@ -53,14 +51,6 @@ import retrofit2.Retrofit
     ]
 )
 internal class DataSetPackageDIModule {
-    @Provides
-    @Reusable
-    fun dataSetCompleteRegistrationCallFactory(
-        impl: DataSetCompleteRegistrationCall
-    ): QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
-        return impl
-    }
-
     @Provides
     @Reusable
     fun dataSetEndpointCallFactory(impl: DataSetEndpointCallFactory): UidsCallFactory<DataSet> {

@@ -34,7 +34,6 @@ import javax.inject.Singleton
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule
@@ -69,13 +68,13 @@ import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule
 import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule
 import org.hisp.dhis.android.core.map.internal.MapPackageDIModule
 import org.hisp.dhis.android.core.note.internal.NotePackageDIModule
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
-import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.internal.ProgramCall
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListPackageDIModule
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule
@@ -172,13 +171,13 @@ internal interface D2DIComponent {
     fun internalModules(): D2InternalModules
 
     @VisibleForTesting
-    fun programCall(): UidsCall<Program>
+    fun programCall(): ProgramCall
 
     @VisibleForTesting
-    fun optionSetCall(): UidsCall<OptionSet>
+    fun optionSetCall(): OptionSetCall
 
     @VisibleForTesting
-    fun optionCall(): UidsCall<Option>
+    fun optionCall(): OptionCall
 
     @VisibleForTesting
     fun dataElementCallFactory(): UidsCallFactory<DataElement>

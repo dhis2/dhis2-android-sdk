@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.legendset.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.LegendSetModule
 import retrofit2.Retrofit
 
@@ -46,12 +44,6 @@ internal class LegendPackageDIModule {
     @Provides
     @Reusable
     fun module(impl: LegendSetModuleImpl): LegendSetModule {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun legendSetCall(impl: LegendSetCall): UidsCall<LegendSet> {
         return impl
     }
 

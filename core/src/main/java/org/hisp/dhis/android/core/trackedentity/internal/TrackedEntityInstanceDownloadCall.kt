@@ -57,7 +57,6 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
-    coroutineCallExecutor,
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory

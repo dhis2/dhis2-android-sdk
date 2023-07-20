@@ -33,12 +33,11 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asFlow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -56,29 +55,23 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
-    private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory
+    private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
 ) {
 
-    @OptIn(FlowPreview::class)
-    fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = flow {
+    fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {
             progressManager.setTotalCalls(1)
-            emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
+            send(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
         } else {
             val relatives = RelationshipItemRelatives()
-            systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-                .asFlow()
-                .flatMapConcat {
-                    flow {
-                        emitAll(downloadInternal(params, progressManager, relatives))
-                        emitAll(downloadRelationships(progressManager, relatives))
-                        emit(progressManager.complete())
-                    }
-                }
-                .collect { progress ->
-                    emit(progress)
-                }
+            systemInfoModuleDownloader.downloadWithProgressManager(progressManager).blockingSubscribe()
+            coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+                downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
+                downloadRelationships(progressManager, relatives).collect { v -> send(v) }
+                send(progressManager.complete())
+            }
         }
     }
 
@@ -124,13 +117,12 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     updateLastUpdated(bundle)
                 }
             }
+            emit(progressManager.getProgress())
         }
 
         if (progressManager.getProgress().programs().any { !it.value.isComplete }) {
             emit(progressManager.completePrograms())
         }
-
-        emit(progressManager.complete())
     }
 
     private fun iterationNotFinished(

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
@@ -49,6 +50,7 @@ internal class EventDownloadCall @Inject internal constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -57,7 +59,8 @@ internal class EventDownloadCall @Inject internal constructor(
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory
+    relationshipDownloadAndPersistCallFactory,
+    coroutineAPICallExecutor
 ) {
 
     override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {

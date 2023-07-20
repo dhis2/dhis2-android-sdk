@@ -59,7 +59,8 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory
+    relationshipDownloadAndPersistCallFactory,
+    coroutineCallExecutor
 ) {
     override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)

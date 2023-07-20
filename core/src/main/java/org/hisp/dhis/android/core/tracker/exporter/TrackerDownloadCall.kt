@@ -137,10 +137,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
-    /*
-    it uses a callbackFlow to create a flow that can emit the IterationResult asynchronously
-     */
-
     @Suppress("LongParameterList")
     private fun iterateBundle(
         bundle: Q,

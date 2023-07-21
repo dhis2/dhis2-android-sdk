@@ -28,13 +28,10 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -42,38 +39,37 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
+import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
 internal class LogInCall @Inject internal constructor(
-    private val apiCallExecutor: APICallExecutor,
+    private val databaseAdapter: DatabaseAdapter,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val userHandler: UserHandler,
     private val authenticatedUserStore: AuthenticatedUserStore,
-    private val systemInfoCall: SystemInfoCall,
+    private val systemInfoRepository: SystemInfoObjectRepository,
     private val userStore: UserStore,
-    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
     private val versionManager: DHISVersionManager
 ) {
-    fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
-        return Single.fromCallable {
-            blockingLogIn(username, password, serverUrl)
-        }
+    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
+        return blockingLogIn(username, password, serverUrl)
+
     }
 
     @Throws(D2Error::class)
-    private fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
+    private suspend fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
@@ -91,7 +87,7 @@ internal class LogInCall @Inject internal constructor(
         val credentials = Credentials(username, trimmedServerUrl!!, password, null)
 
         return try {
-            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
+            val user = coroutineAPICallExecutor.wrap { authenticateCall }.getOrThrow()
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
@@ -127,25 +123,25 @@ internal class LogInCall @Inject internal constructor(
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
         databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
-        return runBlocking {
-            coroutineAPICallExecutor.wrapTransactionally {
-                try {
-                    val authenticatedUser = AuthenticatedUser.builder()
-                        .user(user.uid())
-                        .hash(credentials.getHash())
-                        .build()
+        val transaction = databaseAdapter.beginNewTransaction()
+        return try {
+            val authenticatedUser = AuthenticatedUser.builder()
+                .user(user.uid())
+                .hash(credentials.getHash())
+                .build()
 
-                    authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
-                    systemInfoCall.download(storeError = true)
-                    userHandler.handle(user)
-                    user
-                } catch (e: Exception) {
-                    // Credentials are stored and then removed in case of error (required to download system info)
-                    credentialsSecureStore.remove()
-                    userIdStore.remove()
-                    throw e
-                }
-            }
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
+            systemInfoRepository.download().blockingAwait()
+            userHandler.handle(user)
+            transaction.setSuccessful()
+            user
+        } catch (e: Exception) {
+            // Credentials are stored and then removed in case of error since they are required to download system info
+            credentialsSecureStore.remove()
+            userIdStore.remove()
+            throw e
+        } finally {
+            transaction.end()
         }
     }
 
@@ -168,7 +164,7 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
+    suspend fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
 
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
@@ -181,7 +177,7 @@ internal class LogInCall @Inject internal constructor(
 
         var credentials: Credentials? = null
         return try {
-            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
+            val user = coroutineAPICallExecutor.wrap { authenticateCall }.getOrThrow()
             credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {

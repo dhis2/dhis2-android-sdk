@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.user.User;
 
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
@@ -40,10 +39,10 @@ import retrofit2.http.Query;
 interface UserService {
 
     @GET("me")
-    Call<User> authenticate(@Header("Authorization") String credentials,
-                            @Query("fields") @Which Fields<User> fields);
+    User authenticate(@Header("Authorization") String credentials,
+                      @Query("fields") @Which Fields<User> fields);
 
     @GET("me")
-    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
+    User getUser(@Query("fields") @Which Fields<User> fields);
 
 }

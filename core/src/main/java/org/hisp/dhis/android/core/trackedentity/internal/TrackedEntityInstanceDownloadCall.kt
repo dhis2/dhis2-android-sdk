@@ -57,10 +57,10 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
-    rxCallExecutor,
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory
+    relationshipDownloadAndPersistCallFactory,
+    coroutineCallExecutor
 ) {
     override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)

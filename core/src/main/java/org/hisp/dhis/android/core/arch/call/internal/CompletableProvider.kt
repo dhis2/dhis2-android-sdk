@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.arch.call.internal;
+import io.reactivex.Completable
 
-import io.reactivex.Completable;
-
-public interface CompletableProvider {
-    Completable getCompletable(boolean storeError);
+interface CompletableProvider {
+    fun getCompletable(storeError: Boolean): Completable
 }

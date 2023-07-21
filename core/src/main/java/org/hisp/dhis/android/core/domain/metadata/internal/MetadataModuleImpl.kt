@@ -25,17 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.domain.metadata.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import dagger.Reusable
+import io.reactivex.Observable
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall
+import javax.inject.Inject
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+@Reusable
+class MetadataModuleImpl @Inject internal constructor(
+    private val metadataCall: MetadataCall
+) : WithProgressDownloader {
+    override fun download(): Observable<D2Progress> {
+        return metadataCall.download().asObservable()
+    }
 
-interface SystemInfoService {
-    @GET("system/info")
-    Single<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
+    override fun blockingDownload() {
+        metadataCall.blockingDownload()
+    }
 }

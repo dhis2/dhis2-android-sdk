@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -42,6 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
@@ -52,12 +55,13 @@ import org.hisp.dhis.android.core.user.UserInternalAccessor
 internal class LogInCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val userHandler: UserHandler,
     private val authenticatedUserStore: AuthenticatedUserStore,
-    private val systemInfoRepository: SystemInfoObjectRepository,
+    private val systemInfoCall: SystemInfoCall,
     private val userStore: UserStore,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
@@ -126,25 +130,25 @@ internal class LogInCall @Inject internal constructor(
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
         databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
-        val transaction = databaseAdapter.beginNewTransaction()
-        return try {
-            val authenticatedUser = AuthenticatedUser.builder()
-                .user(user.uid())
-                .hash(credentials.getHash())
-                .build()
+        return runBlocking {
+            coroutineAPICallExecutor.wrapTransactionally {
+                try {
+                    val authenticatedUser = AuthenticatedUser.builder()
+                        .user(user.uid())
+                        .hash(credentials.getHash())
+                        .build()
 
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
-            systemInfoRepository.download().blockingAwait()
-            userHandler.handle(user)
-            transaction.setSuccessful()
-            user
-        } catch (e: Exception) {
-            // Credentials are stored and then removed in case of error since they are required to download system info
-            credentialsSecureStore.remove()
-            userIdStore.remove()
-            throw e
-        } finally {
-            transaction.end()
+                    authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
+                    systemInfoCall.download(storeError = true)
+                    userHandler.handle(user)
+                    user
+                } catch (e: Exception) {
+                    // Credentials are stored and then removed in case of error since they are required to download system info
+                    credentialsSecureStore.remove()
+                    userIdStore.remove()
+                    throw e
+                }
+            }
         }
     }
 

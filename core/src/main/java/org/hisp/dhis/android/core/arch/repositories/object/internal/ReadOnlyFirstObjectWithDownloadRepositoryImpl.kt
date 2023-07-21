@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
@@ -41,15 +42,10 @@ internal constructor(
     store: ObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    downloadCompletableProvider: CompletableProvider,
+    private val downloadProvider: DownloadProvider,
     repositoryFactory: ObjectRepositoryFactory<R>
 ) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadOnlyWithDownloadObjectRepository<M> {
-    private val downloadCompletableProvider: CompletableProvider
-
-    init {
-        this.downloadCompletableProvider = downloadCompletableProvider
-    }
 
     /**
      * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the
@@ -57,7 +53,7 @@ internal constructor(
      * @return a `Completable` that completes when the download and processing is finished
      */
     override fun download(): Completable {
-        return downloadCompletableProvider.getCompletable(true)
+        return rxCompletable { downloadProvider.download(true) }
     }
 
     /**

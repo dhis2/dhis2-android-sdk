@@ -29,10 +29,13 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import dagger.Reusable
 import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -69,11 +72,12 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @Reusable
 internal class MetadataCall @Inject constructor(
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
     private val useCaseDownloader: UseCaseModuleDownloader,
@@ -99,77 +103,63 @@ internal class MetadataCall @Inject constructor(
         const val CALLS_COUNT = 12
     }
 
-    fun download(): Observable<D2Progress> {
+    fun download(): Flow<D2Progress> = channelFlow {
         val progressManager = D2ProgressManager(CALLS_COUNT)
-        return changeEncryptionIfRequired().andThen(
-            rxCallExecutor.wrapObservableTransactionally(
-                Observable.merge(
-                    systemInfoDownloader.downloadWithProgressManager(progressManager),
-                    executeIndependentCalls(progressManager),
-                    executeUserCallAndChildren(progressManager)
-                ),
-                true
-            )
-        )
+        changeEncryptionIfRequired().blockingAwait()
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
+            executeIndependentCalls(progressManager).collect { send(it) }
+            executeUserCallAndChildren(progressManager).collect { send(it) }
+        }
     }
 
-    private fun executeIndependentCalls(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return Single.merge(
-            listOf(
-                Single.fromCallable {
-                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
-                    progressManager.increaseProgress(SystemInfo::class.java, false)
-                },
-                systemSettingDownloader.downloadMetadata().toSingle {
-                    progressManager.increaseProgress(SystemSetting::class.java, false)
-                },
-                useCaseDownloader.downloadMetadata().toSingle {
-                    progressManager.increaseProgress(StockUseCase::class.java, false)
-                },
-                constantModuleDownloader.downloadMetadata().map {
-                    progressManager.increaseProgress(Constant::class.java, false)
-                },
-                smsModule.configCase().refreshMetadataIdsCallable().toSingle {
-                    progressManager.increaseProgress(SmsModule::class.java, false)
-                }
-            )
-        ).toObservable()
+    private fun executeIndependentCalls(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
+        databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+        emit(progressManager.increaseProgress(SystemInfo::class.java, false))
+
+        systemSettingDownloader.downloadMetadata().blockingAwait()
+        progressManager.increaseProgress(SystemSetting::class.java, false)
+
+        useCaseDownloader.downloadMetadata().blockingAwait()
+        progressManager.increaseProgress(StockUseCase::class.java, false)
+
+        constantModuleDownloader.downloadMetadata().blockingGet()
+        progressManager.increaseProgress(Constant::class.java, false)
+
+        smsModule.configCase().refreshMetadataIdsCallable().blockingAwait()
+        progressManager.increaseProgress(SmsModule::class.java, false)
     }
 
-    private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return userModuleDownloader.downloadMetadata()
-            .flatMapCompletable { user: User ->
-                organisationUnitModuleDownloader.downloadMetadata(user)
-            }.andThen(
-                Single.concatArray(
-                    Single.just(progressManager.increaseProgress(User::class.java, false)),
-                    Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
-                    programDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(Program::class.java, false)
-                    },
-                    dataSetDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(DataSet::class.java, false)
-                    },
-                    categoryDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(Category::class.java, false)
-                    },
-                    visualizationDownloader.downloadMetadata().map {
-                        progressManager.increaseProgress(Visualization::class.java, false)
-                    },
-                    programIndicatorModuleDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(ProgramIndicator::class.java, false)
-                    },
-                    indicatorModuleDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(Indicator::class.java, false)
-                    },
-                    legendSetModuleDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(LegendSet::class.java, false)
-                    },
-                    expressionDimensionItemModuleDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(ExpressionDimensionItem::class.java, false)
-                    }
-                ).toObservable()
-            )
+    private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
+        val user = userModuleDownloader.downloadMetadata().blockingGet()
+        emit(progressManager.increaseProgress(User::class.java, false))
+
+        organisationUnitModuleDownloader.downloadMetadata(user).blockingAwait()
+        emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
+
+        programDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(Program::class.java, false))
+
+        dataSetDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(DataSet::class.java, false))
+
+        categoryDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(Category::class.java, false))
+
+        visualizationDownloader.downloadMetadata().blockingGet()
+        emit(progressManager.increaseProgress(Visualization::class.java, false))
+
+        programIndicatorModuleDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(ProgramIndicator::class.java, false))
+
+        indicatorModuleDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(Indicator::class.java, false))
+
+        legendSetModuleDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(LegendSet::class.java, false))
+
+        expressionDimensionItemModuleDownloader.downloadMetadata().blockingAwait()
+        emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, true))
     }
 
     private fun changeEncryptionIfRequired(): Completable {
@@ -182,6 +172,6 @@ internal class MetadataCall @Inject constructor(
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        runBlocking { download().collect() }
     }
 }

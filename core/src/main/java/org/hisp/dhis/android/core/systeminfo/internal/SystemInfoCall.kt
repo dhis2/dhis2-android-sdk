@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -50,38 +49,34 @@ class SystemInfoCall @Inject internal constructor(
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
-    private val apiCallExecutor: RxAPICallExecutor
-) : CompletableProvider {
-    override fun getCompletable(storeError: Boolean): Completable {
-        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields), storeError)
-            .doOnSuccess { systemInfo: SystemInfo ->
-                val version = systemInfo.version()
-                if (version != null && isAllowedVersion(version)) {
-                    versionManager.setVersion(version)
-                } else {
-                    throw D2Error.builder()
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                        .errorDescription(
-                            "Server DHIS version (" + version + ") not valid. " +
-                                "Allowed versions: " +
-                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
-                        )
-                        .build()
-                }
-                insertOrUpdateSystemInfo(systemInfo)
-            }.ignoreElement()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) : DownloadProvider {
+
+    override suspend fun download(storeError: Boolean) {
+        coroutineAPICallExecutor.wrap(storeError) {
+            systemInfoService.getSystemInfo(SystemInfoFields.allFields)
+        }.map { systemInfo ->
+            val version = systemInfo.version()
+            if (version != null && isAllowedVersion(version)) {
+                versionManager.setVersion(version)
+            } else {
+                throw D2Error.builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                    .errorDescription(
+                        "Server DHIS version (" + version + ") not valid. " +
+                            "Allowed versions: " +
+                            CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
+                    )
+                    .build()
+            }
+            insertOrUpdateSystemInfo(systemInfo)
+        }
     }
 
     private fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            systemInfoHandler.handle(systemInfo)
-            resourceHandler.serverDate = systemInfo.serverDate()
-            resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+        systemInfoHandler.handle(systemInfo)
+        resourceHandler.serverDate = systemInfo.serverDate()
+        resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
     }
 }

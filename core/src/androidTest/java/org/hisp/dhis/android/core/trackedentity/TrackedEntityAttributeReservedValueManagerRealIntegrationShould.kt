@@ -211,7 +211,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
 
     //    @Test
     @Throws(D2Error::class)
-    suspend fun fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified() {
+    suspend fun fill_up_100_values_if_db_does_not_have_at_least_50_when_no_number_of_values_to_reserve_is_specified() {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 50)
         Truth.assertThat(selectAll().size).isEqualTo(50)
         d2.trackedEntityModule().reservedValueManager()

@@ -41,21 +41,8 @@ public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
 
     @Override
     public D2ErrorCode fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceValue = cursor.getString(columnIndex);
-
-        D2ErrorCode enumModel;
-        if (sourceValue == null) {
-            enumModel = D2ErrorCode.UNEXPECTED;
-        } else {
-            try {
-                enumModel = Enum.valueOf(getEnumClass(), sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown " + getEnumClass().getSimpleName() + " type", exception);
-            }
-        }
-
-        return enumModel;
+        D2ErrorCode d2ErrorCode = super.fromCursor(cursor, columnName);
+        return d2ErrorCode != null ? d2ErrorCode : D2ErrorCode.UNEXPECTED;
     }
 
     @Override

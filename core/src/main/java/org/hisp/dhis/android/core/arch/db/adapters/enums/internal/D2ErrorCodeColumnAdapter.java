@@ -42,7 +42,7 @@ public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
     @Override
     public D2ErrorCode fromCursor(Cursor cursor, String columnName) {
         D2ErrorCode d2ErrorCode = super.fromCursor(cursor, columnName);
-        return d2ErrorCode != null ? d2ErrorCode : D2ErrorCode.UNEXPECTED;
+        return d2ErrorCode == null ? D2ErrorCode.UNEXPECTED : d2ErrorCode;
     }
 
     @Override

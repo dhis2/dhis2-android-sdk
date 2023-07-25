@@ -65,7 +65,6 @@ import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.usecase.stock.StockUseCase
@@ -100,7 +99,7 @@ internal class MetadataCall @Inject constructor(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 12
+        const val CALLS_COUNT = 15
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -121,19 +120,18 @@ internal class MetadataCall @Inject constructor(
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
         databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
-        emit(progressManager.increaseProgress(SystemInfo::class.java, false))
 
         systemSettingDownloader.downloadMetadata().blockingAwait()
-        progressManager.increaseProgress(SystemSetting::class.java, false)
+        emit(progressManager.increaseProgress(SystemSetting::class.java, false))
 
         useCaseDownloader.downloadMetadata().blockingAwait()
-        progressManager.increaseProgress(StockUseCase::class.java, false)
+        emit(progressManager.increaseProgress(StockUseCase::class.java, false))
 
         constantModuleDownloader.downloadMetadata().blockingGet()
-        progressManager.increaseProgress(Constant::class.java, false)
+        emit(progressManager.increaseProgress(Constant::class.java, false))
 
         smsModule.configCase().refreshMetadataIdsCallable().blockingAwait()
-        progressManager.increaseProgress(SmsModule::class.java, false)
+        emit(progressManager.increaseProgress(SmsModule::class.java, false))
     }
 
     private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Flow<D2Progress> = flow {

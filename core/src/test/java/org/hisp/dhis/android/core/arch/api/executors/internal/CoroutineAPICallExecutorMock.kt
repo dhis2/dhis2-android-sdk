@@ -25,8 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.modules.internal
 
-interface UntypedSuspendModuleDownloader {
-    suspend fun downloadMetadata()
+package org.hisp.dhis.android.core.arch.api.executors.internal
+
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+
+internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
+    override suspend fun <P> wrap(
+        storeError: Boolean,
+        acceptedErrorCodes: List<Int>?,
+        errorCatcher: APICallErrorCatcher?,
+        errorClass: Class<P>?,
+        block: suspend () -> P
+    ): Result<P, D2Error> {
+        return try {
+            Result.Success(block.invoke())
+        } catch (e: Throwable) {
+            Result.Failure(
+                D2Error.builder()
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected error")
+                    .build()
+            )
+        }
+    }
+
+    override suspend fun <P> wrapTransactionally(cleanForeignKeyErrors: Boolean, block: suspend () -> P): P {
+        return block.invoke()
+    }
 }

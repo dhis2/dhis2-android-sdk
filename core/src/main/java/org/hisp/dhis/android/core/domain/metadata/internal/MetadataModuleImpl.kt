@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.domain.metadata.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader
 import org.hisp.dhis.android.core.domain.metadata.MetadataCall
-import javax.inject.Inject
 
 @Reusable
 class MetadataModuleImpl @Inject internal constructor(

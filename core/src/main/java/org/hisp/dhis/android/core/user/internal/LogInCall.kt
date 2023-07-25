@@ -29,13 +29,12 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -43,7 +42,6 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
@@ -53,7 +51,6 @@ import org.hisp.dhis.android.core.user.UserInternalAccessor
 @Reusable
 @Suppress("LongParameterList")
 internal class LogInCall @Inject internal constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
@@ -143,7 +140,7 @@ internal class LogInCall @Inject internal constructor(
                     userHandler.handle(user)
                     user
                 } catch (e: Exception) {
-                    // Credentials are stored and then removed in case of error since they are required to download system info
+                    // Credentials are stored and then removed in case of error (required to download system info)
                     credentialsSecureStore.remove()
                     userIdStore.remove()
                     throw e

@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -44,7 +43,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
 @Reusable
 class SystemInfoCall @Inject internal constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val systemInfoHandler: SystemInfoHandler,
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,
@@ -55,23 +53,26 @@ class SystemInfoCall @Inject internal constructor(
     override suspend fun download(storeError: Boolean) {
         coroutineAPICallExecutor.wrap(storeError) {
             systemInfoService.getSystemInfo(SystemInfoFields.allFields)
-        }.map { systemInfo ->
-            val version = systemInfo.version()
-            if (version != null && isAllowedVersion(version)) {
-                versionManager.setVersion(version)
-            } else {
-                throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                    .errorDescription(
-                        "Server DHIS version (" + version + ") not valid. " +
-                            "Allowed versions: " +
-                            CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
-                    )
-                    .build()
-            }
-            insertOrUpdateSystemInfo(systemInfo)
-        }
+        }.fold(
+            onSuccess = { systemInfo ->
+                val version = systemInfo.version()
+                if (version != null && isAllowedVersion(version)) {
+                    versionManager.setVersion(version)
+                } else {
+                    throw D2Error.builder()
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                        .errorDescription(
+                            "Server DHIS version (" + version + ") not valid. " +
+                                "Allowed versions: " +
+                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
+                        )
+                        .build()
+                }
+                insertOrUpdateSystemInfo(systemInfo)
+            },
+            onFailure = { throw it }
+        )
     }
 
     private fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {

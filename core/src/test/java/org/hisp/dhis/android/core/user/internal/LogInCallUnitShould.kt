@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -46,7 +47,7 @@ import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.junit.Before
@@ -61,6 +62,7 @@ import retrofit2.Call
 class LogInCallUnitShould : BaseCallShould() {
     private val userService: UserService = mock()
     private val apiCallExecutor: APICallExecutor = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val userHandler: UserHandler = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
@@ -78,7 +80,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val authenticatedUser: AuthenticatedUser = mock()
     private val credentials: Credentials = mock()
     private val userStore: UserStore = mock()
-    private val systemInfoRepository: SystemInfoObjectRepository = mock()
+    private val systemInfoCall: SystemInfoCall = mock()
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
@@ -103,10 +105,11 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint)
         whenever(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint)
         whenever<Call<*>?>(userService.authenticate(any(), any())).thenReturn(authenticateAPICall)
-        whenever(systemInfoRepository.download()).thenReturn(Completable.complete())
+        systemInfoCall.stub {
+            onBlocking { download(any()) }.doReturn(Unit)
+        }
         whenAPICall().thenReturn(user)
         whenever(userStore.selectFirst()).thenReturn(loggedUser)
-        whenever(systemInfoRepository.blockingGet()).thenReturn(systemInfoFromDb)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT)
         whenever(d2Error.isOffline).thenReturn(true)
@@ -118,9 +121,9 @@ class LogInCallUnitShould : BaseCallShould() {
 
     private fun instantiateCall(username: String?, password: String?, serverUrl: String?): Single<User> {
         return LogInCall(
-            databaseAdapter, apiCallExecutor,
+            apiCallExecutor, coroutineAPICallExecutor,
             userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
-            systemInfoRepository, userStore, apiCallErrorCatcher,
+            systemInfoCall, userStore, apiCallErrorCatcher,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, versionManager
         ).logIn(username, password, serverUrl)
@@ -183,7 +186,6 @@ class LogInCallUnitShould : BaseCallShould() {
         testObserver.awaitTerminalEvent()
         assertThat(testObserver.errorCount()).isEqualTo(1)
         testObserver.dispose()
-        verifyNoTransactionCompleted()
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).updateOrInsertWhere(any())
@@ -263,7 +265,6 @@ class LogInCallUnitShould : BaseCallShould() {
             .user(UID)
             .hash(UserHelper.md5(USERNAME, PASSWORD))
             .build()
-        verifyTransactionComplete()
         verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel)
         verify(userHandler).handle(eq(user))
     }

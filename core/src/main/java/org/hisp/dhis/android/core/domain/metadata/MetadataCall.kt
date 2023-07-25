@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -72,7 +73,6 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @Reusable
@@ -103,13 +103,19 @@ internal class MetadataCall @Inject constructor(
         const val CALLS_COUNT = 12
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun download(): Flow<D2Progress> = channelFlow {
         val progressManager = D2ProgressManager(CALLS_COUNT)
         changeEncryptionIfRequired().blockingAwait()
         coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
-            systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
-            executeIndependentCalls(progressManager).collect { send(it) }
-            executeUserCallAndChildren(progressManager).collect { send(it) }
+            try {
+                systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
+                executeIndependentCalls(progressManager).collect { send(it) }
+                executeUserCallAndChildren(progressManager).collect { send(it) }
+            } catch (e: Exception) {
+                if (e !is D2Error && e.cause is D2Error) throw e.cause!!
+                else throw e
+            }
         }
     }
 

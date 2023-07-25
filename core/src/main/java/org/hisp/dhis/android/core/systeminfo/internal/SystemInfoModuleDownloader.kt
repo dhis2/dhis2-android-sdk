@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import javax.inject.Inject
 
 @Reusable
 internal class SystemInfoModuleDownloader @Inject internal constructor(
     private val systemInfoCall: SystemInfoCall
 ) : UntypedSuspendModuleDownloader {
 
-    override suspend fun downloadMetadata(){
+    override suspend fun downloadMetadata() {
         return systemInfoCall.download(storeError = true)
     }
 

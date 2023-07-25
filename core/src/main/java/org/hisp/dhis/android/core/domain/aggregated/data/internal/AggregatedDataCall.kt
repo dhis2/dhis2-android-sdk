@@ -29,12 +29,9 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
@@ -69,11 +66,10 @@ internal class AggregatedDataCall @Inject constructor(
     private val resourceHandler: ResourceHandler,
     private val hashHelper: AggregatedDataSyncHashHelper
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun download(): Flow<AggregatedD2Progress> {
+    fun download(): Flow<AggregatedD2Progress> = flow {
         val progressManager = AggregatedD2ProgressManager(null)
-        return flow<D2Progress> { systemInfoModuleDownloader.downloadWithProgressManager(progressManager) }
-            .flatMapLatest { selectDataSetsAndDownload(progressManager) }
+        systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+        selectDataSetsAndDownload(progressManager).collect { emit(it) }
     }
 
     private fun selectDataSetsAndDownload(

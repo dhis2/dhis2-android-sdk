@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import kotlin.math.ceil
 import kotlin.math.max
@@ -36,7 +35,6 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.rx2.asFlow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -320,14 +318,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private fun downloadRelationships(
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives
-    ): Flow<TrackerD2Progress> {
-        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
-            Observable.fromCallable {
-                progressManager.increaseProgress(
-                    TrackedEntityInstance::class.java, false
-                )
-            }
-        ).asFlow()
+    ): Flow<TrackerD2Progress> = flow {
+        relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives)
+        emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
     }
 
     @Suppress("TooGenericExceptionCaught")

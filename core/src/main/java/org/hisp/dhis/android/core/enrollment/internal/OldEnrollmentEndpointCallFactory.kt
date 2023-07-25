@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 internal class OldEnrollmentEndpointCallFactory @Inject constructor(
     private val service: EnrollmentService
 ) : EnrollmentEndpointCallFactory {
-    override fun getRelationshipEntityCall(uid: String): Single<Enrollment> {
+    override suspend fun getRelationshipEntityCall(uid: String): Enrollment {
         return service.getEnrollmentSingle(
             uid,
             EnrollmentFields.asRelationshipFields

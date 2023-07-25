@@ -60,12 +60,12 @@ internal class NewEventEndpointCallFactory @Inject constructor(
         ).map { mapPayload(it) }
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
         return service.getEventSingle(
             eventUid = uid,
             fields = NewEventFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
-        ).map { mapPayload(it) }
+        ).let { mapPayload(it) }
     }
 
     private fun mapPayload(payload: NTIPayload<NewTrackerImporterEvent>): Payload<Event> {

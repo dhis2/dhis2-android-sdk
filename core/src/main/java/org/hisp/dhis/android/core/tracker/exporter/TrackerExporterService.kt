@@ -39,13 +39,13 @@ import retrofit2.http.*
 @Suppress("LongParameterList")
 internal interface TrackerExporterService {
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstance(
+    suspend fun getTrackedEntityInstance(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<NTIPayload<NewTrackerImporterTrackedEntity>>
+    ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
@@ -91,10 +91,10 @@ internal interface TrackerExporterService {
     ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$ENROLLMENTS/{$ENROLLMENT}")
-    fun getEnrollmentSingle(
+    suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT) enrollmentUid: String,
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>
-    ): Single<NewTrackerImporterEnrollment>
+    ): NewTrackerImporterEnrollment
 
     @GET(EVENTS)
     fun getEvents(
@@ -128,11 +128,11 @@ internal interface TrackerExporterService {
     ): Single<NTIPayload<NewTrackerImporterEvent>>
 
     @GET(EVENTS)
-    fun getEventSingle(
+    suspend fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(EVENT) eventUid: String,
         @Query(OU_MODE) orgUnitMode: String
-    ): Single<NTIPayload<NewTrackerImporterEvent>>
+    ): NTIPayload<NewTrackerImporterEvent>
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "tracker/trackedEntities"

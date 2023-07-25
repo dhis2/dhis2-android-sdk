@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 

@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
 import org.hisp.dhis.android.core.event.Event

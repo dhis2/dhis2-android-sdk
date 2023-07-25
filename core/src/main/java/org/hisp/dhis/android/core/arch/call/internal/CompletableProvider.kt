@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.call.internal
 
 import io.reactivex.Completable
 
-interface CompletableProvider {
+fun interface CompletableProvider {
     fun getCompletable(storeError: Boolean): Completable
 }

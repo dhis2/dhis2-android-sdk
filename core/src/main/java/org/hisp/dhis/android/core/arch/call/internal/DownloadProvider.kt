@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.call.internal
 
-internal interface DownloadProvider {
+internal fun interface DownloadProvider {
     suspend fun download(storeError: Boolean)
 }

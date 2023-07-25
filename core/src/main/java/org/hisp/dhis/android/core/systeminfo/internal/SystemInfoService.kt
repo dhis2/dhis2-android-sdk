@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface SystemInfoService {
+internal fun interface SystemInfoService {
     @GET("system/info")
     suspend fun getSystemInfo(
         @Query("fields") @Which fields: Fields<SystemInfo>

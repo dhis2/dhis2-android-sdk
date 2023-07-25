@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.modules.internal
 
-interface UntypedSuspendModuleDownloader {
+fun interface UntypedSuspendModuleDownloader {
     suspend fun downloadMetadata()
 }

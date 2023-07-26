@@ -25,26 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal
+package org.hisp.dhis.android.core.arch.modules.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
-
-@Reusable
-internal class SystemInfoModuleDownloader @Inject internal constructor(
-    private val systemInfoCall: SystemInfoCall
-) : UntypedSuspendModuleDownloader {
-
-    override suspend fun downloadMetadata() {
-        return systemInfoCall.download(storeError = true)
-    }
-
-    suspend fun downloadWithProgressManager(progressManager: D2ProgressManager): D2Progress {
-        downloadMetadata()
-        return progressManager.increaseProgress(SystemInfo::class.java, false)
-    }
+fun interface UntypedSuspendModuleDownloader {
+    suspend fun downloadMetadata()
 }

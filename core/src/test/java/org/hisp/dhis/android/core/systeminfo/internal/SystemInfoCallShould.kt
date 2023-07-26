@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
 import java.util.*
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
@@ -40,7 +41,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,11 +51,10 @@ import org.junit.runners.JUnit4
 class SystemInfoCallShould {
     private val systemInfoService: SystemInfoService = mock()
     private val databaseAdapter: DatabaseAdapter = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val d2Error: D2Error = mock()
     private val systemInfoHandler: SystemInfoHandler = mock()
     private val resourceHandler: ResourceHandler = mock()
-    private val systemInfoSingle: Single<SystemInfo> = mock()
     private val transaction: Transaction = mock()
 
     private val filterCaptor: KArgumentCaptor<Fields<SystemInfo>> = argumentCaptor()
@@ -68,73 +68,93 @@ class SystemInfoCallShould {
     @Before
     fun setUp() {
         systemInfoSyncCall = SystemInfoCall(
-            databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler, versionManager,
-            apiCallExecutor
+            systemInfoHandler, systemInfoService, resourceHandler, versionManager,
+            coroutineAPICallExecutor
         )
 
         whenever(systemInfo.version()).thenReturn("2.29")
         whenever(systemInfo.serverDate()).thenReturn(serverDate)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
-        whenever(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoSingle)
+        systemInfoService.stub {
+            onBlocking { getSystemInfo(filterCaptor.capture()) }.doReturn(systemInfo)
+        }
     }
 
     @Test
-    fun pass_correct_fields_to_service() {
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo))
-        systemInfoSyncCall.getCompletable(true).subscribe()
+    fun pass_correct_fields_to_service() = runBlocking {
+        systemInfoSyncCall.download(true)
 
         assertThat(filterCaptor.firstValue).isEqualTo(SystemInfoFields.allFields)
     }
 
     @Test
-    fun emit_d2_error_when_api_call_executor_returns_error() {
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.error(d2Error))
+    fun emit_d2_error_when_api_call_executor_returns_error() = runBlocking {
+        systemInfoService.stub {
+            onBlocking { getSystemInfo(any()) }.doAnswer { throw d2Error }
+        }
 
-        systemInfoSyncCall.getCompletable(true).test().assertError(d2Error)
+        try {
+            systemInfoSyncCall.download(true)
+            fail("It should throw exception")
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(D2Error::class.java)
+        }
     }
 
     @Test
-    fun never_invoke_handlers_on_call_exception() {
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.error(d2Error))
-        systemInfoSyncCall.getCompletable(true).onErrorComplete().subscribe()
+    fun never_invoke_handlers_on_call_exception() = runBlocking {
+        systemInfoService.stub {
+            onBlocking { getSystemInfo(filterCaptor.capture()) }.doAnswer { throw d2Error }
+        }
 
-        verify(databaseAdapter, never()).beginNewTransaction()
-        verify(transaction, never()).setSuccessful()
-        verify(transaction, never()).end()
+        verifyThrowD2Error(
+            block = { systemInfoSyncCall.download(true) }
+        )
+
         verifyNoMoreInteractions(systemInfoHandler)
         verifyNoMoreInteractions(resourceHandler)
     }
 
     @Test
-    fun invoke_handler_after_successful_call() {
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo))
-        systemInfoSyncCall.getCompletable(true).subscribe()
+    fun invoke_handler_after_successful_call() = runBlocking {
+        systemInfoSyncCall.download(true)
 
         verify(systemInfoHandler).handle(systemInfo)
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO))
     }
 
     @Test
-    fun throw_d2_call_exception_when_system_version_not_supported() {
+    fun throw_d2_call_exception_when_system_version_not_supported() = runBlocking {
         whenever(systemInfo.version()).thenReturn("2.28")
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo))
 
-        systemInfoSyncCall.getCompletable(true).test().assertError(D2Error::class.java)
+        verifyThrowD2Error(
+            block = { systemInfoSyncCall.download(true) }
+        )
     }
 
     @Test
-    fun not_call_handler_when_system_version_not_supported() {
+    fun not_call_handler_when_system_version_not_supported() = runBlocking {
         whenever(systemInfo.version()).thenReturn("2.28")
-        whenever(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo))
-        try {
-            systemInfoSyncCall.getCompletable(true).blockingAwait()
-            Assert.fail("It should not get here")
-        } catch (e: RuntimeException) {
-            assertThat((e.cause as D2Error).errorCode())
-                .isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_DHIS_VERSION)
-        }
+
+        verifyThrowD2Error(
+            block = { systemInfoSyncCall.download(true) },
+            code = D2ErrorCode.INVALID_DHIS_VERSION
+        )
 
         verify(systemInfoHandler, never()).handle(systemInfo)
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO))
+    }
+
+    private suspend fun verifyThrowD2Error(block: suspend () -> Unit, code: D2ErrorCode? = null) {
+        try {
+            block.invoke()
+            fail("It should not get here")
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(D2Error::class.java)
+
+            if (code != null) {
+                assertThat((e as D2Error).errorCode()).isEquivalentAccordingToCompareTo(code)
+            }
+        }
     }
 }

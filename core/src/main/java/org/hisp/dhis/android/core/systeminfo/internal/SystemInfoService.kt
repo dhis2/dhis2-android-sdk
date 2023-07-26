@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface SystemInfoService {
+internal fun interface SystemInfoService {
     @GET("system/info")
-    Single<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
+    suspend fun getSystemInfo(
+        @Query("fields") @Which fields: Fields<SystemInfo>
+    ): SystemInfo
 }

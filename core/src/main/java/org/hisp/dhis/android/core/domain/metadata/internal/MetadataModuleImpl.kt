@@ -25,34 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata.internal;
+package org.hisp.dhis.android.core.domain.metadata.internal
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader;
-import org.hisp.dhis.android.core.domain.metadata.MetadataCall;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader
+import org.hisp.dhis.android.core.domain.metadata.MetadataCall
 
 @Reusable
-public final class MetadataModuleImpl implements WithProgressDownloader {
-
-    private final MetadataCall metadataCall;
-
-    @Inject
-    MetadataModuleImpl(MetadataCall metadataCall) {
-        this.metadataCall = metadataCall;
+class MetadataModuleImpl @Inject internal constructor(
+    private val metadataCall: MetadataCall
+) : WithProgressDownloader {
+    override fun download(): Observable<D2Progress> {
+        return metadataCall.download().asObservable()
     }
 
-    @Override
-    public Observable<D2Progress> download() {
-        return metadataCall.download();
-    }
-
-    @Override
-    public void blockingDownload() {
-        metadataCall.blockingDownload();
+    override fun blockingDownload() {
+        metadataCall.blockingDownload()
     }
 }

@@ -26,10 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.call.internal;
+package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import io.reactivex.Single;
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 
-public interface SingleProvider {
-    Single getSingle(boolean storeError);
+internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
+    override suspend fun <P> wrap(
+        storeError: Boolean,
+        acceptedErrorCodes: List<Int>?,
+        errorCatcher: APICallErrorCatcher?,
+        errorClass: Class<P>?,
+        block: suspend () -> P
+    ): Result<P, D2Error> {
+        return try {
+            Result.Success(block.invoke())
+        } catch (e: Throwable) {
+            Result.Failure(
+                D2Error.builder()
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected error")
+                    .build()
+            )
+        }
+    }
+
+    override suspend fun <P> wrapTransactionally(cleanForeignKeyErrors: Boolean, block: suspend () -> P): P {
+        return block.invoke()
+    }
 }

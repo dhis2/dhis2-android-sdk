@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import java.util.concurrent.Callable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -46,7 +44,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
     private val queryCallFactory: TrackedEntityInstanceQueryCallFactory
 ) : TrackedEntityEndpointCallFactory() {
 
-    override fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
+    override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
@@ -88,7 +86,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
         )
     }
 
-    override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
+    override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
         return queryCallFactory.getCall(query)
     }
 }

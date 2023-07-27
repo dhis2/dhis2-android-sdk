@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import java.text.ParseException
 import java.util.*
-import java.util.concurrent.Callable
 import javax.net.ssl.HttpsURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -82,7 +82,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
     // object to test
-    private lateinit var call: Callable<TrackerQueryResult>
+    private lateinit var callFactory: TrackedEntityInstanceQueryCallFactory
 
     @Before
     override fun setUp() {
@@ -125,25 +125,25 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
 
         // Metadata call
-        call = getFactory().getCall(query)
+        callFactory = getFactory()
     }
 
     @Test
-    fun succeed_when_endpoint_calls_succeed() {
-        val teisResponse = call.call()
+    fun succeed_when_endpoint_calls_succeed() = runBlocking {
+        val teisResponse = callFactory.getCall(query)
         assertThat(teisResponse.trackedEntities).isEqualTo(teis)
     }
 
     @Test
     fun call_mapper_with_search_grid() {
-        call.call()
+        callFactory.getCall(query)
         verify(mapper).transform(searchGrid)
         verifyNoMoreInteractions(mapper)
     }
 
     @Test
     fun call_service_with_query_parameters() {
-        call.call()
+        callFactory.getCall(query)
         verifyService(query)
         verifyNoMoreInteractions(trackedEntityService)
     }
@@ -154,7 +154,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(d2Error.errorCode()).doReturn(D2ErrorCode.MAX_TEI_COUNT_REACHED)
 
         try {
-            call.call()
+            callFactory.getCall(query)
             fail("D2Error was expected but was not thrown")
         } catch (d2e: D2Error) {
             assertThat(d2e.errorCode() == D2ErrorCode.MAX_TEI_COUNT_REACHED).isTrue()
@@ -168,7 +168,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(d2Error.httpErrorCode()).doReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG)
 
         try {
-            call.call()
+            callFactory.getCall(query)
             fail("D2Error was expected but was not thrown")
         } catch (d2e: D2Error) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue()
@@ -178,16 +178,15 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     @Test(expected = D2Error::class)
     fun throw_D2CallException_when_mapper_throws_exception() {
         whenever(mapper.transform(searchGrid)).thenThrow(ParseException::class.java)
-        call.call()
+        callFactory.getCall(query)
     }
 
     @Test
     fun should_not_map_active_event_status_if_greater_than_2_33() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
         val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        val activeCall = getFactory().getCall(activeQuery)
 
-        activeCall.call()
+        callFactory.getCall(activeQuery)
 
         verifyService(activeQuery, EventStatus.ACTIVE)
     }
@@ -197,16 +196,12 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
 
         val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        val activeCall = getFactory().getCall(activeQuery)
-
-        activeCall.call()
+        callFactory.getCall(activeQuery)
 
         verifyService(activeQuery, EventStatus.VISITED)
 
         val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
-        val nonActiveCall = getFactory().getCall(nonActiveQuery)
-
-        nonActiveCall.call()
+        callFactory.getCall(nonActiveQuery)
 
         verifyService(activeQuery, EventStatus.SCHEDULE)
     }
@@ -228,9 +223,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     .build()
             )
         )
-        val call = getFactory().getCall(query)
 
-        call.call()
+        callFactory.getCall(query)
 
         val expectedTeiQuery = TrackedEntityInstanceQueryCallFactory.getPostEventTeiQuery(query, events)
 
@@ -252,9 +246,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             ),
             orgUnits = listOf("orgunit1", "orgunit2")
         )
-        val call = getFactory().getCall(query)
 
-        call.call()
+        callFactory.getCall(query)
 
         verifyEventService(query)
     }
@@ -306,7 +299,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             }
         }
     }
-    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) {
+    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
         verify(eventService).getEvents(
             eq(EventFields.teiQueryFields),
             eq(orgunit),
@@ -364,7 +357,34 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
     }
 
-    private fun whenEventServiceQuery(): OngoingStubbing<Single<Payload<Event>>> {
+    private fun whenEventServiceQuery(): OngoingStubbing<Single<Payload<Event>>> = runBlocking {
+        eventService.stub {
+            onBlocking {
+                .getEvents(
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+            )
+        }
         return whenever(
             eventService.getEvents(
                 anyOrNull(),

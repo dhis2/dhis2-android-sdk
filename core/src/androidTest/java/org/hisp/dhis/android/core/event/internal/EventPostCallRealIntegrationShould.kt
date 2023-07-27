@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
@@ -94,7 +95,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_event_with_correct_category_combo_after_be_pushed() {
+    fun pull_event_with_correct_category_combo_after_be_pushed() = runBlocking {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         pushDummyEvent()
@@ -118,7 +119,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_two_events_with_correct_category_combo_after_be_pushed() {
+    fun pull_two_events_with_correct_category_combo_after_be_pushed() = runBlocking {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         createDummyDataToPost(eventUid2)
@@ -156,11 +157,11 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     @Throws(Exception::class)
-    private fun downloadEvents() {
-        val eventEndpointCall = EventCallFactory.create(
+    private suspend fun downloadEvents() {
+        val eventPayload = EventCallFactory.create(
             d2.retrofit(), orgUnitUid, 50, emptyList()
         )
-        val events = eventEndpointCall.blockingGet().items()
+        val events = eventPayload.items()
         for (event in events) {
             eventStore.insert(event)
         }

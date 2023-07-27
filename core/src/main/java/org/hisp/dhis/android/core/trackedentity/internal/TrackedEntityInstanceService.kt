@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -75,7 +74,7 @@ internal interface TrackedEntityInstanceService {
     ): TrackedEntityInstance
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstances(
+    suspend fun getTrackedEntityInstances(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstances: String?,
         @Query(OU) orgUnits: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -90,10 +89,10 @@ internal interface TrackedEntityInstanceService {
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<Payload<TrackedEntityInstance>>
+    ): Payload<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/query")
-    fun query(
+    suspend fun query(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -118,7 +117,7 @@ internal interface TrackedEntityInstanceService {
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int
-    ): Call<SearchGrid>
+    ): SearchGrid
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"

@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
@@ -50,7 +48,6 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val rxCallExecutor: RxAPICallExecutor,
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
@@ -66,10 +63,10 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         return queryFactory.getQueries(params)
     }
 
-    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
-        return rxCallExecutor.wrapSingle(
-            trackerCallFactory.getTrackedEntityCall().getCollectionCall(query), true
-        )
+    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<TrackedEntityInstance>, D2Error> {
+        return coroutineCallExecutor.wrap(storeError = true) {
+            trackerCallFactory.getTrackedEntityCall().getCollectionCall(query)
+        }
     }
 
     override fun persistItems(
@@ -84,7 +81,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         lastUpdatedManager.update(bundle)
     }
 
-    override fun queryByUids(
+    override suspend fun queryByUids(
         bundle: TrackerQueryBundle,
         overwrite: Boolean,
         relatives: RelationshipItemRelatives
@@ -100,7 +97,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
             try {
                 val useEntityEndpoint = teiQuery.commonParams.program != null
 
-                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery)
+                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
                     val persistParams = IdentifiableDataHandlerParams(
@@ -124,25 +121,23 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         return result
     }
 
-    private fun querySingleTei(
+    private suspend fun querySingleTei(
         uid: String,
         useEntityEndpoint: Boolean,
         query: TrackerAPIQuery
-    ): TrackedEntityInstance? {
+    ): Result<TrackedEntityInstance?, D2Error> {
         return if (useEntityEndpoint) {
-            runBlocking {
                 coroutineCallExecutor.wrap(
                     storeError = true,
                     errorCatcher = TrackedEntityInstanceCallErrorCatcher()
                 ) {
                     trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
                 }
-            }.getOrThrow()
         } else {
             val collectionQuery = query.copy(uids = listOf(uid))
-            rxCallExecutor.wrapSingle(
-                trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery), true
-            ).blockingGet().items().firstOrNull()
+            coroutineCallExecutor.wrap(storeError = true) {
+                trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery)
+            }.map { it.items().firstOrNull() }
         }
     }
 

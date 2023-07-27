@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -43,7 +42,7 @@ internal interface EventService {
 
     @SuppressWarnings("LongParameterList")
     @GET(EVENTS)
-    fun getEvents(
+    suspend fun getEvents(
         @Query(FIELDS) @Which fields: Fields<Event>,
         @Query(ORG_UNIT) orgUnit: String? = null,
         @Query(OU_MODE) orgUnitMode: String? = null,
@@ -66,7 +65,7 @@ internal interface EventService {
         @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
         @Query(EVENT) eventUid: String? = null,
-    ): Single<Payload<Event>>
+    ): Payload<Event>
 
     @GET("$EVENTS/{$EVENT_UID}")
     fun getEvent(

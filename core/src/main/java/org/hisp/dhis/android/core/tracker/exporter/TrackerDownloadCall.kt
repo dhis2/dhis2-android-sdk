@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import io.reactivex.Single
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
@@ -136,7 +136,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Suppress("LongParameterList")
-    private fun iterateBundle(
+    private suspend fun iterateBundle(
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
@@ -171,7 +171,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Suppress("LongParameterList", "NestedBlockDepth")
-    private fun iterateBundleOrgunit(
+    private suspend fun iterateBundleOrgunit(
         orgUnitUid: String,
         bundle: Q,
         params: ProgramDataDownloadParams,
@@ -244,7 +244,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         }
     }
 
-    private fun getItemsForOrgUnitProgramCombination(
+    private suspend fun getItemsForOrgUnitProgramCombination(
         trackerQueryBuilder: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
@@ -260,7 +260,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Throws(D2Error::class)
-    private fun getItemsWithPaging(
+    private suspend fun getItemsWithPaging(
         query: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
@@ -324,9 +324,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    protected fun getItems(query: TrackerAPIQuery): List<T> {
+    protected suspend fun getItems(query: TrackerAPIQuery): List<T> {
         return try {
-            getItemsAsSingle(query).blockingGet().items()
+            getPayloadResult(query).getOrThrow().items()
         } catch (e: RuntimeException) {
             if (e.cause is D2Error) {
                 throw e.cause as D2Error
@@ -362,7 +362,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected abstract fun getBundles(params: ProgramDataDownloadParams): List<Q>
 
-    protected abstract fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<T>>
+    protected abstract suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<T>, D2Error>
 
     protected abstract fun persistItems(
         items: List<T>,
@@ -372,7 +372,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected abstract fun updateLastUpdated(bundle: Q)
 
-    protected abstract fun queryByUids(
+    protected abstract suspend fun queryByUids(
         bundle: Q,
         overwrite: Boolean,
         relatives: RelationshipItemRelatives

@@ -31,7 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 
 @Reusable
-class UserInternalModule @Inject internal constructor(
-    internal val userCall: UserCall,
-    internal val logInCall: LogInCall
+internal class UserInternalModule @Inject constructor(
+    val userCall: UserCall,
+    val logInCall: LogInCall
 )

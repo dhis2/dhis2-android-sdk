@@ -56,7 +56,7 @@ internal class OldEventEndpointCallFactory @Inject constructor(
         )
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
         return service.getEventSingle(
             eventUid = uid,
             fields = EventFields.asRelationshipFields,

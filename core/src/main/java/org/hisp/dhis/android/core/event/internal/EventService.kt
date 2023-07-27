@@ -76,11 +76,11 @@ internal interface EventService {
     ): Call<Event>
 
     @GET(EVENTS)
-    fun getEventSingle(
+    suspend fun getEventSingle(
         @Query(EVENT) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
         @Query(OU_MODE) orgUnitMode: String
-    ): Single<Payload<Event>>
+    ): Payload<Event>
 
     companion object {
         const val ORG_UNIT = "orgUnit"

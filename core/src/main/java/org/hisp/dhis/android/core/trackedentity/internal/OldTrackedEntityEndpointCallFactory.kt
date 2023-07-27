@@ -78,7 +78,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
         )
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstance(
             fields = TrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstance = uid,

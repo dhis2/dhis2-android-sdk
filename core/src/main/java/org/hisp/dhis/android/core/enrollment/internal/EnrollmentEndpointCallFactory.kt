@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.enrollment.Enrollment
 
 internal interface EnrollmentEndpointCallFactory {
-    fun getRelationshipEntityCall(uid: String): Single<Enrollment>
+    suspend fun getRelationshipEntityCall(uid: String): Enrollment
 }

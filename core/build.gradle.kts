@@ -221,6 +221,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.
     }
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     debugImplementation("com.facebook.flipper:flipper:$flipper")
     debugImplementation("com.facebook.soloader:soloader:$soloader")

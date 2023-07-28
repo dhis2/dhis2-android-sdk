@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -95,7 +95,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_event_with_correct_category_combo_after_be_pushed() = runBlocking {
+    fun pull_event_with_correct_category_combo_after_be_pushed() = runTest {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         pushDummyEvent()
@@ -119,7 +119,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_two_events_with_correct_category_combo_after_be_pushed() = runBlocking {
+    fun pull_two_events_with_correct_category_combo_after_be_pushed() = runTest {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         createDummyDataToPost(eventUid2)

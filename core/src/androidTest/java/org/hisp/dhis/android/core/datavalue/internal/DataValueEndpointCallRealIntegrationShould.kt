@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
@@ -47,7 +47,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     @Throws(Exception::class)
     fun download_data_values() {
-        runBlocking {
+        runTest {
             if (!d2.userModule().isLogged().blockingGet()) {
                 d2.userModule().logIn(username, password, url).blockingGet()
             }

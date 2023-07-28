@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.wipe
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
@@ -46,7 +46,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     @Throws(Exception::class)
-    fun have_empty_database_when_wipe_db_after_sync_data() = runBlocking {
+    fun have_empty_database_when_wipe_db_after_sync_data() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
 

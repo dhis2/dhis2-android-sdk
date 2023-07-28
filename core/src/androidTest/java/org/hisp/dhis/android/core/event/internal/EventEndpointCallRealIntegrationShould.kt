@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
@@ -39,7 +39,7 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     // @Test
     @Throws(Exception::class)
-    fun download_number_of_events_according_to_default_limit() = runBlocking {
+    fun download_number_of_events_according_to_default_limit() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         val eventEndpointCall = create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())
@@ -55,7 +55,7 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     @Throws(Exception::class)
-    fun download_event_with_category_combo_option() = runBlocking {
+    fun download_event_with_category_combo_option() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())

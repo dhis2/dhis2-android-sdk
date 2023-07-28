@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
@@ -47,7 +47,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // @Test
-    fun delete_credentials_when_log_out_after_sync_data() = runBlocking {
+    fun delete_credentials_when_log_out_after_sync_data() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
 

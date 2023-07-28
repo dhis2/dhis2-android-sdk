@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlinx.coroutines.runBlocking
 import kotlin.collections.HashSet
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender

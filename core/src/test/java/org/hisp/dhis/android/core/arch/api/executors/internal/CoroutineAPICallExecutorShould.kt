@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -41,6 +42,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineAPICallExecutorShould {
 
     private val errorMapper: APIErrorMapper = mock()
@@ -63,7 +65,7 @@ class CoroutineAPICallExecutorShould {
     }
 
     @Test
-    fun `should return object when object api call succeed`() = runBlocking {
+    fun `should return object when object api call succeed`() = runTest {
         // Given suspend function returns an Int
         val expectedResult = Result.Success<Int, D2Error>(13)
         val block: suspend () -> Int = { 13 }
@@ -78,7 +80,7 @@ class CoroutineAPICallExecutorShould {
     }
 
     @Test
-    fun `should return D2Error when object api call fails`() = runBlocking {
+    fun `should return D2Error when object api call fails`() = runTest {
         // Given suspend function returns an error
         val d2Error = D2Error.builder()
             .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)

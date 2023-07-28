@@ -127,12 +127,12 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         query: TrackerAPIQuery
     ): Result<TrackedEntityInstance?, D2Error> {
         return if (useEntityEndpoint) {
-                coroutineCallExecutor.wrap(
-                    storeError = true,
-                    errorCatcher = TrackedEntityInstanceCallErrorCatcher()
-                ) {
-                    trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
-                }
+            coroutineCallExecutor.wrap(
+                storeError = true,
+                errorCatcher = TrackedEntityInstanceCallErrorCatcher()
+            ) {
+                trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
+            }
         } else {
             val collectionQuery = query.copy(uids = listOf(uid))
             coroutineCallExecutor.wrap(storeError = true) {

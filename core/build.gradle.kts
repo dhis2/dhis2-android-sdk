@@ -209,6 +209,7 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
     testImplementation("androidx.test:runner:$testRunner")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     // Android test dependencies
     androidTestImplementation("org.mockito:mockito-core:$mockito")

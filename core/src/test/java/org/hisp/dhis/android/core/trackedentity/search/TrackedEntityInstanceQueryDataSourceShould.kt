@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search
 import androidx.paging.ItemKeyedDataSource
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.runBlocking
 import java.util.*
-import java.util.concurrent.Callable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -53,6 +53,7 @@ import org.mockito.*
 import org.mockito.ArgumentMatchers.anyString
 
 @RunWith(JUnit4::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class TrackedEntityInstanceQueryDataSourceShould {
     private lateinit var singleEventFilterScope: TrackedEntityInstanceQueryRepositoryScope
     private lateinit var multipleEventFilterScope: TrackedEntityInstanceQueryRepositoryScope
@@ -125,7 +126,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun get_initial_online_page() = runBlocking {
+    fun get_initial_online_page() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,
@@ -158,7 +159,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun query_online_when_offline_exhausted() = runBlocking {
+    fun query_online_when_offline_exhausted() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,
@@ -176,7 +177,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun query_online_again_if_not_exhausted_and_use_right_paging() = runBlocking {
+    fun query_online_again_if_not_exhausted_and_use_right_paging() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,
@@ -206,7 +207,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun get_initial_online_page_from_cache() = runBlocking {
+    fun get_initial_online_page_from_cache() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).allowOnlineCache(true).build()
         val dataSource1 = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,
@@ -230,7 +231,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun get_multiple_event_filter_queries() = runBlocking {
+    fun get_multiple_event_filter_queries() = runTest {
         val scope = multipleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,
@@ -256,7 +257,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
      values already returned offline (duplicates), so it is needed to do a second query.
      */
     @Test
-    fun get_second_online_page_if_needed_in_initial_load() = runBlocking {
+    fun get_second_online_page_if_needed_in_initial_load() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
             store, trackerParentCallFactory, scope, childrenAppenders,

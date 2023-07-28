@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 import dagger.Reusable
 import java.text.ParseException
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
@@ -52,7 +51,6 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private val trackedEntityService: TrackedEntityInstanceService,
     private val eventService: EventService,
     private val mapper: SearchGridMapper,
-    private val apiCallExecutor: APICallExecutor,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dhisVersionManager: DHISVersionManager
 ) {
@@ -98,7 +96,10 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         }
     }
 
-    private suspend fun getEventQueryForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?): List<Event> {
+    private suspend fun getEventQueryForOrgunit(
+        query: TrackedEntityInstanceQueryOnline,
+        orgunit: String?
+    ): List<Event> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
                 fields = EventFields.teiQueryFields,

@@ -28,15 +28,23 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import java.util.Date
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
@@ -64,7 +72,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
-@SuppressWarnings("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList", "TooManyFunctions")
 @Reusable
 class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val store: TrackedEntityAttributeReservedValueStore,
@@ -80,6 +88,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         TrackedEntityAttributeReservedValueQuery>
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
 
     /**
      * @param attributeUid        Attribute uid
@@ -87,8 +96,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @return Value of tracked entity attribute
      * @see .getValue
      */
-    suspend fun blockingGetValue(attributeUid: String, organisationUnitUid: String): String {
-        return getValue(attributeUid, organisationUnitUid)!!
+    fun blockingGetValue(attributeUid: String, organisationUnitUid: String): String? {
+        return getValue(attributeUid, organisationUnitUid).blockingGet()
     }
 
     /**
@@ -99,20 +108,32 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param organisationUnitUid Organisation unit uid
      * @return Single with value of tracked entity attribute
      */
-
-    suspend fun getValue(attributeUid: String, organisationUnitUid: String): String? {
-
-        downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
-
-        val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
-        val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
-        val reservedValue = store.popOne(attributeUid, attributeOrgunit)
-            ?: throw D2Error.builder()
-                .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
-                .errorDescription("There are no reserved values")
-                .errorComponent(D2ErrorComponent.Database).build()
-
-        return reservedValue.value()
+    fun getValue(attributeUid: String, organisationUnitUid: String): Single<String?> {
+        return Single.create { emitter: SingleEmitter<String?> ->
+            scope.launch {
+                suspendCancellableCoroutine { continuation ->
+                    downloadValuesIfBelowThreshold(
+                        attributeUid, getOrganisationUnit(organisationUnitUid), null, false
+                    )
+                    continuation.resume(Unit)
+                }
+            }
+            scope.launch {
+                val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
+                val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
+                val reservedValue = store.popOne(attributeUid, attributeOrgunit)
+                if (reservedValue == null) {
+                    emitter.onError(
+                        D2Error.builder()
+                            .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
+                            .errorDescription("There are no reserved values")
+                            .errorComponent(D2ErrorComponent.Database).build()
+                    )
+                } else {
+                    emitter.onSuccess(reservedValue.value() ?: "")
+                }
+            }
+        }
     }
 
     /**
@@ -120,11 +141,11 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @see .downloadReservedValues
      */
-    suspend fun blockingDownloadReservedValues(
+    fun blockingDownloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?
     ) {
-        downloadReservedValues(attributeUid, numberOfValuesToFillUp).collect()
+        downloadReservedValues(attributeUid, numberOfValuesToFillUp).blockingSubscribe()
     }
 
     /**
@@ -141,19 +162,19 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @return An Observable that notifies about the progress.
      */
-    private fun downloadReservedValues(
+    fun downloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?
-    ) = flow<D2Progress> {
-        downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp)
+    ): Observable<D2Progress> {
+        return downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
     /**
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
-     * @see .downloadAllReservedValues
+     * @see .downloadAllReservedValuesObservable
      */
-    suspend fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
-        downloadAllReservedValues(numberOfValuesToFillUp)
+    fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
+        downloadAllReservedValues(numberOfValuesToFillUp).blockingSubscribe()
     }
 
     /**
@@ -163,14 +184,13 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
      * @return An Observable that notifies about the progress.
      */
-    private suspend fun downloadAllReservedValues(
-        numberOfValuesToFillUp: Int?
-    ): List<D2Progress> = coroutineScope {
-        val observables = generatedAttributes.map { attribute ->
-            async { downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp) }
+    fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
+        val observables: MutableList<Observable<D2Progress>> = ArrayList()
+        val generatedAttributes = generatedAttributes
+        for (attribute in generatedAttributes) {
+            observables.add(downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp).asObservable())
         }
-
-        observables.awaitAll().flatten()
+        return Observable.merge(observables)
     }
 
     /**
@@ -181,8 +201,14 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param organisationUnitUid An optional organisation unit uid
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
-    fun count(attributeUid: String, organisationUnitUid: String?): Int =
-        store.count(attributeUid, organisationUnitUid, null)
+    fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> {
+        return Single.fromCallable {
+            blockingCount(
+                attributeUid,
+                organisationUnitUid
+            )
+        }
+    }
 
     /**
      * @param attributeUid        Attribute uid
@@ -190,23 +216,23 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @return The reserved value count by attribute or by attribute and organisation unit.
      * @see .count
      */
-    fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int =
-        count(attributeUid, organisationUnitUid)
+    fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int {
+        return store.count(attributeUid, organisationUnitUid, null)
+    }
 
     /**
      * Generate a list of reserved value summaries from the existing tracked entity attribute reserved values in the DB.
      *
      * @return Single with a list of the reserved value summaries
      */
-    val reservedValueSummaries: Flow<List<ReservedValueSummary>> = flow {
-        emit(blockingGetReservedValueSummaries())
-    }
+    val reservedValueSummaries: Single<List<ReservedValueSummary>>
+        get() = Single.just(blockingGetReservedValueSummaries())
 
     /**
      * @return List of the reserved value summaries
      * @see .getReservedValueSummaries
      */
-    suspend fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
+    fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
         val whereClause = WhereClauseBuilder()
             .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build()
         val orderByClause = OrderByClauseBuilder.orderByFromItems(
@@ -217,8 +243,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
             ),
             CoreColumns.ID
         )
-        val trackedEntityAttributes =
-            trackedEntityAttributeStore.selectWhere(whereClause, orderByClause)
+        val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(whereClause, orderByClause)
         val reservedValueSummaries: MutableList<ReservedValueSummary> = ArrayList()
         for (trackedEntityAttribute in trackedEntityAttributes) {
             val builder = ReservedValueSummary.builder()
@@ -228,12 +253,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                 for (organisationUnit in organisationUnits) {
                     builder.organisationUnit(organisationUnit)
                         .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
-                        .numberOfValuesToFillUp(
-                            getFillUpToValue(
-                                null,
-                                trackedEntityAttribute.uid()
-                            )
-                        )
+                        .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()))
                     reservedValueSummaries.add(builder.build())
                 }
             } else {
@@ -251,86 +271,79 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         )
     }
 
-    private suspend fun downloadValuesForOrgUnits(
+    private fun downloadValuesForOrgUnits(
         attribute: String,
         numberOfValuesToFillUp: Int?
-    ): List<D2Progress> = coroutineScope {
+    ): Flow<D2Progress> = flow {
         val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
-
         if (isOrgunitDependent(pattern)) {
             val organisationUnits = getOrgUnitsLinkedToAttribute(attribute)
-            val progressList = mutableListOf<D2Progress>()
-
             for (organisationUnit in organisationUnits) {
-                downloadValuesIfBelowThreshold(
-                    attribute,
-                    organisationUnit,
-                    numberOfValuesToFillUp,
-                    true
-                )
-                progressList.add(increaseProgress())
+                downloadValuesIfBelowThreshold(attribute, organisationUnit, numberOfValuesToFillUp, true)
+                emit(increaseProgress())
             }
-
-            progressList
         } else {
             downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
-
-            listOf(increaseProgress())
+            emit(increaseProgress())
         }
     }
 
-    private suspend fun downloadValuesIfBelowThreshold(
+    private fun downloadValuesIfBelowThreshold(
         attribute: String,
         organisationUnit: OrganisationUnit?,
         minNumberOfValuesToHave: Int?,
         storeError: Boolean
-    ): Unit = coroutineScope {
-        // Using local date. It's not worth it to make a system info call
-        store.deleteExpired(Date())
-        val fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute)
-        val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
-        val remainingValues = store.count(
-            attribute,
-            if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
-            pattern
-        )
-
-        // If number of values is explicitly specified, we use that value as threshold.
-        val minNumberToTryFill = minNumberOfValuesToHave
-            ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
-
-        if (remainingValues < minNumberToTryFill) {
-            val numberToReserve = fillUpTo!! - remainingValues
-            downloadValues(
+    ) {
+        scope.launch {
+            // Using local date. It's not worth it to make a system info call
+            store.deleteExpired(Date())
+            val fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute)
+            val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
+            val remainingValues = store.count(
                 attribute,
-                organisationUnit,
-                numberToReserve,
-                pattern,
-                storeError
+                if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
+                pattern
             )
+
+            // If the number of values is explicitly specified, we use that value as the threshold.
+            val minNumberToTryFill =
+                minNumberOfValuesToHave ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
+
+            if (remainingValues < minNumberToTryFill) {
+                val numberToReserve = fillUpTo!! - remainingValues
+                downloadValues(attribute, organisationUnit, numberToReserve, pattern, storeError)
+            }
         }
     }
 
-    suspend fun downloadValues(
+    private suspend fun downloadValues(
         trackedEntityAttributeUid: String,
         organisationUnit: OrganisationUnit?,
         numberToReserve: Int,
         pattern: String?,
         storeError: Boolean
-    ) {
-        return suspendCoroutine {
-            executor.executeD2Call(
-                reservedValueQueryCallFactory.create(
-                    TrackedEntityAttributeReservedValueQuery.create(
-                        trackedEntityAttributeUid, numberToReserve,
-                        organisationUnit, pattern
-                    )
-                ),
-                storeError
-            )
+    ) = suspendCoroutine { continuation ->
 
-            if (pattern != null) {
-                store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern)
+        val deferred = CompletableDeferred<Unit>()
+
+        executor.executeD2Call(
+            reservedValueQueryCallFactory.create(
+                TrackedEntityAttributeReservedValueQuery.create(
+                    trackedEntityAttributeUid, numberToReserve,
+                    organisationUnit, pattern
+                )
+            ),
+            storeError
+        )
+
+        deferred.invokeOnCompletion {
+            if (it == null) {
+                if (pattern != null) {
+                    store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern)
+                }
+                continuation.resume(Unit)
+            } else {
+                continuation.resumeWithException(it!!)
             }
         }
     }
@@ -353,6 +366,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         val captureOrgunits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
             OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
         )
+
         linkedOrgunitUids.toMutableList().retainAll(captureOrgunits)
         return organisationUnitStore.selectWhere(
             WhereClauseBuilder().appendInKeyStringValues(

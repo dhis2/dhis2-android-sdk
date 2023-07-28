@@ -68,16 +68,16 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
     private val programUid = "program_uid"
     private val categoryComboUid = "category_combo_uid"
     private val ownerUid = "xs8A6tQJY0s"
-    private var organisationUnit: OrganisationUnit? = null
+    private lateinit var organisationUnit: OrganisationUnit
     private var pattern: String? = null
 
     @Mock
-    var trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
+    val trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
         TrackedEntityAttributeReservedValueQuery>? =
         null
 
     @Mock
-    var trackedEntityAttributeReservedValueCall: Callable<List<TrackedEntityAttributeReservedValue>>? =
+    val trackedEntityAttributeReservedValueCall: Callable<List<TrackedEntityAttributeReservedValue>>? =
         null
 
     @Captor

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
+import org.hisp.dhis.android.core.program.internal.ProgramStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
@@ -57,7 +57,7 @@ public final class ProgramCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository> {
 
     @Inject
-    ProgramCollectionRepository(final ProgramStoreInterface store,
+    ProgramCollectionRepository(final ProgramStore store,
                                 final Map<String, ChildrenAppender<Program>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

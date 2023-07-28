@@ -175,7 +175,7 @@ class VisualizationCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val visualization = d2.visualizationModule().visualizations()
             .withColumnsRowsAndFilters()
             .uid("PYBH8ZaAQnC")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(visualization.columns()!![0].id()).isEqualTo("dx")
         assertThat(visualization.columns()!![0].items()!!.size).isEqualTo(3)

@@ -41,7 +41,7 @@ public class DataElementAttributeValueLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataElementAttributeValueLink> {
 
     public DataElementAttributeValueLinkStoreIntegrationShould() {
-        super(DataElementAttributeValueLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new DataElementAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 DataElementAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

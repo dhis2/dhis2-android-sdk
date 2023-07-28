@@ -30,28 +30,16 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserCredentials
 
 @Module
-internal class UserEntityDIModule : IdentifiableStoreProvider<User> {
+internal class UserEntityDIModule {
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<User> {
-        return UserStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(userHandler: UserHandler): Handler<User> {
-        return userHandler
+    fun store(databaseAdapter: DatabaseAdapter): UserStore {
+        return UserStoreImpl(databaseAdapter)
     }
 
     @Provides
@@ -60,11 +48,5 @@ internal class UserEntityDIModule : IdentifiableStoreProvider<User> {
         return mapOf(
             UserFields.USER_ROLES to userRoleChildrenAppender
         )
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): TwoWayTransformer<User, UserCredentials> {
-        return UserUserCredentialsTransformer()
     }
 }

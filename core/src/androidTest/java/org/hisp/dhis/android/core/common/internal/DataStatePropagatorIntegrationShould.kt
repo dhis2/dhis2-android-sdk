@@ -32,28 +32,25 @@ import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import java.text.ParseException
 import java.util.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl.Companion.create
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Before
 import org.junit.Test
@@ -67,21 +64,21 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     private lateinit var eventStore: EventStore
     private lateinit var relationshipStore: RelationshipStore
     private lateinit var relationshipItemStore: RelationshipItemStore
-    private lateinit var relationshipTypeStore: IdentifiableObjectStore<RelationshipType>
-    private lateinit var programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
+    private lateinit var relationshipTypeStore: RelationshipTypeStore
+    private lateinit var programOwnerStore: ProgramOwnerStore
 
     private val relationshipType = "WiH6923nMtb"
 
     @Before
     @Throws(IOException::class)
     fun setUp() {
-        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter())
-        enrollmentStore = create(d2.databaseAdapter())
-        eventStore = EventStoreImpl.create(d2.databaseAdapter())
-        relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
-        relationshipItemStore = RelationshipItemStoreImpl.create(d2.databaseAdapter())
-        relationshipTypeStore = RelationshipTypeStore.create(d2.databaseAdapter())
-        programOwnerStore = ProgramOwnerStore.create(d2.databaseAdapter())
+        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
+        enrollmentStore = EnrollmentStoreImpl(d2.databaseAdapter())
+        eventStore = EventStoreImpl(d2.databaseAdapter())
+        relationshipStore = RelationshipStoreImpl(d2.databaseAdapter())
+        relationshipItemStore = RelationshipItemStoreImpl(d2.databaseAdapter())
+        relationshipTypeStore = RelationshipTypeStoreImpl(d2.databaseAdapter())
+        programOwnerStore = ProgramOwnerStoreImpl(d2.databaseAdapter())
 
         propagator = DataStatePropagatorImpl(
             trackedEntityInstanceStore, enrollmentStore, eventStore,

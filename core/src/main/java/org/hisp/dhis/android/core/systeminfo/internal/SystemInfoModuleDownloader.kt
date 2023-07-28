@@ -28,30 +28,23 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Observable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
 @Reusable
-class SystemInfoModuleDownloader @Inject internal constructor(
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>
-) : UntypedModuleDownloader {
+internal class SystemInfoModuleDownloader @Inject internal constructor(
+    private val systemInfoCall: SystemInfoCall
+) : UntypedSuspendModuleDownloader {
 
-    override fun downloadMetadata(): Completable {
-        return systemInfoRepository.download()
+    override suspend fun downloadMetadata() {
+        return systemInfoCall.download(storeError = true)
     }
 
-    fun downloadWithProgressManager(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return systemInfoRepository.download()
-            .toSingle {
-                progressManager.increaseProgress(
-                    SystemInfo::class.java, false
-                )
-            }.toObservable()
+    suspend fun downloadWithProgressManager(progressManager: D2ProgressManager): D2Progress {
+        downloadMetadata()
+        return progressManager.increaseProgress(SystemInfo::class.java, false)
     }
 }

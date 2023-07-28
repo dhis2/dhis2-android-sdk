@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class FilterSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<FilterSetting>(
-    FilterSettingStore.create(TestDatabaseAdapterFactory.get()),
+    FilterSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     FilterSettingTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {

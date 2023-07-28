@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class ProgramRuleActionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction> {
 
     public ProgramRuleActionStoreIntegrationShould() {
-        super(ProgramRuleActionStore.create(TestDatabaseAdapterFactory.get()), ProgramRuleActionTableInfo.TABLE_INFO,
+        super(new ProgramRuleActionStoreImpl(TestDatabaseAdapterFactory.get()), ProgramRuleActionTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

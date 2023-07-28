@@ -38,7 +38,7 @@ internal abstract class EventEndpointCallFactory {
 
     abstract fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>>
 
-    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<Event>>
+    abstract suspend fun getRelationshipEntityCall(uid: String): Payload<Event>
 
     protected fun getUidStr(query: TrackerAPIQuery): String? {
         return if (query.uids.isEmpty()) null else query.uids.joinToString(";")

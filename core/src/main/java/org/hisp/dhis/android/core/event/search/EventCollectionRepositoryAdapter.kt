@@ -183,7 +183,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         mode: AssignedUserMode
     ): EventCollectionRepository {
         return when (mode) {
-            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet().user())
+            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user())
             AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
             AssignedUserMode.NONE -> repository.byAssignedUser().isNull
             // TODO Not implemented yet

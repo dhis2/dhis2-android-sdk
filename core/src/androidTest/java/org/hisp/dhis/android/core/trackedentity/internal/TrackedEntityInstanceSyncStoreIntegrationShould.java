@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
 
     public TrackedEntityInstanceSyncStoreIntegrationShould() {
-        super(TrackedEntityInstanceSyncStore.create(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
+        super(new TrackedEntityInstanceSyncStoreImpl(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

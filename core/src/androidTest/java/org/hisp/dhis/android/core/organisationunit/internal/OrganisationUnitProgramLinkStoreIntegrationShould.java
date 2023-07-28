@@ -41,7 +41,7 @@ public class OrganisationUnitProgramLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<OrganisationUnitProgramLink> {
 
     public OrganisationUnitProgramLinkStoreIntegrationShould() {
-        super(OrganisationUnitProgramLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new OrganisationUnitProgramLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 OrganisationUnitProgramLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

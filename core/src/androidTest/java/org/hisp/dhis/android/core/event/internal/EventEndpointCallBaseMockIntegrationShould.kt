@@ -31,7 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -48,7 +48,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
     abstract val eventsWithUids: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStore.create(databaseAdapter)
+    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
     fun setUp() {
@@ -97,7 +97,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
         val event = events[0]
         assertThat(event.uid()).isEqualTo("V1CerIi3sdL")
         assertThat(events.size).isEqualTo(1)
-        EventStoreImpl.create(d2.databaseAdapter()).update(
+        EventStoreImpl(d2.databaseAdapter()).update(
             event.toBuilder()
                 .syncState(state)
                 .aggregatedSyncState(state)
@@ -107,7 +107,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
         enqueue(events1File)
         d2.eventModule().eventDownloader().blockingDownload()
 
-        val event1 = d2.eventModule().events().one().blockingGet()
+        val event1 = d2.eventModule().events().one().blockingGet()!!
         assertThat(event1.uid()).isEqualTo("V1CerIi3sdL")
         assertThat(event1.status()).isEqualTo(finalStatus)
     }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship.internal
 import android.database.Cursor
 import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -41,18 +40,17 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 
-internal class RelationshipItemStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl
-) : ObjectWithoutUidStoreImpl<RelationshipItem>(
-    databaseAdapter,
-    builder,
-    BINDER,
-    WHERE_UPDATE_BINDER,
-    WHERE_DELETE_BINDER,
-    { cursor: Cursor -> RelationshipItem.create(cursor) }
-),
-    RelationshipItemStore {
+internal class RelationshipItemStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : RelationshipItemStore,
+    ObjectWithoutUidStoreImpl<RelationshipItem>(
+        databaseAdapter,
+        RelationshipItemTableInfo.TABLE_INFO,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        { cursor: Cursor -> RelationshipItem.create(cursor) }
+    ) {
 
     @Suppress("NestedBlockDepth")
     override fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
@@ -177,17 +175,6 @@ internal class RelationshipItemStoreImpl private constructor(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { o: RelationshipItem, w: StatementWrapper ->
             w.bind(1, getUidOrNull(o.relationship()))
             w.bind(2, o.relationshipItemType())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): RelationshipItemStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                RelationshipItemTableInfo.TABLE_INFO.name(), RelationshipItemTableInfo.Columns()
-            )
-            return RelationshipItemStoreImpl(
-                databaseAdapter,
-                statementBuilder
-            )
         }
     }
 }

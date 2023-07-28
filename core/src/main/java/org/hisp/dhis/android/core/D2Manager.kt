@@ -123,8 +123,9 @@ object D2Manager {
             d2 = D2(d2DIComponent)
 
             if (credentials != null) {
-                val uid = d2!!.userModule().user().blockingGet().uid()
-                d2DIComponent.userIdInMemoryStore().set(uid)
+                d2!!.userModule().user().blockingGet()?.uid()?.let { uid ->
+                    d2DIComponent.userIdInMemoryStore().set(uid)
+                }
             }
 
             val setUpTime = System.currentTimeMillis() - startTime

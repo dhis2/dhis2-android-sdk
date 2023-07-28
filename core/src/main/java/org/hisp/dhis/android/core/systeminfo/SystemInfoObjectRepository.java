@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore;
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public final class SystemInfoObjectRepository
         extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
 
     @Inject
-    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
+    SystemInfoObjectRepository(SystemInfoStore store,
                                Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
                                RepositoryScope scope,
                                SystemInfoCall systemInfoCall) {

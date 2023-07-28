@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.validation;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore;
 
 import java.util.List;
 import java.util.Map;
@@ -45,14 +47,12 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
-
 @Reusable
 public final class ValidationRuleCollectionRepository
         extends ReadOnlyNameableCollectionRepositoryImpl<ValidationRule, ValidationRuleCollectionRepository> {
 
     @Inject
-    ValidationRuleCollectionRepository(final IdentifiableObjectStore<ValidationRule> store,
+    ValidationRuleCollectionRepository(final ValidationRuleStore store,
                                        final Map<String, ChildrenAppender<ValidationRule>> childrenAppenders,
                                        final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

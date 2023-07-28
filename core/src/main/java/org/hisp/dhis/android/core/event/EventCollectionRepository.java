@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
@@ -49,11 +49,12 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
+import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
-import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.internal.UserStore;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,8 +65,6 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
-import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
-
 @SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 public final class EventCollectionRepository
@@ -75,17 +74,17 @@ public final class EventCollectionRepository
     private final EventPostParentCall postCall;
 
     private final EventStore store;
-    private final IdentifiableObjectStore<User> userStore;
+    private final UserStore userStore;
     private final TrackerDataManager trackerDataManager;
     private final JobQueryCall jobQueryCall;
 
     @Inject
     EventCollectionRepository(final EventStore store,
-                              final IdentifiableObjectStore<User> userStore,
+                              final UserStore userStore,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
                               final EventPostParentCall postCall,
-                              final Transformer<EventCreateProjection, Event> transformer,
+                              final EventProjectionTransformer transformer,
                               final TrackerDataManager trackerDataManager,
                               final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer,

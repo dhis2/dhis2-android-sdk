@@ -25,35 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 
-@Suppress("MagicNumber")
-internal object AnalyticsPeriodBoundaryStore {
-
-    private val BINDER = StatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
-        w.bind(1, o.programIndicator())
-        w.bind(2, o.boundaryTarget())
-        w.bind(3, o.analyticsPeriodBoundaryType())
-        w.bind(4, o.offsetPeriods())
-        w.bind(5, o.offsetPeriodType())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsPeriodBoundary> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
-            AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR,
-            BINDER
-        ) { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
-    }
-}
+internal interface AnalyticsPeriodBoundaryStore : LinkStore<AnalyticsPeriodBoundary>

@@ -47,8 +47,8 @@ import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore;
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -71,9 +71,9 @@ public class TrackedEntityDataValueStoreIntegrationShould
     protected TrackedEntityDataValueStore store;
 
     public TrackedEntityDataValueStoreIntegrationShould() {
-        super(TrackedEntityDataValueStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackedEntityDataValueStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackedEntityDataValueTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-        this.store = TrackedEntityDataValueStoreImpl.create(TestDatabaseAdapterFactory.get());
+        this.store = new TrackedEntityDataValueStoreImpl(TestDatabaseAdapterFactory.get());
     }
 
     @Override
@@ -84,11 +84,11 @@ public class TrackedEntityDataValueStoreIntegrationShould
     @After
     public void tearDown() {
         super.tearDown();
-        TrackedEntityInstanceStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
-        EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
-        EventStoreImpl.create(TestDatabaseAdapterFactory.get()).delete();
-        ProgramStageStore.create(TestDatabaseAdapterFactory.get()).delete();
-        ProgramStageDataElementStore.create(TestDatabaseAdapterFactory.get()).delete();
+        new TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()).delete();
+        new EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()).delete();
+        new EventStoreImpl(TestDatabaseAdapterFactory.get()).delete();
+        new ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()).delete();
+        new ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get()).delete();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void select_single_events_data_values() {
-        EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
+        EventStore eventStore = new EventStoreImpl(TestDatabaseAdapterFactory.get());
         eventStore.insert(EventSamples.get().toBuilder().uid("event_1").enrollment(null).syncState(State.TO_POST).build());
         eventStore.insert(EventSamples.get().toBuilder().uid("event_2").syncState(State.TO_POST).build());
         assertThat(eventStore.count()).isEqualTo(2);
@@ -162,19 +162,19 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void select_tracker_data_values() {
-        TrackedEntityInstanceStore trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl
-                .create(TestDatabaseAdapterFactory.get());
+        TrackedEntityInstanceStore trackedEntityInstanceStore =
+                new TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get());
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder().uid("tei_uid")
                 .organisationUnit("organisation_unit_uid").trackedEntityType("tei_type").syncState(State.TO_POST).build();
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get());
+        EnrollmentStore enrollmentStore = new EnrollmentStoreImpl(TestDatabaseAdapterFactory.get());
         Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
                 .program("program").trackedEntityInstance("tei_uid")
                 .aggregatedSyncState(State.TO_POST).syncState(State.TO_POST).build();
         enrollmentStore.insert(enrollment);
 
-        EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
+        EventStore eventStore = new EventStoreImpl(TestDatabaseAdapterFactory.get());
         eventStore.insert(EventSamples.get().toBuilder().uid("event_1").syncState(State.TO_POST).build());
         eventStore.insert(EventSamples.get().toBuilder().uid("event_2").enrollment(null).syncState(State.TO_POST).build());
 
@@ -198,17 +198,17 @@ public class TrackedEntityDataValueStoreIntegrationShould
     @Test
     public void remove_unassigned_event_values() {
         ProgramStage stage = ProgramStageSamples.getProgramStage().toBuilder().uid("stage_uid").build();
-        IdentifiableObjectStore<ProgramStage> stageStore = ProgramStageStore.create(TestDatabaseAdapterFactory.get());
+        IdentifiableObjectStore<ProgramStage> stageStore = new ProgramStageStoreImpl(TestDatabaseAdapterFactory.get());
         stageStore.insert(stage);
 
         Event event = EventSamples.get().toBuilder().uid("event_1").programStage(stage.uid()).build();
-        EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
+        EventStore eventStore = new EventStoreImpl(TestDatabaseAdapterFactory.get());
         eventStore.insert(event);
 
         String dataElement1 = "data_element_1";
         String dataElement2 = "data_element_2";
         IdentifiableObjectStore<ProgramStageDataElement> psStore =
-                ProgramStageDataElementStore.create(TestDatabaseAdapterFactory.get());
+                new ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get());
         psStore.insert(ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
                 .uid(dataElement1)
                 .dataElement(DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build())

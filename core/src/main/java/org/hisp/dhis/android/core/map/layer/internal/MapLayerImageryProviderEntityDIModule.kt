@@ -31,25 +31,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
 @Module
 internal class MapLayerImageryProviderEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<MapLayerImageryProvider> {
-        return MapLayerImageryProviderStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): MapLayerImageryProviderStore {
+        return MapLayerImageryProviderStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(
-        store: LinkStore<MapLayerImageryProvider>
-    ): LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider> {
-        return LinkHandlerImpl(store)
+    fun handler(store: MapLayerImageryProviderStore): MapLayerImageryProviderHandler {
+        return MapLayerImageryProviderHandler(store)
     }
 }

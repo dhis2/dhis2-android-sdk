@@ -31,26 +31,20 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore.create
 
 @Module
 internal class CategoryCategoryComboEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryComboLink> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): CategoryCategoryComboLinkStore {
+        return CategoryCategoryComboLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun handler(
-        store: LinkStore<CategoryCategoryComboLink>
-    ): OrderedLinkHandler<Category, CategoryCategoryComboLink> {
-        return OrderedLinkHandlerImpl(store)
+        store: CategoryCategoryComboLinkStore
+    ): CategoryCategoryComboLinkHandler {
+        return CategoryCategoryComboLinkHandler(store)
     }
 }

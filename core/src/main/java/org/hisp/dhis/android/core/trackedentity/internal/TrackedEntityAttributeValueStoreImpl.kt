@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -41,20 +40,21 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
 
-internal class TrackedEntityAttributeValueStoreImpl private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl
-) : ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue>(
-    databaseAdapter,
-    builder,
-    BINDER,
-    WHERE_UPDATE_BINDER,
-    WHERE_DELETE_BINDER,
-    { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) }
-),
-    TrackedEntityAttributeValueStore {
+internal class TrackedEntityAttributeValueStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : TrackedEntityAttributeValueStore,
+    ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue>(
+        databaseAdapter,
+        TrackedEntityAttributeValueTableInfo.TABLE_INFO,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) }
+    ) {
 
     override fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>> {
         val toPostQuery = "SELECT TrackedEntityAttributeValue.* " +
@@ -194,22 +194,9 @@ internal class TrackedEntityAttributeValueStoreImpl private constructor(
                 w.bind(2, o.trackedEntityInstance())
             }
 
-        @JvmField
         val CHILD_PROJECTION = SingleParentChildProjection(
             TrackedEntityAttributeValueTableInfo.TABLE_INFO,
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
         )
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeValueStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO.columns()
-            )
-            return TrackedEntityAttributeValueStoreImpl(
-                databaseAdapter,
-                statementBuilder
-            )
-        }
     }
 }

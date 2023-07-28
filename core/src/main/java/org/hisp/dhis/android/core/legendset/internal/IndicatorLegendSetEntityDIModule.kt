@@ -32,26 +32,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
 @Module
 internal class IndicatorLegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    internal fun store(databaseAdapter: DatabaseAdapter): LinkStore<IndicatorLegendSetLink> {
-        return IndicatorLegendSetLinkStore.create(databaseAdapter)
+    internal fun store(databaseAdapter: DatabaseAdapter): IndicatorLegendSetLinkStore {
+        return IndicatorLegendSetLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    internal fun handler(
-        store: LinkStore<IndicatorLegendSetLink>
-    ): OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink> {
-        return OrderedLinkHandlerImpl(store)
+    internal fun handler(store: IndicatorLegendSetLinkStore): IndicatorLegendSetLinkHandler {
+        return IndicatorLegendSetLinkHandler(store)
     }
 }

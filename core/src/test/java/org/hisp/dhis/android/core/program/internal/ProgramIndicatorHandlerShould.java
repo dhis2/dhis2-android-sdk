@@ -27,13 +27,20 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkHandler;
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.junit.Before;
@@ -46,26 +53,16 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.google.common.collect.Lists;
-
 @RunWith(JUnit4.class)
 public class ProgramIndicatorHandlerShould {
     @Mock
-    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
+    private ProgramIndicatorStore programIndicatorStore;
 
     @Mock
-    private OrderedLinkHandler<ObjectWithUid, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private ProgramIndicatorLegendSetLinkHandler programIndicatorLegendSetLinkHandler;
 
     @Mock
-    private LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
+    private AnalyticsPeriodBoundaryHandler analyticsPeriodBoundaryHandler;
 
     @Mock
     private Handler<ObjectWithUid> legendSetHandler;

@@ -31,12 +31,11 @@ import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
@@ -48,7 +47,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 @Reusable
 internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
+    private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore
 ) {
 
     private fun getRootCaptureOrgUnitUids(): List<String> {

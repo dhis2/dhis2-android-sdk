@@ -65,7 +65,7 @@ class CategoryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
         val category = d2.categoryModule().categories()
             .withCategoryOptions()
             .uid("vGs6omsRekv")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(category.categoryOptions()!!.size).isEqualTo(1)
     }

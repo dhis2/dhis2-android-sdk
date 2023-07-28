@@ -48,7 +48,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
             .blockingGet()
 
         RelationshipTypeAsserts.assertTypesWithoutConstraints(
-            relationshipType,
+            relationshipType!!,
             RelationshipTypeSamples.RELATIONSHIP_TYPE_1
         )
     }
@@ -91,7 +91,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
                 .blockingGet()
 
         RelationshipTypeAsserts.assertTypesWithoutConstraints(
-            relationshipType,
+            relationshipType!!,
             RelationshipTypeSamples.RELATIONSHIP_TYPE_2
         )
     }
@@ -104,7 +104,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
             .blockingGet()
 
         RelationshipTypeAsserts.assertTypeWithConstraints(
-            relationshipType,
+            relationshipType!!,
             RelationshipTypeSamples.RELATIONSHIP_TYPE_1
         )
     }
@@ -114,7 +114,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
         val relationshipType = relationshipTypeCollectionRepository
             .withConstraints()
             .uid(RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_2)
-            .blockingGet()
+            .blockingGet()!!
 
         RelationshipTypeAsserts.assertTypeWithConstraints(
             relationshipType,

@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.State
 @Reusable
 class DataStoreObjectRepository @Inject internal constructor(
     store: ObjectWithoutUidStore<DataStoreEntry>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
+    childrenAppenders: Map<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope,
     private val namespace: String,
     private val key: String
@@ -69,17 +69,19 @@ class DataStoreObjectRepository @Inject internal constructor(
     }
 
     override fun blockingDelete() {
-        val entry = blockingGetWithoutChildren()
-        if (entry.syncState() == State.TO_POST) {
-            super.blockingDelete()
-        } else {
-            setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+        blockingGetWithoutChildren()?.let { entry ->
+            if (entry.syncState() == State.TO_POST) {
+                super.blockingDelete()
+            } else {
+                setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+            }
         }
     }
 
     private fun setBuilder(): DataStoreEntry.Builder {
-        return if (blockingExists()) {
-            val entry = blockingGetWithoutChildren()
+        val entry = blockingGetWithoutChildren()
+
+        return if (entry != null) {
             entry.toBuilder()
                 .syncState(if (entry.syncState() == State.TO_POST) State.TO_POST else State.TO_UPDATE)
         } else {

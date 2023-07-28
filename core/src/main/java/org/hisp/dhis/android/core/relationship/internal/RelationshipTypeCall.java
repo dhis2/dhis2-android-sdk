@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.internal.Resource;
@@ -43,17 +42,17 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-final class RelationshipTypeCall implements ListCall<RelationshipType> {
+public final class RelationshipTypeCall implements ListCall<RelationshipType> {
 
     private final Resource.Type resourceType = Resource.Type.RELATIONSHIP_TYPE;
 
     private final RelationshipTypeService service;
-    private final Handler<RelationshipType> handler;
+    private final RelationshipTypeHandler handler;
     private final APIDownloader apiDownloader;
 
     @Inject
     RelationshipTypeCall(RelationshipTypeService service,
-                         Handler<RelationshipType> handler,
+                         RelationshipTypeHandler handler,
                          APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;

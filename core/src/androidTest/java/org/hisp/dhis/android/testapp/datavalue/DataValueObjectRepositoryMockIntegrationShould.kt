@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -45,7 +45,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val repository = objectRepository()
         repository.blockingSet(value)
 
-        assertThat(repository.blockingGet().value()).isEqualTo(value)
+        assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
         repository.blockingDelete()
     }
 
@@ -55,7 +55,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val repository = objectRepository()
         repository.setFollowUp(followUp)
 
-        assertThat(repository.blockingGet().followUp()).isEqualTo(followUp)
+        assertThat(repository.blockingGet()!!.followUp()).isEqualTo(followUp)
         repository.blockingDelete()
     }
 
@@ -65,7 +65,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val repository = objectRepository()
         repository.setComment(comment)
 
-        assertThat(repository.blockingGet().comment()).isEqualTo(comment)
+        assertThat(repository.blockingGet()!!.comment()).isEqualTo(comment)
         repository.blockingDelete()
     }
 
@@ -75,7 +75,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         repository.blockingSet("value")
 
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST)
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_POST)
 
         repository.blockingDelete()
         assertThat(repository.blockingExists()).isFalse()
@@ -85,30 +85,30 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun set_state_to_delete_if_state_is_not_to_post() {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR)
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.ERROR)
 
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR)
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.ERROR)
 
         repository.blockingDelete()
         assertThat(repository.blockingExists()).isTrue()
-        assertThat(repository.blockingGet().deleted()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isTrue()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
     }
 
     @Test
     fun set_not_deleted_when_updating_deleted_value() {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE)
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.TO_UPDATE)
         repository.blockingDelete()
 
-        assertThat(repository.blockingGet().deleted()).isTrue()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isTrue()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
         repository.blockingSet("new_value")
-        assertThat(repository.blockingGet().deleted()).isFalse()
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(repository.blockingGet()!!.deleted()).isFalse()
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
     }
 
     @Test

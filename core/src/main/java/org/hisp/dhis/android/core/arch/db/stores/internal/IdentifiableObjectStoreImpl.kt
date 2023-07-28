@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
@@ -46,6 +48,18 @@ internal open class IdentifiableObjectStoreImpl<O>(
     objectFactory: (Cursor) -> O
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
+        objectFactory: (Cursor) -> O
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf()),
+        binder,
+        objectFactory
+    )
 
     private var updateStatement: StatementWrapper? = null
     private var deleteStatement: StatementWrapper? = null

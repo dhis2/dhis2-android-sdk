@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.constant.internal.ConstantStore;
 
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public final class ConstantCollectionRepository extends ReadOnlyIdentifiableColl
 
     @Inject
     ConstantCollectionRepository(
-            final IdentifiableObjectStore<Constant> store,
+            final ConstantStore store,
             final Map<String, ChildrenAppender<Constant>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

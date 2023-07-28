@@ -168,7 +168,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     @Test
     fun count_tedv_for_a_data_element() {
         val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
-            .one().blockingGet()
+            .one().blockingGet()!!
         val tedvCount = d2.trackedEntityModule().trackedEntityDataValues()
             .byDataElement().eq(firstTedv.dataElement())
             .blockingCount()
@@ -178,7 +178,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     @Test
     fun aggregate_tedv_for_a_data_element() {
         val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
-            .one().blockingGet()
+            .one().blockingGet()!!
         val tedv = d2.trackedEntityModule().trackedEntityDataValues()
             .byDataElement().eq(firstTedv.dataElement())
             .blockingGet()
@@ -208,14 +208,14 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
         return d2.programModule().programs()
             .byProgramType().eq(ProgramType.WITH_REGISTRATION)
             .one()
-            .blockingGet()
+            .blockingGet()!!
     }
 
     private fun getProgramWithoutRegistration(): Program {
         return d2.programModule().programs()
             .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
             .one()
-            .blockingGet()
+            .blockingGet()!!
     }
 
     private fun getEventRepositoryByTEDV(tedvCount: Int): EventCollectionRepository {

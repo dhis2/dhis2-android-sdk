@@ -97,14 +97,14 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
         return NewTrackerImporterTrackedEntityTransformer.deTransform(tei)
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstance(
             trackedEntityInstance = uid,
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
             includeDeleted = true
-        ).map { mapPayload(it) }
+        ).let { mapPayload(it) }
     }
 
     override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {

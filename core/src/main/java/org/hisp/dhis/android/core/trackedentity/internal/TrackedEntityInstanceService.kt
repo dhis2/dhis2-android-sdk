@@ -46,13 +46,13 @@ internal interface TrackedEntityInstanceService {
     ): Call<TEIWebResponse>
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstance(
+    suspend fun getTrackedEntityInstance(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<Payload<TrackedEntityInstance>>
+    ): Payload<TrackedEntityInstance>
 
     @GET(TRACKED_ENTITY_INSTANCES)
     fun getTrackedEntityInstanceAsCall(

@@ -31,7 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import retrofit2.Retrofit
@@ -47,8 +46,8 @@ internal class LocalDataStoreEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return LocalDataStoreStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): LocalDataStoreStore {
+        return LocalDataStoreStoreImpl(databaseAdapter)
     }
 
     @Provides

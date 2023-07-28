@@ -42,7 +42,7 @@ public class ProgramRuleVariableStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleVariable> {
 
     public ProgramRuleVariableStoreIntegrationShould() {
-        super(ProgramRuleVariableStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ProgramRuleVariableStoreImpl(TestDatabaseAdapterFactory.get()),
                 ProgramRuleVariableTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

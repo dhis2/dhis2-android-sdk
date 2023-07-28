@@ -31,7 +31,9 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteConstraintException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 
@@ -42,6 +44,25 @@ internal open class LinkStoreImpl<O : CoreObject>(
     binder: StatementBinder<O>,
     objectFactory: (Cursor) -> O
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), LinkStore<O> {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        masterColumn: String,
+        binder: StatementBinder<O>,
+        objectFactory: (Cursor) -> O
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(
+            tableInfo.name(),
+            tableInfo.columns().all(),
+            tableInfo.columns().whereUpdate()
+        ),
+        masterColumn,
+        binder,
+        objectFactory
+    )
+
     override fun insertIfNotExists(o: O): HandleAction {
         return try {
             insert(o)

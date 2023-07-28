@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
+internal open class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
     private val databaseAdapter: DatabaseAdapter,

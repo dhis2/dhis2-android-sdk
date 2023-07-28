@@ -41,7 +41,7 @@ public class TrackedEntityAttributeValueStoreIntegrationShould
         extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityAttributeValue> {
 
     public TrackedEntityAttributeValueStoreIntegrationShould() {
-        super(TrackedEntityAttributeValueStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackedEntityAttributeValueStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

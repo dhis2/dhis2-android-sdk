@@ -28,26 +28,24 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentHandler
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerHandler
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceHandlerShould {
@@ -55,9 +53,9 @@ class TrackedEntityInstanceHandlerShould {
     private val relationshipHandler: RelationshipHandler = mock()
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore = mock()
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
-    private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue> = mock()
-    private val enrollmentHandler: IdentifiableDataHandler<Enrollment> = mock()
-    private val programOwnerHandler: HandlerWithTransformer<ProgramOwner> = mock()
+    private val trackedEntityAttributeValueHandler: TrackedEntityAttributeValueHandler = mock()
+    private val enrollmentHandler: EnrollmentHandler = mock()
+    private val programOwnerHandler: ProgramOwnerHandler = mock()
 
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val enrollment: Enrollment = mock()
@@ -66,7 +64,7 @@ class TrackedEntityInstanceHandlerShould {
     private val relative: TrackedEntityInstance = mock()
     private val relativeBuilder: TrackedEntityInstance.Builder = mock()
     private val enrollmentCleaner: TrackedEntityEnrollmentOrphanCleaner = mock()
-    private val relationshipCleaner: OrphanCleaner<TrackedEntityInstance, Relationship> = mock()
+    private val relationshipCleaner: TEIRelationshipOrphanCleaner = mock()
     private val relatives: RelationshipItemRelatives = mock()
     private val teiBuilder: TrackedEntityInstance.Builder = mock()
 
@@ -99,8 +97,7 @@ class TrackedEntityInstanceHandlerShould {
         whenever(relationship.from()).thenReturn(RelationshipHelper.teiItem(TEI_UID))
         whenever(relationship.to()).thenReturn(RelationshipHelper.teiItem(RELATIVE_UID))
         whenever(relative.uid()).thenReturn(RELATIVE_UID)
-        whenever(trackedEntityInstanceStore.updateOrInsert(ArgumentMatchers.any()))
-            .thenReturn(HandleAction.Insert)
+        whenever(trackedEntityInstanceStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
 
         trackedEntityInstanceHandler = TrackedEntityInstanceHandler(
             relationshipVersionManager,

@@ -62,7 +62,7 @@ internal class DataValueFileResourcePostCall @Inject constructor(
         }
     }
 
-    fun updateFileResourceStates(fileResources: List<String>) {
+    suspend fun updateFileResourceStates(fileResources: List<String>) {
         fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.AGGREGATED)
     }
 }

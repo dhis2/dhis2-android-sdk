@@ -28,10 +28,14 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.datavalue.DataValueConflict;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.junit.Before;
@@ -43,12 +47,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class DataValueImportHandlerShould {
 
@@ -59,7 +57,7 @@ public class DataValueImportHandlerShould {
     DataValueConflictParser dataValueConflictParser;
 
     @Mock
-    ObjectStore<DataValueConflict> dataValueConflictStore;
+    DataValueConflictStore dataValueConflictStore;
 
     @Mock
     DataValueImportSummary dataValueImportSummary;

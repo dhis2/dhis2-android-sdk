@@ -42,7 +42,7 @@ internal abstract class TrackedEntityEndpointCallFactory {
 
     abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
-    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>>
+    abstract suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance>
 
     abstract fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult>
 

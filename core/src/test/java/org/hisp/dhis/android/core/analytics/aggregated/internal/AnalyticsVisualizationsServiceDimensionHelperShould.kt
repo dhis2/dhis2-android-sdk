@@ -33,13 +33,13 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.visualization.*
 import org.junit.Assert.fail
 import org.junit.Test
@@ -50,9 +50,9 @@ import org.mockito.ArgumentMatchers.anyString
 @RunWith(JUnit4::class)
 class AnalyticsVisualizationsServiceDimensionHelperShould {
 
-    private val categoryStore: IdentifiableObjectStore<Category> = mock()
-    private val categoryOptionLinkStore: LinkStore<CategoryCategoryOptionLink> = mock()
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
+    private val categoryStore: CategoryStore = mock()
+    private val categoryOptionLinkStore: CategoryCategoryOptionLinkStore = mock()
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore = mock()
     private val category: Category = mock()
     private val orgUnitLevel: OrganisationUnitLevel = mock()
 

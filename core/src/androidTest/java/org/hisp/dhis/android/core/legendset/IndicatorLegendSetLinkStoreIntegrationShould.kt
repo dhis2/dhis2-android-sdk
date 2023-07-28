@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.legendset
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.legendset.IndicatorLegendSetLinkSamples
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -39,8 +39,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class IndicatorLegendSetLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<IndicatorLegendSetLink>(
-        IndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+        IndicatorLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
     ) {
     override fun addMasterUid(): String {
         return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!

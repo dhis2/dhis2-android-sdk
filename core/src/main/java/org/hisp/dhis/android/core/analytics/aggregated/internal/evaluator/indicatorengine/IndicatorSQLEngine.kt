@@ -33,13 +33,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionParserUtils
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 
 internal class IndicatorSQLEngine @Inject constructor(
-    private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
+    private val indicatorTypeStore: IndicatorTypeStore,
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
     private val databaseAdapter: DatabaseAdapter
 ) {

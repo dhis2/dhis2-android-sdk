@@ -31,23 +31,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore.create
 
 @Module
 internal class AttributeValueFilterEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AttributeValueFilter> {
-        return create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<AttributeValueFilter>): HandlerWithTransformer<AttributeValueFilter> {
-        return ObjectWithoutUidHandlerImpl(store)
+    fun store(databaseAdapter: DatabaseAdapter): AttributeValueFilterStore {
+        return AttributeValueFilterStoreImpl(databaseAdapter)
     }
 }

@@ -27,12 +27,16 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
 import org.junit.Before;
@@ -42,20 +46,17 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramStageDataElementHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore;
+    private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
-    private Handler<DataElement> dataElementHandler;
+    private DataElementHandler dataElementHandler;
 
     @Mock
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+    private ValueTypeRenderingHandler renderTypeHandler;
 
     @Mock
     private ProgramStageDataElement programStageDataElement;
@@ -77,6 +78,8 @@ public class ProgramStageDataElementHandlerShould {
         when(programStageDataElement.dataElement()).thenReturn(dataElement);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(programStageDataElement.renderType()).thenReturn(valueTypeRendering);
+
+        when(programStageDataElementStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -94,7 +97,10 @@ public class ProgramStageDataElementHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramStageDataElement> genericHandler =
-                new ProgramStageDataElementHandler(programStageDataElementStore, null, null);
+        IdentifiableHandlerImpl<ProgramStageDataElement> genericHandler = new ProgramStageDataElementHandler(
+                programStageDataElementStore,
+                dataElementHandler,
+                renderTypeHandler
+        );
     }
 }

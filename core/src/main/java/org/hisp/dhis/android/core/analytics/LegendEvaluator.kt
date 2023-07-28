@@ -55,7 +55,7 @@ internal class LegendEvaluator @Inject constructor(
                 .withLegendSets()
                 .one().blockingGet()
 
-            val legendSet = programIndicator.legendSets()!![0]
+            val legendSet = programIndicator?.legendSets()!![0]
 
             return getLegendByLegendSet(legendSet.uid(), value)
         } catch (e: Exception) {
@@ -75,7 +75,7 @@ internal class LegendEvaluator @Inject constructor(
                 .withLegendSets()
                 .one().blockingGet()
 
-            val legendSet = dataElement.legendSets()!![0]
+            val legendSet = dataElement?.legendSets()!![0]
 
             return getLegendByLegendSet(legendSet.uid(), value)
         } catch (e: Exception) {
@@ -95,7 +95,7 @@ internal class LegendEvaluator @Inject constructor(
                 .withLegendSets()
                 .one().blockingGet()
 
-            val legendSet = trackedEntityAttribute.legendSets()!![0]
+            val legendSet = trackedEntityAttribute?.legendSets()!![0]
 
             return getLegendByLegendSet(legendSet.uid(), value)
         } catch (e: Exception) {
@@ -115,7 +115,7 @@ internal class LegendEvaluator @Inject constructor(
                 .withLegendSets()
                 .one().blockingGet()
 
-            val legendSet = indicator.legendSets()!![0]
+            val legendSet = indicator?.legendSets()!![0]
 
             return getLegendByLegendSet(legendSet.uid(), value)
         } catch (e: Exception) {
@@ -136,7 +136,7 @@ internal class LegendEvaluator @Inject constructor(
                 .byEndValue().biggerOrEqualTo(value.toDouble())
                 .byLegendSet().eq(legendSetUid)
                 .one()
-                .blockingGet().uid()
+                .blockingGet()?.uid()
         } catch (e: Exception) {
             null
         }

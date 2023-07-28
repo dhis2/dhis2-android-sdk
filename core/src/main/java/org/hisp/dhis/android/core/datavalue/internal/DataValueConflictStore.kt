@@ -28,33 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 
-@Suppress("MagicNumber")
-internal object DataValueConflictStore {
-    private val BINDER = StatementBinder<DataValueConflict> { o, w ->
-        w.bind(1, o.conflict())
-        w.bind(2, o.value())
-        w.bind(3, o.attributeOptionCombo())
-        w.bind(4, o.categoryOptionCombo())
-        w.bind(5, o.dataElement())
-        w.bind(6, o.period())
-        w.bind(7, o.orgUnit())
-        w.bind(8, o.errorCode())
-        w.bind(9, o.displayDescription())
-        w.bind(10, o.status())
-        w.bind(11, o.created())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
-        return StoreFactory.objectStore(databaseAdapter, DataValueConflictTableInfo.TABLE_INFO, BINDER) {
-            DataValueConflict.create(it)
-        }
-    }
-}
+internal interface DataValueConflictStore : ObjectStore<DataValueConflict>

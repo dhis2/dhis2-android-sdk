@@ -43,16 +43,16 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore.create
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -79,19 +79,19 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected fun storeTrackerData() {
-        val orgUnit = create(databaseAdapter).selectFirst()
-        val teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst()
-        val program = d2.programModule().programs().one().blockingGet()
-        val programStage = ProgramStageStore.create(databaseAdapter).selectFirst()
+        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()!!
+        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()!!
+        val program = d2.programModule().programs().one().blockingGet()!!
+        val programStage = ProgramStageStoreImpl(databaseAdapter).selectFirst()!!
 
         val dataValue1 = TrackedEntityDataValueSamples.get().toBuilder().event(event1Id).build()
 
         val event1 = Event.builder()
             .uid(event1Id)
             .enrollment(enrollment1Id)
-            .organisationUnit(orgUnit!!.uid())
+            .organisationUnit(orgUnit.uid())
             .program(program.uid())
-            .programStage(programStage!!.uid())
+            .programStage(programStage.uid())
             .syncState(State.TO_UPDATE)
             .aggregatedSyncState(State.TO_UPDATE)
             .trackedEntityDataValues(listOf(dataValue1))
@@ -153,7 +153,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             TrackedEntityInstance.builder(), listOf(enrollment1, enrollment2, enrollment3)
         )
             .uid(teiId)
-            .trackedEntityType(teiType!!.uid())
+            .trackedEntityType(teiType.uid())
             .organisationUnit(orgUnit.uid())
             .syncState(State.TO_POST)
             .aggregatedSyncState(State.TO_POST)
@@ -186,9 +186,9 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
-        val orgUnit = create(databaseAdapter).selectFirst()
-        val teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst()
-        TrackedEntityInstanceStoreImpl.create(databaseAdapter).insert(
+        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()
+        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()
+        TrackedEntityInstanceStoreImpl(databaseAdapter).insert(
             TrackedEntityInstanceSamples.get().toBuilder()
                 .uid(teiUid)
                 .trackedEntityType(teiType!!.uid())
@@ -214,22 +214,22 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         from: RelationshipItem,
         to: RelationshipItem
     ) {
-        val relationshipType = RelationshipTypeStore.create(databaseAdapter).selectFirst()
+        val relationshipType = RelationshipTypeStoreImpl(databaseAdapter).selectFirst()
         val executor = D2CallExecutor.create(databaseAdapter)
         executor.executeD2CallTransactionally<Any?> {
-            RelationshipStoreImpl.create(databaseAdapter).insert(
+            RelationshipStoreImpl(databaseAdapter).insert(
                 RelationshipSamples.get230(relationshipUid, from, to).toBuilder()
                     .relationshipType(relationshipType!!.uid())
                     .syncState(State.TO_POST)
                     .build()
             )
-            RelationshipItemStoreImpl.create(databaseAdapter).insert(
+            RelationshipItemStoreImpl(databaseAdapter).insert(
                 from.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.FROM)
                     .build()
             )
-            RelationshipItemStoreImpl.create(databaseAdapter).insert(
+            RelationshipItemStoreImpl(databaseAdapter).insert(
                 to.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.TO)
@@ -255,7 +255,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         internal lateinit var eventStore: EventStore
         internal lateinit var enrollmentStore: EnrollmentStore
         internal lateinit var trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>
-        internal lateinit var programStore: ProgramStoreInterface
+        internal lateinit var programStore: ProgramStore
 
         @BeforeClass
         @JvmStatic
@@ -263,12 +263,12 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         fun setUp() {
             setUpClass()
             oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator()
-            teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
-            teiDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
-            eventStore = EventStoreImpl.create(databaseAdapter)
-            enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
-            trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
-            programStore = ProgramStore.create(databaseAdapter)
+            teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+            teiDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+            eventStore = EventStoreImpl(databaseAdapter)
+            enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
+            trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
+            programStore = ProgramStoreImpl(databaseAdapter)
         }
     }
 }

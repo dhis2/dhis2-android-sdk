@@ -29,19 +29,15 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
 @Reusable
 internal class ProgramStageWorkingListHandler @Inject constructor(
-    store: IdentifiableObjectStore<ProgramStageWorkingList>,
-    private val eventDataFilterHandler: HandlerWithTransformer<ProgramStageWorkingListEventDataFilter>,
-    private val attributeValueFilterHandler: HandlerWithTransformer<ProgramStageWorkingListAttributeValueFilter>
+    store: ProgramStageWorkingListStore,
+    private val eventDataFilterHandler: ProgramStageWorkingListEventDataFilterHandler,
+    private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler
 ) : IdentifiableHandlerImpl<ProgramStageWorkingList>(store) {
 
     override fun beforeCollectionHandled(

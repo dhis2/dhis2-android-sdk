@@ -34,17 +34,14 @@ import javax.inject.Singleton
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule
-import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationPackageDIModule
@@ -56,7 +53,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModul
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule
 import org.hisp.dhis.android.core.datastore.internal.DataStorePackageDIModule
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictDIModule
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictEntityDIModule
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataPackageDIModule
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl
@@ -71,25 +68,25 @@ import org.hisp.dhis.android.core.legendset.internal.LegendPackageDIModule
 import org.hisp.dhis.android.core.maintenance.internal.MaintenancePackageDIModule
 import org.hisp.dhis.android.core.map.internal.MapPackageDIModule
 import org.hisp.dhis.android.core.note.internal.NotePackageDIModule
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule
-import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.internal.ProgramCall
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListPackageDIModule
-import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeHandler
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule
 import org.hisp.dhis.android.core.settings.internal.SettingPackageDIModule
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetDIModule
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandler
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
@@ -150,7 +147,7 @@ import retrofit2.Retrofit
         UserPackageDIModule::class,
         ValidationPackageDIModule::class,
         VisualizationPackageDIModule::class,
-        DataValueConflictDIModule::class,
+        DataValueConflictEntityDIModule::class,
         MapPackageDIModule::class,
         ProgramStageWorkingListPackageDIModule::class
     ]
@@ -174,13 +171,13 @@ internal interface D2DIComponent {
     fun internalModules(): D2InternalModules
 
     @VisibleForTesting
-    fun programCall(): UidsCall<Program>
+    fun programCall(): ProgramCall
 
     @VisibleForTesting
-    fun optionSetCall(): UidsCall<OptionSet>
+    fun optionSetCall(): OptionSetCall
 
     @VisibleForTesting
-    fun optionCall(): UidsCall<Option>
+    fun optionCall(): OptionCall
 
     @VisibleForTesting
     fun dataElementCallFactory(): UidsCallFactory<DataElement>
@@ -189,16 +186,16 @@ internal interface D2DIComponent {
     fun dataSetCallFactory(): UidsCallFactory<DataSet>
 
     @VisibleForTesting
-    fun relationshipTypeHandler(): Handler<RelationshipType>
+    fun relationshipTypeHandler(): RelationshipTypeHandler
 
     @VisibleForTesting
-    fun trackedEntityTypeHandler(): Handler<TrackedEntityType>
+    fun trackedEntityTypeHandler(): TrackedEntityTypeHandler
 
     @VisibleForTesting
     fun oldTrackerImporterPayloadGenerator(): OldTrackerImporterPayloadGenerator
 
     @VisibleForTesting
-    fun categoryOptionStore(): IdentifiableObjectStore<CategoryOption>
+    fun categoryOptionStore(): CategoryOptionStore
 
     @VisibleForTesting
     fun periodHandler(): PeriodHandler
@@ -243,7 +240,7 @@ internal interface D2DIComponent {
         fun userPackageDIModule(userPackageDIModule: UserPackageDIModule): Builder
         fun validationPackageDIModule(validationPackageDIModule: ValidationPackageDIModule): Builder
         fun visualizationPackageDIModule(visualizationPackageDIModule: VisualizationPackageDIModule): Builder
-        fun dataValueConflictDIModule(dataValueConflictDIModule: DataValueConflictDIModule): Builder
+        fun dataValueConflictDIModule(dataValueConflictDIModule: DataValueConflictEntityDIModule): Builder
         fun build(): D2DIComponent
     }
 

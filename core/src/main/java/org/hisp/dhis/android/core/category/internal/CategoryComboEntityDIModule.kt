@@ -30,40 +30,27 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore.create
 
 @Module
-internal class CategoryComboEntityDIModule : IdentifiableStoreProvider<CategoryCombo> {
+internal class CategoryComboEntityDIModule {
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<CategoryCombo> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): CategoryComboStore {
+        return CategoryComboStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(impl: CategoryComboHandler): Handler<CategoryCombo> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun orphanCleaner(databaseAdapter: DatabaseAdapter): OrphanCleaner<CategoryCombo, CategoryOptionCombo> {
-        return OrphanCleanerImpl(
-            CategoryOptionComboTableInfo.TABLE_INFO.name(),
-            CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO,
-            databaseAdapter
-        )
+    fun handler(
+        store: CategoryComboStore,
+        optionComboHandler: CategoryOptionComboHandler,
+        categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
+        categoryOptionCleaner: CategoryOptionComboOrphanCleaner
+    ): CategoryComboHandler {
+        return CategoryComboHandler(store, optionComboHandler, categoryCategoryComboLinkHandler, categoryOptionCleaner)
     }
 
     @Provides

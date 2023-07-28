@@ -28,13 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.junit.Before;
@@ -45,14 +48,10 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public class TrackedEntityInstanceUidHelperShould {
 
     @Mock
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private OrganisationUnitStore organisationUnitStore;
 
     @Mock
     private TrackedEntityInstance tei1;

@@ -25,25 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
-@Reusable
-internal class CategoryComboHandler @Inject constructor(
-    store: IdentifiableObjectStore<CategoryCombo>,
-    private val optionComboHandler: HandlerWithTransformer<CategoryOptionCombo>,
-    private val categoryCategoryComboLinkHandler: OrderedLinkHandler<Category, CategoryCategoryComboLink>,
-    private val categoryOptionCleaner: OrphanCleaner<CategoryCombo, CategoryOptionCombo>
+internal class CategoryComboHandler constructor(
+    store: CategoryComboStore,
+    private val optionComboHandler: CategoryOptionComboHandler,
+    private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
+    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
     override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {

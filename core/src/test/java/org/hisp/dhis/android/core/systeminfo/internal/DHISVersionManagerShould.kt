@@ -30,14 +30,17 @@ package org.hisp.dhis.android.core.systeminfo.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.*
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.SMSVersion
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.junit.Before
 import org.junit.Test
 
 class DHISVersionManagerShould {
-    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo> = mock()
+    private val systemInfoStore: SystemInfoStore = mock()
     private val systemInfo: SystemInfo = mock()
 
     // Object to test

@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -41,15 +39,16 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 @Reusable
@@ -62,11 +61,11 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val eventStore: EventStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val noteStore: IdentifiableObjectStore<Note>,
-    private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
-    private val programStore: ProgramStoreInterface,
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
+    private val noteStore: NoteStore,
+    private val trackedEntityTypeStore: TrackedEntityTypeStore,
+    private val relationshipTypeStore: RelationshipTypeStore,
+    private val programStore: ProgramStore,
+    private val programOwnerStore: ProgramOwnerStore
 ) {
 
     private data class ExtraData(

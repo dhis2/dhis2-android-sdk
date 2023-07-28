@@ -33,16 +33,15 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 @Reusable
 internal class ProgramIndicatorCall @Inject constructor(
     private val service: ProgramIndicatorService,
-    private val handler: Handler<ProgramIndicator>,
+    private val handler: ProgramIndicatorHandler,
     private val apiDownloader: APIDownloader,
-    private val programStore: ProgramStoreInterface
+    private val programStore: ProgramStore
 ) : UidsCall<ProgramIndicator> {
 
     companion object {

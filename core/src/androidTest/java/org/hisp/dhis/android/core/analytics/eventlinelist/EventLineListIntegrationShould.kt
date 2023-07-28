@@ -49,33 +49,33 @@ import org.hisp.dhis.android.core.analytics.linelist.EventLineListParams
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListService
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListServiceImpl
 import org.hisp.dhis.android.core.analytics.linelist.LineListItem
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore
+import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.common.*
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
-import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
-import org.hisp.dhis.android.core.legendset.internal.LegendStore
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStoreImpl
+import org.hisp.dhis.android.core.legendset.internal.LegendSetStoreImpl
+import org.hisp.dhis.android.core.legendset.internal.LegendStoreImpl
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -88,25 +88,25 @@ import org.junit.runner.RunWith
 class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     // Stores
-    private val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
-    private val categoryComboStore = CategoryComboStore.create(databaseAdapter)
-    private val categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter)
-    private val programStore = ProgramStore.create(databaseAdapter)
-    private val programStageStore = ProgramStageStore.create(databaseAdapter)
-    private val dataElementStore = DataElementStore.create(databaseAdapter)
-    private val dataElementLegendSetLinkStore = DataElementLegendSetLinkStore.create(databaseAdapter)
-    private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
-    private val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
-    private val organisationUnitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
-    private val organisationUnitLevelStore = OrganisationUnitLevelStore.create(databaseAdapter)
-    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
-    private val eventStore = EventStoreImpl.create(databaseAdapter)
-    private val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
-    private val programIndicatorStore = ProgramIndicatorStore.create(databaseAdapter)
-    private val programIndicatorLegendSetLinkStore = ProgramIndicatorLegendSetLinkStore.create(databaseAdapter)
-    private val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
-    private val legendSetStore = LegendSetStore.create(databaseAdapter)
-    private val legendStore = LegendStore.create(databaseAdapter)
+    private val trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
+    private val categoryComboStore = CategoryComboStoreImpl(databaseAdapter)
+    private val categoryOptionComboStore = CategoryOptionComboStoreImpl(databaseAdapter)
+    private val programStore = ProgramStoreImpl(databaseAdapter)
+    private val programStageStore = ProgramStageStoreImpl(databaseAdapter)
+    private val dataElementStore = DataElementStoreImpl(databaseAdapter)
+    private val dataElementLegendSetLinkStore = DataElementLegendSetLinkStoreImpl(databaseAdapter)
+    private val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
+    private val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl(databaseAdapter)
+    private val organisationUnitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(databaseAdapter)
+    private val organisationUnitLevelStore = OrganisationUnitLevelStoreImpl(databaseAdapter)
+    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    private val eventStore = EventStoreImpl(databaseAdapter)
+    private val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+    private val programIndicatorStore = ProgramIndicatorStoreImpl(databaseAdapter)
+    private val programIndicatorLegendSetLinkStore = ProgramIndicatorLegendSetLinkStoreImpl(databaseAdapter)
+    private val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
+    private val legendSetStore = LegendSetStoreImpl(databaseAdapter)
+    private val legendStore = LegendStoreImpl(databaseAdapter)
     private val calendarProvider = CalendarProviderFactory.createFixed()
     private val dateFilterPeriodHelper =
         DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))

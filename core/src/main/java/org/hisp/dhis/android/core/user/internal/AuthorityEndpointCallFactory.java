@@ -51,7 +51,7 @@ final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> 
     @Inject
     AuthorityEndpointCallFactory(GenericCallData data,
                                  APICallExecutor apiCallExecutor,
-                                 Handler<Authority> handler,
+                                 AuthorityHandler handler,
                                  AuthorityService service) {
         super(data, apiCallExecutor);
         this.handler = handler;

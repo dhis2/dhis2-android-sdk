@@ -180,6 +180,11 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             .doOnSuccess { oCollection: List<P> -> handler.handleMany(oCollection) }
     }
 
+    override suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P> {
+        return downloader.invoke()
+            .also { handler.handleMany(it) }
+    }
+
     override fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P> {
         return downloader
             .doOnSuccess { o: P -> handler.handle(o) }

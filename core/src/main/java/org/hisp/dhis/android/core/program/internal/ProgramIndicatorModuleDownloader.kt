@@ -32,13 +32,11 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.program.ProgramIndicator
 
 @Reusable
 internal class ProgramIndicatorModuleDownloader @Inject constructor(
-    private val programIndicatorCall: UidsCall<ProgramIndicator>,
+    private val programIndicatorCall: ProgramIndicatorCall,
     private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker
 ) : UntypedModuleDownloader {
 

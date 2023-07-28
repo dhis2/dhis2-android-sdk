@@ -40,36 +40,36 @@ internal interface FileResourceService {
     fun uploadFile(@Part filePart: MultipartBody.Part): Call<ResponseBody>
 
     @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
-    fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): Call<FileResource>
+    suspend fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): FileResource
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
-    fun getImageFromTrackedEntityAttribute(
+    suspend fun getImageFromTrackedEntityAttribute(
         @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
         @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
         @Query("dimension") dimension: String
-    ): Call<ResponseBody>
+    ): ResponseBody
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/file")
-    fun getFileFromTrackedEntityAttribute(
+    suspend fun getFileFromTrackedEntityAttribute(
         @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
         @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String
-    ): Call<ResponseBody>
+    ): ResponseBody
 
     @GET("$EVENTS/files")
-    fun getFileFromEventValue(
+    suspend fun getFileFromEventValue(
         @Query("eventUid") eventUid: String,
         @Query("dataElementUid") dataElementUid: String,
         @Query("dimension") dimension: String
-    ): Call<ResponseBody>
+    ): ResponseBody
 
     @GET("$DATA_VALUES/files")
-    fun getFileFromDataValue(
+    suspend fun getFileFromDataValue(
         @Query("de") dataElement: String,
         @Query("pe") period: String,
         @Query("ou") organisationUnit: String,
         @Query("co") categoryOptionCombo: String,
         @Query("dimension") dimension: String
-    ): Call<ResponseBody>
+    ): ResponseBody
 
     companion object {
         const val FILE_RESOURCES = "fileResources"

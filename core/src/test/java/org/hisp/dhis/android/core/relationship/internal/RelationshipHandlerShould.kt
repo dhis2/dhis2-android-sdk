@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship.internal
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -47,7 +46,7 @@ class RelationshipHandlerShould {
 
     private val relationshipItemStore: RelationshipItemStore = mock()
 
-    private val relationshipItemHandler: Handler<RelationshipItem> = mock()
+    private val relationshipItemHandler: RelationshipItemHandler = mock()
 
     private val storeSelector: RelationshipItemElementStoreSelector = mock()
 
@@ -64,11 +63,11 @@ class RelationshipHandlerShould {
     private val newRelationship: Relationship = RelationshipSamples.get230(NEW_UID, TEI_3_UID, TEI_4_UID)
 
     // object to test
-    private lateinit var relationshipHandler: RelationshipHandlerImpl
+    private lateinit var relationshipHandler: RelationshipHandler
 
     @Before
     fun setUp() {
-        relationshipHandler = RelationshipHandlerImpl(
+        relationshipHandler = RelationshipHandler(
             relationshipStore, relationshipItemStore,
             relationshipItemHandler, storeSelector
         )

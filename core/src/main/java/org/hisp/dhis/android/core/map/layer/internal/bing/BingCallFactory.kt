@@ -37,11 +37,11 @@ import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 @Reusable
 internal class BingCallFactory @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val mapLayerHandler: Handler<MapLayer>,
+    private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
     private val settingsService: SettingService,
     private val bingService: BingService

@@ -139,17 +139,17 @@ internal class APIErrorMapper @Inject constructor() {
         }
     }
 
-    @JvmOverloads
     fun responseException(
         errorBuilder: D2Error.Builder,
         response: Response<*>,
-        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE,
+        errorCode: D2ErrorCode?,
         errorBody: String?
     ): D2Error {
+        val code = errorCode ?: D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
         val serverMessage = errorBody ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
-            .errorCode(errorCode)
+            .errorCode(code)
             .httpErrorCode(response.code())
             .errorDescription("API call failed, server message: $serverMessage")
             .build()

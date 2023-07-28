@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedData
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey
 import org.hisp.dhis.android.core.period.PeriodType
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     /**
@@ -46,19 +48,17 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     @Throws(Exception::class)
-    fun download_data_values() {
-        runTest {
-            if (!d2.userModule().isLogged().blockingGet()) {
-                d2.userModule().logIn(username, password, url).blockingGet()
-            }
-
-            /*  This test won't pass independently of the sync of metadata, as the foreign keys
-                constraints won't be satisfied.
-                To run the test, you will need to disable foreign key support in database in
-                DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
-                uncomment the @Test tag */
-            download()
+    fun download_data_values() = runTest {
+        if (!d2.userModule().isLogged().blockingGet()) {
+            d2.userModule().logIn(username, password, url).blockingGet()
         }
+
+        /*  This test won't pass independently of the sync of metadata, as the foreign keys
+            constraints won't be satisfied.
+            To run the test, you will need to disable foreign key support in database in
+            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+            uncomment the @Test tag */
+        download()
     }
 
     private suspend fun download(): List<DataValue> {

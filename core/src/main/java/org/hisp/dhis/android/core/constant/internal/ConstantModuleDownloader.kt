@@ -25,30 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal;
+package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader;
-import org.hisp.dhis.android.core.constant.Constant;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.constant.Constant
+import javax.inject.Inject
 
 @Reusable
-public class ConstantModuleDownloader implements TypedModuleDownloader<List<Constant>> {
-
-    private final ConstantCallFactory constantCallFactory;
-
-    @Inject
-    ConstantModuleDownloader(ConstantCallFactory constantCallFactory) {
-        this.constantCallFactory = constantCallFactory;
-    }
-
-    @Override
-    public Single<List<Constant>> downloadMetadata() {
-        return Single.fromCallable(constantCallFactory.create());
+class ConstantModuleDownloader @Inject internal constructor(private val constantCallFactory: ConstantCallFactory) :
+    TypedModuleDownloader<List<Constant>?> {
+    override fun downloadMetadata(): Single<List<Constant>?> {
+        return Single.fromCallable(
+            constantCallFactory.create()
+        )
     }
 }

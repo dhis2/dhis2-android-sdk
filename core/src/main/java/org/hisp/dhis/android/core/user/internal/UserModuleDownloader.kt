@@ -25,35 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader;
-import org.hisp.dhis.android.core.user.User;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.user.User
+import javax.inject.Inject
 
 @Reusable
-public class UserModuleDownloader implements TypedModuleDownloader<User> {
-
-    private final UserCall userCall;
-    private final AuthorityEndpointCallFactory authorityCallFactory;
-
-    @Inject
-    UserModuleDownloader(UserCall userCall, AuthorityEndpointCallFactory authorityCallFactory) {
-        this.userCall = userCall;
-        this.authorityCallFactory = authorityCallFactory;
-    }
-
-    @Override
-    public Single<User> downloadMetadata() {
-        return Single.fromCallable(() -> {
-            User user = userCall.call();
-            authorityCallFactory.create().call();
-            return user;
-        });
+internal class UserModuleDownloader @Inject internal constructor(
+    private val userCall: UserCall,
+    private val authorityCallFactory: AuthorityEndpointCallFactory
+) : TypedModuleDownloader<User?> {
+    override fun downloadMetadata(): Single<User> {
+        return Single.fromCallable {
+            val user = userCall.call()
+            authorityCallFactory.create().call()
+            user
+        }
     }
 }

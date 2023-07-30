@@ -25,54 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant.internal
 
-package org.hisp.dhis.android.core.constant.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.constant.Constant;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
+import org.hisp.dhis.android.core.constant.Constant
+import retrofit2.Call
+import javax.inject.Inject
 
 @Reusable
-final class ConstantCallFactory extends ListCallFactoryImpl<Constant> {
-
-    private final ConstantService service;
-    private final ConstantHandler handler;
-
-    @Inject
-    ConstantCallFactory(GenericCallData data,
-                        APICallExecutor apiCallExecutor,
-                        ConstantService service,
-                        ConstantHandler handler) {
-        super(data, apiCallExecutor);
-        this.service = service;
-        this.handler = handler;
-    }
-
-    @Override
-    protected CallFetcher<Constant> fetcher() {
-        return new PayloadNoResourceCallFetcher<Constant>(apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<Payload<Constant>> getCall() {
-                return service.constants(ConstantFields.allFields, Boolean.FALSE);
+internal class ConstantCallFactory @Inject constructor(
+    data: GenericCallData?,
+    apiCallExecutor: APICallExecutor?,
+    private val service: ConstantService,
+    private val handler: ConstantHandler
+) : ListCallFactoryImpl<Constant?>(data, apiCallExecutor) {
+    override fun fetcher(): CallFetcher<Constant?>? {
+        return object : PayloadNoResourceCallFetcher<Constant?>(apiCallExecutor) {
+            override fun getCall(): Call<Payload<Constant?>>? {
+                return service.constants(ConstantFields.allFields, false)
             }
-        };
+        }
     }
 
-    @Override
-    protected CallProcessor<Constant> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(),
-                handler
-        );
+    override fun processor(): CallProcessor<Constant?> {
+        return TransactionalNoResourceSyncCallProcessor(
+            data.databaseAdapter(),
+            handler
+        )
     }
 }

@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.modules.internal
 
-package org.hisp.dhis.android.core.arch.modules.internal;
+import io.reactivex.Single
 
-import io.reactivex.Single;
-
-public interface TypedModuleDownloader<O> {
-   Single<O> downloadMetadata();
+interface TypedModuleDownloader<O> {
+    fun downloadMetadata(): Single<O>?
 }

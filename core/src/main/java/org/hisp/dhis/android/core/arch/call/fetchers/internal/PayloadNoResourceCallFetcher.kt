@@ -25,27 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-package org.hisp.dhis.android.core.arch.call.fetchers.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.maintenance.D2Error
+import retrofit2.Call
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.List;
-
-public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> {
-
-    private final APICallExecutor apiCallExecutor;
-
-    protected PayloadNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall();
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executePayloadCall(getCall());
+abstract class PayloadNoResourceCallFetcher<P> protected constructor(private val apiCallExecutor: APICallExecutor) :
+    CallFetcher<P> {
+    protected abstract val call: Call<Payload<P>?>?
+    @Throws(D2Error::class)
+    override fun fetch(): List<P> {
+        return apiCallExecutor.executePayloadCall(call)
     }
 }

@@ -29,11 +29,9 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -57,27 +55,25 @@ internal class BingCallFactory @Inject constructor(
 ) {
 
     @Suppress("TooGenericExceptionCaught")
-    fun download(): Single<List<MapLayer>> {
-        return rxSingle {
-            if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
-                try {
-                    val settings = coroutineAPICallExecutor.wrap(storeError = true) {
-                        settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
-                    }
-
-                    val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
-                        ?.let { key -> downloadBingBasemaps(key) }
-                        ?: emptyList()
-
-                    mapLayers.also {
-                        mapLayerHandler.handleMany(it)
-                    }
-                } catch (e: Exception) {
-                    emptyList()
+    suspend fun download(): List<MapLayer> {
+        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
+            try {
+                val settings = coroutineAPICallExecutor.wrap(storeError = true) {
+                    settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
                 }
-            } else {
+
+                val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
+                    ?.let { key -> downloadBingBasemaps(key) }
+                    ?: emptyList()
+
+                mapLayers.also {
+                    mapLayerHandler.handleMany(it)
+                }
+            } catch (e: Exception) {
                 emptyList()
             }
+        } else {
+            emptyList()
         }
     }
 

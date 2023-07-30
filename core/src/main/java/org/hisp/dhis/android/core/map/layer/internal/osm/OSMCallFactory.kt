@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.map.layer.internal.osm
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
@@ -41,38 +40,34 @@ internal class OSMCallFactory @Inject constructor(
     private val mapLayerHandler: MapLayerHandler
 ) {
 
-    fun download(): Single<List<MapLayer>> {
-        return Single.defer {
-            getOSMBaseMaps().map { mapLayers ->
-                mapLayerHandler.handleMany(mapLayers)
-                mapLayers
-            }
-        }
+    fun download(): List<MapLayer> {
+        val mapLayers = getOSMBaseMaps()
+        mapLayerHandler.handleMany(mapLayers)
+        return mapLayers
     }
 
-    private fun getOSMBaseMaps(): Single<List<MapLayer>> {
-        return Single.fromCallable {
-            OSMBaseMaps.list.map { basemap ->
-                MapLayer.builder()
-                    .uid(basemap.id)
-                    .name(basemap.name)
-                    .displayName(basemap.name)
-                    .style(basemap.style)
-                    .mapLayerPosition(MapLayerPosition.BASEMAP)
-                    .external(false)
-                    .imageUrl(basemap.imageUrl)
-                    .subdomains(basemap.subdomains)
-                    .subdomainPlaceholder(basemap.subdomainPlaceholder)
-                    .imageryProviders(
-                        listOf(
-                            MapLayerImageryProvider.builder()
-                                .mapLayer(basemap.id)
-                                .attribution(basemap.attribution)
-                                .build()
-                        )
+    // Function to get OSMBaseMaps
+    private fun getOSMBaseMaps(): List<MapLayer> {
+        return OSMBaseMaps.list.map { basemap ->
+            MapLayer.builder()
+                .uid(basemap.id)
+                .name(basemap.name)
+                .displayName(basemap.name)
+                .style(basemap.style)
+                .mapLayerPosition(MapLayerPosition.BASEMAP)
+                .external(false)
+                .imageUrl(basemap.imageUrl)
+                .subdomains(basemap.subdomains)
+                .subdomainPlaceholder(basemap.subdomainPlaceholder)
+                .imageryProviders(
+                    listOf(
+                        MapLayerImageryProvider.builder()
+                            .mapLayer(basemap.id)
+                            .attribution(basemap.attribution)
+                            .build()
                     )
-                    .build()
-            }
+                )
+                .build()
         }
     }
 }

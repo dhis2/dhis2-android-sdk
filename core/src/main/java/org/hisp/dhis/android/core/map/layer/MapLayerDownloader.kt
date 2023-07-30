@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.map.layer
 import dagger.Reusable
 import io.reactivex.Completable
 import javax.inject.Inject
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerCallFactory
 
@@ -39,6 +40,6 @@ class MapLayerDownloader @Inject internal constructor(
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
-        return Completable.fromSingle(mapLayerCallFactory.downloadMetadata())
+        return rxCompletable { mapLayerCallFactory.downloadMetadata() }
     }
 }

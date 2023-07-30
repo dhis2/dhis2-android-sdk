@@ -25,33 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.processors.internal
 
-package org.hisp.dhis.android.core.arch.call.processors.internal;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.List;
-
-public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final DatabaseAdapter databaseAdapter;
-    private final Handler<O> handler;
-
-    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
-                                                    Handler<O> handler) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                return null;
-            });
+internal class TransactionalNoResourceSyncCallProcessor<O>(
+    private val databaseAdapter: DatabaseAdapter,
+    private val handler: Handler<O>
+) : CallProcessor<O> {
+    @Throws(D2Error::class)
+    override fun process(objectList: List<O>) {
+        if (objectList.isNotEmpty()) {
+            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally<Any?> {
+                handler.handleMany(objectList)
+                null
+            }
         }
     }
 }

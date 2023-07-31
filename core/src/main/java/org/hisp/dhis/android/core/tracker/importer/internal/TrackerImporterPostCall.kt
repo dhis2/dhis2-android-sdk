@@ -126,7 +126,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         importStrategy: String
     ): Result<String, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
-            service.postTrackedEntityInstances(payload, ATOMIC_MODE_OBJECT, importStrategy)
+            service.postTrackerPayload(payload, ATOMIC_MODE_OBJECT, importStrategy)
         }.map { res ->
             val jobId = res.response().uid()
             jobObjectHandler.handleMany(generateJobObjects(payload, jobId))

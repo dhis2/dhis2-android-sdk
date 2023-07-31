@@ -45,15 +45,8 @@ internal const val JOB_ID = "jobId"
 internal interface TrackerImporterService {
 
     @POST(TRACKER_URL)
-    suspend fun postTrackedEntityInstances(
+    suspend fun postTrackerPayload(
         @Body payload: NewTrackerImporterPayload,
-        @Query(ATOMIC_MODE) atomicMode: String,
-        @Query(IMPORT_STRATEGY) importStrategy: String
-    ): ObjectWithUidWebResponse
-
-    @POST(TRACKER_URL)
-    suspend fun postEvents(
-        @Body events: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
         @Query(IMPORT_STRATEGY) importStrategy: String
     ): ObjectWithUidWebResponse

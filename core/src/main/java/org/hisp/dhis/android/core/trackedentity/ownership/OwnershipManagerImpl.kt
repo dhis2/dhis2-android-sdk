@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -60,6 +60,7 @@ internal class OwnershipManagerImpl @Inject constructor(
             postBreakGlass(trackedEntityInstance, program, reason)
         }.fold(
             onSuccess = { breakGlassResponse ->
+                @Suppress("MagicNumber")
                 if (breakGlassResponse.httpStatusCode() == 200) {
                     programTempOwnerStore.insert(
                         ProgramTempOwner.builder()

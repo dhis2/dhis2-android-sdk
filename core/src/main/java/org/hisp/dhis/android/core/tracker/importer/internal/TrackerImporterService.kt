@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import retrofit2.Call
 import retrofit2.http.*
 
 internal const val TRACKER_URL = "tracker"
@@ -46,19 +45,19 @@ internal const val JOB_ID = "jobId"
 internal interface TrackerImporterService {
 
     @POST(TRACKER_URL)
-    fun postTrackedEntityInstances(
+    suspend fun postTrackedEntityInstances(
         @Body payload: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
         @Query(IMPORT_STRATEGY) importStrategy: String
-    ): Call<ObjectWithUidWebResponse>
+    ): ObjectWithUidWebResponse
 
     @POST(TRACKER_URL)
-    fun postEvents(
+    suspend fun postEvents(
         @Body events: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
         @Query(IMPORT_STRATEGY) importStrategy: String
-    ): Call<ObjectWithUidWebResponse>
+    ): ObjectWithUidWebResponse
 
     @GET("$JOBS_URL{jobId}/report")
-    fun getJobReport(@Path(JOB_ID) jobId: String): Call<JobReport>
+    suspend fun getJobReport(@Path(JOB_ID) jobId: String): JobReport
 }

@@ -28,15 +28,19 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.Single
 import java.util.Date
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
@@ -54,56 +58,48 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val fileResourcesPostCall: TrackerImporterFileResourcesPostCall,
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val jobQueryCall: JobQueryCall,
     private val jobObjectHandler: TrackerJobObjectHandler,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
 ) {
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
-        }
+    ): Flow<D2Progress> {
+        return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
     }
 
     fun uploadEvents(
         filteredEvents: List<Event>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
-        }
+    ): Flow<D2Progress> {
+        return postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
     }
 
     private fun postPayloadWrapper(
         payloadWrapper: NewTrackerImporterPayloadWrapper
-    ): Observable<D2Progress> {
-        return fileResourcesPostCall.uploadFileResources(payloadWrapper).flatMapObservable { payload ->
-            Observable.concat(
-                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true),
-                doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE),
-                doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE),
-                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false)
-            )
-        }
+    ): Flow<D2Progress> = flow {
+        val payload = fileResourcesPostCall.uploadFileResources(payloadWrapper).blockingGet()
+
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true))
+        emitAll(doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE))
+        emitAll(doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE))
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false))
     }
 
     private fun doPostCall(
         payload: NewTrackerImporterPayload,
         importStrategy: String
-    ): Observable<D2Progress> {
-        return if (payload.isEmpty()) {
-            Observable.empty<D2Progress>()
+    ): Flow<D2Progress> = flow {
+        if (payload.isEmpty()) {
+            emit(D2ProgressManager(null).increaseProgress(NewTrackerImporterPayload::class.java, true))
         } else {
-            doPost(payload, importStrategy).flatMap { d2Progress ->
-                val glassErrors = breakTheGlassHelper.getGlassErrors(payload)
+            emitAll(doPost(payload, importStrategy))
 
-                if (glassErrors.isEmpty()) {
-                    Observable.just(d2Progress)
-                } else {
-                    breakTheGlassHelper.fakeBreakGlass(glassErrors)
-                    doPost(payload, importStrategy)
-                }
+            val glassErrors = breakTheGlassHelper.getGlassErrors(payload)
+
+            if (!glassErrors.isEmpty()) {
+                breakTheGlassHelper.fakeBreakGlass(glassErrors)
+                emitAll(doPost(payload, importStrategy))
             }
         }
     }
@@ -111,30 +107,31 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private fun doPost(
         payload: NewTrackerImporterPayload,
         importStrategy: String
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            stateManager.setStates(payload, State.UPLOADING)
+    ): Flow<D2Progress> = flow {
+        stateManager.setStates(payload, State.UPLOADING)
 
-            Single.fromCallable {
-                doPostCallInternal(payload, importStrategy)
-            }.doOnError {
+        doPostCallInternal(payload, importStrategy).fold(
+            onSuccess = { jobId ->
+                emitAll(jobQueryCall.queryJob(jobId))
+            },
+            onFailure = {
                 stateManager.restoreStates(payload)
-            }.flatMapObservable {
-                jobQueryCall.queryJob(it)
+                throw it
             }
-        }
+        )
     }
 
-    private fun doPostCallInternal(
+    private suspend fun doPostCallInternal(
         payload: NewTrackerImporterPayload,
         importStrategy: String
-    ): String {
-        val res = apiCallExecutor.executeObjectCall(
+    ): Result<String, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = true) {
             service.postTrackedEntityInstances(payload, ATOMIC_MODE_OBJECT, importStrategy)
-        )
-        val jobId = res.response().uid()
-        jobObjectHandler.handleMany(generateJobObjects(payload, jobId))
-        return jobId
+        }.map { res ->
+            val jobId = res.response().uid()
+            jobObjectHandler.handleMany(generateJobObjects(payload, jobId))
+            jobId
+        }
     }
 
     private fun generateJobObjects(

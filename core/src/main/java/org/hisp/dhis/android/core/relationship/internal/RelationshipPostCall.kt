@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.net.HttpURLConnection.*
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager

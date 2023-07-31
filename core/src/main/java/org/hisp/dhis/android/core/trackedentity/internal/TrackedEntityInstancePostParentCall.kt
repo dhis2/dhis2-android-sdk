@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
@@ -47,9 +48,9 @@ internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
             Observable.empty()
         } else {
             if (trackerParentCallHelper.useNewTrackerImporter()) {
-                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
+                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances).asObservable()
             } else {
-                oldTrackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
+                oldTrackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances).asObservable()
             }
         }
     }

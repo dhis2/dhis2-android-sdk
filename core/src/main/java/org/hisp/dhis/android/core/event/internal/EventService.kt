@@ -38,7 +38,7 @@ import retrofit2.http.*
 internal interface EventService {
 
     @POST(EVENTS)
-    fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): Call<EventWebResponse>
+    suspend fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): EventWebResponse
 
     @SuppressWarnings("LongParameterList")
     @GET(EVENTS)

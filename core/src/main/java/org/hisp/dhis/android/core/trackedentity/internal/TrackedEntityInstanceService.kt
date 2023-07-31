@@ -39,10 +39,10 @@ import retrofit2.http.*
 @Suppress("LongParameterList")
 internal interface TrackedEntityInstanceService {
     @POST(TRACKED_ENTITY_INSTANCES)
-    fun postTrackedEntityInstances(
+    suspend fun postTrackedEntityInstances(
         @Body trackedEntityInstances: TrackedEntityInstancePayload?,
         @Query(STRATEGY) strategy: String?
-    ): Call<TEIWebResponse>
+    ): TEIWebResponse
 
     @GET(TRACKED_ENTITY_INSTANCES)
     suspend fun getTrackedEntityInstance(

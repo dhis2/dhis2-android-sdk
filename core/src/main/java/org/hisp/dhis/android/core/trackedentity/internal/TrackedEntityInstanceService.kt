@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
-import retrofit2.Call
 import retrofit2.http.*
 
 @Suppress("LongParameterList")
@@ -52,14 +51,6 @@ internal interface TrackedEntityInstanceService {
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean
     ): Payload<TrackedEntityInstance>
-
-    @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstanceAsCall(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Call<Payload<TrackedEntityInstance>>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(

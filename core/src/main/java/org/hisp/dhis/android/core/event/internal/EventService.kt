@@ -68,11 +68,11 @@ internal interface EventService {
     ): Payload<Event>
 
     @GET("$EVENTS/{$EVENT_UID}")
-    fun getEvent(
+    suspend fun getEvent(
         @Path(EVENT_UID) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
         @Query(OU_MODE) orgUnitMode: String
-    ): Call<Event>
+    ): Event
 
     @GET(EVENTS)
     suspend fun getEventSingle(

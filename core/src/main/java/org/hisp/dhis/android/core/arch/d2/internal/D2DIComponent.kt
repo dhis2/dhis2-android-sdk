@@ -33,6 +33,7 @@ import dagger.Component
 import javax.inject.Singleton
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -166,6 +167,9 @@ internal interface D2DIComponent {
 
     @VisibleForTesting
     fun retrofit(): Retrofit
+
+    @VisibleForTesting
+    fun coroutineApiCallExecutor(): CoroutineAPICallExecutor
 
     @VisibleForTesting
     fun internalModules(): D2InternalModules

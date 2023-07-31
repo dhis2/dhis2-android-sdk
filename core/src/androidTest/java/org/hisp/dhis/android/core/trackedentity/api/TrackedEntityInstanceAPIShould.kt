@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
+import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
@@ -49,7 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.junit.Assert
 import org.junit.Before
-import java.util.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class TrackedEntityInstanceAPIShould internal constructor(

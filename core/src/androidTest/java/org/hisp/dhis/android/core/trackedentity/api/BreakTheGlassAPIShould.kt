@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
+import java.util.Arrays
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
@@ -49,7 +50,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
 import org.junit.Before
-import java.util.Arrays
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
@@ -92,7 +92,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         login()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun tei_with_event_in_search_scope_in_open_program() = runTest {
         val tei = teiWithEventInSearchScope()
@@ -109,7 +109,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     // Make program protected
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun tei_with_event_in_search_scope_in_protected_program() = runTest {
         val tei = teiWithEventInSearchScope()
@@ -132,7 +132,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     // Make program protected
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun tei_with_enrollment_in_search_scope_in_protected_program() = runTest {
         val tei = teiWithEnrollmentInSearchScope()
@@ -231,9 +231,11 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
     private fun teiWithEventInSearchScope(): TrackedEntityInstance {
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(), listOf(
+            validTei().toBuilder(),
+            listOf(
                 EnrollmentInternalAccessor.insertEvents(
-                    validEnrollment().toBuilder(), listOf(
+                    validEnrollment().toBuilder(),
+                    listOf(
                         validEvent().toBuilder()
                             .organisationUnit(searchOrgunit)
                             .build()
@@ -247,7 +249,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
     private fun teiWithEnrollmentInSearchScope(): TrackedEntityInstance {
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(), listOf(
+            validTei().toBuilder(),
+            listOf(
                 EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(), listOf(validEvent()))
                     .organisationUnit(searchOrgunit).build()
             )

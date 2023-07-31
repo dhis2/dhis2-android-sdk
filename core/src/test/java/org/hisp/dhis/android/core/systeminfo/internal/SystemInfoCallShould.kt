@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.systeminfo.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
@@ -48,6 +49,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class SystemInfoCallShould {
     private val systemInfoService: SystemInfoService = mock()
     private val databaseAdapter: DatabaseAdapter = mock()
@@ -81,14 +83,14 @@ class SystemInfoCallShould {
     }
 
     @Test
-    fun pass_correct_fields_to_service() = runBlocking {
+    fun pass_correct_fields_to_service() = runTest {
         systemInfoSyncCall.download(true)
 
         assertThat(filterCaptor.firstValue).isEqualTo(SystemInfoFields.allFields)
     }
 
     @Test
-    fun emit_d2_error_when_api_call_executor_returns_error() = runBlocking {
+    fun emit_d2_error_when_api_call_executor_returns_error() = runTest {
         systemInfoService.stub {
             onBlocking { getSystemInfo(any()) }.doAnswer { throw d2Error }
         }
@@ -102,7 +104,7 @@ class SystemInfoCallShould {
     }
 
     @Test
-    fun never_invoke_handlers_on_call_exception() = runBlocking {
+    fun never_invoke_handlers_on_call_exception() = runTest {
         systemInfoService.stub {
             onBlocking { getSystemInfo(filterCaptor.capture()) }.doAnswer { throw d2Error }
         }
@@ -116,7 +118,7 @@ class SystemInfoCallShould {
     }
 
     @Test
-    fun invoke_handler_after_successful_call() = runBlocking {
+    fun invoke_handler_after_successful_call() = runTest {
         systemInfoSyncCall.download(true)
 
         verify(systemInfoHandler).handle(systemInfo)
@@ -124,7 +126,7 @@ class SystemInfoCallShould {
     }
 
     @Test
-    fun throw_d2_call_exception_when_system_version_not_supported() = runBlocking {
+    fun throw_d2_call_exception_when_system_version_not_supported() = runTest {
         whenever(systemInfo.version()).thenReturn("2.28")
 
         verifyThrowD2Error(
@@ -133,7 +135,7 @@ class SystemInfoCallShould {
     }
 
     @Test
-    fun not_call_handler_when_system_version_not_supported() = runBlocking {
+    fun not_call_handler_when_system_version_not_supported() = runTest {
         whenever(systemInfo.version()).thenReturn("2.28")
 
         verifyThrowD2Error(

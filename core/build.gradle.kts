@@ -209,6 +209,7 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
     testImplementation("androidx.test:runner:$testRunner")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     // Android test dependencies
     androidTestImplementation("org.mockito:mockito-core:$mockito")
@@ -220,6 +221,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.
     }
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     debugImplementation("com.facebook.flipper:flipper:$flipper")
     debugImplementation("com.facebook.soloader:soloader:$soloader")

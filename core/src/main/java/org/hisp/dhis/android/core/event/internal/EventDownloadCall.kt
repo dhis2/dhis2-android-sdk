@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -50,8 +49,7 @@ internal class EventDownloadCall @Inject internal constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
@@ -67,10 +65,10 @@ internal class EventDownloadCall @Inject internal constructor(
         return eventQueryBundleFactory.getQueries(params)
     }
 
-    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<Event>> {
-        return rxCallExecutor.wrapSingle(
-            trackerParentCallFactory.getEventCall().getCollectionCall(query), true
-        )
+    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<Event>, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = true) {
+            trackerParentCallFactory.getEventCall().getCollectionCall(query)
+        }
     }
 
     override fun persistItems(
@@ -85,7 +83,7 @@ internal class EventDownloadCall @Inject internal constructor(
         lastUpdatedManager.update(bundle)
     }
 
-    override fun queryByUids(
+    override suspend fun queryByUids(
         bundle: EventQueryBundle,
         overwrite: Boolean,
         relatives: RelationshipItemRelatives

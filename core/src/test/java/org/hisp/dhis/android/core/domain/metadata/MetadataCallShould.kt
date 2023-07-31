@@ -165,7 +165,7 @@ class MetadataCallShould : BaseCallShould() {
     @Test
     fun fail_when_system_info_call_fail() {
         systemInfoDownloader.stub {
-            onBlocking { downloadWithProgressManager(any()) }.then { runBlocking { throw networkError } }
+            onBlocking { downloadWithProgressManager(any()) }.doAnswer { throw networkError }
         }
         downloadAndAssertError()
     }

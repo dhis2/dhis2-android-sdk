@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -44,7 +43,7 @@ internal class NewEventEndpointCallFactory @Inject constructor(
     private val service: TrackerExporterService
 ) : EventEndpointCallFactory() {
 
-    override fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = NewEventFields.allFields,
             orgUnit = eventQuery.orgUnit,
@@ -57,7 +56,7 @@ internal class NewEventEndpointCallFactory @Inject constructor(
             updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
             eventUid = getUidStr(eventQuery)
-        ).map { mapPayload(it) }
+        ).let { mapPayload(it) }
     }
 
     override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {

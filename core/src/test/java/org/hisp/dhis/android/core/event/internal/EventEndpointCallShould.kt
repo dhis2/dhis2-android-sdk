@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.event.Event
@@ -42,6 +43,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventEndpointCallShould {
 
     private val orgunit = "orgunitUid"
@@ -49,24 +51,20 @@ class EventEndpointCallShould {
     private val startDateStr = "2021-01-01"
 
     @Test
-    fun realize_request_with_page_filters_when_included_in_query() {
-        val eventEndpointCall = givenAEventCallByPagination(2, 32)
-
+    fun realize_request_with_page_filters_when_included_in_query() = runTest {
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.blockingGet()
+        givenAEventCallByPagination(2, 32)
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains("paging=true&page=2&pageSize=32")
     }
 
     @Test
-    fun realize_request_with_orgUnit_program_filters_when_included_in_query() {
-        val eventEndpointCall = givenAEventCallByOrgUnitAndProgram(orgunit, program)
-
+    fun realize_request_with_orgUnit_program_filters_when_included_in_query() = runTest {
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.subscribe()
+        givenAEventCallByOrgUnitAndProgram(orgunit, program)
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains("orgUnit=$orgunit")
@@ -74,30 +72,26 @@ class EventEndpointCallShould {
     }
 
     @Test
-    fun include_start_date_if_program_is_defined() {
-        val eventEndpointCall = givenAEventCallByOrgUnitAndProgram(orgunit, program, startDateStr)
-
+    fun include_start_date_if_program_is_defined() = runTest {
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.blockingGet()
+        givenAEventCallByOrgUnitAndProgram(orgunit, program, startDateStr)
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).contains(startDateStr)
     }
 
     @Test
-    fun does_not_include_start_date_if_program_is_not_defined() {
-        val eventEndpointCall = givenAEventCallByOrgUnitAndProgram(program, null, startDateStr)
-
+    fun does_not_include_start_date_if_program_is_not_defined() = runTest {
         mockWebServer.enqueueMockResponse()
 
-        eventEndpointCall.blockingGet()
+        givenAEventCallByOrgUnitAndProgram(program, null, startDateStr)
         val request = mockWebServer.takeRequest()
 
         assertThat(request.path).doesNotContain(startDateStr)
     }
 
-    private fun givenAEventCallByPagination(page: Int, pageCount: Int): Single<Payload<Event>> {
+    private suspend fun givenAEventCallByPagination(page: Int, pageCount: Int): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = get(),
             page = page,
@@ -107,17 +101,17 @@ class EventEndpointCallShould {
         return givenACallForQuery(eventQuery)
     }
 
-    private fun givenACallForQuery(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+    private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
         return OldEventEndpointCallFactory(
             retrofit.create(EventService::class.java)
         ).getCollectionCall(eventQuery)
     }
 
-    private fun givenAEventCallByOrgUnitAndProgram(
+    private suspend fun givenAEventCallByOrgUnitAndProgram(
         orgUnit: String,
         program: String?,
         startDate: String? = null
-    ): Single<Payload<Event>> {
+    ): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 listOf(),

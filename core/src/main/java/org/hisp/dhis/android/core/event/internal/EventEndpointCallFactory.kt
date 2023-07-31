@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
@@ -36,7 +35,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 @Reusable
 internal abstract class EventEndpointCallFactory {
 
-    abstract fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>>
+    abstract suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
 
     abstract suspend fun getRelationshipEntityCall(uid: String): Payload<Event>
 

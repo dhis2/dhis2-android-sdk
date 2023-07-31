@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import kotlin.collections.HashSet
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -145,6 +146,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 when (it) {
                     is Result.Success ->
                         !returnedUidsOffline.contains(it.value.uid()) && !returnedUidsOnline.contains(it.value.uid())
+
                     is Result.Failure ->
                         !returnedErrorCodes.contains(it.failure.errorCode())
                 }
@@ -165,9 +167,10 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
 
-            cachedInstances ?: trackerParentCallFactory.getTrackedEntityCall()
-                .getQueryCall(onlineQuery)
-                .call()
+            cachedInstances ?: runBlocking {
+                trackerParentCallFactory.getTrackedEntityCall()
+                    .getQueryCall(onlineQuery)
+            }
                 .let { result ->
                     TrackedEntityInstanceOnlineResult(
                         items = result.trackedEntities.map { Result.Success(it) },

@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
 import java.text.ParseException
-import java.util.concurrent.Callable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
@@ -53,15 +51,14 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private val trackedEntityService: TrackedEntityInstanceService,
     private val eventService: EventService,
     private val mapper: SearchGridMapper,
-    private val apiCallExecutor: APICallExecutor,
-    private val rxAPICallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dhisVersionManager: DHISVersionManager
 ) {
-    fun getCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
-        return Callable { queryTrackedEntityInstances(query) }
+    suspend fun getCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
+        return queryTrackedEntityInstances(query)
     }
 
-    private fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
+    private suspend fun queryTrackedEntityInstances(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
         val shouldCallEventsFirst = query.dataValueFilter.isNotEmpty() ||
             query.dueStartDate != null || query.dueEndDate != null
 
@@ -89,7 +86,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         }
     }
 
-    private fun getEventQuery(query: TrackedEntityInstanceQueryOnline): List<Event> {
+    private suspend fun getEventQuery(query: TrackedEntityInstanceQueryOnline): List<Event> {
         return if (query.orgUnits.size <= 1) {
             getEventQueryForOrgunit(query, query.orgUnits.firstOrNull())
         } else {
@@ -99,8 +96,11 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         }
     }
 
-    private fun getEventQueryForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?): List<Event> {
-        return rxAPICallExecutor.wrapSingle(
+    private suspend fun getEventQueryForOrgunit(
+        query: TrackedEntityInstanceQueryOnline,
+        orgunit: String?
+    ): List<Event> {
+        return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
                 fields = EventFields.teiQueryFields,
                 orgUnit = orgunit,
@@ -123,12 +123,11 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted
-            ),
-            storeError = false
-        ).blockingGet().items()
+            )
+        }.getOrThrow().items()
     }
 
-    private fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
+    private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         val uidsStr = query.uids?.joinToString(";")
 
         val searchGridCall = trackedEntityService.query(
@@ -159,11 +158,12 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
         )
 
         return try {
-            val searchGrid = apiCallExecutor.executeObjectCallWithErrorCatcher(
-                searchGridCall,
-                TrackedEntityInstanceQueryErrorCatcher()
-            )
-            mapper.transform(searchGrid)
+            coroutineAPICallExecutor.wrap(
+                storeError = false,
+                errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
+            ) {
+                searchGridCall
+            }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
             throw D2Error.builder()
                 .errorCode(D2ErrorCode.SEARCH_GRID_PARSE)

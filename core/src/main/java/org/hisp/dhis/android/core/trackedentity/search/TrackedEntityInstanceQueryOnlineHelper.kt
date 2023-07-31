@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -78,9 +79,10 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     ): List<TrackedEntityInstance> {
         return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
             val noPagingQuery = queryOnline.copy(paging = false)
-            val pageInstances = trackerParentCallFactory.getTrackedEntityCall()
-                .getQueryCall(noPagingQuery)
-                .call()
+            val pageInstances = runBlocking {
+                trackerParentCallFactory.getTrackedEntityCall()
+                    .getQueryCall(noPagingQuery)
+            }
 
             val validInstances = pageInstances.trackedEntities.filter { tei ->
                 val isExcluded = scope.excludedUids()?.contains(tei.uid()) ?: false

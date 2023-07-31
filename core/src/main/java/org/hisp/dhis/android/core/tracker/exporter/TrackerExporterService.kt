@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
@@ -97,7 +96,7 @@ internal interface TrackerExporterService {
     ): NewTrackerImporterEnrollment
 
     @GET(EVENTS)
-    fun getEvents(
+    suspend fun getEvents(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -125,7 +124,7 @@ internal interface TrackerExporterService {
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
         @Query(EVENT) eventUid: String? = null
-    ): Single<NTIPayload<NewTrackerImporterEvent>>
+    ): NTIPayload<NewTrackerImporterEvent>
 
     @GET(EVENTS)
     suspend fun getEventSingle(

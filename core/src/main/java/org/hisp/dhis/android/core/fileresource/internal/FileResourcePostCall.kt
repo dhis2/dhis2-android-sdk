@@ -37,7 +37,7 @@ import javax.inject.Inject
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
@@ -54,7 +54,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 @Reusable
 internal class FileResourcePostCall @Inject constructor(
     private val fileResourceService: FileResourceService,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataValueStore: DataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
@@ -66,10 +66,10 @@ internal class FileResourcePostCall @Inject constructor(
 
     private var alreadyPinged = false
 
-    fun uploadFileResource(fileResource: FileResource, value: FileResourceValue): String? {
+    suspend fun uploadFileResource(fileResource: FileResource, value: FileResourceValue): String? {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
-            pingCall.getCompletable(true).blockingAwait()
+            pingCall.download(true)
             alreadyPinged = true
         }
 
@@ -77,7 +77,9 @@ internal class FileResourcePostCall @Inject constructor(
 
         return if (file != null) {
             val filePart = getFilePart(file)
-            val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
+            val responseBody = coroutineAPICallExecutor.wrap(storeError = true) {
+                fileResourceService.uploadFile(filePart)
+            }.getOrThrow()
             handleResponse(responseBody.string(), fileResource, file, value)
         } else {
             handleMissingFile(fileResource, value)

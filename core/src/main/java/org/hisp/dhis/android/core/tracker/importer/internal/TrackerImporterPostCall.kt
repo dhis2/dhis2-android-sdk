@@ -78,7 +78,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private fun postPayloadWrapper(
         payloadWrapper: NewTrackerImporterPayloadWrapper
     ): Flow<D2Progress> = flow {
-        val payload = fileResourcesPostCall.uploadFileResources(payloadWrapper).blockingGet()
+        val payload = fileResourcesPostCall.uploadFileResources(payloadWrapper)
 
         emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true))
         emitAll(doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE))

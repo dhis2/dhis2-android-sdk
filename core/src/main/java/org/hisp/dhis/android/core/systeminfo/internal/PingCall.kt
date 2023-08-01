@@ -28,11 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 
 @Reusable

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
@@ -48,26 +47,22 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
     private val fileResourceHelper: FileResourceHelper
 ) {
 
-    fun uploadFileResources(
+    suspend fun uploadFileResources(
         payloadWrapper: NewTrackerImporterPayloadWrapper
-    ): Single<NewTrackerImporterPayloadWrapper> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    ): NewTrackerImporterPayloadWrapper {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(payloadWrapper)
-            } else {
-                emitter.onSuccess(
-                    payloadWrapper.copy(
-                        deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
-                        updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources)
-                    )
-                )
-            }
+        return if (fileResources.isEmpty()) {
+            payloadWrapper
+        } else {
+            payloadWrapper.copy(
+                deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
+                updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources)
+            )
         }
     }
 
-    private fun uploadPayloadFileResources(
+    private suspend fun uploadPayloadFileResources(
         payload: NewTrackerImporterPayload,
         fileResources: List<FileResource>
     ): NewTrackerImporterPayload {
@@ -82,7 +77,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         )
     }
 
-    private fun uploadAttributes(
+    private suspend fun uploadAttributes(
         entities: List<NewTrackerImporterTrackedEntity>,
         enrollments: List<NewTrackerImporterEnrollment>,
         fileResources: List<FileResource>
@@ -122,7 +117,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         return Triple(successfulEntities, successfulEnrollments, fileResourcesByEntity)
     }
 
-    private fun getUpdatedAttributes(
+    private suspend fun getUpdatedAttributes(
         entityUid: String,
         attributeValues: List<NewTrackerImporterTrackedEntityAttributeValue>?,
         fileResources: List<FileResource>,
@@ -154,7 +149,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         return updatedAttributes
     }
 
-    private fun uploadDataValues(
+    private suspend fun uploadDataValues(
         events: List<NewTrackerImporterEvent>,
         fileResources: List<FileResource>
     ): Pair<List<NewTrackerImporterEvent>, Map<String, List<String>>> {
@@ -183,7 +178,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun <T> catchErrorToNull(f: () -> T): T? {
+    private suspend fun <T> catchErrorToNull(f: suspend () -> T): T? {
         return try {
             f()
         } catch (e: java.lang.RuntimeException) {

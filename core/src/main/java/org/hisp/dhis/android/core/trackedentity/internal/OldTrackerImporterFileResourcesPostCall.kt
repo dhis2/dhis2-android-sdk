@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
@@ -49,45 +48,39 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     private val fileResourceHelper: FileResourceHelper
 ) {
 
-    fun uploadTrackedEntityFileResources(
+    suspend fun uploadTrackedEntityFileResources(
         trackedEntityInstances: List<TrackedEntityInstance>
-    ): Single<ItemsWithFileResources<TrackedEntityInstance>> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    ): ItemsWithFileResources<TrackedEntityInstance> {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(ItemsWithFileResources(trackedEntityInstances, emptyList()))
-            } else {
-                val successfulTeis = trackedEntityInstances.mapNotNull {
-                    catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
-                }
-                emitter.onSuccess(
-                    ItemsWithFileResources(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second })
-                )
+        return if (fileResources.isEmpty()) {
+            ItemsWithFileResources(trackedEntityInstances, emptyList())
+        } else {
+            val successfulTeis = trackedEntityInstances.mapNotNull {
+                catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
             }
+
+            ItemsWithFileResources(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second })
         }
     }
 
-    fun uploadEventsFileResources(
+    suspend fun uploadEventsFileResources(
         events: List<Event>
-    ): Single<ItemsWithFileResources<Event>> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    ): ItemsWithFileResources<Event> {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(ItemsWithFileResources(events, emptyList()))
-            } else {
-                val successfulEvents = events.mapNotNull {
-                    catchErrorToNull { uploadEvent(it, fileResources) }
-                }
-                emitter.onSuccess(
-                    ItemsWithFileResources(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second })
-                )
+        return if (fileResources.isEmpty()) {
+            ItemsWithFileResources(events, emptyList())
+        } else {
+            val successfulEvents = events.mapNotNull {
+                catchErrorToNull { uploadEvent(it, fileResources) }
             }
+
+            ItemsWithFileResources(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second })
         }
     }
 
-    private fun uploadTrackedEntityInstance(
+    private suspend fun uploadTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
         fileResources: List<FileResource>
     ): Pair<TrackedEntityInstance, List<String>> {
@@ -118,7 +111,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         )
     }
 
-    private fun uploadEnrollment(
+    private suspend fun uploadEnrollment(
         enrollment: Enrollment,
         fileResources: List<FileResource>
     ): Pair<Enrollment, List<String>> {
@@ -136,7 +129,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
         )
     }
 
-    private fun uploadEvent(
+    private suspend fun uploadEvent(
         event: Event,
         fileResources: List<FileResource>
     ): Pair<Event, List<String>> {
@@ -162,7 +155,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun <T> catchErrorToNull(f: () -> T): T? {
+    private suspend fun <T> catchErrorToNull(f: suspend () -> T): T? {
         return try {
             f()
         } catch (e: java.lang.RuntimeException) {

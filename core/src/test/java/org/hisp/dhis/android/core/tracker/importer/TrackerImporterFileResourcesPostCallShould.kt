@@ -88,7 +88,7 @@ class TrackerImporterFileResourcesPostCallShould {
         whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
             .doReturn(Math.random().toString())
 
-        val result = fileResourcePostCall.uploadFileResources(payloadWrapper).blockingGet()
+        val result = fileResourcePostCall.uploadFileResources(payloadWrapper)
 
         verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource, fValue)
 

@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import io.reactivex.Completable
 import java.util.*
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -42,7 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 internal class OwnershipManagerImpl @Inject constructor(
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val ownershipService: OwnershipService,
     private val dataStatePropagator: DataStatePropagator,
     private val programTempOwnerStore: ProgramTempOwnerStore,
@@ -54,30 +56,39 @@ internal class OwnershipManagerImpl @Inject constructor(
     }
 
     override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        val breakGlassResponse: HttpMessageResponse = apiCallExecutor.executeObjectCall(
-            ownershipService.breakGlass(trackedEntityInstance, program, reason)
-        )
-
-        @Suppress("MagicNumber")
-        if (breakGlassResponse.httpStatusCode() == 200) {
-            programTempOwnerStore.insert(
-                ProgramTempOwner.builder()
-                    .program(program)
-                    .trackedEntityInstance(trackedEntityInstance)
-                    .reason(reason)
-                    .created(Date())
-                    .validUntil(getValidUntil())
+        runBlocking {
+            postBreakGlass(trackedEntityInstance, program, reason)
+        }.fold(
+            onSuccess = { breakGlassResponse ->
+                @Suppress("MagicNumber")
+                if (breakGlassResponse.httpStatusCode() == 200) {
+                    programTempOwnerStore.insert(
+                        ProgramTempOwner.builder()
+                            .program(program)
+                            .trackedEntityInstance(trackedEntityInstance)
+                            .reason(reason)
+                            .created(Date())
+                            .validUntil(getValidUntil())
+                            .build()
+                    )
+                } else {
+                    throw D2Error.builder()
+                        .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                        .errorComponent(D2ErrorComponent.Server)
+                        .errorDescription(breakGlassResponse.message())
+                        .httpErrorCode(breakGlassResponse.httpStatusCode())
+                        .build()
+                }
+            },
+            onFailure = { e ->
+                throw D2Error.builder()
+                    .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                    .errorComponent(D2ErrorComponent.Server)
+                    .errorDescription(e.errorDescription())
+                    .httpErrorCode(e.httpErrorCode())
                     .build()
-            )
-        } else {
-            @Suppress("TooGenericExceptionThrown")
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                .errorComponent(D2ErrorComponent.Server)
-                .errorDescription(breakGlassResponse.message())
-                .httpErrorCode(breakGlassResponse.httpStatusCode())
-                .build()
-        }
+            }
+        )
     }
 
     override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
@@ -96,7 +107,7 @@ internal class OwnershipManagerImpl @Inject constructor(
         dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstance)
     }
 
-    internal fun fakeBreakGlass(trackedEntityInstance: String, program: String) {
+    internal suspend fun fakeBreakGlass(trackedEntityInstance: String, program: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramTempOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstance)
             .appendKeyStringValue(ProgramTempOwnerTableInfo.Columns.PROGRAM, program)
@@ -111,9 +122,17 @@ internal class OwnershipManagerImpl @Inject constructor(
         val previousReason = mostRecent.firstOrNull()?.reason() ?: "<Previous reason not found>"
         val fakeReason = "Android App sync: $previousReason"
 
-        apiCallExecutor.executeObjectCall(
-            ownershipService.breakGlass(trackedEntityInstance, program, fakeReason)
-        )
+        postBreakGlass(trackedEntityInstance, program, fakeReason)
+    }
+
+    private suspend fun postBreakGlass(
+        trackedEntityInstance: String,
+        program: String,
+        reason: String
+    ): Result<HttpMessageResponse, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = true) {
+            ownershipService.breakGlass(trackedEntityInstance, program, reason)
+        }
     }
 
     private fun getValidUntil(): Date {

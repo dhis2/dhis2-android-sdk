@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import java.util.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -39,36 +41,36 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Assert
 import org.junit.Before
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class EventAPIRealShould internal constructor(
     // API version dependant parameters
     private val serverUrl: String,
     private val strategy: String
 ) : BaseRealIntegrationTest() {
     private val ouMode = OrganisationUnitMode.ACCESSIBLE.name
-    private lateinit var apiCallExecutor: APICallExecutor
+    private lateinit var apiCallExecutor: CoroutineAPICallExecutor
     private lateinit var eventService: EventService
 
     @Before
     override fun setUp() {
         super.setUp()
-        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter(), null)
+        apiCallExecutor = d2.coroutineAPICallExecutor()
         eventService = d2.retrofit().create(EventService::class.java)
     }
 
     // @Test
     @Throws(Exception::class)
-    fun valid_events() {
+    fun valid_events() = runTest {
         login()
         val validEvent1 = EventUtils.createValidEvent()
         val validEvent2 = EventUtils.createValidEvent()
         val payload = EventPayload()
         payload.events = listOf(validEvent1, validEvent2)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent1.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -78,30 +80,31 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent1 = apiCallExecutor.executeObjectCall(
+        val serverValidEvent1 = apiCallExecutor.wrap {
             eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode)
-        )
-        val serverValidEvent2 = apiCallExecutor.executeObjectCall(
+        }.getOrThrow()
+
+        val serverValidEvent2 = apiCallExecutor.wrap {
             eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode)
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent1).isNotNull()
         assertThat(serverValidEvent2).isNotNull()
     }
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_invalid_orgunit() {
+    fun event_with_invalid_orgunit() = runTest {
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidOrgunit()
         val payload = EventPayload()
         payload.events = listOf(validEvent, invalidEvent)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -111,18 +114,20 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent = apiCallExecutor.executeObjectCall(
+        val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent).isNotNull()
+
         try {
-            apiCallExecutor.executeObjectCall(
+            apiCallExecutor.wrap {
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
                     ouMode
                 )
-            )
+            }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
             assertThat(e.httpErrorCode()).isEqualTo(404)
@@ -131,18 +136,17 @@ abstract class EventAPIRealShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_invalid_attribute_option_combo() {
+    fun event_with_invalid_attribute_option_combo() = runTest {
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidAttributeOptionCombo()
         val payload = EventPayload()
         payload.events = listOf(validEvent, invalidEvent)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -152,18 +156,20 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent = apiCallExecutor.executeObjectCall(
+        val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent).isNotNull()
+
         try {
-            apiCallExecutor.executeObjectCall(
+            apiCallExecutor.wrap {
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
                     ouMode
                 )
-            )
+            }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
             assertThat(e.httpErrorCode()).isEqualTo(404)
@@ -172,18 +178,17 @@ abstract class EventAPIRealShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_future_date_does_not_fail() {
+    fun event_with_future_date_does_not_fail() = runTest {
         login()
         val validEvent1 = EventUtils.createValidEvent()
         val validEvent2 = EventUtils.createEventWithFutureDate()
         val payload = EventPayload()
         payload.events = listOf(validEvent1, validEvent2)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent1.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -193,30 +198,31 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent1 = apiCallExecutor.executeObjectCall(
+        val serverValidEvent1 = apiCallExecutor.wrap {
             eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode)
-        )
-        val serverValidEvent2 = apiCallExecutor.executeObjectCall(
+        }.getOrThrow()
+
+        val serverValidEvent2 = apiCallExecutor.wrap {
             eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode)
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent1).isNotNull()
         assertThat(serverValidEvent2).isNotNull()
     }
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_invalid_program() {
+    fun event_with_invalid_program() = runTest {
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidProgram()
         val payload = EventPayload()
         payload.events = listOf(validEvent, invalidEvent)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -226,18 +232,20 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent = apiCallExecutor.executeObjectCall(
+        val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent).isNotNull()
+
         try {
-            apiCallExecutor.executeObjectCall(
+            apiCallExecutor.wrap {
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
                     ouMode
                 )
-            )
+            }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
             assertThat(e.httpErrorCode()).isEqualTo(404)
@@ -246,18 +254,17 @@ abstract class EventAPIRealShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_invalid_data_values() {
+    fun event_with_invalid_data_values() = runTest {
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidDataValues()
         val payload = EventPayload()
         payload.events = listOf(validEvent, invalidEvent)
-        val response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            eventService
-                .postEvents(payload, strategy),
-            listOf(409), EventWebResponse::class.java
-        )
+
+        val response = postPayload(payload).getOrThrow()
+
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.WARNING)
+
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validEvent.uid() == importSummary.reference()) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
@@ -267,22 +274,34 @@ abstract class EventAPIRealShould internal constructor(
         }
 
         // Check server status
-        val serverValidEvent = apiCallExecutor.executeObjectCall(
+        val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 validEvent.uid(),
                 EventFields.allFields, ouMode
             )
-        )
-        val serverInvalidEvent = apiCallExecutor.executeObjectCall(
+        }.getOrThrow()
+
+        val serverInvalidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 invalidEvent.uid(),
                 EventFields.allFields, ouMode
             )
-        )
+        }.getOrThrow()
+
         assertThat(serverValidEvent).isNotNull()
         assertThat(serverValidEvent.trackedEntityDataValues()!!.size).isEqualTo(2)
         assertThat(serverInvalidEvent).isNotNull()
         assertThat(serverInvalidEvent.trackedEntityDataValues()).isNull()
+    }
+
+    private suspend fun postPayload(payload: EventPayload): Result<EventWebResponse, D2Error> {
+        return apiCallExecutor.wrap(
+            storeError = false,
+            acceptedErrorCodes = listOf(409),
+            errorClass = EventWebResponse::class.java
+        ) {
+            eventService.postEvents(payload, strategy)
+        }
     }
 
     private fun login() {

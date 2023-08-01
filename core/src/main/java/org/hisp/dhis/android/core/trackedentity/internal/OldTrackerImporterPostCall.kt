@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import java.net.HttpURLConnection.HTTP_CONFLICT
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
@@ -59,7 +60,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val eventService: EventService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
     private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
@@ -68,84 +69,71 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
     fun uploadTrackedEntityInstances(
         trackedEntityInstances: List<TrackedEntityInstance>
-    ): Observable<D2Progress> {
+    ): Flow<D2Progress> {
         val payload = trackerImporterPayloadGenerator.getTrackedEntityInstancePayload(trackedEntityInstances)
         return uploadPayload(payload)
     }
 
     fun uploadEvents(
         events: List<Event>
-    ): Observable<D2Progress> {
+    ): Flow<D2Progress> {
         val payload = trackerImporterPayloadGenerator.getEventPayload(events)
         return uploadPayload(payload)
     }
 
     private fun uploadPayload(
         payload: OldTrackerImporterPayload
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
+    ): Flow<D2Progress> = flow {
+        val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
 
-            Observable.concatArray(
-                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true),
-                relationshipPostCall.deleteRelationships(partitionedRelationships.first),
-                postTrackedEntityInstances(payload.trackedEntityInstances),
-                postEvents(payload.events),
-                relationshipPostCall.postRelationships(partitionedRelationships.second),
-                programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false)
-            )
-        }
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true))
+        emitAll(relationshipPostCall.deleteRelationships(partitionedRelationships.first))
+        emitAll(postTrackedEntityInstances(payload.trackedEntityInstances))
+        emitAll(postEvents(payload.events))
+        emitAll(relationshipPostCall.postRelationships(partitionedRelationships.second))
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false))
     }
 
     @Suppress("TooGenericExceptionCaught")
     private fun postTrackedEntityInstances(
         trackedEntityInstances: List<TrackedEntityInstance>
-    ): Observable<D2Progress> {
-        return Observable.create { emitter: ObservableEmitter<D2Progress> ->
-            val progressManager = D2ProgressManager(null)
-            val teiPartitions = trackedEntityInstances
-                .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
-                .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
-                .filter { it.items.isNotEmpty() }
+    ): Flow<D2Progress> = flow {
+        val progressManager = D2ProgressManager(null)
+        val teiPartitions = trackedEntityInstances
+            .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+            .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
+            .filter { it.items.isNotEmpty() }
 
-            for (partition in teiPartitions) {
-                try {
-                    val summary = postPartition(partition.items)
-                    val glassErrors = breakTheGlassHelper.getGlassErrors(summary, partition.items)
+        for (partition in teiPartitions) {
+            try {
+                val summary = postPartition(partition.items)
+                val glassErrors = breakTheGlassHelper.getGlassErrors(summary, partition.items)
 
-                    if (glassErrors.isNotEmpty()) {
-                        breakTheGlassHelper.fakeBreakGlass(glassErrors)
-                        val breakGlassSummary = postPartition(glassErrors)
+                if (glassErrors.isNotEmpty()) {
+                    breakTheGlassHelper.fakeBreakGlass(glassErrors)
+                    val breakGlassSummary = postPartition(glassErrors)
 
-                        summary.update(breakGlassSummary)
-                    }
+                    summary.update(breakGlassSummary)
+                }
 
-                    fileResourcePostCall.updateFileResourceStates(partition.fileResources)
+                fileResourcePostCall.updateFileResourceStates(partition.fileResources)
 
-                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
-                } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(
-                        trackedEntityInstances = partition.items,
-                        fileResources = partition.fileResources
-                    )
-                    if (e is D2Error && e.isOffline) {
-                        emitter.onError(e)
-                        break
-                    } else {
-                        emitter.onNext(
-                            progressManager.increaseProgress(
-                                TrackedEntityInstance::class.java,
-                                false
-                            )
-                        )
-                    }
+                emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
+            } catch (e: Exception) {
+                trackerStateManager.restorePayloadStates(
+                    trackedEntityInstances = partition.items,
+                    fileResources = partition.fileResources
+                )
+                if (e is D2Error && e.isOffline) {
+                    throw e
+                } else {
+                    emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 }
             }
-            emitter.onComplete()
         }
     }
 
-    private fun postPartition(
+    private suspend fun postPartition(
         trackedEntityInstances: List<TrackedEntityInstance>
     ): TEIWebResponseHandlerSummary {
         trackerStateManager.setPayloadStates(
@@ -153,60 +141,63 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             forcedState = State.UPLOADING
         )
         val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(trackedEntityInstances)
-        val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService.postTrackedEntityInstances(
-                trackedEntityInstancePayload, "SYNC"
-            ),
-            @Suppress("MagicNumber")
-            listOf(HTTP_CONFLICT),
-            TEIWebResponse::class.java
-        )
-        return teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances)
+
+        val response = coroutineAPICallExecutor.wrap(
+            storeError = true,
+            acceptedErrorCodes = listOf(HTTP_CONFLICT),
+            errorClass = TEIWebResponse::class.java
+        ) {
+            trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, "SYNC")
+        }
+
+        return response.getOrThrow().let { webResponse ->
+            teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
     private fun postEvents(
         events: List<Event>
-    ): Observable<D2Progress> {
+    ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
-        return if (events.isEmpty()) {
-            Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
+        if (events.isEmpty()) {
+            emit(progressManager.increaseProgress(Event::class.java, true))
         } else {
-            Observable.defer {
-                val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
+            val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
 
-                val payload = EventPayload()
-                payload.events = validEvents.items
+            val payload = EventPayload()
+            payload.events = validEvents.items
 
-                trackerStateManager.setPayloadStates(
-                    events = payload.events,
-                    forcedState = State.UPLOADING
+            trackerStateManager.setPayloadStates(
+                events = payload.events,
+                forcedState = State.UPLOADING
+            )
+
+            val strategy = "SYNC"
+            try {
+                val webResponse = coroutineAPICallExecutor.wrap(
+                    storeError = true,
+                    acceptedErrorCodes = listOf(HTTP_CONFLICT),
+                    errorClass = EventWebResponse::class.java
+                ) {
+                    eventService.postEvents(payload, strategy)
+                }.getOrThrow()
+
+                eventImportHandler.handleEventImportSummaries(
+                    eventImportSummaries = webResponse.response()?.importSummaries(),
+                    events = payload.events
                 )
 
-                val strategy = "SYNC"
-                try {
-                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        eventService.postEvents(payload, strategy),
-                        @Suppress("MagicNumber")
-                        listOf(HTTP_CONFLICT),
-                        EventWebResponse::class.java
-                    )
-                    eventImportHandler.handleEventImportSummaries(
-                        eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = payload.events
-                    )
+                fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
 
-                    fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
-
-                    Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
-                } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(
-                        events = payload.events,
-                        fileResources = validEvents.fileResources
-                    )
-                    Observable.error<D2Progress>(e)
-                }
+                emit(progressManager.increaseProgress(Event::class.java, true))
+            } catch (e: Exception) {
+                trackerStateManager.restorePayloadStates(
+                    events = payload.events,
+                    fileResources = validEvents.fileResources
+                )
+                throw e
             }
         }
     }

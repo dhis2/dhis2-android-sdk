@@ -133,7 +133,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     /**
      * Fake break the glass for importer V1
      */
-    fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
+    suspend fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
         instances.forEach { instance ->
             TrackedEntityInstanceInternalAccessor.accessEnrollments(instance).forEach { enrollment ->
                 if (instance.uid() != null && enrollment.program() != null)
@@ -145,7 +145,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     /**
      * Fake break the glass for importer V2
      */
-    fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
+    suspend fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
         val teiProgramForEnrollment = payload.enrollments.mapNotNull {
             if (it.trackedEntity() != null && it.program() != null) {
                 Pair(it.trackedEntity()!!, it.program()!!)

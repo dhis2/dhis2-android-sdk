@@ -29,43 +29,41 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
-import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Reusable
 internal class ProgramOwnerPostCall @Inject constructor(
     private val ownershipService: OwnershipService,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val programOwnerStore: ProgramOwnerStore,
     private val dataStatePropagator: DataStatePropagator
 ) {
 
-    fun uploadProgramOwner(programOwner: ProgramOwner): Boolean {
-        return try {
-            val response = apiCallExecutor.executeObjectCall(
-                ownershipService.transfer(
-                    programOwner.trackedEntityInstance(),
-                    programOwner.program(),
-                    programOwner.ownerOrgUnit()
-                )
+    suspend fun uploadProgramOwner(programOwner: ProgramOwner) {
+        val response = coroutineAPICallExecutor.wrap(storeError = true) {
+            ownershipService.transfer(
+                programOwner.trackedEntityInstance(),
+                programOwner.program(),
+                programOwner.ownerOrgUnit()
             )
-
-            @Suppress("MagicNumber")
-            val isSuccessful = response.httpStatusCode() == 200
-
-            if (isSuccessful) {
-                val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
-                programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
-                dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(
-                    programOwner.trackedEntityInstance()
-                )
-            }
-            isSuccessful
-        } catch (e: D2Error) {
-            // TODO Create a record in TEI
-            false
         }
+
+        response.fold(
+            onSuccess = { messageResponse ->
+                @Suppress("MagicNumber")
+                if (messageResponse.httpStatusCode() == 200) {
+                    val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
+                    programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
+                    dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(
+                        programOwner.trackedEntityInstance()
+                    )
+                }
+            },
+            onFailure = {
+                // TODO Create a record in TEI
+            }
+        )
     }
 }

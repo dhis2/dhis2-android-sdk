@@ -32,13 +32,12 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
-import retrofit2.Call
 import retrofit2.http.*
 
 internal interface EventService {
 
     @POST(EVENTS)
-    fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): Call<EventWebResponse>
+    suspend fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): EventWebResponse
 
     @SuppressWarnings("LongParameterList")
     @GET(EVENTS)
@@ -68,11 +67,11 @@ internal interface EventService {
     ): Payload<Event>
 
     @GET("$EVENTS/{$EVENT_UID}")
-    fun getEvent(
+    suspend fun getEvent(
         @Path(EVENT_UID) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
         @Query(OU_MODE) orgUnitMode: String
-    ): Call<Event>
+    ): Event
 
     @GET(EVENTS)
     suspend fun getEventSingle(

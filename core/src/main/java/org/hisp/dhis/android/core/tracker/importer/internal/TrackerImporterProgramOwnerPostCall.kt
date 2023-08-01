@@ -28,9 +28,11 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -49,24 +51,24 @@ internal class TrackerImporterProgramOwnerPostCall @Inject constructor(
     fun uploadProgramOwners(
         programOwners: Map<String, List<ProgramOwner>>,
         onlyExistingTeis: Boolean = false
-    ): Observable<D2Progress> {
-        return Observable.create { emitter ->
-            programOwners.forEach { (tei, programOwners) ->
-                programOwners
-                    .filter {
-                        val unsyncedOwner by lazy { selectWhere(it)?.syncState() != State.SYNCED }
-                        val existingTei by lazy {
-                            trackedEntityInstanceStore.selectByUid(tei)?.syncState() != State.TO_POST
-                        }
+    ): Flow<D2Progress> = flow {
+        val progressManager = D2ProgressManager(null)
 
-                        unsyncedOwner && (!onlyExistingTeis || existingTei)
-                    }.forEach {
-                        programOwnerPostCall.uploadProgramOwner(it)
+        programOwners.forEach { (tei, programOwners) ->
+            programOwners
+                .filter {
+                    val unsyncedOwner by lazy { selectWhere(it)?.syncState() != State.SYNCED }
+                    val existingTei by lazy {
+                        trackedEntityInstanceStore.selectByUid(tei)?.syncState() != State.TO_POST
                     }
-            }
 
-            emitter.onComplete()
+                    unsyncedOwner && (!onlyExistingTeis || existingTei)
+                }.forEach {
+                    programOwnerPostCall.uploadProgramOwner(it)
+                }
         }
+
+        emit(progressManager.increaseProgress(ProgramOwner::class.java, false))
     }
 
     private fun selectWhere(o: ProgramOwner): ProgramOwner? {

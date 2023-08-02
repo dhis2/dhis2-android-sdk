@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields;
 
 import java.util.Map;
@@ -77,5 +78,10 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
 
     public ProgramStageSectionsCollectionRepository withDataElements() {
         return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS);
+    }
+
+    public ProgramStageSectionsCollectionRepository orderBySortOrder(
+            RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(ProgramStageSectionTableInfo.Columns.SORT_ORDER, direction);
     }
 }

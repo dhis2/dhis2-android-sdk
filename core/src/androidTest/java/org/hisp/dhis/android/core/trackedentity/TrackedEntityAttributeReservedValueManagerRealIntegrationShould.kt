@@ -63,7 +63,7 @@ import org.mockito.Mockito
 
 @SuppressWarnings("MaxLineLength")
 class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
-    private var store: TrackedEntityAttributeReservedValueStore? = null
+    private lateinit var store: TrackedEntityAttributeReservedValueStore
     private val organisationUnitUid = "org_unit_uid"
     private val programUid = "program_uid"
     private val categoryComboUid = "category_combo_uid"
@@ -114,7 +114,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
 
         organisationUnit =
             OrganisationUnit.builder().uid(organisationUnitUid).code("org_unit_code").build()
-        organisationUnitStore.insert(organisationUnit as OrganisationUnit)
+        organisationUnitStore.insert(organisationUnit)
 
         pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)"
         trackedEntityAttributeStore.updateOrInsert(
@@ -324,7 +324,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
     }
 
     private fun selectAll(): List<TrackedEntityAttributeReservedValue> {
-        return store!!.selectAll()
+        return store.selectAll()
     }
 
     private fun login() {

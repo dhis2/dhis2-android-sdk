@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.fileresource.internal
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.fileresource.FileResource
-import retrofit2.Call
 import retrofit2.http.*
 
 internal interface FileResourceService {
 
     @Multipart
     @POST(FILE_RESOURCES)
-    fun uploadFile(@Part filePart: MultipartBody.Part): Call<ResponseBody>
+    suspend fun uploadFile(@Part filePart: MultipartBody.Part): ResponseBody
 
     @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
     suspend fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): FileResource

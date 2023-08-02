@@ -101,7 +101,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         val progressManager = D2ProgressManager(null)
         val teiPartitions = trackedEntityInstances
             .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
-            .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
+            .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition) }
             .filter { it.items.isNotEmpty() }
 
         for (partition in teiPartitions) {
@@ -164,7 +164,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         if (events.isEmpty()) {
             emit(progressManager.increaseProgress(Event::class.java, true))
         } else {
-            val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
+            val validEvents = fileResourcePostCall.uploadEventsFileResources(events)
 
             val payload = EventPayload()
             payload.events = validEvents.items

@@ -35,12 +35,11 @@ import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
-import kotlinx.coroutines.rx2.rxObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
@@ -108,7 +107,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      */
 
     fun getValue(attributeUid: String, organisationUnitUid: String): Single<String> {
-        return rxSingle { getValueCoroutines(attributeUid, organisationUnitUid) ?: "" }
+        return rxSingle { getValueCoroutines(attributeUid, organisationUnitUid) }
     }
 
     private suspend fun getValueCoroutines(attributeUid: String, organisationUnitUid: String): String {
@@ -160,8 +159,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private fun downloadReservedValuesFlow(
         attributeUid: String,
         numberOfValuesToFillUp: Int?
-    ) = flow<D2Progress> {
-        downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp).collect()
+    ) = flow {
+        emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
     }
 
     /**
@@ -183,16 +182,16 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      */
 
     fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
-        return rxObservable { downloadAllReservedValuesFlow(numberOfValuesToFillUp).collect() }
+        return downloadAllReservedValuesFlow(numberOfValuesToFillUp).asObservable()
     }
 
-    private suspend fun downloadAllReservedValuesFlow(
+    private fun downloadAllReservedValuesFlow(
         numberOfValuesToFillUp: Int?
-    ): Flow<D2Progress> {
+    ) = flow {
         val flows = generatedAttributes.map { attribute ->
             downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp)
         }
-        return flows.merge()
+        emitAll(flows.merge())
     }
 
     /**

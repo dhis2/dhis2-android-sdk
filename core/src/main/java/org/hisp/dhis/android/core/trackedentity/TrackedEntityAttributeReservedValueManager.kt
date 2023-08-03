@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.Date
+import javax.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -65,8 +67,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import java.util.Date
-import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
 @Reusable
@@ -81,7 +81,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val reservedValueSettingStore: ReservedValueSettingStore,
     private val executor: D2CallExecutor,
     private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery>
+        TrackedEntityAttributeReservedValueQuery>
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
 

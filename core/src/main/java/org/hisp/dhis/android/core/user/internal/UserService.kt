@@ -25,24 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.user.User
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.user.User;
-
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Query;
-
-interface UserService {
+internal interface UserService {
+    @GET("me")
+    suspend fun authenticate(
+        @Header("Authorization") credentials: String,
+        @Query("fields") @Which fields: Fields<User>
+    ): User
 
     @GET("me")
-    User authenticate(@Header("Authorization") String credentials,
-                      @Query("fields") @Which Fields<User> fields);
-
-    @GET("me")
-    User getUser(@Query("fields") @Which Fields<User> fields);
-
+    suspend fun getUser(@Query("fields") @Which fields: Fields<User>): User
 }

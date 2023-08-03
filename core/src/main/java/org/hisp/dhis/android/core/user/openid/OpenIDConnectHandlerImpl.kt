@@ -34,6 +34,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxSingle
 import javax.inject.Inject
 import net.openid.appauth.*
 import org.hisp.dhis.android.core.user.User
@@ -75,7 +76,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
                 downloadToken(response.createTokenExchangeRequest())
                     .observeOn(Schedulers.io())
                     .map {
-                        logInCall.blockingLogInOpenIDConnect(serverUrl, it)
+                         logInCall.blockingLogInOpenIDConnect(serverUrl, it)
                     }
             }
         } else {

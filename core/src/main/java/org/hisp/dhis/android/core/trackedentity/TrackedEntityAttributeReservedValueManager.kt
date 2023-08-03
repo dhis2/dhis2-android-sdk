@@ -30,11 +30,9 @@ package org.hisp.dhis.android.core.trackedentity
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.Date
-import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
@@ -67,6 +65,8 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.Date
+import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
 @Reusable
@@ -81,7 +81,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val reservedValueSettingStore: ReservedValueSettingStore,
     private val executor: D2CallExecutor,
     private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery>
+            TrackedEntityAttributeReservedValueQuery>
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
 
@@ -131,7 +131,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?
     ) {
-        runBlocking { downloadReservedValues(attributeUid, numberOfValuesToFillUp) }
+        runBlocking { downloadReservedValuesFlow(attributeUid, numberOfValuesToFillUp).collect() }
     }
 
     /**
@@ -169,7 +169,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      */
     fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
         runBlocking {
-            downloadAllReservedValues(numberOfValuesToFillUp)
+            downloadAllReservedValuesFlow(numberOfValuesToFillUp).collect()
         }
     }
 
@@ -202,8 +202,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @param organisationUnitUid An optional organisation unit uid
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
-    fun count(attributeUid: String, organisationUnitUid: String?): Int =
-        store.count(attributeUid, organisationUnitUid, null)
+    fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> =
+        rxSingle { blockingCount(attributeUid, organisationUnitUid) }
 
     /**
      * @param attributeUid        Attribute uid
@@ -211,8 +211,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      * @return The reserved value count by attribute or by attribute and organisation unit.
      * @see .count
      */
-    fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int = runBlocking {
-        count(attributeUid, organisationUnitUid)
+    fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int {
+        return store.count(attributeUid, organisationUnitUid, null)
     }
 
     /**
@@ -296,7 +296,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         organisationUnit: OrganisationUnit?,
         minNumberOfValuesToHave: Int?,
         storeError: Boolean
-    ): Unit = coroutineScope {
+    ) = coroutineScope {
         // Using local date. It's not worth it to make a system info call
         store.deleteExpired(Date())
         val fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute)
@@ -323,19 +323,17 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         pattern: String?,
         storeError: Boolean
     ) {
-        return suspendCoroutine {
-            executor.executeD2Call(
-                reservedValueQueryCallFactory.create(
-                    TrackedEntityAttributeReservedValueQuery.create(
-                        trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern
-                    )
-                ),
-                storeError
-            )
+        executor.executeD2Call(
+            reservedValueQueryCallFactory.create(
+                TrackedEntityAttributeReservedValueQuery.create(
+                    trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern
+                )
+            ),
+            storeError
+        )
 
-            if (pattern != null) {
-                store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern)
-            }
+        if (pattern != null) {
+            store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern)
         }
     }
 

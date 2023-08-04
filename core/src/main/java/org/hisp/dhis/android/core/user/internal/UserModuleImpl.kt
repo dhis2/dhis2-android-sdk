@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
-import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions", "LongParameterList")

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user
 
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
@@ -35,6 +36,8 @@ class OpenIdConnectRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test(expected = D2Error::class)
     fun throw_error_when_not_passing_token() {
         val logInCall = getD2DIComponent(d2).internalModules().user.logInCall
-        logInCall.blockingLogInOpenIDConnect(url, AuthState())
+        runBlocking {
+            logInCall.blockingLogInOpenIDConnect(url, AuthState())
+        }
     }
 }

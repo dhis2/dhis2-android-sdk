@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -40,13 +40,11 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -79,15 +77,15 @@ internal class LogInCall @Inject internal constructor(
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val authenticateCall = userService.authenticate(
-            okhttp3.Credentials.basic(username!!, password!!),
-            UserFields.allFieldsWithoutOrgUnit(null)
-        )
-
-        val credentials = Credentials(username, trimmedServerUrl!!, password, null)
+        val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
 
         return try {
-            val user = coroutineAPICallExecutor.wrap { authenticateCall }.getOrThrow()
+            val user = coroutineAPICallExecutor.wrap {
+                userService.authenticate(
+                    okhttp3.Credentials.basic(username, password!!),
+                    UserFields.allFieldsWithoutOrgUnit(null)
+                )
+            }.getOrThrow()
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {

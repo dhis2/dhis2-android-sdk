@@ -43,12 +43,16 @@ internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
         return try {
             Result.Success(block.invoke())
         } catch (e: Throwable) {
-            Result.Failure(
-                D2Error.builder()
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected error")
-                    .build()
-            )
+            if (e is D2Error) {
+                Result.Failure(e)
+            } else {
+                Result.Failure(
+                    D2Error.builder()
+                        .errorCode(D2ErrorCode.UNEXPECTED)
+                        .errorDescription("Unexpected error")
+                        .build()
+                )
+            }
         }
     }
 

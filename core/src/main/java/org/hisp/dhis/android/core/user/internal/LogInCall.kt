@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -117,28 +116,26 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun loginOnline(user: User, credentials: Credentials): User {
+    private suspend fun loginOnline(user: User, credentials: Credentials): User {
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
         databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
-        return runBlocking {
-            coroutineAPICallExecutor.wrapTransactionally {
-                try {
-                    val authenticatedUser = AuthenticatedUser.builder()
-                        .user(user.uid())
-                        .hash(credentials.getHash())
-                        .build()
+        return coroutineAPICallExecutor.wrapTransactionally {
+            try {
+                val authenticatedUser = AuthenticatedUser.builder()
+                    .user(user.uid())
+                    .hash(credentials.getHash())
+                    .build()
 
-                    authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
-                    systemInfoCall.download(storeError = true)
-                    userHandler.handle(user)
-                    user
-                } catch (e: Exception) {
-                    // Credentials are stored and then removed in case of error (required to download system info)
-                    credentialsSecureStore.remove()
-                    userIdStore.remove()
-                    throw e
-                }
+                authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
+                systemInfoCall.download(storeError = true)
+                userHandler.handle(user)
+                user
+            } catch (e: Exception) {
+                // Credentials are stored and then removed in case of error (required to download system info)
+                credentialsSecureStore.remove()
+                userIdStore.remove()
+                throw e
             }
         }
     }

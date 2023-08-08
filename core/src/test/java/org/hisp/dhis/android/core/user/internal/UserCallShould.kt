@@ -64,17 +64,18 @@ class UserCallShould : BaseCallShould() {
         userService.stub {
             onBlocking { getUser(any()) }.doReturn(userCall)
         }
+
         whenever(dhisVersionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
 
     @Test
     fun not_invoke_stores_on_call_io_exception() = runTest {
         whenever(coroutineAPICallExecutor.wrap { userCall }.getOrThrow()).thenThrow(d2Error)
+
         try {
             userSyncCall.call()
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
-
             // verify that handlers was not touched
             verify(databaseAdapter, never()).beginNewTransaction()
             verify(transaction, never()).setSuccessful()

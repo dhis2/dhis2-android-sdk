@@ -36,7 +36,7 @@ plugins {
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
-apply(from = project.file("plugins/jacoco.gradle"))
+apply(from = project.file("plugins/jacoco.gradle.kts"))
 apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
 repositories {

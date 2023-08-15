@@ -25,28 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-public interface TrackedEntityAttributeReservedValueService {
-    String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
+interface TrackedEntityAttributeReservedValueService {
+    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    suspend fun generateAndReserve(
+        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
+        @Query("numberToReserve") numberToReserve: Int?
+    ): List<TrackedEntityAttributeReservedValue?>?
 
     @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserve(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
-            @Query("numberToReserve") Integer numberToReserve);
+    suspend fun generateAndReserveWithOrgUnitCode(
+        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
+        @Query("numberToReserve") numberToReserve: Int?,
+        @Query("ORG_UNIT_CODE") orgUnitCode: String?
+    ): List<TrackedEntityAttributeReservedValue?>?
 
-    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserveWithOrgUnitCode(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
-            @Query("numberToReserve") Integer numberToReserve,
-            @Query("ORG_UNIT_CODE") String orgUnitCode);
+    companion object {
+        const val TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid"
+    }
 }

@@ -25,42 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.arch.call.internal;
+import androidx.annotation.VisibleForTesting
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
+class EndpointCall<P>(
+    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val fetcher: CallFetcher<P>,
+    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val processor: CallProcessor<P>
+) {
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import androidx.annotation.VisibleForTesting;
-
-public final class EndpointCall<P> implements Callable<List<P>> {
-
-    private final CallFetcher<P> fetcher;
-    private final CallProcessor<P> processor;
-
-    public EndpointCall(CallFetcher<P> fetcher,
-                        CallProcessor<P> processor) {
-        this.fetcher = fetcher;
-        this.processor = processor;
-    }
-
-    @Override
-    public List<P> call() throws Exception {
-        List<P> objects = fetcher.fetch();
-        processor.process(objects);
-        return objects;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallFetcher<P> getFetcher() {
-        return fetcher;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallProcessor<P> getProcessor() {
-        return processor;
+    @Throws(Exception::class)
+    fun call(): List<P> {
+        val objects = fetcher.fetch()
+        processor.process(objects)
+        return objects
     }
 }

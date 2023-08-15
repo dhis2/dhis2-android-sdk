@@ -25,72 +25,59 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import retrofit2.Call
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityAttributeReservedValueEndpointCallFactory
-        extends QueryCallFactoryImpl<TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery> {
+class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject internal constructor(
+    data: GenericCallData?,
+    apiCallExecutor: APICallExecutor?,
+    private val service: TrackedEntityAttributeReservedValueService,
+    private val handler: TrackedEntityAttributeReservedValueHandler
+) : QueryCallFactoryImpl<TrackedEntityAttributeReservedValue?, TrackedEntityAttributeReservedValueQuery?>(
+    data,
+    apiCallExecutor
+) {
 
-    private final TrackedEntityAttributeReservedValueService service;
-    private final TrackedEntityAttributeReservedValueHandler handler;
-
-    @Inject
-    TrackedEntityAttributeReservedValueEndpointCallFactory(
-            GenericCallData data,
-            APICallExecutor apiCallExecutor,
-            TrackedEntityAttributeReservedValueService service,
-            TrackedEntityAttributeReservedValueHandler handler) {
-        super(data, apiCallExecutor);
-        this.service = service;
-        this.handler = handler;
-    }
-
-    @Override
-    protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
-            final TrackedEntityAttributeReservedValueQuery query) {
-
-        return new ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue>(
-                apiCallExecutor, new TrackedEntityAttributeReservedValueCallErrorCatcher()) {
-            @Override
-            protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
-                if (query.organisationUnit() == null) {
-                    return service.generateAndReserve(
-                            query.trackedEntityAttributeUid(),
-                            query.numberToReserve());
+    override fun fetcher(query: TrackedEntityAttributeReservedValueQuery?): CallFetcher<TrackedEntityAttributeReservedValue?> {
+        return object: ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue?>(
+            apiCallExecutor, TrackedEntityAttributeReservedValueCallErrorCatcher()
+        ) {
+            override fun getCall(): Call<MutableList<TrackedEntityAttributeReservedValue?>>? {
+                return if (query!!.organisationUnit() == null) {
+                    service.generateAndReserve(
+                        query.trackedEntityAttributeUid(),
+                        query.numberToReserve()
+                    )
                 } else {
-                    return service.generateAndReserveWithOrgUnitCode(
-                            query.trackedEntityAttributeUid(),
-                            query.numberToReserve(),
-                            query.organisationUnit().code());
+                    service.generateAndReserveWithOrgUnitCode(
+                        query.trackedEntityAttributeUid(),
+                        query.numberToReserve(),
+                        query.organisationUnit()!!.code()
+                    )
                 }
             }
-        };
+        }
     }
 
-    @Override
-    protected CallProcessor<TrackedEntityAttributeReservedValue> processor(
-            final TrackedEntityAttributeReservedValueQuery query) {
-        return new TrackedEntityAttributeReservedValueCallProcessor(
-                data.databaseAdapter(),
-                handler,
-                query.organisationUnit(),
-                query.trackedEntityAttributePattern()
-        );
+    override fun processor(query: TrackedEntityAttributeReservedValueQuery?): CallProcessor<TrackedEntityAttributeReservedValue?> {
+        return TrackedEntityAttributeReservedValueCallProcessor(
+            data.databaseAdapter(),
+            handler,
+            query!!.organisationUnit(),
+            query.trackedEntityAttributePattern()
+        )
     }
+
+
 }

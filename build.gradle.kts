@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    val kotlinVersion = "1.7.21"
+    val kotlinVersion = "1.9.0"
 
     repositories {
         google()
@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.1")
+        classpath("com.android.tools.build:gradle:8.1.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
         classpath("org.jacoco:org.jacoco.core:0.8.8")

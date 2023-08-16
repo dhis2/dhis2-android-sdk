@@ -36,7 +36,7 @@ plugins {
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
-apply(from = project.file("plugins/jacoco.gradle"))
+apply(from = project.file("plugins/jacoco.gradle.kts"))
 apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
 repositories {
@@ -52,19 +52,19 @@ val VERSION_NAME: String by project
 /*
 ** Libraries
 */
-val libraryDesugaring = "1.2.2"
+val libraryDesugaring = "2.0.3"
 
 // android
-val annotation = "1.4.0"
+val annotation = "1.6.0"
 val paging = "2.1.2"
 
 // java
 val jackson = "2.13.4"
-val autoValue = "1.10.1"
+val autoValue = "1.10.2"
 val autoValueCursor = "2.0.1"
 val retrofit = "2.9.0"
 val okHttp = "3.14.9"
-val dagger = "2.44.2"
+val dagger = "2.47"
 val rxJava = "2.2.21"
 val rxAndroid = "2.1.1"
 val sqlCipher = "4.4.3"
@@ -108,11 +108,11 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += listOf("META-INF/LICENSE", "META-INF/rxjava.properties")
         }

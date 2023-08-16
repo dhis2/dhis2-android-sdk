@@ -38,7 +38,7 @@ import retrofit2.http.Query
 internal interface ConstantService {
     @GET("constants")
     fun constants(
-        @Query("fields") @Which fields: Fields<Constant?>?,
+        @Query("fields") @Which fields: Fields<Constant>,
         @Query("paging") paging: Boolean
-    ): Call<Payload<Constant?>?>?
+    ): Call<Payload<Constant>?>
 }

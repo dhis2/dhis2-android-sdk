@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    val kotlinVersion = "1.8.20"
+    val kotlinVersion = "1.9.0"
 
     repositories {
         google()

@@ -25,11 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
-
-import androidx.annotation.NonNull;
-
-public interface StatementBinder<O> {
-    void bindToStatement(@NonNull O object, @NonNull StatementWrapper wrapper);
+internal fun interface StatementBinder<O> {
+    fun bindToStatement(o: O, w: StatementWrapper)
 }

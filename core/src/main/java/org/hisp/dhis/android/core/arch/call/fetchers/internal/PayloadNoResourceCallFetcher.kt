@@ -34,7 +34,7 @@ import retrofit2.Call
 
 abstract class PayloadNoResourceCallFetcher<P> protected constructor(private val apiCallExecutor: APICallExecutor) :
     CallFetcher<P> {
-    protected abstract val call: Call<Payload<P>?>?
+    protected abstract val call: Call<Payload<P>?>
     @Throws(D2Error::class)
     override fun fetch(): List<P> {
         return apiCallExecutor.executePayloadCall(call)

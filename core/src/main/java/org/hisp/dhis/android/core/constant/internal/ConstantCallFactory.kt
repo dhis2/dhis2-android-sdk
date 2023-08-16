@@ -42,20 +42,19 @@ import javax.inject.Inject
 
 @Reusable
 internal class ConstantCallFactory @Inject constructor(
-    data: GenericCallData?,
-    apiCallExecutor: APICallExecutor?,
+    data: GenericCallData,
+    apiCallExecutor: APICallExecutor,
     private val service: ConstantService,
     private val handler: ConstantHandler
-) : ListCallFactoryImpl<Constant?>(data, apiCallExecutor) {
-    override fun fetcher(): CallFetcher<Constant?>? {
-        return object : PayloadNoResourceCallFetcher<Constant?>(apiCallExecutor) {
-            override fun getCall(): Call<Payload<Constant?>>? {
-                return service.constants(ConstantFields.allFields, false)
-            }
+) : ListCallFactoryImpl<Constant>(data, apiCallExecutor) {
+    override fun fetcher(): CallFetcher<Constant> {
+        return object : PayloadNoResourceCallFetcher<Constant>(apiCallExecutor) {
+            override val call: Call<Payload<Constant>?>
+                get() = service.constants(ConstantFields.allFields, false)
         }
     }
 
-    override fun processor(): CallProcessor<Constant?> {
+    override fun processor(): CallProcessor<Constant> {
         return TransactionalNoResourceSyncCallProcessor(
             data.databaseAdapter(),
             handler

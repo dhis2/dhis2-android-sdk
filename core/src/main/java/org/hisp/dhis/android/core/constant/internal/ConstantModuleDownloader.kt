@@ -37,6 +37,7 @@ import javax.inject.Inject
 class ConstantModuleDownloader @Inject internal constructor(private val constantCallFactory: ConstantCallFactory) :
     TypedModuleDownloader<List<Constant>?> {
     override fun downloadMetadata(): Single<List<Constant>?> {
+        // TODO : rxSingle
         return Single.fromCallable(
             constantCallFactory.create()
         )

@@ -37,7 +37,7 @@ import javax.inject.Inject
 internal class UserModuleDownloader @Inject internal constructor(
     private val userCall: UserCall,
     private val authorityCallFactory: AuthorityEndpointCallFactory
-) : TypedModuleDownloader<User?> {
+) : TypedModuleDownloader<User> {
     override fun downloadMetadata(): Single<User> {
         return Single.fromCallable {
             val user = userCall.call()

@@ -25,31 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-
-public final class LongFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, Long> {
-
-    LongFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
-
+class DoubleFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, Double?>(
+    repositoryFactory, scope, key
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The smallerThan filter checks if the given field has a value which is smaller than the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R smallerThan(long value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
+    fun smallerThan(value: Double): R {
+        return newWithWrappedScope(FilterItemOperator.LT, value)
     }
 
     /**
@@ -58,11 +55,21 @@ public final class LongFilterConnector<R extends BaseRepository>
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R biggerThan(long value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
+    fun biggerThan(value: Double): R {
+        return newWithWrappedScope(FilterItemOperator.GT, value)
     }
 
-    String wrapValue(Long value) {
-        return value.toString();
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The biggerOrEqualTo filter checks if the given field has a value which is bigger or equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    fun biggerOrEqualTo(value: Double): R {
+        return newWithWrappedScope(FilterItemOperator.GE, value)
+    }
+
+    override fun wrapValue(value: Double?): String {
+        return value.toString()
     }
 }

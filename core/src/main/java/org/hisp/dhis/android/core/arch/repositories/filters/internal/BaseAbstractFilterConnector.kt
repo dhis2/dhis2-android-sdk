@@ -25,35 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import java.util.Arrays
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
-
-    BaseAbstractFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                                RepositoryScope scope,
-                                String key) {
-        super(repositoryFactory, scope, key);
-    }
-
+abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope?,
+    key: String?
+) : AbstractFilterConnector<R, V>(
+    repositoryFactory, scope!!, key!!
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The eq filter checks if the given field has a value which is equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R eq(V value) {
-        return newWithWrappedScope(FilterItemOperator.EQ, value);
+    fun eq(value: V): R {
+        return newWithWrappedScope(FilterItemOperator.EQ, value)
     }
-
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
@@ -61,8 +56,8 @@ public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> e
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R neq(V value) {
-        return newWithWrappedScope(FilterItemOperator.NOT_EQ, value);
+    fun neq(value: V): R {
+        return newWithWrappedScope(FilterItemOperator.NOT_EQ, value)
     }
 
     /**
@@ -71,8 +66,11 @@ public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> e
      * @param values list of values to compare with the target field
      * @return the new repository
      */
-    public R in(Collection<V> values) {
-        return newWithUnwrappedScope(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
+    fun `in`(values: Collection<V>?): R {
+        return newWithUnwrappedScope(
+            FilterItemOperator.IN,
+            "(" + getCommaSeparatedValues(values!!) + ")"
+        )
     }
 
     /**
@@ -82,8 +80,8 @@ public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> e
      * @return the new repository
      */
     @SafeVarargs
-    public final R in(V... values) {
-        return in(Arrays.asList(values));
+    fun `in`(vararg values: V): R {
+        return `in`(Arrays.asList(*values))
     }
 
     /**
@@ -92,8 +90,11 @@ public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> e
      * @param values list of values to compare with the target field
      * @return the new repository
      */
-    public R notIn(Collection<V> values) {
-        return newWithUnwrappedScope(FilterItemOperator.NOT_IN, "(" + getCommaSeparatedValues(values) + ")");
+    fun notIn(values: Collection<V>?): R {
+        return newWithUnwrappedScope(
+            FilterItemOperator.NOT_IN,
+            "(" + getCommaSeparatedValues(values!!) + ")"
+        )
     }
 
     /**
@@ -103,29 +104,29 @@ public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> e
      * @return the new repository
      */
     @SafeVarargs
-    public final R notIn(V... values) {
-        return notIn(Arrays.asList(values));
+    fun notIn(vararg values: V): R {
+        return notIn(Arrays.asList(*values))
     }
 
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isNull filter checks if the given field has a null value.
-     * @return the new repository
-     */
-    public final R isNull() {
-        return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NULL");
-    }
+    val isNull: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isNull filter checks if the given field has a null value.
+         * @return the new repository
+         */
+        get() = newWithUnwrappedScope(FilterItemOperator.VOID, "IS NULL")
+    val isNotNull: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isNotNull filter checks if the given field has a non-null value.
+         * @return the new repository
+         */
+        get() = newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL")
 
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isNotNull filter checks if the given field has a non-null value.
-     * @return the new repository
-     */
-    public final R isNotNull() {
-        return newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL");
-    }
-
-    static String escapeQuotes(String value) {
-        return value.replaceAll("'", "''");
+    companion object {
+        @JvmStatic
+        fun escapeQuotes(value: String): String {
+            return value.replace("'".toRegex(), "''")
+        }
     }
 }

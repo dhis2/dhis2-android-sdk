@@ -147,7 +147,7 @@ internal class EventLineListServiceImpl @Inject constructor(
 
     private fun getEvents(params: EventLineListParams): List<Event> {
         var repoBuilder = eventRepository
-            .byProgramStageUid().eq(params.programStage)
+            .byProgramStageUid().eq(params.programStage!!)
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
             .byDeleted().isFalse
 

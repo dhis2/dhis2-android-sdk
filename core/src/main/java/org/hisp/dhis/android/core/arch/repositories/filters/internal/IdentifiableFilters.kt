@@ -25,33 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-
-public abstract class BaseSubQueryFilterConnector<R extends BaseRepository>
-        extends AbstractFilterConnector<R, String> {
-
-    private final String linkTable;
-    private final String linkParent;
-
-    BaseSubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                                RepositoryScope scope,
-                                String key,
-                                String linkTable,
-                                String linkParent) {
-        super(repositoryFactory, scope, key);
-        this.linkTable = linkTable;
-        this.linkParent = linkParent;
-    }
-
-    protected R inTableWhere(WhereClauseBuilder clauseBuilder) {
-        return newWithUnwrappedScope(FilterItemOperator.IN, "(" + String.format(
-                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
-    }
+interface IdentifiableFilters<R : ReadOnlyCollectionRepository<*>> {
+    fun byUid(): StringFilterConnector<R>
+    fun byCode(): StringFilterConnector<R>
+    fun byName(): StringFilterConnector<R>
+    fun byDisplayName(): StringFilterConnector<R>
+    fun byCreated(): DateFilterConnector<R>
+    fun byLastUpdated(): DateFilterConnector<R>
 }

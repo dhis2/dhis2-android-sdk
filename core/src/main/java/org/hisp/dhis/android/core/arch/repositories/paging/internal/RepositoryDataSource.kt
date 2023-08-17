@@ -25,73 +25,65 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.paging.internal;
+package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
+import androidx.paging.ItemKeyedDataSource
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor.appendInObjectCollection
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-import java.util.Map;
-
-public final class RepositoryDataSource<M extends CoreObject> extends ItemKeyedDataSource<M, M> {
-
-    private final ReadableStore<M> store;
-    private final RepositoryScope scope;
-    private final Map<String, ChildrenAppender<M>> childrenAppenders;
-
-    public RepositoryDataSource(ReadableStore<M> store,
-                                RepositoryScope scope,
-                                Map<String, ChildrenAppender<M>> childrenAppenders) {
-        this.store = store;
-        this.scope = scope;
-        this.childrenAppenders = childrenAppenders;
+class RepositoryDataSource<M : CoreObject>(
+    private val store: ReadableStore<M>,
+    private val scope: RepositoryScope,
+    private val childrenAppenders: Map<String, ChildrenAppender<M>>
+) : ItemKeyedDataSource<M, M>() {
+    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<M>) {
+        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
+            scope
+        )
+        val withoutChildren = store.selectWhere(
+            whereClause,
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            params.requestedLoadSize
+        )
+        callback.onResult(appendChildren(withoutChildren))
     }
 
-    @Override
-    public void loadInitial(@NonNull LoadInitialParams<M> params, @NonNull LoadInitialCallback<M> callback) {
-        String whereClause = new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
-        List<M> withoutChildren = store.selectWhere(whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize);
-        callback.onResult(appendChildren(withoutChildren));
+    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<M>) {
+        loadPages(params, callback, false)
     }
 
-    @Override
-    public void loadAfter(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback) {
-        loadPages(params, callback, false);
+    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<M>) {
+        loadPages(params, callback, true)
     }
 
-    @Override
-    public void loadBefore(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback) {
-        loadPages(params, callback, true);
+    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
+        val whereClauseBuilder = WhereClauseBuilder()
+        OrderByClauseBuilder.addSortingClauses(
+            whereClauseBuilder, scope.orderBy(),
+            params.key.toContentValues(), reversed, scope.pagingKey()
+        )
+        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
+            scope
+        )
+        val withoutChildren = store.selectWhere(
+            whereClause,
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            params.requestedLoadSize
+        )
+        callback.onResult(appendChildren(withoutChildren))
     }
 
-    private void loadPages(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback, boolean reversed) {
-        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
-        OrderByClauseBuilder.addSortingClauses(whereClauseBuilder, scope.orderBy(),
-                params.key.toContentValues(), reversed, scope.pagingKey());
-        String whereClause = new WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope);
-        List<M> withoutChildren = store.selectWhere(whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-                params.requestedLoadSize);
-        callback.onResult(appendChildren(withoutChildren));
+    override fun getKey(item: M): M {
+        return item
     }
 
-    @NonNull
-    @Override
-    public M getKey(@NonNull M item) {
-        return item;
-    }
-
-    private List<M> appendChildren(List<M> withoutChildren) {
-        return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders, scope.children());
+    private fun appendChildren(withoutChildren: List<M>): List<M> {
+        return appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
     }
 }

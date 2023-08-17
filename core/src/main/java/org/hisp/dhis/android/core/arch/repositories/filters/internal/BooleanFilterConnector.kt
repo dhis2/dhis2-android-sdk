@@ -25,33 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+class BooleanFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, Boolean?>(
+    repositoryFactory, scope, key
+) {
+    val isTrue: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isTrue filter checks if the given field has a true value.
+         * @return the new repository
+         */
+        get() = eq(true)
+    val isFalse: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isFalse filter checks if the given field has a false value.
+         * @return the new repository
+         */
+        get() = eq(false)
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-public final class ListFilterConnector<R  extends BaseRepository, T> {
-
-    private final ScopedRepositoryFilterFactory<R, List<T>> repositoryFactory;
-
-    ListFilterConnector(ScopedRepositoryFilterFactory<R, List<T>> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
-    public R eq(T value) {
-        return repositoryFactory.updated(Collections.singletonList(value));
-    }
-
-    public R in(List<T> values) {
-        return repositoryFactory.updated(values);
-    }
-
-    @SafeVarargs
-    public final R in(T... values) {
-        return in(Arrays.asList(values));
+    override fun wrapValue(value: Boolean?): String {
+        return if (value!!) {
+            "1"
+        } else {
+            "0"
+        }
     }
 }

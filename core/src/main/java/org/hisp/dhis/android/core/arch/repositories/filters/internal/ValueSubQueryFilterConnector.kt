@@ -25,41 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BaseAbstractFilterConnector.Companion.escapeQuotes
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-
-import java.util.Collection;
-
-import static org.hisp.dhis.android.core.arch.repositories.filters.internal.BaseAbstractFilterConnector.escapeQuotes;
-
-public final class ValueSubQueryFilterConnector<R extends BaseRepository> extends BaseSubQueryFilterConnector<R> {
-
-    private final String linkChild;
-    private final String dataElementColumn;
-    private final String dataElementId;
-
-    ValueSubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                                 RepositoryScope scope,
-                                 String key,
-                                 String linkTable,
-                                 String linkParent,
-                                 String linkChild,
-                                 String dataElementColumn,
-                                 String dataElementId) {
-        super(repositoryFactory, scope, key, linkTable, linkParent);
-        this.linkChild = linkChild;
-        this.dataElementColumn = dataElementColumn;
-        this.dataElementId = dataElementId;
-    }
-
-    String wrapValue(String value) {
-        return "'" + escapeQuotes(value) + "'";
+class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String,
+    linkTable: String,
+    linkParent: String,
+    private val linkChild: String,
+    private val dataElementColumn: String,
+    private val dataElementId: String
+) : BaseSubQueryFilterConnector<R>(repositoryFactory, scope, key, linkTable, linkParent) {
+    override fun wrapValue(value: String?): String {
+        return "'" + escapeQuotes(value!!) + "'"
     }
 
     /**
@@ -68,8 +54,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R eq(String value) {
-        return inLinkTable(FilterItemOperator.EQ, wrapValue(value));
+    fun eq(value: String): R {
+        return inLinkTable(FilterItemOperator.EQ, wrapValue(value))
     }
 
     /**
@@ -78,8 +64,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R le(String value) {
-        return inLinkTable(FilterItemOperator.LE, wrapValue(value));
+    fun le(value: String): R {
+        return inLinkTable(FilterItemOperator.LE, wrapValue(value))
     }
 
     /**
@@ -88,8 +74,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R lt(String value) {
-        return inLinkTable(FilterItemOperator.LT, wrapValue(value));
+    fun lt(value: String): R {
+        return inLinkTable(FilterItemOperator.LT, wrapValue(value))
     }
 
     /**
@@ -98,8 +84,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R ge(String value) {
-        return inLinkTable(FilterItemOperator.GE, wrapValue(value));
+    fun ge(value: String): R {
+        return inLinkTable(FilterItemOperator.GE, wrapValue(value))
     }
 
     /**
@@ -108,8 +94,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R gt(String value) {
-        return inLinkTable(FilterItemOperator.GT, wrapValue(value));
+    fun gt(value: String): R {
+        return inLinkTable(FilterItemOperator.GT, wrapValue(value))
     }
 
     /**
@@ -118,8 +104,8 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param values value list to compare with the target field
      * @return the new repository
      */
-    public R in(Collection<String> values) {
-        return inLinkTable(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
+    fun `in`(values: Collection<String>): R {
+        return inLinkTable(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")")
     }
 
     /**
@@ -129,15 +115,14 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R like(String value) {
-        return inLinkTable(FilterItemOperator.LIKE, wrapValue("%" + value + "%"));
+    fun like(value: String): R {
+        return inLinkTable(FilterItemOperator.LIKE, wrapValue("%$value%"))
     }
 
-    private R inLinkTable(FilterItemOperator operator, String value) {
-        WhereClauseBuilder clauseBuilder = new WhereClauseBuilder()
-                .appendKeyOperatorValue(linkChild, operator.getSqlOperator(), value)
-                .appendKeyStringValue(dataElementColumn, dataElementId);
-
-        return inTableWhere(clauseBuilder);
+    private fun inLinkTable(operator: FilterItemOperator, value: String): R {
+        val clauseBuilder = WhereClauseBuilder()
+            .appendKeyOperatorValue(linkChild, operator.sqlOperator, value)
+            .appendKeyStringValue(dataElementColumn, dataElementId)
+        return inTableWhere(clauseBuilder)
     }
 }

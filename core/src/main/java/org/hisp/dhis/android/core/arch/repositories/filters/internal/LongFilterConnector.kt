@@ -25,46 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public final class DeletedFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, String> {
-
-    DeletedFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
+class LongFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, Long>(
+    repositoryFactory, scope, key
+) {
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The smallerThan filter checks if the given field has a value which is smaller than the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    fun smallerThan(value: Long): R {
+        return newWithWrappedScope(FilterItemOperator.LT, value)
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isFalse filter checks if the given field has a value distinct of null.
+     * The biggerThan filter checks if the given field has a value which is bigger than the one provided.
+     * @param value value to compare with the target field
      * @return the new repository
      */
-    public R isFalse() {
-        return isNotNull();
+    fun biggerThan(value: Long): R {
+        return newWithWrappedScope(FilterItemOperator.GT, value)
     }
 
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isTrue filter checks if the given field has a null value.
-     * @return the new repository
-     */
-    public R isTrue() {
-        return isNull();
-    }
-
-    @Override
-    String wrapValue(String value) {
-        if (value == null) {
-            return null;
-        } else {
-            return "'" + escapeQuotes(value) + "'";
-        }
+    override fun wrapValue(value: Long?): String {
+        return value.toString()
     }
 }

@@ -25,14 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import android.content.ContentValues
 
-import android.content.ContentValues;
-
-@FunctionalInterface
-public interface RepositoryScopeKeyOrderExtractor {
-
-    String extractKey(ContentValues contentValues, String column);
-
+fun interface RepositoryScopeKeyOrderExtractor {
+    fun extractKey(contentValues: ContentValues, column: String): String
 }

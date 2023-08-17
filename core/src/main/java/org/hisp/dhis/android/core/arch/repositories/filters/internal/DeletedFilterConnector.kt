@@ -25,23 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+class DeletedFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, String>(
+    repositoryFactory, scope, key
+) {
+    val isFalse: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isFalse filter checks if the given field has a value distinct of null.
+         * @return the new repository
+         */
+        get() = isNotNull
+    val isTrue: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isTrue filter checks if the given field has a null value.
+         * @return the new repository
+         */
+        get() = isNull
 
-public final class EnumFilterConnector<R extends BaseRepository, E extends Enum<E>>
-        extends BaseAbstractFilterConnector<R, E> {
-
-    EnumFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    String wrapValue(E value) {
-        return "'" + value.name() + "'";
+    override fun wrapValue(value: String?): String? {
+        return if (value == null) {
+            null
+        } else {
+            "'" + escapeQuotes(value) + "'"
+        }
     }
 }

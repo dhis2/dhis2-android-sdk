@@ -25,23 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public final class BaseStringFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, String> {
-
-    BaseStringFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                              RepositoryScope scope,
-                              String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    String wrapValue(String value) {
-        return escapeQuotes(value);
+class EnumFilterConnector<R : BaseRepository, E : Enum<E>> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, E>(
+    repositoryFactory, scope, key
+) {
+    override fun wrapValue(value: E?): String {
+        return "'" + value!!.name + "'"
     }
 }

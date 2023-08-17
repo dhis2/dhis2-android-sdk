@@ -25,11 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
+import java.util.Arrays
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
-fun interface BaseRepositoryFactory<R : BaseRepository> {
-    fun updated(updatedScope: RepositoryScope): R
+class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : AbstractFilterConnector<R, String>(
+    repositoryFactory, scope, key
+) {
+    override fun wrapValue(value: String?): String? {
+        return value
+    }
+
+    fun eq(value: String): R {
+        return newWithWrappedScope(FilterItemOperator.EQ, value)
+    }
+
+    fun `in`(values: Collection<String>): R {
+        return newWithUnwrappedScope(
+            FilterItemOperator.IN,
+            "(" + getCommaSeparatedValues(values) + ")"
+        )
+    }
+
+    fun `in`(vararg values: String): R {
+        return `in`(Arrays.asList(*values))
+    }
+
+    companion object {
+        @JvmStatic
+        fun getValueList(value: String): List<String> {
+            return if (value[0] == '(') {
+                val values = value
+                    .substring(1, value.length - 1)
+                    .split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val list: MutableList<String> = ArrayList(value.length)
+                for (v in values) {
+                    val trimmed = v.trim { it <= ' ' }
+                    if (!trimmed.isEmpty()) {
+                        list.add(trimmed)
+                    }
+                }
+                list
+            } else {
+                listOf(value)
+            }
+        }
+    }
 }

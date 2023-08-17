@@ -25,20 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-
-public final class EqFilterConnector<R  extends BaseRepository, T> {
-
-    private final ScopedRepositoryFilterFactory<R, T> repositoryFactory;
-
-    EqFilterConnector(ScopedRepositoryFilterFactory<R, T> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
-    public R eq(T value) {
-        return repositoryFactory.updated(value);
-    }
+class BoolFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, Boolean>
+) {
+    val isTrue: R
+        /**
+         * Returns a new repository whose scope that checks if the given field has a true value.
+         * @return the new repository
+         */
+        get() = repositoryFactory.updated(true)
+    val isFalse: R
+        /**
+         * Returns a new repository whose scope that checks if the given field has a false value.
+         * @return the new repository
+         */
+        get() = repositoryFactory.updated(false)
 }

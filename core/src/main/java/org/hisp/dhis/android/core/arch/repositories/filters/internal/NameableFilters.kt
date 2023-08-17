@@ -25,35 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-
-public final class StringFilterConnector<R extends BaseRepository>
-        extends BaseAbstractFilterConnector<R, String> {
-
-    StringFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                          RepositoryScope scope,
-                          String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value which contains the value provided. The comparison
-     * is case insensitive.
-     * @param value value to compare with the target field
-     * @return the new repository
-     */
-    public R like(String value) {
-        return newWithWrappedScope(FilterItemOperator.LIKE, "%" + value + "%");
-    }
-
-    String wrapValue(String value) {
-        return "'" + escapeQuotes(value) + "'";
-    }
+interface NameableFilters<R : ReadOnlyCollectionRepository<*>> : IdentifiableFilters<R> {
+    fun byShortName(): StringFilterConnector<R>
+    fun byDisplayShortName(): StringFilterConnector<R>
+    fun byDescription(): StringFilterConnector<R>
+    fun byDisplayDescription(): StringFilterConnector<R>
 }

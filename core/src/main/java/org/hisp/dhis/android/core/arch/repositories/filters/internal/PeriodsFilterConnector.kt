@@ -25,40 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import java.util.Date
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.period.DatePeriod
+import org.hisp.dhis.android.core.period.Period
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.DatePeriodType;
-import org.hisp.dhis.android.core.common.RelativePeriod;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.Period;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-public final class PeriodsFilterConnector<R extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>> repositoryFactory;
-
-    PeriodsFilterConnector(ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
+class PeriodsFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>>
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The before filter checks if the given field has a date value which is before or equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R beforeOrEqual(Date value) {
-        DateFilterPeriod filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(Collections.singletonList(filter));
+    fun beforeOrEqual(value: Date): R {
+        val filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
@@ -67,9 +55,10 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R afterOrEqual(Date value) {
-        DateFilterPeriod filter = DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(Collections.singletonList(filter));
+    fun afterOrEqual(value: Date): R {
+        val filter =
+            DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
@@ -78,13 +67,16 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param datePeriods date period to compare with the target field
      * @return the new repository
      */
-    public R inDatePeriods(@NonNull DatePeriod...datePeriods) {
-        List<DateFilterPeriod> filters = new ArrayList<>();
-        for (DatePeriod period : datePeriods) {
-            filters.add(DateFilterPeriod.builder()
-                    .startDate(period.startDate()).endDate(period.endDate()).type(DatePeriodType.ABSOLUTE).build());
+    fun inDatePeriods(vararg datePeriods: DatePeriod): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
+        for (period in datePeriods) {
+            filters.add(
+                DateFilterPeriod.builder()
+                    .startDate(period.startDate()).endDate(period.endDate())
+                    .type(DatePeriodType.ABSOLUTE).build()
+            )
         }
-        return repositoryFactory.updated(filters);
+        return repositoryFactory.updated(filters)
     }
 
     /**
@@ -93,13 +85,16 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param periods periods to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull Period...periods) {
-        List<DateFilterPeriod> filters = new ArrayList<>();
-        for (Period period : periods) {
-            filters.add(DateFilterPeriod.builder()
-                    .startDate(period.startDate()).endDate(period.endDate()).type(DatePeriodType.ABSOLUTE).build());
+    fun inPeriods(vararg periods: Period): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
+        for (period in periods) {
+            filters.add(
+                DateFilterPeriod.builder()
+                    .startDate(period.startDate()).endDate(period.endDate())
+                    .type(DatePeriodType.ABSOLUTE).build()
+            )
         }
-        return repositoryFactory.updated(filters);
+        return repositoryFactory.updated(filters)
     }
 
     /**
@@ -109,11 +104,13 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param relativePeriods relative periods to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull RelativePeriod...relativePeriods) {
-        List<DateFilterPeriod> filters = new ArrayList<>();
-        for (RelativePeriod relative : relativePeriods) {
-            filters.add(DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build());
+    fun inPeriods(vararg relativePeriods: RelativePeriod): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
+        for (relative in relativePeriods) {
+            filters.add(
+                DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build()
+            )
         }
-        return repositoryFactory.updated(filters);
+        return repositoryFactory.updated(filters)
     }
 }

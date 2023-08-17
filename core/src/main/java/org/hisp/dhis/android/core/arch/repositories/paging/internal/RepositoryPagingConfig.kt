@@ -25,13 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.paging.internal;
+package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.CoreColumns
 
-public final class RepositoryPagingConfig {
-    public static final String PAGING_KEY = CoreColumns.ID;
-
-    private RepositoryPagingConfig() {
-    }
+object RepositoryPagingConfig {
+    const val PAGING_KEY = CoreColumns.ID
 }

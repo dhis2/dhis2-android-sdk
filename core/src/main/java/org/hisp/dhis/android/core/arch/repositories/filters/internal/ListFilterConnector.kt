@@ -25,15 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import java.util.Arrays
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
-    StringFilterConnector<R> byUid();
-    StringFilterConnector<R> byCode();
-    StringFilterConnector<R> byName();
-    StringFilterConnector<R> byDisplayName();
-    DateFilterConnector<R> byCreated();
-    DateFilterConnector<R> byLastUpdated();
+class ListFilterConnector<R : BaseRepository, T>
+internal constructor(private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<T>>) {
+    fun eq(value: T): R {
+        return repositoryFactory.updated(listOf(value))
+    }
+
+    fun `in`(values: List<T>): R {
+        return repositoryFactory.updated(values)
+    }
+
+    @SafeVarargs
+    fun `in`(vararg values: T): R {
+        return `in`(Arrays.asList(*values))
+    }
 }

@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import java.util.Date
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.period.DatePeriod
+import org.hisp.dhis.android.core.period.Period
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.DatePeriodType;
-import org.hisp.dhis.android.core.common.RelativePeriod;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.Period;
-
-import java.util.Date;
-
-public final class PeriodFilterConnector<R extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, DateFilterPeriod> repositoryFactory;
-
-    PeriodFilterConnector(ScopedRepositoryFilterFactory<R, DateFilterPeriod> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
+class PeriodFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, DateFilterPeriod>
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The before filter checks if the given field has a date value which is before or equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R beforeOrEqual(Date value) {
-        DateFilterPeriod filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(filter);
+    fun beforeOrEqual(value: Date): R {
+        val filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(filter)
     }
 
     /**
@@ -64,9 +55,10 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R afterOrEqual(Date value) {
-        DateFilterPeriod filter = DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(filter);
+    fun afterOrEqual(value: Date): R {
+        val filter =
+            DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(filter)
     }
 
     /**
@@ -75,8 +67,8 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @param datePeriod date period to compare with the target field
      * @return the new repository
      */
-    public R inDatePeriod(@NonNull DatePeriod datePeriod) {
-        return inPeriod(datePeriod.startDate(), datePeriod.endDate());
+    fun inDatePeriod(datePeriod: DatePeriod): R {
+        return inPeriod(datePeriod.startDate(), datePeriod.endDate())
     }
 
     /**
@@ -85,14 +77,14 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @param period period to compare with the target field
      * @return the new repository
      */
-    public R inPeriod(@NonNull Period period) {
-        return inPeriod(period.startDate(), period.endDate());
+    fun inPeriod(period: Period): R {
+        return inPeriod(period.startDate()!!, period.endDate()!!)
     }
 
-    private R inPeriod(@NonNull Date startDate, @NonNull Date endDate) {
-        DateFilterPeriod filter = DateFilterPeriod.builder()
-                .startDate(startDate).endDate(endDate).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(filter);
+    private fun inPeriod(startDate: Date, endDate: Date): R {
+        val filter = DateFilterPeriod.builder()
+            .startDate(startDate).endDate(endDate).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(filter)
     }
 
     /**
@@ -102,9 +94,9 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @param relativePeriod relative period to compare with the target field
      * @return the new repository
      */
-    public R inPeriod(@NonNull RelativePeriod relativePeriod) {
-        DateFilterPeriod filter = DateFilterPeriod.builder()
-                .period(relativePeriod).type(DatePeriodType.RELATIVE).build();
-        return repositoryFactory.updated(filter);
+    fun inPeriod(relativePeriod: RelativePeriod): R {
+        val filter = DateFilterPeriod.builder()
+            .period(relativePeriod).type(DatePeriodType.RELATIVE).build()
+        return repositoryFactory.updated(filter)
     }
 }

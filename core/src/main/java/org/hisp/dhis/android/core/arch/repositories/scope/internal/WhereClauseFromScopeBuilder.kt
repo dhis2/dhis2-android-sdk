@@ -25,33 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public class WhereClauseFromScopeBuilder {
-
-    private final WhereClauseBuilder builder;
-
-    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
-        this.builder = builder;
-    }
-
-    public String getWhereClause(RepositoryScope scope) {
-        if (!scope.hasFilters() && builder.isEmpty()) {
-            return "1";
+class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuilder) {
+    fun getWhereClause(scope: RepositoryScope): String {
+        if (!scope.hasFilters() && builder.isEmpty) {
+            return "1"
         }
-
-        for (RepositoryScopeFilterItem item: scope.filters()) {
-            builder.appendKeyOperatorValue(item.key(), item.operator().getSqlOperator(), item.value());
+        for (item in scope.filters()) {
+            builder.appendKeyOperatorValue(item.key(), item.operator().sqlOperator, item.value())
         }
-
-        for (RepositoryScopeComplexFilterItem item: scope.complexFilters()) {
-            builder.appendComplexQuery(item.whereQuery());
+        for (item in scope.complexFilters()) {
+            builder.appendComplexQuery(item.whereQuery())
         }
-
-        return builder.build();
+        return builder.build()
     }
 }

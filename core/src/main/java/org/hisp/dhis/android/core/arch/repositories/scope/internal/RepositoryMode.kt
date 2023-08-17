@@ -25,9 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
-
-public enum RepositoryMode {
-        ONLINE_ONLY, OFFLINE_ONLY, ONLINE_FIRST, OFFLINE_FIRST
+enum class RepositoryMode {
+    ONLINE_ONLY, OFFLINE_ONLY, ONLINE_FIRST, OFFLINE_FIRST
 }

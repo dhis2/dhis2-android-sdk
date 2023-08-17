@@ -64,6 +64,7 @@ internal open class ReadOnlyNameableCollectionRepositoryImpl<M, R : ReadOnlyColl
         return cf.string(NameableColumns.DISPLAY_DESCRIPTION)
     }
 
+    // TODO: should direction be nullable and thus, use a default value?
     fun orderByShortName(direction: OrderByDirection?): R {
         return cf.withOrderBy(NameableColumns.SHORT_NAME, direction)
     }

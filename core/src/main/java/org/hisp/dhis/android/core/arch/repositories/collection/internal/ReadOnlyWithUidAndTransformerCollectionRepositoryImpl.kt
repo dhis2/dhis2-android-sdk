@@ -82,7 +82,7 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
      * @param uid to compare
      * @return the ReadOnlyObjectRepository
      */
-    override fun uid(uid: String?): ReadOnlyObjectRepository<T> {
+    override fun uid(uid: String): ReadOnlyObjectRepository<T> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
         return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, updatedScope, transformer)
     }

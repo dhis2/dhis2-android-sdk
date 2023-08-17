@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
-import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
-
-public interface BaseScopeFactory<S extends BaseScope, I> {
-    S updated(I item);
+interface BaseScopeFactory<S : BaseScope, I> {
+    fun updated(item: I): S
 }

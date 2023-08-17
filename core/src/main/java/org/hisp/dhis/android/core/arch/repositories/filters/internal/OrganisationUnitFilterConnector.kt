@@ -25,36 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.common.OrganisationUnitFilter
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.common.OrganisationUnitFilter;
-import org.hisp.dhis.android.core.common.RelativeOrganisationUnit;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public final class OrganisationUnitFilterConnector<R extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, List<OrganisationUnitFilter>> repositoryFactory;
-
-    OrganisationUnitFilterConnector(ScopedRepositoryFilterFactory<R, List<OrganisationUnitFilter>> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
+class OrganisationUnitFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<OrganisationUnitFilter>>
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The eq filter checks if the given field has the same the orgunit as the one provided.
      * @param orgunitUid value to compare with the target field
      * @return the new repository
      */
-    public R eq(@NonNull String orgunitUid) {
-        OrganisationUnitFilter filter = new OrganisationUnitFilter(orgunitUid, null);
-        return repositoryFactory.updated(Collections.singletonList(filter));
+    fun eq(orgunitUid: String): R {
+        val filter = OrganisationUnitFilter(orgunitUid, null)
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
@@ -63,9 +51,9 @@ public final class OrganisationUnitFilterConnector<R extends BaseRepository> {
      * @param relative value to compare with the target field
      * @return the new repository
      */
-    public R eq(@NonNull RelativeOrganisationUnit relative) {
-        OrganisationUnitFilter filter = new OrganisationUnitFilter(null, relative);
-        return repositoryFactory.updated(Collections.singletonList(filter));
+    fun eq(relative: RelativeOrganisationUnit): R {
+        val filter = OrganisationUnitFilter(null, relative)
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
@@ -74,12 +62,12 @@ public final class OrganisationUnitFilterConnector<R extends BaseRepository> {
      * @param orgunitUids list of uids organisation units to compare
      * @return the new repository
      */
-    public R in(@NonNull String...orgunitUids) {
-        List<OrganisationUnitFilter> filters = new ArrayList<>();
-        for (String uid : orgunitUids) {
-            filters.add(new OrganisationUnitFilter(uid, null));
+    fun `in`(vararg orgunitUids: String): R {
+        val filters: MutableList<OrganisationUnitFilter> = ArrayList()
+        for (uid in orgunitUids) {
+            filters.add(OrganisationUnitFilter(uid, null))
         }
-        return repositoryFactory.updated(filters);
+        return repositoryFactory.updated(filters)
     }
 
     /**
@@ -88,11 +76,11 @@ public final class OrganisationUnitFilterConnector<R extends BaseRepository> {
      * @param relatives list of relative organisation units to compare
      * @return the new repository
      */
-    public R in(@NonNull RelativeOrganisationUnit...relatives) {
-        List<OrganisationUnitFilter> filters = new ArrayList<>();
-        for (RelativeOrganisationUnit relative : relatives) {
-            filters.add(new OrganisationUnitFilter(null, relative));
+    fun `in`(vararg relatives: RelativeOrganisationUnit): R {
+        val filters: MutableList<OrganisationUnitFilter> = ArrayList()
+        for (relative in relatives) {
+            filters.add(OrganisationUnitFilter(null, relative))
         }
-        return repositoryFactory.updated(filters);
+        return repositoryFactory.updated(filters)
     }
 }

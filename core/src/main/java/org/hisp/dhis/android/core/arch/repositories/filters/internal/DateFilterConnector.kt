@@ -110,7 +110,7 @@ abstract class DateFilterConnector<R : BaseRepository> internal constructor(
         return inDatePeriods(datePeriods)
     }
 
-    override fun wrapValue(value: Date): String {
-        return "'${formatter.format(value)}'"
+    override fun wrapValue(value: Date?): String {
+        return "'${formatter.format(value!!)}'"
     }
 }

@@ -25,32 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+class BaseStringFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : BaseAbstractFilterConnector<R, String?>(
+    repositoryFactory, scope, key
+) {
 
-public final class BoolFilterConnector<R  extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory;
-
-    BoolFilterConnector(ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
-
-    /**
-     * Returns a new repository whose scope that checks if the given field has a true value.
-     * @return the new repository
-     */
-    public R isTrue() {
-        return repositoryFactory.updated(true);
-    }
-
-    /**
-     * Returns a new repository whose scope that checks if the given field has a false value.
-     * @return the new repository
-     */
-    public R isFalse() {
-        return repositoryFactory.updated(false);
+    override fun wrapValue(value: String?): String {
+        return escapeQuotes(value!!)
     }
 }

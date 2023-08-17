@@ -25,46 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-public final class BooleanFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, Boolean> {
-
-    BooleanFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                           RepositoryScope scope,
-                           String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isTrue filter checks if the given field has a true value.
-     * @return the new repository
-     */
-    public R isTrue() {
-        return eq(true);
-    }
-
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isFalse filter checks if the given field has a false value.
-     * @return the new repository
-     */
-    public R isFalse() {
-        return eq(false);
-    }
-
-    @Override
-    String wrapValue(Boolean value) {
-        if (value) {
-            return "1";
-        } else {
-            return "0";
-        }
+class EqFilterConnector<R : BaseRepository, T> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, T>
+) {
+    fun eq(value: T): R {
+        return repositoryFactory.updated(value)
     }
 }

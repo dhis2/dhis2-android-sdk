@@ -25,54 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public final class RepositoryScopeHelper {
-
-    private RepositoryScopeHelper() {
+object RepositoryScopeHelper {
+    @JvmStatic
+    fun withFilterItem(scope: RepositoryScope, item: RepositoryScopeFilterItem): RepositoryScope {
+        val copiedItems: MutableList<RepositoryScopeFilterItem> = ArrayList(scope.filters())
+        copiedItems.add(item)
+        return scope.toBuilder().filters(copiedItems).build()
     }
 
-    public static RepositoryScope withFilterItem(RepositoryScope scope, RepositoryScopeFilterItem item) {
-        List<RepositoryScopeFilterItem> copiedItems = new ArrayList<>(scope.filters());
-        copiedItems.add(item);
-        return scope.toBuilder().filters(copiedItems).build();
+    @JvmStatic
+    fun withUidFilterItem(scope: RepositoryScope, uid: String): RepositoryScope {
+        val filterItem = RepositoryScopeFilterItem.builder()
+            .key(IdentifiableColumns.UID)
+            .operator(FilterItemOperator.EQ)
+            .value("'$uid'")
+            .build()
+        return withFilterItem(scope, filterItem)
     }
 
-    public static RepositoryScope withUidFilterItem(RepositoryScope scope, String uid) {
-        RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
-                .key(IdentifiableColumns.UID)
-                .operator(FilterItemOperator.EQ)
-                .value("'" + uid + "'")
-                .build();
-
-        return RepositoryScopeHelper.withFilterItem(scope, filterItem);
+    fun withComplexFilterItem(
+        scope: RepositoryScope,
+        item: RepositoryScopeComplexFilterItem
+    ): RepositoryScope {
+        val copiedItems: MutableList<RepositoryScopeComplexFilterItem> =
+            ArrayList(scope.complexFilters())
+        copiedItems.add(item)
+        return scope.toBuilder().complexFilters(copiedItems).build()
     }
 
-    public static RepositoryScope withComplexFilterItem(RepositoryScope scope, RepositoryScopeComplexFilterItem item) {
-        List<RepositoryScopeComplexFilterItem> copiedItems = new ArrayList<>(scope.complexFilters());
-        copiedItems.add(item);
-        return scope.toBuilder().complexFilters(copiedItems).build();
+    fun withChild(scope: RepositoryScope, child: String?): RepositoryScope {
+        return scope.toBuilder().children(scope.children().withChild(child!!)).build()
     }
 
-    public static RepositoryScope withChild(RepositoryScope scope, String child) {
-        return scope.toBuilder().children(scope.children().withChild(child)).build();
-    }
-
-    public static RepositoryScope withOrderBy(RepositoryScope scope, RepositoryScopeOrderByItem item) {
-        List<RepositoryScopeOrderByItem> newItems = new ArrayList<>(scope.orderBy().size() + 1);
-        for (RepositoryScopeOrderByItem i: scope.orderBy()) {
-            if (!i.column().equals(item.column())) {
-                newItems.add(i);
+    @JvmStatic
+    fun withOrderBy(scope: RepositoryScope, item: RepositoryScopeOrderByItem): RepositoryScope {
+        val newItems: MutableList<RepositoryScopeOrderByItem> = ArrayList(scope.orderBy().size + 1)
+        for (i in scope.orderBy()) {
+            if (i.column() != item.column()) {
+                newItems.add(i)
             }
         }
-        newItems.add(item);
-        return scope.toBuilder().orderBy(newItems).build();
+        newItems.add(item)
+        return scope.toBuilder().orderBy(newItems).build()
     }
 }

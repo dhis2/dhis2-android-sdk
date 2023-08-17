@@ -44,7 +44,7 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
     }
 
     fun <T> listConnector(baseScopeFactory: BaseScopeFactory<S, List<T>>): ListFilterConnector<R, T> {
-        return ListFilterConnector { list: List<T>? -> repositoryFactory.updated(baseScopeFactory.updated(list)) }
+        return ListFilterConnector { list: List<T>? -> repositoryFactory.updated(baseScopeFactory.updated(list!!)) }
     }
 
     fun booleanConnector(baseScopeFactory: BaseScopeFactory<S, Boolean>): BoolFilterConnector<R> {

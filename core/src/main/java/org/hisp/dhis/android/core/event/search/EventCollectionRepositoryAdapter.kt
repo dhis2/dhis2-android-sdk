@@ -112,7 +112,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             filter.lt()?.let { filterRepo = filterRepo.byDataValue(deId).lt(it) }
             filter.like()?.let { filterRepo = filterRepo.byDataValue(deId).like(it) }
             if (!filter.`in`().isNullOrEmpty()) {
-                filterRepo = filterRepo.byDataValue(deId).`in`(filter.`in`())
+                filterRepo = filterRepo.byDataValue(deId).`in`(filter.`in`()!!)
             }
             filter.dateFilter()?.let { period ->
                 datePeriodHelper.getStartDate(period)?.let {
@@ -183,7 +183,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         mode: AssignedUserMode
     ): EventCollectionRepository {
         return when (mode) {
-            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user())
+            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user()!!)
             AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
             AssignedUserMode.NONE -> repository.byAssignedUser().isNull
             // TODO Not implemented yet

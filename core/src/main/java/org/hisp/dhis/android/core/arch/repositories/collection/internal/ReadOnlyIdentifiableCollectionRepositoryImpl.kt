@@ -72,6 +72,8 @@ open class ReadOnlyIdentifiableCollectionRepositoryImpl<M, R : ReadOnlyCollectio
         return cf.date(IdentifiableColumns.LAST_UPDATED)
     }
 
+    // TODO: should direction be nullable and thus, use a default value?
+
     fun orderByUid(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.UID, direction)
     }

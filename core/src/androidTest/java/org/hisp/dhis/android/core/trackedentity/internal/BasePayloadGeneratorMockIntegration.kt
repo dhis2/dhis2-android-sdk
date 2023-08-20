@@ -70,6 +70,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     protected val event2Id = "event2Id"
     protected val event3Id = "event3Id"
     protected val singleEventId = "singleEventId"
+    protected val unassignedDataElementId = "bx6fsa0t90x"
 
     @After
     @Throws(D2Error::class)

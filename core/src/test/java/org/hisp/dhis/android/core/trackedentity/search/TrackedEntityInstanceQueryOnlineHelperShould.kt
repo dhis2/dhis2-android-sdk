@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,5 +85,40 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
 
         assertThat(onlineQueries.size).isEqualTo(1)
         assertThat(onlineQueries[0].attributeFilter.size).isEqualTo(1)
+    }
+
+    @Test
+    fun to_API_filter_format() {
+        // List of filters
+        val list = listOf(
+            "nom,app",
+            "nom:app",
+            "nom;app"
+        )
+
+        val expectedList = listOf(
+            "filterItemIN:in:nom/,app;nom/:app;nom/;app",
+            "filterItemLIKE1:like:nom/,app",
+            "filterItemLIKE2:like:nom/:app",
+            "filterItemLIKE3:like:nom/;app",
+        )
+
+        val scope = queryBuilder
+            .filter(
+                listOf(
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemIN").operator(FilterItemOperator.IN).value(listToStr(list)).build(),
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemLIKE1").operator(FilterItemOperator.LIKE).value(list[0]).build(),
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemLIKE2").operator(FilterItemOperator.LIKE).value(list[1]).build(),
+                    RepositoryScopeFilterItem.builder()
+                        .key("filterItemLIKE3").operator(FilterItemOperator.LIKE).value(list[2]).build()
+                )
+            ).build()
+
+        val formattedQueries = toAPIFilterFormat(scope.filter(), false)
+
+        assertThat(formattedQueries).isEqualTo(expectedList)
     }
 }

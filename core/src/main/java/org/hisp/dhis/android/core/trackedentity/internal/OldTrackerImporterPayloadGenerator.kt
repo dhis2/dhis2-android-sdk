@@ -70,7 +70,6 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
 ) {
 
     private data class ExtraData(
-        val dataValueMap: Map<String, List<TrackedEntityDataValue>>,
         val eventMap: Map<String, List<Event>>,
         val enrollmentMap: Map<String, List<Enrollment>>,
         val attributeValueMap: Map<String, List<TrackedEntityAttributeValue>>,
@@ -241,7 +240,6 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
 
     private fun getExtraData(): ExtraData {
         return ExtraData(
-            dataValueMap = trackedEntityDataValueStore.queryByUploadableEvents(),
             eventMap = eventStore.queryEventsAttachedToEnrollmentToPost(),
             enrollmentMap = enrollmentStore.queryEnrollmentsToPost(),
             attributeValueMap = trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost(),
@@ -318,30 +316,27 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
                 getEvent(event, extraData)
             } ?: emptyList()
 
+            val notes = extraData.notes.filter { it.enrollment() == enrollment.uid() }
+
             EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events)
-                .notes(getEnrollmentNotes(extraData.notes, enrollment))
+                .notes(notes)
                 .build()
         } ?: emptyList()
     }
 
     private fun getEvent(event: Event, extraData: ExtraData): Event {
+        val eventDataValues = trackedEntityDataValueStore.queryToPostByEvent(event.uid())
+        val eventNotes = extraData.notes.filter { it.event() == event.uid() }
+
         val eventBuilder = event.toBuilder()
-            .trackedEntityDataValues(extraData.dataValueMap[event.uid()])
-            .notes(getEventNotes(extraData.notes, event))
+            .trackedEntityDataValues(eventDataValues)
+            .notes(eventNotes)
 
         if (versionManager.getVersion() == DHISVersion.V2_30) {
             eventBuilder.geometry(null)
         }
 
         return eventBuilder.build()
-    }
-
-    private fun getEventNotes(notes: List<Note>, event: Event): List<Note> {
-        return notes.filter { it.event() == event.uid() }
-    }
-
-    private fun getEnrollmentNotes(notes: List<Note>, enrollment: Enrollment): List<Note> {
-        return notes.filter { it.enrollment() == enrollment.uid() }
     }
 
     private fun addProgramOwners(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {

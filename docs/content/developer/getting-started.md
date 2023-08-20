@@ -6,7 +6,7 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.8.1.1"
+    implementation "org.hisp.dhis:android-core:1.8.2"
     ...
 }
 ```

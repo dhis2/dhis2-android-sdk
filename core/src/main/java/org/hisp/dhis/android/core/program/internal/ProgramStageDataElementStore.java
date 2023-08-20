@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class ProgramStageDataElementStore {
+public final class ProgramStageDataElementStore {
 
     private ProgramStageDataElementStore() {}
 
@@ -62,7 +62,7 @@ final class ProgramStageDataElementStore {
         }
     };
 
-    static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
+    public static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,
                 ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, ProgramStageDataElement::create);
     }

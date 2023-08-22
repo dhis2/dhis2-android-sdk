@@ -31,7 +31,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
-    id("org.jetbrains.dokka") version "1.7.20" apply false
+    id("org.jetbrains.dokka") version "1.8.20" apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))

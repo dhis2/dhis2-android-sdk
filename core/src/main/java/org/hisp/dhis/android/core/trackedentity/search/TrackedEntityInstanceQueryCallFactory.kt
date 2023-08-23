@@ -130,39 +130,37 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         val uidsStr = query.uids?.joinToString(";")
 
-        val searchGridCall = trackedEntityService.query(
-            trackedEntityInstance = uidsStr,
-            orgUnit = getOrgunits(query.orgUnits),
-            orgUnitMode = query.orgUnitMode?.toString(),
-            program = query.program,
-            programStage = query.programStage,
-            programStartDate = query.programStartDate.simpleDateFormat(),
-            programEndDate = query.programEndDate.simpleDateFormat(),
-            enrollmentStatus = query.enrollmentStatus?.toString(),
-            programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
-            programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
-            followUp = query.followUp,
-            eventStartDate = query.eventStartDate.simpleDateFormat(),
-            eventEndDate = query.eventEndDate.simpleDateFormat(),
-            eventStatus = getEventStatus(query),
-            trackedEntityType = query.trackedEntityType,
-            query = query.query,
-            filter = toAPIFilterFormat(query.attributeFilter, upper = true),
-            assignedUserMode = query.assignedUserMode?.toString(),
-            lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
-            lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-            order = query.order,
-            paging = query.paging,
-            pageSize = query.pageSize,
-            page = query.page,
-        )
-
         return try {
             coroutineAPICallExecutor.wrap(
                 storeError = false,
                 errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
             ) {
-                searchGridCall
+                trackedEntityService.query(
+                    trackedEntityInstance = uidsStr,
+                    orgUnit = getOrgunits(query.orgUnits),
+                    orgUnitMode = query.orgUnitMode?.toString(),
+                    program = query.program,
+                    programStage = query.programStage,
+                    programStartDate = query.programStartDate.simpleDateFormat(),
+                    programEndDate = query.programEndDate.simpleDateFormat(),
+                    enrollmentStatus = query.enrollmentStatus?.toString(),
+                    programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
+                    programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
+                    followUp = query.followUp,
+                    eventStartDate = query.eventStartDate.simpleDateFormat(),
+                    eventEndDate = query.eventEndDate.simpleDateFormat(),
+                    eventStatus = getEventStatus(query),
+                    trackedEntityType = query.trackedEntityType,
+                    query = query.query,
+                    filter = toAPIFilterFormat(query.attributeFilter, upper = true),
+                    assignedUserMode = query.assignedUserMode?.toString(),
+                    lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
+                    lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
+                    order = query.order,
+                    paging = query.paging,
+                    pageSize = query.pageSize,
+                    page = query.page,
+                )
             }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
             throw D2Error.builder()

@@ -52,18 +52,20 @@ internal class ProgramConfigurationSettingStoreImpl(
 
     companion object {
         private val BINDER =
-            StatementBinder<ProgramConfigurationSetting> { o: ProgramConfigurationSetting, w: StatementWrapper ->
+            StatementBinder { o: ProgramConfigurationSetting, w: StatementWrapper ->
                 w.bind(1, o.uid())
                 w.bind(2, o.completionSpinner())
                 w.bind(3, o.optionalSearch())
+                w.bind(4, o.disableReferrals())
+                w.bind(5, o.collapsibleSections())
             }
 
         private val WHERE_UPDATE_BINDER =
-            WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
+            WhereStatementBinder { _: ProgramConfigurationSetting, _: StatementWrapper ->
             }
 
         private val WHERE_DELETE_BINDER =
-            WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
+            WhereStatementBinder { _: ProgramConfigurationSetting, _: StatementWrapper ->
             }
     }
 }

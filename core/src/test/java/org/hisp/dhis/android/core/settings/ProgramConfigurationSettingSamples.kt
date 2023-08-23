@@ -35,6 +35,8 @@ object ProgramConfigurationSettingSamples {
             .uid("aBcDeFg")
             .completionSpinner(true)
             .optionalSearch(true)
+            .disableReferrals(true)
+            .collapsibleSections(true)
             .build()
     }
 }

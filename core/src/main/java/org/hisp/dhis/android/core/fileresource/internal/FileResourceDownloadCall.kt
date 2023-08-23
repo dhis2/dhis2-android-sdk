@@ -158,7 +158,6 @@ internal class FileResourceDownloadCall @Inject constructor(
         download: suspend (V) -> ResponseBody?,
         getUid: (V) -> String?
     ) {
-
         val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
 
         handler.handleMany(fileResources) { fileResource: FileResource ->
@@ -175,7 +174,6 @@ internal class FileResourceDownloadCall @Inject constructor(
         download: suspend (V) -> ResponseBody?,
         getUid: (V) -> String?
     ): FileResource? {
-
         return getUid(value)?.let { uid ->
             try {
                 val fileResource =

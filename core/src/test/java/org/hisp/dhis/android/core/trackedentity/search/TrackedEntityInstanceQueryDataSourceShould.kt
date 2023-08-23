@@ -129,8 +129,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_online_page() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -146,8 +151,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_offline_page() {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -162,8 +172,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun query_online_when_offline_exhausted() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -180,8 +195,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun query_online_again_if_not_exhausted_and_use_right_paging() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
 
         onlineCallFactory.stub {
@@ -210,8 +230,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_online_page_from_cache() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).allowOnlineCache(true).build()
         val dataSource1 = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource1.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -220,8 +245,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
         verify(onlineCallFactory).getQueryCall(any())
 
         val dataSource2 = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource2.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -234,8 +264,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_multiple_event_filter_queries() = runTest {
         val scope = multipleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
@@ -260,8 +295,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_second_online_page_if_needed_in_initial_load() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
         )
 
         onlineCallFactory.stub {

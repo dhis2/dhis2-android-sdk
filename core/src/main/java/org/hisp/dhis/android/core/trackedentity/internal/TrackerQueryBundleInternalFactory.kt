@@ -44,14 +44,20 @@ internal class TrackerQueryBundleInternalFactory constructor(
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TrackerQueryBundle> {
         val limit = commonHelper.getLimit(
-            params, programSettings, programUid
+            params,
+            programSettings,
+            programUid
         ) { it?.teiDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
-            params, programSettings, programs,
-            programUid, limit, orgUnitByLimitExtractor
+            params,
+            programSettings,
+            programs,
+            programUid,
+            limit,
+            orgUnitByLimitExtractor
         ) { it?.enrollmentDateDownload() }
 
         val programStatus = getProgramStatus(params, programSettings, programUid)

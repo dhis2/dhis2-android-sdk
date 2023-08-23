@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 @Reusable
 internal class StockUseCaseHandler @Inject constructor(
     store: StockUseCaseStore,
-    private val transactionLinkHandler: StockUseCaseTransactionLinkHandler,
+    private val transactionLinkHandler: StockUseCaseTransactionLinkHandler
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
     override fun beforeCollectionHandled(

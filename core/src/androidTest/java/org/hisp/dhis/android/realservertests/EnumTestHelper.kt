@@ -52,7 +52,9 @@ internal class EnumTestHelper {
             return if (notContainedValues.isNotEmpty()) {
                 "Constants ${notContainedValues.joinToString()} from enum " +
                     "$enumKey does not exist in the $containerKey"
-            } else null
+            } else {
+                null
+            }
         }
 
         inline fun <reified E : Enum<E>> entry(apiKey: String): Pair<String, List<String>> {

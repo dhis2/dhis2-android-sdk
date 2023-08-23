@@ -116,16 +116,22 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(
             d2.dataValueModule().dataValues()
                 .value(
-                    "no_period", "no_org_unit", "no_data_element",
-                    "no_category", "no_attribute"
+                    "no_period",
+                    "no_org_unit",
+                    "no_data_element",
+                    "no_category",
+                    "no_attribute"
                 ).blockingExists()
         ).isFalse()
 
         assertThat(
             d2.dataValueModule().dataValues()
                 .value(
-                    "2018", "DiszpKrYNg8", "g9eOBujte1U",
-                    "Gmbgme7z9BF", "bRowv6yZOF2"
+                    "2018",
+                    "DiszpKrYNg8",
+                    "g9eOBujte1U",
+                    "Gmbgme7z9BF",
+                    "bRowv6yZOF2"
                 ).blockingExists()
         ).isTrue()
     }
@@ -133,8 +139,11 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     private fun objectRepository(): DataValueObjectRepository {
         return d2.dataValueModule().dataValues()
             .value(
-                "201905", "DiszpKrYNg8", "g9eOBujte1U",
-                "Gmbgme7z9BF", "bRowv6yZOF2"
+                "201905",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2"
             )
     }
 }

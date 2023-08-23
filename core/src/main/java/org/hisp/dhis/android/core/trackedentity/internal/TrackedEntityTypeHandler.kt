@@ -42,7 +42,8 @@ internal class TrackedEntityTypeHandler @Inject constructor(
 ) : IdentifiableHandlerImpl<TrackedEntityType>(trackedEntityTypeStore) {
     override fun afterObjectHandled(o: TrackedEntityType, action: HandleAction) {
         attributeHandler.handleMany(
-            o.uid(), o.trackedEntityTypeAttributes()
+            o.uid(),
+            o.trackedEntityTypeAttributes()
         ) { trackedEntityTypeAttribute: TrackedEntityTypeAttribute, sortOrder: Int? ->
             trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build()
         }

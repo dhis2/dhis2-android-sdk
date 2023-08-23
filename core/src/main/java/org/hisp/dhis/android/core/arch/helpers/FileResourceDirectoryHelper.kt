@@ -59,7 +59,9 @@ object FileResourceDirectoryHelper {
         val file = File(context.filesDir, childPath)
         return if (!file.exists() && file.mkdirs()) {
             file
-        } else file
+        } else {
+            file
+        }
     }
 
     internal fun deleteRootFileResourceDirectory(context: Context) {
@@ -92,7 +94,9 @@ object FileResourceDirectoryHelper {
         val file = File(context.cacheDir, childPath)
         return if (!file.exists() && file.mkdirs()) {
             file
-        } else file
+        } else {
+            file
+        }
     }
 
     internal fun getSubfolderName(databaseName: String): String {

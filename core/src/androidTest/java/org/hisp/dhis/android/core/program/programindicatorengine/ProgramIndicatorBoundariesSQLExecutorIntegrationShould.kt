@@ -69,24 +69,38 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191102
         )
         val event1 = generator.generate()
         helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191102
         )
         val event2 = generator.generate()
         helper.createTrackerEvent(
-            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            event2,
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20201202
         )
 
@@ -158,17 +172,28 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191102
         )
         val event1 = generator.generate()
         helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         val event2 = generator.generate()
         helper.createTrackerEvent(
-            event2, enrollment1, program.uid(), programStage2.uid(), orgunitChild1.uid(),
+            event2,
+            enrollment1,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
 
@@ -219,15 +244,26 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191102
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage2.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191110
         )
 
@@ -277,30 +313,52 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191101
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20201202
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191102
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage2.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191110
         )
 
@@ -361,30 +419,52 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191101
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20201202
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
             enrollmentDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191201
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage2.uid(), orgunitChild1.uid(),
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
             eventDate = day20191110
         )
 

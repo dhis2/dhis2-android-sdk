@@ -119,7 +119,7 @@ internal object AnalyticExpressionParserUtils {
             ExpressionParser.MIN_DATE to FunctionMinDate(),
             ExpressionParser.MAX_DATE to FunctionMaxDate(),
             ExpressionParser.PERIOD_OFFSET to PeriodOffset(),
-            ExpressionParser.YEAR_TO_DATE to FunctionYearToDate(),
+            ExpressionParser.YEAR_TO_DATE to FunctionYearToDate()
         )
 
     fun getDays(

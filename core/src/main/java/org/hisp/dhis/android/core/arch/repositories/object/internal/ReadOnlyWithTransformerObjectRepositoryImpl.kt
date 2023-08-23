@@ -65,7 +65,9 @@ internal constructor(
      */
     override fun blockingGet(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(), childrenAppenders, scope.children()
+            blockingGetWithoutChildren(),
+            childrenAppenders,
+            scope.children()
         )
 
         return item?.let { transformer.transform(it) }

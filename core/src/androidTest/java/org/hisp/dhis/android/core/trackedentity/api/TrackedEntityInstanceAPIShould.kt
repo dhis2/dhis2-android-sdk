@@ -404,8 +404,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
             assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
             for (
-                enrollmentImportSummary in teiImportSummaries.enrollments()!!
-                    .importSummaries()!!
+            enrollmentImportSummary in teiImportSummaries.enrollments()!!
+                .importSummaries()!!
             ) {
                 assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1)
                 for (eventImportSummary in enrollmentImportSummary.events()!!.importSummaries()!!) {

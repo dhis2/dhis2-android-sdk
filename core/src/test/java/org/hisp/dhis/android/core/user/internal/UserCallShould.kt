@@ -69,7 +69,6 @@ class UserCallShould : BaseCallShould() {
             userSyncCall.call()
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
-
             // verify that handlers was not touched
             verify(databaseAdapter, never()).beginNewTransaction()
             verify(transaction, never()).setSuccessful()

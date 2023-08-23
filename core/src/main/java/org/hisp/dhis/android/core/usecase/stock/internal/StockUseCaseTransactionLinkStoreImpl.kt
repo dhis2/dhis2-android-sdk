@@ -62,7 +62,8 @@ internal class StockUseCaseTransactionLinkStoreImpl(
             }
 
         val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(
-            StockUseCaseTransactionTableInfo.TABLE_INFO, StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID
+            StockUseCaseTransactionTableInfo.TABLE_INFO,
+            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID
         )
     }
 }

@@ -60,7 +60,8 @@ internal class EventStoreImpl(
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStatesIncludingError().toList())
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE,
+                asStringList(uploadableStatesIncludingError().toList())
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
 

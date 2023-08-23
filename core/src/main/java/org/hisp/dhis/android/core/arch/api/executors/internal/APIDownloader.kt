@@ -54,7 +54,7 @@ internal interface APIDownloader {
     fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>
     ): Single<List<P>>
 
     fun <K, V> downloadPartitionedMap(

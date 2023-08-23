@@ -42,7 +42,7 @@ class OptionServiceImpl @Inject constructor(
         optionSetUid: String,
         searchText: String?,
         optionToHideUids: List<String>?,
-        optionToShowUids: List<String>?,
+        optionToShowUids: List<String>?
     ): List<Option> {
         var repository = optionRepository
             .byOptionSetUid().eq(optionSetUid)
@@ -64,7 +64,7 @@ class OptionServiceImpl @Inject constructor(
         optionSetUid: String,
         searchText: String?,
         optionToHideUids: List<String>?,
-        optionToShowUids: List<String>?,
+        optionToShowUids: List<String>?
     ): Single<List<Option>> {
         return Single.fromCallable {
             blockingSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)

@@ -179,7 +179,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                             AttributeValueFilter.builder()
                                 .attribute("attribute2")
                                 .eq("eq_str")
-                                .build(),
+                                .build()
                         )
                     )
                     .build()

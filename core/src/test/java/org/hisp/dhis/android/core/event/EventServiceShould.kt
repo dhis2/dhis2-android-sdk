@@ -76,8 +76,14 @@ class EventServiceShould {
     private val eventDateUtils: EventDateUtils = mock()
 
     private val eventService: EventService = EventServiceImpl(
-        enrollmentRepository, eventRepository, programRepository, programStageRepository,
-        enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
+        enrollmentRepository,
+        eventRepository,
+        programRepository,
+        programStageRepository,
+        enrollmentService,
+        organisationUnitService,
+        categoryOptionComboService,
+        eventDateUtils
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")

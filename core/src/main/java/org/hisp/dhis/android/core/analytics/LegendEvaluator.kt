@@ -41,7 +41,7 @@ internal class LegendEvaluator @Inject constructor(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val indicatorRepository: IndicatorCollectionRepository,
     private val legendRepository: LegendCollectionRepository,
-    private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
+    private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository
 ) {
     fun getLegendByProgramIndicator(
         programIndicatorUid: String,
@@ -49,17 +49,19 @@ internal class LegendEvaluator @Inject constructor(
     ): String? {
         return if (value == null) {
             null
-        } else try {
-            val programIndicator = programIndicatorRepository
-                .byUid().eq(programIndicatorUid)
-                .withLegendSets()
-                .one().blockingGet()
+        } else {
+            try {
+                val programIndicator = programIndicatorRepository
+                    .byUid().eq(programIndicatorUid)
+                    .withLegendSets()
+                    .one().blockingGet()
 
-            val legendSet = programIndicator?.legendSets()!![0]
+                val legendSet = programIndicator?.legendSets()!![0]
 
-            return getLegendByLegendSet(legendSet.uid(), value)
-        } catch (e: Exception) {
-            null
+                return getLegendByLegendSet(legendSet.uid(), value)
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
@@ -69,17 +71,19 @@ internal class LegendEvaluator @Inject constructor(
     ): String? {
         return if (value == null) {
             null
-        } else try {
-            val dataElement = dataElementRepository
-                .byUid().eq(dataElementUid)
-                .withLegendSets()
-                .one().blockingGet()
+        } else {
+            try {
+                val dataElement = dataElementRepository
+                    .byUid().eq(dataElementUid)
+                    .withLegendSets()
+                    .one().blockingGet()
 
-            val legendSet = dataElement?.legendSets()!![0]
+                val legendSet = dataElement?.legendSets()!![0]
 
-            return getLegendByLegendSet(legendSet.uid(), value)
-        } catch (e: Exception) {
-            null
+                return getLegendByLegendSet(legendSet.uid(), value)
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
@@ -89,17 +93,19 @@ internal class LegendEvaluator @Inject constructor(
     ): String? {
         return if (value == null) {
             null
-        } else try {
-            val trackedEntityAttribute = trackedEntityAttributeCollectionRepository
-                .byUid().eq(trackedEntityAttributeUid)
-                .withLegendSets()
-                .one().blockingGet()
+        } else {
+            try {
+                val trackedEntityAttribute = trackedEntityAttributeCollectionRepository
+                    .byUid().eq(trackedEntityAttributeUid)
+                    .withLegendSets()
+                    .one().blockingGet()
 
-            val legendSet = trackedEntityAttribute?.legendSets()!![0]
+                val legendSet = trackedEntityAttribute?.legendSets()!![0]
 
-            return getLegendByLegendSet(legendSet.uid(), value)
-        } catch (e: Exception) {
-            null
+                return getLegendByLegendSet(legendSet.uid(), value)
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
@@ -109,17 +115,19 @@ internal class LegendEvaluator @Inject constructor(
     ): String? {
         return if (value == null) {
             null
-        } else try {
-            val indicator = indicatorRepository
-                .byUid().eq(indicatorUid)
-                .withLegendSets()
-                .one().blockingGet()
+        } else {
+            try {
+                val indicator = indicatorRepository
+                    .byUid().eq(indicatorUid)
+                    .withLegendSets()
+                    .one().blockingGet()
 
-            val legendSet = indicator?.legendSets()!![0]
+                val legendSet = indicator?.legendSets()!![0]
 
-            return getLegendByLegendSet(legendSet.uid(), value)
-        } catch (e: Exception) {
-            null
+                return getLegendByLegendSet(legendSet.uid(), value)
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
@@ -127,18 +135,19 @@ internal class LegendEvaluator @Inject constructor(
         legendSetUid: String,
         value: String?
     ): String? {
-
         return if (value == null || value.toDouble().isNaN()) {
             null
-        } else try {
-            return legendRepository
-                .byStartValue().smallerThan(value.toDouble())
-                .byEndValue().biggerOrEqualTo(value.toDouble())
-                .byLegendSet().eq(legendSetUid)
-                .one()
-                .blockingGet()?.uid()
-        } catch (e: Exception) {
-            null
+        } else {
+            try {
+                return legendRepository
+                    .byStartValue().smallerThan(value.toDouble())
+                    .byEndValue().biggerOrEqualTo(value.toDouble())
+                    .byLegendSet().eq(legendSetUid)
+                    .one()
+                    .blockingGet()?.uid()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 }

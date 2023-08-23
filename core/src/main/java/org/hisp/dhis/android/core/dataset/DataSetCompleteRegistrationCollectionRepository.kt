@@ -60,13 +60,19 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     private val postCall: DataSetCompleteRegistrationPostCall,
     private val credentialsRepository: UserCredentialsObjectRepository
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(
-    dataSetCompleteRegistrationStore, childrenAppenders, scope,
+    dataSetCompleteRegistrationStore,
+    childrenAppenders,
+    scope,
     FilterConnectorFactory(
         scope
     ) { s: RepositoryScope ->
         DataSetCompleteRegistrationCollectionRepository(
-            dataSetCompleteRegistrationStore, childrenAppenders,
-            s, handler, postCall, credentialsRepository
+            dataSetCompleteRegistrationStore,
+            childrenAppenders,
+            s,
+            handler,
+            postCall,
+            credentialsRepository
         )
     }
 ),
@@ -82,8 +88,14 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
             .byDataSetUid().eq(dataSet)
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataSetCompleteRegistrationObjectRepository(
-            dataSetCompleteRegistrationStore, credentialsRepository, childrenAppenders,
-            updatedScope, period, organisationUnit, dataSet, attributeOptionCombo
+            dataSetCompleteRegistrationStore,
+            credentialsRepository,
+            childrenAppenders,
+            updatedScope,
+            period,
+            organisationUnit,
+            dataSet,
+            attributeOptionCombo
         )
     }
 

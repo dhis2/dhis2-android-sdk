@@ -68,7 +68,8 @@ internal class ProgramHandler @Inject constructor(
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             attributeHandler.handleMany(attributes)
             programAttributeLinkHandler.handleMany(
-                o.uid(), attributes
+                o.uid(),
+                attributes
             ) { attribute: Attribute ->
                 ProgramAttributeValueLink.builder()
                     .program(o.uid())

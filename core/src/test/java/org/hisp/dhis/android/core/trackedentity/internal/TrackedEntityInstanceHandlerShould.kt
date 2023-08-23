@@ -194,7 +194,9 @@ class TrackedEntityInstanceHandlerShould {
 
         verify(relationshipHandler, times(1)).handleMany(any(), any())
         verify(relationshipVersionManager, times(1)).saveRelativesIfNotExist(
-            listOf(relationship), TEI_UID, relatives,
+            listOf(relationship),
+            TEI_UID,
+            relatives,
             relationshipHandler
         )
     }
@@ -229,7 +231,9 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(any())
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(any(), any())
         verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInProgramAttributes(
-            any(), any(), any()
+            any(),
+            any(),
+            any()
         )
         verifyNoMoreInteractions(trackedEntityAttributeValueStore)
     }

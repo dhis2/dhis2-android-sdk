@@ -57,8 +57,13 @@ class WebApiRepositoryImplShould {
 
         testWebRepository.metadataCall(defalutMetadataConfig)
         verify(apiService).getMetadataIds(
-            notNull(), notNull(), notNull(), notNull(), notNull(),
-            notNull(), notNull()
+            notNull(),
+            notNull(),
+            notNull(),
+            notNull(),
+            notNull(),
+            notNull(),
+            notNull()
         )
     }
 
@@ -68,8 +73,13 @@ class WebApiRepositoryImplShould {
 
         testWebRepository.metadataCall(defalutMetadataConfig)
         verify(apiService).getMetadataIds(
-            notNull(), notNull(), notNull(), isNull(), notNull(),
-            notNull(), notNull()
+            notNull(),
+            notNull(),
+            notNull(),
+            isNull(),
+            notNull(),
+            notNull(),
+            notNull()
         )
     }
 }

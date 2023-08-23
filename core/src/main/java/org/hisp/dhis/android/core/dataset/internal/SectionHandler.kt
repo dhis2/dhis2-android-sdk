@@ -53,7 +53,8 @@ internal class SectionHandler @Inject constructor(
 
     override fun afterObjectHandled(o: Section, action: HandleAction) {
         sectionDataElementLinkHandler.handleMany(
-            o.uid(), o.dataElements()
+            o.uid(),
+            o.dataElements()
         ) { dataElement: DataElement, sortOrder: Int ->
             SectionDataElementLink.builder()
                 .section(o.uid())
@@ -63,7 +64,8 @@ internal class SectionHandler @Inject constructor(
         }
 
         sectionIndicatorLinkHandler.handleMany(
-            o.uid(), o.indicators()
+            o.uid(),
+            o.indicators()
         ) {
             SectionIndicatorLink.builder()
                 .section(o.uid())
@@ -81,7 +83,8 @@ internal class SectionHandler @Inject constructor(
         )
 
         sectionGreyedFieldsLinkHandler.handleMany(
-            o.uid(), o.greyedFields()
+            o.uid(),
+            o.greyedFields()
         ) { dataElementOperand: DataElementOperand ->
             SectionGreyedFieldsLink.builder()
                 .section(o.uid())

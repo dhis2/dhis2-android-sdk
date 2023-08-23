@@ -49,7 +49,8 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            params.requestedLoadSize
         )
         callback.onResult(appendChildren(withoutChildren))
     }
@@ -65,8 +66,11 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     private fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
         val whereClauseBuilder = WhereClauseBuilder()
         OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder, scope.orderBy(),
-            params.key.toContentValues(), reversed, scope.pagingKey()
+            whereClauseBuilder,
+            scope.orderBy(),
+            params.key.toContentValues(),
+            reversed,
+            scope.pagingKey()
         )
         val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
@@ -83,7 +87,9 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
 
     private fun appendChildren(withoutChildren: List<M>): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren, childrenAppenders, scope.children()
+            withoutChildren,
+            childrenAppenders,
+            scope.children()
         ).map { transformer.transform(it) }
     }
 }

@@ -70,7 +70,10 @@ class SystemInfoCallShould {
     @Before
     fun setUp() {
         systemInfoSyncCall = SystemInfoCall(
-            systemInfoHandler, systemInfoService, resourceHandler, versionManager,
+            systemInfoHandler,
+            systemInfoService,
+            resourceHandler,
+            versionManager,
             coroutineAPICallExecutor
         )
 

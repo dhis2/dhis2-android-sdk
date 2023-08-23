@@ -57,7 +57,9 @@ class AuthorityEndpointCallShould : BaseCallShould() {
         super.setUp()
         val apiCallExecutor = APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
         endpointCall = AuthorityEndpointCallFactory(
-            genericCallData, apiCallExecutor, handler,
+            genericCallData,
+            apiCallExecutor,
+            handler,
             retrofit.create(AuthorityService::class.java)
         ).create()
         whenever(retrofitCall.execute()).thenReturn(Response.success(payload))

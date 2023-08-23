@@ -136,8 +136,9 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     suspend fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
         instances.forEach { instance ->
             TrackedEntityInstanceInternalAccessor.accessEnrollments(instance).forEach { enrollment ->
-                if (instance.uid() != null && enrollment.program() != null)
+                if (instance.uid() != null && enrollment.program() != null) {
                     ownershipManagerImpl.fakeBreakGlass(instance.uid()!!, enrollment.program()!!)
+                }
             }
         }
     }

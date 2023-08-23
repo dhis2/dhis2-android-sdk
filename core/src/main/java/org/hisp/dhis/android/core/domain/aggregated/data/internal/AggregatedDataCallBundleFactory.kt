@@ -118,7 +118,10 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
             pastPeriods = pastPeriods,
             futurePeriods = futurePeriods,
             lastUpdated = lastUpdatedCalculator.getLastUpdated(
-                syncValue, dataSet, pastPeriods, futurePeriods,
+                syncValue,
+                dataSet,
+                pastPeriods,
+                futurePeriods,
                 organisationUnitsHash
             )
         )

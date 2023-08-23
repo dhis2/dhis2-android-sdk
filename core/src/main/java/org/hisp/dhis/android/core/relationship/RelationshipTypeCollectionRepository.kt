@@ -60,8 +60,12 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         RelationshipTypeCollectionRepository(
-            store, teiStore, enrollmentStore, eventStore,
-            childrenAppenders, s
+            store,
+            teiStore,
+            enrollmentStore,
+            eventStore,
+            childrenAppenders,
+            s
         )
     }
 ) {
@@ -138,7 +142,8 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     ): WhereClauseBuilder {
         return WhereClauseBuilder()
             .appendKeyStringValue(
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY,
+                relationshipEntityType
             )
             .appendKeyStringValue(getRelationshipEntityColumn(relationshipEntityType), relationshipEntityUid)
     }

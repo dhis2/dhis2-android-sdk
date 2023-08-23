@@ -216,7 +216,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         mapOf(
             "${de(dataElement1.uid())}.minDate(2019-10-05)" to "12.0",
             "${de(dataElement1.uid())}.maxDate(2019-12-01)" to "6.0",
-            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0",
+            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0"
         ).forEach { (numerator, expected) ->
             val indicator = createIndicator(numerator = numerator)
             val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
@@ -265,7 +265,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
             period201910 to "2.0",
             period201911 to "6.0",
             period201912 to "14.0",
-            period202001 to "16.0",
+            period202001 to "16.0"
         ).forEach { (period, expected) ->
             val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
             assertThat(result).isEqualTo(expected)

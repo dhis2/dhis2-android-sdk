@@ -79,8 +79,13 @@ class TrackerDataManagerShould {
         whenever(relationshipStore.getRelationshipsByItem(any())).doReturn(listOf(relationship))
 
         trackerDataManager = TrackerDataManagerImpl(
-            trackedEntityStore, enrollmentStore, eventStore, relationshipStore,
-            relationshipChildrenAppender, dataStatePropagator, programOwnerStore
+            trackedEntityStore,
+            enrollmentStore,
+            eventStore,
+            relationshipStore,
+            relationshipChildrenAppender,
+            dataStatePropagator,
+            programOwnerStore
         )
     }
 

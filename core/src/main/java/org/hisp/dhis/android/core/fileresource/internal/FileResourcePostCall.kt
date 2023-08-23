@@ -34,7 +34,7 @@ import dagger.Reusable
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -92,7 +92,7 @@ internal class FileResourcePostCall @Inject constructor(
         val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
 
         return MultipartBody.Part
-            .createFormData("file", file.name, RequestBody.create(MediaType.parse(type), file))
+            .createFormData("file", file.name, RequestBody.create(type.toMediaTypeOrNull(), file))
     }
 
     private fun handleResponse(
@@ -153,8 +153,11 @@ internal class FileResourcePostCall @Inject constructor(
 
         dataValueStore.selectOneWhere(whereClause)?.let { dataValue ->
             val newValue =
-                if (newUid == null) dataValue.toBuilder().deleted(true).build()
-                else dataValue.toBuilder().value(newUid).build()
+                if (newUid == null) {
+                    dataValue.toBuilder().deleted(true).build()
+                } else {
+                    dataValue.toBuilder().value(newUid).build()
+                }
 
             dataValueStore.updateWhere(newValue)
         }

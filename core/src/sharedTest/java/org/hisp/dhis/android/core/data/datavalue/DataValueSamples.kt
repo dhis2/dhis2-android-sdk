@@ -42,7 +42,6 @@ object DataValueSamples {
         attributeOptionCombo: String,
         value: String
     ): DataValue {
-
         return DataValue.builder()
             .id(1L)
             .syncState(State.TO_POST)

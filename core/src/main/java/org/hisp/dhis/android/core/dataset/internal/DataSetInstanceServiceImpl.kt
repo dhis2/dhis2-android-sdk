@@ -54,7 +54,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
     private val organisationUnitService: OrganisationUnitService,
     private val periodHelper: PeriodHelper,
     private val categoryOptionComboService: CategoryOptionComboService,
-    private val periodGenerator: ParentPeriodGenerator,
+    private val periodGenerator: ParentPeriodGenerator
 ) : DataSetInstanceService {
 
     override fun getEditableStatus(

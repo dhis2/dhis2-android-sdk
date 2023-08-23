@@ -39,7 +39,7 @@ class VisualizationModuleWiper @Inject internal constructor(private val tableWip
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             VisualizationTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.TABLE_INFO,
+            VisualizationDimensionItemTableInfo.TABLE_INFO
         )
     }
 

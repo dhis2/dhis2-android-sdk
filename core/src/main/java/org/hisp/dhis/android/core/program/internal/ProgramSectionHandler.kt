@@ -43,7 +43,8 @@ internal class ProgramSectionHandler @Inject constructor(
 
     override fun afterObjectHandled(o: ProgramSection, action: HandleAction) {
         programSectionAttributeLinkHandler.handleMany(
-            o.uid(), o.attributes()
+            o.uid(),
+            o.attributes()
         ) { trackedEntityAttribute: TrackedEntityAttribute, sortOrder: Int ->
             ProgramSectionAttributeLink.builder()
                 .programSection(o.uid())

@@ -111,7 +111,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -167,7 +167,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -389,7 +389,7 @@ internal object ProgramIndicatorEvaluatorHelper {
     fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         programIndicator: ProgramIndicator,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): AggregationType {
         val aggregationType =
             if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {

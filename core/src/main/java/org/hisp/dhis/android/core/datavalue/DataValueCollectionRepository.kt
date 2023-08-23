@@ -86,8 +86,14 @@ class DataValueCollectionRepository @Inject internal constructor(
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataValueObjectRepository(
-            store, childrenAppenders, updatedScope, period, organisationUnit,
-            dataElement, categoryOptionCombo, attributeOptionCombo
+            store,
+            childrenAppenders,
+            updatedScope,
+            period,
+            organisationUnit,
+            dataElement,
+            categoryOptionCombo,
+            attributeOptionCombo
         )
     }
 

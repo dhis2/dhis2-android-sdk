@@ -97,7 +97,8 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
     private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
-            scope, returnedUidsOffline,
+            scope,
+            returnedUidsOffline,
             requestedLoadSize
         )
         val instances = store.selectRawQuery(sqlQuery)
@@ -188,7 +189,8 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
     private fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren, childrenAppenders,
+            withoutChildren,
+            childrenAppenders,
             ChildrenSelection(
                 setOf(
                     TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES

@@ -41,7 +41,7 @@ internal class ExpressionDimensionItemEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val item = ExpressionDimensionItemEvaluatorHelper.getItem(evaluationItem, metadata)
         val contextEvaluationItem = ExpressionDimensionItemEvaluatorHelper
@@ -57,7 +57,7 @@ internal class ExpressionDimensionItemEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         throw AnalyticsException.SQLException("Method getSql not implemented for ExpressionDimensionItemEvaluator")
     }

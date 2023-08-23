@@ -43,7 +43,9 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceEventFilter>(
         databaseAdapter,
         TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-        BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
         { TrackedEntityInstanceEventFilter.create(it) }
     ) {
 

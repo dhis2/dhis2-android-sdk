@@ -42,7 +42,7 @@ class StockUseCaseCollectionRepository @Inject internal constructor(
     store: StockUseCaseStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockUseCase>>,
     scope: RepositoryScope,
-    transformer: StockUseCaseTransformer,
+    transformer: StockUseCaseTransformer
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
 ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
     StockUseCaseCollectionRepository>(

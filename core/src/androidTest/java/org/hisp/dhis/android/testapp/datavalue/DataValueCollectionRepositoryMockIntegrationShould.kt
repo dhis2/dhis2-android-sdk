@@ -186,8 +186,11 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     fun return_data_value_object_repository() {
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
-                "2018", "DiszpKrYNg8", "g9eOBujte1U",
-                "Gmbgme7z9BF", "bRowv6yZOF2"
+                "2018",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2"
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()

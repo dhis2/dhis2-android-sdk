@@ -104,7 +104,9 @@ internal class ExpressionService @Inject constructor(
 
     fun getExpressionValue(expression: String?): Any? {
         return getExpressionValue(
-            expression, ExpressionServiceContext(), MissingValueStrategy.NEVER_SKIP
+            expression,
+            ExpressionServiceContext(),
+            MissingValueStrategy.NEVER_SKIP
         )
     }
 

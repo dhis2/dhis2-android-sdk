@@ -150,7 +150,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .build()
 
         val tei = TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            TrackedEntityInstance.builder(), listOf(enrollment1, enrollment2, enrollment3)
+            TrackedEntityInstance.builder(),
+            listOf(enrollment1, enrollment2, enrollment3)
         )
             .uid(teiId)
             .trackedEntityType(teiType.uid())

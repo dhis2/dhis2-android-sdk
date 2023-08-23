@@ -80,7 +80,8 @@ internal class ProgramStageHandler @Inject constructor(
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             attributeHandler.handleMany(attributes)
             programStageAttributeValueLinkHandler.handleMany(
-                o.uid(), attributes
+                o.uid(),
+                attributes
             ) { attribute: Attribute ->
                 ProgramStageAttributeValueLink.builder()
                     .programStage(o.uid())

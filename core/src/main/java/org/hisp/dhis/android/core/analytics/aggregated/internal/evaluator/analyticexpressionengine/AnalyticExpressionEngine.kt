@@ -36,7 +36,7 @@ internal class AnalyticExpressionEngine @Inject constructor(
 ) {
 
     fun evaluate(
-        expression: String,
+        expression: String
     ): Any? {
         return CommonParser.visit(expression, visitor)
     }

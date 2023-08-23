@@ -175,7 +175,8 @@ internal class TrackedEntityDataValueStoreImpl(
             w.bind(2, o.dataElement())
         }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackedEntityDataValueTableInfo.TABLE_INFO, TrackedEntityDataValueTableInfo.Columns.EVENT
+            TrackedEntityDataValueTableInfo.TABLE_INFO,
+            TrackedEntityDataValueTableInfo.Columns.EVENT
         )
     }
 }

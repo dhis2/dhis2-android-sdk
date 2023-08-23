@@ -41,7 +41,7 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata, queryMods)
     }
@@ -49,7 +49,7 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
     }

@@ -44,7 +44,9 @@ internal class EventQueryBundleFactory @Inject constructor(
     lastUpdatedManager: EventLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper
 ) : TrackerQueryFactory<EventQueryBundle, EventSync>(
-    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    programStore,
+    programSettingsObjectRepository,
+    lastUpdatedManager,
     commonHelper,
     ProgramType.WITHOUT_REGISTRATION,
     { params: ProgramDataDownloadParams,

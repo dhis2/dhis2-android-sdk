@@ -48,7 +48,8 @@ internal class ProgramStageDataElementHandler @Inject constructor(
             dataElementHandler.handle(o.dataElement()!!)
         }
         valueTypeRenderingHandler.handle(
-            o.renderType(), o.uid(),
+            o.renderType(),
+            o.uid(),
             ProgramStageDataElementTableInfo.TABLE_INFO.name()
         )
     }

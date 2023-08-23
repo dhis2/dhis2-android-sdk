@@ -38,7 +38,9 @@ class ReadOnlyOneObjectRepositoryFinalImpl<M> internal constructor(
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope
 ) : ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>>(
-    store, childrenAppenders, scope,
+    store,
+    childrenAppenders,
+    scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         ReadOnlyOneObjectRepositoryFinalImpl(
             store,

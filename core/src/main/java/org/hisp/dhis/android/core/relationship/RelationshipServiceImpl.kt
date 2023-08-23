@@ -41,7 +41,6 @@ internal class RelationshipServiceImpl @Inject constructor(
     private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository
 ) : RelationshipService {
     override fun hasAccessPermission(relationshipType: RelationshipType): Boolean {
-
         val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess(it) } ?: false
         val toAccess = relationshipType.toConstraint()?.let { constraintAccess(it) } ?: false
 

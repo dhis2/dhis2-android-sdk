@@ -138,8 +138,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         val newEventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
-                existingEvent.enrollment(), existingEvent.program(),
-                existingEvent.programStage(), existingEvent.organisationUnit(), existingEvent.attributeOptionCombo()
+                existingEvent.enrollment(),
+                existingEvent.program(),
+                existingEvent.programStage(),
+                existingEvent.organisationUnit(),
+                existingEvent.attributeOptionCombo()
             )
         )
         d2.eventModule().events().uid(newEventUid).setEventDate(Date())
@@ -197,8 +200,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         d2.dataValueModule().dataValues()
             .value(
-                nextPeriod.periodId()!!, dataValue.organisationUnit()!!, dataValue.dataElement()!!,
-                dataValue.categoryOptionCombo()!!, dataValue.attributeOptionCombo()!!
+                nextPeriod.periodId()!!,
+                dataValue.organisationUnit()!!,
+                dataValue.dataElement()!!,
+                dataValue.categoryOptionCombo()!!,
+                dataValue.attributeOptionCombo()!!
             )
             .blockingSet(uid)
 

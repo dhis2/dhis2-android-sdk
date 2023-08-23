@@ -53,7 +53,8 @@ internal class CategoryComboHandler constructor(
                 .build()
         }
         categoryCategoryComboLinkHandler.handleMany(
-            o.uid(), o.categories()
+            o.uid(),
+            o.categories()
         ) { category: Category, sortOrder: Int? ->
             CategoryCategoryComboLink.builder()
                 .categoryCombo(o.uid())

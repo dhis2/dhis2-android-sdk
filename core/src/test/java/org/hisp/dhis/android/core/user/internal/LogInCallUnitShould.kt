@@ -169,7 +169,8 @@ class LogInCallUnitShould : BaseCallShould() {
     fun invoke_server_with_correct_parameters_after_call() {
         whenever(
             userService.authenticate(
-                credentialsCaptor.capture(), filterCaptor.capture()
+                credentialsCaptor.capture(),
+                filterCaptor.capture()
             )
         ).thenReturn(authenticateAPICall)
         logInSingle.blockingGet()

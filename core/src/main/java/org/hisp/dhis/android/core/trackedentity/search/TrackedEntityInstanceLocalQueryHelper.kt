@@ -124,7 +124,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             if (hasEvent(scope)) {
                 queryStr += String.format(
                     " JOIN %s %s ON %s = %s",
-                    EventTableInfo.TABLE_INFO.name(), eventAlias,
+                    EventTableInfo.TABLE_INFO.name(),
+                    eventAlias,
                     dot(enrollmentAlias, IdentifiableColumns.UID),
                     dot(eventAlias, EventTableInfo.Columns.ENROLLMENT)
                 )
@@ -134,12 +135,16 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
         if (hasOrgunits(scope)) {
             val joinOrgunitColum =
-                if (hasProgram(scope)) dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT)
-                else dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
+                if (hasProgram(scope)) {
+                    dot(ownerAlias, ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT)
+                } else {
+                    dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
+                }
 
             queryStr += String.format(
                 " JOIN %s %s ON %s = %s",
-                OrganisationUnitTableInfo.TABLE_INFO.name(), orgunitAlias,
+                OrganisationUnitTableInfo.TABLE_INFO.name(),
+                orgunitAlias,
                 joinOrgunitColum,
                 dot(orgunitAlias, IdentifiableColumns.UID)
             )
@@ -298,7 +303,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             }
             OrganisationUnitMode.CHILDREN -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(
-                    dot(orgunitAlias, OrganisationUnitTableInfo.Columns.PARENT), escapeQuotes(orgUnit)
+                    dot(orgunitAlias, OrganisationUnitTableInfo.Columns.PARENT),
+                    escapeQuotes(orgUnit)
                 )
 
                 // TODO Include orgunit?
@@ -331,15 +337,21 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             val tokens = query.value().split(" ".toRegex()).toTypedArray()
             for (token in tokens) {
                 val valueStr =
-                    if (query.operator() == FilterItemOperator.LIKE) "%${escapeQuotes(token)}%"
-                    else escapeQuotes(token)
+                    if (query.operator() == FilterItemOperator.LIKE) {
+                        "%${escapeQuotes(token)}%"
+                    } else {
+                        escapeQuotes(token)
+                    }
 
                 val sub = String.format(
                     "SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
-                    TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
-                    dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
+                    TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                    teavAlias,
+                    dot(teavAlias, trackedEntityInstance),
+                    dot(teiAlias, IdentifiableColumns.UID),
                     dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                    query.operator().sqlOperator, valueStr
+                    query.operator().sqlOperator,
+                    valueStr
                 )
 
                 where.appendExistsSubQuery(sub)
@@ -451,7 +463,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                             listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                         statusWhere.appendKeyGreaterOrEqStringValue(
-                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})",
+                            nowStr
                         )
                     }
                     EventStatus.OVERDUE -> {
@@ -462,7 +475,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                             listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                         statusWhere.appendKeyLessThanStringValue(
-                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})",
+                            nowStr
                         )
                     }
                     EventStatus.SKIPPED -> {
@@ -595,7 +609,9 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
                 TrackedEntityInstanceQueryScopeOrderColumn.Type.INCIDENT_DATE ->
                     orderByEnrollmentField(
-                        scope.program(), EnrollmentTableInfo.Columns.INCIDENT_DATE, item.direction()
+                        scope.program(),
+                        EnrollmentTableInfo.Columns.INCIDENT_DATE,
+                        item.direction()
                     )
 
                 TrackedEntityInstanceQueryScopeOrderColumn.Type.ENROLLMENT_STATUS ->

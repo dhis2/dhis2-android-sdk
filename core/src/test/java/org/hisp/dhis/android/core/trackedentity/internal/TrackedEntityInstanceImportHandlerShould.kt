@@ -105,7 +105,8 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances
+            listOf(importSummary),
+            instances
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -118,7 +119,8 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances
+            listOf(importSummary),
+            instances
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -135,12 +137,15 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(importEnrollment.importSummaries()).doReturn(enrollmentSummaries)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances
+            listOf(importSummary),
+            instances
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-            eq(enrollmentSummaries), anyList(), eq(State.SYNCED)
+            eq(enrollmentSummaries),
+            anyList(),
+            eq(State.SYNCED)
         )
     }
 
@@ -153,7 +158,8 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances
+            listOf(importSummary),
+            instances
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
@@ -169,7 +175,8 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
 
         val response = trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), instances
+            listOf(importSummary),
+            instances
         )
 
         assertThat(response.teis.ignored.size).isEqualTo(1)
@@ -189,7 +196,8 @@ class TrackedEntityInstanceImportHandlerShould {
         val teis = listOf(sampleTei(sampleTeiUid, emptyList()))
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary), teis
+            listOf(importSummary),
+            teis
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)

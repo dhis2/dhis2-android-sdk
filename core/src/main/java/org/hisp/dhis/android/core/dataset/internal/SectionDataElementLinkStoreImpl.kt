@@ -39,7 +39,8 @@ internal class SectionDataElementLinkStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : SectionDataElementLinkStore,
     LinkStoreImpl<SectionDataElementLink>(
-        databaseAdapter, SectionDataElementLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        SectionDataElementLinkTableInfo.TABLE_INFO,
         SectionDataElementLinkTableInfo.Columns.SECTION,
         BINDER,
         { cursor: Cursor -> SectionDataElementLink.create(cursor) }

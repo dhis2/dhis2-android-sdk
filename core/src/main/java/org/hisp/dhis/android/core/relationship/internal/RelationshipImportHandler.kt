@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
         importSummaries: List<RelationshipImportSummary?>?,
         relationships: List<Relationship>
     ) {
-
         importSummaries?.filterNotNull()?.forEach { importSummary ->
             importSummary.reference()?.let { relationshipUid ->
                 val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()

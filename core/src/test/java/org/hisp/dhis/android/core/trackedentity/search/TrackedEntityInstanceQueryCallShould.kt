@@ -119,7 +119,11 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
         // Metadata call
         callFactory = TrackedEntityInstanceQueryCallFactory(
-            trackedEntityService, eventService, mapper, coroutineAPICallExecutor, dhisVersionManager
+            trackedEntityService,
+            eventService,
+            mapper,
+            coroutineAPICallExecutor,
+            dhisVersionManager
         )
     }
 
@@ -205,7 +209,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
-            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
+            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build()
         )
         whenever(eventPayload.items()).doReturn(events)
 
@@ -311,7 +315,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
             eq(query.includeDeleted),
-            eq(null),
+            eq(null)
         )
     }
 
@@ -373,7 +377,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
-                    anyOrNull(),
+                    anyOrNull()
                 )
             }.doAnswer(answer)
         }

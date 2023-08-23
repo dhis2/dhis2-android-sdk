@@ -66,7 +66,6 @@ internal class AppearanceSettingCall @Inject constructor(
     }
 
     override fun process(item: AppearanceSettings?) {
-
         val filterSettingsList = item?.let {
             SettingsAppHelper.getFilterSettingsList(it)
         } ?: emptyList()

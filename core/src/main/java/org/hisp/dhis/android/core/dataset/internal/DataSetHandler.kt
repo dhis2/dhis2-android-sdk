@@ -71,12 +71,14 @@ internal class DataSetHandler constructor(
             dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(o.uid())).build()
         }
         dataSetElementLinkHandler.handleMany(
-            o.uid(), o.dataSetElements()
+            o.uid(),
+            o.dataSetElements()
         ) { dataSetElement: DataSetElement ->
             dataSetElement.toBuilder().dataSet(ObjectWithUid.create(o.uid())).build()
         }
         dataSetIndicatorLinkHandler.handleMany(
-            o.uid(), o.indicators()
+            o.uid(),
+            o.indicators()
         ) { indicator: Indicator ->
             DataSetIndicatorLink.builder().dataSet(o.uid()).indicator(indicator.uid()).build()
         }

@@ -109,8 +109,11 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             sync.organisationUnitIdsHash()
         )
         val finalBuilder =
-            if (sync.program() == null) builder.appendIsNullValue(Columns.PROGRAM)
-            else builder.appendKeyStringValue(Columns.PROGRAM, sync.program())
+            if (sync.program() == null) {
+                builder.appendIsNullValue(Columns.PROGRAM)
+            } else {
+                builder.appendKeyStringValue(Columns.PROGRAM, sync.program())
+            }
         store.deleteWhere(finalBuilder.build())
         store.insert(sync)
     }

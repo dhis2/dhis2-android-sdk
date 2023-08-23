@@ -58,7 +58,6 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
         return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
                 val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid

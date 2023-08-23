@@ -53,7 +53,8 @@ class SynchronizationSettingsHandlerShould {
         whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         synchronizationSettingsHandler = SynchronizationSettingHandler(
             synchronizationSettingStore,
-            dataSetSettingHandler, programSettingHandler
+            dataSetSettingHandler,
+            programSettingHandler
         )
     }
 

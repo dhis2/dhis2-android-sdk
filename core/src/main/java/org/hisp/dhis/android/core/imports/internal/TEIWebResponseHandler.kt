@@ -43,7 +43,8 @@ internal class TEIWebResponseHandler @Inject constructor(
     ): TEIWebResponseHandlerSummary {
         return webResponse?.response()?.let { response ->
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(), instances
+                response.importSummaries(),
+                instances
             )
         } ?: TEIWebResponseHandlerSummary()
     }

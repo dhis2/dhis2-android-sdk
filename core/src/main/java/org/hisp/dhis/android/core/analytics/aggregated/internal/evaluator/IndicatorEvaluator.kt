@@ -41,7 +41,7 @@ internal class IndicatorEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
@@ -56,7 +56,7 @@ internal class IndicatorEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }

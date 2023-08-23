@@ -54,7 +54,8 @@ internal class TrackedEntityAttributeHandler @Inject constructor(
     override fun afterObjectHandled(o: TrackedEntityAttribute, action: HandleAction) {
         if (o.legendSets() != null) {
             trackedEntityAttributeLegendSetLinkHandler.handleMany(
-                o.uid(), o.legendSets()
+                o.uid(),
+                o.legendSets()
             ) { legendSet: ObjectWithUid, sortOrder: Int? ->
                 TrackedEntityAttributeLegendSetLink.builder()
                     .legendSet(legendSet.uid())

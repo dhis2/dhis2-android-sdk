@@ -99,7 +99,7 @@ internal object ParserUtils {
         ExpressionParser.C_BRACE to ItemConstant(),
 
         // Literals
-        ExpressionParser.NULL to NullLiteral(),
+        ExpressionParser.NULL to NullLiteral()
     )
 
     @JvmStatic

@@ -277,14 +277,16 @@ abstract class EventAPIRealShould internal constructor(
         val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 validEvent.uid(),
-                EventFields.allFields, ouMode
+                EventFields.allFields,
+                ouMode
             )
         }.getOrThrow()
 
         val serverInvalidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 invalidEvent.uid(),
-                EventFields.allFields, ouMode
+                EventFields.allFields,
+                ouMode
             )
         }.getOrThrow()
 

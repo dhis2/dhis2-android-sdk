@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 internal class StockUseCaseCall @Inject constructor(
     private val stockUseCaseHandler: StockUseCaseHandler,
     private val stockUseCaseService: StockUseCaseService,
-    private val apiCallExecutor: RxAPICallExecutor,
+    private val apiCallExecutor: RxAPICallExecutor
 ) : BaseSettingCall<List<InternalStockUseCase>>() {
 
     override fun fetch(storeError: Boolean): Single<List<InternalStockUseCase>> {

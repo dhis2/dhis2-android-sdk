@@ -64,14 +64,16 @@ internal class OngoingSubmissionsStore @Inject constructor(
         }
         return if (type == null) {
             Completable.error(IllegalArgumentException("Wrong submission type"))
-        } else getOngoingSubmissions().flatMapCompletable { submissions: Map<Int, SubmissionType> ->
-            if (submissions.containsKey(id)) {
-                Completable.error(IllegalArgumentException("Submission id already exists"))
-            } else {
-                Completable.fromCallable {
-                    val ongoingSubmission = SMSOngoingSubmission.builder().submissionId(id).type(type).build()
-                    smsOngoingSubmissionStore.insert(ongoingSubmission)
-                    updateOngoingSubmissions()
+        } else {
+            getOngoingSubmissions().flatMapCompletable { submissions: Map<Int, SubmissionType> ->
+                if (submissions.containsKey(id)) {
+                    Completable.error(IllegalArgumentException("Submission id already exists"))
+                } else {
+                    Completable.fromCallable {
+                        val ongoingSubmission = SMSOngoingSubmission.builder().submissionId(id).type(type).build()
+                        smsOngoingSubmissionStore.insert(ongoingSubmission)
+                        updateOngoingSubmissions()
+                    }
                 }
             }
         }
@@ -101,10 +103,12 @@ internal class OngoingSubmissionsStore @Inject constructor(
     private fun getLastGeneratedSubmissionId(): Single<Int> {
         return if (lastGeneratedSubmissionId != null) {
             Single.just(lastGeneratedSubmissionId)
-        } else Single.fromCallable {
-            smsConfigStore.get(SMSConfigKey.LAST_SUBMISSION_ID)?.toInt() ?: 0
+        } else {
+            Single.fromCallable {
+                smsConfigStore.get(SMSConfigKey.LAST_SUBMISSION_ID)?.toInt() ?: 0
+            }
+                .doOnSuccess { lastGeneratedSubmissionId = it }
         }
-            .doOnSuccess { lastGeneratedSubmissionId = it }
     }
 
     private fun saveLastGeneratedSubmissionId(id: Int) {

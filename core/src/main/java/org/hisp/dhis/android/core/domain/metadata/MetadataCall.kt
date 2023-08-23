@@ -95,7 +95,7 @@ internal class MetadataCall @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
-    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
+    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader
 ) {
 
     companion object {
@@ -112,8 +112,11 @@ internal class MetadataCall @Inject constructor(
                 executeIndependentCalls(progressManager).collect { send(it) }
                 executeUserCallAndChildren(progressManager).collect { send(it) }
             } catch (e: Exception) {
-                if (e !is D2Error && e.cause is D2Error) throw e.cause!!
-                else throw e
+                if (e !is D2Error && e.cause is D2Error) {
+                    throw e.cause!!
+                } else {
+                    throw e
+                }
             }
         }
     }

@@ -56,7 +56,9 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
     private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
         for (rootOrgUnitUid in query.rootOrgUnitUids) {
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
-                query.dataSetUids, query.periodIds, rootOrgUnitUid
+                query.dataSetUids,
+                query.periodIds,
+                rootOrgUnitUid
             )
         }
     }

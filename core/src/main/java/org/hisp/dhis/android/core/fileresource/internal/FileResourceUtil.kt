@@ -136,8 +136,11 @@ internal object FileResourceUtil {
     @JvmStatic
     fun getExtension(fileName: String): String? {
         return fileName.split(".").let { tokens ->
-            if (tokens.size > 1) tokens.last()
-            else null
+            if (tokens.size > 1) {
+                tokens.last()
+            } else {
+                null
+            }
         }
     }
 

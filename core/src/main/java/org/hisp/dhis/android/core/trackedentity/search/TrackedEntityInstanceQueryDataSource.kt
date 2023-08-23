@@ -46,8 +46,13 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
 ) : ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance>() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
-        store, trackerParentCallFactory, scope, childrenAppenders,
-        onlineCache, onlineHelper, localQueryHelper
+        store,
+        trackerParentCallFactory,
+        scope,
+        childrenAppenders,
+        onlineCache,
+        onlineHelper,
+        localQueryHelper
     )
 
     override fun loadInitial(

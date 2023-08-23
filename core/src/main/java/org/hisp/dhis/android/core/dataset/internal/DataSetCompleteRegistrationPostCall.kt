@@ -127,7 +127,9 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
             )
         }
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-            payload, dataValueImportSummary, deletedDataSetCompleteRegistrations,
+            payload,
+            dataValueImportSummary,
+            deletedDataSetCompleteRegistrations,
             withErrorDataSetCompleteRegistrations
         )
         emit(progressManager.increaseProgress(DataSetCompleteRegistration::class.java, true))

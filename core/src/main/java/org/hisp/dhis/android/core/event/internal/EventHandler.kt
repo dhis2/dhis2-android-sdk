@@ -93,7 +93,9 @@ internal class EventHandler @Inject constructor(
                     noteVersionManager.transform(Note.NoteType.EVENT_NOTE, o.uid(), note)
                 }
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                    transformed, Note.NoteType.EVENT_NOTE, o.uid()
+                    transformed,
+                    Note.NoteType.EVENT_NOTE,
+                    o.uid()
                 )
                 noteHandler.handleMany(notesToSync)
             }

@@ -41,7 +41,8 @@ internal class DatabaseConfigurationHelper @Inject constructor(
             .encrypted(!account.encrypted())
             .databaseName(
                 databaseNameGenerator.getDatabaseName(
-                    serverUrl!!, account.username(),
+                    serverUrl!!,
+                    account.username(),
                     !account.encrypted()
                 )
             )

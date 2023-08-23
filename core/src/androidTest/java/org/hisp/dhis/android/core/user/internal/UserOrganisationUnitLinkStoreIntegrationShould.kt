@@ -41,7 +41,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<UserOrganisationUnitLink>(
     UserOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    UserOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    UserOrganisationUnitLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
 ) {
     private var linkStore: UserOrganisationUnitLinkStore = store as UserOrganisationUnitLinkStore
 

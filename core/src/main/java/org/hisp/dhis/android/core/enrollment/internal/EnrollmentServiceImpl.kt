@@ -74,16 +74,25 @@ internal class EnrollmentServiceImpl @Inject constructor(
         val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
-            if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
-            else EnrollmentAccess.READ_ACCESS
+            if (program.access()?.data()?.write() == true) {
+                EnrollmentAccess.WRITE_ACCESS
+            } else {
+                EnrollmentAccess.READ_ACCESS
+            }
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
-                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) dataAccess
-                else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
+                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) {
+                    dataAccess
+                } else {
+                    EnrollmentAccess.PROTECTED_PROGRAM_DENIED
+                }
             AccessLevel.CLOSED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
-                else EnrollmentAccess.CLOSED_PROGRAM_DENIED
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) {
+                    dataAccess
+                } else {
+                    EnrollmentAccess.CLOSED_PROGRAM_DENIED
+                }
             else ->
                 dataAccess
         }

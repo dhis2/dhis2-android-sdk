@@ -47,7 +47,7 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
     private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher,
     private val errorStore: D2ErrorStore,
     private val databaseAdapter: DatabaseAdapter,
-    private val foreignKeyCleaner: ForeignKeyCleaner,
+    private val foreignKeyCleaner: ForeignKeyCleaner
 ) : CoroutineAPICallExecutor {
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -85,7 +85,8 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
                 } else {
                     Result.Failure(
                         storeAndReturn(
-                            errorMapper.responseException(errorBuilder, response, null, errorBody), storeError
+                            errorMapper.responseException(errorBuilder, response, null, errorBody),
+                            storeError
                         )
                     )
                 }

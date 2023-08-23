@@ -46,7 +46,8 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
         val builder = categoryOption.toBuilder()
         val whereClause = WhereClauseBuilder().apply {
             appendKeyStringValue(
-                CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION, categoryOption.uid()
+                CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
+                categoryOption.uid()
             )
         }.build()
         val links = childStore.selectWhere(whereClause)

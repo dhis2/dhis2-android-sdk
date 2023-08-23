@@ -64,7 +64,6 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
         return getDataElement(conflict)?.let { dataElementUid ->
             context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->
                 val name = dataElement.displayFormName() ?: dataElement.displayName() ?: dataElementUid

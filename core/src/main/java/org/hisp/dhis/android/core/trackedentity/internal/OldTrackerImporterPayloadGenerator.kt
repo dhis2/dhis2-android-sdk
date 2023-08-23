@@ -245,7 +245,8 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             notes = noteStore.selectWhere(
                 WhereClauseBuilder()
                     .appendInKeyStringValues(
-                        DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                        DataColumns.SYNC_STATE,
+                        State.uploadableStatesIncludingError().map { it.name }
                     )
                     .build()
             ),
@@ -346,7 +347,8 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
                     payload.trackedEntityInstances.map { it.uid() }
                 )
                 .appendInKeyEnumValues(
-                    DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().toList()
+                    DataColumns.SYNC_STATE,
+                    State.uploadableStatesIncludingError().toList()
                 )
                 .build()
 

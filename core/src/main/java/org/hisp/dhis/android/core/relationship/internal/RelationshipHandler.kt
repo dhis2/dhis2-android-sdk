@@ -74,7 +74,8 @@ internal class RelationshipHandler @Inject constructor(
 
     private fun getExistingRelationshipUid(relationship: Relationship): String? {
         val existingRelationshipUidsForPair = relationshipItemStore.getRelationshipUidsForItems(
-            relationship.from()!!, relationship.to()!!
+            relationship.from()!!,
+            relationship.to()!!
         )
         for (existingRelationshipUid in existingRelationshipUidsForPair) {
             val existingRelationship = store.selectByUid(existingRelationshipUid)

@@ -89,8 +89,11 @@ internal class RxAPICallExecutorImpl @Inject constructor(
 
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {
         var d2Error =
-            if (throwable is D2Error) throwable
-            else errorMapper.mapRetrofitException(throwable, errorMapper.getBaseErrorBuilder())
+            if (throwable is D2Error) {
+                throwable
+            } else {
+                errorMapper.mapRetrofitException(throwable, errorMapper.getBaseErrorBuilder())
+            }
         if (userAccountDisabledErrorCatcher.isUserAccountLocked(throwable)) {
             val errorCode = userAccountDisabledErrorCatcher.catchError(throwable)
             d2Error = d2Error.toBuilder().errorCode(errorCode).build()

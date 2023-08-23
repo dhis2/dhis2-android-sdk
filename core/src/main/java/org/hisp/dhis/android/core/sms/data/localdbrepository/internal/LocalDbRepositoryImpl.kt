@@ -311,10 +311,18 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     ): Completable {
         return Completable.mergeArray(
             dataSetsStore.updateDataSetValuesState(
-                dataSetId, orgUnit, period, attributeOptionComboUid, state
+                dataSetId,
+                orgUnit,
+                period,
+                attributeOptionComboUid,
+                state
             ),
             dataSetsStore.updateDataSetCompleteRegistrationState(
-                dataSetId, orgUnit, period, attributeOptionComboUid, state
+                dataSetId,
+                orgUnit,
+                period,
+                attributeOptionComboUid,
+                state
             )
         )
     }

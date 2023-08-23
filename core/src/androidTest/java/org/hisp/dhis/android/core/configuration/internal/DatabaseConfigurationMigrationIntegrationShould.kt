@@ -76,8 +76,13 @@ class DatabaseConfigurationMigrationIntegrationShould {
         credentialsSecureStore = CredentialsSecureStoreImpl(chunkedSecureStore)
 
         migration = DatabaseConfigurationMigration(
-            context, databasesConfigurationStore,
-            credentialsSecureStore, insecureStore, nameGenerator, renamer, databaseAdapterFactory
+            context,
+            databasesConfigurationStore,
+            credentialsSecureStore,
+            insecureStore,
+            nameGenerator,
+            renamer,
+            databaseAdapterFactory
         )
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)

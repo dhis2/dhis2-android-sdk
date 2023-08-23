@@ -72,6 +72,7 @@ class TrackedEntityInstanceQueryFactoryShould {
 
     // Object to test
     private lateinit var queryFactory: TrackerQueryBundleFactory
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -86,10 +87,14 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+            userOrganisationUnitLinkStore,
+            organisationUnitProgramLinkLinkStore
         )
         queryFactory = TrackerQueryBundleFactory(
-            programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper
+            programStore,
+            programSettingsObjectRepository,
+            lastUpdatedManager,
+            commonHelper
         )
     }
 

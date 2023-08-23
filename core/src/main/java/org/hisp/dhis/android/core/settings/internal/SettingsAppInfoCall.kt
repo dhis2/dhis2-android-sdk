@@ -67,7 +67,8 @@ internal class SettingsAppInfoCall @Inject constructor(
 
     private fun fetchV1GeneralSettings(storeError: Boolean): Single<SettingsAppVersion> {
         return apiCallExecutor.wrapSingle(
-            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1), storeError
+            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1),
+            storeError
         )
             .map<SettingsAppVersion> {
                 SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)

@@ -105,8 +105,14 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Daily).blockingGet()
 
         return MetadataForDataFilling(
-            organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
-            trackerDataElements, programs, programStages, trackedEntityAttributes
+            organisationUnits,
+            periods,
+            categoryOptionCombos,
+            aggregatedDataElements,
+            trackerDataElements,
+            programs,
+            programStages,
+            trackedEntityAttributes
         )
     }
 

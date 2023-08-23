@@ -54,7 +54,7 @@ internal object AccountManagerHelper {
         NoteTableInfo.TABLE_INFO,
         ProgramOwnerTableInfo.TABLE_INFO,
         RelationshipTableInfo.TABLE_INFO,
-        DataStoreEntryTableInfo.TABLE_INFO,
+        DataStoreEntryTableInfo.TABLE_INFO
     )
 
     private val syncStateQuery =

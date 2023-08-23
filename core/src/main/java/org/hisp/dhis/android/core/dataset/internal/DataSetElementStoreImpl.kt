@@ -40,7 +40,8 @@ internal class DataSetElementStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : DataSetElementStore,
     LinkStoreImpl<DataSetElement>(
-        databaseAdapter, DataSetElementLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        DataSetElementLinkTableInfo.TABLE_INFO,
         DataSetElementLinkTableInfo.Columns.DATA_SET,
         BINDER,
         { cursor: Cursor -> DataSetElement.create(cursor) }

@@ -40,10 +40,12 @@ internal class RelationshipItemChildrenAppender @Inject constructor(
 
     override fun appendChildren(relationship: Relationship): Relationship {
         val fromItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!, RelationshipConstraintType.FROM
+            relationship.uid()!!,
+            RelationshipConstraintType.FROM
         )
         val toItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!, RelationshipConstraintType.TO
+            relationship.uid()!!,
+            RelationshipConstraintType.TO
         )
         return relationship.toBuilder()
             .from(fromItem)

@@ -42,7 +42,8 @@ internal class OptionGroupHandler(
 
     override fun afterObjectHandled(o: OptionGroup, action: HandleAction) {
         optionGroupOptionLinkHandler.handleMany(
-            o.uid(), o.options()
+            o.uid(),
+            o.options()
         ) { option: ObjectWithUid ->
             OptionGroupOptionLink.builder().optionGroup(o.uid()).option(option.uid()).build()
         }

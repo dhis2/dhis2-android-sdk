@@ -53,7 +53,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        legendStrategy: AnalyticsLegendStrategy,
+        legendStrategy: AnalyticsLegendStrategy
     ): DimensionalValue {
         val evaluator = getEvaluator(evaluationItem)
 

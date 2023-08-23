@@ -198,7 +198,6 @@ class EnrollmentServiceShould {
 
     @Test
     fun `Enrollment has any events that allows events creation`() {
-
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(enrollment.program()) doReturn programUid
 
@@ -225,7 +224,6 @@ class EnrollmentServiceShould {
 
     @Test
     fun `Enrollment has not any events that allows events creation`() {
-
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(enrollment.program()) doReturn programUid
 

@@ -81,6 +81,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
     private lateinit var ownershipService: OwnershipService
     private val uidGenerator: UidGenerator = UidGeneratorImpl()
+
     @Before
     override fun setUp() {
         super.setUp()

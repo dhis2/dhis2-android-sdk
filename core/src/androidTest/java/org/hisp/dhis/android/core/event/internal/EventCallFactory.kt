@@ -42,7 +42,6 @@ object EventCallFactory {
         pageSize: Int,
         uids: Collection<String> = emptyList()
     ): Payload<Event> {
-
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 program = null,

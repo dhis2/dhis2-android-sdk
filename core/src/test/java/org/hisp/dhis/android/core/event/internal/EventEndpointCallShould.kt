@@ -119,7 +119,8 @@ class EventEndpointCallShould {
                 program,
                 startDate,
                 false,
-                OrganisationUnitMode.SELECTED, listOf(orgUnit),
+                OrganisationUnitMode.SELECTED,
+                listOf(orgUnit),
                 10
             ),
             orgUnit = orgUnit

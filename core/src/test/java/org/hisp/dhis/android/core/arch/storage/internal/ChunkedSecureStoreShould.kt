@@ -56,7 +56,7 @@ class ChunkedSecureStoreShould {
                 "otherKey_[LEN]_",
                 "otherKey_[1]_",
                 "sampleKey_[3]",
-                "OTHER_CONFIG",
+                "OTHER_CONFIG"
             )
         )
 

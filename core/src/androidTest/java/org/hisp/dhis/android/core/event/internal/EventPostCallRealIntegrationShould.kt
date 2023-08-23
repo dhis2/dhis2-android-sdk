@@ -159,7 +159,10 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Throws(Exception::class)
     private suspend fun downloadEvents() {
         val eventPayload = EventCallFactory.create(
-            d2.retrofit(), orgUnitUid, 50, emptyList()
+            d2.retrofit(),
+            orgUnitUid,
+            50,
+            emptyList()
         )
         val events = eventPayload.items()
         for (event in events) {

@@ -37,8 +37,10 @@ import org.junit.Before
 abstract class BaseRealIntegrationTest {
     @JvmField
     protected var username: String = RealServerMother.username
+
     @JvmField
     protected var password: String = RealServerMother.password
+
     @JvmField
     protected var url: String = RealServerMother.url
 
@@ -56,7 +58,9 @@ abstract class BaseRealIntegrationTest {
 
     internal fun getGenericCallData(d2: D2): GenericCallData {
         return GenericCallData.create(
-            d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
+            d2.databaseAdapter(),
+            d2.retrofit(),
+            ResourceHandler.create(d2.databaseAdapter()),
             d2.systemInfoModule().versionManager()
         )
     }

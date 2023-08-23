@@ -159,7 +159,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                     order = query.order,
                     paging = query.paging,
                     pageSize = query.pageSize,
-                    page = query.page,
+                    page = query.page
                 )
             }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
@@ -183,8 +183,11 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     }
 
     private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) null
-        else orgUnits.joinToString(";")
+        return if (orgUnits.isEmpty()) {
+            null
+        } else {
+            orgUnits.joinToString(";")
+        }
     }
 
     companion object {
@@ -200,7 +203,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 eventEndDate = null,
                 dueStartDate = null,
                 dueEndDate = null,
-                programStage = null,
+                programStage = null
             )
         }
     }

@@ -146,8 +146,11 @@ internal class EventServiceImpl @Inject constructor(
         val isActiveEnrollment = enrollment.status() == EnrollmentStatus.ACTIVE
 
         val acceptMoreEvents =
-            if (programStage.repeatable() == true) true
-            else getEventCount(enrollmentUid, programStageUid) == 0
+            if (programStage.repeatable() == true) {
+                true
+            } else {
+                getEventCount(enrollmentUid, programStageUid) == 0
+            }
 
         return isActiveEnrollment && acceptMoreEvents
     }

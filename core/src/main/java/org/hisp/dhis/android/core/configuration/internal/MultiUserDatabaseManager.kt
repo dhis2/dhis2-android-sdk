@@ -177,7 +177,10 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         encrypt: Boolean
     ): DatabaseAccount {
         val updatedAccount = configurationHelper.addAccount(
-            databaseConfigurationSecureStore.get(), serverUrl, username, encrypt
+            databaseConfigurationSecureStore.get(),
+            serverUrl,
+            username,
+            encrypt
         )
         databaseConfigurationSecureStore.set(updatedAccount)
         return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)

@@ -100,7 +100,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
             "filterItemIN:in:nom/,app;nom/:app;nom/;app",
             "filterItemLIKE1:like:nom/,app",
             "filterItemLIKE2:like:nom/:app",
-            "filterItemLIKE3:like:nom/;app",
+            "filterItemLIKE3:like:nom/;app"
         )
 
         val scope = queryBuilder

@@ -65,8 +65,11 @@ class OrganisationUnitHandlerShould {
         val programUid = "test_program_uid"
         pathTransformer = OrganisationUnitDisplayPathTransformer()
         organisationUnitHandler = OrganisationUnitHandler(
-            organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,
-            dataSetDataSetOrganisationUnitLinkHandler, organisationUnitGroupHandler,
+            organisationUnitStore,
+            userOrganisationUnitLinkHandler,
+            organisationUnitProgramLinkHandler,
+            dataSetDataSetOrganisationUnitLinkHandler,
+            organisationUnitGroupHandler,
             organisationUnitGroupLinkHandler
         )
         whenever(user.uid()).doReturn("test_user_uid")

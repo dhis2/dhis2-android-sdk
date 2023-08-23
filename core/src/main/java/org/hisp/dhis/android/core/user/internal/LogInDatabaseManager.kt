@@ -43,12 +43,16 @@ internal class LogInDatabaseManager @Inject internal constructor(
         return generalSettingCall.isDatabaseEncrypted()
             .doOnSuccess { encrypt: Boolean ->
                 multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl, username, encrypt
+                    serverUrl,
+                    username,
+                    encrypt
                 )
             }
             .doOnError {
                 multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl, username, false
+                    serverUrl,
+                    username,
+                    false
                 )
             }
             .ignoreElement()

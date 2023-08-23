@@ -51,7 +51,7 @@ internal class TrackedEntityAttributeLegendSetChildrenAppender(
                 StoreFactory.objectWithUidChildStore(
                     databaseAdapter,
                     TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
-                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION,
+                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION
                 )
             )
         }

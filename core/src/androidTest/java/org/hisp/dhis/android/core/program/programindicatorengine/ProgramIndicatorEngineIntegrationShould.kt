@@ -192,16 +192,22 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     fun evaluate_last_value_in_repeatable_stages() {
         createEnrollment()
         createTrackerEvent(
-            eventUid = event1, programStageUid = programStage1,
-            eventDate = twoDaysBefore(), lastUpdated = today()
+            eventUid = event1,
+            programStageUid = programStage1,
+            eventDate = twoDaysBefore(),
+            lastUpdated = today()
         )
         createTrackerEvent(
-            eventUid = event2, programStageUid = programStage1,
-            eventDate = today(), lastUpdated = today()
+            eventUid = event2,
+            programStageUid = programStage1,
+            eventDate = today(),
+            lastUpdated = today()
         )
         createTrackerEvent(
-            eventUid = event3, programStageUid = programStage1,
-            eventDate = twoDaysBefore(), lastUpdated = today()
+            eventUid = event3,
+            programStageUid = programStage1,
+            eventDate = twoDaysBefore(),
+            lastUpdated = today()
         )
         insertTrackedEntityDataValue(event1, dataElement1, "1")
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
@@ -216,16 +222,22 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createEnrollment()
         val eventDate = twoDaysBefore()
         createTrackerEvent(
-            eventUid = event1, programStageUid = programStage1,
-            eventDate = eventDate, lastUpdated = twoDaysBefore()
+            eventUid = event1,
+            programStageUid = programStage1,
+            eventDate = eventDate,
+            lastUpdated = twoDaysBefore()
         )
         createTrackerEvent(
-            eventUid = event2, programStageUid = programStage1,
-            eventDate = eventDate, lastUpdated = today()
+            eventUid = event2,
+            programStageUid = programStage1,
+            eventDate = eventDate,
+            lastUpdated = today()
         )
         createTrackerEvent(
-            eventUid = event3, programStageUid = programStage1,
-            eventDate = eventDate, lastUpdated = twoDaysBefore()
+            eventUid = event3,
+            programStageUid = programStage1,
+            eventDate = eventDate,
+            lastUpdated = twoDaysBefore()
         )
         insertTrackedEntityDataValue(event1, dataElement1, "1")
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value

@@ -101,7 +101,9 @@ internal class EnrollmentHandler constructor(
                     noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, o.uid(), note)
                 }
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                    transformed, Note.NoteType.ENROLLMENT_NOTE, o.uid()
+                    transformed,
+                    Note.NoteType.ENROLLMENT_NOTE,
+                    o.uid()
                 )
                 noteHandler.handleMany(notesToSync)
             }

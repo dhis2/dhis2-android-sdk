@@ -104,7 +104,7 @@ internal class APIErrorMapper @Inject constructor() {
 
     private fun httpException(errorBuilder: D2Error.Builder, e: HttpException): D2Error {
         return logAndAppendOriginal(errorBuilder, e)
-            .url(e.response()?.raw()?.request()?.url()?.toString())
+            .url(e.response()?.raw()?.request?.url?.toString())
             .httpErrorCode(e.response()!!.code())
             .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
             .errorDescription("API call threw HttpException")
@@ -125,7 +125,7 @@ internal class APIErrorMapper @Inject constructor() {
 
     fun getBaseErrorBuilder(response: Response<*>): D2Error.Builder {
         return getBaseErrorBuilder()
-            .url(getUrl(response.raw().request()))
+            .url(getUrl(response.raw().request))
     }
 
     fun getBaseErrorBuilder(): D2Error.Builder {
@@ -134,7 +134,7 @@ internal class APIErrorMapper @Inject constructor() {
     }
 
     private fun getUrl(request: Request?): String? {
-        return request?.url()?.toString()?.let {
+        return request?.url?.toString()?.let {
             DynamicServerURLInterceptor.transformUrl(it)
         }
     }
@@ -156,7 +156,7 @@ internal class APIErrorMapper @Inject constructor() {
     }
 
     private fun getIfNotEmpty(message: String?): String? {
-        return if (message != null && message.isNotEmpty()) message else null
+        return if (!message.isNullOrEmpty()) message else null
     }
 
     private fun getServerMessage(response: Response<*>): String {

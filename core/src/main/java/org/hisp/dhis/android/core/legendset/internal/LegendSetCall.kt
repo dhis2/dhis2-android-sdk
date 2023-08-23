@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 internal class LegendSetCall @Inject constructor(
     private val service: LegendSetService,
     private val handler: LegendSetHandler,
-    private val apiDownloader: APIDownloader,
+    private val apiDownloader: APIDownloader
 ) : UidsCall<LegendSet> {
     override fun download(uids: Set<String>): Single<List<LegendSet>> {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->

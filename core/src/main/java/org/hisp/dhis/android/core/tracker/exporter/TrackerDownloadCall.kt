@@ -200,8 +200,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
 
                     val syncStatus =
-                        if (result.successfulSync) D2ProgressSyncStatus.SUCCESS
-                        else D2ProgressSyncStatus.ERROR
+                        if (result.successfulSync) {
+                            D2ProgressSyncStatus.SUCCESS
+                        } else {
+                            D2ProgressSyncStatus.ERROR
+                        }
 
                     progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
 
@@ -236,8 +239,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 val numOfCombinations = bundleResult.bundleOrgUnitPrograms.values.sumOf { it.size }
                 val pendingTeis = bundle.commonParams().limit - bundleResult.bundleCount
 
-                if (numOfCombinations == 0 || pendingTeis == 0) 0
-                else ceil(pendingTeis.toDouble() / numOfCombinations.toDouble()).roundToInt()
+                if (numOfCombinations == 0 || pendingTeis == 0) {
+                    0
+                } else {
+                    ceil(pendingTeis.toDouble() / numOfCombinations.toDouble()).roundToInt()
+                }
             }
 
             else -> bundle.commonParams().limit - bundleResult.bundleCount
@@ -267,7 +273,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         overwrite: Boolean,
         relatives: RelationshipItemRelatives
     ): ItemsWithPagingResult {
-
         var downloadedItemsForCombination = 0
         var emptyProgram = false
 

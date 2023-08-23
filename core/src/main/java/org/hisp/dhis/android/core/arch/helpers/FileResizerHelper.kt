@@ -61,20 +61,27 @@ object FileResizerHelper {
         return if (scaleFactor > 1) {
             if (width < dimension.dimension) {
                 fileToResize
-            } else resize(
-                fileToResize, bitmap,
-                dimension.dimension, (dimension.dimension / scaleFactor).toInt(), dimension
-            )
+            } else {
+                resize(
+                    fileToResize,
+                    bitmap,
+                    dimension.dimension,
+                    (dimension.dimension / scaleFactor).toInt(),
+                    dimension
+                )
+            }
         } else {
             if (height < dimension.dimension) {
                 fileToResize
-            } else resize(
-                fileToResize,
-                bitmap,
-                (scaleFactor * dimension.dimension).toInt(),
-                dimension.dimension,
-                dimension
-            )
+            } else {
+                resize(
+                    fileToResize,
+                    bitmap,
+                    (scaleFactor * dimension.dimension).toInt(),
+                    dimension.dimension,
+                    dimension
+                )
+            }
         }
     }
 

@@ -61,7 +61,9 @@ sealed class StockUseCaseTransaction {
             return when (val type = TransactionType.valueOf(t.transactionType())) {
                 TransactionType.DISTRIBUTED ->
                     Distributed(
-                        t.sortOrder(), type, t.distributedTo()!!,
+                        t.sortOrder(),
+                        type,
+                        t.distributedTo()!!,
                         t.stockDistributed()!!
                     )
                 TransactionType.DISCARDED -> Discarded(t.sortOrder(), type, t.stockDiscarded()!!)

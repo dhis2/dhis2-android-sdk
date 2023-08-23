@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 internal interface LinkStore<O : CoreObject> : ObjectStore<O> {
     fun insertIfNotExists(o: O): HandleAction
+
     @Throws(RuntimeException::class)
     fun deleteLinksForMasterUid(masterUid: String)
     fun deleteAllLinks(): Int

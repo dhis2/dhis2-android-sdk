@@ -60,7 +60,6 @@ internal object SettingsAppHelper {
     }
 
     private fun getDataSetFilters(dataSetScope: DataSetFilters): List<FilterSetting> {
-
         val globalFilters = dataSetScope.globalSettings().map { entry ->
             entry.value.toBuilder()
                 .scope(DataSetFilter::class.simpleName)
@@ -82,7 +81,6 @@ internal object SettingsAppHelper {
     }
 
     private fun getProgramFilters(programScope: ProgramFilters): List<FilterSetting> {
-
         val globalFilters = programScope.globalSettings().map { entry ->
             entry.value.toBuilder()
                 .scope(ProgramFilter::class.simpleName)

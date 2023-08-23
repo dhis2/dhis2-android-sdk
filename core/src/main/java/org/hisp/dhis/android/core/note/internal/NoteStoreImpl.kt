@@ -59,10 +59,12 @@ internal class NoteStoreImpl(
             w.bind(9, o.deleted())
         }
         val ENROLLMENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT
+            NoteTableInfo.TABLE_INFO,
+            NoteTableInfo.Columns.ENROLLMENT
         )
         val EVENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.EVENT
+            NoteTableInfo.TABLE_INFO,
+            NoteTableInfo.Columns.EVENT
         )
     }
 }

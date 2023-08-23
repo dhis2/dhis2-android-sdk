@@ -48,7 +48,9 @@ internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(credentials.serverUrl)
             val account = DatabaseConfigurationHelper.getLoggedAccount(
-                databaseConfiguration, credentials.username, credentials.serverUrl
+                databaseConfiguration,
+                credentials.username,
+                credentials.serverUrl
             )
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
         }

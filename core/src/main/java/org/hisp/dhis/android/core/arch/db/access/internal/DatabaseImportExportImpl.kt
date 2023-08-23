@@ -133,7 +133,8 @@ internal class DatabaseImportExportImpl @Inject constructor(
         val databasesConfiguration = databaseConfigurationSecureStore.get()
         val userConfiguration = DatabaseConfigurationHelper.getLoggedAccount(
             databasesConfiguration,
-            credentials.serverUrl, credentials.username
+            credentials.serverUrl,
+            credentials.username
         )
 
         if (userConfiguration.encrypted()) {

@@ -133,7 +133,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programIndicatorRepository = d2.programModule().programIndicators(),
             legendRepository = d2.legendSetModule().legends(),
             indicatorRepository = d2.indicatorModule().indicators(),
-            trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
+            trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes()
         )
     )
 

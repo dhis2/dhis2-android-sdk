@@ -48,7 +48,7 @@ class CategoryOptionComboService @Inject constructor(
     }
 
     fun blockingHasWriteAccess(
-        categoryOptions: List<CategoryOption>,
+        categoryOptions: List<CategoryOption>
     ): Boolean {
         return categoryOptions.none { it.access().data().write() == false }
     }

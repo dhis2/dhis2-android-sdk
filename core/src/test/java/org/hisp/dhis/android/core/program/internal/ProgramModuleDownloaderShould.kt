@@ -32,7 +32,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import javax.net.ssl.HttpsURLConnection
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -84,7 +84,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         super.setUp()
         errorResponse = Response.error<Any>(
             HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
-            ResponseBody.create(MediaType.parse("application/json"), "{}")
+            ResponseBody.create("application/json".toMediaTypeOrNull(), "{}")
         )
 
         // Calls

@@ -62,7 +62,7 @@ internal sealed class CommonExpressionVisitorScope(
         dataElementStore: IdentifiableObjectStore<DataElement>,
         categoryOptionComboStore: IdentifiableObjectStore<CategoryOptionCombo>,
         organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
-        programStageStore: IdentifiableObjectStore<ProgramStage>,
+        programStageStore: IdentifiableObjectStore<ProgramStage>
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,

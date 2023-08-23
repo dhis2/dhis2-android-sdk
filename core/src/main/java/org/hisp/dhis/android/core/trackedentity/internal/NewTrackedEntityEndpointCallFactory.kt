@@ -234,7 +234,10 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     }
 
     private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) null
-        else orgUnits.joinToString(";")
+        return if (orgUnits.isEmpty()) {
+            null
+        } else {
+            orgUnits.joinToString(";")
+        }
     }
 }

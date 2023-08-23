@@ -64,7 +64,8 @@ internal class ProgramSectionStoreImpl(
             }
 
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramSectionTableInfo.TABLE_INFO, ProgramSectionTableInfo.Columns.PROGRAM
+            ProgramSectionTableInfo.TABLE_INFO,
+            ProgramSectionTableInfo.Columns.PROGRAM
         )
     }
 }

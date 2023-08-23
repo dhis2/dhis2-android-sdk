@@ -69,7 +69,8 @@ internal class ProgramRuleActionStoreImpl(
             }
 
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionTableInfo.Columns.PROGRAM_RULE
+            ProgramRuleActionTableInfo.TABLE_INFO,
+            ProgramRuleActionTableInfo.Columns.PROGRAM_RULE
         )
     }
 }

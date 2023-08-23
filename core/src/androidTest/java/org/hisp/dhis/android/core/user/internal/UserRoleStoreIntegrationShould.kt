@@ -38,7 +38,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class UserRoleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<UserRole>(
     UserRoleStoreImpl(TestDatabaseAdapterFactory.get()),
-    UserRoleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    UserRoleTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
 ) {
     override fun buildObject(): UserRole {
         return UserRoleSamples.getUserRole()

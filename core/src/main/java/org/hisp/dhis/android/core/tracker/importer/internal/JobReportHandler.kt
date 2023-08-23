@@ -81,7 +81,9 @@ internal class JobReportHandler @Inject internal constructor(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>
     ) {
-        val presentSuccesses = if (o.bundleReport == null) emptySet<Pair<TrackerImporterObjectType, String>>() else {
+        val presentSuccesses = if (o.bundleReport == null) {
+            emptySet<Pair<TrackerImporterObjectType, String>>()
+        } else {
             val tm = o.bundleReport.typeReportMap
             setOf(tm.event, tm.trackedEntity, tm.enrollment, tm.relationship).flatMap {
                 it.objectReports

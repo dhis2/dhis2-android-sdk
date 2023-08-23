@@ -54,7 +54,8 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE,
+                State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build()
         for (note in noteStore.selectWhere(whereClause)) {

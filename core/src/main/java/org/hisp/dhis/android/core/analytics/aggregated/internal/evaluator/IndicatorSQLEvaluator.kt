@@ -40,7 +40,7 @@ internal class IndicatorSQLEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
@@ -55,7 +55,7 @@ internal class IndicatorSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)

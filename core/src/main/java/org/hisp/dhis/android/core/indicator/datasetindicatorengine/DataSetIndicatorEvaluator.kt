@@ -45,11 +45,15 @@ internal class DataSetIndicatorEvaluator @Inject constructor(private val express
         context: ExpressionServiceContext
     ): Double {
         val numerator = expressionService.getExpressionValue(
-            indicator.numerator(), context, MissingValueStrategy.NEVER_SKIP
+            indicator.numerator(),
+            context,
+            MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val denominator = expressionService.getExpressionValue(
-            indicator.denominator(), context, MissingValueStrategy.NEVER_SKIP
+            indicator.denominator(),
+            context,
+            MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"

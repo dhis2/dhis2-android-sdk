@@ -55,7 +55,8 @@ internal class DataInputPeriodStoreImpl(
             w.bind(4, dataInputPeriod.closingDate())
         }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET
+            DataInputPeriodTableInfo.TABLE_INFO,
+            DataInputPeriodTableInfo.Columns.DATA_SET
         )
     }
 }

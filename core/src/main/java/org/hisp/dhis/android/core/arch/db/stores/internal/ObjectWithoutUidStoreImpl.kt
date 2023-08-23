@@ -58,7 +58,8 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(
-            tableInfo.name(), tableInfo.columns().all(),
+            tableInfo.name(),
+            tableInfo.columns().all(),
             tableInfo.columns().whereUpdate()
         ),
         binder,

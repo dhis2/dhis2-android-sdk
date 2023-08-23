@@ -70,7 +70,6 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
         uids: Set<String>,
         data: Map<String, List<String?>>
     ): Map<String, List<CategoryOptionRestriction>> {
-
         val updatedEntries = mutableMapOf<String, List<CategoryOptionRestriction>>()
         for (uid in uids) {
             if (!data.keys.contains(uid)) {

@@ -58,7 +58,8 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
      */
     override fun blockingGet(): M? {
         return ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(), childrenAppenders,
+            blockingGetWithoutChildren(),
+            childrenAppenders,
             scope.children()
         )
     }

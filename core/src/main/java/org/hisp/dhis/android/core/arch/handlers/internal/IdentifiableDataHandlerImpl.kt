@@ -138,7 +138,10 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
         if (relatives != null) {
             relationshipVersionManager.saveRelativesIfNotExist(
-                ownedRelationships, parent.uid(), relatives, relationshipHandler
+                ownedRelationships,
+                parent.uid(),
+                relatives,
+                relationshipHandler
             )
         }
         relationshipHandler.handleMany(

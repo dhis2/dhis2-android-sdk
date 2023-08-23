@@ -81,8 +81,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         programOwnerStore = ProgramOwnerStoreImpl(d2.databaseAdapter())
 
         propagator = DataStatePropagatorImpl(
-            trackedEntityInstanceStore, enrollmentStore, eventStore,
-            relationshipStore, relationshipItemStore, relationshipTypeStore, programOwnerStore
+            trackedEntityInstanceStore,
+            enrollmentStore,
+            eventStore,
+            relationshipStore,
+            relationshipItemStore,
+            relationshipTypeStore,
+            programOwnerStore
         )
     }
 
@@ -460,8 +465,11 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     private fun sampleEventProjection(enrollmentUid: String?): EventCreateProjection {
         return EventCreateProjection.create(
-            enrollmentUid, "lxAQ7Zs9VYR", "dBwrot7S420",
-            "DiszpKrYNg8", "bRowv6yZOF2"
+            enrollmentUid,
+            "lxAQ7Zs9VYR",
+            "dBwrot7S420",
+            "DiszpKrYNg8",
+            "bRowv6yZOF2"
         )
     }
 }

@@ -52,7 +52,7 @@ internal class EventImportHandler @Inject constructor(
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
-    private val dataStatePropagator: DataStatePropagator,
+    private val dataStatePropagator: DataStatePropagator
 ) {
 
     @Suppress("NestedBlockDepth")

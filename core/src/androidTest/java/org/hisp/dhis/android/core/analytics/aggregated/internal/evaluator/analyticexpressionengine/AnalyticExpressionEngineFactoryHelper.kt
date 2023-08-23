@@ -67,7 +67,7 @@ internal object AnalyticExpressionEngineFactoryHelper {
             dataElementEvaluator,
             programIndicatorEvaluator,
             eventDataItemEvaluator,
-            ConstantStoreImpl(databaseAdapter),
+            ConstantStoreImpl(databaseAdapter)
         )
     }
 }

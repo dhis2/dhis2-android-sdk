@@ -43,7 +43,8 @@ internal class ProgramTrackedEntityAttributeHandler @Inject constructor(
     override fun afterObjectHandled(o: ProgramTrackedEntityAttribute, action: HandleAction) {
         if (action !== HandleAction.Delete) {
             renderTypeHandler.handle(
-                o.renderType(), o.uid(),
+                o.renderType(),
+                o.uid(),
                 ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()
             )
         }

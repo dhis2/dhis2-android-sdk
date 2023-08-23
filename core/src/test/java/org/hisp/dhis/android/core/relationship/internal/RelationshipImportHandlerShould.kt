@@ -86,7 +86,8 @@ class RelationshipImportHandlerShould {
         whenever(importSummary.reference()).doReturn("test_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary), relationships
+            listOf(importSummary),
+            relationships
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.SYNCED)
@@ -99,7 +100,8 @@ class RelationshipImportHandlerShould {
         whenever(importSummary.reference()).doReturn("test_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary), relationships
+            listOf(importSummary),
+            relationships
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.TO_UPDATE)
@@ -115,7 +117,8 @@ class RelationshipImportHandlerShould {
         whenever(relationship.uid()).doReturn("missing_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary), relationships
+            listOf(importSummary),
+            relationships
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.SYNCED)

@@ -104,7 +104,8 @@ internal class OrganisationUnitCall @Inject constructor(
         )
         return downloadOrgUnits(
             getUids(rootCaptureOrgUnitsOutsideSearchScope),
-            user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
+            user,
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
         )
     }
 
@@ -138,8 +139,12 @@ internal class OrganisationUnitCall @Inject constructor(
     private fun downloadPage(orgUnit: String, page: AtomicInteger): Single<List<OrganisationUnit>> {
         return Single.defer {
             organisationUnitService.getOrganisationUnits(
-                OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(orgUnit),
-                OrganisationUnitFields.ASC_ORDER, true, PAGE_SIZE, page.getAndIncrement()
+                OrganisationUnitFields.allFields,
+                OrganisationUnitFields.path.like(orgUnit),
+                OrganisationUnitFields.ASC_ORDER,
+                true,
+                PAGE_SIZE,
+                page.getAndIncrement()
             )
                 .map { obj -> obj.items() }
                 .doOnSuccess { items -> handler.handleMany(items, pathTransformer) }

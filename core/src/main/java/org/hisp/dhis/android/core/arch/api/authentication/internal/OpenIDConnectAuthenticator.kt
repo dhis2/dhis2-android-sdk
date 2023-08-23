@@ -51,7 +51,7 @@ internal class OpenIDConnectAuthenticator @Inject constructor(
         val builder = userIdHelper.builderWithUserId(chain)
         val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
         val res = chain.proceed(builderWithAuthentication.build())
-        if (res.code() == UNAUTHORIZED) {
+        if (res.code == UNAUTHORIZED) {
             logoutHandler.logOut()
         }
         return res

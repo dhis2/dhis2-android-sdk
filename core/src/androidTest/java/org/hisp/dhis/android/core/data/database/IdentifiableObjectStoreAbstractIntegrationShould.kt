@@ -45,7 +45,9 @@ abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal cons
     tableInfo: TableInfo,
     databaseAdapter: DatabaseAdapter?
 ) : ObjectStoreAbstractIntegrationShould<M>(
-    store, tableInfo, databaseAdapter!!
+    store,
+    tableInfo,
+    databaseAdapter!!
 ) where M : ObjectWithUidInterface, M : CoreObject {
     private val objectToUpdate: M
     protected abstract fun buildObjectToUpdate(): M

@@ -67,7 +67,8 @@ internal class ProgramTrackedEntityAttributeStoreImpl(
             }
 
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+            ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM
         )
     }
 }

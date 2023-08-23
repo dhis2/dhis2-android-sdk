@@ -50,7 +50,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
@@ -64,7 +64,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -189,7 +189,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
         aggregationType: AggregationType,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
         val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregationType)
@@ -243,7 +243,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): AggregationType {
         val itemList: List<DimensionItem.DataItem> = AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
 

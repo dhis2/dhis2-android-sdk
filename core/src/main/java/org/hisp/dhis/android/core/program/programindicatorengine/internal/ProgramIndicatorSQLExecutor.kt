@@ -65,7 +65,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
     fun getProgramIndicatorValue(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
 
@@ -78,7 +78,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
     fun getProgramIndicatorSQL(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
         val periodItems = evaluationItem.allDimensionItems.filterIsInstance<DimensionItem.PeriodItem>()

@@ -74,8 +74,12 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                     (0 until iterations).map {
                         val (period, ou) = periodOrgUnits[it]
                         DataValueSamples.getDataValue(
-                            ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
-                            metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString()
+                            ou.uid(),
+                            dataElement.uid(),
+                            period.periodId()!!,
+                            categoryOptionCombo.uid(),
+                            metadata.categoryOptionCombos.first().uid(),
+                            random.nextDouble().toString()
                         )
                     }
                 }
@@ -94,7 +98,10 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
         return teis.map { tei ->
             EnrollmentSamples.get(
-                uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(),
+                uidGenerator.generate(),
+                tei.organisationUnit(),
+                program.uid(),
+                tei.uid(),
                 getRandomDateInLastYear()
             )
         }
@@ -109,8 +116,13 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
             val ou = level3OrgUnits[i % level3OrgUnits.size]
             val programStage = programStages[i % programStages.size]
             EventSamples.get(
-                uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
-                metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear()
+                uidGenerator.generate(),
+                null,
+                ou.uid(),
+                programStage.program()!!.uid(),
+                programStage.uid(),
+                metadata.categoryOptionCombos.first().uid(),
+                getRandomDateInLastYear()
             )
         }
     }
@@ -123,8 +135,12 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
             programStages.flatMap { ps ->
                 (1..params.eventsWithRegistrationPerEnrollmentAndPS).map {
                     EventSamples.get(
-                        uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
-                        enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
+                        uidGenerator.generate(),
+                        enrollment.uid(),
+                        enrollment.organisationUnit(),
+                        enrollment.program(),
+                        ps.uid(),
+                        metadata.categoryOptionCombos.first().uid(),
                         getRandomDateInLastYear()
                     )
                 }

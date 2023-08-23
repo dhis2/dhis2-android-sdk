@@ -68,8 +68,10 @@ class RelationshipHandlerShould {
     @Before
     fun setUp() {
         relationshipHandler = RelationshipHandler(
-            relationshipStore, relationshipItemStore,
-            relationshipItemHandler, storeSelector
+            relationshipStore,
+            relationshipItemStore,
+            relationshipItemHandler,
+            storeSelector
         )
         whenever(storeSelector.getElementStore(any())).thenReturn(itemElementStore)
         whenever(itemElementStore.exists(RelationshipSamples.FROM_UID)).thenReturn(true)
@@ -78,7 +80,8 @@ class RelationshipHandlerShould {
         whenever(itemElementStore.exists(TEI_4_UID)).thenReturn(true)
         whenever(
             relationshipItemStore.getRelationshipUidsForItems(
-                RelationshipSamples.fromItem, RelationshipSamples.toItem
+                RelationshipSamples.fromItem,
+                RelationshipSamples.toItem
             )
         ).thenReturn(listOf(RelationshipSamples.UID))
         whenever(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(emptyList())

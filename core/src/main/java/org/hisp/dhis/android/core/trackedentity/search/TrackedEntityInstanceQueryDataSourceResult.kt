@@ -48,8 +48,13 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     TrackedEntityInstance, Result<@JvmSuppressWildcards TrackedEntityInstance, @JvmSuppressWildcards D2Error>>() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
-        store, trackerParentCallFactory, scope, childrenAppenders,
-        onlineCache, onlineHelper, localQueryHelper
+        store,
+        trackerParentCallFactory,
+        scope,
+        childrenAppenders,
+        onlineCache,
+        onlineHelper,
+        localQueryHelper
     )
 
     override fun loadInitial(

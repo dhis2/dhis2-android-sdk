@@ -138,7 +138,9 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             when {
                 isGlobal(params, programUid) -> {
                     val download = params.limit()!! - specificEvents(
-                        params, programSettings, downloadExtractor
+                        params,
+                        programSettings,
+                        downloadExtractor
                     )
                     return if (download > 0) download else 0
                 }
@@ -249,7 +251,9 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     ): TrackerQueryCommonParams {
         val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid)
         val (ouMode, orgUnits) = getOrganisationUnits(
-            params, hasLimitByOrgUnit, orgUnitByLimitExtractor
+            params,
+            hasLimitByOrgUnit,
+            orgUnitByLimitExtractor
         )
 
         return TrackerQueryCommonParams(

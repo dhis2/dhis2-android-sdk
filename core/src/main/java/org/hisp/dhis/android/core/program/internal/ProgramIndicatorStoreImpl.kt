@@ -51,7 +51,8 @@ internal class ProgramIndicatorStoreImpl(
 
     companion object {
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO, ProgramIndicatorTableInfo.Columns.PROGRAM
+            ProgramIndicatorTableInfo.TABLE_INFO,
+            ProgramIndicatorTableInfo.Columns.PROGRAM
         )
         private val BINDER: StatementBinder<ProgramIndicator> = object : NameableStatementBinder<ProgramIndicator>() {
             override fun bindToStatement(

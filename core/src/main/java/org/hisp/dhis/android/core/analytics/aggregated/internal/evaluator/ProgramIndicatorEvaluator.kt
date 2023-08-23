@@ -53,9 +53,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
-
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
         val aggregationType = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
@@ -73,7 +72,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
@@ -82,7 +81,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): List<String?> {
         return getFilteredEventUids(programIndicator, evaluationItem, metadata, queryMods).map {
             programIndicatorEngine.getEventProgramIndicatorValue(it, programIndicator.uid())
@@ -93,7 +92,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): List<String> {
         val whereClause = ProgramIndicatorEvaluatorHelper
             .getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
@@ -117,7 +116,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): List<String> {
         val whereClause =
             ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(

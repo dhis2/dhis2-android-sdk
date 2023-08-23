@@ -45,7 +45,6 @@ internal class D2RelationshipCount : ExpressionItem {
     private val rAlias = "r"
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-
         val rTypeUid = ctx.uid0?.text
 
         val queries = getQueries(visitor.programIndicatorSQLContext!!.programIndicator)

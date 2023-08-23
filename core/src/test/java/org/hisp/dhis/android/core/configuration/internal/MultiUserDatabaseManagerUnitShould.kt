@@ -84,8 +84,12 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = MultiUserDatabaseManager(
-            context, databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-            databaseAdapterFactory, databaseExport
+            context,
+            databaseAdapter,
+            databaseConfigurationSecureStore,
+            configurationHelper,
+            databaseAdapterFactory,
+            databaseExport
         )
     }
 

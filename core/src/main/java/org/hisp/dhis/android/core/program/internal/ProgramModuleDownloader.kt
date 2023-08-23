@@ -82,7 +82,8 @@ internal class ProgramModuleDownloader @Inject constructor(
                             }
                             .flatMapCompletable { attributes ->
                                 val optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
-                                    attributes, programStages
+                                    attributes,
+                                    programStages
                                 )
                                 Single.merge(
                                     listOf(

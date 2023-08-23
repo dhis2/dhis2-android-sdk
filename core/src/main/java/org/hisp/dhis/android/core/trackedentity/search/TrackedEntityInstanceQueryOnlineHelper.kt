@@ -99,7 +99,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private fun getBaseQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope
     ): TrackedEntityInstanceQueryOnline {
-
         val query = scope.query()?.let { query -> query.operator().apiUpperOperator + ":" + query.value() }
 
         // EnrollmentStatus does not accepts a list of status but a single value in web API.
@@ -121,7 +120,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             followUp = scope.followUp(),
             includeDeleted = scope.includeDeleted(),
             trackedEntityType = scope.trackedEntityType(),
-            order = toAPIOrderFormat(scope.order()),
+            order = toAPIOrderFormat(scope.order())
         ).run {
             scope.program()?.let {
                 copy(
@@ -135,7 +134,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     eventStartDate = scope.eventDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
                     eventEndDate = scope.eventDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
                     dueStartDate = scope.dueDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
-                    dueEndDate = scope.dueDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
+                    dueEndDate = scope.dueDate()?.let { dateFilterPeriodHelper.getEndDate(it) }
                 )
             } ?: this
         }
@@ -147,7 +146,9 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
         return if (eventStatus.isNotEmpty() && hasEventDate) {
             eventStatus[0]
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
@@ -178,7 +179,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
 
         private fun getAPIValue(item: RepositoryScopeFilterItem): String {
-
             return if (item.operator() == FilterItemOperator.IN) {
                 val list = FilterOperatorsHelper.strToList(item.value()).map { escapeChars(it) }
                 list.joinToString(";")

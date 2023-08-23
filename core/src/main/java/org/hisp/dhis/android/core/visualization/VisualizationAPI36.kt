@@ -71,7 +71,7 @@ internal data class VisualizationAPI36(
     val aggregationType: AggregationType?,
     val columns: List<VisualizationDimension>,
     val rows: List<VisualizationDimension>,
-    val filters: List<VisualizationDimension>,
+    val filters: List<VisualizationDimension>
 ) {
     fun toVisualization(): Visualization =
         Visualization.builder()

@@ -59,7 +59,8 @@ class EventDateUtilsShould {
         whenever(periodHelper.calendar) doReturn getCalendar()
         whenever(
             periodHelper.blockingGetPeriodForPeriodTypeAndDate(
-                PeriodType.Monthly, thirdJanuary,
+                PeriodType.Monthly,
+                thirdJanuary,
                 1
             )
         ) doReturn february

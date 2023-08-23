@@ -63,8 +63,11 @@ class OwnershipManagerShould {
         }
 
         ownershipManager = OwnershipManagerImpl(
-            coroutineAPICallExecutor, ownershipService, dataStatePropagator,
-            programTempOwnerStore, programOwnerStore
+            coroutineAPICallExecutor,
+            ownershipService,
+            dataStatePropagator,
+            programTempOwnerStore,
+            programOwnerStore
         )
     }
 

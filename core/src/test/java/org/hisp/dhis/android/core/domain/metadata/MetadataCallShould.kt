@@ -153,7 +153,7 @@ class MetadataCallShould : BaseCallShould() {
             multiUserDatabaseManager,
             credentialsSecureStore,
             legendSetModuleDownloader,
-            expressionDimensIndicatorModuleDownloader,
+            expressionDimensIndicatorModuleDownloader
         )
     }
 

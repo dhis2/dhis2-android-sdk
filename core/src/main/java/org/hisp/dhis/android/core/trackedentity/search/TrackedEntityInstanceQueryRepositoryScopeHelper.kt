@@ -245,8 +245,11 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
             if (column != null) {
                 val direction =
-                    if (directionStr == "desc") RepositoryScope.OrderByDirection.DESC
-                    else RepositoryScope.OrderByDirection.ASC
+                    if (directionStr == "desc") {
+                        RepositoryScope.OrderByDirection.DESC
+                    } else {
+                        RepositoryScope.OrderByDirection.ASC
+                    }
 
                 TrackedEntityInstanceQueryScopeOrderByItem.builder()
                     .column(column)

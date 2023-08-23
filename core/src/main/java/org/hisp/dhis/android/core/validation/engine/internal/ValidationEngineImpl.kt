@@ -77,8 +77,10 @@ internal class ValidationEngineImpl @Inject constructor(
         val violations = if (rules.isNotEmpty()) {
             val constantMap = constantMap
             val valueMap = getValueMap(
-                dataSetUid, attributeOptionComboUid,
-                orgUnitUid, periodId
+                dataSetUid,
+                attributeOptionComboUid,
+                orgUnitUid,
+                periodId
             )
             val orgunitGroupMap = orgunitGroupMap
             val organisationUnit = getOrganisationUnit(orgUnitUid)

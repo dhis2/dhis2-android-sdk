@@ -242,8 +242,11 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val downloadedValues = dataValueList.groupBy { it.event() }
 
         return createTei(
-            downloadedTei, attValuesWithoutIdAndTEI, downloadedEnrollmentsWithoutIdAndDeleteFalse,
-            downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues
+            downloadedTei,
+            attValuesWithoutIdAndTEI,
+            downloadedEnrollmentsWithoutIdAndDeleteFalse,
+            downloadedEventsWithoutValuesAndDeleteFalse,
+            downloadedValues
         )
     }
 
@@ -275,7 +278,8 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
 
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
             TrackedEntityInstanceInternalAccessor.insertRelationships(
-                downloadedTei!!.toBuilder(), relationships
+                downloadedTei!!.toBuilder(),
+                relationships
             ),
             downloadedEnrollments
         )

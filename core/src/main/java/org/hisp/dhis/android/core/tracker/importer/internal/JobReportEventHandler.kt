@@ -99,7 +99,8 @@ internal class JobReportEventHandler @Inject internal constructor(
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE,
+                State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
         for (note in noteStore.selectWhere(whereClause)) {

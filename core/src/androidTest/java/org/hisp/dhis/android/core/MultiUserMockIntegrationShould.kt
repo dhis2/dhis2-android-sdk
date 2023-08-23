@@ -47,7 +47,8 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(), null,
+            CategoryOptionTableInfo.TABLE_INFO.name(),
+            null,
             CategoryOptionSamples.getCategoryOption().toContentValues()
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
@@ -71,7 +72,8 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(), null,
+            CategoryOptionTableInfo.TABLE_INFO.name(),
+            null,
             CategoryOptionSamples.getCategoryOption().toContentValues()
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)

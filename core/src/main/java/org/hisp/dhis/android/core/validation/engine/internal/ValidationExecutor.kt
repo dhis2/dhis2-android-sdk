@@ -53,10 +53,14 @@ internal class ValidationExecutor @Inject constructor(private val expressionServ
             null
         } else {
             val leftSideValue = expressionService.getExpressionValue(
-                rule.leftSide().expression(), context, rule.leftSide().missingValueStrategy()
+                rule.leftSide().expression(),
+                context,
+                rule.leftSide().missingValueStrategy()
             ) as Double?
             val rightSideValue = expressionService.getExpressionValue(
-                rule.rightSide().expression(), context, rule.rightSide().missingValueStrategy()
+                rule.rightSide().expression(),
+                context,
+                rule.rightSide().missingValueStrategy()
             ) as Double?
 
             if (isViolation(rule, leftSideValue, rightSideValue)) {

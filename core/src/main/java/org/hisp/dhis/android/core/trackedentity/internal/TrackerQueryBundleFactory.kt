@@ -42,7 +42,9 @@ internal class TrackerQueryBundleFactory @Inject constructor(
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper
 ) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
-    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    programStore,
+    programSettingsObjectRepository,
+    lastUpdatedManager,
     commonHelper,
     ProgramType.WITH_REGISTRATION,
     { params: ProgramDataDownloadParams,

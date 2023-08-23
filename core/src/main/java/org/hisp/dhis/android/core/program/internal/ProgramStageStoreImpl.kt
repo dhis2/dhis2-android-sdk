@@ -81,7 +81,8 @@ internal class ProgramStageStoreImpl(
                 }
             }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramStageTableInfo.TABLE_INFO, ProgramStageTableInfo.Columns.PROGRAM
+            ProgramStageTableInfo.TABLE_INFO,
+            ProgramStageTableInfo.Columns.PROGRAM
         )
     }
 }

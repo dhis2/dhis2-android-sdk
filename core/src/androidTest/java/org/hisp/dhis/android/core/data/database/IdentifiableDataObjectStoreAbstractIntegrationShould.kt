@@ -45,7 +45,9 @@ abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal 
     tableInfo: TableInfo,
     databaseAdapter: DatabaseAdapter
 ) : IdentifiableObjectStoreAbstractIntegrationShould<M>(
-    store, tableInfo, databaseAdapter
+    store,
+    tableInfo,
+    databaseAdapter
 ) where M : ObjectWithUidInterface, M : CoreObject, M : DataObject, M : ObjectWithDeleteInterface {
 
     private val objectWithToDeleteState: M

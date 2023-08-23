@@ -98,6 +98,6 @@ internal object VisualizationFields {
                 fh.field<DigitGroupSeparator>(VisualizationTableInfo.Columns.DIGIT_GROUP_SEPARATOR),
                 fh.nestedField<VisualizationDimension>(COLUMNS).with(VisualizationDimensionFields.allFields),
                 fh.nestedField<VisualizationDimension>(ROWS).with(VisualizationDimensionFields.allFields),
-                fh.nestedField<VisualizationDimension>(FILTERS).with(VisualizationDimensionFields.allFields),
+                fh.nestedField<VisualizationDimension>(FILTERS).with(VisualizationDimensionFields.allFields)
             )
 }

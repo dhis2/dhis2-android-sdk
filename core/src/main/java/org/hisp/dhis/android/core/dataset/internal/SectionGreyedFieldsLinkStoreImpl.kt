@@ -39,7 +39,8 @@ internal class SectionGreyedFieldsLinkStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : SectionGreyedFieldsLinkStore,
     LinkStoreImpl<SectionGreyedFieldsLink>(
-        databaseAdapter, SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
         SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
         BINDER,
         { cursor: Cursor -> SectionGreyedFieldsLink.create(cursor) }

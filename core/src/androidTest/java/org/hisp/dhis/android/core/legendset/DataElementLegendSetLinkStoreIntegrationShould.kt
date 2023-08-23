@@ -38,7 +38,8 @@ import org.junit.runner.RunWith
 class DataElementLegendSetLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<DataElementLegendSetLink>(
         DataElementLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-        DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+        DataElementLegendSetLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
     ) {
     override fun addMasterUid(): String {
         return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement()!!

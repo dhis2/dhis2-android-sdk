@@ -75,7 +75,6 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         visualization: Visualization,
         params: AnalyticsVisualizationsRepositoryParams
     ): Result<DimensionalResponse, AnalyticsException> {
-
         var queryAnalyticsRepository = analyticsRepository
 
         val queryDimensions =
@@ -116,8 +115,11 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val legendStrategy = when (visualizationLegendStrategy) {
             LegendStrategy.FIXED ->
-                if (legendSetUId != null) AnalyticsLegendStrategy.Fixed(legendSetUId)
-                else AnalyticsLegendStrategy.None
+                if (legendSetUId != null) {
+                    AnalyticsLegendStrategy.Fixed(legendSetUId)
+                } else {
+                    AnalyticsLegendStrategy.None
+                }
             LegendStrategy.BY_DATA_ITEM, null -> AnalyticsLegendStrategy.ByDataItem
         }
 
@@ -137,7 +139,6 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         visualization: Visualization,
         dimensionalResponse: DimensionalResponse
     ): GridAnalyticsResponse {
-
         val gridDimension = dimensionHelper.getGridDimensions(visualization)
 
         val rowIndexes = gridDimension.rows.map { dimensionalResponse.dimensions.indexOf(it) }

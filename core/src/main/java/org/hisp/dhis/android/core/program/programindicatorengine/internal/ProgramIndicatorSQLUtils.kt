@@ -144,10 +144,11 @@ internal object ProgramIndicatorSQLUtils {
     fun getDefaultValue(
         valueType: ValueType?
     ): String {
-        return if (valueType?.isNumeric == true || valueType?.isBoolean == true)
+        return if (valueType?.isNumeric == true || valueType?.isBoolean == true) {
             "CAST(0 AS NUMERIC)"
-        else
+        } else {
             "''"
+        }
     }
 
     fun valueCountExpression(

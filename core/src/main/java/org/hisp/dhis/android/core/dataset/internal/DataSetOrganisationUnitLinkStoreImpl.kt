@@ -39,7 +39,8 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
     databaseAdapter: DatabaseAdapter
 ) : DataSetOrganisationUnitLinkStore,
     LinkStoreImpl<DataSetOrganisationUnitLink>(
-        databaseAdapter, DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
         DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
         BINDER,
         { cursor: Cursor -> DataSetOrganisationUnitLink.create(cursor) }

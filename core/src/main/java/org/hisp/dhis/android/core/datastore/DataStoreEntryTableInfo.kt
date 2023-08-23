@@ -62,7 +62,7 @@ object DataStoreEntryTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 NAMESPACE,
-                KEY,
+                KEY
             )
         }
 

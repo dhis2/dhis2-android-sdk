@@ -84,7 +84,8 @@ class EventQueryBundleFactoryShould {
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+            userOrganisationUnitLinkStore,
+            organisationUnitProgramLinkLinkStore
         )
         bundleFactory = EventQueryBundleFactory(
             programStore,

@@ -89,7 +89,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 ProgramIndicator::class,
                 Indicator::class,
                 LegendSet::class,
-                ExpressionDimensionItem::class,
+                ExpressionDimensionItem::class
             ).map { it.java.simpleName }
         )
 

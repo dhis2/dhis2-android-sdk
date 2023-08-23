@@ -113,8 +113,11 @@ class ExpressionHelperShould {
         value: Double
     ) {
         val key =
-            if (categoryOptionComboId == null) DataElementObject(dataElementId)
-            else DataElementOperandObject(dataElementId, categoryOptionComboId)
+            if (categoryOptionComboId == null) {
+                DataElementObject(dataElementId)
+            } else {
+                DataElementOperandObject(dataElementId, categoryOptionComboId)
+            }
 
         val entry = valueMap.entries.find { it.key == key }
 
@@ -128,8 +131,11 @@ class ExpressionHelperShould {
         categoryOptionComboId: String?
     ) {
         val key =
-            if (categoryOptionComboId == null) DataElementObject(dataElementId)
-            else DataElementOperandObject(dataElementId, categoryOptionComboId)
+            if (categoryOptionComboId == null) {
+                DataElementObject(dataElementId)
+            } else {
+                DataElementOperandObject(dataElementId, categoryOptionComboId)
+            }
 
         valueMap.entries.none { it.key == key }
     }

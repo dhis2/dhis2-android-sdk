@@ -66,12 +66,12 @@ internal class EventLineListServiceImpl @Inject constructor(
 
     @Suppress("LongMethod", "ComplexMethod")
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
-
         val events = getEvents(params)
         val programStage = programStageRepository.uid(params.programStage).blockingGet()
 
         val metadataMap = getMetadataMap(
-            params.dataElements, params.programIndicators,
+            params.dataElements,
+            params.programIndicators,
             events.map { it.organisationUnit()!! }.toHashSet()
         )
 
@@ -95,7 +95,8 @@ internal class EventLineListServiceImpl @Inject constructor(
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
                         is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(
-                            de.uid, dv?.value()
+                            de.uid,
+                            dv?.value()
                         )
                         is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
                             params.analyticsLegendStrategy.legendSetUid,
@@ -118,10 +119,12 @@ internal class EventLineListServiceImpl @Inject constructor(
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
                         is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(
-                            pi.uid, value
+                            pi.uid,
+                            value
                         )
                         is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
-                            params.analyticsLegendStrategy.legendSetUid, value
+                            params.analyticsLegendStrategy.legendSetUid,
+                            value
                         )
                     }
 

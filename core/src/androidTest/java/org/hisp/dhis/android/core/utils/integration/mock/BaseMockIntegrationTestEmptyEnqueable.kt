@@ -39,7 +39,8 @@ abstract class BaseMockIntegrationTestEmptyEnqueable : BaseMockIntegrationTest()
             if (isNewInstance) {
                 dhis2MockServer.enqueueLoginResponses()
                 objects.d2.userModule().blockingLogIn(
-                    RealServerMother.username, RealServerMother.password,
+                    RealServerMother.username,
+                    RealServerMother.password,
                     objects.dhis2MockServer.baseEndpoint
                 )
             }

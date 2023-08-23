@@ -43,7 +43,10 @@ open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepo
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
-    store, childrenAppenders, scope, cf
+    store,
+    childrenAppenders,
+    scope,
+    cf
 ) where M : CoreObject, M : ObjectWithUidInterface {
     /**
      * Returns a new [ReadOnlyObjectRepository] whose scope is the one of the current repository plus the

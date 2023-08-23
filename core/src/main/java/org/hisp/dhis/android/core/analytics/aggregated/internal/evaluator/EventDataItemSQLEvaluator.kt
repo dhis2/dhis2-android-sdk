@@ -52,7 +52,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String? {
         val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
@@ -66,7 +66,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -233,7 +233,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
         aggregation: AggregationType,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
 
@@ -285,7 +285,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     }
 
     private fun getEventDataItems(
-        evaluationItem: AnalyticsServiceEvaluationItem,
+        evaluationItem: AnalyticsServiceEvaluationItem
     ): List<DimensionItem.DataItem.EventDataItem> {
         return AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
     }
@@ -294,7 +294,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?,
+        queryMods: QueryMods?
     ): AggregationType {
         return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
             queryMods.aggregationType!!

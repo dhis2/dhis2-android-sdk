@@ -78,7 +78,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
     override fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>
     ): Single<List<P>> {
         return downloadPartitionedWithoutHandling(
             uids = uids,

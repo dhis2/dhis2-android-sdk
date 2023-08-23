@@ -65,7 +65,9 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
     ): Completable {
         return Completable.defer {
             trackedEntityInstanceHandler.handleMany(
-                trackedEntityInstances, params, relatives
+                trackedEntityInstances,
+                params,
+                relatives
             )
             if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
                 organisationUnitDownloader.refreshOrganisationUnits()

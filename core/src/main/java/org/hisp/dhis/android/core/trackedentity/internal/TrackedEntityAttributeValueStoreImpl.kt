@@ -80,7 +80,8 @@ internal class TrackedEntityAttributeValueStoreImpl(
 
     override fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
         val selectByTrackedEntityInstanceQuery = WhereClauseBuilder().appendKeyStringValue(
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+            trackedEntityInstanceUid
         ).build()
         return selectWhere(selectByTrackedEntityInstanceQuery)
     }

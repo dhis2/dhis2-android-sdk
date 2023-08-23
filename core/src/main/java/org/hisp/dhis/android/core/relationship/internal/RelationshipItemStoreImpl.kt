@@ -158,8 +158,12 @@ internal class RelationshipItemStoreImpl(
 
     companion object {
         private val BINDER = StatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            val trackedEntityInstance = if (o.trackedEntityInstance() == null) null else o.trackedEntityInstance()!!
-                .trackedEntityInstance()
+            val trackedEntityInstance = if (o.trackedEntityInstance() == null) {
+                null
+            } else {
+                o.trackedEntityInstance()!!
+                    .trackedEntityInstance()
+            }
             val enrollment = if (o.enrollment() == null) null else o.enrollment()!!.enrollment()
             val event = if (o.event() == null) null else o.event()!!.event()
             w.bind(1, getUidOrNull(o.relationship()))

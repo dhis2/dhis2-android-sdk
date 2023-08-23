@@ -63,7 +63,7 @@ internal interface EventService {
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String? = null,
         @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null,
+        @Query(EVENT) eventUid: String? = null
     ): Payload<Event>
 
     @GET("$EVENTS/{$EVENT_UID}")

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 
 abstract class AbstractFilterConnector<R : BaseRepository, V>(
     private val repositoryFactory: BaseRepositoryFactory<R>,
-    private val scope: RepositoryScope,
+    protected val scope: RepositoryScope,
     val key: String
 ) {
     abstract fun wrapValue(value: V?): String?
@@ -49,7 +49,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
         )
     }
 
-    fun newWithWrappedScope(operator: FilterItemOperator?, value: V): R {
+    fun newWithWrappedScope(operator: FilterItemOperator?, value: V?): R {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)))
     }
 

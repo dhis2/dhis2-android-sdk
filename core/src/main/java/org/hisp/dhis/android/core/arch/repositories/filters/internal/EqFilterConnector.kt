@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 class EqFilterConnector<R : BaseRepository, T> internal constructor(
     private val repositoryFactory: ScopedRepositoryFilterFactory<R, T>
 ) {
-    fun eq(value: T): R {
+    fun eq(value: T?): R {
         return repositoryFactory.updated(value)
     }
 }

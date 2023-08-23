@@ -39,12 +39,12 @@ import org.hisp.dhis.android.core.event.EventDataFilter
 internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
     private val repositoryFactory: ScopedRepositoryFactory<R, S>
 ) {
-    fun <T> eqConnector(baseScopeFactory: BaseScopeFactory<S, T>): EqFilterConnector<R, T> {
-        return EqFilterConnector { value: T -> repositoryFactory.updated(baseScopeFactory.updated(value)) }
+    fun <T> eqConnector(baseScopeFactory: BaseScopeFactory<S, T?>): EqFilterConnector<R, T> {
+        return EqFilterConnector { value: T? -> repositoryFactory.updated(baseScopeFactory.updated(value)) }
     }
 
     fun <T> listConnector(baseScopeFactory: BaseScopeFactory<S, List<T>>): ListFilterConnector<R, T> {
-        return ListFilterConnector { list: List<T>? -> repositoryFactory.updated(baseScopeFactory.updated(list!!)) }
+        return ListFilterConnector { list: List<T> -> repositoryFactory.updated(baseScopeFactory.updated(list)) }
     }
 
     fun booleanConnector(baseScopeFactory: BaseScopeFactory<S, Boolean>): BoolFilterConnector<R> {

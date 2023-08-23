@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
-interface BaseScopeFactory<S : BaseScope, I> {
+internal fun interface BaseScopeFactory<S : BaseScope, I> {
     fun updated(item: I): S
 }

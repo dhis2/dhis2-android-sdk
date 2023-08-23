@@ -30,16 +30,16 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-object RepositoryScopeHelper {
+internal object RepositoryScopeHelper {
     @JvmStatic
     fun withFilterItem(scope: RepositoryScope, item: RepositoryScopeFilterItem): RepositoryScope {
-        val copiedItems: MutableList<RepositoryScopeFilterItem> = ArrayList(scope.filters())
-        copiedItems.add(item)
-        return scope.toBuilder().filters(copiedItems).build()
+        return scope.toBuilder()
+            .filters(scope.filters() + item)
+            .build()
     }
 
     @JvmStatic
-    fun withUidFilterItem(scope: RepositoryScope, uid: String): RepositoryScope {
+    fun withUidFilterItem(scope: RepositoryScope, uid: String?): RepositoryScope {
         val filterItem = RepositoryScopeFilterItem.builder()
             .key(IdentifiableColumns.UID)
             .operator(FilterItemOperator.EQ)
@@ -52,10 +52,9 @@ object RepositoryScopeHelper {
         scope: RepositoryScope,
         item: RepositoryScopeComplexFilterItem
     ): RepositoryScope {
-        val copiedItems: MutableList<RepositoryScopeComplexFilterItem> =
-            ArrayList(scope.complexFilters())
-        copiedItems.add(item)
-        return scope.toBuilder().complexFilters(copiedItems).build()
+        return scope.toBuilder()
+            .complexFilters(scope.complexFilters() + item)
+            .build()
     }
 
     fun withChild(scope: RepositoryScope, child: String?): RepositoryScope {

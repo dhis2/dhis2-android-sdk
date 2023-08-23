@@ -190,7 +190,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
         val events = getEventRepositoryByTEDV(tedvCount)
             .byEnrollmentUid().isNotNull
             .blockingGet()
-        val enrollmentUids = events.groupBy { it.enrollment() }.keys
+        val enrollmentUids = events.groupBy { it.enrollment() }.keys.mapNotNull { it }
 
         val enrollments = d2.enrollmentModule().enrollments()
             .byUid().`in`(enrollmentUids)
@@ -229,7 +229,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
                 .byValue().like("a")
                 .blockingGet()
             tedv.map { it.event() }
-        }
+        }.mapNotNull { it }
 
         return d2.eventModule().events()
             .byUid().`in`(eventsList.toSet())
@@ -246,7 +246,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
                 .byValue().like("a")
                 .blockingGet()
             teav.map { it.trackedEntityInstance() }
-        }
+        }.mapNotNull { it }
 
         return d2.trackedEntityModule().trackedEntityInstances()
             .byUid().`in`(teisList.toSet())

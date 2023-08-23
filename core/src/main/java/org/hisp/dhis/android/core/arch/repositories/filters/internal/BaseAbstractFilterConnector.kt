@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 
 abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
-    scope: RepositoryScope?,
-    key: String?
+    scope: RepositoryScope,
+    key: String
 ) : AbstractFilterConnector<R, V>(
-    repositoryFactory, scope!!, key!!
+    repositoryFactory, scope, key
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
@@ -46,7 +46,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun eq(value: V): R {
+    fun eq(value: V?): R {
         return newWithWrappedScope(FilterItemOperator.EQ, value)
     }
 
@@ -56,7 +56,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun neq(value: V): R {
+    fun neq(value: V?): R {
         return newWithWrappedScope(FilterItemOperator.NOT_EQ, value)
     }
 

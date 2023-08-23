@@ -121,7 +121,7 @@ class FilterConnectorFactory<R : BaseRepository>(
         externalLink: String,
         ownLink: String,
         direction: OrderByDirection,
-        additionalWhereClause: String?
+        additionalWhereClause: String? = null
     ): R {
         val connectedAdditionalWhere = if (additionalWhereClause == null) "" else " AND $additionalWhereClause"
         val column = String.format(

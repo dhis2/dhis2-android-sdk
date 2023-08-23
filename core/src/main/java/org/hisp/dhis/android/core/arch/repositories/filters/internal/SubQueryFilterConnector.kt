@@ -45,25 +45,23 @@ class SubQueryFilterConnector<R : BaseRepository> internal constructor(
     }
 
     fun inLinkTable(
-        linkTable: String?,
-        linkParent: String?,
-        linkChild: String?,
-        children: List<String?>?
+        linkTable: String,
+        linkParent: String,
+        linkChild: String,
+        children: List<String>
     ): R {
         val clauseBuilder = WhereClauseBuilder().appendInKeyStringValues(linkChild, children)
         return inTableWhere(linkTable, linkParent, clauseBuilder)
     }
 
     fun inTableWhere(
-        linkTable: String?,
-        linkParent: String?,
+        linkTable: String,
+        linkParent: String,
         clauseBuilder: WhereClauseBuilder
     ): R {
         return newWithWrappedScope(
             FilterItemOperator.IN,
-            "(" + String.format(
-                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()
-            ) + ")"
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${clauseBuilder.build()})"
         )
     }
     @SuppressWarnings("LongParameterList")
@@ -77,16 +75,11 @@ class SubQueryFilterConnector<R : BaseRepository> internal constructor(
         children: List<String>
     ): R {
         val innerClauseBuilder = WhereClauseBuilder().appendInKeyStringValues(linkChild2, children)
-        val innerClause = String.format(
-            "SELECT DISTINCT %s FROM %s WHERE %s",
-            linkParent2, linkTable2, innerClauseBuilder.build()
-        )
+        val innerClause = "SELECT DISTINCT $linkParent2 FROM $linkTable2 WHERE ${innerClauseBuilder.build()}"
         val whereClause = "$linkChild1 IN ($innerClause)"
         return newWithWrappedScope(
             FilterItemOperator.IN,
-            String.format(
-                "( SELECT DISTINCT %s FROM %s WHERE %s )", linkParent1, linkTable1, whereClause
-            )
+            "(SELECT DISTINCT $linkParent1 FROM $linkTable1 WHERE $whereClause)"
         )
     }
 
@@ -96,28 +89,17 @@ class SubQueryFilterConnector<R : BaseRepository> internal constructor(
         linkChild: String,
         children: List<String>
     ): R {
-        var repositoryScope: RepositoryScope? = null
-        for (child in children) {
+        val repositoryScope = children.foldRight(scope) { child: String, scope: RepositoryScope ->
             val clause = WhereClauseBuilder().appendKeyStringValue(linkChild, child).build()
-            val value = "(" + String.format(
-                "SELECT %s FROM %s WHERE %s ",
-                linkParent,
-                linkTable,
-                clause
-            ) + ")"
-            repositoryScope = if (repositoryScope == null) updatedUnwrappedScope(
-                FilterItemOperator.IN,
-                value
-            ) else updatePassedScope(FilterItemOperator.IN, value, repositoryScope)
+            val subClause = "(SELECT $linkParent FROM $linkTable WHERE $clause)"
+
+            updatePassedScope(FilterItemOperator.IN, subClause, scope)
         }
-        return newWithPassedScope(
-            FilterItemOperator.IN,
-            "(" + String.format(
-                "SELECT %s FROM %s WHERE 1 GROUP BY %s HAVING COUNT(*) = %s ",
-                linkParent, linkTable, linkParent, children.size
-            ) + ")",
-            repositoryScope
-        )
+
+        val exactCountSubClause =
+            "(SELECT $linkParent FROM $linkTable WHERE 1 GROUP BY $linkParent HAVING COUNT(*) = ${children.size})"
+
+        return newWithPassedScope(FilterItemOperator.IN, exactCountSubClause, repositoryScope)
     }
 
     fun rawSubQuery(operator: FilterItemOperator, subQuery: String): R {

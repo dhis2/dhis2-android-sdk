@@ -139,7 +139,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
     }
 
     private fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()!!).blockingGetUids()
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).blockingGetUids()
 
         return programStageUids.map { programStageUid ->
             val programStageEvents = eventRepository

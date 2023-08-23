@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
 import android.content.ContentValues
 
-fun interface RepositoryScopeKeyOrderExtractor {
+internal fun interface RepositoryScopeKeyOrderExtractor {
     fun extractKey(contentValues: ContentValues, column: String): String
 }

@@ -108,7 +108,7 @@ class FilterConnectorFactory<R : BaseRepository>(
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child))
     }
 
-    fun withOrderBy(column: String, direction: OrderByDirection): R {
+    fun withOrderBy(column: String, direction: OrderByDirection?): R {
         val item = RepositoryScopeOrderByItem.builder().column(column).direction(direction).build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }

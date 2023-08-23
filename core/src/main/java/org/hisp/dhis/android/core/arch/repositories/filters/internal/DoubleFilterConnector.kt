@@ -69,7 +69,7 @@ class DoubleFilterConnector<R : BaseRepository> internal constructor(
         return newWithWrappedScope(FilterItemOperator.GE, value)
     }
 
-    override fun wrapValue(value: Double?): String {
-        return value.toString()
+    override fun wrapValue(value: Double?): String? {
+        return value?.toString()
     }
 }

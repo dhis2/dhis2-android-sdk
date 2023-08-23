@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import org.hisp.dhis.android.core.common.CoreColumns
 
-object RepositoryPagingConfig {
+internal object RepositoryPagingConfig {
     const val PAGING_KEY = CoreColumns.ID
 }

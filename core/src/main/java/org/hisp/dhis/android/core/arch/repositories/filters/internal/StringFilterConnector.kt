@@ -51,6 +51,6 @@ class StringFilterConnector<R : BaseRepository> internal constructor(
     }
 
     override fun wrapValue(value: String?): String {
-        return "'" + escapeQuotes(value!!) + "'"
+        return "'" + escapeQuotes(value) + "'"
     }
 }

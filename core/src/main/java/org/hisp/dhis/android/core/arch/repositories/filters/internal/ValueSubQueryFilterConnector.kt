@@ -45,7 +45,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
     private val dataElementId: String
 ) : BaseSubQueryFilterConnector<R>(repositoryFactory, scope, key, linkTable, linkParent) {
     override fun wrapValue(value: String?): String {
-        return "'" + escapeQuotes(value!!) + "'"
+        return "'" + escapeQuotes(value) + "'"
     }
 
     /**
@@ -119,7 +119,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
         return inLinkTable(FilterItemOperator.LIKE, wrapValue("%$value%"))
     }
 
-    private fun inLinkTable(operator: FilterItemOperator, value: String): R {
+    private fun inLinkTable(operator: FilterItemOperator, value: String?): R {
         val clauseBuilder = WhereClauseBuilder()
             .appendKeyOperatorValue(linkChild, operator.sqlOperator, value)
             .appendKeyStringValue(dataElementColumn, dataElementId)

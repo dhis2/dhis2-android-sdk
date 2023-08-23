@@ -59,7 +59,7 @@ class IntegerFilterConnector<R : BaseRepository> internal constructor(
         return newWithWrappedScope(FilterItemOperator.GT, value)
     }
 
-    override fun wrapValue(value: Int?): String {
-        return value.toString()
+    override fun wrapValue(value: Int?): String? {
+        return value?.toString()
     }
 }

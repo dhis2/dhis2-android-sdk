@@ -55,7 +55,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
 
     fun updatePassedScope(
         operator: FilterItemOperator,
-        valueStr: String,
+        valueStr: String?,
         scope: RepositoryScope
     ): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
@@ -65,7 +65,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
     }
 
     fun newWithPassedScope(operator: FilterItemOperator, value: V, scope: RepositoryScope): R {
-        return repositoryFactory.updated(updatePassedScope(operator, wrapValue(value)!!, scope))
+        return repositoryFactory.updated(updatePassedScope(operator, wrapValue(value), scope))
     }
 
     private fun updatedUnwrappedScope(whereClause: String): RepositoryScope {
@@ -80,10 +80,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
     }
 
     fun getCommaSeparatedValues(values: Collection<V>): String {
-        val wrappedValues: MutableList<String?> = ArrayList()
-        for (v in values) {
-            wrappedValues.add(wrapValue(v))
-        }
+        val wrappedValues = values.map { wrapValue(it) }
         return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues)
     }
 

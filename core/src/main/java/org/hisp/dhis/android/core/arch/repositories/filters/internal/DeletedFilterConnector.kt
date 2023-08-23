@@ -54,10 +54,6 @@ class DeletedFilterConnector<R : BaseRepository> internal constructor(
         get() = isNull
 
     override fun wrapValue(value: String?): String? {
-        return if (value == null) {
-            null
-        } else {
-            "'" + escapeQuotes(value) + "'"
-        }
+        return value?.let { "'" + escapeQuotes(it) + "'" }
     }
 }

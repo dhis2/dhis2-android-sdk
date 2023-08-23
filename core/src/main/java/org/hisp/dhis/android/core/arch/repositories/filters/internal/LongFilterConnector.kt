@@ -59,7 +59,7 @@ class LongFilterConnector<R : BaseRepository> internal constructor(
         return newWithWrappedScope(FilterItemOperator.GT, value)
     }
 
-    override fun wrapValue(value: Long?): String {
-        return value.toString()
+    override fun wrapValue(value: Long?): String? {
+        return value?.toString()
     }
 }

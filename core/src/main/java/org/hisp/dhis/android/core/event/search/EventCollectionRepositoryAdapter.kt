@@ -61,7 +61,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
         scope.dataFilters().forEach { filter -> repository = applyDataFilter(repository, filter) }
         if (!scope.events().isNullOrEmpty()) {
-            repository = repository.byUid().`in`(scope.events())
+            repository = repository.byUid().`in`(scope.events()!!)
         }
         scope.eventStatus()?.let { repository = repository.byStatus().`in`(it) }
         scope.eventDate()?.let { period ->
@@ -183,7 +183,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         mode: AssignedUserMode
     ): EventCollectionRepository {
         return when (mode) {
-            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user()!!)
+            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user())
             AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
             AssignedUserMode.NONE -> repository.byAssignedUser().isNull
             // TODO Not implemented yet

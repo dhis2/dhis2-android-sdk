@@ -109,13 +109,11 @@ internal class EnrollmentServiceImpl @Inject constructor(
             .map { event: Event -> event.programStage() }
             .toList()
             .flatMap { currentProgramStagesUids: List<String?> ->
-                val repository = enrollmentRepository.uid(enrollmentUid).blockingGet()?.program()?.let {
-                    programStagesCollectionRepository.byProgramUid().eq(
-                        it
-                    ).byAccessDataWrite().isTrue
-                }
+                val repository = programStagesCollectionRepository.byProgramUid().eq(
+                    enrollmentRepository.uid(enrollmentUid).blockingGet()?.program()
+                ).byAccessDataWrite().isTrue
 
-                repository!!.get().toFlowable()
+                repository.get().toFlowable()
                     .flatMapIterable { stages: List<ProgramStage>? -> stages }
                     .filter { programStage: ProgramStage ->
                         !currentProgramStagesUids.contains(programStage.uid()) ||

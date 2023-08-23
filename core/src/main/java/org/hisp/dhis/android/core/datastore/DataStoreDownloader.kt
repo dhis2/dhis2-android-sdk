@@ -60,6 +60,6 @@ class DataStoreDownloader @Inject internal constructor(
     }
 
     fun byNamespace(): ListFilterConnector<DataStoreDownloader, String> {
-        return connectorFactory.listConnector { list -> params.copy(namespaces = list ?: emptyList()) }
+        return connectorFactory.listConnector { list -> params.copy(namespaces = list) }
     }
 }

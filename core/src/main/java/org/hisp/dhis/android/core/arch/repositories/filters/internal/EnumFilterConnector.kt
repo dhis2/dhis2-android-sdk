@@ -38,7 +38,7 @@ class EnumFilterConnector<R : BaseRepository, E : Enum<E>> internal constructor(
 ) : BaseAbstractFilterConnector<R, E>(
     repositoryFactory, scope, key
 ) {
-    override fun wrapValue(value: E?): String {
-        return "'" + value!!.name + "'"
+    override fun wrapValue(value: E?): String? {
+        return value?.let { "'" + it.name + "'" }
     }
 }

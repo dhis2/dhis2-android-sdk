@@ -39,7 +39,7 @@ class BaseStringFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory, scope, key
 ) {
 
-    override fun wrapValue(value: String?): String {
-        return escapeQuotes(value!!)
+    override fun wrapValue(value: String?): String? {
+        return escapeQuotes(value)
     }
 }

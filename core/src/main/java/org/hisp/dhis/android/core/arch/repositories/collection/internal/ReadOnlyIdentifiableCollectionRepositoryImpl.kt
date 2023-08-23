@@ -72,27 +72,27 @@ open class ReadOnlyIdentifiableCollectionRepositoryImpl<M, R : ReadOnlyCollectio
         return cf.date(IdentifiableColumns.LAST_UPDATED)
     }
 
-    fun orderByUid(direction: OrderByDirection): R {
+    fun orderByUid(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.UID, direction)
     }
 
-    fun orderByCode(direction: OrderByDirection): R {
+    fun orderByCode(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.CODE, direction)
     }
 
-    fun orderByName(direction: OrderByDirection): R {
+    fun orderByName(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.NAME, direction)
     }
 
-    fun orderByDisplayName(direction: OrderByDirection): R {
+    fun orderByDisplayName(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.DISPLAY_NAME, direction)
     }
 
-    fun orderByCreated(direction: OrderByDirection): R {
+    fun orderByCreated(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.CREATED, direction)
     }
 
-    fun orderByLastUpdated(direction: OrderByDirection): R {
+    fun orderByLastUpdated(direction: OrderByDirection?): R {
         return cf.withOrderBy(IdentifiableColumns.LAST_UPDATED, direction)
     }
 }

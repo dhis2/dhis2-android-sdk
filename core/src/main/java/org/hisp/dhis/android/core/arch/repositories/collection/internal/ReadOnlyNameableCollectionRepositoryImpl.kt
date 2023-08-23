@@ -64,19 +64,19 @@ internal open class ReadOnlyNameableCollectionRepositoryImpl<M, R : ReadOnlyColl
         return cf.string(NameableColumns.DISPLAY_DESCRIPTION)
     }
 
-    fun orderByShortName(direction: OrderByDirection): R {
+    fun orderByShortName(direction: OrderByDirection?): R {
         return cf.withOrderBy(NameableColumns.SHORT_NAME, direction)
     }
 
-    fun orderByShortDisplayName(direction: OrderByDirection): R {
+    fun orderByShortDisplayName(direction: OrderByDirection?): R {
         return cf.withOrderBy(NameableColumns.DISPLAY_SHORT_NAME, direction)
     }
 
-    fun orderByDescription(direction: OrderByDirection): R {
+    fun orderByDescription(direction: OrderByDirection?): R {
         return cf.withOrderBy(NameableColumns.DESCRIPTION, direction)
     }
 
-    fun orderByDisplayDescription(direction: OrderByDirection): R {
+    fun orderByDisplayDescription(direction: OrderByDirection?): R {
         return cf.withOrderBy(NameableColumns.DISPLAY_DESCRIPTION, direction)
     }
 }

@@ -66,10 +66,10 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun `in`(values: Collection<V>?): R {
+    fun `in`(values: Collection<V>): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(" + getCommaSeparatedValues(values!!) + ")"
+            "(" + getCommaSeparatedValues(values) + ")"
         )
     }
 
@@ -90,10 +90,10 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun notIn(values: Collection<V>?): R {
+    fun notIn(values: Collection<V>): R {
         return newWithUnwrappedScope(
             FilterItemOperator.NOT_IN,
-            "(" + getCommaSeparatedValues(values!!) + ")"
+            "(" + getCommaSeparatedValues(values) + ")"
         )
     }
 
@@ -125,8 +125,8 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
 
     companion object {
         @JvmStatic
-        fun escapeQuotes(value: String): String {
-            return value.replace("'".toRegex(), "''")
+        fun escapeQuotes(value: String?): String? {
+            return value?.replace("'".toRegex(), "''")
         }
     }
 }

@@ -54,7 +54,7 @@ class BooleanFilterConnector<R : BaseRepository> internal constructor(
         get() = eq(false)
 
     override fun wrapValue(value: Boolean?): String {
-        return if (value!!) {
+        return if (value == true) {
             "1"
         } else {
             "0"

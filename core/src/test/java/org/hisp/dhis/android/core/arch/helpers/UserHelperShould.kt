@@ -25,38 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class UserHelperShould {
-
+@RunWith(JUnit4::class)
+class UserHelperShould {
     @Test
-    public void md5_evaluate_same_string() {
-        String md5s1 = UserHelper.md5("user1","password1");
-        String md5s2 = UserHelper.md5("user1","password1");
+    fun md5_evaluate_same_string() {
+        val md5s1 = UserHelper.md5("user1", "password1")
+        val md5s2 = UserHelper.md5("user1", "password1")
 
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isTrue();
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isTrue()
     }
 
     @Test
-    public void md5_evaluate_different_string() {
-        String md5s1 = UserHelper.md5("user2", "password2");
-        String md5s2 = UserHelper.md5("user3", "password3");
+    fun md5_evaluate_different_string() {
+        val md5s1 = UserHelper.md5("user2", "password2")
+        val md5s2 = UserHelper.md5("user3", "password3")
 
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isFalse();
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isFalse()
     }
 
+    @Test
+    fun md5_evaluate_special_chars() {
+        val md5s1 = UserHelper.md5("user1", "pässword")
+        val md5s2 = UserHelper.md5("user1", "password")
+
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isFalse()
+    }
+
+    @Test
+    fun base64_encode_credentials() {
+        val base64 = UserHelper.base64("user", "password")
+        assertThat(base64).isEqualTo("dXNlcjpwYXNzd29yZA==")
+    }
+
+    @Test
+    fun base64_encode_special_chars() {
+        val base64 = UserHelper.base64("user", "pässword")
+        assertThat(base64).isEqualTo("dXNlcjpww6Rzc3dvcmQ=")
+    }
 }

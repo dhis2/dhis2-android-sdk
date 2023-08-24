@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.user.User;
@@ -40,7 +41,7 @@ import retrofit2.http.Query;
 interface UserService {
 
     @GET("me")
-    Call<User> authenticate(@Header("Authorization") String credentials,
+    Call<User> authenticate(@Header(UserIdAuthenticatorHelper.AUTHORIZATION_KEY) String credentials,
                             @Query("fields") @Which Fields<User> fields);
 
     @GET("me")

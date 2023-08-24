@@ -66,7 +66,7 @@ subprojects {
     //version = VERSION_NAME
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-//        version.set("0.45.2")
+        version.set("0.50.0")
         android.set(true)
         outputColorName.set("RED")
         reporters {

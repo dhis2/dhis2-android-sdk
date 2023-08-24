@@ -68,7 +68,7 @@ class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
                 val list: MutableList<String> = ArrayList(value.length)
                 for (v in values) {
                     val trimmed = v.trim { it <= ' ' }
-                    if (!trimmed.isEmpty()) {
+                    if (trimmed.isNotEmpty()) {
                         list.add(trimmed)
                     }
                 }

@@ -132,7 +132,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             ownLink,
             connectedAdditionalWhere
         )
-        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, column1: String ->
+        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
             val ownLinkKey = contentValues.getAsString(ownLink)
             String.format(
                 "(SELECT %s FROM %s WHERE %s = '%s' %s)",
@@ -158,7 +158,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
         val column = String.format(
             "(CASE WHEN %s %s THEN %s ELSE %s END)", conditionalColumn, condition, ifTrueColumn, ifFalseColumn
         )
-        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, column1: String ->
+        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
             val conditionalValue = contentValues.getAsString(conditionalColumn)
             val ifTrueValue = contentValues.getAsString(ifTrueColumn)
             val ifFalseValue = contentValues.getAsString(ifFalseColumn)

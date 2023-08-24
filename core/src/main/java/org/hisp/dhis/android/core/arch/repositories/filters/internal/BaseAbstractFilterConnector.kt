@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.Arrays
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -81,7 +80,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      */
     @SafeVarargs
     fun `in`(vararg values: V): R {
-        return `in`(Arrays.asList(*values))
+        return `in`(listOf(*values))
     }
 
     /**
@@ -105,7 +104,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
      */
     @SafeVarargs
     fun notIn(vararg values: V): R {
-        return notIn(Arrays.asList(*values))
+        return notIn(listOf(*values))
     }
 
     val isNull: R

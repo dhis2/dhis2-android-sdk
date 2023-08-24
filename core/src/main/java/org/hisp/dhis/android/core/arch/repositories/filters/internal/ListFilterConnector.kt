@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.Arrays
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
 class ListFilterConnector<R : BaseRepository, T>
@@ -42,6 +41,6 @@ internal constructor(private val repositoryFactory: ScopedRepositoryFilterFactor
 
     @SafeVarargs
     fun `in`(vararg values: T): R {
-        return `in`(Arrays.asList(*values))
+        return `in`(listOf(*values))
     }
 }

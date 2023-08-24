@@ -42,14 +42,14 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
     val key: String
 ) {
     abstract fun wrapValue(value: V?): String?
-    fun updatedUnwrappedScope(operator: FilterItemOperator?, valueStr: String?): RepositoryScope {
+    fun updatedUnwrappedScope(operator: FilterItemOperator, valueStr: String?): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
             scope,
             RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build()
         )
     }
 
-    fun newWithWrappedScope(operator: FilterItemOperator?, value: V?): R {
+    fun newWithWrappedScope(operator: FilterItemOperator, value: V?): R {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)))
     }
 
@@ -84,7 +84,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
         return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues)
     }
 
-    fun newWithUnwrappedScope(operator: FilterItemOperator?, value: String?): R {
+    fun newWithUnwrappedScope(operator: FilterItemOperator, value: String?): R {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, value))
     }
 }

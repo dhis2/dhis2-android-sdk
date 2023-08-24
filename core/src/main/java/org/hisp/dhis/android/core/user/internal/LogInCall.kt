@@ -31,13 +31,13 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -88,7 +88,7 @@ internal class LogInCall @Inject internal constructor(
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
-            UserHelper.base64(username!!, password!!),
+            UserIdAuthenticatorHelper.basic(username!!, password!!),
             UserFields.allFieldsWithoutOrgUnit(null)
         )
 

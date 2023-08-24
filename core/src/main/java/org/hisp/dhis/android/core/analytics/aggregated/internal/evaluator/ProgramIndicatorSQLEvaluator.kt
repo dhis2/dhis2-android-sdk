@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+import javax.inject.Inject
 
 internal class ProgramIndicatorSQLEvaluator @Inject constructor(
-    private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor
+    private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata, queryMods)
     }
@@ -49,7 +49,7 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         return programIndicatorSQLExecutor.getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
     }

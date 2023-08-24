@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -51,12 +50,13 @@ import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.antlr.ParserException
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
+import javax.inject.Inject
 
 internal class ExpressionService @Inject constructor(
     private val dataElementStore: DataElementStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val organisationUnitGroupStore: OrganisationUnitGroupStore,
-    private val programStageStore: ProgramStageStore
+    private val programStageStore: ProgramStageStore,
 ) {
     private val validationRuleExpressionItems: Map<Int, ExpressionItem> = getValidationRuleExpressionItems()
 
@@ -106,19 +106,19 @@ internal class ExpressionService @Inject constructor(
         return getExpressionValue(
             expression,
             ExpressionServiceContext(),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         )
     }
 
     fun getExpressionValue(
         expression: String?,
         context: ExpressionServiceContext,
-        missingValueStrategy: MissingValueStrategy
+        missingValueStrategy: MissingValueStrategy,
     ): Any? {
         return expression?.let {
             val visitor = newVisitor(
                 ITEM_EVALUATE,
-                context.constantMap
+                context.constantMap,
             )
             val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
 
@@ -157,14 +157,14 @@ internal class ExpressionService @Inject constructor(
 
     fun regenerateExpression(
         expression: String?,
-        context: ExpressionServiceContext
+        context: ExpressionServiceContext,
     ): String {
         return if (expression == null) {
             ""
         } else {
             val visitor = newVisitor(
                 ITEM_REGENERATE,
-                context.constantMap
+                context.constantMap,
             )
 
             val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
@@ -196,7 +196,7 @@ internal class ExpressionService @Inject constructor(
         // ParseType parseType,
         itemMethod: ExpressionItemMethod,
         // List<Period> samplePeriods,
-        constantMap: Map<String, Constant>
+        constantMap: Map<String, Constant>,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.Expression(
@@ -206,8 +206,8 @@ internal class ExpressionService @Inject constructor(
                 dataElementStore = dataElementStore,
                 categoryOptionComboStore = categoryOptionComboStore,
                 organisationUnitGroupStore = organisationUnitGroupStore,
-                programStageStore = programStageStore
-            )
+                programStageStore = programStageStore,
+            ),
         )
     }
 }

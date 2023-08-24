@@ -37,7 +37,7 @@ internal class LinkChildStoreImpl<P : ObjectWithUidInterface, C : ObjectWithUidI
     private val linkTableChildProjection: LinkTableChildProjection,
     private val databaseAdapter: DatabaseAdapter,
     private val statementBuilder: SQLStatementBuilder,
-    private val cursorExecutor: CursorExecutor<C>
+    private val cursorExecutor: CursorExecutor<C>,
 ) : LinkChildStore<P, C> {
 
     override fun getChildren(p: P): List<C> {
@@ -48,7 +48,7 @@ internal class LinkChildStoreImpl<P : ObjectWithUidInterface, C : ObjectWithUidI
         val selectStatement = statementBuilder.selectChildrenWithLinkTable(
             linkTableChildProjection,
             p.uid(),
-            whereClause
+            whereClause,
         )
         return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement))
     }

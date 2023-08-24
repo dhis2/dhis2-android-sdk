@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.dataset
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationHa
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
+import javax.inject.Inject
 
 @Reusable
 @Suppress("SpreadOperator", "TooManyFunctions")
@@ -58,13 +58,13 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     scope: RepositoryScope,
     handler: DataSetCompleteRegistrationHandler,
     private val postCall: DataSetCompleteRegistrationPostCall,
-    private val credentialsRepository: UserCredentialsObjectRepository
+    private val credentialsRepository: UserCredentialsObjectRepository,
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(
     dataSetCompleteRegistrationStore,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
-        scope
+        scope,
     ) { s: RepositoryScope ->
         DataSetCompleteRegistrationCollectionRepository(
             dataSetCompleteRegistrationStore,
@@ -72,16 +72,16 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
             s,
             handler,
             postCall,
-            credentialsRepository
+            credentialsRepository,
         )
-    }
+    },
 ),
     ReadOnlyWithUploadCollectionRepository<DataSetCompleteRegistration> {
     fun value(
         period: String,
         organisationUnit: String,
         dataSet: String,
-        attributeOptionCombo: String
+        attributeOptionCombo: String,
     ): DataSetCompleteRegistrationObjectRepository {
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
@@ -95,7 +95,7 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
             period,
             organisationUnit,
             dataSet,
-            attributeOptionCombo
+            attributeOptionCombo,
         )
     }
 

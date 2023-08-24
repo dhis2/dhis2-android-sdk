@@ -62,7 +62,7 @@ class AnalyticsSettingCallShould {
             analyticsDhisVisualizationsSettingHandler,
             service,
             apiCallExecutor,
-            appVersionManager
+            appVersionManager,
         )
     }
 

@@ -36,12 +36,12 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 internal class LegendSetHandler constructor(
     legendSetStore: LegendSetStore,
     private val legendHandler: LegendHandler,
-    private val legendCleaner: LegendSetLegendOrphanCleaner
+    private val legendCleaner: LegendSetLegendOrphanCleaner,
 ) : IdentifiableHandlerImpl<LegendSet>(legendSetStore) {
 
     override fun afterObjectHandled(o: LegendSet, action: HandleAction) {
         legendHandler.handleMany(
-            o.legends()
+            o.legends(),
         ) { legend: Legend ->
             legend.toBuilder()
                 .legendSet(ObjectWithUid.create(o.uid()))

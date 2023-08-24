@@ -50,49 +50,49 @@ object GridAnalyticsResponseSamples {
             period1.periodId()!! to MetadataItem.PeriodItem(period1),
             period2.periodId()!! to MetadataItem.PeriodItem(period2),
             orgunit1.uid() to MetadataItem.OrganisationUnitItem(orgunit1),
-            orgunit2.uid() to MetadataItem.OrganisationUnitItem(orgunit2)
+            orgunit2.uid() to MetadataItem.OrganisationUnitItem(orgunit2),
         ),
         headers = GridHeader(
             columns = listOf(
                 listOf(
                     GridHeaderItem(dataElement1.uid(), 2),
-                    GridHeaderItem(dataElement2.uid(), 2)
+                    GridHeaderItem(dataElement2.uid(), 2),
                 ),
                 listOf(
                     GridHeaderItem(co11.uid(), 1),
                     GridHeaderItem(co12.uid(), 1),
                     GridHeaderItem(co11.uid(), 1),
-                    GridHeaderItem(co12.uid(), 1)
-                )
+                    GridHeaderItem(co12.uid(), 1),
+                ),
             ),
             rows = listOf(
                 listOf(
                     GridHeaderItem(period1.periodId()!!, 1),
-                    GridHeaderItem(period2.periodId()!!, 1)
-                )
-            )
+                    GridHeaderItem(period2.periodId()!!, 1),
+                ),
+            ),
         ),
         dimensions = GridDimension(
             columns = listOf(Dimension.Data, Dimension.Category(cc1.uid())),
-            rows = listOf(Dimension.Period)
+            rows = listOf(Dimension.Period),
         ),
         dimensionItems = mapOf(
             Dimension.Data to listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.DataItem.DataElementItem(dataElement2.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid()),
             ),
             Dimension.Category(cc1.uid()) to listOf(
                 DimensionItem.CategoryItem(cc1.uid(), co11.uid()),
-                DimensionItem.CategoryItem(cc1.uid(), co12.uid())
+                DimensionItem.CategoryItem(cc1.uid(), co12.uid()),
             ),
             Dimension.Period to listOf(
                 DimensionItem.PeriodItem.Absolute(period1.periodId()!!),
-                DimensionItem.PeriodItem.Absolute(period2.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period2.periodId()!!),
             ),
             Dimension.OrganisationUnit to listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunit1.uid()),
-                DimensionItem.OrganisationUnitItem.Absolute(orgunit2.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunit2.uid()),
+            ),
         ),
         filters = listOf(orgunit1.uid(), orgunit2.uid()),
         values = listOf(
@@ -101,53 +101,53 @@ object GridAnalyticsResponseSamples {
                     listOf(dataElement1.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
                     "34.5",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement1.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
                     "10.0",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
                     "13",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
                     "15",
-                    null
-                )
+                    null,
+                ),
             ),
             listOf(
                 GridResponseValue(
                     listOf(dataElement1.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
                     "34.5",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement1.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
                     "10.0",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
                     "13",
-                    null
+                    null,
                 ),
                 GridResponseValue(
                     listOf(dataElement2.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
                     "15",
-                    null
-                )
-            )
-        )
+                    null,
+                ),
+            ),
+        ),
     )
 }

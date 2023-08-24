@@ -29,22 +29,22 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
     private val trackedEntityInstanceHandler: TrackedEntityInstanceHandler,
     private val uidsHelper: TrackedEntityInstanceUidHelper,
-    private val organisationUnitDownloader: OrganisationUnitModuleDownloader
+    private val organisationUnitDownloader: OrganisationUnitModuleDownloader,
 ) {
     fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): Completable {
         return persistTEIsInternal(trackedEntityInstances, params, relatives)
     }
@@ -53,7 +53,7 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = false,
             overwrite = false,
-            asRelationship = true
+            asRelationship = true,
         )
         return persistTEIsInternal(trackedEntityInstances, params, relatives = null)
     }
@@ -61,13 +61,13 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
     private fun persistTEIsInternal(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ): Completable {
         return Completable.defer {
             trackedEntityInstanceHandler.handleMany(
                 trackedEntityInstances,
                 params,
-                relatives
+                relatives,
             )
             if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
                 organisationUnitDownloader.refreshOrganisationUnits()

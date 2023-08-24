@@ -27,21 +27,21 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine.ExpressionDimensionItemEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import javax.inject.Inject
 
 internal class ExpressionDimensionItemEvaluator @Inject constructor(
-    private val expressionDimensionItemEngine: ExpressionDimensionItemEngine
+    private val expressionDimensionItemEngine: ExpressionDimensionItemEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         val item = ExpressionDimensionItemEvaluatorHelper.getItem(evaluationItem, metadata)
         val contextEvaluationItem = ExpressionDimensionItemEvaluatorHelper
@@ -50,14 +50,14 @@ internal class ExpressionDimensionItemEvaluator @Inject constructor(
         return expressionDimensionItemEngine.evaluateIndicator(
             expressionDimensionItem = item,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         throw AnalyticsException.SQLException("Method getSql not implemented for ExpressionDimensionItemEvaluator")
     }

@@ -96,21 +96,21 @@ class EventEndpointCallShould {
             commonParams = get(),
             page = page,
             pageSize = pageCount,
-            paging = true
+            paging = true,
         )
         return givenACallForQuery(eventQuery)
     }
 
     private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
         return OldEventEndpointCallFactory(
-            retrofit.create(EventService::class.java)
+            retrofit.create(EventService::class.java),
         ).getCollectionCall(eventQuery)
     }
 
     private suspend fun givenAEventCallByOrgUnitAndProgram(
         orgUnit: String,
         program: String?,
-        startDate: String? = null
+        startDate: String? = null,
     ): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
@@ -121,9 +121,9 @@ class EventEndpointCallShould {
                 false,
                 OrganisationUnitMode.SELECTED,
                 listOf(orgUnit),
-                10
+                10,
             ),
-            orgUnit = orgUnit
+            orgUnit = orgUnit,
         )
 
         return givenACallForQuery(eventQuery)

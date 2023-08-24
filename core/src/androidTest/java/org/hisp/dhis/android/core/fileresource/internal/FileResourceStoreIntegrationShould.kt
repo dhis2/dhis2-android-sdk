@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class FileResourceStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<FileResource>(
     FileResourceStoreImpl(TestDatabaseAdapterFactory.get()),
     FileResourceTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): FileResource {
         return FileResourceSamples.get()

@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.analytics
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
+import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
 internal class LegendEvaluator @Inject constructor(
@@ -41,11 +41,11 @@ internal class LegendEvaluator @Inject constructor(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val indicatorRepository: IndicatorCollectionRepository,
     private val legendRepository: LegendCollectionRepository,
-    private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository
+    private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
 ) {
     fun getLegendByProgramIndicator(
         programIndicatorUid: String,
-        value: String?
+        value: String?,
     ): String? {
         return if (value == null) {
             null
@@ -67,7 +67,7 @@ internal class LegendEvaluator @Inject constructor(
 
     fun getLegendByDataElement(
         dataElementUid: String,
-        value: String?
+        value: String?,
     ): String? {
         return if (value == null) {
             null
@@ -89,7 +89,7 @@ internal class LegendEvaluator @Inject constructor(
 
     fun getLegendByTrackedEntityAttribute(
         trackedEntityAttributeUid: String,
-        value: String?
+        value: String?,
     ): String? {
         return if (value == null) {
             null
@@ -111,7 +111,7 @@ internal class LegendEvaluator @Inject constructor(
 
     fun getLegendByIndicator(
         indicatorUid: String,
-        value: String?
+        value: String?,
     ): String? {
         return if (value == null) {
             null
@@ -133,7 +133,7 @@ internal class LegendEvaluator @Inject constructor(
 
     fun getLegendByLegendSet(
         legendSetUid: String,
-        value: String?
+        value: String?,
     ): String? {
         return if (value == null || value.toDouble().isNaN()) {
             null

@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.dataset.DataSet
 import java.util.*
 import javax.inject.Inject
-import org.hisp.dhis.android.core.dataset.DataSet
 
 @Reusable
 internal class AggregatedDataSyncLastUpdatedCalculator @Inject constructor(
-    private val hashHelper: AggregatedDataSyncHashHelper
+    private val hashHelper: AggregatedDataSyncHashHelper,
 ) {
 
     @Suppress("ComplexCondition")
@@ -43,7 +43,7 @@ internal class AggregatedDataSyncLastUpdatedCalculator @Inject constructor(
         dataSet: DataSet,
         pastPeriods: Int,
         futurePeriods: Int,
-        organisationUnitHash: Int
+        organisationUnitHash: Int,
     ): Date? {
         return if (
             syncValue == null ||

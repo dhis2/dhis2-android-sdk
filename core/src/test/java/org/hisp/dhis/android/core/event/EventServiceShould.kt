@@ -83,7 +83,7 @@ class EventServiceShould {
         enrollmentService,
         organisationUnitService,
         categoryOptionComboService,
-        eventDateUtils
+        eventDateUtils,
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")

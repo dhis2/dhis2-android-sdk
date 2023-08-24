@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val handler: DataSetCompleteRegistrationHandler
+    private val handler: DataSetCompleteRegistrationHandler,
 ) {
 
     internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
@@ -58,7 +58,7 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
                 query.dataSetUids,
                 query.periodIds,
-                rootOrgUnitUid
+                rootOrgUnitUid,
             )
         }
     }

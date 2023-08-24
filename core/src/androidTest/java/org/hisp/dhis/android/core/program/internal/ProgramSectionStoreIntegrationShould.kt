@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class ProgramSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection>(
     ProgramSectionStoreImpl(TestDatabaseAdapterFactory.get()),
     ProgramSectionTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): ProgramSection {
         return ProgramSectionSamples.programSection

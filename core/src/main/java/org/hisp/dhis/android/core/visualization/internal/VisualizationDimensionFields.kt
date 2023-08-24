@@ -43,7 +43,7 @@ internal object VisualizationDimensionFields {
             .fields(
                 fh.field<String>(BaseIdentifiableObject.UID),
                 fh.nestedField<VisualizationDimensionItem>(ITEMS)
-                    .with(VisualizationDimensionItemFields.allFields)
+                    .with(VisualizationDimensionItemFields.allFields),
             )
             .build()
 }

@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import java.io.*
-import java.net.URLConnection
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
+import java.io.*
+import java.net.URLConnection
 
 internal object FileResourceUtil {
 
@@ -74,7 +74,7 @@ internal object FileResourceUtil {
     fun saveFileFromResponse(body: ResponseBody, fileResource: FileResource, context: Context): File {
         val destinationFile = File(
             FileResourceDirectoryHelper.getFileResourceDirectory(context),
-            generateFileName(fileResource.uid()!!, getExtension(fileResource.name()!!))
+            generateFileName(fileResource.uid()!!, getExtension(fileResource.name()!!)),
         )
         writeInputStream(body.byteStream(), destinationFile, body.contentLength())
         return destinationFile
@@ -104,7 +104,7 @@ internal object FileResourceUtil {
                 outputStream?.close()
                 Log.d(
                     FileResourceUtil::class.java.canonicalName,
-                    "file saved. Size: $fileSize"
+                    "file saved. Size: $fileSize",
                 )
             } catch (e: IOException) {
                 logMessage(e)

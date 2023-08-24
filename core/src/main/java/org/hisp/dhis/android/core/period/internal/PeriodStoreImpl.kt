@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.period.internal
 
 import android.database.Cursor
-import java.util.Date
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
@@ -40,9 +39,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
 internal class PeriodStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : PeriodStore,
     ObjectWithoutUidStoreImpl<Period>(
         databaseAdapter,
@@ -50,7 +50,7 @@ internal class PeriodStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> Period.create(cursor) }
+        { cursor: Cursor -> Period.create(cursor) },
     ) {
     override fun selectByPeriodId(periodId: String?): Period? {
         val whereClause = WhereClauseBuilder()
@@ -64,11 +64,11 @@ internal class PeriodStoreImpl(
             .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_TYPE, periodType)
             .appendKeyLessThanOrEqStringValue(
                 PeriodTableInfo.Columns.START_DATE,
-                BaseIdentifiableObject.DATE_FORMAT.format(date)
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
             )
             .appendKeyGreaterOrEqStringValue(
                 PeriodTableInfo.Columns.END_DATE,
-                BaseIdentifiableObject.DATE_FORMAT.format(date)
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
             )
             .build()
         return selectOneWhere(whereClause)

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 @Suppress("MagicNumber")
 internal class SynchronizationSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SynchronizationSettingStore,
     ObjectWithoutUidStoreImpl<SynchronizationSettings>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class SynchronizationSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> SynchronizationSettings.create(cursor) }
+        { cursor: Cursor -> SynchronizationSettings.create(cursor) },
     ) {
 
     companion object {

@@ -42,7 +42,7 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
     @JvmField internal val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>
+    cf: FilterConnectorFactory<R>,
 ) : ReadOnlyCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
 
@@ -66,8 +66,8 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey()
-            )
+                scope.pagingKey(),
+            ),
         )
     }
 }

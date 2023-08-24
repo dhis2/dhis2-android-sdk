@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramRuleSubCollectionCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SubCollectionCleanerImpl<ProgramRule>(
     tableName = ProgramRuleTableInfo.TABLE_INFO.name(),
     parentColumn = ProgramRuleTableInfo.Columns.PROGRAM,
@@ -46,5 +46,5 @@ internal class ProgramRuleSubCollectionCleaner @Inject constructor(
         override fun transform(o: ProgramRule): String {
             return o.program()!!.uid()
         }
-    }
+    },
 )

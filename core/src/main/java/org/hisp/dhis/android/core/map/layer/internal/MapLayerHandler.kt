@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 
 internal class MapLayerHandler constructor(
     store: MapLayerStore,
-    private val imagerProviderHandler: MapLayerImageryProviderHandler
+    private val imagerProviderHandler: MapLayerImageryProviderHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<MapLayer>(store) {
 
     override fun afterObjectHandled(o: MapLayer, action: HandleAction) {

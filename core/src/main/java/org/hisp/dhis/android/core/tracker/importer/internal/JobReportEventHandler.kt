@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportEventHandler @Inject internal constructor(
@@ -51,7 +51,7 @@ internal class JobReportEventHandler @Inject internal constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore
+    relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
@@ -79,7 +79,7 @@ internal class JobReportEventHandler @Inject internal constructor(
                         .trackedEntityInstance(trackedEntityInstanceUid)
                         .enrollment(event.enrollment())
                         .event(errorReport.uid)
-                        .build()
+                        .build(),
                 )
             }
         }
@@ -100,7 +100,7 @@ internal class JobReportEventHandler @Inject internal constructor(
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.SYNC_STATE,
-                State.uploadableStatesIncludingError().map { it.name }
+                State.uploadableStatesIncludingError().map { it.name },
             )
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
         for (note in noteStore.selectWhere(whereClause)) {

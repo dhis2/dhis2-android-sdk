@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
@@ -49,6 +47,8 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationPostCall @Inject constructor(
@@ -57,10 +57,10 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     private val versionManager: DHISVersionManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataSetCompleteRegistrations(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): Flow<D2Progress> {
         if (dataSetCompleteRegistrations.isEmpty()) {
             return emptyFlow()
@@ -71,7 +71,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
         return uploadInternal(
             progressManager,
             toPostDataSetCompleteRegistrations,
-            toDeleteDataSetCompleteRegistrations
+            toDeleteDataSetCompleteRegistrations,
         )
     }
 
@@ -79,7 +79,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
     private fun uploadInternal(
         progressManager: D2ProgressManager,
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-        toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+        toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ) = flow {
         val payload = DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations)
         val dataValueImportSummary: DataValueImportSummary =
@@ -110,7 +110,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
                     dataSetCompleteRegistration.organisationUnit(),
                     coc!!.categoryCombo()!!.uid(),
                     CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                    false
+                    false,
                 )
             }.fold(
                 onSuccess = { result ->
@@ -123,25 +123,25 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
 
                 onFailure = {
                     withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
-                }
+                },
             )
         }
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             payload,
             dataValueImportSummary,
             deletedDataSetCompleteRegistrations,
-            withErrorDataSetCompleteRegistrations
+            withErrorDataSetCompleteRegistrations,
         )
         emit(progressManager.increaseProgress(DataSetCompleteRegistration::class.java, true))
     }
 
     private suspend fun postCompleteRegistrations(
-        payload: DataSetCompleteRegistrationPayload
+        payload: DataSetCompleteRegistrationPayload,
     ): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java
+                errorClass = DataValueImportSummaryWebResponse::class.java,
             ) {
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload)
             }.map { it.response }
@@ -154,7 +154,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
 
     private fun markObjectsAs(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
-        forcedState: State?
+        forcedState: State?,
     ) {
         for (dscr in dataSetCompleteRegistrations) {
             dataSetCompleteRegistrationStore.setState(dscr, forcedOrOwn(dscr, forcedState))

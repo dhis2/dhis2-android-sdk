@@ -40,7 +40,7 @@ internal class AnalyticsPeriodBoundaryStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<AnalyticsPeriodBoundary>(
         AnalyticsPeriodBoundaryStoreImpl(TestDatabaseAdapterFactory.get()),
         AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundarySamples.getAnalyticsPeriodBoundary()

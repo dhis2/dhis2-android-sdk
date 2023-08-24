@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
@@ -48,7 +48,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val enrollmentStore: EnrollmentStore,
     private val programStore: ProgramStore,
-    private val ownershipManagerImpl: OwnershipManagerImpl
+    private val ownershipManagerImpl: OwnershipManagerImpl,
 ) {
 
     /**
@@ -56,7 +56,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
      */
     fun getGlassErrors(
         summary: TEIWebResponseHandlerSummary,
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
         return summary.enrollments.ignored.filter { enrollment ->
             isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
@@ -106,12 +106,12 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
                 glassErrors.trackedEntities.addAll(
                     payload.trackedEntities.filter {
                         it.uid() == enrollment.trackedEntity()
-                    }
+                    },
                 )
                 glassErrors.events.addAll(
                     payload.events.filter {
                         it.enrollment() == enrollment.uid()
-                    }
+                    },
                 )
             }
 

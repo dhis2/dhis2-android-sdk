@@ -27,21 +27,21 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import javax.inject.Inject
 
 internal class IndicatorEvaluator @Inject constructor(
-    private val indicatorEngine: IndicatorEngine
+    private val indicatorEngine: IndicatorEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
         val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
@@ -49,14 +49,14 @@ internal class IndicatorEvaluator @Inject constructor(
         return indicatorEngine.evaluateIndicator(
             indicator = indicator,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }

@@ -52,7 +52,7 @@ object UidsHelper {
     @JvmStatic
     fun <P, C : ObjectWithUidInterface> getChildrenUids(
         parentList: Collection<P>,
-        childExtractor: (P) -> List<C>
+        childExtractor: (P) -> List<C>,
     ): Set<String> {
         return getUids(parentList.flatMap { childExtractor(it) })
     }
@@ -116,7 +116,7 @@ object UidsHelper {
     @JvmStatic
     fun <O : ObjectWithUidInterface> mapByParentUid(
         objects: Collection<O>,
-        parentExtractor: Transformer<O, String>
+        parentExtractor: Transformer<O, String>,
     ): Map<String, List<O>> {
         return objects.groupBy { o -> parentExtractor.transform(o) }
     }
@@ -141,7 +141,7 @@ object UidsHelper {
      */
     @JvmStatic
     fun <O : ObjectWithUidInterface> commaSeparatedUidsWithSingleQuotationMarks(
-        objects: Collection<O>
+        objects: Collection<O>,
     ): String {
         return CollectionsHelper.commaAndSpaceSeparatedArrayValues(getUidsArray(objects))
     }

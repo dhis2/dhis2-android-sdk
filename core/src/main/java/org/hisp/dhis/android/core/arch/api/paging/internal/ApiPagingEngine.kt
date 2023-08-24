@@ -50,14 +50,14 @@ object ApiPagingEngine {
                     currentPageSize,
                     numberOfFullCallsDone,
                     requiredItemsCount,
-                    itemsSkippedCount
-                )
+                    itemsSkippedCount,
+                ),
             )
         }
 
         for (call in numberOfFullCallsDone + pagingList.size + 1 until numberOfCalls) {
             pagingList.add(
-                Paging.create(call, currentPageSize, 0, 0, false)
+                Paging.create(call, currentPageSize, 0, 0, false),
             )
         }
 
@@ -66,8 +66,8 @@ object ApiPagingEngine {
                 calculateLastPagination(
                     currentPageSize,
                     requiredItemsCount + itemsSkippedCount,
-                    numberOfCalls
-                )
+                    numberOfCalls,
+                ),
             )
         }
 
@@ -80,7 +80,7 @@ object ApiPagingEngine {
         maxPageSize: Int,
         numberOfFullCallsDone: Int,
         requiredItemsCount: Int,
-        itemsSkippedCount: Int
+        itemsSkippedCount: Int,
     ): Paging {
         val upperLimit = minOf(itemsSkippedCount + requiredItemsCount, (numberOfFullCallsDone + 1) * maxPageSize)
         val minimumPageSize = upperLimit - itemsSkippedCount
@@ -95,7 +95,7 @@ object ApiPagingEngine {
                     pageSize,
                     previousItemsToSkipCount,
                     posteriorItemsToSkipCount,
-                    false
+                    false,
                 )
             }
         }
@@ -120,7 +120,7 @@ object ApiPagingEngine {
                         pageSize,
                         previousItemsToSkipCount,
                         posteriorItemsToSkipCount,
-                        true
+                        true,
                     )
                 }
             }

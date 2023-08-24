@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 
 internal class ProgramSectionAttributeChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<ProgramSection, TrackedEntityAttribute>
+    private val linkChildStore: LinkChildStore<ProgramSection, TrackedEntityAttribute>,
 ) : ChildrenAppender<ProgramSection>() {
     override fun appendChildren(m: ProgramSection): ProgramSection {
         val builder = m.toBuilder()
@@ -51,7 +51,7 @@ internal class ProgramSectionAttributeChildrenAppender private constructor(
         val CHILD_PROJECTION = LinkTableChildProjection(
             TrackedEntityAttributeTableInfo.TABLE_INFO,
             ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
-            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE
+            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramSection> {
@@ -59,8 +59,8 @@ internal class ProgramSectionAttributeChildrenAppender private constructor(
                 linkChildStore(
                     databaseAdapter,
                     ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> TrackedEntityAttribute.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> TrackedEntityAttribute.create(cursor) },
             )
         }
     }

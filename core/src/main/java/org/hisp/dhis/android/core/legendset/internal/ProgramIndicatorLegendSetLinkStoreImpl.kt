@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
 
 internal class ProgramIndicatorLegendSetLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramIndicatorLegendSetLinkStore,
     LinkStoreImpl<ProgramIndicatorLegendSetLink>(
         databaseAdapter,
         ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
         ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR,
         BINDER,
-        { cursor: Cursor -> ProgramIndicatorLegendSetLink.create(cursor) }
+        { cursor: Cursor -> ProgramIndicatorLegendSetLink.create(cursor) },
     ) {
 
     companion object {

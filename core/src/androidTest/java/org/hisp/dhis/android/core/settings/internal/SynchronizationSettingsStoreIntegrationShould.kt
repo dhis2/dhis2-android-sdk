@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class SynchronizationSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<SynchronizationSettings>(
     SynchronizationSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     SynchronizationSettingTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): SynchronizationSettings {
         return SynchronizationSettingsSamples.getSynchronizationSettings()

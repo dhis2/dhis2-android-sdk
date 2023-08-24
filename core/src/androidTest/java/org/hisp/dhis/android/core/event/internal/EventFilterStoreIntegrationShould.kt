@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 internal class EventFilterStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<EventFilter>(
     EventFilterStoreImpl(TestDatabaseAdapterFactory.get()),
     EventFilterTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): EventFilter {
         return EventFilterSamples.get()

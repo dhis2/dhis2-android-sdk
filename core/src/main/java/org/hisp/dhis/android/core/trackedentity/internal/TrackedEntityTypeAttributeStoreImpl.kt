@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
 
 internal class TrackedEntityTypeAttributeStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityTypeAttributeStore,
     LinkStoreImpl<TrackedEntityTypeAttribute>(
         databaseAdapter,
         TrackedEntityTypeAttributeTableInfo.TABLE_INFO,
         TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
         BINDER,
-        { cursor: Cursor -> TrackedEntityTypeAttribute.create(cursor) }
+        { cursor: Cursor -> TrackedEntityTypeAttribute.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: TrackedEntityTypeAttribute, w: StatementWrapper ->
@@ -57,7 +57,7 @@ internal class TrackedEntityTypeAttributeStoreImpl(
         }
         val CHILD_PROJECTION = SingleParentChildProjection(
             TrackedEntityTypeAttributeTableInfo.TABLE_INFO,
-            TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE
+            TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
         )
     }
 }

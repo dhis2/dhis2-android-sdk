@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class DataValueConflictStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<DataValueConflict>(
     DataValueConflictStoreImpl(TestDatabaseAdapterFactory.get()),
     DataValueConflictTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): DataValueConflict {
         return DataValueConflictSamples.get()

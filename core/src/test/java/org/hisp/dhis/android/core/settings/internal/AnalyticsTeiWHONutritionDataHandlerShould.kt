@@ -53,7 +53,7 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
         analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
             store,
             teiDataElementHandler,
-            teiIndicatorHandler
+            teiIndicatorHandler,
         )
     }
 

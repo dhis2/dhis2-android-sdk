@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class FilterSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<FilterSetting>(
     FilterSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     FilterSettingTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): FilterSetting {
         return FilterSettingSamples.getFilterSetting()

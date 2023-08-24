@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 
 internal class OptionGroupOptionLinkHandler(
-    store: OptionGroupOptionLinkStore
+    store: OptionGroupOptionLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, OptionGroupOptionLink>(store)

@@ -36,6 +36,6 @@ import retrofit2.http.Query
 internal fun interface SystemInfoService {
     @GET("system/info")
     suspend fun getSystemInfo(
-        @Query("fields") @Which fields: Fields<SystemInfo>
+        @Query("fields") @Which fields: Fields<SystemInfo>,
     ): SystemInfo
 }

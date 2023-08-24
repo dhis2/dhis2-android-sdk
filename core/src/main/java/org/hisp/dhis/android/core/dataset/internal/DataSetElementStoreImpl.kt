@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 
 internal class DataSetElementStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetElementStore,
     LinkStoreImpl<DataSetElement>(
         databaseAdapter,
         DataSetElementLinkTableInfo.TABLE_INFO,
         DataSetElementLinkTableInfo.Columns.DATA_SET,
         BINDER,
-        { cursor: Cursor -> DataSetElement.create(cursor) }
+        { cursor: Cursor -> DataSetElement.create(cursor) },
     ) {
 
     companion object {

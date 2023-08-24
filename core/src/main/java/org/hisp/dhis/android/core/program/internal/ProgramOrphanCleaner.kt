@@ -28,22 +28,22 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramOrphanCleaner @Inject constructor(
     private val programRuleVariableCleaner: ProgramRuleVariableOrphanCleaner,
     private val programTrackedEntityAttributeCleaner: ProgramTrackedEntityAttributeOrphanCleaner,
-    private val programSectionCleaner: ProgramSectionOrphanCleaner
+    private val programSectionCleaner: ProgramSectionOrphanCleaner,
 ) : ParentOrphanCleaner<Program> {
     override fun deleteOrphan(parent: Program?) {
         programRuleVariableCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramRuleVariables(parent))
         programTrackedEntityAttributeCleaner.deleteOrphan(
             parent,
-            ProgramInternalAccessor.accessProgramTrackedEntityAttributes(parent)
+            ProgramInternalAccessor.accessProgramTrackedEntityAttributes(parent),
         )
         programSectionCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramSections(parent))
     }

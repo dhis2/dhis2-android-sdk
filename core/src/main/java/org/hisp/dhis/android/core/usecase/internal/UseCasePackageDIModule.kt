@@ -39,8 +39,8 @@ import retrofit2.Retrofit
 @Module(
     includes = [
         StockUseCaseEntityDIModule::class,
-        StockUseCaseTransactionEntityDIModule::class
-    ]
+        StockUseCaseTransactionEntityDIModule::class,
+    ],
 )
 internal class UseCasePackageDIModule {
 

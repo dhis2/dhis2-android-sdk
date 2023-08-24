@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetIndicatorEvaluator @Inject constructor(private val expressionService: ExpressionService) {
@@ -42,18 +42,18 @@ internal class DataSetIndicatorEvaluator @Inject constructor(private val express
     fun evaluate(
         indicator: Indicator,
         indicatorType: IndicatorType,
-        context: ExpressionServiceContext
+        context: ExpressionServiceContext,
     ): Double {
         val numerator = expressionService.getExpressionValue(
             indicator.numerator(),
             context,
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double
 
         val denominator = expressionService.getExpressionValue(
             indicator.denominator(),
             context,
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"

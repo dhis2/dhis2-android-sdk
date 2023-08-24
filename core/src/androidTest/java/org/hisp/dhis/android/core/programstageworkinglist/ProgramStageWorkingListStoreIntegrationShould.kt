@@ -41,7 +41,7 @@ class ProgramStageWorkingListStoreIntegrationShould :
     IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageWorkingList>(
         ProgramStageWorkingListStoreImpl(TestDatabaseAdapterFactory.get()),
         ProgramStageWorkingListTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObject(): ProgramStageWorkingList {

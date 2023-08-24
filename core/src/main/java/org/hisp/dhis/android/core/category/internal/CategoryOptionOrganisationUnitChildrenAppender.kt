@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUn
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
 internal class CategoryOptionOrganisationUnitChildrenAppender private constructor(
-    private val childStore: LinkStore<CategoryOptionOrganisationUnitLink>
+    private val childStore: LinkStore<CategoryOptionOrganisationUnitLink>,
 ) : ChildrenAppender<CategoryOption>() {
 
     override fun appendChildren(categoryOption: CategoryOption): CategoryOption {
@@ -47,7 +47,7 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
         val whereClause = WhereClauseBuilder().apply {
             appendKeyStringValue(
                 CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-                categoryOption.uid()
+                categoryOption.uid(),
             )
         }.build()
         val links = childStore.selectWhere(whereClause)
@@ -65,7 +65,7 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOption> {
             return CategoryOptionOrganisationUnitChildrenAppender(
-                CategoryOptionOrganisationUnitLinkStoreImpl(databaseAdapter)
+                CategoryOptionOrganisationUnitLinkStoreImpl(databaseAdapter),
             )
         }
     }

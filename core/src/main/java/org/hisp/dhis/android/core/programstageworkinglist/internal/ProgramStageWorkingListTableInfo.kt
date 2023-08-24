@@ -61,7 +61,7 @@ internal object ProgramStageWorkingListTableInfo {
                 DISPLAY_COLUMN_ORDER,
                 ORG_UNIT,
                 OU_MODE,
-                ASSIGNED_USER_MODE
+                ASSIGNED_USER_MODE,
             )
         }
 

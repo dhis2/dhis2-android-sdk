@@ -42,7 +42,7 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
     childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
     onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
-    localQueryHelper: TrackedEntityInstanceLocalQueryHelper
+    localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) : ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance>() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
@@ -52,12 +52,12 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
         childrenAppenders,
         onlineCache,
         onlineHelper,
-        localQueryHelper
+        localQueryHelper,
     )
 
     override fun loadInitial(
         params: LoadInitialParams<TrackedEntityInstance>,
-        callback: LoadInitialCallback<TrackedEntityInstance>
+        callback: LoadInitialCallback<TrackedEntityInstance>,
     ) {
         dataFetcher.refresh()
         callback.onResult(loadPages(params.requestedLoadSize))
@@ -65,14 +65,14 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
 
     override fun loadAfter(
         params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance>
+        callback: LoadCallback<TrackedEntityInstance>,
     ) {
         callback.onResult(loadPages(params.requestedLoadSize))
     }
 
     override fun loadBefore(
         params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance>
+        callback: LoadCallback<TrackedEntityInstance>,
     ) {
         // do nothing
     }

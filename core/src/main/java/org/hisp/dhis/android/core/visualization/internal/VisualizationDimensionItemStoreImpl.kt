@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableI
 
 @Suppress("MagicNumber")
 internal class VisualizationDimensionItemStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : VisualizationDimensionItemStore,
     LinkStoreImpl<VisualizationDimensionItem>(
         databaseAdapter,
         VisualizationDimensionItemTableInfo.TABLE_INFO,
         VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
         BINDER,
-        { VisualizationDimensionItem.create(it) }
+        { VisualizationDimensionItem.create(it) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: VisualizationDimensionItem, w: StatementWrapper ->

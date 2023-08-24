@@ -33,7 +33,7 @@ import javax.inject.Inject
 @Reusable
 internal class DatabaseConfigurationHelper @Inject constructor(
     private val databaseNameGenerator: DatabaseNameGenerator,
-    private val dateProvider: DateProvider
+    private val dateProvider: DateProvider,
 ) {
 
     fun changeEncryption(serverUrl: String?, account: DatabaseAccount): DatabaseAccount {
@@ -43,8 +43,8 @@ internal class DatabaseConfigurationHelper @Inject constructor(
                 databaseNameGenerator.getDatabaseName(
                     serverUrl!!,
                     account.username(),
-                    !account.encrypted()
-                )
+                    !account.encrypted(),
+                ),
             )
             .build()
     }
@@ -53,7 +53,7 @@ internal class DatabaseConfigurationHelper @Inject constructor(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ): DatabasesConfiguration {
         val newAccount = DatabaseAccount.builder()
             .username(username)
@@ -76,7 +76,7 @@ internal class DatabaseConfigurationHelper @Inject constructor(
         fun getAccount(
             configuration: DatabasesConfiguration?,
             serverUrl: String,
-            username: String
+            username: String,
         ): DatabaseAccount? {
             return configuration?.accounts()?.find {
                 equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
@@ -85,7 +85,7 @@ internal class DatabaseConfigurationHelper @Inject constructor(
 
         fun removeAccount(
             configuration: DatabasesConfiguration,
-            userToRemove: List<DatabaseAccount>
+            userToRemove: List<DatabaseAccount>,
         ): DatabasesConfiguration {
             val users = configuration.accounts().filterNot { user ->
                 userToRemove.any { it.databaseName() == user.databaseName() }
@@ -98,7 +98,7 @@ internal class DatabaseConfigurationHelper @Inject constructor(
         fun getLoggedAccount(
             configuration: DatabasesConfiguration,
             username: String,
-            serverUrl: String
+            serverUrl: String,
         ): DatabaseAccount {
             val account = getAccount(configuration, serverUrl, username)
             return account

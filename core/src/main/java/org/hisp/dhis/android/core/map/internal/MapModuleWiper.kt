@@ -28,20 +28,20 @@
 package org.hisp.dhis.android.core.map.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import javax.inject.Inject
 
 @Reusable
 class MapModuleWiper @Inject internal constructor(
-    private val tableWiper: TableWiper
+    private val tableWiper: TableWiper,
 ) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             MapLayerTableInfo.TABLE_INFO,
-            MapLayerImageryProviderTableInfo.TABLE_INFO
+            MapLayerImageryProviderTableInfo.TABLE_INFO,
         )
     }
 

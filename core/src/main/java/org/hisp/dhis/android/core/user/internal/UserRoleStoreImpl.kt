@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.user.UserRoleTableInfo
 
 internal class UserRoleStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : UserRoleStore,
     IdentifiableObjectStoreImpl<UserRole>(
         databaseAdapter,
         UserRoleTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> UserRole.create(cursor) }
+        { cursor: Cursor -> UserRole.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<UserRole> = object : IdentifiableStatementBinder<UserRole>() {

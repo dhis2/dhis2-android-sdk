@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.net.HttpURLConnection.HTTP_CONFLICT
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -50,6 +48,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterProgramOwnerPostCall
+import java.net.HttpURLConnection.HTTP_CONFLICT
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -64,25 +64,25 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val relationshipPostCall: RelationshipPostCall,
     private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
-    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
     fun uploadTrackedEntityInstances(
-        trackedEntityInstances: List<TrackedEntityInstance>
+        trackedEntityInstances: List<TrackedEntityInstance>,
     ): Flow<D2Progress> {
         val payload = trackerImporterPayloadGenerator.getTrackedEntityInstancePayload(trackedEntityInstances)
         return uploadPayload(payload)
     }
 
     fun uploadEvents(
-        events: List<Event>
+        events: List<Event>,
     ): Flow<D2Progress> {
         val payload = trackerImporterPayloadGenerator.getEventPayload(events)
         return uploadPayload(payload)
     }
 
     private fun uploadPayload(
-        payload: OldTrackerImporterPayload
+        payload: OldTrackerImporterPayload,
     ): Flow<D2Progress> = flow {
         val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
 
@@ -96,7 +96,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private fun postTrackedEntityInstances(
-        trackedEntityInstances: List<TrackedEntityInstance>
+        trackedEntityInstances: List<TrackedEntityInstance>,
     ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
         val teiPartitions = trackedEntityInstances
@@ -122,7 +122,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             } catch (e: Exception) {
                 trackerStateManager.restorePayloadStates(
                     trackedEntityInstances = partition.items,
-                    fileResources = partition.fileResources
+                    fileResources = partition.fileResources,
                 )
                 if (e is D2Error && e.isOffline) {
                     throw e
@@ -134,18 +134,18 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     }
 
     private suspend fun postPartition(
-        trackedEntityInstances: List<TrackedEntityInstance>
+        trackedEntityInstances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {
         trackerStateManager.setPayloadStates(
             trackedEntityInstances = trackedEntityInstances,
-            forcedState = State.UPLOADING
+            forcedState = State.UPLOADING,
         )
         val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(trackedEntityInstances)
 
         val response = coroutineAPICallExecutor.wrap(
             storeError = true,
             acceptedErrorCodes = listOf(HTTP_CONFLICT),
-            errorClass = TEIWebResponse::class.java
+            errorClass = TEIWebResponse::class.java,
         ) {
             trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, "SYNC")
         }
@@ -157,7 +157,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private fun postEvents(
-        events: List<Event>
+        events: List<Event>,
     ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
@@ -171,7 +171,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
             trackerStateManager.setPayloadStates(
                 events = payload.events,
-                forcedState = State.UPLOADING
+                forcedState = State.UPLOADING,
             )
 
             val strategy = "SYNC"
@@ -179,14 +179,14 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                 val webResponse = coroutineAPICallExecutor.wrap(
                     storeError = true,
                     acceptedErrorCodes = listOf(HTTP_CONFLICT),
-                    errorClass = EventWebResponse::class.java
+                    errorClass = EventWebResponse::class.java,
                 ) {
                     eventService.postEvents(payload, strategy)
                 }.getOrThrow()
 
                 eventImportHandler.handleEventImportSummaries(
                     eventImportSummaries = webResponse.response()?.importSummaries(),
-                    events = payload.events
+                    events = payload.events,
                 )
 
                 fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
@@ -195,7 +195,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             } catch (e: Exception) {
                 trackerStateManager.restorePayloadStates(
                     events = payload.events,
-                    fileResources = validEvents.fileResources
+                    fileResources = validEvents.fileResources,
                 )
                 throw e
             }

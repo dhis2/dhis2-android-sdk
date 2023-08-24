@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
 
 internal class OptionGroupOptionLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OptionGroupOptionLinkStore,
     LinkStoreImpl<OptionGroupOptionLink>(
         databaseAdapter,
         OptionGroupOptionLinkTableInfo.TABLE_INFO,
         OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
         BINDER,
-        { cursor: Cursor -> OptionGroupOptionLink.create(cursor) }
+        { cursor: Cursor -> OptionGroupOptionLink.create(cursor) },
     ) {
 
     companion object {

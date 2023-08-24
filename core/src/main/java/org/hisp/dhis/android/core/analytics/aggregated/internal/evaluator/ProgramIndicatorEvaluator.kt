@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -43,17 +42,18 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import javax.inject.Inject
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
-    private val programIndicatorEngine: ProgramIndicatorEngine
+    private val programIndicatorEngine: ProgramIndicatorEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
@@ -72,7 +72,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
@@ -81,7 +81,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEventUids(programIndicator, evaluationItem, metadata, queryMods).map {
             programIndicatorEngine.getEventProgramIndicatorValue(it, programIndicator.uid())
@@ -92,7 +92,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): List<String> {
         val whereClause = ProgramIndicatorEvaluatorHelper
             .getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
@@ -105,7 +105,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata, queryMods).map {
             programIndicatorEngine.getEnrollmentProgramIndicatorValue(it, programIndicator.uid())
@@ -116,14 +116,14 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): List<String> {
         val whereClause =
             ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
                 programIndicator,
                 evaluationItem,
                 metadata,
-                queryMods
+                queryMods,
             )
 
         val rawClause = "SELECT * FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollment WHERE $whereClause"
@@ -139,10 +139,12 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 AggregationType.MAX -> floatValues.maxOrNull()
                 AggregationType.MIN -> floatValues.minOrNull()
                 AggregationType.AVERAGE,
-                AggregationType.AVERAGE_SUM_ORG_UNIT -> floatValues.average().toFloat()
+                AggregationType.AVERAGE_SUM_ORG_UNIT,
+                -> floatValues.average().toFloat()
                 AggregationType.COUNT -> floatValues.size.toFloat()
                 AggregationType.LAST,
-                AggregationType.LAST_AVERAGE_ORG_UNIT -> floatValues.lastOrNull()
+                AggregationType.LAST_AVERAGE_ORG_UNIT,
+                -> floatValues.lastOrNull()
                 else -> floatValues.sum()
             }.toString()
         } catch (e: NumberFormatException) {

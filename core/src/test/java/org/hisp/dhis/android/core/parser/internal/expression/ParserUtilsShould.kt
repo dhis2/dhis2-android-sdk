@@ -39,7 +39,7 @@ class ParserUtilsShould {
         mapOf(
             "2022-12-10" to listOf(2022, 12, 10, "2022-12-10"),
             "2022-05-08" to listOf(2022, 5, 8, "2022-05-08"),
-            "2022-5-8" to listOf(2022, 5, 8, "2022-05-08")
+            "2022-5-8" to listOf(2022, 5, 8, "2022-05-08"),
         ).forEach { (str, tokens) ->
             val date = ParserUtils.parseExpressionDate(str)
             assertThat(date.year).isEqualTo(tokens[0])
@@ -55,7 +55,7 @@ class ParserUtilsShould {
             "",
             "null",
             "2022-08",
-            "2022-13-35"
+            "2022-13-35",
         ).forEach {
             assertThrows(ParserExceptionWithoutContext::class.java) { ParserUtils.parseExpressionDate(it) }
         }
@@ -69,7 +69,7 @@ class ParserUtilsShould {
             "2022Q4" to 4,
             "2022BiW13" to 13,
             "2022S2" to 2,
-            "2022NovS1" to 1
+            "2022NovS1" to 1,
         ).forEach { (periodId, trailingDigits) ->
             assertThat(ParserUtils.getTrailingDigits(periodId)).isEqualTo(trailingDigits)
         }

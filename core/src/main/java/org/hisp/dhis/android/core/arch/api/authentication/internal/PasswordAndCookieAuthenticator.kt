@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import javax.inject.Inject
 
 @Reusable
 internal class PasswordAndCookieAuthenticator @Inject constructor(
     private val userIdHelper: UserIdAuthenticatorHelper,
-    private val cookieHelper: CookieAuthenticatorHelper
+    private val cookieHelper: CookieAuthenticatorHelper,
 ) {
 
     companion object {

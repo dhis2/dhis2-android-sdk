@@ -49,7 +49,7 @@ abstract class BaseMockIntegrationTestLocalAnalyticsSuperLargeDispatcher : BaseM
                 objects.d2.userModule().blockingLogIn(
                     RealServerMother.username,
                     RealServerMother.password,
-                    objects.dhis2MockServer.baseEndpoint!!
+                    objects.dhis2MockServer.baseEndpoint!!,
                 )
             }
 

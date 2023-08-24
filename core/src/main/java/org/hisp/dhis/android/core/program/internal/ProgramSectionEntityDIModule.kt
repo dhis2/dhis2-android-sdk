@@ -46,7 +46,7 @@ internal class ProgramSectionEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramSection>> {
         return mapOf(
-            ProgramSectionFields.ATTRIBUTES to ProgramSectionAttributeChildrenAppender.create(databaseAdapter)
+            ProgramSectionFields.ATTRIBUTES to ProgramSectionAttributeChildrenAppender.create(databaseAdapter),
         )
     }
 }

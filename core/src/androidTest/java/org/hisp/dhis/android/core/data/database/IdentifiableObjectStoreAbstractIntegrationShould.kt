@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.data.database
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -39,15 +38,16 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
 
 abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal constructor(
     internal var store: IdentifiableObjectStore<M>,
     tableInfo: TableInfo,
-    databaseAdapter: DatabaseAdapter?
+    databaseAdapter: DatabaseAdapter?,
 ) : ObjectStoreAbstractIntegrationShould<M>(
     store,
     tableInfo,
-    databaseAdapter!!
+    databaseAdapter!!,
 ) where M : ObjectWithUidInterface, M : CoreObject {
     private val objectToUpdate: M
     protected abstract fun buildObjectToUpdate(): M

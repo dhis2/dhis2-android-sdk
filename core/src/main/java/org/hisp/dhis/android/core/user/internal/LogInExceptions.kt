@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import javax.inject.Inject
 
 @Reusable
 internal class LogInExceptions @Inject internal constructor(
-    private val credentialsSecureStore: CredentialsSecureStore
+    private val credentialsSecureStore: CredentialsSecureStore,
 ) {
 
     @Throws(D2Error::class)

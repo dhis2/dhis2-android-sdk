@@ -29,8 +29,6 @@ package org.hisp.dhis.android.testapp.fileresource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.InputStream
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.InputStream
 
 @RunWith(D2JunitRunner::class)
 class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {

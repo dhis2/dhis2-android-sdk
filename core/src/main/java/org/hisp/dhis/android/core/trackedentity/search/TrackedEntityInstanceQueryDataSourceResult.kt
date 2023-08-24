@@ -43,9 +43,11 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
     onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
-    localQueryHelper: TrackedEntityInstanceLocalQueryHelper
+    localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) : PageKeyedDataSource<
-    TrackedEntityInstance, Result<@JvmSuppressWildcards TrackedEntityInstance, @JvmSuppressWildcards D2Error>>() {
+    TrackedEntityInstance,
+    Result<@JvmSuppressWildcards TrackedEntityInstance, @JvmSuppressWildcards D2Error>,
+    >() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
         store,
@@ -54,12 +56,12 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
         childrenAppenders,
         onlineCache,
         onlineHelper,
-        localQueryHelper
+        localQueryHelper,
     )
 
     override fun loadInitial(
         params: LoadInitialParams<TrackedEntityInstance>,
-        callback: LoadInitialCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
+        callback: LoadInitialCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
     ) {
         dataFetcher.refresh()
         val result = loadPages(params.requestedLoadSize)
@@ -68,7 +70,7 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
 
     override fun loadAfter(
         params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
+        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
     ) {
         val result = loadPages(params.requestedLoadSize)
         callback.onResult(result, getKey(result))
@@ -76,7 +78,7 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
 
     override fun loadBefore(
         params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
+        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
     ) {
         // do nothing
     }

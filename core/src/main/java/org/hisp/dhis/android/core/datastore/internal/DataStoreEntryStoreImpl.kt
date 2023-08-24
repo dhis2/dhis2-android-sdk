@@ -42,14 +42,14 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
 @Suppress("MagicNumber")
 internal class DataStoreEntryStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ObjectWithoutUidStoreImpl<DataStoreEntry>(
     databaseAdapter,
     DataStoreEntryTableInfo.TABLE_INFO,
     BINDER,
     WHERE_UPDATE_BINDER,
     WHERE_DELETE_BINDER,
-    { cursor: Cursor -> DataStoreEntry.create(cursor) }
+    { cursor: Cursor -> DataStoreEntry.create(cursor) },
 ),
     DataStoreEntryStore {
 

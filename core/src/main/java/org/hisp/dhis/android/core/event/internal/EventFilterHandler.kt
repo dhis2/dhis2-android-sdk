@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.event.EventFilter
 
 internal class EventFilterHandler constructor(
     eventFilterStore: EventFilterStore,
-    private val eventDataFilterHandler: EventDataFilterHandler
+    private val eventDataFilterHandler: EventDataFilterHandler,
 ) : IdentifiableHandlerImpl<EventFilter>(eventFilterStore) {
 
     override fun beforeCollectionHandled(oCollection: Collection<EventFilter>): Collection<EventFilter> {
@@ -45,7 +45,7 @@ internal class EventFilterHandler constructor(
     override fun afterObjectHandled(o: EventFilter, action: HandleAction) {
         if (action !== HandleAction.Delete && o.eventQueryCriteria() != null) {
             eventDataFilterHandler.handleMany(
-                o.eventQueryCriteria()!!.dataFilters()
+                o.eventQueryCriteria()!!.dataFilters(),
             ) { edf: EventDataFilter -> edf.toBuilder().eventFilter(o.uid()).build() }
         }
     }

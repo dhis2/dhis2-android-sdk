@@ -40,7 +40,7 @@ abstract class BaseMockIntegrationTestMetadataEnqueable : BaseMockIntegrationTes
                 objects.d2.userModule().blockingLogIn(
                     "android",
                     "Android123",
-                    objects.dhis2MockServer.baseEndpoint
+                    objects.dhis2MockServer.baseEndpoint,
                 )
                 objects.dhis2MockServer.enqueueMetadataResponses()
                 objects.d2.metadataModule().blockingDownload()

@@ -120,8 +120,8 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "no_org_unit",
                     "no_data_element",
                     "no_category",
-                    "no_attribute"
-                ).blockingExists()
+                    "no_attribute",
+                ).blockingExists(),
         ).isFalse()
 
         assertThat(
@@ -131,8 +131,8 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "DiszpKrYNg8",
                     "g9eOBujte1U",
                     "Gmbgme7z9BF",
-                    "bRowv6yZOF2"
-                ).blockingExists()
+                    "bRowv6yZOF2",
+                ).blockingExists(),
         ).isTrue()
     }
 
@@ -143,7 +143,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                 "DiszpKrYNg8",
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
-                "bRowv6yZOF2"
+                "bRowv6yZOF2",
             )
     }
 }

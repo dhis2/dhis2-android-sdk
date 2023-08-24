@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.*
+import javax.inject.Inject
 
 @Reusable
 class CategoryModuleImpl @Inject internal constructor(
@@ -37,7 +37,7 @@ class CategoryModuleImpl @Inject internal constructor(
     private val categoryOptions: CategoryOptionCollectionRepository,
     private val categoryOptionCombos: CategoryOptionComboCollectionRepository,
     private val categoryCombos: CategoryComboCollectionRepository,
-    private val categoryOptionComboService: CategoryOptionComboService
+    private val categoryOptionComboService: CategoryOptionComboService,
 ) : CategoryModule {
     override fun categories(): CategoryCollectionRepository {
         return categories

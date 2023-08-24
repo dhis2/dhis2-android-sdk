@@ -31,5 +31,5 @@ internal enum class FileResourceStorageStatus {
     NONE,
     PENDING,
     FAILED,
-    STORED
+    STORED,
 }

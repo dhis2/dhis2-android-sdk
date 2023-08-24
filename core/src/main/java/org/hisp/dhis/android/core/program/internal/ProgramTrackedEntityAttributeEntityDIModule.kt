@@ -45,10 +45,10 @@ internal class ProgramTrackedEntityAttributeEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        valueTypeRenderingChildrenAppender: ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
+        valueTypeRenderingChildrenAppender: ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender,
     ): Map<String, ChildrenAppender<ProgramTrackedEntityAttribute>> {
         return mapOf(
-            ProgramTrackedEntityAttributeFields.RENDER_TYPE to valueTypeRenderingChildrenAppender
+            ProgramTrackedEntityAttributeFields.RENDER_TYPE to valueTypeRenderingChildrenAppender,
         )
     }
 }

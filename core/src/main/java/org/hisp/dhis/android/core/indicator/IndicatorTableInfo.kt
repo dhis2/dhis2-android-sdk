@@ -55,7 +55,7 @@ object IndicatorTableInfo {
                 DENOMINATOR,
                 DENOMINATOR_DESCRIPTION,
                 URL,
-                DECIMALS
+                DECIMALS,
             )
         }
 

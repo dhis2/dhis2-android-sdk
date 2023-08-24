@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo
 
 internal class DataSetSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetSettingStore,
     ObjectWithoutUidStoreImpl<DataSetSetting>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class DataSetSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> DataSetSetting.create(cursor) }
+        { cursor: Cursor -> DataSetSetting.create(cursor) },
     ) {
 
     companion object {

@@ -42,17 +42,17 @@ open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<
     private val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyOneObjectRepositoryImpl<M, R>(
     store,
     childrenAppenders,
     scope,
-    repositoryFactory
+    repositoryFactory,
 ) where M : CoreObject, M : ObjectWithUidInterface {
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected open fun updateObject(m: M): Unit {
+    protected open fun updateObject(m: M) {
         return try {
             store.update(m)
             Unit()

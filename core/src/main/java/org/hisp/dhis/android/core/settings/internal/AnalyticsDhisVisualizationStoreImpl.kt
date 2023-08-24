@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsDhisVisualizationStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AnalyticsDhisVisualizationStore,
     ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization>(
         databaseAdapter,
@@ -47,7 +47,7 @@ internal class AnalyticsDhisVisualizationStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> AnalyticsDhisVisualization.create(cursor) }
+        { cursor: Cursor -> AnalyticsDhisVisualization.create(cursor) },
     ) {
 
     companion object {

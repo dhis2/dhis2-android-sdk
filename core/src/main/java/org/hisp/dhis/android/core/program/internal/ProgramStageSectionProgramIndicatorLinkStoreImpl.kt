@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLin
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo
 
 internal class ProgramStageSectionProgramIndicatorLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageSectionProgramIndicatorLinkStore,
     LinkStoreImpl<ProgramStageSectionProgramIndicatorLink>(
         databaseAdapter,
         ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
         ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
         BINDER,
-        { cursor: Cursor -> ProgramStageSectionProgramIndicatorLink.create(cursor) }
+        { cursor: Cursor -> ProgramStageSectionProgramIndicatorLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: ProgramStageSectionProgramIndicatorLink, w: StatementWrapper ->

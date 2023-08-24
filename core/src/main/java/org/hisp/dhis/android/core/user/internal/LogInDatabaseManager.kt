@@ -29,14 +29,14 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
+import javax.inject.Inject
 
 @Reusable
 internal class LogInDatabaseManager @Inject internal constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val generalSettingCall: GeneralSettingCall
+    private val generalSettingCall: GeneralSettingCall,
 ) {
 
     fun loadDatabaseOnline(serverUrl: String, username: String): Completable {
@@ -45,14 +45,14 @@ internal class LogInDatabaseManager @Inject internal constructor(
                 multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
                     serverUrl,
                     username,
-                    encrypt
+                    encrypt,
                 )
             }
             .doOnError {
                 multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
                     serverUrl,
                     username,
-                    false
+                    false,
                 )
             }
             .ignoreElement()
@@ -62,7 +62,7 @@ internal class LogInDatabaseManager @Inject internal constructor(
     fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return multiUserDatabaseManager.loadExistingKeepingEncryption(
             serverUrl,
-            username
+            username,
         )
     }
 }

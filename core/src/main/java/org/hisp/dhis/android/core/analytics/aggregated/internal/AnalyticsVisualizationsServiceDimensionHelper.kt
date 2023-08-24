@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -45,11 +44,12 @@ import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import javax.inject.Inject
 
 internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
     private val categoryStore: CategoryStore,
     private val categoryOptionLinkStore: CategoryCategoryOptionLinkStore,
-    private val organisationUnitLevelStore: OrganisationUnitLevelStore
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
     private val dataDimension = "dx"
     private val orgUnitDimension = "ou"
@@ -133,7 +133,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
                     val level = organisationUnitLevelStore.selectOneWhere(
                         WhereClauseBuilder()
                             .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, levelNumber.toInt())
-                            .build()
+                            .build(),
                     ) ?: throw AnalyticsException.InvalidOrganisationUnitLevel(levelNumber)
                     DimensionItem.OrganisationUnitItem.Level(level.uid())
                 }

@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.Date
-import javax.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -67,6 +65,8 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.Date
+import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
 @Reusable
@@ -80,8 +80,10 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val generalSettingObjectRepository: GeneralSettingObjectRepository,
     private val reservedValueSettingStore: ReservedValueSettingStore,
     private val executor: D2CallExecutor,
-    private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery>
+    private val reservedValueQueryCallFactory: QueryCallFactory<
+        TrackedEntityAttributeReservedValue,
+        TrackedEntityAttributeReservedValueQuery,
+        >,
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
 
@@ -128,7 +130,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
      */
     fun blockingDownloadReservedValues(
         attributeUid: String,
-        numberOfValuesToFillUp: Int?
+        numberOfValuesToFillUp: Int?,
     ) {
         runBlocking { downloadReservedValuesFlow(attributeUid, numberOfValuesToFillUp).collect() }
     }
@@ -150,14 +152,14 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
 
     fun downloadReservedValues(
         attributeUid: String,
-        numberOfValuesToFillUp: Int?
+        numberOfValuesToFillUp: Int?,
     ): Observable<D2Progress> {
         return downloadReservedValuesFlow(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
     private fun downloadReservedValuesFlow(
         attributeUid: String,
-        numberOfValuesToFillUp: Int?
+        numberOfValuesToFillUp: Int?,
     ) = flow {
         emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
     }
@@ -185,7 +187,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     }
 
     private fun downloadAllReservedValuesFlow(
-        numberOfValuesToFillUp: Int?
+        numberOfValuesToFillUp: Int?,
     ) = flow {
         val flows = generatedAttributes.map { attribute ->
             downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp)
@@ -233,9 +235,9 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         val orderByClause = OrderByClauseBuilder.orderByFromItems(
             listOf(
                 RepositoryScopeOrderByItem.builder().column(IdentifiableColumns.DISPLAY_NAME)
-                    .direction(RepositoryScope.OrderByDirection.ASC).build()
+                    .direction(RepositoryScope.OrderByDirection.ASC).build(),
             ),
-            CoreColumns.ID
+            CoreColumns.ID,
         )
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(whereClause, orderByClause)
         val reservedValueSummaries: MutableList<ReservedValueSummary> = ArrayList()
@@ -249,8 +251,8 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                         .numberOfValuesToFillUp(
                             getFillUpToValue(
                                 null,
-                                trackedEntityAttribute.uid()
-                            )
+                                trackedEntityAttribute.uid(),
+                            ),
                         )
                     reservedValueSummaries.add(builder.build())
                 }
@@ -266,13 +268,13 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private fun increaseProgress(): D2Progress {
         return d2ProgressManager.increaseProgress(
             TrackedEntityAttributeReservedValue::class.java,
-            false
+            false,
         )
     }
 
     private suspend fun downloadValuesForOrgUnits(
         attribute: String,
-        numberOfValuesToFillUp: Int?
+        numberOfValuesToFillUp: Int?,
     ): Flow<D2Progress> = flow {
         val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
 
@@ -284,7 +286,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                     attribute,
                     organisationUnit,
                     numberOfValuesToFillUp,
-                    true
+                    true,
                 )
                 emit(increaseProgress())
             }
@@ -299,7 +301,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         attribute: String,
         organisationUnit: OrganisationUnit?,
         minNumberOfValuesToHave: Int?,
-        storeError: Boolean
+        storeError: Boolean,
     ) = coroutineScope {
         // Using local date. It's not worth it to make a system info call
         store.deleteExpired(Date())
@@ -308,7 +310,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         val remainingValues = store.count(
             attribute,
             if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
-            pattern
+            pattern,
         )
 
         // If number of values is explicitly specified, we use that value as threshold.
@@ -321,7 +323,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                 organisationUnit,
                 numberToReserve,
                 pattern,
-                storeError
+                storeError,
             )
         }
     }
@@ -331,7 +333,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         organisationUnit: OrganisationUnit?,
         numberToReserve: Int,
         pattern: String?,
-        storeError: Boolean
+        storeError: Boolean,
     ) {
         executor.executeD2Call(
             reservedValueQueryCallFactory.create(
@@ -339,10 +341,10 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
                     trackedEntityAttributeUid,
                     numberToReserve,
                     organisationUnit,
-                    pattern
-                )
+                    pattern,
+                ),
             ),
-            storeError
+            storeError,
         )
 
         if (pattern != null) {
@@ -355,25 +357,25 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
             ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
             WhereClauseBuilder().appendKeyStringValue(
                 ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                attribute
-            ).build()
+                attribute,
+            ).build(),
         )
         val linkedOrgunitUids = organisationUnitProgramLinkStore.selectStringColumnsWhereClause(
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
             WhereClauseBuilder().appendInKeyStringValues(
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
-                linkedProgramUids
-            ).build()
+                linkedProgramUids,
+            ).build(),
         )
         val captureOrgunits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
-            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
         )
         linkedOrgunitUids.toMutableList().retainAll(captureOrgunits)
         return organisationUnitStore.selectWhere(
             WhereClauseBuilder().appendInKeyStringValues(
                 IdentifiableColumns.UID,
-                linkedOrgunitUids
-            ).build()
+                linkedOrgunitUids,
+            ).build(),
         )
     }
 
@@ -407,7 +409,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
             }
         } else {
             reservedValueSettingStore.updateOrInsert(
-                ReservedValueSetting.builder().uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build()
+                ReservedValueSetting.builder().uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build(),
             )
             minNumberOfValuesToHave
         }

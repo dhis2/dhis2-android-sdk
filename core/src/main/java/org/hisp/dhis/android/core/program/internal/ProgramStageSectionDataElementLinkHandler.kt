@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 
 internal class ProgramStageSectionDataElementLinkHandler(
-    store: ProgramStageSectionDataElementLinkStore
+    store: ProgramStageSectionDataElementLinkStore,
 ) : OrderedLinkHandlerImpl<DataElement, ProgramStageSectionDataElementLink>(store)

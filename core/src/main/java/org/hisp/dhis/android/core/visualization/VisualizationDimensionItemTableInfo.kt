@@ -53,7 +53,7 @@ object VisualizationDimensionItemTableInfo {
                 POSITION,
                 DIMENSION,
                 DIMENSION_ITEM,
-                DIMENSION_ITEM_TYPE
+                DIMENSION_ITEM_TYPE,
             )
         }
 
@@ -64,7 +64,7 @@ object VisualizationDimensionItemTableInfo {
                 POSITION,
                 DIMENSION,
                 DIMENSION_ITEM,
-                DIMENSION_ITEM_TYPE
+                DIMENSION_ITEM_TYPE,
             )
         }
 

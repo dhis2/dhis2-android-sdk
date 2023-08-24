@@ -85,7 +85,7 @@ class EnrollmentImportHandlerShould {
             trackerImportConflictStore,
             trackerImportConflictParser,
             jobReportEnrollmentHandler,
-            dataStatePropagator
+            dataStatePropagator,
         )
 
         whenever(enrollment.trackedEntityInstance()).thenReturn("tei_uid")
@@ -153,7 +153,7 @@ class EnrollmentImportHandlerShould {
         val response = enrollmentImportHandler.handleEnrollmentImportSummary(
             listOf(importSummary),
             enrollments,
-            teiState
+            teiState,
         )
 
         assertThat(response.enrollments.ignored.size).isEqualTo(1)

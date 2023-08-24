@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetValidationRuleLinkHandler @Inject constructor(
-    store: DataSetValidationRuleLinkStore
+    store: DataSetValidationRuleLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, DataSetValidationRuleLink>(store)

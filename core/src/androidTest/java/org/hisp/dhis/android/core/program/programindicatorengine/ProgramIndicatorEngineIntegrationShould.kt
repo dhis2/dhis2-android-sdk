@@ -29,9 +29,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
@@ -57,6 +54,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreI
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.*
 import org.junit.runner.RunWith
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
@@ -195,19 +195,19 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             eventUid = event1,
             programStageUid = programStage1,
             eventDate = twoDaysBefore(),
-            lastUpdated = today()
+            lastUpdated = today(),
         )
         createTrackerEvent(
             eventUid = event2,
             programStageUid = programStage1,
             eventDate = today(),
-            lastUpdated = today()
+            lastUpdated = today(),
         )
         createTrackerEvent(
             eventUid = event3,
             programStageUid = programStage1,
             eventDate = twoDaysBefore(),
-            lastUpdated = today()
+            lastUpdated = today(),
         )
         insertTrackedEntityDataValue(event1, dataElement1, "1")
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
@@ -225,19 +225,19 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             eventUid = event1,
             programStageUid = programStage1,
             eventDate = eventDate,
-            lastUpdated = twoDaysBefore()
+            lastUpdated = twoDaysBefore(),
         )
         createTrackerEvent(
             eventUid = event2,
             programStageUid = programStage1,
             eventDate = eventDate,
-            lastUpdated = today()
+            lastUpdated = today(),
         )
         createTrackerEvent(
             eventUid = event3,
             programStageUid = programStage1,
             eventDate = eventDate,
-            lastUpdated = twoDaysBefore()
+            lastUpdated = twoDaysBefore(),
         )
         insertTrackedEntityDataValue(event1, dataElement1, "1")
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
@@ -257,11 +257,11 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityAttributeValue(attribute1, "2")
         setProgramIndicatorExpression(
             "(${de(programStage1, dataElement1)} + ${de(programStage2, dataElement2)})" +
-                " / ${att(attribute1)}"
+                " / ${att(attribute1)}",
         )
         val enrollmentValue = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
-            programIndicatorUid
+            programIndicatorUid,
         )
         val event1Value = programIndicatorEngine.getEventProgramIndicatorValue(event1, programIndicatorUid)
         val event2Value = programIndicatorEngine.getEventProgramIndicatorValue(event2, programIndicatorUid)
@@ -279,7 +279,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         setProgramIndicatorExpression(`var`("event_count"))
         val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
-            programIndicatorUid
+            programIndicatorUid,
         )
         assertThat(result).isEqualTo("2")
     }
@@ -291,7 +291,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "4.8")
         insertTrackedEntityDataValue(event1, dataElement2, "3")
         setProgramIndicatorExpression(
-            "d2:round(${de(programStage1, dataElement1)}) * ${de(programStage1, dataElement2)}"
+            "d2:round(${de(programStage1, dataElement1)}) * ${de(programStage1, dataElement2)}",
         )
         val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")
@@ -327,7 +327,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         programStageUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
-        lastUpdated: Date? = null
+        lastUpdated: Date? = null,
     ) {
         helper.createEvent(
             eventUid = eventUid,
@@ -337,7 +337,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             orgunitUid = orgunitUid,
             deleted = deleted,
             eventDate = eventDate,
-            lastUpdated = lastUpdated
+            lastUpdated = lastUpdated,
         )
     }
 
@@ -346,7 +346,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         programStageUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
-        lastUpdated: Date? = null
+        lastUpdated: Date? = null,
     ) {
         helper.createEvent(
             eventUid = eventUid,
@@ -356,7 +356,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             orgunitUid = orgunitUid,
             deleted = deleted,
             eventDate = eventDate,
-            lastUpdated = lastUpdated
+            lastUpdated = lastUpdated,
         )
     }
 

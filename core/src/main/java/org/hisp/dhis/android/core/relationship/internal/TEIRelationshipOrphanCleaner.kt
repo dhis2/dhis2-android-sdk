@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import javax.inject.Inject
 
 @Reusable
 internal class TEIRelationshipOrphanCleaner @Inject internal constructor(
     relationshipStore: RelationshipStore,
-    relationshipRepository: RelationshipCollectionRepository
+    relationshipRepository: RelationshipCollectionRepository,
 ) : RelationshipOrphanCleaner<TrackedEntityInstance, Relationship>(relationshipStore, relationshipRepository) {
     override fun getItem(uid: String): RelationshipItem {
         return RelationshipHelper.teiItem(uid)

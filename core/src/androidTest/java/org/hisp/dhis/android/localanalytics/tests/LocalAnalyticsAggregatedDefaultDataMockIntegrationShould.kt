@@ -46,7 +46,7 @@ internal class LocalAnalyticsAggregatedDefaultDataMockIntegrationShould :
         fun setUpClass() {
             setUpClass(
                 LocalAnalyticsDataParams.DefaultFactor,
-                MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher
+                MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher,
             )
         }
     }

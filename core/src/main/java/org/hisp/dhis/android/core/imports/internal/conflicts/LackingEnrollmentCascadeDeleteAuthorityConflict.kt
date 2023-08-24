@@ -33,7 +33,7 @@ internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportC
 
     private val regex: Regex = Regex(
         "Enrollment (\\w{11}) cannot be deleted as it has associated" +
-            " events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE"
+            " events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE",
     )
     private fun description(enrollment: String) = "You lack the authority to delete the enrollment: $enrollment"
 
@@ -49,7 +49,7 @@ internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportC
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)

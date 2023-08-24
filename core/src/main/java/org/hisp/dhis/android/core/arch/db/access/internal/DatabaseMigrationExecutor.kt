@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 import android.content.res.AssetManager
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import java.io.IOException
 
 internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAdapter, assetManager: AssetManager) {
     private val parser = DatabaseMigrationParser(assetManager, databaseAdapter)

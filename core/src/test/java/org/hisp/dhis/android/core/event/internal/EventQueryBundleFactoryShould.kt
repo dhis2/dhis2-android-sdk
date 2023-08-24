@@ -85,13 +85,13 @@ class EventQueryBundleFactoryShould {
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore,
-            organisationUnitProgramLinkLinkStore
+            organisationUnitProgramLinkLinkStore,
         )
         bundleFactory = EventQueryBundleFactory(
             programStore,
             programSettingsObjectRepository,
             lastUpdatedManager,
-            commonHelper
+            commonHelper,
         )
     }
 
@@ -172,8 +172,8 @@ class EventQueryBundleFactoryShould {
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
             listOf(
                 OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
-                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
-            )
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build(),
+            ),
         )
 
         val bundles = bundleFactory.getQueries(params)

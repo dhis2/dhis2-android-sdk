@@ -30,17 +30,17 @@ package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
 import android.util.Log
 import io.reactivex.Single
-import java.util.*
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataResponse.MetadataId
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.SMSMetadata
+import java.util.*
 
 internal class WebApiRepositoryImpl(
     private val apiService: ApiService,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) : WebApiRepository {
 
     override fun getMetadataIds(config: GetMetadataIdsConfig): Single<SMSMetadata> {
@@ -83,7 +83,7 @@ internal class WebApiRepositoryImpl(
             `val`(c.users),
             `val`(c.trackedEntityTypes),
             `val`(c.trackedEntityAttributes),
-            `val`(c.programs)
+            `val`(c.programs),
         )
     }
 

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import android.util.Log
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler
+import javax.inject.Inject
 
 @Reusable
 internal class EventHandler @Inject constructor(
@@ -58,7 +58,7 @@ internal class EventHandler @Inject constructor(
     private val noteHandler: NoteHandler,
     private val noteVersionManager: NoteDHISVersionManager,
     private val noteUniquenessManager: NoteUniquenessManager,
-    private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner
+    private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Event>(eventStore, relationshipVersionManager, relationshipHandler) {
 
     override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
@@ -74,7 +74,7 @@ internal class EventHandler @Inject constructor(
         o: Event,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         val eventUid = o.uid()
         if (action === HandleAction.Delete) {
@@ -84,7 +84,7 @@ internal class EventHandler @Inject constructor(
                 trackedEntityDataValueHandler.removeEventDataValues(eventUid)
             } else {
                 trackedEntityDataValueHandler.handleMany(
-                    o.trackedEntityDataValues()
+                    o.trackedEntityDataValues(),
                 ) { dataValue: TrackedEntityDataValue -> dataValue.toBuilder().event(eventUid).build() }
             }
 
@@ -95,7 +95,7 @@ internal class EventHandler @Inject constructor(
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
                     transformed,
                     Note.NoteType.EVENT_NOTE,
-                    o.uid()
+                    o.uid(),
                 )
                 noteHandler.handleMany(notesToSync)
             }

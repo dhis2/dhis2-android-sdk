@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
+import javax.inject.Inject
 
 @Reusable
 class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {

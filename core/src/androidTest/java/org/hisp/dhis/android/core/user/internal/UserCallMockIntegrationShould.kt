@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.Callable
 
 @RunWith(D2JunitRunner::class)
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {

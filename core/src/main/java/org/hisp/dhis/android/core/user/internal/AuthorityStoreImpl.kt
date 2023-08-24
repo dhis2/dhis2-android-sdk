@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.AuthorityTableInfo
 
 internal class AuthorityStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AuthorityStore,
     ObjectWithoutUidStoreImpl<Authority>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class AuthorityStoreImpl(
         BINDER,
         WHERE_BINDER,
         WHERE_BINDER,
-        { cursor: Cursor -> Authority.create(cursor) }
+        { cursor: Cursor -> Authority.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: Authority, w: StatementWrapper ->

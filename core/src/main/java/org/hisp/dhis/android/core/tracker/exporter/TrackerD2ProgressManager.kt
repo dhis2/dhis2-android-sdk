@@ -82,7 +82,7 @@ internal class TrackerD2ProgressManager(totalCalls: Int?) : D2ProgressManager(to
             .programs(
                 progress.programs().mapValues {
                     it.value.copy(isComplete = true).addSyncStatus(D2ProgressSyncStatus.SUCCESS)
-                }
+                },
             )
             .build()
             .also { progress = it }

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.parser.internal.service.dataobject.Dimensional
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetIndicatorEngineImpl @Inject constructor(
@@ -54,7 +54,7 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
     private val constantRepository: ConstantCollectionRepository,
     private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore,
     private val periodHelper: PeriodHelper,
-    private val dataSetIndicatorEvaluator: DataSetIndicatorEvaluator
+    private val dataSetIndicatorEvaluator: DataSetIndicatorEvaluator,
 ) : DataSetIndicatorEngine {
 
     override fun evaluate(
@@ -62,7 +62,7 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<Double> {
         return Single.fromCallable {
             blockingEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
@@ -74,7 +74,7 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Double {
         val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
         val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).blockingGet()
@@ -84,13 +84,13 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
                 valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId),
                 constantMap = getConstantMap(),
                 orgUnitCountMap = getOrgunitGroupMap(),
-                days = PeriodHelper.getDays(getPeriod(periodId))
+                days = PeriodHelper.getDays(getPeriod(periodId)),
             )
 
             dataSetIndicatorEvaluator.evaluate(
                 indicator = indicator,
                 indicatorType = indicatorType,
-                context = context
+                context = context,
             )
         } else {
             ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -101,7 +101,7 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,
-        periodId: String
+        periodId: String,
     ): Map<DimensionalItemObject, Double> {
         val dataValues: List<DataValue> = dataValueRepository
             .byDataSetUid(dataSetUid)
@@ -121,7 +121,7 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
 
     private fun getOrgunitGroupMap(): Map<String, Int> {
         return orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )
     }
 

@@ -39,8 +39,8 @@ import retrofit2.Retrofit
         AuthorityEntityDIModule::class,
         UserRoleEntityDIModule::class,
         UserEntityDIModule::class,
-        UserOrganisationUnitLinkEntityDIModule::class
-    ]
+        UserOrganisationUnitLinkEntityDIModule::class,
+    ],
 )
 internal class UserPackageDIModule {
     @Provides

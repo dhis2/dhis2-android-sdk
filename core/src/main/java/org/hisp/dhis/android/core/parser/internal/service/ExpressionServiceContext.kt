@@ -35,5 +35,5 @@ internal data class ExpressionServiceContext(
     val valueMap: Map<DimensionalItemObject, Double> = emptyMap(),
     val constantMap: Map<String, Constant> = emptyMap(),
     val orgUnitCountMap: Map<String, Int> = emptyMap(),
-    val days: Int? = 0
+    val days: Int? = 0,
 )

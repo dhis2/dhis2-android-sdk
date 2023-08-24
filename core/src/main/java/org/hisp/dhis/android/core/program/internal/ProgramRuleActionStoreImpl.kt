@@ -40,13 +40,13 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramRuleActionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramRuleActionStore,
     IdentifiableObjectStoreImpl<ProgramRuleAction>(
         databaseAdapter,
         ProgramRuleActionTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor? -> ProgramRuleAction.create(cursor) }
+        { cursor: Cursor? -> ProgramRuleAction.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<ProgramRuleAction> =
@@ -70,7 +70,7 @@ internal class ProgramRuleActionStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             ProgramRuleActionTableInfo.TABLE_INFO,
-            ProgramRuleActionTableInfo.Columns.PROGRAM_RULE
+            ProgramRuleActionTableInfo.Columns.PROGRAM_RULE,
         )
     }
 }

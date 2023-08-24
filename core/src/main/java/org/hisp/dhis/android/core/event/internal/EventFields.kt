@@ -58,7 +58,7 @@ internal object EventFields {
             fh.nestedField<Note>(NOTES).with(NoteFields.all),
             fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
             fh.nestedField<TrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES)
-                .with(TrackedEntityDataValueFields.allFields)
+                .with(TrackedEntityDataValueFields.allFields),
         ).build()
 
     val asRelationshipFields: Fields<Event> = commonFields().build()
@@ -87,7 +87,7 @@ internal object EventFields {
             fh.field<String>(EventTableInfo.Columns.DUE_DATE),
             fh.field<String>(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
             fh.field<String>(EventTableInfo.Columns.ASSIGNED_USER),
-            fh.field<String>(EventTableInfo.Columns.COMPLETED_BY)
+            fh.field<String>(EventTableInfo.Columns.COMPLETED_BY),
         )
     }
 }

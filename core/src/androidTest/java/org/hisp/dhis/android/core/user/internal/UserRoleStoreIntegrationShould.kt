@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class UserRoleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<UserRole>(
     UserRoleStoreImpl(TestDatabaseAdapterFactory.get()),
     UserRoleTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): UserRole {
         return UserRoleSamples.getUserRole()

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 
 @Suppress("MagicNumber")
 internal class ProgramStageWorkingListEventDataFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListEventDataFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListEventDataFilter>(
         databaseAdapter,
@@ -48,7 +48,7 @@ internal class ProgramStageWorkingListEventDataFilterStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { ProgramStageWorkingListEventDataFilter.create(it) }
+        { ProgramStageWorkingListEventDataFilter.create(it) },
     ) {
 
     companion object {
@@ -75,7 +75,7 @@ internal class ProgramStageWorkingListEventDataFilterStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
+            ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
         )
     }
 }

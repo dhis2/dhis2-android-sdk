@@ -48,13 +48,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 import org.hisp.dhis.android.core.common.CoreObject
 
 internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
-    M : CoreObject, T : Any, R : ReadOnlyCollectionRepository<T>
+    M : CoreObject,
+    T : Any,
+    R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: ReadableStore<M>,
     val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-    open val transformer: TwoWayTransformer<M, T>
+    open val transformer: TwoWayTransformer<M, T>,
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 
     fun blockingGetWithoutChildren(): List<M> {
@@ -62,8 +64,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey()
-            )
+                scope.pagingKey(),
+            ),
         )
     }
 
@@ -86,7 +88,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         return ChildrenAppenderExecutor.appendInObjectCollection(
             blockingGetWithoutChildren(),
             childrenAppenders,
-            scope.children()
+            scope.children(),
         ).map { transformer.transform(it) }
     }
 

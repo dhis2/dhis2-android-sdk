@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -46,11 +45,12 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     private val trackedExporterService: TrackerExporterService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : TrackedEntityEndpointCallFactory() {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
@@ -68,7 +68,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         ).let { mapPayload(it) }
     }
 
@@ -81,7 +81,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }
 
@@ -91,7 +91,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         ).let { mapPayload(it) }
     }
 
@@ -104,21 +104,21 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             if (events.isEmpty()) {
                 TrackerQueryResult(
                     trackedEntities = emptyList(),
-                    exhausted = true
+                    exhausted = true,
                 )
             } else {
                 val teiQuery = getPostEventTeiQuery(query, events)
                 val instances = getTrackedEntityQuery(teiQuery)
                 TrackerQueryResult(
                     trackedEntities = instances,
-                    exhausted = events.size < query.pageSize
+                    exhausted = events.size < query.pageSize,
                 )
             }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
-                exhausted = instances.size < query.pageSize
+                exhausted = instances.size < query.pageSize,
             )
         }
     }
@@ -135,7 +135,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
 
     private suspend fun getEventQueryForOrgunit(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?
+        orgunit: String?,
     ): List<NewTrackerImporterEvent> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             trackedExporterService.getEvents(
@@ -164,14 +164,14 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 page = query.page,
                 updatedAfter = query.lastUpdatedStartDate.simpleDateFormat(),
                 updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
-                includeDeleted = query.includeDeleted
+                includeDeleted = query.includeDeleted,
             )
         }.getOrThrow().instances
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         return coroutineAPICallExecutor.wrap(
-            errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
+            errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
         ) {
             val uidsStr = query.uids?.joinToString(";")
 
@@ -201,7 +201,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
                 paging = query.paging,
                 page = query.page,
                 pageSize = query.pageSize,
-                includeAllAttributes = true
+                includeAllAttributes = true,
             )
 
             mapPayload(payload)
@@ -210,7 +210,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
 
     private fun getPostEventTeiQuery(
         query: TrackedEntityInstanceQueryOnline,
-        events: List<NewTrackerImporterEvent>
+        events: List<NewTrackerImporterEvent>,
     ): TrackedEntityInstanceQueryOnline {
         return TrackedEntityInstanceQueryOnline(
             page = query.page,
@@ -224,7 +224,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
             attributeFilter = query.attributeFilter,
             order = query.order,
             trackedEntityType = query.trackedEntityType,
-            includeDeleted = query.includeDeleted
+            includeDeleted = query.includeDeleted,
         )
     }
 

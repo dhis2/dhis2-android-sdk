@@ -44,7 +44,7 @@ internal class ProgramStageWorkingListAttributeValueFilterEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: ProgramStageWorkingListAttributeValueFilterStore
+        store: ProgramStageWorkingListAttributeValueFilterStore,
     ): ProgramStageWorkingListAttributeValueFilterHandler {
         return ProgramStageWorkingListAttributeValueFilterHandler(store)
     }

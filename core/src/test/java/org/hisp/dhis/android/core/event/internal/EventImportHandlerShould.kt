@@ -77,7 +77,7 @@ class EventImportHandlerShould {
             trackerImportConflictStore,
             trackerImportConflictParser,
             jobReportEventHandler,
-            dataStatePropagator
+            dataStatePropagator,
         )
     }
 

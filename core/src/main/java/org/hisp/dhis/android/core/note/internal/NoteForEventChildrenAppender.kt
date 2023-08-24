@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
 
 internal class NoteForEventChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<Event, Note>
+    private val childStore: SingleParentChildStore<Event, Note>,
 ) : ChildrenAppender<Event>() {
     override fun appendChildren(m: Event): Event {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class NoteForEventChildrenAppender private constructor(
             return NoteForEventChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    NoteStoreImpl.EVENT_CHILD_PROJECTION
-                ) { cursor: Cursor -> Note.create(cursor) }
+                    NoteStoreImpl.EVENT_CHILD_PROJECTION,
+                ) { cursor: Cursor -> Note.create(cursor) },
             )
         }
     }

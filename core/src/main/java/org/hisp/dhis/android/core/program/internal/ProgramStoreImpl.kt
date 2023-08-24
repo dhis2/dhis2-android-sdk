@@ -42,13 +42,13 @@ import org.hisp.dhis.android.core.program.ProgramType
 
 @Suppress("MagicNumber")
 internal class ProgramStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStore,
     IdentifiableObjectStoreImpl<Program>(
         databaseAdapter,
         ProgramTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Program.create(cursor) }
+        { cursor: Cursor -> Program.create(cursor) },
     ) {
 
     override fun getUidsByProgramType(programType: ProgramType): List<String> {

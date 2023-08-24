@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
 
 abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
     internal var store: LinkStore<M>,
     tableInfo: TableInfo,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ObjectStoreAbstractIntegrationShould<M>(store, tableInfo, databaseAdapter) {
 
     private val objectWithOtherMasterUid: M

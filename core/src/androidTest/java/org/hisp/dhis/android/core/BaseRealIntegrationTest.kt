@@ -61,7 +61,7 @@ abstract class BaseRealIntegrationTest {
             d2.databaseAdapter(),
             d2.retrofit(),
             ResourceHandler.create(d2.databaseAdapter()),
-            d2.systemInfoModule().versionManager()
+            d2.systemInfoModule().versionManager(),
         )
     }
 

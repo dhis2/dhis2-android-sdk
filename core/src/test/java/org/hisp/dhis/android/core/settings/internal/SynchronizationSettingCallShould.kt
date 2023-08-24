@@ -65,7 +65,7 @@ class SynchronizationSettingCallShould {
             generalSettingCall,
             dataSetSettingCall,
             programSettingCall,
-            appVersionManager
+            appVersionManager,
         )
     }
 

@@ -45,6 +45,6 @@ internal interface ProgramIndicatorService {
         @Query("filter") @Where displayInForm: Filter<ProgramIndicator, Boolean>?,
         @Query("filter") program: String?,
         @Query("filter") @Where uids: Filter<ProgramIndicator, String>?,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<ProgramIndicator>>
 }

@@ -71,7 +71,7 @@ class RelationshipHandlerShould {
             relationshipStore,
             relationshipItemStore,
             relationshipItemHandler,
-            storeSelector
+            storeSelector,
         )
         whenever(storeSelector.getElementStore(any())).thenReturn(itemElementStore)
         whenever(itemElementStore.exists(RelationshipSamples.FROM_UID)).thenReturn(true)
@@ -81,8 +81,8 @@ class RelationshipHandlerShould {
         whenever(
             relationshipItemStore.getRelationshipUidsForItems(
                 RelationshipSamples.fromItem,
-                RelationshipSamples.toItem
-            )
+                RelationshipSamples.toItem,
+            ),
         ).thenReturn(listOf(RelationshipSamples.UID))
         whenever(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(emptyList())
         whenever(relationshipStore.selectByUid(RelationshipSamples.UID)).thenReturn(RelationshipSamples.get230())
@@ -124,11 +124,11 @@ class RelationshipHandlerShould {
         relationshipHandler.handle(existingRelationship)
         verify(relationshipItemHandler).handle(
             RelationshipSamples.fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
-                .relationshipItemType(RelationshipConstraintType.FROM).build()
+                .relationshipItemType(RelationshipConstraintType.FROM).build(),
         )
         verify(relationshipItemHandler).handle(
             RelationshipSamples.toItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
-                .relationshipItemType(RelationshipConstraintType.TO).build()
+                .relationshipItemType(RelationshipConstraintType.TO).build(),
         )
     }
 
@@ -138,12 +138,12 @@ class RelationshipHandlerShould {
         verify(relationshipItemHandler).handle(
             RelationshipSamples.fromItem.toBuilder()
                 .relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
-                .relationshipItemType(RelationshipConstraintType.FROM).build()
+                .relationshipItemType(RelationshipConstraintType.FROM).build(),
         )
         verify(relationshipItemHandler).handle(
             RelationshipSamples.toItem.toBuilder()
                 .relationship(ObjectWithUid.create(existingRelationshipWithNewUid.uid()))
-                .relationshipItemType(RelationshipConstraintType.TO).build()
+                .relationshipItemType(RelationshipConstraintType.TO).build(),
         )
     }
 
@@ -152,11 +152,11 @@ class RelationshipHandlerShould {
         relationshipHandler.handle(newRelationship)
         verify(relationshipItemHandler).handle(
             tei3Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
-                .relationshipItemType(RelationshipConstraintType.FROM).build()
+                .relationshipItemType(RelationshipConstraintType.FROM).build(),
         )
         verify(relationshipItemHandler).handle(
             tei4Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))
-                .relationshipItemType(RelationshipConstraintType.TO).build()
+                .relationshipItemType(RelationshipConstraintType.TO).build(),
         )
     }
 }

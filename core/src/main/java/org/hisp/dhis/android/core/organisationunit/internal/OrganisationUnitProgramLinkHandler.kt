@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
 internal class OrganisationUnitProgramLinkHandler(
-    store: OrganisationUnitProgramLinkStore
+    store: OrganisationUnitProgramLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, OrganisationUnitProgramLink>(store)

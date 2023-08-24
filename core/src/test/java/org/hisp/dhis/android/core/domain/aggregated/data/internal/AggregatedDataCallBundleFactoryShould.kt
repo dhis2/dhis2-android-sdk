@@ -85,7 +85,7 @@ class AggregatedDataCallBundleFactoryShould {
             dataSetSettingsObjectRepository,
             periodManager,
             aggregatedDataSyncStore,
-            lastUpdatedCalculator
+            lastUpdatedCalculator,
         )
     }
 
@@ -101,7 +101,7 @@ class AggregatedDataCallBundleFactoryShould {
             dataSetSettings,
             rootOrgUnits,
             allOrgUnits,
-            emptyMap()
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(1)
@@ -120,7 +120,7 @@ class AggregatedDataCallBundleFactoryShould {
             dataSetSettings,
             rootOrgUnits,
             allOrgUnits,
-            emptyMap()
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(2)

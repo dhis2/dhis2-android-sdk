@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 
 internal class DataSetOrganisationUnitLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetOrganisationUnitLinkStore,
     LinkStoreImpl<DataSetOrganisationUnitLink>(
         databaseAdapter,
         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
         DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
         BINDER,
-        { cursor: Cursor -> DataSetOrganisationUnitLink.create(cursor) }
+        { cursor: Cursor -> DataSetOrganisationUnitLink.create(cursor) },
     ) {
 
     companion object {

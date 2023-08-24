@@ -73,7 +73,7 @@ internal object ProgramIndicatorSQLUtils {
         column: String,
         programStageUid: String,
         dataElementUid: String,
-        programIndicator: ProgramIndicator
+        programIndicator: ProgramIndicator,
     ): String {
         return "(SELECT $column " +
             "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
@@ -90,7 +90,7 @@ internal object ProgramIndicatorSQLUtils {
     fun getAttributeWhereClause(
         column: String,
         attributeUid: String,
-        programIndicator: ProgramIndicator
+        programIndicator: ProgramIndicator,
     ): String {
         return "(SELECT $column " +
             "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
@@ -129,7 +129,7 @@ internal object ProgramIndicatorSQLUtils {
 
     fun getColumnValueCast(
         column: String,
-        valueType: ValueType?
+        valueType: ValueType?,
     ): String {
         return when {
             valueType?.isNumeric == true ->
@@ -142,7 +142,7 @@ internal object ProgramIndicatorSQLUtils {
     }
 
     fun getDefaultValue(
-        valueType: ValueType?
+        valueType: ValueType?,
     ): String {
         return if (valueType?.isNumeric == true || valueType?.isBoolean == true) {
             "CAST(0 AS NUMERIC)"
@@ -154,7 +154,7 @@ internal object ProgramIndicatorSQLUtils {
     fun valueCountExpression(
         itemIds: Set<DimensionalItemId>,
         programIndicator: ProgramIndicator,
-        conditionalValueExpression: String? = null
+        conditionalValueExpression: String? = null,
     ): String {
         val stageElementItems = itemIds.filter {
             it.dimensionalItemType == DimensionalItemType.TRACKED_ENTITY_DATA_VALUE

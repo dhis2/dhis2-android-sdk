@@ -56,19 +56,19 @@ object TrackedEntityInstanceFilterFields {
             fh.field<String>(TrackedEntityInstanceFilterTableInfo.Columns.DESCRIPTION),
             fh.field<Int>(TrackedEntityInstanceFilterTableInfo.Columns.SORT_ORDER),
             fh.nestedField<TrackedEntityInstanceEventFilter>(EVENT_FILTERS)
-                .with(TrackedEntityInstanceEventFilterFields.allFields)
+                .with(TrackedEntityInstanceEventFilterFields.allFields),
         )
 
     val allFields: Fields<TrackedEntityInstanceFilter> = commonFields
         .fields(
             fh.nestedField<EntityQueryCriteria>(ENTITY_QUERY_CRITERIA)
-                .with(EntityQueryCriteriaFields.allFields)
+                .with(EntityQueryCriteriaFields.allFields),
         ).build()
 
     val allFieldsAPI37: Fields<TrackedEntityInstanceFilter> = commonFields
         .fields(
             fh.field<EnrollmentStatus>(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_STATUS),
             fh.field<Boolean>(FOLLOW_UP),
-            fh.field<FilterPeriod>(ENROLLMENT_CREATED_PERIOD)
+            fh.field<FilterPeriod>(ENROLLMENT_CREATED_PERIOD),
         ).build()
 }

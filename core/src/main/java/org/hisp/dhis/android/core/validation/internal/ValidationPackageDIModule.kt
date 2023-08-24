@@ -38,8 +38,8 @@ import retrofit2.Retrofit
     includes = [
         DataSetValidationRuleLinkEntityDIModule::class,
         ValidationEngineEntityDIModule::class,
-        ValidationRuleEntityDIModule::class
-    ]
+        ValidationRuleEntityDIModule::class,
+    ],
 )
 internal class ValidationPackageDIModule {
     @Provides

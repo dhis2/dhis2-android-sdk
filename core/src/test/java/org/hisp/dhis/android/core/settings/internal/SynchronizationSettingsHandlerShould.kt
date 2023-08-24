@@ -54,7 +54,7 @@ class SynchronizationSettingsHandlerShould {
         synchronizationSettingsHandler = SynchronizationSettingHandler(
             synchronizationSettingStore,
             dataSetSettingHandler,
-            programSettingHandler
+            programSettingHandler,
         )
     }
 

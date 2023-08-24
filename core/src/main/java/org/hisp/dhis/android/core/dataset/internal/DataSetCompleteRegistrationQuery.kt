@@ -33,9 +33,9 @@ internal data class DataSetCompleteRegistrationQuery(
     val dataSetUids: Collection<String>,
     val periodIds: Collection<String>,
     val rootOrgUnitUids: Collection<String>,
-    val lastUpdatedStr: String?
+    val lastUpdatedStr: String?,
 ) : BaseQueryKt(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
-    paging = false
+    paging = false,
 )

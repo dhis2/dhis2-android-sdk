@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
 import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
+import javax.inject.Inject
 
 internal class ValidationEngineImpl @Inject constructor(
     private val validationExecutor: ValidationExecutor,
@@ -55,13 +55,13 @@ internal class ValidationEngineImpl @Inject constructor(
     private val constantRepository: ConstantCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val periodHelper: PeriodHelper,
-    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore
+    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore,
 ) : ValidationEngine {
     override fun validate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<ValidationResult> {
         return Single.fromCallable { blockingValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
     }
@@ -70,7 +70,7 @@ internal class ValidationEngineImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): ValidationResult {
         val rules = getValidationRulesForDataSetValidation(dataSetUid)
 
@@ -80,7 +80,7 @@ internal class ValidationEngineImpl @Inject constructor(
                 dataSetUid,
                 attributeOptionComboUid,
                 orgUnitUid,
-                periodId
+                periodId,
             )
             val orgunitGroupMap = orgunitGroupMap
             val organisationUnit = getOrganisationUnit(orgUnitUid)
@@ -113,7 +113,7 @@ internal class ValidationEngineImpl @Inject constructor(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,
-        periodId: String
+        periodId: String,
     ): Map<DimensionalItemObject, Double> {
         val dataValues = dataValueRepository
             .byDataSetUid(dataSetUid)
@@ -137,7 +137,7 @@ internal class ValidationEngineImpl @Inject constructor(
 
     private val orgunitGroupMap: Map<String, Int>
         get() = orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )
 
     private fun getPeriod(periodId: String): Period {

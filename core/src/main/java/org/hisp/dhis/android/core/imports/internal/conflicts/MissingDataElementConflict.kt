@@ -47,7 +47,7 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getDataElement(conflict)?.let { dataElementUid ->
             context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->

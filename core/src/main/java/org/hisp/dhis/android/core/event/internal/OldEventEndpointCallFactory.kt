@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import javax.inject.Inject
 
 @Reusable
 internal class OldEventEndpointCallFactory @Inject constructor(
-    private val service: EventService
+    private val service: EventService,
 ) : EventEndpointCallFactory() {
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
@@ -51,7 +51,7 @@ internal class OldEventEndpointCallFactory @Inject constructor(
             pageSize = eventQuery.pageSize,
             lastUpdatedStartDate = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery)
+            eventUid = getUidStr(eventQuery),
         )
     }
 
@@ -59,7 +59,7 @@ internal class OldEventEndpointCallFactory @Inject constructor(
         return service.getEventSingle(
             eventUid = uid,
             fields = EventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         )
     }
 }

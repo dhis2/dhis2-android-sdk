@@ -30,10 +30,6 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Completable
-import java.io.File
-import java.util.Calendar
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
@@ -46,6 +42,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import java.io.File
+import java.util.Calendar
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class FileResourceRoutine @Inject constructor(
@@ -55,7 +55,7 @@ internal class FileResourceRoutine @Inject constructor(
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
     private val trackedEntityDataValueCollectionRepository: TrackedEntityDataValueCollectionRepository,
     private val fileResourceStore: FileResourceStore,
-    private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository
+    private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
         return Completable.fromCallable {

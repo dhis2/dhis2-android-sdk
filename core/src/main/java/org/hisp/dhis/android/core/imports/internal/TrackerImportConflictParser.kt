@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.BadAttributePatternConflict
@@ -53,13 +52,14 @@ import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConfli
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(
     attributeStore: TrackedEntityAttributeStore,
     dataElementStore: DataElementStore,
     private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
-    private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository
+    private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository,
 ) {
 
     private val context = TrackerImportConflictItemContext(attributeStore, dataElementStore)
@@ -74,7 +74,7 @@ internal class TrackerImportConflictParser @Inject constructor(
         EnrollmentNotFoundConflict,
         EnrollmentHasInvalidProgramConflict,
         FileResourceAlreadyAssignedConflict,
-        FileResourceReferenceNotFoundConflict
+        FileResourceReferenceNotFoundConflict,
     )
 
     private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
@@ -82,38 +82,38 @@ internal class TrackerImportConflictParser @Inject constructor(
         MissingAttributeConflict,
         BadAttributePatternConflict,
         NonUniqueAttributeConflict,
-        InvalidTrackedEntityTypeConflict
+        InvalidTrackedEntityTypeConflict,
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
         InvalidAttributeValueTypeConflict,
         MissingAttributeConflict,
         BadAttributePatternConflict,
-        NonUniqueAttributeConflict
+        NonUniqueAttributeConflict,
     )
 
     private val eventConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
         InvalidDataValueConflict,
-        MissingDataElementConflict
+        MissingDataElementConflict,
     )
 
     fun getTrackedEntityInstanceConflict(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder
+        conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, trackedEntityInstanceConflicts)
     }
 
     fun getEnrollmentConflict(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder
+        conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, enrollmentConflicts)
     }
 
     fun getEventConflict(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder
+        conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, eventConflicts)
     }
@@ -121,7 +121,7 @@ internal class TrackerImportConflictParser @Inject constructor(
     private fun evaluateConflicts(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
-        conflictTypes: List<TrackerImportConflictItem>
+        conflictTypes: List<TrackerImportConflictItem>,
     ): TrackerImportConflict {
         val conflictType = conflictTypes.find { it.matches(conflict) }
 

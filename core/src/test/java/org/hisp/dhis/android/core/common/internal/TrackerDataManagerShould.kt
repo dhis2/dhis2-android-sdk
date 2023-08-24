@@ -85,7 +85,7 @@ class TrackerDataManagerShould {
             relationshipStore,
             relationshipChildrenAppender,
             dataStatePropagator,
-            programOwnerStore
+            programOwnerStore,
         )
     }
 

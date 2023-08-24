@@ -42,7 +42,7 @@ internal open class LinkStoreImpl<O : CoreObject>(
     builder: SQLStatementBuilder,
     private val masterColumn: String,
     binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), LinkStore<O> {
 
     constructor(
@@ -50,17 +50,17 @@ internal open class LinkStoreImpl<O : CoreObject>(
         tableInfo: TableInfo,
         masterColumn: String,
         binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(
             tableInfo.name(),
             tableInfo.columns().all(),
-            tableInfo.columns().whereUpdate()
+            tableInfo.columns().whereUpdate(),
         ),
         masterColumn,
         binder,
-        objectFactory
+        objectFactory,
     )
 
     override fun insertIfNotExists(o: O): HandleAction {

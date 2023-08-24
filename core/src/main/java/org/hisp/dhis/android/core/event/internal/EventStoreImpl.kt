@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -44,16 +43,17 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludi
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
+import java.util.*
 
 @Suppress("TooManyFunctions")
 internal class EventStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : EventStore,
     IdentifiableDeletableDataObjectStoreImpl<Event>(
         databaseAdapter,
         EventTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Event.create(cursor) }
+        { cursor: Cursor -> Event.create(cursor) },
     ) {
 
     override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
@@ -61,7 +61,7 @@ internal class EventStoreImpl(
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
                 EventTableInfo.Columns.AGGREGATED_SYNC_STATE,
-                asStringList(uploadableStatesIncludingError().toList())
+                asStringList(uploadableStatesIncludingError().toList()),
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
 
@@ -70,7 +70,7 @@ internal class EventStoreImpl(
 
     override fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList()))
+            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList())),
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
             " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
@@ -84,7 +84,7 @@ internal class EventStoreImpl(
     override fun queryOrderedForEnrollmentAndProgramStage(
         enrollmentUid: String,
         programStageUid: String,
-        includeDeleted: Boolean
+        includeDeleted: Boolean,
     ): List<Event> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)

@@ -60,7 +60,7 @@ class AnalyticsTeiSettingHandlerShould {
             teiDataElementHandler,
             teiIndicatorHandler,
             teiAttributeHandler,
-            whoDataHandler
+            whoDataHandler,
         )
     }
 

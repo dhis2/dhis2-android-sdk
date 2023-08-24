@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 internal data class BingBasemap(
     val id: String,
     val name: String,
-    val style: String
+    val style: String,
 )

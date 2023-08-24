@@ -48,7 +48,7 @@ internal class DataSetHandler constructor(
     private val dataSetElementLinkHandler: DataSetElementHandler,
     private val dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
     private val collectionCleaner: DataSetCollectionCleaner,
-    private val linkCleaner: DataSetOrganisationUnitLinkCleaner
+    private val linkCleaner: DataSetOrganisationUnitLinkCleaner,
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 
     override fun afterObjectHandled(o: DataSet, action: HandleAction) {
@@ -57,7 +57,7 @@ internal class DataSetHandler constructor(
         compulsoryDataElementOperandHandler.handleMany(o.compulsoryDataElementOperands())
         dataSetCompulsoryDataElementOperandLinkHandler.handleMany(
             o.uid(),
-            o.compulsoryDataElementOperands()
+            o.compulsoryDataElementOperands(),
         ) { dataElementOperand: DataElementOperand ->
             DataSetCompulsoryDataElementOperandLink.builder()
                 .dataSet(o.uid())
@@ -66,19 +66,19 @@ internal class DataSetHandler constructor(
         }
         dataInputPeriodHandler.handleMany(
             o.uid(),
-            o.dataInputPeriods()
+            o.dataInputPeriods(),
         ) { dataInputPeriod: DataInputPeriod ->
             dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(o.uid())).build()
         }
         dataSetElementLinkHandler.handleMany(
             o.uid(),
-            o.dataSetElements()
+            o.dataSetElements(),
         ) { dataSetElement: DataSetElement ->
             dataSetElement.toBuilder().dataSet(ObjectWithUid.create(o.uid())).build()
         }
         dataSetIndicatorLinkHandler.handleMany(
             o.uid(),
-            o.indicators()
+            o.indicators(),
         ) { indicator: Indicator ->
             DataSetIndicatorLink.builder().dataSet(o.uid()).indicator(indicator.uid()).build()
         }

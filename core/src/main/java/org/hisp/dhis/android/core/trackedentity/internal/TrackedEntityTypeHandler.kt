@@ -28,22 +28,22 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityTypeHandler @Inject constructor(
     trackedEntityTypeStore: TrackedEntityTypeStore,
     private val attributeHandler: TrackedEntityTypeAttributeHandler,
-    private val collectionCleaner: TrackedEntityTypeCollectionCleaner
+    private val collectionCleaner: TrackedEntityTypeCollectionCleaner,
 ) : IdentifiableHandlerImpl<TrackedEntityType>(trackedEntityTypeStore) {
     override fun afterObjectHandled(o: TrackedEntityType, action: HandleAction) {
         attributeHandler.handleMany(
             o.uid(),
-            o.trackedEntityTypeAttributes()
+            o.trackedEntityTypeAttributes(),
         ) { trackedEntityTypeAttribute: TrackedEntityTypeAttribute, sortOrder: Int? ->
             trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build()
         }

@@ -48,5 +48,5 @@ internal data class IndicatorContext(
     val programIndicatorEvaluator: AnalyticsEvaluator,
     val eventDataItemEvaluator: AnalyticsEvaluator,
     val evaluationItem: AnalyticsServiceEvaluationItem,
-    val contextMetadata: Map<String, MetadataItem>
+    val contextMetadata: Map<String, MetadataItem>,
 )

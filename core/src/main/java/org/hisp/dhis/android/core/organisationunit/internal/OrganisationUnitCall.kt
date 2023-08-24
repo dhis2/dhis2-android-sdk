@@ -31,8 +31,6 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
@@ -40,6 +38,8 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 @Reusable
 internal class OrganisationUnitCall @Inject constructor(
@@ -48,7 +48,7 @@ internal class OrganisationUnitCall @Inject constructor(
     private val pathTransformer: OrganisationUnitDisplayPathTransformer,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
-    private val collectionCleaner: OrganisationUnitCollectionCleaner
+    private val collectionCleaner: OrganisationUnitCollectionCleaner,
 ) {
     fun download(user: User): Completable {
         return Completable.defer {
@@ -65,14 +65,14 @@ internal class OrganisationUnitCall @Inject constructor(
                         downloadDataCaptureOrgUnits(
                             rootSearchOrgUnits,
                             searchOrgUnits,
-                            user
+                            user,
                         )
-                    }
+                    },
                 ).doOnComplete {
                     val assignedOrgunitIds = userOrganisationUnitLinkStore
                         .selectStringColumnsWhereClause(
                             UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                            "1"
+                            "1",
                         )
                     collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
                 }
@@ -81,7 +81,7 @@ internal class OrganisationUnitCall @Inject constructor(
 
     private fun downloadSearchOrgUnits(
         rootSearchOrgUnits: Set<OrganisationUnit>,
-        user: User
+        user: User,
     ): Completable {
         return downloadOrgUnits(getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
     }
@@ -89,7 +89,7 @@ internal class OrganisationUnitCall @Inject constructor(
     private fun downloadDataCaptureOrgUnits(
         rootSearchOrgUnits: Set<OrganisationUnit>,
         searchOrgUnits: List<OrganisationUnit>,
-        user: User
+        user: User,
     ): Completable {
         val allRootCaptureOrgUnits = OrganisationUnitTree.findRoots(UserInternalAccessor.accessOrganisationUnits(user))
         val rootCaptureOrgUnitsOutsideSearchScope =
@@ -98,21 +98,21 @@ internal class OrganisationUnitCall @Inject constructor(
             OrganisationUnitTree.getCaptureOrgUnitsInSearchScope(
                 searchOrgUnits,
                 allRootCaptureOrgUnits,
-                rootCaptureOrgUnitsOutsideSearchScope
+                rootCaptureOrgUnitsOutsideSearchScope,
             ),
-            user
+            user,
         )
         return downloadOrgUnits(
             getUids(rootCaptureOrgUnitsOutsideSearchScope),
             user,
-            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
         )
     }
 
     private fun downloadOrgUnits(
         orgUnits: Set<String>,
         user: User,
-        scope: OrganisationUnit.Scope
+        scope: OrganisationUnit.Scope,
     ): Completable {
         return if (orgUnits.isEmpty()) {
             Completable.complete()
@@ -144,7 +144,7 @@ internal class OrganisationUnitCall @Inject constructor(
                 OrganisationUnitFields.ASC_ORDER,
                 true,
                 PAGE_SIZE,
-                page.getAndIncrement()
+                page.getAndIncrement(),
             )
                 .map { obj -> obj.items() }
                 .doOnSuccess { items -> handler.handleMany(items, pathTransformer) }

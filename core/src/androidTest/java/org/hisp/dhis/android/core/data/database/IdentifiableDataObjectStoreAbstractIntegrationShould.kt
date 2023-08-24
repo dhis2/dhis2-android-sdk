@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import kotlin.Throws
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -39,15 +37,17 @@ import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
+import kotlin.Throws
 
 abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal constructor(
     store: IdentifiableObjectStore<M>,
     tableInfo: TableInfo,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : IdentifiableObjectStoreAbstractIntegrationShould<M>(
     store,
     tableInfo,
-    databaseAdapter
+    databaseAdapter,
 ) where M : ObjectWithUidInterface, M : CoreObject, M : DataObject, M : ObjectWithDeleteInterface {
 
     private val objectWithToDeleteState: M

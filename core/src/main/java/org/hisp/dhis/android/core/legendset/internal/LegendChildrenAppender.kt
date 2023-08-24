@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 
 internal class LegendChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<LegendSet, Legend>
+    private val childStore: SingleParentChildStore<LegendSet, Legend>,
 ) : ChildrenAppender<LegendSet>() {
     override fun appendChildren(m: LegendSet): LegendSet {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class LegendChildrenAppender private constructor(
             return LegendChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    LegendStoreImpl.CHILD_PROJECTION
-                ) { cursor: Cursor -> Legend.create(cursor) }
+                    LegendStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> Legend.create(cursor) },
             )
         }
     }

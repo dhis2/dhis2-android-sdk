@@ -33,5 +33,5 @@ import javax.inject.Inject
 @Reusable
 internal class UserInternalModule @Inject constructor(
     val userCall: UserCall,
-    val logInCall: LogInCall
+    val logInCall: LogInCall,
 )

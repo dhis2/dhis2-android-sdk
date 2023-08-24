@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -53,11 +51,13 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
 internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
-    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
     private val teiAlias = "tei"
     private val enrollmentAlias = "en"
@@ -86,7 +86,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     fun getUidsWhereClause(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         excludeList: Set<String>?,
-        limit: Int
+        limit: Int,
     ): String {
         val selectSubQuery = getSqlQuery(scope, excludeList, limit, teiUid)
         return WhereClauseBuilder()
@@ -99,7 +99,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         scope: TrackedEntityInstanceQueryRepositoryScope,
         excludeList: Set<String>?,
         limit: Int,
-        columns: String
+        columns: String,
     ): String {
         var queryStr = "SELECT DISTINCT $columns FROM ${TrackedEntityInstanceTableInfo.TABLE_INFO.name()} $teiAlias"
 
@@ -127,7 +127,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     EventTableInfo.TABLE_INFO.name(),
                     eventAlias,
                     dot(enrollmentAlias, IdentifiableColumns.UID),
-                    dot(eventAlias, EventTableInfo.Columns.ENROLLMENT)
+                    dot(eventAlias, EventTableInfo.Columns.ENROLLMENT),
                 )
                 appendEventWhere(where, scope)
             }
@@ -146,7 +146,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
                 orgunitAlias,
                 joinOrgunitColum,
-                dot(orgunitAlias, IdentifiableColumns.UID)
+                dot(orgunitAlias, IdentifiableColumns.UID),
             )
             appendOrgunitWhere(where, scope)
         }
@@ -154,14 +154,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         if (scope.trackedEntityType() != null) {
             where.appendKeyStringValue(
                 dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
-                escapeQuotes(scope.trackedEntityType())
+                escapeQuotes(scope.trackedEntityType()),
             )
         }
 
         if (!scope.uids().isNullOrEmpty()) {
             where.appendInKeyStringValues(
                 dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.UID),
-                scope.uids()
+                scope.uids(),
             )
         }
 
@@ -213,20 +213,20 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             appendDateFilter(
                 where = where,
                 column = dot(enrollmentAlias, enrollmentDate),
-                dateFilterPeriod = scope.programDate()!!
+                dateFilterPeriod = scope.programDate()!!,
             )
         }
         if (scope.incidentDate() != null) {
             appendDateFilter(
                 where = where,
                 column = dot(enrollmentAlias, incidentDate),
-                dateFilterPeriod = scope.incidentDate()!!
+                dateFilterPeriod = scope.incidentDate()!!,
             )
         }
         if (scope.enrollmentStatus() != null) {
             where.appendInKeyEnumValues(
                 dot(enrollmentAlias, EnrollmentTableInfo.Columns.STATUS),
-                scope.enrollmentStatus()
+                scope.enrollmentStatus(),
             )
         }
         if (!scope.includeDeleted()) {
@@ -271,7 +271,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 "EXISTS($ownerOrguitIsInCaptureScope) " +
                 "OR " +
                 "EXISTS($hasAnyNotExpiredOwnershipRecord)" +
-                ") ELSE 1 END "
+                ") ELSE 1 END ",
         )
     }
 
@@ -298,13 +298,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             OrganisationUnitMode.DESCENDANTS -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyLikeStringValue(
                     dot(orgunitAlias, OrganisationUnitTableInfo.Columns.PATH),
-                    "%" + escapeQuotes(orgUnit) + "%"
+                    "%" + escapeQuotes(orgUnit) + "%",
                 )
             }
             OrganisationUnitMode.CHILDREN -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(
                     dot(orgunitAlias, OrganisationUnitTableInfo.Columns.PARENT),
-                    escapeQuotes(orgUnit)
+                    escapeQuotes(orgUnit),
                 )
 
                 // TODO Include orgunit?
@@ -318,8 +318,8 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                         UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                         UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name
-                    )
+                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name,
+                    ),
                 )
             OrganisationUnitMode.SELECTED -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
@@ -351,7 +351,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     dot(teiAlias, IdentifiableColumns.UID),
                     dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                     query.operator().sqlOperator,
-                    valueStr
+                    valueStr,
                 )
 
                 where.appendExistsSubQuery(sub)
@@ -368,7 +368,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
                 dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                 item.operator().sqlOperator,
-                getFilterItemValueStr(item)
+                getFilterItemValueStr(item),
             )
 
             where.appendExistsSubQuery(sub)
@@ -391,7 +391,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             eventCreatedDate = scope.eventCreatedDate(),
             eventStatusList = scope.eventStatus(),
             eventDate = scope.eventDate(),
-            dueDate = scope.dueDate()
+            dueDate = scope.dueDate(),
         )
 
         val innerClause = WhereClauseBuilder()
@@ -421,7 +421,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             eventCreatedDate = null,
             eventStatusList = eventFilter.eventStatus(),
             eventDate = eventFilter.eventDate(),
-            dueDate = null
+            dueDate = null,
         )
 
         return if (innerClause.isEmpty) null else innerClause.build()
@@ -432,7 +432,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         eventCreatedDate: DateFilterPeriod?,
         eventStatusList: List<EventStatus>?,
         eventDate: DateFilterPeriod?,
-        dueDate: DateFilterPeriod?
+        dueDate: DateFilterPeriod?,
     ) {
         if (eventStatusList == null) {
             appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
@@ -448,7 +448,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
-                            listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                            listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE),
                         )
                     }
                     EventStatus.COMPLETED, EventStatus.VISITED -> {
@@ -460,11 +460,11 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
-                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE),
                         )
                         statusWhere.appendKeyGreaterOrEqStringValue(
                             "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})",
-                            nowStr
+                            nowStr,
                         )
                     }
                     EventStatus.OVERDUE -> {
@@ -472,11 +472,11 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
-                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE),
                         )
                         statusWhere.appendKeyLessThanStringValue(
                             "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})",
-                            nowStr
+                            nowStr,
                         )
                     }
                     EventStatus.SKIPPED -> {
@@ -495,13 +495,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private fun appendEventDates(
         where: WhereClauseBuilder,
         date: DateFilterPeriod?,
-        refDate: String
+        refDate: String,
     ) {
         if (date != null) {
             appendDateFilter(
                 where = where,
                 column = dot(eventAlias, refDate),
-                dateFilterPeriod = date
+                dateFilterPeriod = date,
             )
         }
     }
@@ -509,7 +509,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private fun appendDateFilter(
         where: WhereClauseBuilder,
         column: String,
-        dateFilterPeriod: DateFilterPeriod
+        dateFilterPeriod: DateFilterPeriod,
     ) {
         val dateColumnStr = "date($column)"
 
@@ -526,7 +526,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendAssignedUserMode(
         where: WhereClauseBuilder,
-        mode: AssignedUserMode
+        mode: AssignedUserMode,
     ) {
         val assignedUserColumn = dot(eventAlias, EventTableInfo.Columns.ASSIGNED_USER)
         when (mode) {
@@ -534,7 +534,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 val subquery = String.format(
                     "(SELECT %s FROM %s LIMIT 1)",
                     AuthenticatedUserTableInfo.Columns.USER,
-                    AuthenticatedUserTableInfo.TABLE_INFO.name()
+                    AuthenticatedUserTableInfo.TABLE_INFO.name(),
                 )
                 where.appendKeyOperatorValue(assignedUserColumn, "IN", subquery)
             }
@@ -547,7 +547,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
 
     private fun appendDataValues(
         where: WhereClauseBuilder,
-        dataValues: List<RepositoryScopeFilterItem>
+        dataValues: List<RepositoryScopeFilterItem>,
     ) {
         dataValues
             .groupBy { it.key() }
@@ -611,7 +611,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     orderByEnrollmentField(
                         scope.program(),
                         EnrollmentTableInfo.Columns.INCIDENT_DATE,
-                        item.direction()
+                        item.direction(),
                     )
 
                 TrackedEntityInstanceQueryScopeOrderColumn.Type.ENROLLMENT_STATUS ->
@@ -646,7 +646,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             dot(teiAlias, IdentifiableColumns.UID),
             programClause,
             EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-            dir.name
+            dir.name,
         )
     }
 
@@ -664,7 +664,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             dot(teiAlias, IdentifiableColumns.UID),
             programClause,
             EventTableInfo.Columns.EVENT_DATE, EventTableInfo.Columns.DUE_DATE,
-            dir.name
+            dir.name,
         )
     }
 
@@ -677,7 +677,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
             CollectionsHelper.withSingleQuotationMarks(item.column().value()),
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-            dot(teiAlias, IdentifiableColumns.UID)
+            dot(teiAlias, IdentifiableColumns.UID),
         )
         return "$attOrder ${item.direction().name}"
     }

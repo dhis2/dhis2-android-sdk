@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
-import java.util.Arrays
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
 import org.junit.Before
+import java.util.Arrays
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
@@ -87,7 +87,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
         trackedEntityInstanceService = d2.retrofit().create(
-            TrackedEntityInstanceService::class.java
+            TrackedEntityInstanceService::class.java,
         )
         ownershipService = d2.retrofit().create(OwnershipService::class.java)
         login()
@@ -143,7 +143,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
-                ImportStatus.SUCCESS
+                ImportStatus.SUCCESS,
             ) // Because it is the first upload.Ownership is not defined
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.ERROR) // It takes enrollment ownership
         }
@@ -154,7 +154,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
-                ImportStatus.ERROR
+                ImportStatus.ERROR,
             ) // Because ownership was previously set
         }
     }
@@ -170,7 +170,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
-                ImportStatus.SUCCESS
+                ImportStatus.SUCCESS,
             ) // Because it is the first upload.Ownership is not defined
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.ERROR) // It takes enrollment ownership
         }
@@ -202,8 +202,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
                     TrackedEntityAttributeValue.builder()
                         .trackedEntityAttribute(attribute2)
                         .value("TrackedEntity")
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .build()
     }
@@ -239,11 +239,11 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
                     listOf(
                         validEvent().toBuilder()
                             .organisationUnit(searchOrgunit)
-                            .build()
-                    )
+                            .build(),
+                    ),
                 )
-                    .build()
-            )
+                    .build(),
+            ),
         )
             .build()
     }
@@ -253,8 +253,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             validTei().toBuilder(),
             listOf(
                 EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(), listOf(validEvent()))
-                    .organisationUnit(searchOrgunit).build()
-            )
+                    .organisationUnit(searchOrgunit).build(),
+            ),
         )
             .build()
     }
@@ -269,7 +269,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         return executor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
-            errorClass = TEIWebResponse::class.java
+            errorClass = TEIWebResponse::class.java,
         ) {
             trackedEntityInstanceService
                 .postTrackedEntityInstances(wrapPayload(*instances), strategy)

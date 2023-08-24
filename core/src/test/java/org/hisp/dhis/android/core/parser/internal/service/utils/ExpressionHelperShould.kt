@@ -47,7 +47,7 @@ class ExpressionHelperShould {
     fun map_data_elements_only() {
         val dataValues: List<DataValue> = listOf(
             dv(dataElement1, cocDefault, "4"),
-            dv(dataElement2, cocDefault, "6")
+            dv(dataElement2, cocDefault, "6"),
         )
         val valueMap = getValueMap(dataValues)
         Truth.assertThat(valueMap.keys.size).isEqualTo(4)
@@ -63,7 +63,7 @@ class ExpressionHelperShould {
             dv(dataElement1, coc1, "4"),
             dv(dataElement1, coc2, "5"),
             dv(dataElement2, coc1, "6"),
-            dv(dataElement2, coc2, "7")
+            dv(dataElement2, coc2, "7"),
         )
         val valueMap = getValueMap(dataValues)
         Truth.assertThat(valueMap.keys.size).isEqualTo(6)
@@ -81,7 +81,7 @@ class ExpressionHelperShould {
             dv(dataElement1, coc1, "4"),
             dv(dataElement1, coc2, "5"),
             dv(dataElement2, coc1, "text1"),
-            dv(dataElement2, coc2, "text2")
+            dv(dataElement2, coc2, "text2"),
         )
         val valueMap = getValueMap(dataValues)
         Truth.assertThat(valueMap.keys.size).isEqualTo(3)
@@ -101,7 +101,7 @@ class ExpressionHelperShould {
     private fun assertContainsEntry(
         valueMap: Map<DimensionalItemObject, Double>,
         dataElementId: String,
-        value: Double
+        value: Double,
     ) {
         assertContainsEntry(valueMap, dataElementId, null, value)
     }
@@ -110,7 +110,7 @@ class ExpressionHelperShould {
         valueMap: Map<DimensionalItemObject, Double>,
         dataElementId: String,
         categoryOptionComboId: String?,
-        value: Double
+        value: Double,
     ) {
         val key =
             if (categoryOptionComboId == null) {
@@ -128,7 +128,7 @@ class ExpressionHelperShould {
     private fun assertNotContainsEntry(
         valueMap: Map<DimensionalItemObject, Double>,
         dataElementId: String,
-        categoryOptionComboId: String?
+        categoryOptionComboId: String?,
     ) {
         val key =
             if (categoryOptionComboId == null) {

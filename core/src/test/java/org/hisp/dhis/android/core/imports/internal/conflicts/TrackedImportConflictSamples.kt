@@ -34,77 +34,77 @@ object TrackedImportConflictSamples {
     fun missingMandatoryAttribute(attributeUid: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.attribute",
-            "Missing mandatory attribute $attributeUid"
+            "Missing mandatory attribute $attributeUid",
         )
     }
 
     fun badAttributePattern(): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value does not match the attribute pattern"
+            "Value does not match the attribute pattern",
         )
     }
 
     fun invalidNumericAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid numeric type for attribute $attributeUid"
+            "Value '$value' is not a valid numeric type for attribute $attributeUid",
         )
     }
 
     fun invalidBooleanAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid boolean type for attribute $attributeUid"
+            "Value '$value' is not a valid boolean type for attribute $attributeUid",
         )
     }
 
     fun invalidTrueOnlyAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not true (true-only type) for attribute $attributeUid"
+            "Value '$value' is not true (true-only type) for attribute $attributeUid",
         )
     }
 
     fun invalidDateAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid date for attribute $attributeUid"
+            "Value '$value' is not a valid date for attribute $attributeUid",
         )
     }
 
     fun invalidDatetimeAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid datetime for attribute $attributeUid"
+            "Value '$value' is not a valid datetime for attribute $attributeUid",
         )
     }
 
     fun invalidUsernameAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid username for attribute $attributeUid"
+            "Value '$value' is not a valid username for attribute $attributeUid",
         )
     }
 
     fun invalidFileAttribute(value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not the uid of a file"
+            "Value '$value' is not the uid of a file",
         )
     }
 
     fun invalidAttributeOption(attributeUid: String, value: String, optionSetUid: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Value '$value' is not a valid option for attribute $attributeUid and option set $optionSetUid"
+            "Value '$value' is not a valid option for attribute $attributeUid and option set $optionSetUid",
         )
     }
 
     fun nonUniqueAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "Non-unique attribute value '$value' for attribute $attributeUid"
+            "Non-unique attribute value '$value' for attribute $attributeUid",
         )
     }
 
@@ -112,7 +112,7 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(
             teiUid,
             "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does" +
-                " not have authority F_TEI_CASCADE_DELETE"
+                " not have authority F_TEI_CASCADE_DELETE",
         )
     }
 
@@ -120,14 +120,14 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(
             enrollmentUid,
             "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not" +
-                " have authority: F_ENROLLMENT_CASCADE_DELETE"
+                " have authority: F_ENROLLMENT_CASCADE_DELETE",
         )
     }
 
     fun fileResourceAlreadyAssigned(fileResourceUid: String): ImportConflict {
         return ImportConflict.create(
             "Attribute.value",
-            "File resource with uid '$fileResourceUid' has already been assigned to a different object"
+            "File resource with uid '$fileResourceUid' has already been assigned to a different object",
         )
     }
 
@@ -162,7 +162,7 @@ object TrackedImportConflictSamples {
     fun teiHasInvalidType(teiUid: String, relationshipUid: String): ImportConflict {
         return ImportConflict.create(
             relationshipUid,
-            "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType."
+            "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType.",
         )
     }
 

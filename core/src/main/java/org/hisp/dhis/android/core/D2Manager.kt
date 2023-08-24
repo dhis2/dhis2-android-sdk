@@ -114,7 +114,7 @@ object D2Manager {
                     testingServerUrl!!,
                     testingDatabaseName!!,
                     false,
-                    testingUsername!!
+                    testingUsername!!,
                 )
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials)

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
 internal class ResourceStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ResourceStore,
     ObjectWithoutUidStoreImpl<Resource>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class ResourceStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> Resource.create(cursor) }
+        { cursor: Cursor -> Resource.create(cursor) },
     ) {
     override fun getLastUpdated(type: Resource.Type): String? {
         val whereClause = WhereClauseBuilder()

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 internal data class TEIWebResponseHandlerSummary(
     val teis: TrackerResponseHandlerSummary<TrackedEntityInstance> = TrackerResponseHandlerSummary(),
     val enrollments: TrackerResponseHandlerSummary<Enrollment> = TrackerResponseHandlerSummary(),
-    val events: TrackerResponseHandlerSummary<Event> = TrackerResponseHandlerSummary()
+    val events: TrackerResponseHandlerSummary<Event> = TrackerResponseHandlerSummary(),
 ) {
     fun add(other: TEIWebResponseHandlerSummary) {
         teis.add(other.teis)
@@ -53,7 +53,7 @@ internal data class TEIWebResponseHandlerSummary(
 internal data class TrackerResponseHandlerSummary<E : ObjectWithUidInterface>(
     val success: MutableList<E> = mutableListOf(),
     val error: MutableList<E> = mutableListOf(),
-    val ignored: MutableList<E> = mutableListOf()
+    val ignored: MutableList<E> = mutableListOf(),
 ) {
     fun add(other: TrackerResponseHandlerSummary<E>) {
         success.addAll(other.success)

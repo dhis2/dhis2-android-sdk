@@ -45,7 +45,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     binder: StatementBinder<O>,
     private val whereUpdateBinder: WhereStatementBinder<O>,
     private val whereDeleteBinder: WhereStatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), ObjectWithoutUidStore<O> {
 
     constructor(
@@ -54,18 +54,18 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
         binder: StatementBinder<O>,
         whereUpdateBinder: WhereStatementBinder<O>,
         whereDeleteBinder: WhereStatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(
             tableInfo.name(),
             tableInfo.columns().all(),
-            tableInfo.columns().whereUpdate()
+            tableInfo.columns().whereUpdate(),
         ),
         binder,
         whereUpdateBinder,
         whereDeleteBinder,
-        objectFactory
+        objectFactory,
     )
 
     private var updateWhereStatement: StatementWrapper? = null

@@ -87,7 +87,7 @@ class RelationshipImportHandlerShould {
 
         relationshipImportHandler.handleRelationshipImportSummaries(
             listOf(importSummary),
-            relationships
+            relationships,
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.SYNCED)
@@ -101,7 +101,7 @@ class RelationshipImportHandlerShould {
 
         relationshipImportHandler.handleRelationshipImportSummaries(
             listOf(importSummary),
-            relationships
+            relationships,
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.TO_UPDATE)
@@ -118,7 +118,7 @@ class RelationshipImportHandlerShould {
 
         relationshipImportHandler.handleRelationshipImportSummaries(
             listOf(importSummary),
-            relationships
+            relationships,
         )
 
         verify(relationshipStore, times(1)).setSyncStateOrDelete("test_uid", State.SYNCED)

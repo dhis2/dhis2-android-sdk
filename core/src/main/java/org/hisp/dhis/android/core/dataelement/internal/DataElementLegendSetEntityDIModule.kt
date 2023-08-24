@@ -46,7 +46,7 @@ internal class DataElementLegendSetEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: DataElementLegendSetLinkStore
+        store: DataElementLegendSetLinkStore,
     ): DataElementLegendSetLinkHandler {
         return DataElementLegendSetLinkHandler(store)
     }

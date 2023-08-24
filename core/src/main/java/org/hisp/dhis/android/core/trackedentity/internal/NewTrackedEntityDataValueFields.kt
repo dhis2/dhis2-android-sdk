@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import java.util.*
 
 internal object NewTrackedEntityDataValueFields {
     private const val DATA_ELEMENT = "dataElement"
@@ -50,6 +50,6 @@ internal object NewTrackedEntityDataValueFields {
                 fh.field<String>(VALUE),
                 fh.field<Date>(CREATED_AT),
                 fh.field<Date>(UPDATED_AT),
-                fh.field<Boolean>(PROVIDED_ELSEWHERE)
+                fh.field<Boolean>(PROVIDED_ELSEWHERE),
             ).build()
 }

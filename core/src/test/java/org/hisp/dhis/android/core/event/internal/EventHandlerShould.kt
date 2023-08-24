@@ -88,7 +88,7 @@ class EventHandlerShould {
             noteHandler,
             noteVersionManager,
             noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipOrphanCleaner,
         )
     }
 

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class SectionHandler @Inject constructor(
@@ -48,13 +48,13 @@ internal class SectionHandler @Inject constructor(
     private val greyedFieldsHandler: DataElementOperandHandler,
     private val sectionGreyedFieldsLinkHandler: SectionGreyedFieldsLinkHandler,
     private val sectionIndicatorLinkHandler: SectionIndicatorLinkHandler,
-    private val sectionGreyedFieldsStore: SectionGreyedFieldsLinkStore
+    private val sectionGreyedFieldsStore: SectionGreyedFieldsLinkStore,
 ) : IdentifiableHandlerImpl<Section>(sectionStore) {
 
     override fun afterObjectHandled(o: Section, action: HandleAction) {
         sectionDataElementLinkHandler.handleMany(
             o.uid(),
-            o.dataElements()
+            o.dataElements(),
         ) { dataElement: DataElement, sortOrder: Int ->
             SectionDataElementLink.builder()
                 .section(o.uid())
@@ -65,7 +65,7 @@ internal class SectionHandler @Inject constructor(
 
         sectionIndicatorLinkHandler.handleMany(
             o.uid(),
-            o.indicators()
+            o.indicators(),
         ) {
             SectionIndicatorLink.builder()
                 .section(o.uid())
@@ -78,13 +78,13 @@ internal class SectionHandler @Inject constructor(
         sectionGreyedFieldsStore.deleteWhere(
             WhereClauseBuilder().appendKeyStringValue(
                 SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-                o.uid()
-            ).build()
+                o.uid(),
+            ).build(),
         )
 
         sectionGreyedFieldsLinkHandler.handleMany(
             o.uid(),
-            o.greyedFields()
+            o.greyedFields(),
         ) { dataElementOperand: DataElementOperand ->
             SectionGreyedFieldsLink.builder()
                 .section(o.uid())

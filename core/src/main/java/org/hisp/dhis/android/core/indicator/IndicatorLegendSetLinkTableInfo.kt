@@ -50,7 +50,7 @@ class IndicatorLegendSetLinkTableInfo {
         val CHILD_PROJECTION = LinkTableChildProjection(
             LegendSetTableInfo.TABLE_INFO,
             Columns.INDICATOR,
-            Columns.LEGEND_SET
+            Columns.LEGEND_SET,
         )
     }
 
@@ -60,7 +60,7 @@ class IndicatorLegendSetLinkTableInfo {
                 super.all(),
                 INDICATOR,
                 LEGEND_SET,
-                SORT_ORDER
+                SORT_ORDER,
             )
         }
 

@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 
 internal class DataInputPeriodHandler(
-    store: DataInputPeriodStore
+    store: DataInputPeriodStore,
 ) : LinkHandlerImpl<DataInputPeriod, DataInputPeriod>(store)

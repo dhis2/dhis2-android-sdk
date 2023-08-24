@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.expressiondimensionitem.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 internal class ExpressionDimensionItemModuleDownloader @Inject internal constructor(
     private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
-    private val expressionDimensionItemCall: ExpressionDimensionItemCall
+    private val expressionDimensionItemCall: ExpressionDimensionItemCall,
 ) : UntypedModuleDownloader {
     override fun downloadMetadata(): Completable {
         return Single.fromCallable { expressionDimensionItemUidsSeeker.seekUids() }

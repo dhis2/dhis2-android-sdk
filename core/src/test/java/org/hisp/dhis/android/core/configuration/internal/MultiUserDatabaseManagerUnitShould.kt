@@ -89,7 +89,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             databaseConfigurationSecureStore,
             configurationHelper,
             databaseAdapterFactory,
-            databaseExport
+            databaseExport,
         )
     }
 
@@ -144,8 +144,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
                     buildUserConfiguration("user1", "2021-06-01T00:01:04.000"),
                     buildUserConfiguration("user2", "2021-09-02T00:01:04.000"),
                     buildUserConfiguration("user3", "2020-08-05T00:01:04.000"),
-                    buildUserConfiguration("user4", "2020-08-09T00:01:04.000")
-                )
+                    buildUserConfiguration("user4", "2020-08-09T00:01:04.000"),
+                ),
             )
             .build()
 

@@ -70,7 +70,7 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
             databaseAdapter,
             migration,
             databaseAdapterFactory,
-            databaseConfigurationStore
+            databaseConfigurationStore,
         )
         whenever(databaseConfigurationStore.get()).doReturn(databasesConfiguration)
     }

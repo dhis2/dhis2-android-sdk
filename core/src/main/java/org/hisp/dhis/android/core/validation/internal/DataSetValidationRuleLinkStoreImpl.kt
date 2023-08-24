@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo
 
 internal class DataSetValidationRuleLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetValidationRuleLinkStore,
     LinkStoreImpl<DataSetValidationRuleLink>(
         databaseAdapter,
         DataSetValidationRuleLinkTableInfo.TABLE_INFO,
         DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
         BINDER,
-        { cursor: Cursor -> DataSetValidationRuleLink.create(cursor) }
+        { cursor: Cursor -> DataSetValidationRuleLink.create(cursor) },
     ) {
 
     companion object {

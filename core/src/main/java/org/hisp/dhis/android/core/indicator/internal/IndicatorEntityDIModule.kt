@@ -46,7 +46,7 @@ internal class IndicatorEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Indicator>> {
         return mapOf(
-            IndicatorFields.LEGEND_SETS to IndicatorLegendSetChildrenAppender.create(databaseAdapter)
+            IndicatorFields.LEGEND_SETS to IndicatorLegendSetChildrenAppender.create(databaseAdapter),
         )
     }
 }

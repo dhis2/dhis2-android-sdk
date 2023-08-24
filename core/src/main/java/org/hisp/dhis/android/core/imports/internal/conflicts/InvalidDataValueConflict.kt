@@ -45,7 +45,7 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
         "value_not_valid_datetime",
         "value_not_coordinate",
         "value_not_url",
-        "value_not_valid_file_resource_uid"
+        "value_not_valid_file_resource_uid",
     )
 
     private fun description(dataElementId: String) = "Invalid value type for dataElement: $dataElementId"
@@ -62,7 +62,7 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getDataElement(conflict)?.let { dataElementUid ->
             context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->

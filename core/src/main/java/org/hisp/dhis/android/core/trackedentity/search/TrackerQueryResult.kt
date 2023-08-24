@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 data class TrackerQueryResult(
     val trackedEntities: List<TrackedEntityInstance>,
-    val exhausted: Boolean
+    val exhausted: Boolean,
 )

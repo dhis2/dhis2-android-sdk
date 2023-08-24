@@ -28,23 +28,23 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramSectionHandler @Inject constructor(
     programSectionStore: ProgramSectionStore,
-    private val programSectionAttributeLinkHandler: ProgramSectionAttributeLinkHandler
+    private val programSectionAttributeLinkHandler: ProgramSectionAttributeLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramSection>(programSectionStore) {
 
     override fun afterObjectHandled(o: ProgramSection, action: HandleAction) {
         programSectionAttributeLinkHandler.handleMany(
             o.uid(),
-            o.attributes()
+            o.attributes(),
         ) { trackedEntityAttribute: TrackedEntityAttribute, sortOrder: Int ->
             ProgramSectionAttributeLink.builder()
                 .programSection(o.uid())

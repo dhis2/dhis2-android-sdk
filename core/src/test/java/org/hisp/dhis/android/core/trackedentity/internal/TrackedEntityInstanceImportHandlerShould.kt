@@ -87,7 +87,7 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
             trackerImportConflictParser, relationshipStore, dataStatePropagator, relationshipDHISVersionManager,
-            relationshipCollectionRepository, trackedEntityAttributeValueStore
+            relationshipCollectionRepository, trackedEntityAttributeValueStore,
         )
 
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)
@@ -106,7 +106,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            instances
+            instances,
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -120,7 +120,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            instances
+            instances,
         )
 
         verify(trackedEntityInstanceStore, times(1))
@@ -138,14 +138,14 @@ class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            instances
+            instances,
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
             eq(enrollmentSummaries),
             anyList(),
-            eq(State.SYNCED)
+            eq(State.SYNCED),
         )
     }
 
@@ -159,7 +159,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            instances
+            instances,
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
@@ -176,7 +176,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         val response = trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            instances
+            instances,
         )
 
         assertThat(response.teis.ignored.size).isEqualTo(1)
@@ -197,7 +197,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
             listOf(importSummary),
-            teis
+            teis,
         )
 
         verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)

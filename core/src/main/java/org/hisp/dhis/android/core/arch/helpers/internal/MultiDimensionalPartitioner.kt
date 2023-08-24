@@ -36,14 +36,14 @@ internal class MultiDimensionalPartitioner @Inject constructor() {
     fun partitionForSize(size: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
         return partitionInternal(
             UrlLengthHelper.getHowManyUidsFitInURL(size),
-            listOf(partitions.map { it.toList() })
+            listOf(partitions.map { it.toList() }),
         )
     }
 
     fun partition(maxValues: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
         return partitionInternal(
             maxValues,
-            listOf(partitions.map { it.toList() })
+            listOf(partitions.map { it.toList() }),
         )
     }
 

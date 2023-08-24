@@ -68,7 +68,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             periodType = PeriodType.Daily,
             futurePeriods = 0,
             pastPeriods = 30,
-            lastUpdated = null
+            lastUpdated = null,
         )
 
         val bundle = AggregatedDataCallBundle(
@@ -76,7 +76,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             dataSets = DataValueUtils.dataSets,
             periodIds = DataValueUtils.periodIds,
             rootOrganisationUnitUids = DataValueUtils.orgUnitUids,
-            allOrganisationUnitUidsSet = emptySet()
+            allOrganisationUnitUidsSet = emptySet(),
         )
 
         val resourceHandler = getGenericCallData(d2).resourceHandler()

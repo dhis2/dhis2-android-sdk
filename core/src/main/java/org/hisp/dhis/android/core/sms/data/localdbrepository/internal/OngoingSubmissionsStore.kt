@@ -32,15 +32,15 @@ import android.util.Pair
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import javax.inject.Inject
 
 @Reusable
 internal class OngoingSubmissionsStore @Inject constructor(
     private val smsOngoingSubmissionStore: SMSOngoingSubmissionStore,
-    private val smsConfigStore: SMSConfigStore
+    private val smsConfigStore: SMSConfigStore,
 ) {
     private var ongoingSubmissions: Map<Int, SubmissionType>? = null
     private var lastGeneratedSubmissionId: Int? = null
@@ -119,7 +119,7 @@ internal class OngoingSubmissionsStore @Inject constructor(
     fun generateNextSubmissionId(): Single<Int> {
         return Single.zip<Map<Int, SubmissionType>, Int, Pair<Map<Int, SubmissionType>, Int>>(
             getOngoingSubmissions(),
-            getLastGeneratedSubmissionId()
+            getLastGeneratedSubmissionId(),
         ) { a: Map<Int, SubmissionType>?, b: Int? -> Pair.create(a, b) }
             .flatMap { ids: Pair<Map<Int, SubmissionType>, Int> ->
                 val ongoingIds: Collection<Int> = ids.first.keys

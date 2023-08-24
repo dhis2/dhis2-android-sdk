@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
-import java.util.*
-import kotlin.random.Random
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
@@ -46,6 +44,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.*
+import kotlin.random.Random
 
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
@@ -79,7 +79,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                             period.periodId()!!,
                             categoryOptionCombo.uid(),
                             metadata.categoryOptionCombos.first().uid(),
-                            random.nextDouble().toString()
+                            random.nextDouble().toString(),
                         )
                     }
                 }
@@ -102,7 +102,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                 tei.organisationUnit(),
                 program.uid(),
                 tei.uid(),
-                getRandomDateInLastYear()
+                getRandomDateInLastYear(),
             )
         }
     }
@@ -122,7 +122,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                 programStage.program()!!.uid(),
                 programStage.uid(),
                 metadata.categoryOptionCombos.first().uid(),
-                getRandomDateInLastYear()
+                getRandomDateInLastYear(),
             )
         }
     }
@@ -141,7 +141,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                         enrollment.program(),
                         ps.uid(),
                         metadata.categoryOptionCombos.first().uid(),
-                        getRandomDateInLastYear()
+                        getRandomDateInLastYear(),
                     )
                 }
             }
@@ -150,7 +150,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateTrackedEntityAttributeValues(
         trackedEntityAttributes: List<TrackedEntityAttribute>,
-        teis: List<TrackedEntityInstance>
+        teis: List<TrackedEntityInstance>,
     ): List<TrackedEntityAttributeValue> {
         return trackedEntityAttributes.flatMap { tea ->
             teis.map { tei ->
@@ -161,7 +161,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateTrackedEntityDataValues(
         dataElements: List<DataElement>,
-        events: List<Event>
+        events: List<Event>,
     ): List<TrackedEntityDataValue> {
         return dataElements.flatMap { de ->
             events.map { event ->

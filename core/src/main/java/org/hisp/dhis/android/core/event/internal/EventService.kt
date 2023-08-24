@@ -63,21 +63,21 @@ internal interface EventService {
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String? = null,
         @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null
+        @Query(EVENT) eventUid: String? = null,
     ): Payload<Event>
 
     @GET("$EVENTS/{$EVENT_UID}")
     suspend fun getEvent(
         @Path(EVENT_UID) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String
+        @Query(OU_MODE) orgUnitMode: String,
     ): Event
 
     @GET(EVENTS)
     suspend fun getEventSingle(
         @Query(EVENT) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String
+        @Query(OU_MODE) orgUnitMode: String,
     ): Payload<Event>
 
     companion object {

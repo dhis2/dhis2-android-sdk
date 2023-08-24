@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityTypeAttributeHandler @Inject constructor(
-    store: TrackedEntityTypeAttributeStore
+    store: TrackedEntityTypeAttributeStore,
 ) : OrderedLinkHandlerImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>(store)

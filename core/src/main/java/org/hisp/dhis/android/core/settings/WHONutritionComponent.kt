@@ -29,5 +29,5 @@ package org.hisp.dhis.android.core.settings
 
 enum class WHONutritionComponent {
     X,
-    Y
+    Y,
 }

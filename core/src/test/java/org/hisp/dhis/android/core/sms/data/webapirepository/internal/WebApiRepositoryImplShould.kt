@@ -63,7 +63,7 @@ class WebApiRepositoryImplShould {
             notNull(),
             notNull(),
             notNull(),
-            notNull()
+            notNull(),
         )
     }
 
@@ -79,7 +79,7 @@ class WebApiRepositoryImplShould {
             isNull(),
             notNull(),
             notNull(),
-            notNull()
+            notNull(),
         )
     }
 }

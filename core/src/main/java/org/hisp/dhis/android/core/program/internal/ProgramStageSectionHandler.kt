@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -36,18 +35,19 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageSectionHandler @Inject constructor(
     programStageSectionStore: ProgramStageSectionStore,
     private val programStageSectionProgramIndicatorLinkHandler: ProgramStageSectionProgramIndicatorLinkHandler,
-    private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler
+    private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramStageSection>(programStageSectionStore) {
 
     override fun afterObjectHandled(o: ProgramStageSection, action: HandleAction) {
         programStageSectionDataElementLinkHandler.handleMany(
             o.uid(),
-            o.dataElements()
+            o.dataElements(),
         ) { dataElement: DataElement, sortOrder: Int ->
             ProgramStageSectionDataElementLink.builder()
                 .programStageSection(o.uid())
@@ -58,7 +58,7 @@ internal class ProgramStageSectionHandler @Inject constructor(
 
         programStageSectionProgramIndicatorLinkHandler.handleMany(
             o.uid(),
-            o.programIndicators()
+            o.programIndicators(),
         ) { programIndicator: ProgramIndicator ->
             ProgramStageSectionProgramIndicatorLink.builder()
                 .programStageSection(o.uid())

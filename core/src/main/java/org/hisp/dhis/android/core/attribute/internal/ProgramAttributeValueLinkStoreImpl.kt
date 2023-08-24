@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo
 
 internal class ProgramAttributeValueLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramAttributeValueLinkStore,
     LinkStoreImpl<ProgramAttributeValueLink>(
         databaseAdapter,
         ProgramAttributeValueLinkTableInfo.TABLE_INFO,
         ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,
         BINDER,
-        { cursor: Cursor -> ProgramAttributeValueLink.create(cursor) }
+        { cursor: Cursor -> ProgramAttributeValueLink.create(cursor) },
     ) {
 
     companion object {

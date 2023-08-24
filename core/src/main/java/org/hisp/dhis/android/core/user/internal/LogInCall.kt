@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -65,7 +65,7 @@ internal class LogInCall @Inject internal constructor(
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -86,7 +86,7 @@ internal class LogInCall @Inject internal constructor(
 
         val authenticateCall = userService.authenticate(
             UserIdAuthenticatorHelper.basic(username!!, password!!),
-            UserFields.allFieldsWithoutOrgUnit(null)
+            UserFields.allFieldsWithoutOrgUnit(null),
         )
 
         val credentials = Credentials(username, trimmedServerUrl!!, password, null)
@@ -177,7 +177,7 @@ internal class LogInCall @Inject internal constructor(
 
         val authenticateCall = userService.authenticate(
             "Bearer ${openIDConnectState.idToken}",
-            UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion())
+            UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion()),
         )
 
         var credentials: Credentials? = null

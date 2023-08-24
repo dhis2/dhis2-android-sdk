@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
 
 internal class DataElementAttributeValueLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataElementAttributeValueLinkStore,
     LinkStoreImpl<DataElementAttributeValueLink>(
         databaseAdapter,
         DataElementAttributeValueLinkTableInfo.TABLE_INFO,
         DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,
         BINDER,
-        { cursor: Cursor -> DataElementAttributeValueLink.create(cursor) }
+        { cursor: Cursor -> DataElementAttributeValueLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: DataElementAttributeValueLink, w: StatementWrapper ->

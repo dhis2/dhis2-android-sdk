@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
@@ -44,6 +42,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class DatabaseConfigurationMigrationIntegrationShould {
@@ -82,7 +82,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             insecureStore,
             nameGenerator,
             renamer,
-            databaseAdapterFactory
+            databaseAdapterFactory,
         )
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
@@ -143,10 +143,10 @@ class DatabaseConfigurationMigrationIntegrationShould {
                                     .databaseName(newName)
                                     .databaseCreationDate("2014-06-06T20:44:21.375")
                                     .encrypted(false)
-                                    .build()
-                            )
-                        ).build()
-                )
+                                    .build(),
+                            ),
+                        ).build(),
+                ),
             ).build()
 
         DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(oldDatabaseConfiguration)

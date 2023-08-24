@@ -29,9 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import java.text.ParseException
-import java.util.*
-import javax.net.ssl.HttpsURLConnection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -61,6 +58,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.invocation.InvocationOnMock
+import java.text.ParseException
+import java.util.*
+import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -108,7 +108,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             assignedUserMode = AssignedUserMode.ANY,
             paging = false,
             page = 2,
-            pageSize = 33
+            pageSize = 33,
         )
 
         whenServiceQuery { searchGrid }
@@ -123,7 +123,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eventService,
             mapper,
             coroutineAPICallExecutor,
-            dhisVersionManager
+            dhisVersionManager,
         )
     }
 
@@ -209,7 +209,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
-            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build()
+            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
         )
         whenever(eventPayload.items()).doReturn(events)
 
@@ -219,8 +219,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
                     .value("2")
-                    .build()
-            )
+                    .build(),
+            ),
         )
 
         callFactory.getCall(query)
@@ -241,9 +241,9 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
                     .value("2")
-                    .build()
+                    .build(),
             ),
-            orgUnits = listOf("orgunit1", "orgunit2")
+            orgUnits = listOf("orgunit1", "orgunit2"),
         )
 
         callFactory.getCall(query)
@@ -253,7 +253,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private fun verifyService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus
+        expectedStatus: EventStatus? = query.eventStatus,
     ) = runBlocking {
         verify(trackedEntityService).query(
             eq(query.uids?.joinToString(";")),
@@ -279,7 +279,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.order),
             eq(query.paging),
             eq(query.page),
-            eq(query.pageSize)
+            eq(query.pageSize),
         )
     }
 
@@ -315,7 +315,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
             eq(query.includeDeleted),
-            eq(null)
+            eq(null),
         )
     }
 
@@ -346,7 +346,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
-                    anyOrNull()
+                    anyOrNull(),
                 )
             }.doAnswer(answer)
         }
@@ -377,7 +377,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
-                    anyOrNull()
+                    anyOrNull(),
                 )
             }.doAnswer(answer)
         }

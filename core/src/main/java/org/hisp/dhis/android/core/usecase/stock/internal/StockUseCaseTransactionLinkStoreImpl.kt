@@ -38,20 +38,21 @@ import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
 
 @Suppress("MagicNumber")
 internal class StockUseCaseTransactionLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseTransactionLinkStore,
     LinkStoreImpl<InternalStockUseCaseTransaction>(
         databaseAdapter,
         StockUseCaseTransactionTableInfo.TABLE_INFO,
         StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID,
         BINDER,
-        { cursor: Cursor -> InternalStockUseCaseTransaction.create(cursor) }
+        { cursor: Cursor -> InternalStockUseCaseTransaction.create(cursor) },
     ) {
 
     companion object {
         private val BINDER: StatementBinder<InternalStockUseCaseTransaction> =
             StatementBinder<InternalStockUseCaseTransaction> { o: InternalStockUseCaseTransaction,
-                w: StatementWrapper ->
+                                                               w: StatementWrapper,
+                ->
                 w.bind(1, o.programUid())
                 w.bind(2, o.sortOrder())
                 w.bind(3, o.transactionType())
@@ -63,7 +64,7 @@ internal class StockUseCaseTransactionLinkStoreImpl(
 
         val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(
             StockUseCaseTransactionTableInfo.TABLE_INFO,
-            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID
+            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID,
         )
     }
 }

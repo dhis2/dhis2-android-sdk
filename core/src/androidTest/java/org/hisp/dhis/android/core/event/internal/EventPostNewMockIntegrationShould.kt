@@ -38,10 +38,10 @@ class EventPostNewMockIntegrationShould : EventPostBaseMockIntegrationShould() {
     override val exporterVersion = TrackerExporterVersion.V2
     override val importConflictsFile1 = listOf(
         "imports/tracker-importer/job_response.json",
-        "imports/web_response_with_event_import_conflicts_new.json"
+        "imports/web_response_with_event_import_conflicts_new.json",
     )
     override val importConflictsFile2 = listOf(
         "imports/tracker-importer/job_response.json",
-        "imports/web_response_with_event_import_conflicts2_new.json"
+        "imports/web_response_with_event_import_conflicts2_new.json",
     )
 }

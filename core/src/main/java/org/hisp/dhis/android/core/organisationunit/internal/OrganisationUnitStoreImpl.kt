@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
 @Suppress("MagicNumber")
 internal class OrganisationUnitStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitStore,
     IdentifiableObjectStoreImpl<OrganisationUnit>(
         databaseAdapter,
         OrganisationUnitTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> OrganisationUnit.create(cursor) }
+        { cursor: Cursor -> OrganisationUnit.create(cursor) },
     ) {
 
     companion object {

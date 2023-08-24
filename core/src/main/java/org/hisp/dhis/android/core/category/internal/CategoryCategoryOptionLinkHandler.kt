@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
 
 internal class CategoryCategoryOptionLinkHandler(
-    store: CategoryCategoryOptionLinkStore
+    store: CategoryCategoryOptionLinkStore,
 ) : OrderedLinkHandlerImpl<CategoryOption, CategoryCategoryOptionLink>(store)

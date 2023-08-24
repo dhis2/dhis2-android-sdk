@@ -60,7 +60,7 @@ class CoroutineAPICallExecutorShould {
             userAccountDisabledErrorCatcher = userAccountDisabledErrorCatcher,
             errorStore = errorStore,
             databaseAdapter = databaseAdapter,
-            foreignKeyCleaner = foreignKeyCleaner
+            foreignKeyCleaner = foreignKeyCleaner,
         )
     }
 

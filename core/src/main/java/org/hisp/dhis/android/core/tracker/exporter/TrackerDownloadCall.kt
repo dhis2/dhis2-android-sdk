@@ -27,10 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
@@ -48,13 +44,17 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
@@ -76,7 +76,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private fun downloadInternal(
         params: ProgramDataDownloadParams,
         progressManager: TrackerD2ProgressManager,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): Flow<TrackerD2Progress> = flow {
         val bundles: List<Q> = getBundles(params)
         val programs = bundles.flatMap { it.commonParams().programs }
@@ -127,7 +127,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
-        iterationCount: Int
+        iterationCount: Int,
     ): Boolean {
         return params.limitByProgram() != true &&
             bundleResult.bundleCount < bundle.commonParams().limit &&
@@ -141,7 +141,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
         relatives: RelationshipItemRelatives,
-        progressManager: TrackerD2ProgressManager
+        progressManager: TrackerD2ProgressManager,
     ): IterationResult {
         val iterationResult = IterationResult()
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
@@ -162,7 +162,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 bundleResult,
                 bundleLimit,
                 relatives,
-                progressManager
+                progressManager,
             )
             iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
         }
@@ -178,7 +178,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
         limit: Int,
         relatives: RelationshipItemRelatives,
-        progressManager: TrackerD2ProgressManager
+        progressManager: TrackerD2ProgressManager,
     ): IterationResult {
         val iterationResult = IterationResult()
 
@@ -192,7 +192,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                         limit,
                         bundleProgram.itemCount,
                         params.overwrite(),
-                        relatives
+                        relatives,
                     )
 
                     bundleResult.bundleCount += result.count
@@ -231,7 +231,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private fun getBundleLimit(
         bundle: Q,
         params: ProgramDataDownloadParams,
-        bundleResult: BundleResult
+        bundleResult: BundleResult,
     ): Int {
         return when {
             params.uids().isNotEmpty() -> params.uids().size
@@ -255,7 +255,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         return try {
             getItemsWithPaging(trackerQueryBuilder, combinationLimit, downloadedCount, overwrite, relatives)
@@ -271,7 +271,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         var downloadedItemsForCombination = 0
         var emptyProgram = false
@@ -281,7 +281,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         for (paging in pagingList) {
             val pageQuery = query.copy(
                 pageSize = paging.pageSize(),
-                page = paging.page()
+                page = paging.page(),
             )
 
             val items = getItems(pageQuery)
@@ -292,7 +292,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 hasAllAttributes = true,
                 overwrite = overwrite,
                 asRelationship = false,
-                program = pageQuery.commonParams.program
+                program = pageQuery.commonParams.program,
             )
 
             persistItems(itemsToPersist, persistParams, relatives)
@@ -312,7 +312,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         return if (paging.isFullPage && pageItems.size > paging.previousItemsToSkipCount()) {
             val toIndex = min(
                 pageItems.size,
-                paging.pageSize() - paging.posteriorItemsToSkipCount()
+                paging.pageSize() - paging.posteriorItemsToSkipCount(),
             )
             pageItems.subList(paging.previousItemsToSkipCount(), toIndex)
         } else {
@@ -322,7 +322,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     private fun downloadRelationships(
         progressManager: TrackerD2ProgressManager,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): Flow<TrackerD2Progress> = flow {
         relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives)
         emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
@@ -345,7 +345,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         var count: Int,
         var successfulSync: Boolean,
         var d2Error: D2Error?,
-        var emptyProgram: Boolean
+        var emptyProgram: Boolean,
     )
 
     protected class ItemsByProgramCount(val program: String, var itemCount: Int)
@@ -353,11 +353,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     protected class BundleResult(
         var bundleCount: Int,
         var bundleOrgUnitPrograms: MutableMap<String, MutableList<ItemsByProgramCount>>,
-        var bundleOrgUnitsToDownload: MutableList<String?>
+        var bundleOrgUnitsToDownload: MutableList<String?>,
     )
 
     protected class IterationResult(
-        var successfulSync: Boolean = true
+        var successfulSync: Boolean = true,
     )
 
     companion object {
@@ -372,7 +372,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     protected abstract fun persistItems(
         items: List<T>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     )
 
     protected abstract fun updateLastUpdated(bundle: Q)
@@ -380,13 +380,13 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     protected abstract suspend fun queryByUids(
         bundle: Q,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult
 
     protected abstract fun getQuery(
         bundle: Q,
         program: String?,
         orgunitUid: String?,
-        limit: Int
+        limit: Int,
     ): TrackerAPIQuery
 }

@@ -58,7 +58,7 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
             OrganisationUnitSamples.getOrganisationUnit(
                 "${parent.name()} $i",
                 parent.level()!! + 1,
-                parent
+                parent,
             )
         }
     }
@@ -90,7 +90,7 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
                     "DE Aggr $i",
                     null,
                     ObjectWithUid.create(categoryCombo.uid()),
-                    "AGGREGATE"
+                    "AGGREGATE",
                 )
             }
         }
@@ -102,7 +102,7 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
                 "DE Tracker $i",
                 null,
                 ObjectWithUid.create(categoryCombo.uid()),
-                "TRACKER"
+                "TRACKER",
             )
         }
     }
@@ -111,12 +111,12 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
         val withReg = ProgramSamples.getProgram(
             "Program with registration",
             ProgramType.WITH_REGISTRATION,
-            categoryCombo
+            categoryCombo,
         )
         val withoutReg = ProgramSamples.getProgram(
             "Program without registration",
             ProgramType.WITHOUT_REGISTRATION,
-            categoryCombo
+            categoryCombo,
         )
         return listOf(withReg, withoutReg)
     }

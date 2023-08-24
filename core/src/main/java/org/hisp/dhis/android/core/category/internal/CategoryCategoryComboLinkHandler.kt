@@ -34,5 +34,5 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 
 internal class CategoryCategoryComboLinkHandler(
-    store: LinkStore<CategoryCategoryComboLink>
+    store: LinkStore<CategoryCategoryComboLink>,
 ) : OrderedLinkHandlerImpl<Category, CategoryCategoryComboLink>(store)

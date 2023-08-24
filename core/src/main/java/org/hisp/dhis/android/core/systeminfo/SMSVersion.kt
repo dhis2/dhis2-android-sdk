@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.systeminfo
 
 enum class SMSVersion(val intValue: Int) {
     V1(1),
-    V2(2);
+    V2(2),
+    ;
 
     companion object {
         @JvmStatic

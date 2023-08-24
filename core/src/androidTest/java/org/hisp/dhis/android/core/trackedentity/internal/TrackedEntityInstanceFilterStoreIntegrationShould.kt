@@ -40,7 +40,7 @@ class TrackedEntityInstanceFilterStoreIntegrationShould :
     IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter>(
         TrackedEntityInstanceFilterStoreImpl(TestDatabaseAdapterFactory.get()),
         TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilterSamples.get()

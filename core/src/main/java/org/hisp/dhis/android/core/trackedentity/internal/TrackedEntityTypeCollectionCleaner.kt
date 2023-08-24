@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityTypeCollectionCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CollectionCleanerImpl<TrackedEntityType>(
     tableName = TrackedEntityTypeTableInfo.TABLE_INFO.name(),
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

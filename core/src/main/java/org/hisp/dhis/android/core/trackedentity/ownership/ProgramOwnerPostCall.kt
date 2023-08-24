@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramOwnerPostCall @Inject constructor(
     private val ownershipService: OwnershipService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val programOwnerStore: ProgramOwnerStore,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
 ) {
 
     suspend fun uploadProgramOwner(programOwner: ProgramOwner) {
@@ -46,7 +46,7 @@ internal class ProgramOwnerPostCall @Inject constructor(
             ownershipService.transfer(
                 programOwner.trackedEntityInstance(),
                 programOwner.program(),
-                programOwner.ownerOrgUnit()
+                programOwner.ownerOrgUnit(),
             )
         }
 
@@ -57,13 +57,13 @@ internal class ProgramOwnerPostCall @Inject constructor(
                     val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
                     programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
                     dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(
-                        programOwner.trackedEntityInstance()
+                        programOwner.trackedEntityInstance(),
                     )
                 }
             },
             onFailure = {
                 // TODO Create a record in TEI
-            }
+            },
         )
     }
 }

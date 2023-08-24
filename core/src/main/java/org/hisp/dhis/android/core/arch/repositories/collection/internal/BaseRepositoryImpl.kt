@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 open class BaseRepositoryImpl<R : BaseRepository>(
     @JvmField protected val scope: RepositoryScope,
-    @JvmField protected val cf: FilterConnectorFactory<R>
+    @JvmField protected val cf: FilterConnectorFactory<R>,
 ) : BaseRepository

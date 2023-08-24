@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
@@ -37,10 +36,11 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import javax.inject.Inject
 
 @Reusable
 internal class NewEventEndpointCallFactory @Inject constructor(
-    private val service: TrackerExporterService
+    private val service: TrackerExporterService,
 ) : EventEndpointCallFactory() {
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
@@ -55,7 +55,7 @@ internal class NewEventEndpointCallFactory @Inject constructor(
             pageSize = eventQuery.pageSize,
             updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery)
+            eventUid = getUidStr(eventQuery),
         ).let { mapPayload(it) }
     }
 
@@ -63,7 +63,7 @@ internal class NewEventEndpointCallFactory @Inject constructor(
         return service.getEventSingle(
             eventUid = uid,
             fields = NewEventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         ).let { mapPayload(it) }
     }
 

@@ -48,7 +48,7 @@ class AnalyticsBoundaryParserShould {
             "INVALID_STRING" to null,
             "#{a3kGcGDCuk6}" to null,
             "A{GPkGfbmy}" to null,
-            "PS_EVENTDATE:3MvHHogjR" to null
+            "PS_EVENTDATE:3MvHHogjR" to null,
         )
             .forEach {
                 assertThat(AnalyticsBoundaryParser.parseBoundaryTarget(it.key)).isEqualTo(it.value)

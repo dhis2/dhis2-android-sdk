@@ -42,7 +42,7 @@ internal object TrackerQueryCommonParamsSamples {
             false,
             OrganisationUnitMode.ACCESSIBLE,
             listOf(),
-            50
+            50,
         )
     }
 }

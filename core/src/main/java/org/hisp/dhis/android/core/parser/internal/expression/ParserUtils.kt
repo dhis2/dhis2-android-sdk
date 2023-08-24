@@ -27,11 +27,6 @@
  */
 package org.hisp.dhis.android.core.parser.internal.expression
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.regex.Pattern
-import kotlin.math.pow
-import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.function.*
@@ -44,6 +39,11 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.regex.Pattern
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 internal object ParserUtils {
     const val DOUBLE_VALUE_IF_NULL = 0.0
@@ -99,7 +99,7 @@ internal object ParserUtils {
         ExpressionParser.C_BRACE to ItemConstant(),
 
         // Literals
-        ExpressionParser.NULL to NullLiteral()
+        ExpressionParser.NULL to NullLiteral(),
     )
 
     @JvmStatic
@@ -176,12 +176,14 @@ internal object ParserUtils {
         return when (period.periodType()!!) {
             PeriodType.Daily -> LocalDate.parse(periodIsoDate).dayOfYear
             PeriodType.Monthly,
-            PeriodType.BiMonthly -> period.periodId()!!.substring(4, 6).toInt()
+            PeriodType.BiMonthly,
+            -> period.periodId()!!.substring(4, 6).toInt()
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialNov,
-            PeriodType.FinancialOct -> 1
+            PeriodType.FinancialOct,
+            -> 1
             else -> getTrailingDigits(period.periodId()!!) ?: 0
         }
     }

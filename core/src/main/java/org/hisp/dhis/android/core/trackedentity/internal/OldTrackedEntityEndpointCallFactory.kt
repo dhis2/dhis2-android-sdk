@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -37,11 +36,12 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import javax.inject.Inject
 
 @Reusable
 internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val queryCallFactory: TrackedEntityInstanceQueryCallFactory
+    private val queryCallFactory: TrackedEntityInstanceQueryCallFactory,
 ) : TrackedEntityEndpointCallFactory() {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
@@ -59,7 +59,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 
@@ -72,7 +72,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 
@@ -82,7 +82,7 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
             trackedEntityInstance = uid,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 

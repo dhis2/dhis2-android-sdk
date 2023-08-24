@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.map.layer.internal.bing.BingEntityDIModule
     includes = [
         MapLayerEntityDIModule::class,
         MapLayerImageryProviderEntityDIModule::class,
-        BingEntityDIModule::class
-    ]
+        BingEntityDIModule::class,
+    ],
 )
 internal class MapPackageDIModule {
 

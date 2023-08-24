@@ -71,7 +71,7 @@ class CategoryComboHandlerShould {
             categoryComboStore,
             optionComboHandler,
             categoryCategoryComboLinkHandler,
-            categoryOptionCleaner
+            categoryOptionCleaner,
         )
     }
 

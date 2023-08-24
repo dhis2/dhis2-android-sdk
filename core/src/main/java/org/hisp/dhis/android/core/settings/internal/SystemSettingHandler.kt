@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.SystemSetting
+import javax.inject.Inject
 
 @Reusable
 internal class SystemSettingHandler @Inject constructor(
-    store: SystemSettingStore
+    store: SystemSettingStore,
 ) : ObjectWithoutUidHandlerImpl<SystemSetting>(store)

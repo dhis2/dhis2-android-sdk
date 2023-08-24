@@ -43,5 +43,5 @@ enum class VisualizationType {
     SINGLE_VALUE,
     PIVOT_TABLE,
     SCATTER,
-    BUBBLE
+    BUBBLE,
 }

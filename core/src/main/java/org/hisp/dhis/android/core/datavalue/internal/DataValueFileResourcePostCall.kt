@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
+import javax.inject.Inject
 
 @Reusable
 internal class DataValueFileResourcePostCall @Inject constructor(
     private val fileResourceHelper: FileResourceHelper,
-    private val fileResourcePostCall: FileResourcePostCall
+    private val fileResourcePostCall: FileResourcePostCall,
 ) {
     suspend fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
         val fileResources = fileResourceHelper.getUploadableFileResources()
@@ -69,5 +69,5 @@ internal class DataValueFileResourcePostCall @Inject constructor(
 
 internal data class DataValueFileResourcePostCallResult(
     val dataValues: List<DataValue>,
-    val fileResources: List<String>
+    val fileResources: List<String>,
 )

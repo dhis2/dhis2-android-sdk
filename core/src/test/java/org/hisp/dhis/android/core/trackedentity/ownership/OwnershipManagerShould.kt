@@ -67,7 +67,7 @@ class OwnershipManagerShould {
             ownershipService,
             dataStatePropagator,
             programTempOwnerStore,
-            programOwnerStore
+            programOwnerStore,
         )
     }
 

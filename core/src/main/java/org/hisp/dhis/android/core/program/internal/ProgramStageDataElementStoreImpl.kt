@@ -39,20 +39,20 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramStageDataElementStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageDataElementStore,
     IdentifiableObjectStoreImpl<ProgramStageDataElement>(
         databaseAdapter,
         ProgramStageDataElementTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramStageDataElement.create(cursor) }
+        { cursor: Cursor -> ProgramStageDataElement.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<ProgramStageDataElement> =
             object : IdentifiableStatementBinder<ProgramStageDataElement>() {
                 override fun bindToStatement(
                     programStageDataElement: ProgramStageDataElement,
-                    w: StatementWrapper
+                    w: StatementWrapper,
                 ) {
                     super.bindToStatement(programStageDataElement, w)
                     w.bind(7, programStageDataElement.displayInReports())

@@ -40,7 +40,7 @@ class ProgramStageWorkingListAttributeValueFilterStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramStageWorkingListAttributeValueFilter>(
         ProgramStageWorkingListAttributeValueFilterStoreImpl(TestDatabaseAdapterFactory.get()),
         ItemFilterTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilterSamples.get()

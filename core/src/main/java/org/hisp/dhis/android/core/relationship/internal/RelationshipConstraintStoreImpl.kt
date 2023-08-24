@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
 
 internal class RelationshipConstraintStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : RelationshipConstraintStore,
     ObjectWithoutUidStoreImpl<RelationshipConstraint>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class RelationshipConstraintStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> RelationshipConstraint.create(cursor) }
+        { cursor: Cursor -> RelationshipConstraint.create(cursor) },
     ) {
 
     companion object {

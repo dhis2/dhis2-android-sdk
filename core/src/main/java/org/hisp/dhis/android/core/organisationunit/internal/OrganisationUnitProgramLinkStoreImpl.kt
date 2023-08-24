@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 
 internal class OrganisationUnitProgramLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitProgramLinkStore,
     LinkStoreImpl<OrganisationUnitProgramLink>(
         databaseAdapter,
         OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
         OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
         BINDER,
-        { cursor: Cursor -> OrganisationUnitProgramLink.create(cursor) }
+        { cursor: Cursor -> OrganisationUnitProgramLink.create(cursor) },
     ) {
 
     companion object {

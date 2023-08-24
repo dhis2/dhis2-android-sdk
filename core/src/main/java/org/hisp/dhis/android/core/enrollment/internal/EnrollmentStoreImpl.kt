@@ -44,20 +44,20 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
 internal class EnrollmentStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : EnrollmentStore,
     IdentifiableDeletableDataObjectStoreImpl<Enrollment>(
         databaseAdapter,
         EnrollmentTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Enrollment.create(cursor) }
+        { cursor: Cursor -> Enrollment.create(cursor) },
     ) {
 
     override fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
         val enrollmentsToPostQuery = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.AGGREGATED_SYNC_STATE,
-                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
+                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
             ).build()
         val enrollmentList: List<Enrollment> = selectWhere(enrollmentsToPostQuery)
 
@@ -91,7 +91,7 @@ internal class EnrollmentStoreImpl(
 
     override fun selectByTrackedEntityInstanceAndAttribute(
         teiUid: String,
-        attributeUid: String
+        attributeUid: String,
     ): List<Enrollment> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
@@ -100,7 +100,7 @@ internal class EnrollmentStoreImpl(
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
                     "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
                     "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +
-                    "'$attributeUid'"
+                    "'$attributeUid'",
             ).build()
 
         return selectWhere(whereClause)

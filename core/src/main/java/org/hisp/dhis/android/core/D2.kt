@@ -105,8 +105,8 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     @Deprecated(
         "Use settingModule() instead.",
         replaceWith = ReplaceWith(
-            expression = "settingModule()"
-        )
+            expression = "settingModule()",
+        ),
     )
     fun systemSettingModule(): SettingModule {
         return modules.settingModule

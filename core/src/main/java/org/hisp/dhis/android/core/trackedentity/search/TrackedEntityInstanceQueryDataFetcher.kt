@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlin.collections.HashSet
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import kotlin.collections.HashSet
 
 internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
@@ -49,7 +49,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
-    private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper
+    private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) {
     private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> = onlineHelper.fromScope(scope)
     private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> = HashMap()
@@ -99,7 +99,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         val sqlQuery = localQueryHelper.getSqlQuery(
             scope,
             returnedUidsOffline,
-            requestedLoadSize
+            requestedLoadSize,
         )
         val instances = store.selectRawQuery(sqlQuery)
         returnedUidsOffline.addAll(instances.map { it.uid() })
@@ -124,7 +124,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
     private fun getOnlineQueryResults(
         baseOnlineQuery: TrackedEntityInstanceQueryOnline,
-        requestLoadSize: Int
+        requestLoadSize: Int,
     ): List<Result<TrackedEntityInstance, D2Error>> {
         val status = onlineQueryStatusMap[baseOnlineQuery]!!
         if (status.isExhausted) {
@@ -135,7 +135,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         val onlineQuery = baseOnlineQuery.copy(
             page = page,
             pageSize = requestLoadSize,
-            paging = true
+            paging = true,
         )
         val queryInstances = queryOnline(onlineQuery)
 
@@ -163,7 +163,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     }
 
     private fun queryOnline(
-        onlineQuery: TrackedEntityInstanceQueryOnline
+        onlineQuery: TrackedEntityInstanceQueryOnline,
     ): TrackedEntityInstanceOnlineResult {
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
@@ -175,14 +175,14 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 .let { result ->
                     TrackedEntityInstanceOnlineResult(
                         items = result.trackedEntities.map { Result.Success(it) },
-                        exhausted = result.exhausted
+                        exhausted = result.exhausted,
                     )
                 }
                 .also { onlineCache[onlineQuery] = it }
         } catch (e: D2Error) {
             TrackedEntityInstanceOnlineResult(
                 items = listOf(Result.Failure(e)),
-                exhausted = true
+                exhausted = true,
             )
         }
     }
@@ -193,9 +193,9 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             childrenAppenders,
             ChildrenSelection(
                 setOf(
-                    TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES
-                )
-            )
+                    TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                ),
+            ),
         )
     }
 
@@ -206,5 +206,5 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
 private data class OnlineQueryStatus(
     var requestedItems: Int = 0,
-    var isExhausted: Boolean = false
+    var isExhausted: Boolean = false,
 )

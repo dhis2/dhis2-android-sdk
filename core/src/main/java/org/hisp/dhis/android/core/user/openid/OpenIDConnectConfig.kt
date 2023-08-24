@@ -35,5 +35,5 @@ data class OpenIDConnectConfig(
     val redirectUri: Uri,
     val discoveryUri: Uri?,
     val authorizationUri: String?,
-    val tokenUrl: String?
+    val tokenUrl: String?,
 )

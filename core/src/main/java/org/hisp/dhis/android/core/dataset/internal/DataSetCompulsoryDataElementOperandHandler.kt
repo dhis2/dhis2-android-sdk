@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
 
 internal class DataSetCompulsoryDataElementOperandHandler(
-    store: DataSetCompulsoryDataElementOperandLinkStore
+    store: DataSetCompulsoryDataElementOperandLinkStore,
 ) : LinkHandlerImpl<DataElementOperand, DataSetCompulsoryDataElementOperandLink>(store)

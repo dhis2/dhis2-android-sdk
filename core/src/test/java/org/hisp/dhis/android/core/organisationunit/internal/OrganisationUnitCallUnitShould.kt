@@ -31,8 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.io.IOException
-import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -44,6 +42,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.io.IOException
+import java.util.*
 
 @RunWith(JUnit4::class)
 class OrganisationUnitCallUnitShould {
@@ -120,7 +120,7 @@ class OrganisationUnitCallUnitShould {
             organisationUnitDisplayPathTransformer,
             userOrganisationUnitLinkStore,
             organisationUnitStore,
-            collectionCleaner
+            collectionCleaner,
         )
             .download(user)
 
@@ -134,8 +134,8 @@ class OrganisationUnitCallUnitShould {
                 orderCaptor.capture(),
                 pagingCaptor.capture(),
                 pageSizeCaptor.capture(),
-                pageCaptor.capture()
-            )
+                pageCaptor.capture(),
+            ),
         ).doReturn(Single.just(organisationUnitPayload))
         whenever(organisationUnitPayload.items()).doReturn(organisationUnits)
     }

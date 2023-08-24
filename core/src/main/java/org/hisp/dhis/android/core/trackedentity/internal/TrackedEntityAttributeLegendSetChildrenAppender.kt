@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 
 internal class TrackedEntityAttributeLegendSetChildrenAppender(
-    private val linkChildStore: ObjectWithUidChildStore<TrackedEntityAttribute>
+    private val linkChildStore: ObjectWithUidChildStore<TrackedEntityAttribute>,
 ) : ChildrenAppender<TrackedEntityAttribute>() {
 
     override fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
@@ -51,8 +51,8 @@ internal class TrackedEntityAttributeLegendSetChildrenAppender(
                 StoreFactory.objectWithUidChildStore(
                     databaseAdapter,
                     TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
-                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
+                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION,
+                ),
             )
         }
     }

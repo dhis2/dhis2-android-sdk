@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.event.EventDataFilter
 
 internal class EventDataFilterHandler(
-    store: EventDataFilterStore
+    store: EventDataFilterStore,
 ) : ObjectWithoutUidHandlerImpl<EventDataFilter>(store)

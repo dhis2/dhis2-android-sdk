@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -37,6 +35,8 @@ import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import java.io.File
+import java.util.*
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -142,8 +142,8 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
                 existingEvent.program(),
                 existingEvent.programStage(),
                 existingEvent.organisationUnit(),
-                existingEvent.attributeOptionCombo()
-            )
+                existingEvent.attributeOptionCombo(),
+            ),
         )
         d2.eventModule().events().uid(newEventUid).setEventDate(Date())
 
@@ -204,7 +204,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
                 dataValue.organisationUnit()!!,
                 dataValue.dataElement()!!,
                 dataValue.categoryOptionCombo()!!,
-                dataValue.attributeOptionCombo()!!
+                dataValue.attributeOptionCombo()!!,
             )
             .blockingSet(uid)
 

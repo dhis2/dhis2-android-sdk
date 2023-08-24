@@ -62,7 +62,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     fun should_evaluate_mathematical_expressions() {
         val indicator = createIndicator(
             numerator = "4 * 5 / 2",
-            denominator = "2 + 7 - 4"
+            denominator = "2 + 7 - 4",
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -88,7 +88,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
 
         val indicator = createIndicator(
             numerator = de(dataElement1.uid()),
-            denominator = "[days]"
+            denominator = "[days]",
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -104,7 +104,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         val indicator = createIndicator(
             numerator = de(dataElement1.uid()),
             denominator = de(dataElement2.uid()),
-            decimals = 4
+            decimals = 4,
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -118,7 +118,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
 
         val indicator = createIndicator(
             numerator = de(dataElement1.uid()),
-            denominator = cons(constant1.uid())
+            denominator = cons(constant1.uid()),
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -132,7 +132,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         createEventAndValue("15", dataElement1.uid())
 
         val indicator = createIndicator(
-            numerator = eventDE(program.uid(), dataElement1.uid())
+            numerator = eventDE(program.uid(), dataElement1.uid()),
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -146,7 +146,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         createTEIAndAttribute("5", attribute1.uid())
 
         val indicator = createIndicator(
-            numerator = eventAtt(program.uid(), attribute1.uid())
+            numerator = eventAtt(program.uid(), attribute1.uid()),
         )
 
         val value = evaluateForThisMonth(indicator)
@@ -216,7 +216,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         mapOf(
             "${de(dataElement1.uid())}.minDate(2019-10-05)" to "12.0",
             "${de(dataElement1.uid())}.maxDate(2019-12-01)" to "6.0",
-            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0"
+            "${de(dataElement1.uid())}.minDate(2019-10-05).maxDate(2019-12-01)" to "4.0",
         ).forEach { (numerator, expected) ->
             val indicator = createIndicator(numerator = numerator)
             val result = evaluateForAbsolute(indicator, periodId = period2019Q4.periodId()!!)
@@ -231,7 +231,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         mapOf(
             period201910 to "12.0",
             period2019Q4 to "4.0",
-            period2019SunW25 to "52.0"
+            period2019SunW25 to "52.0",
         ).forEach { (period, expected) ->
             val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
             assertThat(result).isEqualTo(expected)
@@ -245,7 +245,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         mapOf(
             period201910 to "10.0",
             period2019Q4 to "4.0",
-            period2019SunW25 to "25.0"
+            period2019SunW25 to "25.0",
         ).forEach { (period, expected) ->
             val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
             assertThat(result).isEqualTo(expected)
@@ -265,7 +265,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
             period201910 to "2.0",
             period201911 to "6.0",
             period201912 to "14.0",
-            period202001 to "16.0"
+            period202001 to "16.0",
         ).forEach { (period, expected) ->
             val result = evaluateForAbsolute(indicator, periodId = period.periodId()!!)
             assertThat(result).isEqualTo(expected)
@@ -288,46 +288,46 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
 
     private fun evaluateForThisMonth(
         indicator: Indicator,
-        aggregationType: AggregationType = AggregationType.DEFAULT
+        aggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {
         return evaluateFor(
             indicator = indicator,
             aggregationType = aggregationType,
-            periodItem = DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            periodItem = DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
         )
     }
 
     private fun evaluateForAbsolute(
         indicator: Indicator,
         periodId: String,
-        aggregationType: AggregationType = AggregationType.DEFAULT
+        aggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {
         return evaluateFor(
             indicator = indicator,
             aggregationType = aggregationType,
-            periodItem = DimensionItem.PeriodItem.Absolute(periodId)
+            periodItem = DimensionItem.PeriodItem.Absolute(periodId),
         )
     }
 
     private fun evaluateFor(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT,
-        periodItem: DimensionItem.PeriodItem
+        periodItem: DimensionItem.PeriodItem,
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.IndicatorItem(indicator.uid()),
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
             ),
             filters = listOf(
-                periodItem
+                periodItem,
             ),
-            aggregationType = aggregationType
+            aggregationType = aggregationType,
         )
 
         return indicatorEvaluator.evaluate(
             evaluationItem,
-            metadata + (indicator.uid() to MetadataItem.IndicatorItem(indicator))
+            metadata + (indicator.uid() to MetadataItem.IndicatorItem(indicator)),
         )
     }
 
@@ -335,7 +335,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         numerator: String? = "1",
         denominator: String? = "1",
         decimals: Int? = null,
-        factor: Int? = 1
+        factor: Int? = 1,
     ): Indicator {
         val indicatorType = IndicatorType.builder()
             .uid(generator.generate())

@@ -48,7 +48,7 @@ internal class SectionEntityDIModule {
         return mapOf(
             SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
             SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender.create(databaseAdapter),
-            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender.create(databaseAdapter)
+            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender.create(databaseAdapter),
         )
     }
 }

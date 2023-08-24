@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityAttributeHandler @Inject constructor(
     trackedEntityAttributeStore: TrackedEntityAttributeStore,
-    private val trackedEntityAttributeLegendSetLinkHandler: TrackedEntityAttributeLegendSetLinkHandler
+    private val trackedEntityAttributeLegendSetLinkHandler: TrackedEntityAttributeLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<TrackedEntityAttribute>(trackedEntityAttributeStore) {
     override fun beforeObjectHandled(o: TrackedEntityAttribute): TrackedEntityAttribute {
         val builder = o.toBuilder()
@@ -55,7 +55,7 @@ internal class TrackedEntityAttributeHandler @Inject constructor(
         if (o.legendSets() != null) {
             trackedEntityAttributeLegendSetLinkHandler.handleMany(
                 o.uid(),
-                o.legendSets()
+                o.legendSets(),
             ) { legendSet: ObjectWithUid, sortOrder: Int? ->
                 TrackedEntityAttributeLegendSetLink.builder()
                     .legendSet(legendSet.uid())

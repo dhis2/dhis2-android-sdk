@@ -89,8 +89,8 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 ProgramIndicator::class,
                 Indicator::class,
                 LegendSet::class,
-                ExpressionDimensionItem::class
-            ).map { it.java.simpleName }
+                ExpressionDimensionItem::class,
+            ).map { it.java.simpleName },
         )
 
         testObserver.dispose()

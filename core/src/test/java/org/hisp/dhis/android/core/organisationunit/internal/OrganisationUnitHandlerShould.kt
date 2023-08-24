@@ -70,7 +70,7 @@ class OrganisationUnitHandlerShould {
             organisationUnitProgramLinkHandler,
             dataSetDataSetOrganisationUnitLinkHandler,
             organisationUnitGroupHandler,
-            organisationUnitGroupLinkHandler
+            organisationUnitGroupLinkHandler,
         )
         whenever(user.uid()).doReturn("test_user_uid")
         whenever(program.uid()).doReturn(programUid)

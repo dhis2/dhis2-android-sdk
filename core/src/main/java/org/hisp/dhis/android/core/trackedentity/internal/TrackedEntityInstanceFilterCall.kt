@@ -29,20 +29,20 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import javax.inject.Inject
 
 @Reusable
 class TrackedEntityInstanceFilterCall @Inject internal constructor(
     private val service: TrackedEntityInstanceFilterService,
     private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
 ) : UidsCall<TrackedEntityInstanceFilter> {
     override fun download(uids: Set<String>): Single<List<TrackedEntityInstanceFilter>> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
@@ -51,13 +51,13 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
-                handler
+                handler,
             ) { partitionUids: Set<String> ->
                 service.getTrackedEntityInstanceFilters(
                     TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                     accessDataReadFilter,
                     TrackedEntityInstanceFilterFields.allFields,
-                    false
+                    false,
                 )
             }
         } else {
@@ -70,10 +70,10 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
                         TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                         accessDataReadFilter,
                         TrackedEntityInstanceFilterFields.allFieldsAPI37,
-                        false
+                        false,
                     )
                 },
-                { it.toTrackedEntityInstanceFilter() }
+                { it.toTrackedEntityInstanceFilter() },
             )
         }
     }

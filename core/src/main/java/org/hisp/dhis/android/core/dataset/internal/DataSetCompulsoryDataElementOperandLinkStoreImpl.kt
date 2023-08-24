@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLin
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 
 internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetCompulsoryDataElementOperandLinkStore,
     LinkStoreImpl<DataSetCompulsoryDataElementOperandLink>(
         databaseAdapter,
         DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
         DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
         BINDER,
-        { cursor: Cursor -> DataSetCompulsoryDataElementOperandLink.create(cursor) }
+        { cursor: Cursor -> DataSetCompulsoryDataElementOperandLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: DataSetCompulsoryDataElementOperandLink, w: StatementWrapper ->

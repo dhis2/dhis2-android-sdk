@@ -36,7 +36,7 @@ enum class RelativePeriod constructor(
     internal val start: Int?,
     internal val end: Int?,
     internal val periodsThisYear: Boolean = false,
-    internal val periodsLastYear: Boolean = false
+    internal val periodsLastYear: Boolean = false,
 ) {
     @JsonAlias("today", "thisDay")
     TODAY(PeriodType.Daily, 0, 1),
@@ -171,5 +171,5 @@ enum class RelativePeriod constructor(
     LAST_12_WEEKS(PeriodType.Weekly, -12, 0),
 
     @JsonAlias("last52Weeks")
-    LAST_52_WEEKS(PeriodType.Weekly, -52, 0)
+    LAST_52_WEEKS(PeriodType.Weekly, -52, 0),
 }

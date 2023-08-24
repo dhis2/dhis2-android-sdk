@@ -31,7 +31,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
-import javax.net.ssl.HttpsURLConnection
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
@@ -55,6 +54,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
 import retrofit2.Response
+import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 class ProgramModuleDownloaderShould : BaseCallShould() {
@@ -84,7 +84,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         super.setUp()
         errorResponse = Response.error<Any>(
             HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
-            ResponseBody.create("application/json".toMediaTypeOrNull(), "{}")
+            ResponseBody.create("application/json".toMediaTypeOrNull(), "{}"),
         )
 
         // Calls
@@ -114,7 +114,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
             optionSetCall,
             optionCall,
             optionGroupCall,
-            organisationUnitProgramLinkLinkStore
+            organisationUnitProgramLinkLinkStore,
         )
     }
 

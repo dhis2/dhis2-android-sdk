@@ -56,7 +56,7 @@ internal object EnrollmentFields {
         .fields(
             fh.nestedField<Event>(EVENTS).with(EventFields.allFields),
             fh.nestedField<Note>(NOTES).with(NoteFields.all),
-            fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields)
+            fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
         ).build()
 
     val asRelationshipFields: Fields<Enrollment> = commonFields().build()
@@ -78,7 +78,7 @@ internal object EnrollmentFields {
             fh.field<Boolean>(DELETED),
             fh.field<String>(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE),
             fh.field<Coordinates>(COORDINATE),
-            fh.field<Geometry>(GEOMETRY)
+            fh.field<Geometry>(GEOMETRY),
         )
     }
 }

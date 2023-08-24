@@ -36,18 +36,18 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFac
 internal class EventQueryBundleInternalFactory constructor(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
-    programSettings: ProgramSettings?
+    programSettings: ProgramSettings?,
 ) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
     override fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>
+        orgUnitByLimitExtractor: () -> List<String>,
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(
             params,
             programSettings,
-            programUid
+            programUid,
         ) { it?.eventsDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
@@ -58,7 +58,7 @@ internal class EventQueryBundleInternalFactory constructor(
             programs,
             programUid,
             limit,
-            orgUnitByLimitExtractor
+            orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
         val builder = EventQueryBundle.builder()

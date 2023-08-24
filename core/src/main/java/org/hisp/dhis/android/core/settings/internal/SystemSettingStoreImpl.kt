@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.SystemSettingTableInfo
 
 internal class SystemSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SystemSettingStore,
     ObjectWithoutUidStoreImpl<SystemSetting>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class SystemSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> SystemSetting.create(cursor) }
+        { cursor: Cursor -> SystemSetting.create(cursor) },
     ) {
 
     companion object {

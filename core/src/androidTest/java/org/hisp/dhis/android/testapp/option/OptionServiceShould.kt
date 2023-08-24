@@ -81,7 +81,7 @@ class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
                 optionSetUid = "VQ2lai3OfVG",
                 searchText = "19",
                 optionToHideUids = listOf("Y1ILwhy5VDY"),
-                optionToShowUids = listOf("egT1YqFWsVk")
+                optionToShowUids = listOf("egT1YqFWsVk"),
             )
 
         assertThat(options.size).isEqualTo(1)

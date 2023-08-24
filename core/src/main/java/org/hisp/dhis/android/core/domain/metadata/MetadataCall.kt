@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -72,6 +71,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @Reusable
@@ -95,7 +95,7 @@ internal class MetadataCall @Inject constructor(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
-    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader
+    private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
 ) {
 
     companion object {

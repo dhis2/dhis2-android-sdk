@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.DataSetSetting
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetSettingHandler @Inject constructor(
-    store: DataSetSettingStore
+    store: DataSetSettingStore,
 ) : ObjectWithoutUidHandlerImpl<DataSetSetting>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<DataSetSetting>): Collection<DataSetSetting> {

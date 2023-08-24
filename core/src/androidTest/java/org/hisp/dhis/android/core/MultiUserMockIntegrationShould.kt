@@ -49,7 +49,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         d2.databaseAdapter().insert(
             CategoryOptionTableInfo.TABLE_INFO.name(),
             null,
-            CategoryOptionSamples.getCategoryOption().toContentValues()
+            CategoryOptionSamples.getCategoryOption().toContentValues(),
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
@@ -74,7 +74,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         d2.databaseAdapter().insert(
             CategoryOptionTableInfo.TABLE_INFO.name(),
             null,
-            CategoryOptionSamples.getCategoryOption().toContentValues()
+            CategoryOptionSamples.getCategoryOption().toContentValues(),
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()

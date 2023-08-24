@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class SectionIndicatorLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<SectionIndicatorLink>(
     SectionIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
     SectionIndicatorLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
 
     override fun addMasterUid(): String {

@@ -40,7 +40,7 @@ object DataValueSamples {
         period: String,
         categoryOptionCombo: String,
         attributeOptionCombo: String,
-        value: String
+        value: String,
     ): DataValue {
         return DataValue.builder()
             .id(1L)

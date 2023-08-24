@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.constant.ConstantTableInfo
 
 @Suppress("MagicNumber")
 internal class ConstantStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ConstantStore,
     IdentifiableObjectStoreImpl<Constant>(
         databaseAdapter,
         ConstantTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Constant.create(cursor) }
+        { cursor: Cursor -> Constant.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<Constant> = object : IdentifiableStatementBinder<Constant>() {

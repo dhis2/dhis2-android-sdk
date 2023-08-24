@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -60,6 +59,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito
+import java.util.concurrent.Callable
 
 @SuppressWarnings("MaxLineLength")
 class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
@@ -72,8 +72,10 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
     private var pattern: String? = null
 
     @Mock
-    val trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery>? =
+    val trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<
+        TrackedEntityAttributeReservedValue,
+        TrackedEntityAttributeReservedValueQuery,
+        >? =
         null
 
     @Mock
@@ -118,7 +120,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
 
         pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)"
         trackedEntityAttributeStore.updateOrInsert(
-            TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build()
+            TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build(),
         )
         val categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build()
         d2.databaseAdapter()
@@ -133,20 +135,20 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
             .program(ObjectWithUid.create(programUid))
             .build()
         ProgramTrackedEntityAttributeStoreImpl(d2.databaseAdapter()).insert(
-            programTrackedEntityAttribute
+            programTrackedEntityAttribute,
         )
         val organisationUnitProgramLink =
             OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid)
                 .program(programUid).build()
         OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(
-            organisationUnitProgramLink
+            organisationUnitProgramLink,
         )
         Mockito.`when`(
             trackedEntityAttributeReservedValueQueryCallFactory!!.create(
                 ArgumentMatchers.any(
-                    TrackedEntityAttributeReservedValueQuery::class.java
-                )
-            )
+                    TrackedEntityAttributeReservedValueQuery::class.java,
+                ),
+            ),
         )
             .thenReturn(trackedEntityAttributeReservedValueCall)
         handler.handleMany(trackedEntityAttributeReservedValues)
@@ -263,8 +265,9 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
         d2.metadataModule().blockingDownload()
         d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(null)
 
-        /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */Truth.assertThat(
-            selectAll().size
+        /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
+        Truth.assertThat(
+            selectAll().size,
         ).isEqualTo(200)
     }
 
@@ -342,7 +345,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
      */
     private fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
         Mockito.verify(trackedEntityAttributeReservedValueQueryCallFactory)!!.create(
-            trackedEntityAttributeReservedValueQueryCaptor!!.capture()
+            trackedEntityAttributeReservedValueQueryCaptor!!.capture(),
         )
         val query = trackedEntityAttributeReservedValueQueryCaptor.value
         Truth.assertThat(query.organisationUnit()!!.uid()).isEqualTo(organisationUnit!!.uid())

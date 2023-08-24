@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import java.util.*
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -49,13 +48,14 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import java.util.*
 
 @Suppress("TooManyFunctions")
 internal object ProgramIndicatorEvaluatorHelper {
 
     fun getProgramIndicator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): ProgramIndicator {
         val programIndicatorItem = evaluationItem.allDimensionItems
             .find { it is DimensionItem.DataItem.ProgramIndicatorItem }
@@ -71,12 +71,12 @@ internal object ProgramIndicatorEvaluatorHelper {
                     hasDefaultTargetBoundaries(
                         programIndicator,
                         AnalyticsType.EVENT,
-                        BoundaryTargetType.EventDate
+                        BoundaryTargetType.EventDate,
                     ) ||
                         hasDefaultTargetBoundaries(
                             programIndicator,
                             AnalyticsType.ENROLLMENT,
-                            BoundaryTargetType.EnrollmentDate
+                            BoundaryTargetType.EnrollmentDate,
                         )
                     )
         } ?: false
@@ -85,7 +85,7 @@ internal object ProgramIndicatorEvaluatorHelper {
     private fun hasDefaultTargetBoundaries(
         programIndicator: ProgramIndicator,
         type: AnalyticsType,
-        targetType: BoundaryTargetType
+        targetType: BoundaryTargetType,
     ): Boolean {
         val hasTargetTypeAndNoOffset = programIndicator.analyticsPeriodBoundaries()!!.all {
             it.boundaryTargetType() == targetType &&
@@ -111,7 +111,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -120,13 +120,13 @@ internal object ProgramIndicatorEvaluatorHelper {
                 WhereClauseBuilder().apply {
                     appendOrKeyNumberValue(EventTableInfo.Columns.DELETED, 0)
                     appendOrIsNullValue(EventTableInfo.Columns.DELETED)
-                }.build()
+                }.build(),
             )
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
                     "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'",
             )
 
             items.entries.forEach { entry ->
@@ -138,7 +138,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             dimensions = entry.value,
                             builder = this,
                             metadata = metadata,
-                            queryMods = queryMods
+                            queryMods = queryMods,
                         )
                     }
                     is Dimension.OrganisationUnit ->
@@ -146,7 +146,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             columnName = EventTableInfo.Columns.ORGANISATION_UNIT,
                             items = entry.value,
                             builder = this,
-                            metadata = metadata
+                            metadata = metadata,
                         )
                     is Dimension.Category ->
                         AnalyticsEvaluatorHelper.appendCategoryWhereClause(
@@ -154,7 +154,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             disaggregationColumnName = null,
                             items = entry.value,
                             builder = this,
-                            metadata = metadata
+                            metadata = metadata,
                         )
                     else -> {
                     }
@@ -167,7 +167,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -176,7 +176,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 WhereClauseBuilder().apply {
                     appendOrKeyNumberValue(EnrollmentTableInfo.Columns.DELETED, 0)
                     appendOrIsNullValue(EnrollmentTableInfo.Columns.DELETED)
-                }.build()
+                }.build(),
             )
             appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, programIndicator.program()?.uid())
 
@@ -189,14 +189,14 @@ internal object ProgramIndicatorEvaluatorHelper {
                             dimensions = entry.value,
                             builder = this,
                             metadata = metadata,
-                            queryMods = queryMods
+                            queryMods = queryMods,
                         )
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
                             columnName = EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
                             items = entry.value,
                             builder = this,
-                            metadata = metadata
+                            metadata = metadata,
                         )
                     is Dimension.Category -> TODO()
                     else -> {
@@ -213,7 +213,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         programIndicator: ProgramIndicator,
         defaultColumn: String,
         builder: WhereClauseBuilder,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ) {
         if (hasDefaultBoundaries(programIndicator)) {
             builder.appendComplexQuery(
@@ -221,8 +221,8 @@ internal object ProgramIndicatorEvaluatorHelper {
                     column = defaultColumn,
                     dimensions = dimensions,
                     metadata = metadata,
-                    queryMods = queryMods
-                )
+                    queryMods = queryMods,
+                ),
             )
         } else {
             buildNonDefaultBoundariesClauses(programIndicator, dimensions, metadata).forEach {
@@ -235,7 +235,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         column: String,
         dimensions: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(dimensions, metadata, queryMods)
 
@@ -245,8 +245,8 @@ internal object ProgramIndicatorEvaluatorHelper {
                     AnalyticsEvaluatorHelper.getPeriodWhereClause(
                         columnStart = column,
                         columnEnd = column,
-                        period = period
-                    )
+                        period = period,
+                    ),
                 )
             }
         }.build()
@@ -255,7 +255,7 @@ internal object ProgramIndicatorEvaluatorHelper {
     private fun buildNonDefaultBoundariesClauses(
         programIndicator: ProgramIndicator,
         dimensions: List<DimensionItem>,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): List<String> {
         val startDate: Date? = AnalyticsEvaluatorHelper.getStartDate(dimensions, metadata)
         val endDate: Date? = AnalyticsEvaluatorHelper.getEndDate(dimensions, metadata)
@@ -281,7 +281,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         boundaries: List<AnalyticsPeriodBoundary>,
         programIndicator: ProgramIndicator,
         startDate: Date,
-        endDate: Date
+        endDate: Date,
     ): List<String> {
         val analyticsType = programIndicator.analyticsType() ?: AnalyticsType.ENROLLMENT
 
@@ -318,7 +318,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                     column = TrackedEntityDataValueTableInfo.Columns.VALUE,
                     programStageUid = target.programStageUid,
                     dataElementUid = target.dataElementUid,
-                    programIndicator = programIndicator
+                    programIndicator = programIndicator,
                 )
                 boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
             }
@@ -327,7 +327,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 val targetColumn = ProgramIndicatorSQLUtils.getAttributeWhereClause(
                     column = TrackedEntityAttributeValueTableInfo.Columns.VALUE,
                     attributeUid = target.attributeUid,
-                    programIndicator = programIndicator
+                    programIndicator = programIndicator,
                 )
                 boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
             }
@@ -342,7 +342,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                                 column = EventTableInfo.Columns.EVENT_DATE,
                                 boundary = it,
                                 startDate = startDate,
-                                endDate = endDate
+                                endDate = endDate,
                             )
                         }
 
@@ -350,7 +350,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             programStageUid = target.programStageUid,
                             whereClause = WhereClauseBuilder().apply {
                                 whereClauses.forEach { appendComplexQuery(it) }
-                            }.build()
+                            }.build(),
                         )
 
                         listOf(whereClause)
@@ -363,17 +363,19 @@ internal object ProgramIndicatorEvaluatorHelper {
         column: String,
         boundary: AnalyticsPeriodBoundary,
         startDate: Date,
-        endDate: Date
+        endDate: Date,
     ): String {
         val operator = when (boundary.analyticsPeriodBoundaryType()) {
             AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
-            AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD -> ">="
+            AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD,
+            -> ">="
             else -> "<="
         }
 
         val date = when (boundary.analyticsPeriodBoundaryType()) {
             AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
-            AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD -> startDate
+            AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD,
+            -> startDate
             else -> endDate
         }
 
@@ -389,7 +391,7 @@ internal object ProgramIndicatorEvaluatorHelper {
     fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         programIndicator: ProgramIndicator,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): AggregationType {
         val aggregationType =
             if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
@@ -407,17 +409,20 @@ internal object ProgramIndicatorEvaluatorHelper {
             AggregationType.SUM,
             AggregationType.COUNT,
             AggregationType.MIN,
-            AggregationType.MAX -> aggregationType
+            AggregationType.MAX,
+            -> aggregationType
 
             AggregationType.AVERAGE_SUM_ORG_UNIT,
             AggregationType.FIRST,
             AggregationType.LAST,
-            AggregationType.LAST_IN_PERIOD -> AggregationType.SUM
+            AggregationType.LAST_IN_PERIOD,
+            -> AggregationType.SUM
 
             AggregationType.FIRST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
-            AggregationType.DEFAULT -> AggregationType.AVERAGE
+            AggregationType.DEFAULT,
+            -> AggregationType.AVERAGE
 
             AggregationType.LAST_LAST_ORG_UNIT,
             AggregationType.FIRST_FIRST_ORG_UNIT,
@@ -427,7 +432,8 @@ internal object ProgramIndicatorEvaluatorHelper {
             AggregationType.VARIANCE,
             AggregationType.STDDEV,
             AggregationType.CUSTOM,
-            AggregationType.NONE ->
+            AggregationType.NONE,
+            ->
                 throw AnalyticsException.UnsupportedAggregationType(programIndicator.aggregationType()!!)
         }
     }

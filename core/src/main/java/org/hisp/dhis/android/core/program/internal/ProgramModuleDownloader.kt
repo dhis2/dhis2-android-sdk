@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -60,7 +60,7 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
     private val optionGroupCall: OptionGroupCall,
-    private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore
+    private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
@@ -77,13 +77,13 @@ internal class ProgramModuleDownloader @Inject constructor(
                             .flatMap { trackedEntityTypes ->
                                 trackedEntityAttributeCall.download(
                                     ProgramParentUidsHelper
-                                        .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes)
+                                        .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes),
                                 )
                             }
                             .flatMapCompletable { attributes ->
                                 val optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
                                     attributes,
-                                    programStages
+                                    programStages,
                                 )
                                 Single.merge(
                                     listOf(
@@ -91,8 +91,8 @@ internal class ProgramModuleDownloader @Inject constructor(
                                         relationshipTypeCall.download(),
                                         optionSetCall.download(optionSetUids),
                                         optionCall.download(optionSetUids),
-                                        optionGroupCall.download(optionSetUids)
-                                    )
+                                        optionGroupCall.download(optionSetUids),
+                                    ),
                                 ).ignoreElements()
                             }
                             .concatWith(downloadFiltersAndWorkingLists(programUids))
@@ -106,8 +106,8 @@ internal class ProgramModuleDownloader @Inject constructor(
             listOf(
                 trackedEntityInstanceFilterCall.download(programUids),
                 eventFilterCall.download(programUids),
-                programStageWorkingListCall.download(programUids)
-            )
+                programStageWorkingListCall.download(programUids),
+            ),
         ).ignoreElements()
     }
 }

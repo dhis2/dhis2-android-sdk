@@ -68,25 +68,31 @@ class RelativePeriodGeneratorImplShould {
                 RelativePeriod.LAST_SIX_MONTH,
                 RelativePeriod.LAST_QUARTER,
                 RelativePeriod.LAST_YEAR,
-                RelativePeriod.LAST_FINANCIAL_YEAR -> assertThat(periods.size).isEqualTo(1)
+                RelativePeriod.LAST_FINANCIAL_YEAR,
+                -> assertThat(periods.size).isEqualTo(1)
 
                 RelativePeriod.LAST_2_SIXMONTHS -> assertThat(periods.size).isEqualTo(2)
 
                 RelativePeriod.LAST_3_DAYS,
-                RelativePeriod.LAST_3_MONTHS -> assertThat(periods.size).isEqualTo(3)
+                RelativePeriod.LAST_3_MONTHS,
+                -> assertThat(periods.size).isEqualTo(3)
 
                 RelativePeriod.LAST_4_WEEKS,
                 RelativePeriod.LAST_4_BIWEEKS,
-                RelativePeriod.LAST_4_QUARTERS -> assertThat(periods.size).isEqualTo(4)
+                RelativePeriod.LAST_4_QUARTERS,
+                -> assertThat(periods.size).isEqualTo(4)
 
                 RelativePeriod.LAST_5_YEARS,
-                RelativePeriod.LAST_5_FINANCIAL_YEARS -> assertThat(periods.size).isEqualTo(5)
+                RelativePeriod.LAST_5_FINANCIAL_YEARS,
+                -> assertThat(periods.size).isEqualTo(5)
 
                 RelativePeriod.LAST_10_YEARS,
-                RelativePeriod.LAST_10_FINANCIAL_YEARS -> assertThat(periods.size).isEqualTo(10)
+                RelativePeriod.LAST_10_FINANCIAL_YEARS,
+                -> assertThat(periods.size).isEqualTo(10)
 
                 RelativePeriod.LAST_6_MONTHS,
-                RelativePeriod.LAST_6_BIMONTHS -> assertThat(periods.size).isEqualTo(6)
+                RelativePeriod.LAST_6_BIMONTHS,
+                -> assertThat(periods.size).isEqualTo(6)
 
                 RelativePeriod.LAST_7_DAYS -> assertThat(periods.size).isEqualTo(7)
                 RelativePeriod.LAST_14_DAYS -> assertThat(periods.size).isEqualTo(14)
@@ -96,18 +102,22 @@ class RelativePeriodGeneratorImplShould {
                 RelativePeriod.LAST_180_DAYS -> assertThat(periods.size).isEqualTo(180)
 
                 RelativePeriod.LAST_12_WEEKS,
-                RelativePeriod.LAST_12_MONTHS -> assertThat(periods.size).isEqualTo(12)
+                RelativePeriod.LAST_12_MONTHS,
+                -> assertThat(periods.size).isEqualTo(12)
 
                 RelativePeriod.LAST_52_WEEKS,
-                RelativePeriod.WEEKS_THIS_YEAR -> assertThat(periods.size).isEqualTo(52)
+                RelativePeriod.WEEKS_THIS_YEAR,
+                -> assertThat(periods.size).isEqualTo(52)
 
                 RelativePeriod.MONTHS_THIS_YEAR,
-                RelativePeriod.MONTHS_LAST_YEAR -> assertThat(periods.size).isEqualTo(12)
+                RelativePeriod.MONTHS_LAST_YEAR,
+                -> assertThat(periods.size).isEqualTo(12)
 
                 RelativePeriod.BIMONTHS_THIS_YEAR -> assertThat(periods.size).isEqualTo(6)
 
                 RelativePeriod.QUARTERS_THIS_YEAR,
-                RelativePeriod.QUARTERS_LAST_YEAR -> assertThat(periods.size).isEqualTo(4)
+                RelativePeriod.QUARTERS_LAST_YEAR,
+                -> assertThat(periods.size).isEqualTo(4)
             }
         }
     }

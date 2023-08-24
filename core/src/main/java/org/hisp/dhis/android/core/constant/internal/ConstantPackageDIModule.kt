@@ -49,7 +49,7 @@ internal class ConstantPackageDIModule {
     @Reusable
     fun handler(
         optionStore: ConstantStore,
-        collectionCleaner: ConstantCollectionCleaner
+        collectionCleaner: ConstantCollectionCleaner,
     ): ConstantHandler {
         return ConstantHandler(optionStore, collectionCleaner)
     }

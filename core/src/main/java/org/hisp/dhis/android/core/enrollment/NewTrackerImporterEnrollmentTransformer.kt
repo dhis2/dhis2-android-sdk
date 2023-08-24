@@ -37,7 +37,7 @@ internal object NewTrackerImporterEnrollmentTransformer {
     fun transform(
         o: Enrollment,
         teiAttributes: List<TrackedEntityAttributeValue>?,
-        programAttributeMap: Map<String, List<String>>
+        programAttributeMap: Map<String, List<String>>,
     ): NewTrackerImporterEnrollment {
         val programAttributeUids = programAttributeMap[o.program()] ?: emptyList()
         val enrollmentAttributeValues = teiAttributes
@@ -67,14 +67,14 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .notes(
                 o.notes()?.map {
                     NewTrackerImporterNoteTransformer.transform(it)
-                }
+                },
             )
             .attributes(enrollmentAttributeValues)
             .build()
     }
 
     fun deTransform(
-        o: NewTrackerImporterEnrollment
+        o: NewTrackerImporterEnrollment,
     ): Enrollment {
         val notes = o.notes()?.map { NewTrackerImporterNoteTransformer.deTransform(it) }
         val events = o.events()?.map { NewTrackerImporterEventTransformer.deTransform(it) }

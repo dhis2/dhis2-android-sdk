@@ -47,7 +47,7 @@ internal class MapLayerEntityDIModule {
     @Reusable
     fun handler(
         store: MapLayerStore,
-        imageryProviderHandler: MapLayerImageryProviderHandler
+        imageryProviderHandler: MapLayerImageryProviderHandler,
     ): MapLayerHandler {
         return MapLayerHandler(store, imageryProviderHandler)
     }
@@ -55,10 +55,10 @@ internal class MapLayerEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        store: MapLayerImageryProviderStore
+        store: MapLayerImageryProviderStore,
     ): Map<String, ChildrenAppender<MapLayer>> {
         return mapOf(
-            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store)
+            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store),
         )
     }
 }

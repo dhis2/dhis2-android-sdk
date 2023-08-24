@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiAttributeHandler @Inject constructor(
-    store: AnalyticsTeiAttributeStore
+    store: AnalyticsTeiAttributeStore,
 ) : LinkHandlerImpl<AnalyticsTeiAttribute, AnalyticsTeiAttribute>(store)

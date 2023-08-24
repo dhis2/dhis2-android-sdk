@@ -190,7 +190,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                 "DiszpKrYNg8",
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
-                "bRowv6yZOF2"
+                "bRowv6yZOF2",
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()

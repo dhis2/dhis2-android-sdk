@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import javax.inject.Inject
 
 internal class AnalyticExpressionEngine @Inject constructor(
-    private val visitor: CommonExpressionVisitor
+    private val visitor: CommonExpressionVisitor,
 ) {
 
     fun evaluate(
-        expression: String
+        expression: String,
     ): Any? {
         return CommonParser.visit(expression, visitor)
     }

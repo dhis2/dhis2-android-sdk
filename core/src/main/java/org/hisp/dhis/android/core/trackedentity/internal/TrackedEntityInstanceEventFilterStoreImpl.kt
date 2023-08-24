@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
 @Suppress("MagicNumber")
 internal class TrackedEntityInstanceEventFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceEventFilterStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceEventFilter>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { TrackedEntityInstanceEventFilter.create(it) }
+        { TrackedEntityInstanceEventFilter.create(it) },
     ) {
 
     companion object {
@@ -64,7 +64,7 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-            TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER
+            TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
         )
     }
 }

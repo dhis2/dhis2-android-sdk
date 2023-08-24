@@ -46,7 +46,7 @@ internal class UserEntityDIModule {
     @Reusable
     fun childrenAppenders(userRoleChildrenAppender: UserRoleChildrenAppender): Map<String, ChildrenAppender<User>> {
         return mapOf(
-            UserFields.USER_ROLES to userRoleChildrenAppender
+            UserFields.USER_ROLES to userRoleChildrenAppender,
         )
     }
 }

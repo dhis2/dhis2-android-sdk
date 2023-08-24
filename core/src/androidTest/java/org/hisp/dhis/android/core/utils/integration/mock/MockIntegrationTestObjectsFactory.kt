@@ -63,6 +63,6 @@ internal object MockIntegrationTestObjectsFactory {
 
     internal class IntegrationTestObjectsWithIsNewInstance(
         val objects: MockIntegrationTestObjects,
-        val isNewInstance: Boolean
+        val isNewInstance: Boolean,
     )
 }

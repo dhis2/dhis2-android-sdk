@@ -37,8 +37,8 @@ import retrofit2.Retrofit
 @Module(
     includes = [
         PingEntityDIModule::class,
-        SystemInfoEntityDIModule::class
-    ]
+        SystemInfoEntityDIModule::class,
+    ],
 )
 internal class SystemInfoPackageDIModule {
     @Provides

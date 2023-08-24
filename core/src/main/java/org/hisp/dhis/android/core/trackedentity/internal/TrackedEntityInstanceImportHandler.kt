@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -48,6 +46,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
@@ -59,7 +59,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val dataStatePropagator: DataStatePropagator,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
-    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
 ) {
 
     private val alreadyDeletedInServerRegex =
@@ -68,7 +68,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     @Suppress("NestedBlockDepth")
     fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {
         val summary = TEIWebResponseHandlerSummary()
         val processedTeis = mutableListOf<String>()
@@ -118,14 +118,14 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private fun handleEnrollmentImportSummaries(
         teiImportSummary: TEIImportSummary,
         instances: List<TrackedEntityInstance>,
-        teiState: State
+        teiState: State,
     ): TEIWebResponseHandlerSummary {
         return teiImportSummary.enrollments()?.importSummaries()?.let { importSummaries ->
             val teiUid = teiImportSummary.reference()
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
                 getEnrollments(teiUid, instances),
-                teiState
+                teiState,
             )
         } ?: TEIWebResponseHandlerSummary()
     }
@@ -138,13 +138,13 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                     .conflict(teiImportSummary.description())
                     .displayDescription(teiImportSummary.description())
                     .value(teiImportSummary.reference())
-                    .build()
+                    .build(),
             )
         }
         teiImportSummary.conflicts()?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
-                    .getTrackedEntityInstanceConflict(importConflict, getConflictBuilder(teiImportSummary))
+                    .getTrackedEntityInstanceConflict(importConflict, getConflictBuilder(teiImportSummary)),
             )
         }
 
@@ -164,7 +164,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
     private fun processIgnoredTEIs(
         processedTEIs: List<String>,
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
         return instances.filterNot { processedTEIs.contains(it.uid()) }.onEach { instance ->
             trackerImportConflictStore.deleteTrackedEntityConflicts(instance.uid())
@@ -182,7 +182,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
     private fun getEnrollments(
         trackedEntityInstanceUid: String?,
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): List<Enrollment> {
         return instances.find { it.uid() == trackedEntityInstanceUid }?.let {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it)

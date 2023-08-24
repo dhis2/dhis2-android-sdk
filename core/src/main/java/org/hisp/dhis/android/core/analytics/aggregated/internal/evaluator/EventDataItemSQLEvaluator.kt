@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -41,18 +40,19 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns as tavColumns
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import javax.inject.Inject
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns as tavColumns
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns as dvColumns
 
 internal class EventDataItemSQLEvaluator @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String? {
         val sqlQuery = getSql(evaluationItem, metadata, queryMods)
 
@@ -66,7 +66,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -91,7 +91,8 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
             AggregationType.SUM,
             AggregationType.COUNT,
             AggregationType.MIN,
-            AggregationType.MAX -> {
+            AggregationType.MAX,
+            -> {
                 "SELECT ${aggregator.sql}($valueColumn) " +
                     "FROM $fromClause " +
                     "WHERE $whereClause"
@@ -114,12 +115,14 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
             }
             AggregationType.LAST,
-            AggregationType.LAST_IN_PERIOD -> {
+            AggregationType.LAST_IN_PERIOD,
+            -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
-            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT -> {
+            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
@@ -132,12 +135,13 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
             AggregationType.STDDEV,
             AggregationType.VARIANCE,
             AggregationType.DEFAULT,
-            AggregationType.NONE -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
+            AggregationType.NONE,
+            -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
         }
     }
 
     private fun getEventDataItemSQLItems(
-        eventDataItem: DimensionItem.DataItem.EventDataItem
+        eventDataItem: DimensionItem.DataItem.EventDataItem,
     ): Pair<String, String> {
         return when (eventDataItem) {
             is DimensionItem.DataItem.EventDataItem.DataElement ->
@@ -167,7 +171,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         valueColumn: String,
         fromClause: String,
         whereClause: String,
-        minOrMax: String
+        minOrMax: String,
     ): String {
         val firstOrLastValueClause = "SELECT " +
             "$valueColumn, " +
@@ -186,7 +190,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
     private fun appendDataWhereClause(
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder
+        builder: WhereClauseBuilder,
     ): WhereClauseBuilder {
         val innerClause = items.map { it as DimensionItem.DataItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
@@ -195,11 +199,11 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
                                 "$dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
-                                item.dataElement
+                                item.dataElement,
                             )
                             .appendKeyStringValue(
                                 "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
-                                item.program
+                                item.program,
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -208,11 +212,11 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
                                 "$attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
-                                item.attribute
+                                item.attribute,
                             )
                             .appendKeyStringValue(
                                 "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
-                                item.program
+                                item.program,
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -220,7 +224,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in EventDataItem Evaluator."
+                                "dataItem ${item.javaClass.name} in EventDataItem Evaluator.",
                         )
                 }
             }.build()
@@ -233,7 +237,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
         aggregation: AggregationType,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): WhereClauseBuilder {
         val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata, queryMods)
 
@@ -245,11 +249,11 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
 
             val innerClause = periods.joinToString(" OR ") {
                 "(${
-                AnalyticsEvaluatorHelper.getPeriodWhereClause(
-                    columnStart = eventDateColumn,
-                    columnEnd = eventDateColumn,
-                    period = it
-                )
+                    AnalyticsEvaluatorHelper.getPeriodWhereClause(
+                        columnStart = eventDateColumn,
+                        columnEnd = eventDateColumn,
+                        period = it,
+                    )
                 })"
             }
 
@@ -260,32 +264,32 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
     private fun appendOrgunitWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
             columnName = "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}",
             items = items,
             builder = builder,
-            metadata = metadata
+            metadata = metadata,
         )
     }
 
     private fun appendCategoryWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
             attributeColumnName = "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
             disaggregationColumnName = null,
             items = items,
             builder = builder,
-            metadata = metadata
+            metadata = metadata,
         )
     }
 
     private fun getEventDataItems(
-        evaluationItem: AnalyticsServiceEvaluationItem
+        evaluationItem: AnalyticsServiceEvaluationItem,
     ): List<DimensionItem.DataItem.EventDataItem> {
         return AnalyticsDimensionHelper.getSingleItemByDimension(evaluationItem)
     }
@@ -294,7 +298,7 @@ internal class EventDataItemSQLEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         item: DimensionItem.DataItem.EventDataItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): AggregationType {
         return if (queryMods?.aggregationType?.let { it != AggregationType.DEFAULT } == true) {
             queryMods.aggregationType!!

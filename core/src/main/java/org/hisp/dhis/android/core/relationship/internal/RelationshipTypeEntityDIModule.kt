@@ -47,21 +47,21 @@ internal class RelationshipTypeEntityDIModule {
     @Reusable
     fun handler(
         relationshipTypeStore: RelationshipTypeStore,
-        relationshipConstraintHandler: RelationshipConstraintHandler
+        relationshipConstraintHandler: RelationshipConstraintHandler,
     ): RelationshipTypeHandler {
         return RelationshipTypeHandler(
             relationshipTypeStore,
-            relationshipConstraintHandler
+            relationshipConstraintHandler,
         )
     }
 
     @Provides
     @Reusable
     fun childrenAppenders(
-        constraintStore: RelationshipConstraintStore
+        constraintStore: RelationshipConstraintStore,
     ): Map<String, ChildrenAppender<RelationshipType>> {
         return mapOf(
-            RelationshipTypeFields.CONSTRAINTS to RelationshipConstraintChildrenAppender(constraintStore)
+            RelationshipTypeFields.CONSTRAINTS to RelationshipConstraintChildrenAppender(constraintStore),
         )
     }
 }

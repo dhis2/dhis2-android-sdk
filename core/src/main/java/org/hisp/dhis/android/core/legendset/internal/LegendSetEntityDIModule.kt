@@ -47,12 +47,12 @@ internal class LegendSetEntityDIModule {
     fun handler(
         legendSetStore: LegendSetStore,
         legendHandler: LegendHandler,
-        legendCleaner: LegendSetLegendOrphanCleaner
+        legendCleaner: LegendSetLegendOrphanCleaner,
     ): LegendSetHandler {
         return LegendSetHandler(
             legendSetStore,
             legendHandler,
-            legendCleaner
+            legendCleaner,
         )
     }
 
@@ -60,7 +60,7 @@ internal class LegendSetEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<LegendSet>> {
         return mapOf(
-            LegendSetFields.LEGENDS to LegendChildrenAppender.create(databaseAdapter)
+            LegendSetFields.LEGENDS to LegendChildrenAppender.create(databaseAdapter),
         )
     }
 }

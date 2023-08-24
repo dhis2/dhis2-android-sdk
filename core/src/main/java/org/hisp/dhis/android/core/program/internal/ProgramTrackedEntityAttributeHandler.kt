@@ -28,24 +28,24 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramTrackedEntityAttributeHandler @Inject constructor(
     store: ProgramTrackedEntityAttributeStore,
-    private val renderTypeHandler: ValueTypeRenderingHandler
+    private val renderTypeHandler: ValueTypeRenderingHandler,
 ) : IdentifiableHandlerImpl<ProgramTrackedEntityAttribute>(store) {
     override fun afterObjectHandled(o: ProgramTrackedEntityAttribute, action: HandleAction) {
         if (action !== HandleAction.Delete) {
             renderTypeHandler.handle(
                 o.renderType(),
                 o.uid(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
             )
         }
     }

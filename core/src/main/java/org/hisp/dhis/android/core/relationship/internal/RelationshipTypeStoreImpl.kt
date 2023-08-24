@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
 
 @Suppress("MagicNumber")
 internal class RelationshipTypeStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : RelationshipTypeStore,
     IdentifiableObjectStoreImpl<RelationshipType>(
         databaseAdapter,
         RelationshipTypeTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> RelationshipType.create(cursor) }
+        { cursor: Cursor -> RelationshipType.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<RelationshipType> =

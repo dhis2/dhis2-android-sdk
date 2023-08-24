@@ -46,7 +46,7 @@ internal class ProgramRuleEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramRule>> {
         return mapOf(
-            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender.create(databaseAdapter)
+            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender.create(databaseAdapter),
         )
     }
 }

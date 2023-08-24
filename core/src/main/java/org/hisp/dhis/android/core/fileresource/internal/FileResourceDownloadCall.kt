@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import dagger.Reusable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList")
 @Reusable
@@ -58,7 +58,7 @@ internal class FileResourceDownloadCall @Inject constructor(
     private val fileResourceRoutine: FileResourceRoutine,
     private val synchronizationSettingsStore: SynchronizationSettingStore,
     private val context: Context,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
     fun download(params: FileResourceDownloadParams): Flow<D2Progress> = flow {
@@ -68,7 +68,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         val paramsWithCorrectedMaxContentLength = params.copy(
             maxContentLength = params.maxContentLength
                 ?: synchronizationSettingsStore.selectFirst()?.fileMaxLengthBytes()
-                ?: defaultDownloadMaxContentLength
+                ?: defaultDownloadMaxContentLength,
         )
 
         downloadAggregatedValues(paramsWithCorrectedMaxContentLength, existingFileResources)
@@ -81,7 +81,7 @@ internal class FileResourceDownloadCall @Inject constructor(
 
     private suspend fun downloadAggregatedValues(
         params: FileResourceDownloadParams,
-        existingFileResources: List<String>
+        existingFileResources: List<String>,
     ) {
         if (params.domainTypes.contains(FileResourceDomainType.AGGREGATED)) {
             val dataValues = helper.getMissingAggregatedDataValues(params, existingFileResources)
@@ -95,10 +95,10 @@ internal class FileResourceDownloadCall @Inject constructor(
                         v.period()!!,
                         v.organisationUnit()!!,
                         v.attributeOptionCombo()!!,
-                        FileResizerHelper.Dimension.MEDIUM.name
+                        FileResizerHelper.Dimension.MEDIUM.name,
                     )
                 },
-                getUid = { v -> v.value() }
+                getUid = { v -> v.value() },
             )
         }
     }
@@ -117,19 +117,19 @@ internal class FileResourceDownloadCall @Inject constructor(
                                 fileResourceService.getImageFromTrackedEntityAttribute(
                                     v.value.trackedEntityInstance()!!,
                                     v.value.trackedEntityAttribute()!!,
-                                    FileResizerHelper.Dimension.MEDIUM.name
+                                    FileResizerHelper.Dimension.MEDIUM.name,
                                 )
 
                             ValueType.FILE_RESOURCE ->
                                 fileResourceService.getFileFromTrackedEntityAttribute(
                                     v.value.trackedEntityInstance()!!,
-                                    v.value.trackedEntityAttribute()!!
+                                    v.value.trackedEntityAttribute()!!,
                                 )
 
                             else -> null
                         }
                     },
-                    getUid = { v -> v.value.value() }
+                    getUid = { v -> v.value.value() },
                 )
             }
 
@@ -143,10 +143,10 @@ internal class FileResourceDownloadCall @Inject constructor(
                         fileResourceService.getFileFromEventValue(
                             v.event()!!,
                             v.dataElement()!!,
-                            FileResizerHelper.Dimension.MEDIUM.name
+                            FileResizerHelper.Dimension.MEDIUM.name,
                         )
                     },
-                    getUid = { v -> v.value() }
+                    getUid = { v -> v.value() },
                 )
             }
         }
@@ -156,7 +156,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         values: List<V>,
         maxContentLength: Int?,
         download: suspend (V) -> ResponseBody?,
-        getUid: (V) -> String?
+        getUid: (V) -> String?,
     ) {
         val fileResources = values.mapNotNull { downloadFile(it, maxContentLength, download, getUid) }
 
@@ -172,7 +172,7 @@ internal class FileResourceDownloadCall @Inject constructor(
         value: V,
         maxContentLength: Int?,
         download: suspend (V) -> ResponseBody?,
-        getUid: (V) -> String?
+        getUid: (V) -> String?,
     ): FileResource? {
         return getUid(value)?.let { uid ->
             try {

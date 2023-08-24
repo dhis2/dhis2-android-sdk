@@ -42,7 +42,7 @@ class StockUseCaseTransactionLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<InternalStockUseCaseTransaction>(
         StockUseCaseTransactionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
         StockUseCaseTransactionTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun addMasterUid(): String {
         return InternalStockUseCaseTransactionSamples.get().programUid()!!

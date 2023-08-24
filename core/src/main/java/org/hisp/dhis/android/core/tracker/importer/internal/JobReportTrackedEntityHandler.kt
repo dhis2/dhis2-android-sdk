@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportTrackedEntityHandler @Inject internal constructor(
@@ -44,7 +44,7 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore
+    relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
@@ -65,7 +65,7 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
                 conflictStore.insert(
                     conflictHelper.getConflictBuilder(errorReport)
                         .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-                        .trackedEntityInstance(errorReport.uid).build()
+                        .trackedEntityInstance(errorReport.uid).build(),
                 )
             }
         }

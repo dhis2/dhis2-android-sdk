@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class EventLineListServiceImpl @Inject constructor(
@@ -57,7 +57,7 @@ internal class EventLineListServiceImpl @Inject constructor(
     private val periodHelper: PeriodHelper,
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
     private val organisationUnitHelper: AnalyticsOrganisationUnitHelper,
-    private val legendEvaluator: LegendEvaluator
+    private val legendEvaluator: LegendEvaluator,
 ) : EventLineListService {
 
     override fun evaluate(params: EventLineListParams): List<LineListResponse> {
@@ -72,7 +72,7 @@ internal class EventLineListServiceImpl @Inject constructor(
         val metadataMap = getMetadataMap(
             params.dataElements,
             params.programIndicators,
-            events.map { it.organisationUnit()!! }.toHashSet()
+            events.map { it.organisationUnit()!! }.toHashSet(),
         )
 
         val dataElementValues = if (params.dataElements.isNotEmpty()) {
@@ -96,11 +96,11 @@ internal class EventLineListServiceImpl @Inject constructor(
                         is AnalyticsLegendStrategy.None -> null
                         is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(
                             de.uid,
-                            dv?.value()
+                            dv?.value(),
                         )
                         is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
                             params.analyticsLegendStrategy.legendSetUid,
-                            dv?.value()
+                            dv?.value(),
                         )
                     }
 
@@ -108,7 +108,7 @@ internal class EventLineListServiceImpl @Inject constructor(
                         uid = de.uid,
                         displayName = metadataMap[de.uid] ?: de.uid,
                         value = dv?.value(),
-                        legend = legend
+                        legend = legend,
                     )
                 }
 
@@ -120,11 +120,11 @@ internal class EventLineListServiceImpl @Inject constructor(
                         is AnalyticsLegendStrategy.None -> null
                         is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(
                             pi.uid,
-                            value
+                            value,
                         )
                         is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
                             params.analyticsLegendStrategy.legendSetUid,
-                            value
+                            value,
                         )
                     }
 
@@ -132,7 +132,7 @@ internal class EventLineListServiceImpl @Inject constructor(
                         uid = pi.uid,
                         displayName = metadataMap[pi.uid] ?: pi.uid,
                         value = value,
-                        legend = legend
+                        legend = legend,
                     )
                 }
 
@@ -142,7 +142,7 @@ internal class EventLineListServiceImpl @Inject constructor(
                     period = eventPeriod,
                     organisationUnit = it.organisationUnit()!!,
                     organisationUnitName = metadataMap[it.organisationUnit()!!] ?: it.organisationUnit()!!,
-                    values = eventDataValues + programIndicatorValues
+                    values = eventDataValues + programIndicatorValues,
                 )
             }
         }
@@ -181,7 +181,7 @@ internal class EventLineListServiceImpl @Inject constructor(
     private fun getMetadataMap(
         dataElements: List<LineListItem>,
         programIndicators: List<LineListItem>,
-        organisationUnitUids: HashSet<String>
+        organisationUnitUids: HashSet<String>,
     ): Map<String, String> {
         val dataElementNameMap = if (dataElements.isNotEmpty()) {
             dataElementRepository

@@ -41,7 +41,7 @@ internal object VisualizationDimensionItemFields {
         Fields.builder<VisualizationDimensionItem>()
             .fields(
                 fh.field<String>(DIMENSION_ITEM),
-                fh.field<String>(DIMENSION_ITEM_TYPE)
+                fh.field<String>(DIMENSION_ITEM_TYPE),
             )
             .build()
 }

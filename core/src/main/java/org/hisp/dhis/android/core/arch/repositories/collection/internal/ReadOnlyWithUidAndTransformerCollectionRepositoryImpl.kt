@@ -43,13 +43,15 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
-    M, T, R : ReadOnlyCollectionRepository<T>
+    M,
+    T,
+    R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-    override val transformer: TwoWayTransformer<M, T>
+    override val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
     ReadOnlyWithUidCollectionRepository<T>
     where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
@@ -73,8 +75,8 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey()
-            )
+                scope.pagingKey(),
+            ),
         )
     }
 

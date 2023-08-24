@@ -108,7 +108,7 @@ class TrackedEntityInstanceHandlerShould {
             enrollmentHandler,
             programOwnerHandler,
             enrollmentCleaner,
-            relationshipCleaner
+            relationshipCleaner,
         )
     }
 
@@ -151,8 +151,8 @@ class TrackedEntityInstanceHandlerShould {
         whenever(trackedEntityInstanceStore.updateOrInsert(any())).doReturn(HandleAction.Update)
         whenever(trackedEntityInstance.trackedEntityAttributeValues()).doReturn(
             listOf(
-                TrackedEntityAttributeValue.builder().trackedEntityAttribute("att").build()
-            )
+                TrackedEntityAttributeValue.builder().trackedEntityAttribute("att").build(),
+            ),
         )
 
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relationshipItemRelatives)
@@ -197,7 +197,7 @@ class TrackedEntityInstanceHandlerShould {
             listOf(relationship),
             TEI_UID,
             relatives,
-            relationshipHandler
+            relationshipHandler,
         )
     }
 
@@ -233,7 +233,7 @@ class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityAttributeValueStore, times(1)).deleteByInstanceAndNotInProgramAttributes(
             any(),
             any(),
-            any()
+            any(),
         )
         verifyNoMoreInteractions(trackedEntityAttributeValueStore)
     }

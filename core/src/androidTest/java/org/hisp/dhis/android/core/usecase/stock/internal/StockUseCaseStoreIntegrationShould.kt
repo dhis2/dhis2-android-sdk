@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<InternalStockUseCase>(
     StockUseCaseStoreImpl(TestDatabaseAdapterFactory.get()),
     StockUseCaseTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): InternalStockUseCase {
         return get()

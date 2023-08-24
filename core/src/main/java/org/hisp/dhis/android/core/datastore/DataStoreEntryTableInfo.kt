@@ -54,7 +54,7 @@ object DataStoreEntryTableInfo {
                 KEY,
                 VALUE,
                 SYNC_STATE,
-                DELETED
+                DELETED,
             )
         }
 
@@ -62,7 +62,7 @@ object DataStoreEntryTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 NAMESPACE,
-                KEY
+                KEY,
             )
         }
 

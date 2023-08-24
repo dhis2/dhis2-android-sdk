@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.net.HttpURLConnection
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import java.net.HttpURLConnection
 
 internal abstract class BaseSettingCall<T> : CompletableProvider {
 

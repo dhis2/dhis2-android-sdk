@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.EventStatus
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class EventProjectionTransformer @Inject constructor() : Transformer<EventCreateProjection, Event> {

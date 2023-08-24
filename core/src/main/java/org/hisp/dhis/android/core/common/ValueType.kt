@@ -57,7 +57,8 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     FILE_RESOURCE(UidValidator),
     IMAGE(UidValidator),
     GEOJSON(TextValidator),
-    MULTI_TEXT(TextValidator);
+    MULTI_TEXT(TextValidator),
+    ;
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)

@@ -125,7 +125,7 @@ class LogInCallUnitShould : BaseCallShould() {
             userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
             systemInfoCall, userStore, apiCallErrorCatcher,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager
+            LogInExceptions(credentialsSecureStore), accountManager, versionManager,
         ).logIn(username, password, serverUrl)
     }
 
@@ -170,8 +170,8 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(
             userService.authenticate(
                 credentialsCaptor.capture(),
-                filterCaptor.capture()
-            )
+                filterCaptor.capture(),
+            ),
         ).thenReturn(authenticateAPICall)
         logInSingle.blockingGet()
         assertThat(okhttp3.Credentials.basic(USERNAME, PASSWORD)).isEqualTo(credentialsCaptor.firstValue)

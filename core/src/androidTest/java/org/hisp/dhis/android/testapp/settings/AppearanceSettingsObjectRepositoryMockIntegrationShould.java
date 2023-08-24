@@ -109,4 +109,32 @@ public class AppearanceSettingsObjectRepositoryMockIntegrationShould extends Bas
         assertThat(completionSpinner.uid()).isEqualTo(UID);
         assertThat(completionSpinner.visible()).isEqualTo(true);
     }
+
+    @Test
+    public void should_return_disable_referrals_settings() {
+        ProgramConfigurationSetting setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting();
+        assertThat(setting.disableReferrals()).isEqualTo(true);
+
+        String UID = "IpHINAT79UW";
+        setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
+        assertThat(setting.disableReferrals()).isEqualTo(true);
+
+        UID = "IpHINAT79UQ";
+        setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
+        assertThat(setting.disableReferrals()).isEqualTo(false);
+    }
+
+    @Test
+    public void should_return_collapsibleSections_settings() {
+        ProgramConfigurationSetting setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting();
+        assertThat(setting.collapsibleSections()).isEqualTo(false);
+
+        String UID = "IpHINAT79UW";
+        setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
+        assertThat(setting.collapsibleSections()).isEqualTo(false);
+
+        UID = "IpHINAT79UQ";
+        setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
+        assertThat(setting.collapsibleSections()).isEqualTo(true);
+    }
 }

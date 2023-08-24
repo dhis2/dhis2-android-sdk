@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-fun interface BaseRepositoryFactory<R : BaseRepository> {
+internal fun interface BaseRepositoryFactory<R : BaseRepository> {
     fun updated(updatedScope: RepositoryScope): R
 }

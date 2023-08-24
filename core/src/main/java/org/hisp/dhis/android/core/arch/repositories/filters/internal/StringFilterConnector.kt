@@ -46,7 +46,7 @@ class StringFilterConnector<R : BaseRepository> internal constructor(
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun like(value: String): R {
+    fun like(value: String?): R {
         return newWithWrappedScope(FilterItemOperator.LIKE, "%$value%")
     }
 

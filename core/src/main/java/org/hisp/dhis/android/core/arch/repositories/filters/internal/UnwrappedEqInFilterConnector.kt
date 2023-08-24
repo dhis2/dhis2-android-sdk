@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.Arrays
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -44,11 +43,11 @@ class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
         return value
     }
 
-    fun eq(value: String): R {
+    fun eq(value: String?): R {
         return newWithWrappedScope(FilterItemOperator.EQ, value)
     }
 
-    fun `in`(values: Collection<String>): R {
+    fun `in`(values: Collection<String>?): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
             "(" + getCommaSeparatedValues(values) + ")"
@@ -56,7 +55,7 @@ class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
     }
 
     fun `in`(vararg values: String): R {
-        return `in`(Arrays.asList(*values))
+        return `in`(listOf(*values))
     }
 
     companion object {

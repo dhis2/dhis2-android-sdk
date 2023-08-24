@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-
-public interface ScopedRepositoryFilterFactory<R extends BaseRepository, T> {
-    R updated(T value);
+internal fun interface ScopedRepositoryFilterFactory<R : BaseRepository, T> {
+    fun updated(value: T): R
 }

@@ -38,9 +38,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 
 @SuppressWarnings("TooManyFunctions")
 
-class FilterConnectorFactory<R : BaseRepository>(
+class FilterConnectorFactory<R : BaseRepository> internal constructor(
     private val scope: RepositoryScope,
-    val repositoryFactory: BaseRepositoryFactory<R>
+    private val repositoryFactory: BaseRepositoryFactory<R>
 ) {
     fun string(key: String): StringFilterConnector<R> {
         return StringFilterConnector(repositoryFactory, scope, key)

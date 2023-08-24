@@ -31,8 +31,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
 class ListFilterConnector<R : BaseRepository, T>
 internal constructor(private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<T>>) {
-    fun eq(value: T): R {
-        return repositoryFactory.updated(listOf(value))
+    fun eq(value: T?): R {
+        return repositoryFactory.updated(value?.let { listOf(it) } ?: emptyList())
     }
 
     fun `in`(values: List<T>): R {

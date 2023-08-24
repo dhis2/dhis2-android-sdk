@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
 
-abstract class AbstractFilterConnector<R : BaseRepository, V>(
+abstract class AbstractFilterConnector<R : BaseRepository, V> internal constructor(
     private val repositoryFactory: BaseRepositoryFactory<R>,
     protected val scope: RepositoryScope,
     val key: String
@@ -79,9 +79,11 @@ abstract class AbstractFilterConnector<R : BaseRepository, V>(
         return repositoryFactory.updated(updatedUnwrappedScope(whereClause))
     }
 
-    fun getCommaSeparatedValues(values: Collection<V>): String {
-        val wrappedValues = values.map { wrapValue(it) }
-        return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues)
+    fun getCommaSeparatedValues(values: Collection<V>?): String {
+        return values?.let {
+            val wrappedValues = values.map { wrapValue(it) }
+            CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues)
+        } ?: ""
     }
 
     fun newWithUnwrappedScope(operator: FilterItemOperator, value: String?): R {

@@ -56,12 +56,7 @@ object FileResourceDirectoryHelper {
 
     internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
         val childPath = subfolder?.let { "$FilesDir/$it" } ?: FilesDir
-        val file = File(context.filesDir, childPath)
-        return if (!file.exists() && file.mkdirs()) {
-            file
-        } else {
-            file
-        }
+        return File(context.filesDir, childPath)
     }
 
     internal fun deleteRootFileResourceDirectory(context: Context) {
@@ -91,12 +86,7 @@ object FileResourceDirectoryHelper {
 
     private fun getFileCacheResourceDirectory(context: Context, subfolder: String?): File {
         val childPath = subfolder?.let { "$CacheDir/$it" } ?: CacheDir
-        val file = File(context.cacheDir, childPath)
-        return if (!file.exists() && file.mkdirs()) {
-            file
-        } else {
-            file
-        }
+        return File(context.cacheDir, childPath)
     }
 
     internal fun getSubfolderName(databaseName: String): String {

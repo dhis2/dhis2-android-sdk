@@ -36,7 +36,7 @@ import java.io.IOException
 import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
@@ -92,7 +92,7 @@ internal class FileResourcePostCall @Inject constructor(
         val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
 
         return MultipartBody.Part
-            .createFormData("file", file.name, RequestBody.create(type.toMediaTypeOrNull(), file))
+            .createFormData("file", file.name, file.asRequestBody(type.toMediaTypeOrNull()))
     }
 
     private fun handleResponse(

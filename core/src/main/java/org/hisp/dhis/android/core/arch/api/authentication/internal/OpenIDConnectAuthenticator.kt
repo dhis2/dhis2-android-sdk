@@ -32,7 +32,6 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
@@ -70,6 +69,9 @@ internal class OpenIDConnectAuthenticator @Inject constructor(
     }
 
     private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
-        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
+        return builder.addHeader(
+            UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
+            "Bearer $token"
+        )
     }
 }

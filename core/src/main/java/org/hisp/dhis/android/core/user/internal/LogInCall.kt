@@ -32,6 +32,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -84,7 +85,7 @@ internal class LogInCall @Inject internal constructor(
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
-            okhttp3.Credentials.basic(username!!, password!!),
+            UserIdAuthenticatorHelper.basic(username!!, password!!),
             UserFields.allFieldsWithoutOrgUnit(null)
         )
 

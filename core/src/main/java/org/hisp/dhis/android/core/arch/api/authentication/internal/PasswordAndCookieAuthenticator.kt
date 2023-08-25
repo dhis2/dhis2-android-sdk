@@ -73,7 +73,7 @@ internal class PasswordAndCookieAuthenticator @Inject constructor(
     private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
         return builder.addHeader(
             UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
-            UserIdAuthenticatorHelper.basic(credentials)
+            UserIdAuthenticatorHelper.basic(credentials),
         )
     }
 }

@@ -71,7 +71,7 @@ internal class OpenIDConnectAuthenticator @Inject constructor(
     private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
         return builder.addHeader(
             UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
-            "Bearer $token"
+            "Bearer $token",
         )
     }
 }

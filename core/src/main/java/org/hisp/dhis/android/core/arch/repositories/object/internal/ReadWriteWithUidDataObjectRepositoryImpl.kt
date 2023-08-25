@@ -116,7 +116,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     }
 
     @Throws(D2Error::class)
-    override fun updateObject(m: M) {
+    override fun updateObject(m: M): Unit {
         super.updateObject(m)
         propagateState(m, HandleAction.Update)
         return Unit()

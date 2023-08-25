@@ -52,7 +52,7 @@ open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected open fun updateObject(m: M) {
+    protected open fun updateObject(m: M): Unit {
         return try {
             store.update(m)
             Unit()

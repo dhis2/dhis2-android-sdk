@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import kotlin.math.ceil
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import kotlin.math.ceil
 
 internal class D2Ceil : ExpressionItem {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

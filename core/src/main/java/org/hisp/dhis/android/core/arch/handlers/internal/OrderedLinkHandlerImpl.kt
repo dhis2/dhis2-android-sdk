@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.CoreObject
 
 internal open class OrderedLinkHandlerImpl<S, M : CoreObject>(
-    private val store: LinkStore<M>
+    private val store: LinkStore<M>,
 ) : OrderedLinkHandler<S, M> {
 
     override fun handleMany(masterUid: String, slaves: List<S>?, transformer: Function2<S, Int, M>) {

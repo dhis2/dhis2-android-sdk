@@ -39,7 +39,8 @@ import org.junit.runner.RunWith
 class TrackedEntityInstanceFilterStoreIntegrationShould :
     IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter>(
         TrackedEntityInstanceFilterStoreImpl(TestDatabaseAdapterFactory.get()),
-        TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+        TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilterSamples.get()

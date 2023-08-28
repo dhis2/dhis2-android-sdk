@@ -47,7 +47,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : IdentifiableObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDataObjectStore<O> where O : ObjectWithUidInterface, O : DataObject {
 
@@ -55,12 +55,12 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(tableInfo),
         binder,
-        objectFactory
+        objectFactory,
     )
 
     private var selectStateQuery: String? = null
@@ -161,7 +161,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.SYNC_STATE,
-                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
+                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
             ).build()
 
         return selectWhere(whereClause)

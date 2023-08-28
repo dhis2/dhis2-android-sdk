@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -45,6 +43,8 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class DataValuePostCall @Inject constructor(
@@ -53,7 +53,7 @@ internal class DataValuePostCall @Inject constructor(
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
     private val versionManager: DHISVersionManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -73,7 +73,7 @@ internal class DataValuePostCall @Inject constructor(
                 },
                 onFailure = {
                     throw it
-                }
+                },
             )
         } catch (e: D2Error) {
             markObjectsAs(validDataValues, errorIfOnline(e))
@@ -88,7 +88,7 @@ internal class DataValuePostCall @Inject constructor(
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java
+                errorClass = DataValueImportSummaryWebResponse::class.java,
             ) {
                 dataValueService.postDataValuesWebResponse(dataValueSet)
             }.map { it.response }

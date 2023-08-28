@@ -29,16 +29,16 @@ package org.hisp.dhis.android.core.option.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.option.OptionSet
+import javax.inject.Inject
 
 @Reusable
 internal class OptionSetCall @Inject constructor(
     private val service: OptionSetService,
     private val handler: OptionSetHandler,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
 ) : UidsCall<OptionSet> {
 
     companion object {

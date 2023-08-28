@@ -35,6 +35,6 @@ internal interface BingService {
 
     @GET
     suspend fun getBaseMap(
-        @Url url: String
+        @Url url: String,
     ): BingServerResponse
 }

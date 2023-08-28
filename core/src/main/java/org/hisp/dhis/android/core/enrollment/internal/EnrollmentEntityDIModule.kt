@@ -62,7 +62,7 @@ internal class EnrollmentEntityDIModule {
         eventOrphanCleaner: EventOrphanCleaner,
         noteHandler: NoteHandler,
         noteUniquenessManager: NoteUniquenessManager,
-        relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner
+        relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner,
     ): EnrollmentHandler {
         return EnrollmentHandler(
             relationshipVersionManager,
@@ -73,7 +73,7 @@ internal class EnrollmentEntityDIModule {
             eventOrphanCleaner,
             noteHandler,
             noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipOrphanCleaner,
         )
     }
 
@@ -81,7 +81,7 @@ internal class EnrollmentEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Enrollment>> {
         return mapOf(
-            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender.create(databaseAdapter)
+            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender.create(databaseAdapter),
         )
     }
 }

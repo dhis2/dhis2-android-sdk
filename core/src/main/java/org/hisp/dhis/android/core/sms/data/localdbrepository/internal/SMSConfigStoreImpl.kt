@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.datastore.KeyValuePair
 
 @Suppress("MagicNumber")
 internal class SMSConfigStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SMSConfigStore,
     ObjectWithoutUidStoreImpl<KeyValuePair>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class SMSConfigStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor -> KeyValuePair.create(cursor) }
+        { cursor -> KeyValuePair.create(cursor) },
     ) {
 
     override fun get(key: SMSConfigKey): String? {

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -72,6 +71,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @Reusable
@@ -112,8 +112,11 @@ internal class MetadataCall @Inject constructor(
                 executeIndependentCalls(progressManager).collect { send(it) }
                 executeUserCallAndChildren(progressManager).collect { send(it) }
             } catch (e: Exception) {
-                if (e !is D2Error && e.cause is D2Error) throw e.cause!!
-                else throw e
+                if (e !is D2Error && e.cause is D2Error) {
+                    throw e.cause!!
+                } else {
+                    throw e
+                }
             }
         }
     }

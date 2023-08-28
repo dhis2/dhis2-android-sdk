@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.resource.internal
 
 import androidx.annotation.VisibleForTesting
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
 @Singleton
 internal class ResourceHandler @Inject constructor(private val resourceStore: ResourceStore) {

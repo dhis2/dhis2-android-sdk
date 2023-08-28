@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.common
 
 internal data class OrganisationUnitFilter(
     val organisationUnitUid: String?,
-    val relativeOrganisationUnit: RelativeOrganisationUnit?
+    val relativeOrganisationUnit: RelativeOrganisationUnit?,
 )

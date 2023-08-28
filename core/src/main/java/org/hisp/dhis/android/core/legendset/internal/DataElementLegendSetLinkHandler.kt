@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 
 internal class DataElementLegendSetLinkHandler(
-    store: DataElementLegendSetLinkStore
+    store: DataElementLegendSetLinkStore,
 ) : OrderedLinkHandlerImpl<ObjectWithUid, DataElementLegendSetLink>(store)

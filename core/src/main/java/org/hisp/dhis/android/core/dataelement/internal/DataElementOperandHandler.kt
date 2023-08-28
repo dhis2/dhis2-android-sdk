@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
 internal class DataElementOperandHandler constructor(
-    store: IdentifiableObjectStore<DataElementOperand>
+    store: IdentifiableObjectStore<DataElementOperand>,
 ) : IdentifiableHandlerImpl<DataElementOperand>(store)

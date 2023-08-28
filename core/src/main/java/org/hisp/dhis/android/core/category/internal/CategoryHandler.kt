@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.Category
 
 internal class CategoryHandler(
-    store: CategoryStore
+    store: CategoryStore,
 ) : IdentifiableHandlerImpl<Category>(store)

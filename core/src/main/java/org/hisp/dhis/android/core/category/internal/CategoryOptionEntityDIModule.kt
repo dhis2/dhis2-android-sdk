@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.Collections
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
+import java.util.Collections
 
 @Module
 internal class CategoryOptionEntityDIModule {
@@ -55,7 +55,7 @@ internal class CategoryOptionEntityDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOption>> {
         return Collections.singletonMap(
             CategoryOptionFields.ORGANISATION_UNITS,
-            CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter)
+            CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter),
         )
     }
 }

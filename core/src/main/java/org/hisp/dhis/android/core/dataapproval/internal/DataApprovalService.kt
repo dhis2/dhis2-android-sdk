@@ -42,6 +42,6 @@ internal interface DataApprovalService {
         @Query("wf") workflow: String,
         @Query("pe") periods: String,
         @Query("ou") organisationUnit: String,
-        @Query("aoc") attributeOptionCombo: String
+        @Query("aoc") attributeOptionCombo: String,
     ): List<DataApproval>
 }

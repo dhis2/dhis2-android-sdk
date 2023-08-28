@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportEnrollmentHandler @Inject internal constructor(
@@ -47,14 +47,15 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore
+    relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE,
+                State.uploadableStatesIncludingError().map { it.name },
             )
             .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build()
         for (note in noteStore.selectWhere(whereClause)) {
@@ -83,7 +84,7 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
                         .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
                         .enrollment(errorReport.uid)
                         .trackedEntityInstance(enrollment.trackedEntityInstance())
-                        .build()
+                        .build(),
                 )
             }
         }

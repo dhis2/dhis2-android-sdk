@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 
 @Suppress("MagicNumber")
 internal class ProgramStageWorkingListStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListStore,
     IdentifiableObjectStoreImpl<ProgramStageWorkingList>(
         databaseAdapter,
         ProgramStageWorkingListTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramStageWorkingList.create(cursor) }
+        { cursor: Cursor -> ProgramStageWorkingList.create(cursor) },
     ) {
 
     companion object {
@@ -59,21 +59,21 @@ internal class ProgramStageWorkingListStoreImpl(
                     w.bind(10, o.programStageQueryCriteria()?.eventStatus())
                     w.bind(
                         11,
-                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventCreatedAt())
+                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventCreatedAt()),
                     )
                     w.bind(
                         12,
-                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventOccurredAt())
+                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventOccurredAt()),
                     )
                     w.bind(
                         13,
-                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventScheduledAt())
+                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.eventScheduledAt()),
                     )
                     w.bind(14, o.programStageQueryCriteria()?.enrollmentStatus())
                     w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrolledAt()))
                     w.bind(
                         16,
-                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrollmentOccurredAt())
+                        DateFilterPeriodColumnAdapter.serialize(o.programStageQueryCriteria()?.enrollmentOccurredAt()),
                     )
                     w.bind(17, o.programStageQueryCriteria()?.order())
                     w.bind(18, StringListColumnAdapter.serialize(o.programStageQueryCriteria()?.displayColumnOrder()))

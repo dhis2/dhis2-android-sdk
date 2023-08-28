@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,19 +38,20 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
+import javax.inject.Inject
 
 @Reusable
 class TrackedEntityInstanceDownloader @Inject internal constructor(
     scope: RepositoryScope,
-    private val downloadCall: TrackedEntityInstanceDownloadCall
+    private val downloadCall: TrackedEntityInstanceDownloadCall,
 ) : BaseRepositoryImpl<TrackedEntityInstanceDownloader>(
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         TrackedEntityInstanceDownloader(
             s,
-            downloadCall
+            downloadCall,
         )
-    }
+    },
 ) {
 
     /**

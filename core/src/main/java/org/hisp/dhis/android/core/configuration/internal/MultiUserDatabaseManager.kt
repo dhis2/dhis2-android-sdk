@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.util.Log
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import javax.inject.Inject
 
 @Reusable
 internal class MultiUserDatabaseManager @Inject internal constructor(
@@ -44,18 +44,18 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val configurationHelper: DatabaseConfigurationHelper,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val databaseExport: DatabaseExport
+    private val databaseExport: DatabaseExport,
 ) {
     fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { encrypt },
-            true
+            true,
         )
 
         if (!existing) {
@@ -68,7 +68,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
-            true
+            true,
         )
 
         if (!existing) {
@@ -102,7 +102,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             credentials.serverUrl,
             credentials.username,
             { encrypt },
-            false
+            false,
         )
     }
 
@@ -111,7 +111,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
-            true
+            true,
         )
     }
 
@@ -131,7 +131,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
         serverUrl: String,
         username: String,
         encryptionExtractor: (config: DatabaseAccount) -> Boolean,
-        alsoOpenWhenEncryptionDoesntChange: Boolean
+        alsoOpenWhenEncryptionDoesntChange: Boolean,
     ): Boolean {
         val existingAccount = getAccount(serverUrl, username) ?: return false
         val encrypt = encryptionExtractor(existingAccount)
@@ -140,7 +140,7 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
             val updatedAccount = addNewAccountInternal(
                 serverUrl,
                 username,
-                encrypt
+                encrypt,
             )
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedAccount)
         }
@@ -150,12 +150,12 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     private fun changeEncryptionIfRequired(
         serverUrl: String,
         existingAccount: DatabaseAccount,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         if (encrypt != existingAccount.encrypted()) {
             Log.w(
                 MultiUserDatabaseManager::class.java.name,
-                "Encryption value changed for " + existingAccount.username() + ": " + encrypt
+                "Encryption value changed for " + existingAccount.username() + ": " + encrypt,
             )
             if (encrypt && !existingAccount.encrypted()) {
                 databaseExport.encrypt(serverUrl, existingAccount)
@@ -174,10 +174,13 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
     private fun addNewAccountInternal(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ): DatabaseAccount {
         val updatedAccount = configurationHelper.addAccount(
-            databaseConfigurationSecureStore.get(), serverUrl, username, encrypt
+            databaseConfigurationSecureStore.get(),
+            serverUrl,
+            username,
+            encrypt,
         )
         databaseConfigurationSecureStore.set(updatedAccount)
         return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)

@@ -84,7 +84,7 @@ class EnrollmentHandlerShould {
         enrollmentHandler = EnrollmentHandler(
             relationshipVersionManager, relationshipHandler, noteVersionManager,
             enrollmentStore, eventHandler, eventCleaner, noteHandler, noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipOrphanCleaner,
         )
     }
 

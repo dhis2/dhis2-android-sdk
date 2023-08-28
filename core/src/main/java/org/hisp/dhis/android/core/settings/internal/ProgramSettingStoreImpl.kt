@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo
 
 internal class ProgramSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramSettingStore,
     ObjectWithoutUidStoreImpl<ProgramSetting>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class ProgramSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> ProgramSetting.create(cursor) }
+        { cursor: Cursor -> ProgramSetting.create(cursor) },
     ) {
 
     companion object {

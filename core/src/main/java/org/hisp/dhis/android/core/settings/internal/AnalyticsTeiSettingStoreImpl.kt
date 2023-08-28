@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsTeiSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiSettingStore,
     ObjectWithoutUidStoreImpl<AnalyticsTeiSetting>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class AnalyticsTeiSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
+        { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) },
     ) {
 
     companion object {

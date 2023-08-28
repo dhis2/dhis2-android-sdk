@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Assert
 import org.junit.Before
+import java.util.*
 
 class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var repository: TrackedEntityInstanceQueryCollectionRepository
@@ -479,7 +479,7 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
             "aVlSMMvgVzf", "zAyK28LLaez", "IcVHzEm0b6Z", "lc3eMKXaEfw", "VfZnZ6UKyn8", "uYG1rUdsJJi",
             "szbAJSWOXjT", "cZZG5BMDLps", "GRc9WXp9gSy", "kbPmt60yi0L", "vRC0stJ5y9Q", "tO01bqIipeD",
             "iUauWFeH8Qp", "AXZq6q7Dr6E", "LZclRdyVk1t", "OI0BQUurVFS", "DwpbWkiqjMy", "MwfWgjMRgId",
-            "Q2USZSJmcNK", "EJoI3HArJ2W", "E497Rk80ivZ", "nOYt1LtFSyU", "wbtk73Zwhj9", "cMFi8lYbXHY"
+            "Q2USZSJmcNK", "EJoI3HArJ2W", "E497Rk80ivZ", "nOYt1LtFSyU", "wbtk73Zwhj9", "cMFi8lYbXHY",
         )
         try {
             repository.byOrgUnits().`in`(orgUnits).blockingGet()

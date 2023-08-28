@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationU
 
 @Suppress("MagicNumber")
 internal class OrganisationUnitOrganisationUnitGroupLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitOrganisationUnitGroupLinkStore,
     LinkStoreImpl<OrganisationUnitOrganisationUnitGroupLink>(
         databaseAdapter,
         OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
         OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
         BINDER,
-        { cursor: Cursor -> OrganisationUnitOrganisationUnitGroupLink.create(cursor) }
+        { cursor: Cursor -> OrganisationUnitOrganisationUnitGroupLink.create(cursor) },
     ) {
 
     companion object {

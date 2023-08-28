@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 
 internal class ProgramStageSectionDataElementChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<ProgramStageSection, DataElement>
+    private val linkChildStore: LinkChildStore<ProgramStageSection, DataElement>,
 ) : ChildrenAppender<ProgramStageSection>() {
     override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
         val builder = m.toBuilder()
@@ -51,7 +51,7 @@ internal class ProgramStageSectionDataElementChildrenAppender private constructo
         private val CHILD_PROJECTION = LinkTableChildProjection(
             DataElementTableInfo.TABLE_INFO,
             ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
-            ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT
+            ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageSection> {
@@ -59,8 +59,8 @@ internal class ProgramStageSectionDataElementChildrenAppender private constructo
                 linkChildStore(
                     databaseAdapter,
                     ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> DataElement.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> DataElement.create(cursor) },
             )
         }
     }

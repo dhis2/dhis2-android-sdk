@@ -36,13 +36,14 @@ import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
 
 internal class SectionDataElementLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SectionDataElementLinkStore,
     LinkStoreImpl<SectionDataElementLink>(
-        databaseAdapter, SectionDataElementLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        SectionDataElementLinkTableInfo.TABLE_INFO,
         SectionDataElementLinkTableInfo.Columns.SECTION,
         BINDER,
-        { cursor: Cursor -> SectionDataElementLink.create(cursor) }
+        { cursor: Cursor -> SectionDataElementLink.create(cursor) },
     ) {
 
     companion object {

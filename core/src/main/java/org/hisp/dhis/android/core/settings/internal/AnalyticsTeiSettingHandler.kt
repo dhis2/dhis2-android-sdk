@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiSettingHandler @Inject constructor(
@@ -39,11 +39,11 @@ internal class AnalyticsTeiSettingHandler @Inject constructor(
     private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
     private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,
     private val teiAttributeHandler: AnalyticsTeiAttributeHandler,
-    private val whoNutritionDataHandler: AnalyticsTeiWHONutritionDataHandler
+    private val whoNutritionDataHandler: AnalyticsTeiWHONutritionDataHandler,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<AnalyticsTeiSetting>
+        oCollection: Collection<AnalyticsTeiSetting>,
     ): Collection<AnalyticsTeiSetting> {
         store.delete()
         return oCollection

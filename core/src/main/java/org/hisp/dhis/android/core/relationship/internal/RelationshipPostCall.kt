@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import java.net.HttpURLConnection.*
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -42,6 +40,8 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
+import java.net.HttpURLConnection.*
+import javax.inject.Inject
 
 @Reusable
 internal class RelationshipPostCall @Inject internal constructor(
@@ -50,7 +50,7 @@ internal class RelationshipPostCall @Inject internal constructor(
     private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val trackerStateManager: TrackerPostStateManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
     fun deleteRelationships(relationships: List<Relationship>): Flow<D2Progress> = flow {
@@ -59,7 +59,7 @@ internal class RelationshipPostCall @Inject internal constructor(
             val response = coroutineAPICallExecutor.wrap(
                 storeError = true,
                 acceptedErrorCodes = listOf(HTTP_NOT_FOUND),
-                errorClass = RelationshipDeleteWebResponse::class.java
+                errorClass = RelationshipDeleteWebResponse::class.java,
             ) {
                 relationshipService.deleteRelationship(relationship.uid()!!)
             }
@@ -77,7 +77,7 @@ internal class RelationshipPostCall @Inject internal constructor(
                 },
                 onFailure = {
                     handleDeleteRelationshipError(relationship.uid()!!)
-                }
+                },
             )
 
             dataStatePropagator.propagateRelationshipUpdate(relationship)
@@ -97,19 +97,19 @@ internal class RelationshipPostCall @Inject internal constructor(
                 val payload = RelationshipPayload.builder().relationships(relationships).build()
                 trackerStateManager.setPayloadStates(
                     relationships = relationships,
-                    forcedState = State.UPLOADING
+                    forcedState = State.UPLOADING,
                 )
                 val httpResponse = coroutineAPICallExecutor.wrap(
                     storeError = true,
                     acceptedErrorCodes = listOf(HTTP_CONFLICT),
-                    errorClass = RelationshipWebResponse::class.java
+                    errorClass = RelationshipWebResponse::class.java,
                 ) {
                     relationshipService.postRelationship(payload)
                 }.getOrThrow()
 
                 relationshipImportHandler.handleRelationshipImportSummaries(
                     importSummaries = httpResponse.response()?.importSummaries(),
-                    relationships = relationships
+                    relationships = relationships,
                 )
                 emit(progressManager.increaseProgress(Relationship::class.java, false))
             } catch (e: Exception) {

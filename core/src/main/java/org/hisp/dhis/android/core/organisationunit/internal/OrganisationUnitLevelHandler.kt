@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 
 internal class OrganisationUnitLevelHandler(
-    store: OrganisationUnitLevelStore
+    store: OrganisationUnitLevelStore,
 ) : IdentifiableHandlerImpl<OrganisationUnitLevel>(store)

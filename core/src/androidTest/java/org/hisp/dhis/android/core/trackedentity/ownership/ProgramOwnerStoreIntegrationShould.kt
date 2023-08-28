@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 class ProgramOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<ProgramOwner>(
     ProgramOwnerStoreImpl(TestDatabaseAdapterFactory.get()),
     ProgramOwnerTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): ProgramOwner {
         return ProgramOwnerSamples.programOwner

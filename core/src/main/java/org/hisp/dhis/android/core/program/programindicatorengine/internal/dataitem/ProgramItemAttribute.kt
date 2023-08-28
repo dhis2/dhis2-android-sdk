@@ -67,13 +67,13 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityAttributeValueTableInfo.Columns.VALUE,
-            attribute.valueType()
+            attribute.valueType(),
         )
 
         val selectExpression = ProgramIndicatorSQLUtils.getAttributeWhereClause(
             column = valueCastExpression,
             attributeUid = attributeUid,
-            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
         )
 
         return if (visitor.state.replaceNulls) {
@@ -87,8 +87,8 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
         return visitor.itemIds.add(
             DimensionalItemId(
                 dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE,
-                id0 = ctx.uid0.text
-            )
+                id0 = ctx.uid0.text,
+            ),
         )
     }
 

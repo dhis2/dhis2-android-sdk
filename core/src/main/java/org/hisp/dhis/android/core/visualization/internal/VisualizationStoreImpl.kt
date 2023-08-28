@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Suppress("MagicNumber")
 internal class VisualizationStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : VisualizationStore,
     IdentifiableObjectStoreImpl<Visualization>(
         databaseAdapter,
         VisualizationTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Visualization.create(cursor) }
+        { cursor: Cursor -> Visualization.create(cursor) },
     ) {
     companion object {
         private val BINDER = object : IdentifiableStatementBinder<Visualization>() {

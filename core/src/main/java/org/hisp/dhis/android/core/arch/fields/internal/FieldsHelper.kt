@@ -85,7 +85,7 @@ internal class FieldsHelper<O> {
             displayName(),
             created(),
             lastUpdated(),
-            deleted()
+            deleted(),
         )
     }
 
@@ -94,7 +94,7 @@ internal class FieldsHelper<O> {
             this.field<O>(BaseNameableObject.SHORT_NAME),
             this.field<O>(BaseNameableObject.DISPLAY_SHORT_NAME),
             this.field<O>(BaseNameableObject.DESCRIPTION),
-            this.field<O>(BaseNameableObject.DISPLAY_DESCRIPTION)
+            this.field<O>(BaseNameableObject.DISPLAY_DESCRIPTION),
         )
     }
 }

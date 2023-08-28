@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.junit.Before
+import java.util.concurrent.Callable
 
 class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
@@ -49,7 +49,7 @@ class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         val uids = setOf(
             "FTRrcoaog83",
             "P3jJH5Tu5VC",
-            "FQ2o8UBlcrS"
+            "FQ2o8UBlcrS",
         )
         return getD2DIComponent(d2).dataElementCallFactory().create(uids)
     }

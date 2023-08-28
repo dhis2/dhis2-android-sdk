@@ -44,7 +44,7 @@ interface ApiService {
         @Query("users:fields") users: String?,
         @Query("trackedEntityTypes:fields") trackedEntityTypes: String?,
         @Query("trackedEntityAttributes:fields") trackedEntityAttributes: String?,
-        @Query("programs:fields") programs: String?
+        @Query("programs:fields") programs: String?,
     ): Single<MetadataResponse>
 
     companion object {

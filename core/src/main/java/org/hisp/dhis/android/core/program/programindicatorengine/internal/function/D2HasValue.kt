@@ -47,7 +47,7 @@ internal class D2HasValue : ProgramExpressionItem() {
             is ProgramItemStageElement -> hasProgramItemStageElement(ctx, visitor)
             is ProgramItemAttribute -> hasProgramAttribute(ctx, visitor)
             else -> throw ParserExceptionWithoutContext(
-                "First argument not supported for d2:hasValue... function: ${ctx.text}"
+                "First argument not supported for d2:hasValue... function: ${ctx.text}",
             )
         }
     }
@@ -77,7 +77,7 @@ internal class D2HasValue : ProgramExpressionItem() {
             is ProgramItemStageElement -> hasProgramItemStageElementSQL(ctx, visitor)
             is ProgramItemAttribute -> hasProgramAttributeSQL(ctx, visitor)
             else -> throw ParserExceptionWithoutContext(
-                "First argument not supported for d2:hasValue... function: ${ctx.text}"
+                "First argument not supported for d2:hasValue... function: ${ctx.text}",
             )
         }
     }

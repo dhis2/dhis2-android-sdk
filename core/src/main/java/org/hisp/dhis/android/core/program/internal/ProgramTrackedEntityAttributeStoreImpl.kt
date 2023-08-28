@@ -40,20 +40,20 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramTrackedEntityAttributeStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramTrackedEntityAttributeStore,
     IdentifiableObjectStoreImpl<ProgramTrackedEntityAttribute>(
         databaseAdapter,
         ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramTrackedEntityAttribute.create(cursor) }
+        { cursor: Cursor -> ProgramTrackedEntityAttribute.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<ProgramTrackedEntityAttribute> =
             object : NameableStatementBinder<ProgramTrackedEntityAttribute>() {
                 override fun bindToStatement(
                     o: ProgramTrackedEntityAttribute,
-                    w: StatementWrapper
+                    w: StatementWrapper,
                 ) {
                     super.bindToStatement(o, w)
                     w.bind(11, o.mandatory())
@@ -67,7 +67,8 @@ internal class ProgramTrackedEntityAttributeStoreImpl(
             }
 
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+            ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
         )
     }
 }

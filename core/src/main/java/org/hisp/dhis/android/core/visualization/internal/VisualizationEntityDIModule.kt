@@ -47,7 +47,7 @@ internal class VisualizationEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
         return mapOf(
-            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter)
+            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter),
         )
     }
 }

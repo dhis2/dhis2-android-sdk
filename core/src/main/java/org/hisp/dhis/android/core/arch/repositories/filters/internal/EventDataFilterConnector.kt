@@ -27,17 +27,17 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
+import java.util.*
 
 @Suppress("TooManyFunctions")
 class EventDataFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, EventDataFilter>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, EventDataFilter>,
 ) {
     fun eq(value: String): R {
         val filter = EventDataFilter.builder().dataItem(key).eq(value).build()

@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import kotlin.jvm.Throws
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -37,11 +35,13 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
+import kotlin.jvm.Throws
 
 abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
     private val store: ObjectStore<M>,
     tableInfo: TableInfo,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) {
     val `object`: M
     private val tableInfo: TableInfo

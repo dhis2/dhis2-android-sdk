@@ -34,7 +34,7 @@ internal object ChildrenAppenderExecutor {
     fun <M> appendInObject(
         m: M?,
         childrenAppenders: Map<String, ChildrenAppender<M>>,
-        childrenSelection: ChildrenSelection
+        childrenSelection: ChildrenSelection,
     ): M? {
         return m?.let {
             val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
@@ -49,7 +49,7 @@ internal object ChildrenAppenderExecutor {
     fun <M : CoreObject?> appendInObjectCollection(
         list: List<M>,
         childrenAppenders: Map<String, ChildrenAppender<M>>,
-        childrenSelection: ChildrenSelection
+        childrenSelection: ChildrenSelection,
     ): List<M> {
         val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
 
@@ -64,7 +64,7 @@ internal object ChildrenAppenderExecutor {
 
     private fun <M> getSelectedChildrenAppenders(
         appendersMap: Map<String, ChildrenAppender<M>>,
-        childrenSelection: ChildrenSelection
+        childrenSelection: ChildrenSelection,
     ): Collection<ChildrenAppender<M>> {
         return childrenSelection.children.mapNotNull { key -> appendersMap[key] }
     }

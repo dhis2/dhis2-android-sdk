@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 
 @Suppress("MagicNumber")
 internal class MapLayerStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : MapLayerStore,
     IdentifiableObjectStoreImpl<MapLayer>(
         databaseAdapter,
         MapLayerTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> MapLayer.create(cursor) }
+        { cursor: Cursor -> MapLayer.create(cursor) },
     ) {
 
     companion object {

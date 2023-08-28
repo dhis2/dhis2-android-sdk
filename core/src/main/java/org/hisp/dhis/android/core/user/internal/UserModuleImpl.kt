@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
+import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -47,7 +47,7 @@ internal class UserModuleImpl @Inject constructor(
     private val userCredentials: UserCredentialsObjectRepository,
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
-    private val openIDConnectHandler: OpenIDConnectHandlerImpl
+    private val openIDConnectHandler: OpenIDConnectHandlerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {

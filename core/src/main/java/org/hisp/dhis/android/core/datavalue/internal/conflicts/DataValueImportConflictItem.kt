@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.Date
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.Date
 
 internal interface DataValueImportConflictItem {
 
@@ -41,7 +41,7 @@ internal interface DataValueImportConflictItem {
     fun getConflictBuilder(
         dataValue: DataValue,
         conflict: ImportConflict,
-        displayDescription: String
+        displayDescription: String,
     ): DataValueConflict.Builder {
         return DataValueConflict.builder()
             .conflict(conflict.value())

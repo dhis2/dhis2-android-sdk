@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentModuleImpl @Inject constructor(
     private val enrollments: EnrollmentCollectionRepository,
-    private val enrollmentService: EnrollmentServiceImpl
+    private val enrollmentService: EnrollmentServiceImpl,
 ) : EnrollmentModule {
 
     override fun enrollments(): EnrollmentCollectionRepository {

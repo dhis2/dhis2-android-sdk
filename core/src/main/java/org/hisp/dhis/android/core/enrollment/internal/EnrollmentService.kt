@@ -38,7 +38,7 @@ interface EnrollmentService {
     @GET("$ENROLLMENTS/{$ENROLLMENT_UID}")
     suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT_UID) enrollmentUid: String?,
-        @Query(FIELDS) @Which fields: Fields<Enrollment>
+        @Query(FIELDS) @Which fields: Fields<Enrollment>,
     ): Enrollment
 
     companion object {

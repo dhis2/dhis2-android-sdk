@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import javax.inject.Inject
 
 internal class IndicatorSQLEvaluator @Inject constructor(
-    private val indicatorEngine: IndicatorSQLEngine
+    private val indicatorEngine: IndicatorSQLEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
@@ -48,7 +48,7 @@ internal class IndicatorSQLEvaluator @Inject constructor(
         return indicatorEngine.evaluateIndicator(
             indicator = indicator,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 
@@ -63,7 +63,7 @@ internal class IndicatorSQLEvaluator @Inject constructor(
         return indicatorEngine.getSql(
             indicator = indicator,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 }

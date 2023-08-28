@@ -31,5 +31,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 
 internal class ExpressionDimensionItemHandler constructor(
-    store: ExpressionDimensionItemStore
+    store: ExpressionDimensionItemStore,
 ) : IdentifiableHandlerImpl<ExpressionDimensionItem>(store)

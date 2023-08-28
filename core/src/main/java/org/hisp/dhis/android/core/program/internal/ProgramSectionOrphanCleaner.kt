@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramSectionOrphanCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OrphanCleanerImpl<Program, ProgramSection>(
     tableName = ProgramSectionTableInfo.TABLE_INFO.name(),
     parentColumn = ProgramSectionTableInfo.Columns.PROGRAM,
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

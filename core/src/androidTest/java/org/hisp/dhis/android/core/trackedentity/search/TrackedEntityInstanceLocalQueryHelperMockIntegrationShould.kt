@@ -60,18 +60,18 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
             .programDate(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_10_YEARS)
-                    .build()
+                    .build(),
             )
             .incidentDate(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_3_MONTHS)
-                    .build()
+                    .build(),
             )
             .enrollmentStatus(listOf(EnrollmentStatus.ACTIVE))
             .eventDate(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_10_YEARS)
-                    .build()
+                    .build(),
             )
             .eventStatus(listOf(EventStatus.ACTIVE))
             .filter(
@@ -85,15 +85,15 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                         .key("attributeUid2")
                         .operator(FilterItemOperator.EQ)
                         .value("value2")
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .query(
                 RepositoryScopeFilterItem.builder()
                     .key("")
                     .operator(FilterItemOperator.EQ)
                     .value("value1")
-                    .build()
+                    .build(),
             )
             .trackedEntityType("trackedEntityTypeUid")
             .orgUnitMode(OrganisationUnitMode.CAPTURE)
@@ -109,16 +109,16 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                         .eventDate(
                             DateFilterPeriod.builder()
                                 .period(RelativePeriod.LAST_10_YEARS)
-                                .build()
+                                .build(),
                         )
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .states(listOf(State.SYNCED, State.TO_UPDATE))
             .lastUpdatedDate(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_10_YEARS)
-                    .build()
+                    .build(),
             )
             .order(
                 listOf(
@@ -129,8 +129,8 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
                     TrackedEntityInstanceQueryScopeOrderByItem.builder()
                         .column(TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED)
                         .direction(RepositoryScope.OrderByDirection.ASC)
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .build()
 

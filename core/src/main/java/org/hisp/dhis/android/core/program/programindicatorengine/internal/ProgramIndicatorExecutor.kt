@@ -45,7 +45,7 @@ internal class ProgramIndicatorExecutor constructor(
     private val programIndicatorContext: ProgramIndicatorContext,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>
+    private val programStageStore: IdentifiableObjectStore<ProgramStage>,
 ) {
     fun getProgramIndicatorValue(programIndicator: ProgramIndicator): String? {
         val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)
@@ -117,8 +117,8 @@ internal class ProgramIndicatorExecutor constructor(
                 programIndicatorExecutor = this,
                 dataElementStore = dataElementStore,
                 trackedEntityAttributeStore = trackedEntityAttributeStore,
-                programStageStore = programStageStore
-            )
+                programStageStore = programStageStore,
+            ),
         )
     }
 }

@@ -32,7 +32,7 @@ data class DataValueImportSummaryWebResponse(
     val httpStatus: String,
     val httpStatusCode: Int,
     val status: String,
-    val message: String
+    val message: String,
 ) : WebResponse() {
     override fun httpStatus() = httpStatus
 

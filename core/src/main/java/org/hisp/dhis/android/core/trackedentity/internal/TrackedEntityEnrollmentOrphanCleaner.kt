@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -36,17 +35,18 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityEnrollmentOrphanCleaner @Inject constructor(
     private val enrollmentStore: EnrollmentStore,
-    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
     fun deleteOrphan(
         parent: TrackedEntityInstance?,
         children: Collection<Enrollment>?,
-        program: String?
+        program: String?,
     ): Boolean {
         return if (parent != null && children != null) {
             val orphanEnrollmentsClause = WhereClauseBuilder().run {
@@ -54,7 +54,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner @Inject constructor(
                 appendNotInKeyStringValues(EnrollmentTableInfo.Columns.UID, children.map { it.uid() })
                 appendInKeyEnumValues(
                     EnrollmentTableInfo.Columns.SYNC_STATE,
-                    listOf(State.SYNCED, State.SYNCED_VIA_SMS)
+                    listOf(State.SYNCED, State.SYNCED_VIA_SMS),
                 )
                 if (program != null) {
                     appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, program)
@@ -83,7 +83,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner @Inject constructor(
     private fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
         val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
             program = enrollment.program(),
-            organisationUnit = enrollment.organisationUnit()
+            organisationUnit = enrollment.organisationUnit(),
         )
 
         return !isProtected || enrollment.program() == program

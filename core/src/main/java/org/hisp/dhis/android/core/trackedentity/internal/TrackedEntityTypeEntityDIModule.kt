@@ -47,7 +47,7 @@ internal class TrackedEntityTypeEntityDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityType>> {
         return mapOf(
             TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES to
-                TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)
+                TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter),
         )
     }
 }

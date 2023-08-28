@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.GeneralSettings
+import javax.inject.Inject
 
 @Reusable
 internal class GeneralSettingHandler @Inject constructor(store: GeneralSettingStore) :

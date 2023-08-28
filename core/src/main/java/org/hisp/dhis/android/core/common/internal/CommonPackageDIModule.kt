@@ -41,8 +41,8 @@ import retrofit2.Retrofit
 @Module(
     includes = [
         ValueTypeDeviceRenderingEntityDIModule::class,
-        ValueTypeRenderingEntityDIModule::class
-    ]
+        ValueTypeRenderingEntityDIModule::class,
+    ],
 )
 internal class CommonPackageDIModule {
     @Provides
@@ -51,13 +51,13 @@ internal class CommonPackageDIModule {
         databaseAdapter: DatabaseAdapter,
         retrofit: Retrofit,
         resourceHandler: ResourceHandler,
-        versionManager: DHISVersionManager
+        versionManager: DHISVersionManager,
     ): GenericCallData {
         return GenericCallData.create(
             databaseAdapter,
             retrofit,
             resourceHandler,
-            versionManager
+            versionManager,
         )
     }
 

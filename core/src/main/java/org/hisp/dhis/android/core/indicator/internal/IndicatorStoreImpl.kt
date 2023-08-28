@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 
 @Suppress("MagicNumber")
 internal class IndicatorStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : IndicatorStore,
     IdentifiableObjectStoreImpl<Indicator>(
         databaseAdapter,
         TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Indicator.create(cursor) }
+        { cursor: Cursor -> Indicator.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<Indicator> = object : NameableWithStyleStatementBinder<Indicator>() {

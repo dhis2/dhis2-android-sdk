@@ -71,15 +71,15 @@ class TrackerImporterFileResourcesPostCallShould {
                     NewTrackerImporterTrackedEntity.builder()
                         .uid("tei_uid")
                         .trackedEntityAttributeValues(listOf(attributeValue))
-                        .build()
+                        .build(),
                 ),
                 enrollments = mutableListOf(
                     NewTrackerImporterEnrollment.builder()
                         .uid("enrollment_uid")
                         .attributes(listOf(attributeValue))
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         )
 
         val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
@@ -103,7 +103,7 @@ class TrackerImporterFileResourcesPostCallShould {
     fun setUp() {
         fileResourcePostCall = TrackerImporterFileResourcesPostCall(
             fileResourcesPostCall,
-            fileResourceHelper
+            fileResourceHelper,
         )
     }
 }

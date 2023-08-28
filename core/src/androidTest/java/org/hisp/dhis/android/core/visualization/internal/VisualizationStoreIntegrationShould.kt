@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
     VisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
     VisualizationTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): Visualization {
         return VisualizationSamples.visualization()

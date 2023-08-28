@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.Program
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramOrganisationUnitLinkCleaner @Inject constructor(
     programStore: ProgramStore,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : LinkCleanerImpl<Program>(
     tableName = OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
     applicableColumn = OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
     parentStore = programStore,
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

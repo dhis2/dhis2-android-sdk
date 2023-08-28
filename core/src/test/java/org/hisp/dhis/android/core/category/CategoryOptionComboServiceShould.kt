@@ -60,7 +60,7 @@ class CategoryOptionComboServiceShould {
         whenever(
             categoryOptionRepository
                 .byCategoryOptionComboUid(categoryOptionComboUid)
-                .blockingGet()
+                .blockingGet(),
         ) doReturn listOf(option1, option2)
 
         whenever(option1.access()) doReturn AccessHelper.createForDataWrite(true)

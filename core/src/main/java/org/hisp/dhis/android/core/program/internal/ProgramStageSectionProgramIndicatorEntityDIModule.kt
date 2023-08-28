@@ -43,7 +43,7 @@ internal class ProgramStageSectionProgramIndicatorEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: ProgramStageSectionProgramIndicatorLinkStore
+        store: ProgramStageSectionProgramIndicatorLinkStore,
     ): ProgramStageSectionProgramIndicatorLinkHandler {
         return ProgramStageSectionProgramIndicatorLinkHandler(store)
     }

@@ -43,7 +43,7 @@ internal constructor(
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     private val downloadProvider: DownloadProvider,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadOnlyWithDownloadObjectRepository<M> {
 

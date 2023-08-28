@@ -34,13 +34,13 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
 
 internal class ConfigurationStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ConfigurationStore,
     ObjectStoreImpl<Configuration>(
         databaseAdapter,
         ConfigurationTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Configuration.create(cursor) }
+        { cursor: Cursor -> Configuration.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: Configuration, w: StatementWrapper ->

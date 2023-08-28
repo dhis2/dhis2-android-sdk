@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.event.EventFilterTableInfo
 
 @Suppress("MagicNumber")
 internal class EventFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : EventFilterStore,
     IdentifiableObjectStoreImpl<EventFilter>(
         databaseAdapter,
         EventFilterTableInfo.TABLE_INFO,
         BINDER,
-        { EventFilter.create(it) }
+        { EventFilter.create(it) },
     ) {
 
     companion object {

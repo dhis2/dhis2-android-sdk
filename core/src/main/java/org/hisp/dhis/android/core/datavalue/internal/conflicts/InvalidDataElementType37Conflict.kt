@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.ArrayList
 
 internal class InvalidDataElementType37Conflict(
-    dataElementStore: IdentifiableObjectStore<DataElement>
+    dataElementStore: IdentifiableObjectStore<DataElement>,
 ) : InvalidDataElementTypeConflict(dataElementStore) {
 
     override val regex: Regex
@@ -54,9 +54,9 @@ internal class InvalidDataElementType37Conflict(
                         displayDescription = getDisplayDescription(
                             conflict,
                             dataValue.value() ?: "",
-                            dataValue.dataElement()
-                        )
-                    ).build()
+                            dataValue.dataElement(),
+                        ),
+                    ).build(),
                 )
             }
         }

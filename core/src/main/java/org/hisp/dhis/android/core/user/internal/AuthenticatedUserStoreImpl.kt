@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 
 internal class AuthenticatedUserStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AuthenticatedUserStore,
     ObjectWithoutUidStoreImpl<AuthenticatedUser>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class AuthenticatedUserStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> AuthenticatedUser.create(cursor) }
+        { cursor: Cursor -> AuthenticatedUser.create(cursor) },
     ) {
 
     companion object {

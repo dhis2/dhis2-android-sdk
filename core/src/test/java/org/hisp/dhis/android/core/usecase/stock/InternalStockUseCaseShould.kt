@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.usecase.stock
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth
-import java.io.InputStream
 import org.hisp.dhis.android.core.Inject
 import org.junit.Test
+import java.io.InputStream
 
 class InternalStockUseCaseShould {
     private var objectMapper: ObjectMapper = Inject.objectMapper()

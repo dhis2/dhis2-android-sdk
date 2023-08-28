@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.option.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionGroupTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class OptionGroupCollectionCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CollectionCleanerImpl<OptionGroup>(
     tableName = OptionGroupTableInfo.TABLE_INFO.name(),
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

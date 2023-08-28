@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 import androidx.paging.ItemKeyedDataSource
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
@@ -51,6 +50,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.*
 import org.mockito.ArgumentMatchers.anyString
+import java.util.*
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -85,18 +85,18 @@ class TrackedEntityInstanceQueryDataSourceShould {
         offlineObjects = listOf(
             TrackedEntityInstance.builder().uid("offline1").build(),
             TrackedEntityInstance.builder().uid("offline2").build(),
-            TrackedEntityInstance.builder().uid("offline3").build()
+            TrackedEntityInstance.builder().uid("offline3").build(),
         )
         onlineObjects1 = listOf(
             TrackedEntityInstance.builder().uid("online1").build(),
             TrackedEntityInstance.builder().uid("offline2").build(),
             TrackedEntityInstance.builder().uid("online3").build(),
             TrackedEntityInstance.builder().uid("online4").build(),
-            TrackedEntityInstance.builder().uid("online5").build()
+            TrackedEntityInstance.builder().uid("online5").build(),
         )
         onlineObjects2 = listOf(
             TrackedEntityInstance.builder().uid("online5").build(),
-            TrackedEntityInstance.builder().uid("online6").build()
+            TrackedEntityInstance.builder().uid("online6").build(),
         )
         whenever(store.selectRawQuery(any())).doReturn(offlineObjects)
 
@@ -129,12 +129,17 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_online_page() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verify(onlineCallFactory)
             .getQueryCall(argThat(QueryPageUserModeMatcher(1, initialLoad, AssignedUserMode.ANY)))
@@ -146,12 +151,17 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_offline_page() {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verify(store).selectRawQuery(anyString())
         verify(initialCallback).onResult(offlineObjects)
@@ -162,12 +172,17 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun query_online_when_offline_exhausted() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verify(store).selectRawQuery(anyString())
         verifyNoMoreInteractions(store)
@@ -180,8 +195,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun query_online_again_if_not_exhausted_and_use_right_paging() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
 
         onlineCallFactory.stub {
@@ -194,7 +214,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, 4, false),
-            initialCallback
+            initialCallback,
         )
         verify(store).selectRawQuery(anyString())
         verifyNoMoreInteractions(store)
@@ -210,22 +230,32 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_initial_online_page_from_cache() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).allowOnlineCache(true).build()
         val dataSource1 = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource1.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verify(onlineCallFactory).getQueryCall(any())
 
         val dataSource2 = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource2.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verifyNoMoreInteractions(onlineCallFactory)
     }
@@ -234,12 +264,17 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_multiple_event_filter_queries() = runTest {
         val scope = multipleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, initialLoad, false),
-            initialCallback
+            initialCallback,
         )
         verify(store).selectRawQuery(anyString())
         verifyNoMoreInteractions(store)
@@ -247,7 +282,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
         verify(onlineCallFactory).getQueryCall(argThat(QueryUserModeMatcher(AssignedUserMode.CURRENT)))
         verifyNoMoreInteractions(onlineCallFactory)
         verify(initialCallback).onResult(
-            captureInstances.capture()
+            captureInstances.capture(),
         )
         assertThat(captureInstances.firstValue.size).isEqualTo(8)
     }
@@ -260,8 +295,13 @@ class TrackedEntityInstanceQueryDataSourceShould {
     fun get_second_online_page_if_needed_in_initial_load() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(
-            store, trackerParentCallFactory, scope, childrenAppenders,
-            onlineCache, onlineHelper, localQueryHelper
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
         )
 
         onlineCallFactory.stub {
@@ -274,7 +314,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
         dataSource.loadInitial(
             ItemKeyedDataSource.LoadInitialParams(null, 5, false),
-            initialCallback
+            initialCallback,
         )
         verify(store).selectRawQuery(anyString())
         verifyNoMoreInteractions(store)
@@ -294,7 +334,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     private fun emptyScopeWithModes(
-        vararg assignedUserModes: AssignedUserMode
+        vararg assignedUserModes: AssignedUserMode,
     ): TrackedEntityInstanceQueryRepositoryScope {
         val eventFilters = assignedUserModes.map {
             TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(it).build()

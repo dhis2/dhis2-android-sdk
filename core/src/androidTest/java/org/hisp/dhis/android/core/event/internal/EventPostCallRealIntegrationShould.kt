@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.junit.Before
+import java.util.*
 
 class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var eventStore: EventStore
@@ -85,7 +85,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
                 .program(programUid)
                 .programStage(programStageUid)
                 .attributeOptionCombo(attributeOptionCombo)
-                .build()
+                .build(),
         )
         val repo = d2.eventModule().events().uid(eventUid)
         repo.setEventDate(Date())
@@ -137,7 +137,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
                 .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(Date())
                 .completedDate(Date()).dueDate(Date()).syncState(State.TO_POST)
-                .attributeOptionCombo(attributeOptionCombo).build()
+                .attributeOptionCombo(attributeOptionCombo).build(),
         )
         val trackedEntityDataValue = TrackedEntityDataValue.builder()
             .event(eventUid)
@@ -159,7 +159,10 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Throws(Exception::class)
     private suspend fun downloadEvents() {
         val eventPayload = EventCallFactory.create(
-            d2.retrofit(), orgUnitUid, 50, emptyList()
+            d2.retrofit(),
+            orgUnitUid,
+            50,
+            emptyList(),
         )
         val events = eventPayload.items()
         for (event in events) {

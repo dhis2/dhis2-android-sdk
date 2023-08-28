@@ -32,7 +32,7 @@ import retrofit2.Retrofit
 
 internal class GeneratedSchemaCall internal constructor(
     private val retrofit: Retrofit,
-    private val instanceVersion: String
+    private val instanceVersion: String,
 ) {
     fun download(schemaId: String): Single<GeneratedSchema> {
         return retrofit.create(GeneratedSchemaService::class.java).getSchema(instanceVersion, schemaId)

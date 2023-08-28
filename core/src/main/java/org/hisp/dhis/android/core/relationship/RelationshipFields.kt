@@ -50,6 +50,6 @@ internal object RelationshipFields {
         fh.field<String>(BaseIdentifiableObject.CREATED),
         fh.field<String>(BaseIdentifiableObject.LAST_UPDATED),
         fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
-        fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields)
+        fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields),
     ).build()
 }

@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsPeriodBoundaryStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AnalyticsPeriodBoundaryStore,
     LinkStoreImpl<AnalyticsPeriodBoundary>(
         databaseAdapter,
         AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
         AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR,
         BINDER,
-        { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
+        { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) },
     ) {
 
     companion object {

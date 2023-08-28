@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
 import junit.framework.Assert.fail
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
@@ -52,6 +51,7 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
 
 abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
@@ -117,7 +117,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
 
         verifyDownloadedTrackedEntityInstanceSingle(
             teiWithRemovedDataFile,
-            teiUid
+            teiUid,
         )
     }
 
@@ -226,7 +226,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
         val downloadedEnrollments = enrollmentStore.selectWhere(
             WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build()
+                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build(),
         )
         val downloadedEnrollmentsWithoutIdAndDeleteFalse = downloadedEnrollments.map {
             it.toBuilder().id(null).deleted(false).notes(ArrayList()).build()
@@ -242,8 +242,11 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val downloadedValues = dataValueList.groupBy { it.event() }
 
         return createTei(
-            downloadedTei, attValuesWithoutIdAndTEI, downloadedEnrollmentsWithoutIdAndDeleteFalse,
-            downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues
+            downloadedTei,
+            attValuesWithoutIdAndTEI,
+            downloadedEnrollmentsWithoutIdAndDeleteFalse,
+            downloadedEventsWithoutValuesAndDeleteFalse,
+            downloadedValues,
         )
     }
 
@@ -252,7 +255,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         attValuesWithoutIdAndTEI: List<TrackedEntityAttributeValue>,
         downloadedEnrollmentsWithoutEvents: List<Enrollment>,
         downloadedEventsWithoutValues: List<Event>,
-        downloadedValues: Map<String?, List<TrackedEntityDataValue>?>
+        downloadedValues: Map<String?, List<TrackedEntityDataValue>?>,
     ): TrackedEntityInstance? {
         val downloadedEvents = downloadedEventsWithoutValues.map { event ->
             val trackedEntityDataValuesWithNullIdsAndEvents = downloadedValues[event.uid()]!!.map {
@@ -265,7 +268,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val downloadedEnrollments = downloadedEnrollmentsWithoutEvents.map { enrollment ->
             EnrollmentInternalAccessor.insertEvents(
                 enrollment.toBuilder(),
-                downloadedEvents[enrollment.uid()]
+                downloadedEvents[enrollment.uid()],
             )
                 .trackedEntityInstance(downloadedTei!!.uid())
                 .build()
@@ -275,9 +278,10 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
 
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
             TrackedEntityInstanceInternalAccessor.insertRelationships(
-                downloadedTei!!.toBuilder(), relationships
+                downloadedTei!!.toBuilder(),
+                relationships,
             ),
-            downloadedEnrollments
+            downloadedEnrollments,
         )
             .id(null)
             .deleted(false)

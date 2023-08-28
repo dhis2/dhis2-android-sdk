@@ -33,11 +33,11 @@ data class DimensionalResponse(
     val dimensions: List<Dimension>,
     val dimensionItems: Map<Dimension, List<DimensionItem>>,
     val filters: List<String>,
-    val values: List<DimensionalValue>
+    val values: List<DimensionalValue>,
 )
 
 data class DimensionalValue(
     val dimensions: List<String>,
     val value: String?,
-    val legend: String?
+    val legend: String?,
 )

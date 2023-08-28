@@ -40,7 +40,7 @@ internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrati
     private val indicatorEngine = IndicatorEngine(
         indicatorTypeStore,
         analyticExpressionEngineFactory,
-        expressionService
+        expressionService,
     )
 
     override val indicatorEvaluator = IndicatorEvaluator(indicatorEngine)

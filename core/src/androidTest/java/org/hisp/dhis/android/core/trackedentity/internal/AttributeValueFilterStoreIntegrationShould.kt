@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class AttributeValueFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AttributeValueFilter>(
     AttributeValueFilterStoreImpl(TestDatabaseAdapterFactory.get()),
     ItemFilterTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): AttributeValueFilter {
         return AttributeValueFilterSamples.get()

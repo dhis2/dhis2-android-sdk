@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class CollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : CollectionCleaner<P> {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {

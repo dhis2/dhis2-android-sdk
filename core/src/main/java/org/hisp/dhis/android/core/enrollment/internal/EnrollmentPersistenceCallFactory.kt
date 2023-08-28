@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentPersistenceCallFactory @Inject constructor(
-    private val enrollmentHandler: EnrollmentHandler
+    private val enrollmentHandler: EnrollmentHandler,
 ) {
     fun persistAsRelationships(enrollments: List<Enrollment>): Completable {
         return persistEnrollmentsInternal(enrollments, asRelationship = true, overwrite = false)
@@ -44,12 +44,12 @@ internal class EnrollmentPersistenceCallFactory @Inject constructor(
     private fun persistEnrollmentsInternal(
         enrollments: List<Enrollment>,
         asRelationship: Boolean,
-        overwrite: Boolean
+        overwrite: Boolean,
     ): Completable {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = true,
             overwrite = overwrite,
-            asRelationship = asRelationship
+            asRelationship = asRelationship,
         )
         return Completable.defer {
             enrollmentHandler.handleMany(enrollments, params, relatives = null)

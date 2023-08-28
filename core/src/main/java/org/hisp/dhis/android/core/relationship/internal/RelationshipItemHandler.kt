@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 internal class RelationshipItemHandler(
-    store: RelationshipItemStore
+    store: RelationshipItemStore,
 ) : ObjectWithoutUidHandlerImpl<RelationshipItem>(store)

@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.dataapproval.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import javax.inject.Inject
 
 @Reusable
 internal class DataApprovalCall @Inject constructor(
     private val service: DataApprovalService,
     private val handler: DataApprovalHandler,
     private val apiDownloader: APIDownloader,
-    private val multiDimensionalPartitioner: MultiDimensionalPartitioner
+    private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
 ) : QueryCall<DataApproval, DataApprovalQuery> {
 
     companion object {
@@ -56,7 +56,7 @@ internal class DataApprovalCall @Inject constructor(
             query.workflowsUids,
             query.periodIds,
             query.organisationUnistUids,
-            query.attributeOptionCombosUids
+            query.attributeOptionCombosUids,
         )
         return partitions.flatMap { part ->
             apiDownloader.downloadListAsCoroutine(handler) {
@@ -66,7 +66,7 @@ internal class DataApprovalCall @Inject constructor(
                     workflow = commaSeparatedCollectionValues(part[0]),
                     periods = commaSeparatedCollectionValues(part[1]),
                     organisationUnit = commaSeparatedCollectionValues(part[2]),
-                    attributeOptionCombo = commaSeparatedCollectionValues(part[3])
+                    attributeOptionCombo = commaSeparatedCollectionValues(part[3]),
                 )
             }
         }

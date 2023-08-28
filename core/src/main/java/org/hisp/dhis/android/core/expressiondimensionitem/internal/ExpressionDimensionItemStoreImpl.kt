@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionIte
 
 @Suppress("MagicNumber")
 internal class ExpressionDimensionItemStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ExpressionDimensionItemStore,
     IdentifiableObjectStoreImpl<ExpressionDimensionItem>(
         databaseAdapter,
         ExpressionDimensionItemTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ExpressionDimensionItem.create(cursor) }
+        { cursor: Cursor -> ExpressionDimensionItem.create(cursor) },
     ) {
 
     companion object {

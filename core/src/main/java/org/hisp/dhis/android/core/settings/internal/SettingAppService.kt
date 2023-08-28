@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.settings.*
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import javax.inject.Inject
 
 internal class SettingAppService @Inject constructor(
-    private val settingService: SettingService
+    private val settingService: SettingService,
 ) {
 
     fun info(): Single<SettingsAppInfo> {

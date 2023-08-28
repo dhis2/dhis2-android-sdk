@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
@@ -41,15 +40,16 @@ import org.hisp.dhis.android.core.imports.internal.ItemsWithFileResources
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 internal class OldTrackerImporterFileResourcesPostCall @Inject internal constructor(
     private val fileResourcePostCall: FileResourcePostCall,
-    private val fileResourceHelper: FileResourceHelper
+    private val fileResourceHelper: FileResourceHelper,
 ) {
 
     suspend fun uploadTrackedEntityFileResources(
-        trackedEntityInstances: List<TrackedEntityInstance>
+        trackedEntityInstances: List<TrackedEntityInstance>,
     ): ItemsWithFileResources<TrackedEntityInstance> {
         val fileResources = fileResourceHelper.getUploadableFileResources()
 
@@ -65,7 +65,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     }
 
     suspend fun uploadEventsFileResources(
-        events: List<Event>
+        events: List<Event>,
     ): ItemsWithFileResources<Event> {
         val fileResources = fileResourceHelper.getUploadableFileResources()
 
@@ -82,7 +82,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
     private suspend fun uploadTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<TrackedEntityInstance, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
@@ -107,13 +107,13 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
                 .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
                 .trackedEntityAttributeValues(updatedAttributes)
                 .build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 
     private suspend fun uploadEnrollment(
         enrollment: Enrollment,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<Enrollment, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
@@ -125,13 +125,13 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
         return Pair(
             EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), updatedEvents).build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 
     private suspend fun uploadEvent(
         event: Event,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<Event, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
@@ -146,7 +146,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
         return Pair(
             event.toBuilder().trackedEntityDataValues(updatedDataValues).build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 

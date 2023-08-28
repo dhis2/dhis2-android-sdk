@@ -32,7 +32,7 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 
 abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M>(
-    private val downloadCompletableProvider: CompletableProvider
+    private val downloadCompletableProvider: CompletableProvider,
 ) {
     fun get(): Single<M?> {
         return Single.fromCallable { blockingGet() }

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.constant.Constant
 @Suppress("MagicNumber")
 internal class ConstantHandler constructor(
     optionStore: ConstantStore,
-    private val collectionCleaner: ConstantCollectionCleaner
+    private val collectionCleaner: ConstantCollectionCleaner,
 ) : IdentifiableHandlerImpl<Constant>(optionStore) {
     override fun afterCollectionHandled(oCollection: Collection<Constant>?) {
         collectionCleaner.deleteNotPresent(oCollection)

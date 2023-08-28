@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.option.OptionGroupTableInfo
 
 @Suppress("MagicNumber")
 internal class OptionGroupStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OptionGroupStore,
     IdentifiableObjectStoreImpl<OptionGroup>(
         databaseAdapter,
         OptionGroupTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> OptionGroup.create(cursor) }
+        { cursor: Cursor -> OptionGroup.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<OptionGroup> = object : IdentifiableStatementBinder<OptionGroup>() {

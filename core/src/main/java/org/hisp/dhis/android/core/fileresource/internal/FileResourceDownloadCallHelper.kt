@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import javax.inject.Inject
 
 @Reusable
 internal class FileResourceDownloadCallHelper @Inject constructor(
@@ -53,12 +53,12 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val dataValueStore: DataValueStore,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     fun getMissingTrackerAttributeValues(
         params: FileResourceDownloadParams,
-        existingFileResources: List<String>
+        existingFileResources: List<String>,
     ): List<MissingTrackerAttributeValue> {
         val fileTypes =
             if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
@@ -73,11 +73,11 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
         val attributeValuesWhereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributes.map { it.uid() }
+                trackedEntityAttributes.map { it.uid() },
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.VALUE,
-                existingFileResources
+                existingFileResources,
             )
             .build()
         return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause)
@@ -89,7 +89,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
 
     fun getMissingTrackerDataValues(
         params: FileResourceDownloadParams,
-        existingFileResources: List<String>
+        existingFileResources: List<String>,
     ): List<TrackedEntityDataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
             .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
@@ -105,7 +105,7 @@ internal class FileResourceDownloadCallHelper @Inject constructor(
 
     fun getMissingAggregatedDataValues(
         params: FileResourceDownloadParams,
-        existingFileResources: List<String>
+        existingFileResources: List<String>,
     ): List<DataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
             .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })

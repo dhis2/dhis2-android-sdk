@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.junit.Before
+import java.util.concurrent.Callable
 
 class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -53,13 +52,14 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.antlr.Parser
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorSQLExecutor @Inject constructor(
     private val constantStore: ConstantStore,
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) {
 
     fun getProgramIndicatorValue(
@@ -101,20 +101,20 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
                     programIndicator,
                     evaluationItem,
                     metadata,
-                    queryMods
+                    queryMods,
                 )
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
                     programIndicator,
                     evaluationItem,
                     metadata,
-                    queryMods
+                    queryMods,
                 )
         }
 
         val context = ProgramIndicatorSQLContext(
             programIndicator = programIndicator,
-            periods = periods
+            periods = periods,
         )
 
         val collector = ProgramIndicatorItemIdsCollector()
@@ -146,7 +146,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
     private fun newVisitor(
         itemMethod: ExpressionItemMethod,
-        context: ProgramIndicatorSQLContext
+        context: ProgramIndicatorSQLContext,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.ProgramSQLIndicator(
@@ -155,8 +155,8 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
                 constantMap = constantMap(),
                 programIndicatorSQLContext = context,
                 dataElementStore = dataElementStore,
-                trackedEntityAttributeStore = trackedEntityAttributeStore
-            )
+                trackedEntityAttributeStore = trackedEntityAttributeStore,
+            ),
         )
     }
 }

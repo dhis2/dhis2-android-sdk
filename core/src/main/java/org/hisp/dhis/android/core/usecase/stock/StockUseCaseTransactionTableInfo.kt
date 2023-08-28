@@ -54,7 +54,7 @@ object StockUseCaseTransactionTableInfo {
                 DISTRIBUTED_TO,
                 STOCK_DISTRIBUTED,
                 STOCK_DISCARDED,
-                STOCK_COUNT
+                STOCK_COUNT,
             )
         }
 

@@ -42,7 +42,7 @@ internal constructor(
     private val store: ReadableStore<M>,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
     private val scope: RepositoryScope,
-    private val transformer: TwoWayTransformer<M, T>
+    private val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyObjectRepository<T> {
 
     fun blockingGetWithoutChildren(): M? {
@@ -65,7 +65,9 @@ internal constructor(
      */
     override fun blockingGet(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(), childrenAppenders, scope.children()
+            blockingGetWithoutChildren(),
+            childrenAppenders,
+            scope.children(),
         )
 
         return item?.let { transformer.transform(it) }

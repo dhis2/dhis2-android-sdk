@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
 internal class MapLayerImageryProviderHandler(
-    store: MapLayerImageryProviderStore
+    store: MapLayerImageryProviderStore,
 ) : LinkHandlerImpl<MapLayerImageryProvider, MapLayerImageryProvider>(store)

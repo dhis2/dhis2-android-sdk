@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMetho
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import javax.inject.Inject
 
 internal class AnalyticExpressionEngineFactory @Inject constructor(
     private val dataElementStore: DataElementStore,
@@ -55,14 +55,14 @@ internal class AnalyticExpressionEngineFactory @Inject constructor(
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
-    private val constantStore: ConstantStore
+    private val constantStore: ConstantStore,
 ) {
 
     fun getEngine(
         method: ExpressionItemMethod,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,
-        days: Int?
+        days: Int?,
     ): AnalyticExpressionEngine {
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
@@ -74,7 +74,7 @@ internal class AnalyticExpressionEngineFactory @Inject constructor(
             programIndicatorEvaluator = programIndicatorEvaluator,
             eventDataItemEvaluator = eventDataItemEvaluator,
             evaluationItem = contextEvaluationItem,
-            contextMetadata = contextMetadata
+            contextMetadata = contextMetadata,
         )
 
         val visitor = newVisitor(indicatorContext, method)
@@ -94,15 +94,15 @@ internal class AnalyticExpressionEngineFactory @Inject constructor(
 
     private fun newVisitor(
         indicatorContext: IndicatorContext,
-        method: ExpressionItemMethod
+        method: ExpressionItemMethod,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.AnalyticsIndicator(
                 itemMap = AnalyticExpressionParserUtils.ANALYTIC_EXPRESSION_ITEMS,
                 itemMethod = method,
                 constantMap = constantMap,
-                indicatorContext = indicatorContext
-            )
+                indicatorContext = indicatorContext,
+            ),
         )
     }
 }

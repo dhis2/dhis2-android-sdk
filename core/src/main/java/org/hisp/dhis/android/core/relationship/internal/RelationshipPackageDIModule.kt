@@ -38,8 +38,8 @@ import retrofit2.Retrofit
         RelationshipConstraintEntityDIModule::class,
         RelationshipEntityDIModule::class,
         RelationshipItemEntityDIModule::class,
-        RelationshipTypeEntityDIModule::class
-    ]
+        RelationshipTypeEntityDIModule::class,
+    ],
 )
 internal class RelationshipPackageDIModule {
     @Provides

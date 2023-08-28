@@ -49,7 +49,7 @@ internal class VZeroPosValueCount : ExpressionItem {
         return ProgramIndicatorSQLUtils.valueCountExpression(
             itemIds = visitor.itemIds,
             programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
-            conditionalValueExpression = " >= 0"
+            conditionalValueExpression = " >= 0",
         )
     }
 }

@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 
 @Suppress("MagicNumber")
 internal class DataSetStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetStore,
     IdentifiableObjectStoreImpl<DataSet>(
         databaseAdapter,
         DataSetTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> DataSet.create(cursor) }
+        { cursor: Cursor -> DataSet.create(cursor) },
     ) {
 
     companion object {

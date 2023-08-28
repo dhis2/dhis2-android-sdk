@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+import javax.inject.Inject
 
 private const val UNAUTHORIZED = 401
 
@@ -44,14 +44,14 @@ internal class OpenIDConnectAuthenticator @Inject constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val tokenRefresher: OpenIDConnectTokenRefresher,
     private val userIdHelper: UserIdAuthenticatorHelper,
-    private val logoutHandler: OpenIDConnectLogoutHandler
+    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
     fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
         val builder = userIdHelper.builderWithUserId(chain)
         val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
         val res = chain.proceed(builderWithAuthentication.build())
-        if (res.code() == UNAUTHORIZED) {
+        if (res.code == UNAUTHORIZED) {
             logoutHandler.logOut()
         }
         return res
@@ -71,7 +71,7 @@ internal class OpenIDConnectAuthenticator @Inject constructor(
     private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
         return builder.addHeader(
             UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
-            "Bearer $token"
+            "Bearer $token",
         )
     }
 }

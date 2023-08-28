@@ -38,7 +38,7 @@ internal open class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
     private val databaseAdapter: DatabaseAdapter,
-    private val keyExtractor: Transformer<P, String>
+    private val keyExtractor: Transformer<P, String>,
 ) : SubCollectionCleaner<P> {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {

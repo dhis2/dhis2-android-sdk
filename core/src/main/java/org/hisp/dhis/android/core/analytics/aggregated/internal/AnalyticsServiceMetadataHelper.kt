@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
@@ -67,7 +67,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val parentPeriodGenerator: ParentPeriodGenerator,
-    private val periodHelper: PeriodHelper
+    private val periodHelper: PeriodHelper,
 ) {
 
     fun getMetadata(evaluationItems: List<AnalyticsServiceEvaluationItem>): Map<String, MetadataItem> {
@@ -82,7 +82,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
 
     fun includeLegendsToMetadata(
         metadata: Map<String, MetadataItem>,
-        legendsUids: List<String>
+        legendsUids: List<String>,
     ): Map<String, MetadataItem> {
         val finalMetadata = metadata.toMutableMap()
         val legends = legendStore.selectByUids(legendsUids.distinct()).map { MetadataItem.LegendItem(it) }
@@ -136,7 +136,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     MetadataItem.DataElementOperandItem(
                         dataElementOperand,
                         dataElement.displayName()!!,
-                        coc.displayName()
+                        coc.displayName(),
                     )
                 }
 
@@ -174,7 +174,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
 
                     MetadataItem.ExpressionDimensionItemItem(expressionItem)
                 }
-            }
+            },
         )
     }
 
@@ -189,7 +189,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
                     MetadataItem.RelativePeriodItem(item.relative, periods)
                 }
-            }
+            },
         )
     }
 
@@ -219,7 +219,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         val ouUids = analyticsOrganisationUnitHelper.getOrganisationUnitUidsByGroup(item.uid)
                         MetadataItem.OrganisationUnitGroupItem(group, ouUids)
                     } ?: throw AnalyticsException.InvalidOrganisationUnitGroup(item.uid)
-            }
+            },
         )
     }
 
@@ -231,7 +231,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
 
             categoryOptionStore.selectByUid(item.categoryOption)
                 ?.let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
-                ?: throw AnalyticsException.InvalidCategoryOption(item.categoryOption)
+                ?: throw AnalyticsException.InvalidCategoryOption(item.categoryOption),
         )
     }
 }

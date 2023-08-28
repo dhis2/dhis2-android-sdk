@@ -53,7 +53,7 @@ internal class CategoryEntityDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Category>> {
         return mapOf(
             CategoryFields.CATEGORY_OPTIONS to
-                CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
+                CategoryCategoryOptionChildrenAppender.create(databaseAdapter),
         )
     }
 }

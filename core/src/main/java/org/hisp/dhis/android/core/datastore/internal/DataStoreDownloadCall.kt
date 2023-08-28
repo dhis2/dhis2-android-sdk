@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -42,18 +41,19 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
 
 @Reusable
 internal class DataStoreDownloadCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
     private val dataStoreEntryHandler: DataStoreHandler,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
 ) {
     fun download(params: DataStoreDownloadParams): Observable<D2Progress> {
         return rxObservable {
             return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
-                cleanForeignKeyErrors = true
+                cleanForeignKeyErrors = true,
             ) {
                 coroutineAPICallExecutor.wrap(storeError = false) {
                     dataStoreEntryService.getNamespaces()
@@ -68,7 +68,7 @@ internal class DataStoreDownloadCall @Inject constructor(
                             }
                             send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
                         },
-                        onFailure = { t -> throw t }
+                        onFailure = { t -> throw t },
                     )
             }
         }
@@ -125,7 +125,7 @@ internal class DataStoreDownloadCall @Inject constructor(
                 },
                 onFailure = { t ->
                     entries = Result.Failure(t)
-                }
+                },
             )
         } while (lastPage.size >= PAGE_SIZE && result.succeeded)
 

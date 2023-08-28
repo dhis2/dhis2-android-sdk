@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
 import org.hisp.dhis.android.core.option.OptionTableInfo
 
 internal class OptionGroupOptionChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OptionGroup>
+    private val childStore: ObjectWithUidChildStore<OptionGroup>,
 ) : ChildrenAppender<OptionGroup>() {
     override fun appendChildren(m: OptionGroup): OptionGroup {
         val builder = m.toBuilder()
@@ -49,7 +49,7 @@ internal class OptionGroupOptionChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             OptionTableInfo.TABLE_INFO,
             OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
-            OptionGroupOptionLinkTableInfo.Columns.OPTION
+            OptionGroupOptionLinkTableInfo.Columns.OPTION,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OptionGroup> {
@@ -57,8 +57,8 @@ internal class OptionGroupOptionChildrenAppender private constructor(
                 objectWithUidChildStore(
                     databaseAdapter,
                     OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                )
+                    CHILD_PROJECTION,
+                ),
             )
         }
     }

@@ -53,13 +53,13 @@ internal class ProgramStageWorkingListEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter
+        databaseAdapter: DatabaseAdapter,
     ): Map<String, ChildrenAppender<ProgramStageWorkingList>> {
         return mapOf(
             ProgramStageQueryCriteriaFields.DATA_FILTERS to
                 ProgramStageWorkingListDataFilterChildrenAppender.create(databaseAdapter),
             ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter)
+                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter),
         )
     }
 }

@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import javax.inject.Inject
 
 @Reusable
 class PingCall @Inject internal constructor(
     private val pingService: PingService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
     override suspend fun download(storeError: Boolean) {

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import kotlinx.coroutines.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import retrofit2.HttpException
 import retrofit2.Response
+import javax.inject.Inject
 
 @Reusable
 internal class CoroutineAPICallExecutorImpl @Inject constructor(
@@ -59,7 +59,7 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
         errorClass: Class<P>?,
-        block: suspend () -> P
+        block: suspend () -> P,
     ): Result<P, D2Error> {
         return try {
             Result.Success(block.invoke())
@@ -72,26 +72,27 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
 
                 if (userAccountDisabledErrorCatcher.isUserAccountLocked(response, errorBody)) {
                     Result.Failure(
-                        catchError(userAccountDisabledErrorCatcher, errorBuilder, response, errorBody, storeError)
+                        catchError(userAccountDisabledErrorCatcher, errorBuilder, response, errorBody, storeError),
                     )
                 } else if (errorClass != null && acceptedErrorCodes?.contains(response.code()) == true) {
                     Result.Success(
-                        ObjectMapperFactory.objectMapper().readValue(errorBody, errorClass)
+                        ObjectMapperFactory.objectMapper().readValue(errorBody, errorClass),
                     )
                 } else if (errorCatcher != null) {
                     Result.Failure(
-                        catchError(errorCatcher, errorBuilder, response, errorBody, storeError)
+                        catchError(errorCatcher, errorBuilder, response, errorBody, storeError),
                     )
                 } else {
                     Result.Failure(
                         storeAndReturn(
-                            errorMapper.responseException(errorBuilder, response, null, errorBody), storeError
-                        )
+                            errorMapper.responseException(errorBuilder, response, null, errorBody),
+                            storeError,
+                        ),
                     )
                 }
             } else {
                 Result.Failure(
-                    storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError)
+                    storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError),
                 )
             }
         } catch (d2Error: D2Error) {
@@ -104,7 +105,7 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
     @Suppress("TooGenericExceptionCaught")
     override suspend fun <P> wrapTransactionally(
         cleanForeignKeyErrors: Boolean,
-        block: suspend () -> P
+        block: suspend () -> P,
     ): P {
         return withContext(dbDispatcher) {
             val transaction = databaseAdapter.beginNewTransaction()
@@ -130,7 +131,7 @@ internal class CoroutineAPICallExecutorImpl @Inject constructor(
         errorBuilder: D2Error.Builder,
         response: Response<P>,
         errorBody: String,
-        storeError: Boolean
+        storeError: Boolean,
     ): D2Error {
         return errorCatcher.catchError(response, errorBody)?.let { errorCode ->
             val d2Error = errorMapper.responseException(errorBuilder, response, errorCode, errorBody)

@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.database.Cursor
-import java.util.ArrayList
-import java.util.HashMap
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.CoreObject
+import java.util.ArrayList
+import java.util.HashMap
 
 @Suppress("TooManyFunctions")
 internal open class ReadableStoreImpl<O : CoreObject>(
     protected val databaseAdapter: DatabaseAdapter,
     protected open val builder: ReadOnlySQLStatementBuilder,
-    val objectFactory: (Cursor) -> O
+    val objectFactory: (Cursor) -> O,
 ) : ReadableStore<O> {
 
     override fun selectAll(): List<O> {

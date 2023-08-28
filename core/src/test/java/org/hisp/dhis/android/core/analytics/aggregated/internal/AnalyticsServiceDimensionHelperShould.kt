@@ -37,12 +37,12 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
 class AnalyticsServiceDimensionHelperShould {
@@ -69,9 +69,9 @@ class AnalyticsServiceDimensionHelperShould {
                 s.categoryItem1_1,
                 s.orgunitAbsolute,
                 s.categoryItem1_2,
-                s.categoryItem2_1
+                s.categoryItem2_1,
             ),
-            filters = listOf()
+            filters = listOf(),
         )
 
         val dimensionSet = helper.getQueryDimensions(params)
@@ -81,7 +81,7 @@ class AnalyticsServiceDimensionHelperShould {
             Dimension.Period,
             Dimension.OrganisationUnit,
             Dimension.Category(s.categoryItem1_1.uid),
-            Dimension.Category(s.categoryItem2_1.uid)
+            Dimension.Category(s.categoryItem2_1.uid),
         )
     }
 
@@ -95,15 +95,15 @@ class AnalyticsServiceDimensionHelperShould {
                 s.periodAbsolute2,
                 s.orgunitAbsolute,
                 s.categoryItem1_1,
-                s.categoryItem1_2
+                s.categoryItem1_2,
             ),
-            filters = listOf()
+            filters = listOf(),
         )
         val dimensionsMap = mapOf(
             Dimension.Period to listOf(s.periodAbsolute1, s.periodAbsolute2),
             Dimension.Data to listOf(s.dataElementItem1, s.indicatorItem),
             Dimension.OrganisationUnit to listOf(s.orgunitAbsolute),
-            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1, s.categoryItem1_2)
+            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1, s.categoryItem1_2),
         )
 
         val items = helper.getEvaluationItems(params, dimensionsMap)
@@ -116,7 +116,7 @@ class AnalyticsServiceDimensionHelperShould {
             item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1),
             item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_2),
             item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_1),
-            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2)
+            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2),
         )
     }
 
@@ -127,20 +127,20 @@ class AnalyticsServiceDimensionHelperShould {
                 s.dataElementItem1,
                 s.periodAbsolute1,
                 s.orgunitAbsolute,
-                s.categoryItem1_1
+                s.categoryItem1_1,
             ),
-            filters = listOf()
+            filters = listOf(),
         )
         val dimensionsMap = mapOf(
             Dimension.Period to listOf(s.periodAbsolute1),
             Dimension.Data to listOf(s.dataElementItem1),
-            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1)
+            Dimension.Category(s.categoryItem1_1.uid) to listOf(s.categoryItem1_1),
         )
 
         val items = helper.getEvaluationItems(params, dimensionsMap)
 
         assertThat(items).containsExactly(
-            item(s.periodAbsolute1, s.dataElementItem1, s.categoryItem1_1)
+            item(s.periodAbsolute1, s.dataElementItem1, s.categoryItem1_1),
         )
     }
 
@@ -156,7 +156,7 @@ class AnalyticsServiceDimensionHelperShould {
         val dimensionItems = listOf(
             s.dataElementItem1,
             s.periodLast3Days,
-            s.orgunitAbsolute
+            s.orgunitAbsolute,
         )
         val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
@@ -168,10 +168,10 @@ class AnalyticsServiceDimensionHelperShould {
                 Dimension.Period to listOf(
                     DimensionItem.PeriodItem.Absolute("20210701"),
                     DimensionItem.PeriodItem.Absolute("20210702"),
-                    DimensionItem.PeriodItem.Absolute("20210703")
+                    DimensionItem.PeriodItem.Absolute("20210703"),
                 ),
-                Dimension.OrganisationUnit to listOf(s.orgunitAbsolute)
-            )
+                Dimension.OrganisationUnit to listOf(s.orgunitAbsolute),
+            ),
         )
     }
 
@@ -183,7 +183,7 @@ class AnalyticsServiceDimensionHelperShould {
         val dimensionItems = listOf(
             s.dataElementItem1,
             s.periodAbsolute1,
-            s.orgunitLevel3
+            s.orgunitLevel3,
         )
         val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
@@ -196,16 +196,16 @@ class AnalyticsServiceDimensionHelperShould {
                 Dimension.OrganisationUnit to listOf(
                     DimensionItem.OrganisationUnitItem.Absolute("orgunit1"),
                     DimensionItem.OrganisationUnitItem.Absolute("orgunit2"),
-                    DimensionItem.OrganisationUnitItem.Absolute("orgunit3")
-                )
-            )
+                    DimensionItem.OrganisationUnitItem.Absolute("orgunit3"),
+                ),
+            ),
         )
     }
 
     private fun item(vararg items: AbsoluteDimensionItem): AnalyticsServiceEvaluationItem {
         return AnalyticsServiceEvaluationItem(
             dimensionItems = items.toList(),
-            filters = listOf()
+            filters = listOf(),
         )
     }
 }

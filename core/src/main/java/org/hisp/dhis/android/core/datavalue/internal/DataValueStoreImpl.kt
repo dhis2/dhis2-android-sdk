@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereC
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 
 internal class DataValueStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataValueStore,
     ObjectWithoutUidStoreImpl<DataValue>(
         databaseAdapter,
@@ -49,7 +49,7 @@ internal class DataValueStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor? -> DataValue.create(cursor) }
+        { cursor: Cursor? -> DataValue.create(cursor) },
     ) {
 
     override fun getDataValuesWithState(state: State): Collection<DataValue> {
@@ -98,7 +98,7 @@ internal class DataValueStoreImpl(
         val whereClauseBuilder = uniqueWhereClauseBuilder(dataValue)
             .appendInSubQuery(
                 dataValueKey,
-                whereClause(dataSetUid)
+                whereClause(dataSetUid),
             )
         return selectWhere(whereClauseBuilder.build()).isNotEmpty()
     }

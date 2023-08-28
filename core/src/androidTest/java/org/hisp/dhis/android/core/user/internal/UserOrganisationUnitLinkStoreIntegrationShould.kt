@@ -41,7 +41,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<UserOrganisationUnitLink>(
     UserOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    UserOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    UserOrganisationUnitLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     private var linkStore: UserOrganisationUnitLinkStore = store as UserOrganisationUnitLinkStore
 
@@ -64,11 +65,11 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE),
         )
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE),
         )
         val orgUnitUids = linkStore
             .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
@@ -80,11 +81,11 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH),
         )
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH),
         )
 
         val orgUnitUids = linkStore.queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)

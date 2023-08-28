@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -36,12 +35,13 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkHandler
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorHandler @Inject constructor(
     private val programIndicatorStore: ProgramIndicatorStore,
     private val programIndicatorLegendSetLinkHandler: ProgramIndicatorLegendSetLinkHandler,
-    private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler
+    private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler,
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
     override fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {

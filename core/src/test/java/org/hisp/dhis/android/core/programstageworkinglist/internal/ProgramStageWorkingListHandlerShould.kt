@@ -61,7 +61,7 @@ class ProgramStageWorkingListHandlerShould {
         handler = ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
-            attributeValueFilterHandler
+            attributeValueFilterHandler,
         )
 
         eventDataFilters = listOf(eventDataFilter)
@@ -88,7 +88,7 @@ class ProgramStageWorkingListHandlerShould {
         ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
-            attributeValueFilterHandler
+            attributeValueFilterHandler,
         )
     }
 

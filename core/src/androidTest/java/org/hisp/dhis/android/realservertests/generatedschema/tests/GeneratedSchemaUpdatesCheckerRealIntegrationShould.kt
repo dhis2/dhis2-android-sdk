@@ -98,7 +98,7 @@ class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
             entry<DisplayDensity>("displayDensity"),
             entry<LegendStrategy>("legendDisplayStrategy"),
             entry<HideEmptyItemStrategy>("hideEmptyItemStrategy"),
-            entry<FileResourceStorageStatus>("fileResourceStorageStatus")
+            entry<FileResourceStorageStatus>("fileResourceStorageStatus"),
         )
     }
 }

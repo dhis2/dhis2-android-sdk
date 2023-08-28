@@ -38,8 +38,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 internal class AnalyticsPeriodBoundaryStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<AnalyticsPeriodBoundary>(
-        AnalyticsPeriodBoundaryStoreImpl(TestDatabaseAdapterFactory.get()), AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        AnalyticsPeriodBoundaryStoreImpl(TestDatabaseAdapterFactory.get()),
+        AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundarySamples.getAnalyticsPeriodBoundary()

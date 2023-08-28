@@ -42,8 +42,8 @@ import retrofit2.Retrofit
         DataSetIndicatorEntityDIModule::class,
         IndicatorEntityDIModule::class,
         IndicatorTypeEntityDIModule::class,
-        IndicatorEngineEntityDIModule::class
-    ]
+        IndicatorEngineEntityDIModule::class,
+    ],
 )
 internal class IndicatorPackageDIModule {
     @Provides

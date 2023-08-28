@@ -55,7 +55,7 @@ object ProgramIndicatorTableInfo {
                 DECIMALS,
                 AGGREGATION_TYPE,
                 PROGRAM,
-                ANALYTICS_TYPE
+                ANALYTICS_TYPE,
             )
         }
 

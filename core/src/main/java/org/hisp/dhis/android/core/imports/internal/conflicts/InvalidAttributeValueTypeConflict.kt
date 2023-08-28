@@ -39,7 +39,7 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
         Regex("Value '[\\w|\\s]*' is not a valid datetime for attribute (\\w{11})"),
         Regex("Value '[\\w|\\s]*' is not a valid username for attribute (\\w{11})"),
         Regex("Value '[\\w|\\s]*' is not the uid of a file"),
-        Regex("Value '[\\w|\\s]*' is not a valid option for attribute (\\w{11}) and option set [\\w|\\s]*")
+        Regex("Value '[\\w|\\s]*' is not a valid option for attribute (\\w{11}) and option set [\\w|\\s]*"),
     )
 
     private fun description(attribute: String?) = "Invalid value type for attribute: $attribute"
@@ -56,9 +56,8 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
-
         return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
                 val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid

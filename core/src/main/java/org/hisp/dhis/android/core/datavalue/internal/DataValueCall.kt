@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
 import org.hisp.dhis.android.core.datavalue.DataValue
+import javax.inject.Inject
 
 @Reusable
 internal class DataValueCall @Inject constructor(
     private val service: DataValueService,
     private val handler: DataValueHandler,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
 ) : QueryCall<DataValue, DataValueQuery> {
 
     override suspend fun download(query: DataValueQuery): List<DataValue> {
@@ -53,7 +53,7 @@ internal class DataValueCall @Inject constructor(
                 orgUnitUids = commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
                 children = true,
                 paging = false,
-                includeDeleted = true
+                includeDeleted = true,
             ).dataValues
         }
     }

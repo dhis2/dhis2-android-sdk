@@ -35,12 +35,12 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
 internal class CategoryOptionComboHandler constructor(
     store: CategoryOptionComboStore,
-    private val categoryOptionComboCategoryOptionLinkHandler: CategoryOptionComboCategoryOptionHandler
+    private val categoryOptionComboCategoryOptionLinkHandler: CategoryOptionComboCategoryOptionHandler,
 ) : IdentifiableHandlerImpl<CategoryOptionCombo>(store) {
     override fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
         categoryOptionComboCategoryOptionLinkHandler.handleMany(
             o.uid(),
-            o.categoryOptions()
+            o.categoryOptions(),
         ) { categoryOption: CategoryOption ->
             CategoryOptionComboCategoryOptionLink.builder()
                 .categoryOptionCombo(o.uid())

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
@@ -37,13 +36,14 @@ import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
+import javax.inject.Inject
 
 @Reusable
 internal class VisualizationCall @Inject constructor(
     private val handler: VisualizationHandler,
     private val service: VisualizationService,
     private val dhis2VersionManager: DHISVersionManager,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
 ) : UidsCall<Visualization> {
 
     companion object {
@@ -59,13 +59,13 @@ internal class VisualizationCall @Inject constructor(
                 apiDownloader.downloadPartitioned(
                     uids,
                     MAX_UID_LIST_SIZE,
-                    handler
+                    handler,
                 ) { partitionUids: Set<String> ->
                     service.getSingleVisualization(
                         partitionUids.first(),
                         VisualizationFields.allFields,
                         accessFilter = accessFilter,
-                        paging = false
+                        paging = false,
                     )
                         .map { Payload(listOf(it)) }
                         .onErrorReturnItem(Payload())
@@ -74,13 +74,13 @@ internal class VisualizationCall @Inject constructor(
                 apiDownloader.downloadPartitioned(
                     uids,
                     MAX_UID_LIST_SIZE,
-                    handler
+                    handler,
                 ) { partitionUids: Set<String> ->
                     service.getSingleVisualizations36(
                         partitionUids.first(),
                         VisualizationFields.allFieldsAPI36,
                         accessFilter = accessFilter,
-                        paging = false
+                        paging = false,
                     )
                         .map { Payload(listOf(it.toVisualization())) }
                         .onErrorReturnItem(Payload())

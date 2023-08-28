@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 
 internal class ProgramIndicatorLegendSetLinkHandler(
-    store: ProgramIndicatorLegendSetLinkStore
+    store: ProgramIndicatorLegendSetLinkStore,
 ) : OrderedLinkHandlerImpl<ObjectWithUid, ProgramIndicatorLegendSetLink>(store)

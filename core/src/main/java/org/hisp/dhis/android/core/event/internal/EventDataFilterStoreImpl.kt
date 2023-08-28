@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.event.EventDataFilter
 
 @Suppress("MagicNumber")
 internal class EventDataFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : EventDataFilterStore,
     ObjectWithoutUidStoreImpl<EventDataFilter>(
         databaseAdapter,
@@ -48,7 +48,7 @@ internal class EventDataFilterStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { EventDataFilter.create(it) }
+        { EventDataFilter.create(it) },
     ) {
 
     companion object {
@@ -75,7 +75,7 @@ internal class EventDataFilterStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.EVENT_FILTER
+            ItemFilterTableInfo.Columns.EVENT_FILTER,
         )
     }
 }

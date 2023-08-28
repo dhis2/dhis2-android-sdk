@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core
 
 import android.util.Log
-import java.io.IOException
-import java.util.*
-import kotlin.Throws
 import org.hisp.dhis.android.core.D2Factory.clear
 import org.hisp.dhis.android.core.D2Factory.forNewDatabase
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
@@ -39,6 +36,9 @@ import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
+import java.io.IOException
+import java.util.*
+import kotlin.Throws
 
 class MockIntegrationTestObjects(val content: MockIntegrationTestDatabaseContent) {
 

@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 internal class ProgramStageWorkingListAttributeValueFilterHandler(
-    store: ProgramStageWorkingListAttributeValueFilterStore
+    store: ProgramStageWorkingListAttributeValueFilterStore,
 ) : ObjectWithoutUidHandlerImpl<ProgramStageWorkingListAttributeValueFilter>(store)

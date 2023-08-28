@@ -31,6 +31,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
 
 internal class DatabaseConfigurationInsecureStoreImpl(
-    insecureStore: InsecureStore
+    insecureStore: InsecureStore,
 ) : DatabaseConfigurationInsecureStore,
     JsonKeyValueStoreImpl<DatabasesConfiguration>(insecureStore, "DB_CONFIGS", DatabasesConfiguration::class.java)

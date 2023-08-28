@@ -40,7 +40,7 @@ import retrofit2.Retrofit
     includes = [
         StockUseCaseEntityDIModule::class,
         StockUseCaseTransactionEntityDIModule::class,
-    ]
+    ],
 )
 internal class UseCasePackageDIModule {
 

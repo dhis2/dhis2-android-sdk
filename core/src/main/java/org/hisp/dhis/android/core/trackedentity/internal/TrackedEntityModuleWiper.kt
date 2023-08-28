@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityModuleWiper @Inject constructor(private val tableWiper: TableWiper) : ModuleWiper {
@@ -42,7 +42,7 @@ internal class TrackedEntityModuleWiper @Inject constructor(private val tableWip
             TrackedEntityAttributeTableInfo.TABLE_INFO,
             TrackedEntityTypeTableInfo.TABLE_INFO,
             TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
-            TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO
+            TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
         )
     }
 
@@ -52,7 +52,7 @@ internal class TrackedEntityModuleWiper @Inject constructor(private val tableWip
             TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
             TrackedEntityDataValueTableInfo.TABLE_INFO,
             TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-            TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO
+            TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO,
         )
     }
 }

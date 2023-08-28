@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserCall
+import javax.inject.Inject
 
 @Reusable
 internal class OrganisationUnitModuleDownloader @Inject constructor(
@@ -44,7 +44,7 @@ internal class OrganisationUnitModuleDownloader @Inject constructor(
     private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,
     private val rxCallExecutor: RxAPICallExecutor,
     private val dataSetLinkCleaner: DataSetOrganisationUnitLinkCleaner,
-    private val programLinkCleaner: ProgramOrganisationUnitLinkCleaner
+    private val programLinkCleaner: ProgramOrganisationUnitLinkCleaner,
 ) {
     fun downloadMetadata(user: User): Completable {
         return organisationUnitLevelEndpointCall.download()
@@ -57,7 +57,7 @@ internal class OrganisationUnitModuleDownloader @Inject constructor(
                 .fromCallable { userCall.call() }
                 .flatMapCompletable { user -> downloadMetadata(user) }
                 .andThen(cleanLinksFromDB()),
-            cleanForeignKeys = true
+            cleanForeignKeys = true,
         )
     }
 

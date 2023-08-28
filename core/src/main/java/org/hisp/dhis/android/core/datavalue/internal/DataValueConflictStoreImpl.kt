@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 
 @Suppress("MagicNumber")
 internal class DataValueConflictStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataValueConflictStore,
     ObjectStoreImpl<DataValueConflict>(
         databaseAdapter,
         DataValueConflictTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> DataValueConflict.create(cursor) }
+        { cursor: Cursor -> DataValueConflict.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder<DataValueConflict> { o, w ->

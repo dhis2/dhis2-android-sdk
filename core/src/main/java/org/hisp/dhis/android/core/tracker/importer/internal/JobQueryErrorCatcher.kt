@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import java.net.HttpURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 internal class JobQueryErrorCatcher : APICallErrorCatcher {
 

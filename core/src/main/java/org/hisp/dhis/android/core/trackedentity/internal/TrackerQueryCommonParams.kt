@@ -37,5 +37,5 @@ internal data class TrackerQueryCommonParams(
     val hasLimitByOrgUnit: Boolean,
     val ouMode: OrganisationUnitMode,
     val orgUnitsBeforeDivision: List<String>,
-    val limit: Int
+    val limit: Int,
 )

@@ -44,11 +44,11 @@ class AnalyticsDimensionHelperShould {
         val item = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem("dataElement1"),
-                DimensionItem.PeriodItem.Absolute("periodId")
+                DimensionItem.PeriodItem.Absolute("periodId"),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute("orgunit")
-            )
+                DimensionItem.OrganisationUnitItem.Absolute("orgunit"),
+            ),
         )
 
         val dataItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
@@ -69,9 +69,9 @@ class AnalyticsDimensionHelperShould {
         val item = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem("dataElement1"),
-                DimensionItem.DataItem.DataElementItem("dataElement2")
+                DimensionItem.DataItem.DataElementItem("dataElement2"),
             ),
-            filters = listOf()
+            filters = listOf(),
         )
 
         AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)
@@ -83,8 +83,8 @@ class AnalyticsDimensionHelperShould {
             dimensionItems = listOf(),
             filters = listOf(
                 DimensionItem.DataItem.DataElementItem("dataElement1"),
-                DimensionItem.DataItem.DataElementItem("dataElement2")
-            )
+                DimensionItem.DataItem.DataElementItem("dataElement2"),
+            ),
         )
 
         val dataItem = AnalyticsDimensionHelper.getSingleItemByDimension<DimensionItem.DataItem>(item)

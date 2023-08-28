@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
 
 internal class TrackedEntityAttributeValueStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue>(
         databaseAdapter,
@@ -53,7 +53,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) }
+        { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) },
     ) {
 
     override fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>> {
@@ -69,8 +69,8 @@ internal class TrackedEntityAttributeValueStoreImpl(
     private fun teiInUploadableState(): String {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
             CollectionsHelper.withSingleQuotationMarksArray(
-                asStringList(uploadableStatesIncludingError().asList())
-            )
+                asStringList(uploadableStatesIncludingError().asList()),
+            ),
         )
         return "(" + TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE +
             "." +
@@ -80,23 +80,24 @@ internal class TrackedEntityAttributeValueStoreImpl(
 
     override fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
         val selectByTrackedEntityInstanceQuery = WhereClauseBuilder().appendKeyStringValue(
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+            trackedEntityInstanceUid,
         ).build()
         return selectWhere(selectByTrackedEntityInstanceQuery)
     }
 
     override fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
-        trackedEntityAttributeUids: List<String>
+        trackedEntityAttributeUids: List<String>,
     ) {
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid
+                trackedEntityInstanceUid,
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids
+                trackedEntityAttributeUids,
             )
             .build()
         deleteWhere(deleteWhereQuery)
@@ -105,22 +106,22 @@ internal class TrackedEntityAttributeValueStoreImpl(
     override fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
-        program: String
+        program: String,
     ) {
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid
+                trackedEntityInstanceUid,
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids
+                trackedEntityAttributeUids,
             )
             .appendInSubQuery(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
                     "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = '$program'"
+                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = '$program'",
             )
             .build()
         deleteWhere(deleteWhereQuery)
@@ -130,17 +131,17 @@ internal class TrackedEntityAttributeValueStoreImpl(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         teiType: String,
-        programs: List<String>
+        programs: List<String>,
     ) {
         val programsStr = programs.joinToString(separator = ",", prefix = "'", postfix = "'")
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid
+                trackedEntityInstanceUid,
             )
             .appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids
+                trackedEntityAttributeUids,
             )
             .appendInSubQuery(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
@@ -150,7 +151,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
                     "UNION ALL " +
                     "SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
                     "FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '$teiType'"
+                    "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '$teiType'",
             )
             .build()
         deleteWhere(deleteWhereQuery)
@@ -160,7 +161,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid
+                trackedEntityInstanceUid,
             )
             .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
             .build()
@@ -196,7 +197,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
         )
     }
 }

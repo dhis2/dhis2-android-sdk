@@ -44,10 +44,13 @@ abstract class BaseMockIntegrationTest {
     companion object {
         @JvmStatic
         lateinit var objects: MockIntegrationTestObjects
+
         @JvmStatic
         lateinit var d2: D2
+
         @JvmStatic
         lateinit var dhis2MockServer: Dhis2MockServer
+
         @JvmStatic
         lateinit var databaseAdapter: DatabaseAdapter
 

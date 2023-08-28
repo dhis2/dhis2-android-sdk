@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.option.Option
 
 internal class OptionHandler constructor(
     optionStore: OptionStore,
-    private val optionCleaner: OptionSubCollectionCleaner
+    private val optionCleaner: OptionSubCollectionCleaner,
 ) : IdentifiableHandlerImpl<Option>(optionStore) {
 
     override fun afterCollectionHandled(oCollection: Collection<Option>?) {

@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTable
 
 @Suppress("MagicNumber")
 internal class TrackedEntityInstanceFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceFilterStore,
     IdentifiableObjectStoreImpl<TrackedEntityInstanceFilter>(
         databaseAdapter,
         TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
         BINDER,
-        { TrackedEntityInstanceFilter.create(it) }
+        { TrackedEntityInstanceFilter.create(it) },
     ) {
 
     companion object {

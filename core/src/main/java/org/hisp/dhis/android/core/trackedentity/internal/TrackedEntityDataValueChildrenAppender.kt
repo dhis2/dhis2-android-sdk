@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 internal class TrackedEntityDataValueChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<Event, TrackedEntityDataValue>
+    private val childStore: SingleParentChildStore<Event, TrackedEntityDataValue>,
 ) : ChildrenAppender<Event>() {
     override fun appendChildren(m: Event): Event {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class TrackedEntityDataValueChildrenAppender private constructor(
             return TrackedEntityDataValueChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    TrackedEntityDataValueStoreImpl.CHILD_PROJECTION
-                ) { cursor: Cursor -> TrackedEntityDataValue.create(cursor) }
+                    TrackedEntityDataValueStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> TrackedEntityDataValue.create(cursor) },
             )
         }
     }

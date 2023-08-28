@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 
 internal class SectionGreyedFieldsLinkHandler(
-    store: SectionGreyedFieldsLinkStore
+    store: SectionGreyedFieldsLinkStore,
 ) : LinkHandlerImpl<DataElementOperand, SectionGreyedFieldsLink>(store)

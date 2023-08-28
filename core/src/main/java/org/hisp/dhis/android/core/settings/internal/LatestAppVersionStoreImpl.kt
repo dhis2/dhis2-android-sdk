@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
 
 @Suppress("MagicNumber")
 internal class LatestAppVersionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : LatestAppVersionStore,
     ObjectWithoutUidStoreImpl<LatestAppVersion>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class LatestAppVersionStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> LatestAppVersion.create(cursor) }
+        { cursor: Cursor -> LatestAppVersion.create(cursor) },
     ) {
 
     companion object {

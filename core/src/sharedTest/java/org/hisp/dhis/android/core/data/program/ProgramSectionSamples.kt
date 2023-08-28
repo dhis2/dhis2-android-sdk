@@ -48,12 +48,12 @@ object ProgramSectionSamples {
                 renderType(
                     SectionRendering.create(
                         SectionDeviceRendering.create(
-                            SectionRenderingType.SEQUENTIAL
+                            SectionRenderingType.SEQUENTIAL,
                         ),
                         SectionDeviceRendering.create(
-                            SectionRenderingType.LISTING
-                        )
-                    )
+                            SectionRenderingType.LISTING,
+                        ),
+                    ),
                 )
             }.build()
         }

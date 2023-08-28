@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 
 internal class FileResourceStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : FileResourceStore,
     IdentifiableDataObjectStoreImpl<FileResource>(
         databaseAdapter,
         FileResourceTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> FileResource.create(cursor) }
+        { cursor: Cursor -> FileResource.create(cursor) },
     ) {
 
     companion object {

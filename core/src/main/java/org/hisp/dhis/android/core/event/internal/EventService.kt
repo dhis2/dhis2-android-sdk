@@ -70,14 +70,14 @@ internal interface EventService {
     suspend fun getEvent(
         @Path(EVENT_UID) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String
+        @Query(OU_MODE) orgUnitMode: String,
     ): Event
 
     @GET(EVENTS)
     suspend fun getEventSingle(
         @Query(EVENT) eventUid: String,
         @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String
+        @Query(OU_MODE) orgUnitMode: String,
     ): Payload<Event>
 
     companion object {

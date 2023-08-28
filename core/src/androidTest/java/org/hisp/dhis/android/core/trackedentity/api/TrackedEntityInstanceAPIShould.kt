@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
@@ -50,12 +49,13 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.junit.Assert
 import org.junit.Before
+import java.util.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class TrackedEntityInstanceAPIShould internal constructor(
     // API version dependant parameters
     private val serverUrl: String,
-    private val strategy: String
+    private val strategy: String,
 ) : BaseRealIntegrationTest() {
     private lateinit var executor: CoroutineAPICallExecutor
     private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
@@ -65,7 +65,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
         trackedEntityInstanceService = d2.retrofit().create(
-            TrackedEntityInstanceService::class.java
+            TrackedEntityInstanceService::class.java,
         )
     }
 
@@ -309,13 +309,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI2.items()[0])[0])[0]!!
-                .trackedEntityDataValues()
+                .trackedEntityDataValues(),
         ).isEmpty()
     }
 
@@ -345,13 +345,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI2.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
     }
 
@@ -376,17 +376,17 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(
             getEnrollments(serverValidTEI1.items()[0])[0]!!
-                .status()
+                .status(),
         ).isEqualTo(EnrollmentStatus.COMPLETED)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(
             getEvents(
-                getEnrollments(serverValidTEI1.items()[0])[0]
-            )[0]!!.status()
+                getEnrollments(serverValidTEI1.items()[0])[0],
+            )[0]!!.status(),
         ).isEqualTo(EventStatus.COMPLETED)
     }
 
@@ -404,8 +404,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
             assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
             for (
-                enrollmentImportSummary in teiImportSummaries.enrollments()!!
-                    .importSummaries()!!
+            enrollmentImportSummary in teiImportSummaries.enrollments()!!
+                .importSummaries()!!
             ) {
                 assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1)
                 for (eventImportSummary in enrollmentImportSummary.events()!!.importSummaries()!!) {
@@ -428,7 +428,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         return executor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
-            errorClass = TEIWebResponse::class.java
+            errorClass = TEIWebResponse::class.java,
         ) {
             trackedEntityInstanceService.postTrackedEntityInstances(payload, strategy)
         }.getOrThrow()
@@ -442,7 +442,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                     OrganisationUnitMode.ACCESSIBLE.name,
                     TrackedEntityInstanceFields.allFields,
                     includeAllAttributes = true,
-                    includeDeleted = true
+                    includeDeleted = true,
                 )
         }.getOrThrow()
     }

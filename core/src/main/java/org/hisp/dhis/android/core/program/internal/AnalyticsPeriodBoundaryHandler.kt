@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 
 internal class AnalyticsPeriodBoundaryHandler(
-    store: AnalyticsPeriodBoundaryStore
+    store: AnalyticsPeriodBoundaryStore,
 ) : LinkHandlerImpl<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>(store)

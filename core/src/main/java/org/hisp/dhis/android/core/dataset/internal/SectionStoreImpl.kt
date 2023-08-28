@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.dataset.SectionTableInfo
 
 @Suppress("MagicNumber")
 internal class SectionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SectionStore,
     IdentifiableObjectStoreImpl<Section>(
         databaseAdapter,
         SectionTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Section.create(cursor) }
+        { cursor: Cursor -> Section.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<Section> = object : IdentifiableStatementBinder<Section>() {

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramConfigurationSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramConfigurationSettingStore,
     ObjectWithoutUidStoreImpl<ProgramConfigurationSetting>(
         databaseAdapter,
@@ -47,7 +47,7 @@ internal class ProgramConfigurationSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> ProgramConfigurationSetting.create(cursor) }
+        { cursor: Cursor -> ProgramConfigurationSetting.create(cursor) },
     ) {
 
     companion object {

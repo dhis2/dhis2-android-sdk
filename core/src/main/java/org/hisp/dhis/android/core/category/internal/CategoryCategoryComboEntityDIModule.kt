@@ -43,7 +43,7 @@ internal class CategoryCategoryComboEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: CategoryCategoryComboLinkStore
+        store: CategoryCategoryComboLinkStore,
     ): CategoryCategoryComboLinkHandler {
         return CategoryCategoryComboLinkHandler(store)
     }

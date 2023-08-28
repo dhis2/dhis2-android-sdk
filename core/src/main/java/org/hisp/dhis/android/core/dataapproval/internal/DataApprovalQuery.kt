@@ -34,9 +34,9 @@ internal data class DataApprovalQuery(
     val organisationUnistUids: Collection<String>,
     val periodIds: Collection<String>,
     val attributeOptionCombosUids: Collection<String>,
-    val lastUpdatedStr: String?
+    val lastUpdatedStr: String?,
 ) : BaseQueryKt(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
-    paging = false
+    paging = false,
 )

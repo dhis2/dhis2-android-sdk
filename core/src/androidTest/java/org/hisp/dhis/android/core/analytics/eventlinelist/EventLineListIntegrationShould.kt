@@ -114,7 +114,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         userOrganisationUnitStore,
         organisationUnitStore,
         organisationUnitLevelStore,
-        organisationUnitGroupLinkStore
+        organisationUnitGroupLinkStore,
     )
 
     private val eventLineListService: EventLineListService = EventLineListServiceImpl(
@@ -134,7 +134,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             legendRepository = d2.legendSetModule().legends(),
             indicatorRepository = d2.indicatorModule().indicators(),
             trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
-        )
+        ),
     )
 
     @Before
@@ -207,7 +207,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()))
+            dataElements = listOf(LineListItem(dataElement1.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -250,7 +250,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid()))
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -271,7 +271,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid()))
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -303,13 +303,13 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         createDataValue(event2.uid(), dataElement2.uid(), "20.5")
 
         val programIndicator = createProgramIndicator(
-            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}",
         )
 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            programIndicators = listOf(LineListItem(programIndicator.uid()))
+            programIndicators = listOf(LineListItem(programIndicator.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -337,7 +337,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            programIndicators = listOf(LineListItem(programIndicator.uid()))
+            programIndicators = listOf(LineListItem(programIndicator.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -359,7 +359,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()))
+            dataElements = listOf(LineListItem(dataElement1.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -382,7 +382,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()))
+            dataElements = listOf(LineListItem(dataElement1.uid())),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -409,8 +409,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.THIS_MONTH)
                     .type(DatePeriodType.RELATIVE)
-                    .build()
-            )
+                    .build(),
+            ),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -426,7 +426,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            organisationUnits = listOf(OrganisationUnitFilter(null, RelativeOrganisationUnit.USER_ORGUNIT))
+            organisationUnits = listOf(OrganisationUnitFilter(null, RelativeOrganisationUnit.USER_ORGUNIT)),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -443,14 +443,14 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         createDataValue(event1.uid(), dataElement2.uid(), "10.0")
 
         val programIndicator = createProgramIndicator(
-            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}",
         )
 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.None
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None,
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -466,14 +466,14 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         createDataValue(event1.uid(), dataElement2.uid(), "10.0")
 
         val programIndicator = createProgramIndicator(
-            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}",
         )
 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem,
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -493,14 +493,14 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         createDataValue(event1.uid(), dataElement2.uid(), "40.0")
 
         val programIndicator = createProgramIndicator(
-            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}",
         )
 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             programIndicators = listOf(LineListItem(programIndicator.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid()),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -523,7 +523,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.None
+            analyticsLegendStrategy = AnalyticsLegendStrategy.None,
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -542,7 +542,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
+            analyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem,
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -570,7 +570,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
             dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())),
-            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid())
+            analyticsLegendStrategy = AnalyticsLegendStrategy.Fixed(legendSet2.uid()),
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -625,8 +625,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programIndicatorStore.insert(programIndicator)
         programIndicatorLegendSetLinkStore.insert(
             ProgramIndicatorLegendSetLink.builder().programIndicator(programIndicator.uid()).legendSet(
-                legendSet1.uid()
-            ).build()
+                legendSet1.uid(),
+            ).build(),
         )
         return programIndicator
     }

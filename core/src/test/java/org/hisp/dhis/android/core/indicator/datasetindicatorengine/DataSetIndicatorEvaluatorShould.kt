@@ -81,23 +81,23 @@ class DataSetIndicatorEvaluatorShould {
         val context = getContextForValueMap(
             mapOf(
                 diObject1 to 5.0,
-                diObject2 to 10.0
-            )
+                diObject2 to 10.0,
+            ),
         )
 
         whenever(indicatorType.factor()) doReturn 1
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(0.5)
 
         whenever(indicatorType.factor()) doReturn 100
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(50)
 
         whenever(indicatorType.factor()) doReturn -10
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(-5)
     }
 
@@ -106,12 +106,12 @@ class DataSetIndicatorEvaluatorShould {
         val context = getContextForValueMap(
             mapOf(
                 diObject1 to 10.0,
-                diObject2 to 3.0
-            )
+                diObject2 to 3.0,
+            ),
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(3.33)
     }
 
@@ -122,12 +122,12 @@ class DataSetIndicatorEvaluatorShould {
         val context = getContextForValueMap(
             mapOf(
                 diObject1 to 10.0,
-                diObject2 to 3.0
-            )
+                diObject2 to 3.0,
+            ),
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(3.333)
     }
 
@@ -135,12 +135,12 @@ class DataSetIndicatorEvaluatorShould {
     fun evaluate_null_numerator() {
         val context = getContextForValueMap(
             mapOf(
-                diObject2 to 10.0
-            )
+                diObject2 to 10.0,
+            ),
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(0.0)
     }
 
@@ -148,12 +148,12 @@ class DataSetIndicatorEvaluatorShould {
     fun evaluate_null_denominator() {
         val context = getContextForValueMap(
             mapOf(
-                diObject1 to 10.0
-            )
+                diObject1 to 10.0,
+            ),
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(0.0)
     }
 
@@ -162,12 +162,12 @@ class DataSetIndicatorEvaluatorShould {
         val context = getContextForValueMap(
             mapOf(
                 diObject1 to 10.0,
-                diObject2 to 0.0
-            )
+                diObject2 to 0.0,
+            ),
         )
 
         assertThat(
-            evaluator.evaluate(indicator, indicatorType, context)
+            evaluator.evaluate(indicator, indicatorType, context),
         ).isEqualTo(0.0)
     }
 

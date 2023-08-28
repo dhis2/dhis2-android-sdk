@@ -40,7 +40,7 @@ class VisualizationDimensionItemStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<VisualizationDimensionItem>(
         VisualizationDimensionItemStoreImpl(TestDatabaseAdapterFactory.get()),
         VisualizationDimensionItemTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun addMasterUid(): String {
         return "visualization_uid"

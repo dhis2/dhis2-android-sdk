@@ -60,12 +60,12 @@ internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, Ne
             .trackedEntityDataValues(
                 o.trackedEntityDataValues()?.map {
                     NewTrackerImporterTrackedEntityDataValueTransformer.transform(it)
-                }
+                },
             )
             .notes(
                 o.notes()?.map {
                     NewTrackerImporterNoteTransformer.transform(it)
-                }
+                },
             )
             .build()
     }

@@ -38,7 +38,7 @@ internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
         errorClass: Class<P>?,
-        block: suspend () -> P
+        block: suspend () -> P,
     ): Result<P, D2Error> {
         return try {
             Result.Success(block.invoke())
@@ -52,7 +52,7 @@ internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
                         D2Error.builder()
                             .errorCode(D2ErrorCode.UNEXPECTED)
                             .errorDescription("Unexpected error")
-                            .build()
+                            .build(),
                     )
             }
         }

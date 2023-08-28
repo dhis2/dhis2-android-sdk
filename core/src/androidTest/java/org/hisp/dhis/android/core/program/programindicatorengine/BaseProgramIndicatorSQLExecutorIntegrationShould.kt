@@ -52,7 +52,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         ConstantStoreImpl(databaseAdapter),
         DataElementStoreImpl(databaseAdapter),
         TrackedEntityAttributeStoreImpl(databaseAdapter),
-        databaseAdapter
+        databaseAdapter,
     )
 
     protected val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
@@ -60,7 +60,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
     protected fun evaluateTeiCount(
         filter: String? = null,
         periods: List<Period>? = null,
-        boundaries: List<AnalyticsPeriodBoundary>? = null
+        boundaries: List<AnalyticsPeriodBoundary>? = null,
     ): String? {
         return evaluateProgramIndicator(
             expression = `var`("tei_count"),
@@ -68,14 +68,14 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             analyticsType = AnalyticsType.ENROLLMENT,
             aggregationType = AggregationType.COUNT,
             periods = periods,
-            boundaries = boundaries
+            boundaries = boundaries,
         )
     }
 
     protected fun evaluateEventCount(
         filter: String? = null,
         periods: List<Period>? = null,
-        boundaries: List<AnalyticsPeriodBoundary>? = null
+        boundaries: List<AnalyticsPeriodBoundary>? = null,
     ): String? {
         return evaluateProgramIndicator(
             expression = `var`("event_count"),
@@ -83,7 +83,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             analyticsType = AnalyticsType.EVENT,
             aggregationType = AggregationType.COUNT,
             periods = periods,
-            boundaries = boundaries
+            boundaries = boundaries,
         )
     }
 
@@ -93,19 +93,19 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         analyticsType: AnalyticsType = AnalyticsType.EVENT,
         aggregationType: AggregationType? = AggregationType.SUM,
         periods: List<Period>? = null,
-        boundaries: List<AnalyticsPeriodBoundary>? = null
+        boundaries: List<AnalyticsPeriodBoundary>? = null,
     ): String? {
         val programIndicator = setProgramIndicator(
             expression = expression,
             filter = filter,
             analyticsType = analyticsType,
             aggregationType = aggregationType,
-            boundaries = boundaries
+            boundaries = boundaries,
         )
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())),
-            filters = periods?.map { DimensionItem.PeriodItem.Absolute(it.periodId()!!) } ?: emptyList()
+            filters = periods?.map { DimensionItem.PeriodItem.Absolute(it.periodId()!!) } ?: emptyList(),
         )
 
         return programIndicatorEvaluator.getProgramIndicatorValue(
@@ -113,7 +113,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             metadata = metadata +
                 (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)) +
                 (periods?.associate { it.periodId()!! to MetadataItem.PeriodItem(it) } ?: emptyMap()),
-            queryMods = null
+            queryMods = null,
         )
     }
 
@@ -122,7 +122,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         filter: String? = null,
         analyticsType: AnalyticsType = AnalyticsType.EVENT,
         aggregationType: AggregationType? = AggregationType.SUM,
-        boundaries: List<AnalyticsPeriodBoundary>? = null
+        boundaries: List<AnalyticsPeriodBoundary>? = null,
     ): ProgramIndicator {
         val actualBoundaries: List<AnalyticsPeriodBoundary> =
             boundaries ?: when (analyticsType) {
@@ -155,7 +155,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             AnalyticsPeriodBoundary.builder()
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                .build()
+                .build(),
         )
 
     private val defaultEnrollmentBoundaries: List<AnalyticsPeriodBoundary> =
@@ -167,6 +167,6 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             AnalyticsPeriodBoundary.builder()
                 .boundaryTarget("ENROLLMENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                .build()
+                .build(),
         )
 }

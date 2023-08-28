@@ -48,7 +48,7 @@ internal class CategoryComboEntityDIModule {
         store: CategoryComboStore,
         optionComboHandler: CategoryOptionComboHandler,
         categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-        categoryOptionCleaner: CategoryOptionComboOrphanCleaner
+        categoryOptionCleaner: CategoryOptionComboOrphanCleaner,
     ): CategoryComboHandler {
         return CategoryComboHandler(store, optionComboHandler, categoryCategoryComboLinkHandler, categoryOptionCleaner)
     }

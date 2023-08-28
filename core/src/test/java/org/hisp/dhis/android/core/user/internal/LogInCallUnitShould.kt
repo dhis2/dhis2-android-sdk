@@ -125,7 +125,7 @@ class LogInCallUnitShould : BaseCallShould() {
             userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
             systemInfoCall, userStore, apiCallErrorCatcher,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager
+            LogInExceptions(credentialsSecureStore), accountManager, versionManager,
         ).logIn(username, password, serverUrl)
     }
 
@@ -169,8 +169,9 @@ class LogInCallUnitShould : BaseCallShould() {
     fun invoke_server_with_correct_parameters_after_call() {
         whenever(
             userService.authenticate(
-                credentialsCaptor.capture(), filterCaptor.capture()
-            )
+                credentialsCaptor.capture(),
+                filterCaptor.capture(),
+            ),
         ).thenReturn(authenticateAPICall)
         logInSingle.blockingGet()
         assertThat(okhttp3.Credentials.basic(USERNAME, PASSWORD)).isEqualTo(credentialsCaptor.firstValue)

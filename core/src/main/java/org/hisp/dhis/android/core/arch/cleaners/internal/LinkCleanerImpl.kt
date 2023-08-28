@@ -36,7 +36,7 @@ internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val applicableColumn: String,
     private val parentStore: ObjectStore<P>,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : LinkCleaner<P> {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {

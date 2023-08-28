@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.period.internal
 
-import java.util.Date
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
 internal interface PeriodStore : ObjectWithoutUidStore<Period> {
     fun selectByPeriodId(periodId: String?): Period?

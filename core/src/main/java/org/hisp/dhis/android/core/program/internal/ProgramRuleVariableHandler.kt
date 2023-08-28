@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 
 internal class ProgramRuleVariableHandler(
-    store: ProgramRuleVariableStore
+    store: ProgramRuleVariableStore,
 ) : IdentifiableHandlerImpl<ProgramRuleVariable>(store)

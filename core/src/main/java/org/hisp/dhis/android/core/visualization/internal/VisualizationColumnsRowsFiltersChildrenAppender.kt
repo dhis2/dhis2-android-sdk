@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 
 internal class VisualizationColumnsRowsFiltersChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<Visualization, VisualizationDimensionItem>
+    private val linkChildStore: SingleParentChildStore<Visualization, VisualizationDimensionItem>,
 ) : ChildrenAppender<Visualization>() {
     override fun appendChildren(visualization: Visualization): Visualization {
         val items = linkChildStore.getChildren(visualization)
@@ -67,15 +67,15 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
     companion object {
         private val CHILD_PROJECTION = SingleParentChildProjection(
             VisualizationDimensionItemTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION
+            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
             return VisualizationColumnsRowsFiltersChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> VisualizationDimensionItem.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> VisualizationDimensionItem.create(cursor) },
             )
         }
     }

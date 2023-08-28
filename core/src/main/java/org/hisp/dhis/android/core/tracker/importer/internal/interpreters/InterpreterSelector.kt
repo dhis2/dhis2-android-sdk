@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
+import javax.inject.Inject
 
 @Reusable
 internal class InterpreterSelector @Inject internal constructor(
-    private val interpreterHelper: InterpreterHelper
+    private val interpreterHelper: InterpreterHelper,
 ) {
     fun getInterpreter(error: ImporterError): ErrorCodeInterpreter {
         return when (error) {

@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.note.Note
 
 internal class NoteHandler(
-    store: NoteStore
+    store: NoteStore,
 ) : IdentifiableHandlerImpl<Note>(store)

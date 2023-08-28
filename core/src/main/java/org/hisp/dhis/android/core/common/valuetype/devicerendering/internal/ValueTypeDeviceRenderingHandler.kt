@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 
 internal class ValueTypeDeviceRenderingHandler(
-    store: ValueTypeDeviceRenderingStore
+    store: ValueTypeDeviceRenderingStore,
 ) : ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering>(store)

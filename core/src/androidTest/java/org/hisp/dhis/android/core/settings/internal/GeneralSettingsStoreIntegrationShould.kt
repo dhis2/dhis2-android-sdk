@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class GeneralSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<GeneralSettings>(
     GeneralSettingStoreImpl(TestDatabaseAdapterFactory.get()),
     GeneralSettingTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): GeneralSettings {
         return GeneralSettingsSamples.getGeneralSettings()

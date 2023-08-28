@@ -36,8 +36,8 @@ import retrofit2.Retrofit
 @Module(
     includes = [
         VisualizationEntityDIModule::class,
-        VisualizationDimensionItemEntityDIModule::class
-    ]
+        VisualizationDimensionItemEntityDIModule::class,
+    ],
 )
 internal class VisualizationPackageDIModule {
     @Provides

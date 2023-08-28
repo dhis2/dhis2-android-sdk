@@ -48,7 +48,7 @@ internal interface TrackerImporterService {
     suspend fun postTrackerPayload(
         @Body payload: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
-        @Query(IMPORT_STRATEGY) importStrategy: String
+        @Query(IMPORT_STRATEGY) importStrategy: String,
     ): ObjectWithUidWebResponse
 
     @GET("$JOBS_URL{jobId}/report")

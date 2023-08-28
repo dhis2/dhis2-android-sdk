@@ -40,7 +40,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class CategoryCategoryComboLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<CategoryCategoryComboLink>(
     CategoryCategoryComboLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    CategoryCategoryComboLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
         return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink().categoryCombo()!!

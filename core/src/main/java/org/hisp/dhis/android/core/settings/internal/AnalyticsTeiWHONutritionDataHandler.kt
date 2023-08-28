@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
 import org.hisp.dhis.android.core.settings.WHONutritionComponent
+import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
     store: AnalyticsTeiWHONutritionDataStore,
     private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
-    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler
+    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,
 ) : LinkHandlerImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>(store) {
 
     override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
@@ -61,14 +61,14 @@ internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
 
     private fun getDataElements(
         item: AnalyticsTeiWHONutritionItem?,
-        whoComponent: WHONutritionComponent
+        whoComponent: WHONutritionComponent,
     ): List<AnalyticsTeiDataElement> {
         return item?.dataElements()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
     }
 
     private fun getIndicators(
         item: AnalyticsTeiWHONutritionItem?,
-        whoComponent: WHONutritionComponent
+        whoComponent: WHONutritionComponent,
     ): List<AnalyticsTeiIndicator> {
         return item?.indicators()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
     }

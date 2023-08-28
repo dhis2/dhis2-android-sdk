@@ -39,8 +39,8 @@ import retrofit2.Retrofit
         OrganisationUnitLevelEntityDIModule::class,
         OrganisationUnitGroupEntityDIModule::class,
         OrganisationUnitProgramLinkEntityDIModule::class,
-        OrganisationUnitOrganisationUnitGroupLinkEntityDIModule::class
-    ]
+        OrganisationUnitOrganisationUnitGroupLinkEntityDIModule::class,
+    ],
 )
 internal class OrganisationUnitPackageDIModule {
     @Provides

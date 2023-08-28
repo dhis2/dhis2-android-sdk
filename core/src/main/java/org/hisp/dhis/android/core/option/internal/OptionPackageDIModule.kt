@@ -38,8 +38,8 @@ import retrofit2.Retrofit
         OptionEntityDIModule::class,
         OptionGroupEntityDIModule::class,
         OptionGroupOptionEntityDIModule::class,
-        OptionSetEntityDIModule::class
-    ]
+        OptionSetEntityDIModule::class,
+    ],
 )
 internal class OptionPackageDIModule {
     @Provides

@@ -47,7 +47,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     store: IdentifiableDeletableDataObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> where M : CoreObject, M : ObjectWithUidInterface, M : DeletableDataObject {
     /**

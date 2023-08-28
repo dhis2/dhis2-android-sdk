@@ -28,22 +28,24 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import javax.inject.Inject
 
 @Reusable
 internal class RelationshipItemChildrenAppender @Inject constructor(
-    private val store: RelationshipItemStore
+    private val store: RelationshipItemStore,
 ) : ChildrenAppender<Relationship>() {
 
     override fun appendChildren(relationship: Relationship): Relationship {
         val fromItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!, RelationshipConstraintType.FROM
+            relationship.uid()!!,
+            RelationshipConstraintType.FROM,
         )
         val toItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!, RelationshipConstraintType.TO
+            relationship.uid()!!,
+            RelationshipConstraintType.TO,
         )
         return relationship.toBuilder()
             .from(fromItem)

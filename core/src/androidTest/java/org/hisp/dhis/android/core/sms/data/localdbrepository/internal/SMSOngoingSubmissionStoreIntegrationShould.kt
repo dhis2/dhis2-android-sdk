@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class SMSOngoingSubmissionStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSOngoingSubmission>(
     SMSOngoingSubmissionStoreImpl(TestDatabaseAdapterFactory.get()),
     SMSOngoingSubmissionTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): SMSOngoingSubmission {
         return SMSOngoingSubmissionSample.get

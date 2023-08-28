@@ -47,7 +47,7 @@ internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictIte
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
 import android.util.Log
-import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidatorBase
+import java.util.ArrayList
 
 internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAdapter) : DatabaseCodeMigration {
     override fun migrate() {
@@ -41,7 +41,7 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
             .appendNotKeyStringValue("syncState", "SYNCED")
             .appendInSubQuery(
                 "dataElement",
-                "SELECT uid FROM DataElement WHERE valueType IN ($valueTypes)"
+                "SELECT uid FROM DataElement WHERE valueType IN ($valueTypes)",
             )
             .build()
 

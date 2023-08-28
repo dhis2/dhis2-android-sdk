@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.user
 
 enum class AccountDeletionReason {
     ACCOUNT_DISABLED,
-    APPLICATION_REQUEST
+    APPLICATION_REQUEST,
 }

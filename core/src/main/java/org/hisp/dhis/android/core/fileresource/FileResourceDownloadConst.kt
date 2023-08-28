@@ -31,15 +31,15 @@ import org.hisp.dhis.android.core.common.ValueType
 
 enum class FileResourceValueType(internal val valueType: ValueType) {
     FILE_RESOURCE(ValueType.FILE_RESOURCE),
-    IMAGE(ValueType.IMAGE)
+    IMAGE(ValueType.IMAGE),
 }
 
 enum class FileResourceElementType {
     DATA_ELEMENT,
-    TRACED_ENTITY_ATTRIBUTE
+    TRACED_ENTITY_ATTRIBUTE,
 }
 
 enum class FileResourceDomainType {
     AGGREGATED,
-    TRACKER
+    TRACKER,
 }

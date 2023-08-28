@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
+import javax.inject.Inject
 
 @Reusable
 class SystemInfoModuleImpl @Inject internal constructor(
     private val versionManager: DHISVersionManager,
-    private val systemInfo: SystemInfoObjectRepository
+    private val systemInfo: SystemInfoObjectRepository,
 ) : SystemInfoModule {
     override fun versionManager(): DHISVersionManager {
         return versionManager

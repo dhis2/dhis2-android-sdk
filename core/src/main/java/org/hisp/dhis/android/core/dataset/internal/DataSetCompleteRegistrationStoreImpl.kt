@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
 internal class DataSetCompleteRegistrationStoreImpl constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetCompleteRegistrationStore,
     ObjectWithoutUidStoreImpl<DataSetCompleteRegistration>(
         databaseAdapter,
@@ -48,7 +48,7 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> DataSetCompleteRegistration.create(cursor) }
+        { cursor: Cursor -> DataSetCompleteRegistration.create(cursor) },
     ) {
 
     /**
@@ -68,7 +68,7 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
     override fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
-        rootOrgunitUid: String
+        rootOrgunitUid: String,
     ): Boolean {
         val whereClause = WhereClauseBuilder()
         whereClause.appendInKeyStringValues(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dataSetUids)
@@ -78,7 +78,7 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
             OrganisationUnitTableInfo.Columns.UID,
             OrganisationUnitTableInfo.TABLE_INFO.name(),
             OrganisationUnitTableInfo.Columns.PATH,
-            "%$rootOrgunitUid%"
+            "%$rootOrgunitUid%",
         )
         whereClause.appendInSubQuery(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT, subQuery)
         whereClause.appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE, State.SYNCED)
@@ -91,11 +91,11 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dscr.dataSet())
             .appendKeyStringValue(
                 DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT,
-                dscr.organisationUnit()
+                dscr.organisationUnit(),
             )
             .appendKeyStringValue(
                 DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                dscr.attributeOptionCombo()
+                dscr.attributeOptionCombo(),
             )
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE, State.UPLOADING)
             .build()

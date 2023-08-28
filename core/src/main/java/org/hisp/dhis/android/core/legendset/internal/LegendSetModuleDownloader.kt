@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.legendset.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 internal class LegendSetModuleDownloader @Inject internal constructor(
     private val legendSetUidsSeeker: LegendSetUidsSeeker,
-    private val legendSetCall: LegendSetCall
+    private val legendSetCall: LegendSetCall,
 ) : UntypedModuleDownloader {
     override fun downloadMetadata(): Completable {
         return Single.fromCallable { legendSetUidsSeeker.seekUids() }

@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -44,6 +42,8 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 internal const val ATTEMPTS_AFTER_UPLOAD = 90
 internal const val ATTEMPTS_WHEN_QUERYING = 1
@@ -57,7 +57,7 @@ internal class JobQueryCall @Inject internal constructor(
     private val trackerJobObjectStore: TrackerJobObjectStore,
     private val handler: JobReportHandler,
     private val fileResourceHandler: JobReportFileResourceHandler,
-    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
 ) {
 
     fun queryPendingJobs(): Observable<D2Progress> = flow {
@@ -87,7 +87,7 @@ internal class JobQueryCall @Inject internal constructor(
         jobId: String,
         jobObjects: List<TrackerJobObject>,
         isLastJob: Boolean,
-        attempts: Int
+        attempts: Int,
     ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
@@ -123,7 +123,7 @@ internal class JobQueryCall @Inject internal constructor(
     private suspend fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
         val jobReport = coroutineAPICallExecutor.wrap(
             storeError = false,
-            errorCatcher = JobQueryErrorCatcher()
+            errorCatcher = JobQueryErrorCatcher(),
         ) {
             service.getJobReport(jobId)
         }.getOrThrow()

@@ -48,8 +48,9 @@ abstract class BaseLocalAnalyticsTest : BaseMockIntegrationTest() {
             if (isNewInstance) {
                 objects.dhis2MockServer.setRequestDispatcher()
                 objects.d2.userModule().blockingLogIn(
-                    RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.baseEndpoint!!
+                    RealServerMother.username,
+                    RealServerMother.password,
+                    objects.dhis2MockServer.baseEndpoint!!,
                 )
             }
 

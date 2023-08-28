@@ -43,7 +43,7 @@ internal interface TrackerExporterService {
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
@@ -55,7 +55,7 @@ internal interface TrackerExporterService {
         @Query(PROGRAM_STATUS) programStatus: String?,
         @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): NewTrackerImporterTrackedEntity
 
     @GET(TRACKED_ENTITY_INSTANCES)
@@ -86,13 +86,13 @@ internal interface TrackerExporterService {
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean = false
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
     ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$ENROLLMENTS/{$ENROLLMENT}")
     suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT) enrollmentUid: String,
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>
+        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>,
     ): NewTrackerImporterEnrollment
 
     @GET(EVENTS)
@@ -123,14 +123,14 @@ internal interface TrackerExporterService {
         @Query(UPDATED_AFTER) updatedAfter: String?,
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null
+        @Query(EVENT) eventUid: String? = null,
     ): NTIPayload<NewTrackerImporterEvent>
 
     @GET(EVENTS)
     suspend fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(EVENT) eventUid: String,
-        @Query(OU_MODE) orgUnitMode: String
+        @Query(OU_MODE) orgUnitMode: String,
     ): NTIPayload<NewTrackerImporterEvent>
 
     companion object {

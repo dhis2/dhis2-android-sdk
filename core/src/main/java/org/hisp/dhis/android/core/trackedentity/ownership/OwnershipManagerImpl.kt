@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
-import java.util.*
-import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -42,13 +40,15 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import java.util.*
+import javax.inject.Inject
 
 internal class OwnershipManagerImpl @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val ownershipService: OwnershipService,
     private val dataStatePropagator: DataStatePropagator,
     private val programTempOwnerStore: ProgramTempOwnerStore,
-    private val programOwnerStore: ProgramOwnerStore
+    private val programOwnerStore: ProgramOwnerStore,
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
@@ -69,7 +69,7 @@ internal class OwnershipManagerImpl @Inject constructor(
                             .reason(reason)
                             .created(Date())
                             .validUntil(getValidUntil())
-                            .build()
+                            .build(),
                     )
                 } else {
                     throw D2Error.builder()
@@ -87,7 +87,7 @@ internal class OwnershipManagerImpl @Inject constructor(
                     .errorDescription(e.errorDescription())
                     .httpErrorCode(e.httpErrorCode())
                     .build()
-            }
+            },
         )
     }
 
@@ -116,7 +116,7 @@ internal class OwnershipManagerImpl @Inject constructor(
         val mostRecent = programTempOwnerStore.selectWhere(
             filterWhereClause = whereClause,
             orderByClause = ProgramTempOwnerTableInfo.Columns.CREATED + " " + RepositoryScope.OrderByDirection.DESC,
-            limit = 1
+            limit = 1,
         )
 
         val previousReason = mostRecent.firstOrNull()?.reason() ?: "<Previous reason not found>"
@@ -128,7 +128,7 @@ internal class OwnershipManagerImpl @Inject constructor(
     private suspend fun postBreakGlass(
         trackedEntityInstance: String,
         program: String,
-        reason: String
+        reason: String,
     ): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
             ownershipService.breakGlass(trackedEntityInstance, program, reason)

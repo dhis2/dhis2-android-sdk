@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 
 internal class DataSetIndicatorChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<DataSet, Indicator>
+    private val linkChildStore: LinkChildStore<DataSet, Indicator>,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
         val builder = m.toBuilder()
@@ -51,7 +51,7 @@ internal class DataSetIndicatorChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             TABLE_INFO,
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
-            DataSetIndicatorLinkTableInfo.Columns.INDICATOR
+            DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
@@ -59,8 +59,8 @@ internal class DataSetIndicatorChildrenAppender private constructor(
                 linkChildStore(
                     databaseAdapter,
                     DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> Indicator.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> Indicator.create(cursor) },
             )
         }
     }

@@ -42,7 +42,7 @@ internal class AttributeStoreImpl(databaseAdapter: DatabaseAdapter) : AttributeS
         databaseAdapter,
         AttributeTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Attribute.create(cursor) }
+        { cursor: Cursor -> Attribute.create(cursor) },
     ) {
 
     companion object {

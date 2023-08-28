@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import java.util.Date
 import org.hisp.dhis.android.core.period.Period
+import java.util.Date
 
 data class LineListResponse(
     val uid: String, // Event or enrollment uid
@@ -36,12 +36,12 @@ data class LineListResponse(
     val period: Period,
     val organisationUnit: String,
     val organisationUnitName: String,
-    val values: List<LineListResponseValue>
+    val values: List<LineListResponseValue>,
 )
 
 data class LineListResponseValue(
     val uid: String,
     val displayName: String,
     val value: String?,
-    val legend: String?
+    val legend: String?,
 )

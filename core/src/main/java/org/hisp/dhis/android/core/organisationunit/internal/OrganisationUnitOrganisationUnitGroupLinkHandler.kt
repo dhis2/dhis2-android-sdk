@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 
 internal class OrganisationUnitOrganisationUnitGroupLinkHandler(
-    store: OrganisationUnitOrganisationUnitGroupLinkStore
+    store: OrganisationUnitOrganisationUnitGroupLinkStore,
 ) : LinkHandlerImpl<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>(store)

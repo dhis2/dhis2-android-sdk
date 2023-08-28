@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.arch.helpers
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 object FileResizerHelper {
 
@@ -61,20 +61,27 @@ object FileResizerHelper {
         return if (scaleFactor > 1) {
             if (width < dimension.dimension) {
                 fileToResize
-            } else resize(
-                fileToResize, bitmap,
-                dimension.dimension, (dimension.dimension / scaleFactor).toInt(), dimension
-            )
+            } else {
+                resize(
+                    fileToResize,
+                    bitmap,
+                    dimension.dimension,
+                    (dimension.dimension / scaleFactor).toInt(),
+                    dimension,
+                )
+            }
         } else {
             if (height < dimension.dimension) {
                 fileToResize
-            } else resize(
-                fileToResize,
-                bitmap,
-                (scaleFactor * dimension.dimension).toInt(),
-                dimension.dimension,
-                dimension
-            )
+            } else {
+                resize(
+                    fileToResize,
+                    bitmap,
+                    (scaleFactor * dimension.dimension).toInt(),
+                    dimension.dimension,
+                    dimension,
+                )
+            }
         }
     }
 
@@ -131,6 +138,6 @@ object FileResizerHelper {
     enum class Dimension(val dimension: Int) {
         SMALL(256),
         MEDIUM(512),
-        LARGE(1024)
+        LARGE(1024),
     }
 }

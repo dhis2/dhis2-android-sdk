@@ -44,7 +44,7 @@ internal class OrganisationUnitOrganisationUnitGroupLinkEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: OrganisationUnitOrganisationUnitGroupLinkStore
+        store: OrganisationUnitOrganisationUnitGroupLinkStore,
     ): OrganisationUnitOrganisationUnitGroupLinkHandler {
         return OrganisationUnitOrganisationUnitGroupLinkHandler(store)
     }

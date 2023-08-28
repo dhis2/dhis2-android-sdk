@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.validation.ValidationRule
+import javax.inject.Inject
 
 @Reusable
 internal class ValidationRuleHandler @Inject constructor(
     store: ValidationRuleStore,
-    private val collectionCleaner: ValidationRuleCollectionCleaner
+    private val collectionCleaner: ValidationRuleCollectionCleaner,
 ) : IdentifiableHandlerImpl<ValidationRule>(store) {
     override fun afterCollectionHandled(oCollection: Collection<ValidationRule>?) {
         collectionCleaner.deleteNotPresent(oCollection)

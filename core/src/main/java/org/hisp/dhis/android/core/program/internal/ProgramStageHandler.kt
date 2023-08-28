@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramStageSection
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageHandler @Inject constructor(
@@ -50,15 +50,15 @@ internal class ProgramStageHandler @Inject constructor(
     private val programStageSectionCleaner: ProgramStageSectionOrphanCleaner,
     private val programStageCleaner: ProgramStageSubCollectionCleaner,
     private val attributeHandler: AttributeHandler,
-    private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler
+    private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramStage>(programStageStore) {
 
     override fun afterObjectHandled(o: ProgramStage, action: HandleAction) {
         programStageDataElementHandler.handleMany(
-            ProgramStageInternalAccessor.accessProgramStageDataElements(o)
+            ProgramStageInternalAccessor.accessProgramStageDataElements(o),
         )
         programStageSectionHandler.handleMany(
-            ProgramStageInternalAccessor.accessProgramStageSections(o)
+            ProgramStageInternalAccessor.accessProgramStageSections(o),
         ) { programStageSection: ProgramStageSection ->
             programStageSection.toBuilder()
                 .programStage(ObjectWithUid.create(o.uid()))
@@ -68,11 +68,11 @@ internal class ProgramStageHandler @Inject constructor(
         if (action === HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(
                 o,
-                ProgramStageInternalAccessor.accessProgramStageDataElements(o)
+                ProgramStageInternalAccessor.accessProgramStageDataElements(o),
             )
             programStageSectionCleaner.deleteOrphan(
                 o,
-                ProgramStageInternalAccessor.accessProgramStageSections(o)
+                ProgramStageInternalAccessor.accessProgramStageSections(o),
             )
         }
 
@@ -80,7 +80,8 @@ internal class ProgramStageHandler @Inject constructor(
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             attributeHandler.handleMany(attributes)
             programStageAttributeValueLinkHandler.handleMany(
-                o.uid(), attributes
+                o.uid(),
+                attributes,
             ) { attribute: Attribute ->
                 ProgramStageAttributeValueLink.builder()
                     .programStage(o.uid())

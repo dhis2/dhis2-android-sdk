@@ -31,7 +31,7 @@ internal class DimensionalItemId(
     val dimensionalItemType: DimensionalItemType,
     val id0: String,
     val id1: String? = null,
-    val id2: String? = null
+    val id2: String? = null,
 ) {
     val isDataElementOrOperand: Boolean
         get() = (

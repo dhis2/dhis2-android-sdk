@@ -62,7 +62,7 @@ internal class EventEntityDIModule {
         noteHandler: NoteHandler,
         noteVersionManager: NoteDHISVersionManager,
         noteUniquenessManager: NoteUniquenessManager,
-        relationshipOrphanCleaner: EventRelationshipOrphanCleaner
+        relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
     ): EventHandler {
         return EventHandler(
             relationshipVersionManager,
@@ -72,7 +72,7 @@ internal class EventEntityDIModule {
             noteHandler,
             noteVersionManager,
             noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipOrphanCleaner,
         )
     }
 
@@ -81,7 +81,7 @@ internal class EventEntityDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Event>> {
         return mapOf(
             EventFields.TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender.create(databaseAdapter),
-            EventFields.NOTES to NoteForEventChildrenAppender.create(databaseAdapter)
+            EventFields.NOTES to NoteForEventChildrenAppender.create(databaseAdapter),
         )
     }
 }

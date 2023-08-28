@@ -47,7 +47,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : IdentifiableDataObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDeletableDataObjectStore<O> where O : ObjectWithUidInterface, O : DeletableDataObject {
 
@@ -55,12 +55,12 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(tableInfo),
         binder,
-        objectFactory
+        objectFactory,
     )
 
     private var setDeletedStatement: StatementWrapper? = null

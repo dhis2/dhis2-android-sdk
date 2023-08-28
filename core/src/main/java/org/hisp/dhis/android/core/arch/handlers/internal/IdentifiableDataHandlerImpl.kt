@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 internal abstract class IdentifiableDataHandlerImpl<O>(
     val store: IdentifiableDataObjectStore<O>,
     private val relationshipVersionManager: RelationshipDHISVersionManager,
-    private val relationshipHandler: RelationshipHandler
+    private val relationshipHandler: RelationshipHandler,
 ) : IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
 
     @JvmSuppressWildcards
@@ -49,7 +49,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O?,
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
-        params: IdentifiableDataHandlerParams
+        params: IdentifiableDataHandlerParams,
     ) {
         if (o == null) {
             return
@@ -64,7 +64,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (o == null) {
             return
@@ -85,7 +85,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O,
         transformer: (O) -> O,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ): O {
         val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
@@ -98,7 +98,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     override fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (oCollection == null) {
             return
@@ -132,17 +132,20 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     protected fun handleRelationships(
         relationships: Collection<Relationship>,
         parent: ObjectWithUidInterface,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         val ownedRelationships = relationshipVersionManager.getOwnedRelationships(relationships, parent.uid())
 
         if (relatives != null) {
             relationshipVersionManager.saveRelativesIfNotExist(
-                ownedRelationships, parent.uid(), relatives, relationshipHandler
+                ownedRelationships,
+                parent.uid(),
+                relatives,
+                relationshipHandler,
             )
         }
         relationshipHandler.handleMany(
-            ownedRelationships
+            ownedRelationships,
         ) { relationship: Relationship ->
             relationship.toBuilder()
                 .syncState(State.SYNCED)
@@ -180,12 +183,12 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     )
 
     protected fun beforeCollectionHandled(
         oCollection: Collection<O>,
-        params: IdentifiableDataHandlerParams
+        params: IdentifiableDataHandlerParams,
     ): Collection<O> {
         return when {
             params.overwrite -> {
@@ -194,7 +197,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
             params.asRelationship -> {
                 removeAllowedExistingObjects(
                     oCollection,
-                    listOf(State.RELATIONSHIP.name)
+                    listOf(State.RELATIONSHIP.name),
                 )
             }
             else -> {
@@ -203,8 +206,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
                     listOf(
                         State.SYNCED.name,
                         State.RELATIONSHIP.name,
-                        State.SYNCED_VIA_SMS.name
-                    )
+                        State.SYNCED_VIA_SMS.name,
+                    ),
                 )
             }
         }

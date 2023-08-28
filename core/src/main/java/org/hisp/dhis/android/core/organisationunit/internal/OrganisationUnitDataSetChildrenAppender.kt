@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 internal class OrganisationUnitDataSetChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OrganisationUnit>
+    private val childStore: ObjectWithUidChildStore<OrganisationUnit>,
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         val builder = m.toBuilder()
@@ -49,7 +49,7 @@ internal class OrganisationUnitDataSetChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             DataSetTableInfo.TABLE_INFO,
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET
+            DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
@@ -57,8 +57,8 @@ internal class OrganisationUnitDataSetChildrenAppender private constructor(
                 objectWithUidChildStore(
                     databaseAdapter,
                     DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                )
+                    CHILD_PROJECTION,
+                ),
             )
         }
     }

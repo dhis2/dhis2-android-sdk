@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
@@ -39,9 +38,10 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import javax.inject.Inject
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
-    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
@@ -64,7 +64,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                         eventFilter.eventDate()?.let {
                             copy(
                                 eventStartDate = dateFilterPeriodHelper.getStartDate(it),
-                                eventEndDate = dateFilterPeriodHelper.getEndDate(it)
+                                eventEndDate = dateFilterPeriodHelper.getEndDate(it),
                             )
                         } ?: this
                     }
@@ -75,7 +75,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     @Throws(D2Error::class, Exception::class)
     fun queryOnlineBlocking(
         trackerParentCallFactory: TrackerParentCallFactory,
-        scope: TrackedEntityInstanceQueryRepositoryScope
+        scope: TrackedEntityInstanceQueryRepositoryScope,
     ): List<TrackedEntityInstance> {
         return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
             val noPagingQuery = queryOnline.copy(paging = false)
@@ -97,9 +97,8 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
 
     @Suppress("ComplexMethod")
     private fun getBaseQuery(
-        scope: TrackedEntityInstanceQueryRepositoryScope
+        scope: TrackedEntityInstanceQueryRepositoryScope,
     ): TrackedEntityInstanceQueryOnline {
-
         val query = scope.query()?.let { query -> query.operator().apiUpperOperator + ":" + query.value() }
 
         // EnrollmentStatus does not accepts a list of status but a single value in web API.
@@ -147,7 +146,9 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
         return if (eventStatus.isNotEmpty() && hasEventDate) {
             eventStatus[0]
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
@@ -178,7 +179,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
 
         private fun getAPIValue(item: RepositoryScopeFilterItem): String {
-
             return if (item.operator() == FilterItemOperator.IN) {
                 val list = FilterOperatorsHelper.strToList(item.value()).map { escapeChars(it) }
                 list.joinToString(";")

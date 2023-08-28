@@ -48,6 +48,6 @@ object ProgramStageWorkingListAttributeValueFilterFields {
             fh.field<String>(ItemFilterTableInfo.Columns.EQ),
             fh.field<String>(API_IN),
             fh.field<String>(ItemFilterTableInfo.Columns.LIKE),
-            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER)
+            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER),
         ).build()
 }

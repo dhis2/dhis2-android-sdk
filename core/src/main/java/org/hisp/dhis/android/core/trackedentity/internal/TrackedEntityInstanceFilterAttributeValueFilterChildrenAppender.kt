@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, AttributeValueFilter>
+    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, AttributeValueFilter>,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
     override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
@@ -49,8 +49,8 @@ internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender p
                 singleParentChildStore(
                     databaseAdapter,
                     AttributeValueFilterStoreImpl.CHILD_PROJECTION,
-                    AttributeValueFilter::create
-                )
+                    AttributeValueFilter::create,
+                ),
             )
         }
     }

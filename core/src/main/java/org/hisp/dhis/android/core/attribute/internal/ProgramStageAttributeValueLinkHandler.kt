@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 
 internal class ProgramStageAttributeValueLinkHandler(
-    store: ProgramStageAttributeValueLinkStore
+    store: ProgramStageAttributeValueLinkStore,
 ) : LinkHandlerImpl<Attribute, ProgramStageAttributeValueLink>(store)

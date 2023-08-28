@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 class SMSMetadataIdStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSMetadataId>(
     SMSMetadataIdStoreImpl(TestDatabaseAdapterFactory.get()),
     SMSMetadataIdTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): SMSMetadataId {
         return SMSMetadataIdSample.get

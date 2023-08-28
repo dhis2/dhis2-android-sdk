@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 
 @Suppress("MagicNumber")
 internal class CategoryComboStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CategoryComboStore,
     IdentifiableObjectStoreImpl<CategoryCombo>(
         databaseAdapter,
         CategoryComboTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> CategoryCombo.create(cursor) }
+        { cursor: Cursor -> CategoryCombo.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<CategoryCombo> = object : IdentifiableStatementBinder<CategoryCombo>() {

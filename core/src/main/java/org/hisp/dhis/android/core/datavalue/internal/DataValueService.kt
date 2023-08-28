@@ -49,7 +49,7 @@ internal interface DataValueService {
         @Query("orgUnit") orgUnitUids: String,
         @Query("children") children: Boolean,
         @Query("paging") paging: Boolean,
-        @Query("includeDeleted") includeDeleted: Boolean?
+        @Query("includeDeleted") includeDeleted: Boolean?,
     ): DataValueSet
 
     @POST("dataValueSets")

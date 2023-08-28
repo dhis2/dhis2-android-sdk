@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataStoreEntry>(
     DataStoreEntryStoreImpl(TestDatabaseAdapterFactory.get()),
     DataStoreEntryTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): DataStoreEntry {
         return DataStoreEntrySamples.get()

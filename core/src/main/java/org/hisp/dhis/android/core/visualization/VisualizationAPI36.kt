@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.visualization
 
-import java.util.*
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.*
 
 internal data class VisualizationAPI36(
     val id: String,
@@ -114,7 +114,7 @@ internal data class VisualizationAPI36(
                     .style(legendDisplayStyle)
                     .strategy(legendDisplayStrategy)
                     .showKey(false)
-                    .build()
+                    .build(),
             )
             .columns(columns)
             .rows(rows)

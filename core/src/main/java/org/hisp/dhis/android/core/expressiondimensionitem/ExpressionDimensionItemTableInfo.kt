@@ -47,7 +47,7 @@ object ExpressionDimensionItemTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                EXPRESSION
+                EXPRESSION,
             )
         }
 

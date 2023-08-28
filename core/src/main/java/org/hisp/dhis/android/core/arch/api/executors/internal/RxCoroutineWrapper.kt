@@ -35,7 +35,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 
 internal fun <T : Any> wrapRxSingle(
-    block: suspend CoroutineScope.() -> T
+    block: suspend CoroutineScope.() -> T,
 ): Single<T> {
     return rxSingle(Dispatchers.Unconfined) {
         runBlocking {

@@ -41,20 +41,20 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class TrackerImportConflictStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackerImportConflictStore,
     ObjectStoreImpl<TrackerImportConflict>(
         databaseAdapter,
         TrackerImportConflictTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> TrackerImportConflict.create(cursor) }
+        { cursor: Cursor -> TrackerImportConflict.create(cursor) },
     ) {
 
     override fun deleteEventConflicts(eventUid: String) {
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.EVENT,
             EventTableInfo.TABLE_INFO,
-            eventUid
+            eventUid,
         )
     }
 
@@ -62,7 +62,7 @@ internal class TrackerImportConflictStoreImpl(
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.ENROLLMENT,
             EnrollmentTableInfo.TABLE_INFO,
-            enrollmentUid
+            enrollmentUid,
         )
     }
 
@@ -70,7 +70,7 @@ internal class TrackerImportConflictStoreImpl(
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
             TrackedEntityInstanceTableInfo.TABLE_INFO,
-            tackedEntityUid
+            tackedEntityUid,
         )
     }
 
@@ -79,7 +79,7 @@ internal class TrackerImportConflictStoreImpl(
             .appendKeyStringValue(column, uid)
             .appendKeyStringValue(
                 TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                tableInfo.name()
+                tableInfo.name(),
             )
             .build()
         deleteWhereIfExists(whereClause)

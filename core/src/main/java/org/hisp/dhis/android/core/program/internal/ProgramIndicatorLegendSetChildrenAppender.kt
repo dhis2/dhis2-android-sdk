@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableIn
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
-    private val linkChildStore: ObjectWithUidChildStore<ProgramIndicator>
+    private val linkChildStore: ObjectWithUidChildStore<ProgramIndicator>,
 ) : ChildrenAppender<ProgramIndicator>() {
     override fun appendChildren(m: ProgramIndicator): ProgramIndicator {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
                 objectWithUidChildStore(
                     databaseAdapter,
                     ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                    ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
+                    ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,
+                ),
             )
         }
     }

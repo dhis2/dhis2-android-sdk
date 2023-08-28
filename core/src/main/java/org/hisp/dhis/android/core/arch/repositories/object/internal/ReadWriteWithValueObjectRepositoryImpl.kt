@@ -44,7 +44,7 @@ internal constructor(
     private val store: ObjectWithoutUidStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> {
 

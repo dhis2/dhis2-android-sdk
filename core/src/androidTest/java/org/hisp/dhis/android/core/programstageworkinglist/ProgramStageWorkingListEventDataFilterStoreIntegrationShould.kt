@@ -40,7 +40,7 @@ class ProgramStageWorkingListEventDataFilterStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramStageWorkingListEventDataFilter>(
         ProgramStageWorkingListEventDataFilterStoreImpl(TestDatabaseAdapterFactory.get()),
         ItemFilterTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilterSamples.get()

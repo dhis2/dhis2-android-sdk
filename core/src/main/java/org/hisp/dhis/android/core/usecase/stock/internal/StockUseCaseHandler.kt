@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.usecase.stock.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import javax.inject.Inject
 
 @Reusable
 internal class StockUseCaseHandler @Inject constructor(
@@ -40,7 +40,7 @@ internal class StockUseCaseHandler @Inject constructor(
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<InternalStockUseCase>
+        oCollection: Collection<InternalStockUseCase>,
     ): Collection<InternalStockUseCase> {
         store.delete()
         transactionLinkHandler.resetAllLinks()

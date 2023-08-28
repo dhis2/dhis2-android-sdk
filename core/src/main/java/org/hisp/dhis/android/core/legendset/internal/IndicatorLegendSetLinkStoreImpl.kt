@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
 internal class IndicatorLegendSetLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : IndicatorLegendSetLinkStore,
     LinkStoreImpl<IndicatorLegendSetLink>(
         databaseAdapter,
         IndicatorLegendSetLinkTableInfo.TABLE_INFO,
         IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
         BINDER,
-        { cursor: Cursor -> IndicatorLegendSetLink.create(cursor) }
+        { cursor: Cursor -> IndicatorLegendSetLink.create(cursor) },
     ) {
 
     companion object {

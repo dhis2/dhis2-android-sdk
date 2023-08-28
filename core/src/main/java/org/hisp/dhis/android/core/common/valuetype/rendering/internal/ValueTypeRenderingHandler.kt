@@ -33,12 +33,12 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingHandler
 
 internal class ValueTypeRenderingHandler(
-    private val valueTypeDeviceRenderingHandler: ValueTypeDeviceRenderingHandler
+    private val valueTypeDeviceRenderingHandler: ValueTypeDeviceRenderingHandler,
 ) : DictionaryTableHandler<ValueTypeRendering> {
     override fun handle(o: ValueTypeRendering?, uid: String, objectTable: String) {
         if (o != null) {
             valueTypeDeviceRenderingHandler.handle(
-                o.desktop()
+                o.desktop(),
             ) { value: ValueTypeDeviceRendering ->
                 value.toBuilder()
                     .uid(uid)
@@ -48,7 +48,7 @@ internal class ValueTypeRenderingHandler(
             }
 
             valueTypeDeviceRenderingHandler.handle(
-                o.mobile()
+                o.mobile(),
             ) { value: ValueTypeDeviceRendering ->
                 value.toBuilder()
                     .uid(uid)

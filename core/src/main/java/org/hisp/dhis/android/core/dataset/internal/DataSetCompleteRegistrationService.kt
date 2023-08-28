@@ -47,17 +47,17 @@ internal interface DataSetCompleteRegistrationService {
         @Query("period") periodIds: String,
         @Query("orgUnit") organisationUnitIds: String,
         @Query("children") children: Boolean,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): DataSetCompleteRegistrationPayload
 
     @POST("completeDataSetRegistrations")
     suspend fun postDataSetCompleteRegistrations(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
+        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
     ): DataValueImportSummary
 
     @POST("completeDataSetRegistrations")
     suspend fun postDataSetCompleteRegistrationsWebResponse(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
+        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
     ): DataValueImportSummaryWebResponse
 
     @DELETE("completeDataSetRegistrations")
@@ -67,6 +67,6 @@ internal interface DataSetCompleteRegistrationService {
         @Query("ou") orgUnit: String,
         @Query("cc") categoryComboUid: String,
         @Query("cp") categoryOptionUids: String,
-        @Query("multiOu") multiOrganisationUnit: Boolean
+        @Query("multiOu") multiOrganisationUnit: Boolean,
     ): Response<Unit>
 }

@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.map.layer.MapLayer
 
 internal class MapLayerImagerProviderChildrenAppender(
-    private val mapLayerImageryProviderStore: MapLayerImageryProviderStore
+    private val mapLayerImageryProviderStore: MapLayerImageryProviderStore,
 ) : ChildrenAppender<MapLayer>() {
 
     override fun appendChildren(mapLayer: MapLayer): MapLayer {

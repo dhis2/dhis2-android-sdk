@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsTeiWHONutritionDataStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiWHONutritionDataStore,
     LinkStoreImpl<AnalyticsTeiWHONutritionData>(
         databaseAdapter,
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
         AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING,
         BINDER,
-        { cursor: Cursor -> AnalyticsTeiWHONutritionData.create(cursor) }
+        { cursor: Cursor -> AnalyticsTeiWHONutritionData.create(cursor) },
     ) {
 
     companion object {

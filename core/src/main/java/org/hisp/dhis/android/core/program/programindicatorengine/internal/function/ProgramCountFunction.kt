@@ -69,7 +69,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,
-            dataElement.valueType()
+            dataElement.valueType(),
         )
 
         val conditionalSql = getConditionalSql(ctx, visitor)
@@ -93,7 +93,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
     private fun validateCountFunctionArgs(ctx: ExprContext) {
         if (getProgramArgType(ctx) !is ProgramItemStageElement) {
             throw ParserExceptionWithoutContext(
-                "First argument not supported for d2:count... functions: ${ctx.text}"
+                "First argument not supported for d2:count... functions: ${ctx.text}",
             )
         }
     }

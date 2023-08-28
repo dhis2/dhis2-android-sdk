@@ -39,6 +39,6 @@ object CategoryOptionComboFields {
     val allFields: Fields<CategoryOptionCombo> = Fields.builder<CategoryOptionCombo>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.nestedFieldWithUid(CATEGORY_OPTIONS)
+            fh.nestedFieldWithUid(CATEGORY_OPTIONS),
         ).build()
 }

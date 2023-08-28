@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHa
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramHandler @Inject constructor(
@@ -50,13 +50,13 @@ internal class ProgramHandler @Inject constructor(
     private val collectionCleaner: ProgramCollectionCleaner,
     private val linkCleaner: ProgramOrganisationUnitLinkCleaner,
     private val attributeHandler: AttributeHandler,
-    private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler
+    private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
     override fun afterObjectHandled(o: Program, action: HandleAction) {
         programTrackedEntityAttributeHandler.handleMany(
             ProgramInternalAccessor
-                .accessProgramTrackedEntityAttributes(o)
+                .accessProgramTrackedEntityAttributes(o),
         )
         programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(o))
         programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(o))
@@ -68,7 +68,8 @@ internal class ProgramHandler @Inject constructor(
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             attributeHandler.handleMany(attributes)
             programAttributeLinkHandler.handleMany(
-                o.uid(), attributes
+                o.uid(),
+                attributes,
             ) { attribute: Attribute ->
                 ProgramAttributeValueLink.builder()
                     .program(o.uid())

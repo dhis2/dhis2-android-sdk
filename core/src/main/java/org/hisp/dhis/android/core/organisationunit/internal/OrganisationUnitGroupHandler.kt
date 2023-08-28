@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 
 internal class OrganisationUnitGroupHandler(
-    store: OrganisationUnitGroupStore
+    store: OrganisationUnitGroupStore,
 ) : IdentifiableHandlerImpl<OrganisationUnitGroup>(store)

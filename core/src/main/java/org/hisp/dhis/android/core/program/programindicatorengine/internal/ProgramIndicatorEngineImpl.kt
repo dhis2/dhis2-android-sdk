@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.Constant
@@ -45,6 +43,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicato
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import java.util.*
+import javax.inject.Inject
 
 internal class ProgramIndicatorEngineImpl @Inject constructor(
     private val programIndicatorStore: ProgramIndicatorStore,
@@ -55,14 +55,14 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
     private val programRepository: ProgramStageCollectionRepository,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val constantStore: ConstantStore,
-    private val programStageStore: ProgramStageStore
+    private val programStageStore: ProgramStageStore,
 ) : ProgramIndicatorEngine {
 
     @Deprecated("Deprecated in Java")
     override fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
-        programIndicatorUid: String
+        programIndicatorUid: String,
     ): String? {
         return when {
             eventUid != null -> getEventProgramIndicatorValue(eventUid, programIndicatorUid)
@@ -81,7 +81,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             programIndicator = programIndicator,
             attributeValues = getAttributeValues(enrollment),
             enrollment = enrollment,
-            events = getEnrollmentEvents(enrollment)
+            events = getEnrollmentEvents(enrollment),
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
@@ -104,7 +104,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             programIndicator = programIndicator,
             attributeValues = getAttributeValues(enrollment),
             enrollment = enrollment,
-            events = mapOf(event.programStage()!! to listOf(event))
+            events = mapOf(event.programStage()!! to listOf(event)),
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
@@ -116,7 +116,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             context,
             dataElementStore,
             trackedEntityAttributeStore,
-            programStageStore
+            programStageStore,
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

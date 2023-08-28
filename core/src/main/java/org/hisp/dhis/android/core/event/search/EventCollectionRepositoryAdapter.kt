@@ -28,25 +28,25 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
 @Reusable
 internal class EventCollectionRepositoryAdapter @Inject constructor(
     private val eventCollectionRepository: EventCollectionRepository,
     private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
     private val userRepository: AuthenticatedUserObjectRepository,
-    private val datePeriodHelper: DateFilterPeriodHelper
+    private val datePeriodHelper: DateFilterPeriodHelper,
 ) {
 
     @Suppress("ComplexMethod")
@@ -94,14 +94,14 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
 
     private fun applyOrgunitSelection(
         repository: EventCollectionRepository,
-        scope: EventQueryRepositoryScope
+        scope: EventQueryRepositoryScope,
     ): EventCollectionRepository {
         return getOrganisationUnits(scope)?.let { repository.byOrganisationUnitUid().`in`(it) } ?: repository
     }
 
     private fun applyDataFilter(
         repository: EventCollectionRepository,
-        filter: EventDataFilter
+        filter: EventDataFilter,
     ): EventCollectionRepository {
         var filterRepo = repository
         filter.dataItem()?.let { deId ->
@@ -153,7 +153,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
 
     private fun applyOrderColumn(
         repository: EventCollectionRepository,
-        order: EventQueryScopeOrderByItem
+        order: EventQueryScopeOrderByItem,
     ): EventCollectionRepository {
         return when (order.column().type()) {
             OrderColumnType.EVENT_DATE -> repository.orderByEventDate(order.direction())
@@ -174,13 +174,14 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             OrderColumnType.FOLLOW_UP,
             OrderColumnType.STATUS,
             OrderColumnType.STORED_BY,
-            OrderColumnType.COMPLETED_BY -> repository
+            OrderColumnType.COMPLETED_BY,
+            -> repository
         }
     }
 
     private fun applyUserAssignedMode(
         repository: EventCollectionRepository,
-        mode: AssignedUserMode
+        mode: AssignedUserMode,
     ): EventCollectionRepository {
         return when (mode) {
             AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet()?.user())

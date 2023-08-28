@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 
 internal class OrganisationUnitProgramChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OrganisationUnit>
+    private val childStore: ObjectWithUidChildStore<OrganisationUnit>,
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         val builder = m.toBuilder()
@@ -49,7 +49,7 @@ internal class OrganisationUnitProgramChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             ProgramTableInfo.TABLE_INFO,
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM
+            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
@@ -57,8 +57,8 @@ internal class OrganisationUnitProgramChildrenAppender private constructor(
                 objectWithUidChildStore(
                     databaseAdapter,
                     OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                )
+                    CHILD_PROJECTION,
+                ),
             )
         }
     }

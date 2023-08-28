@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class LocalDataStoreStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<KeyValuePair>(
     LocalDataStoreStoreImpl(TestDatabaseAdapterFactory.get()),
     LocalDataStoreTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): KeyValuePair {
         return keyValuePairSample

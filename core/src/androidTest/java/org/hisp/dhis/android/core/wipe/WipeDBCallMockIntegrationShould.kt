@@ -109,7 +109,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
             D2Error.builder()
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("Sample error")
-                .build()
+                .build(),
         )
         TrackerImportConflictStoreImpl(databaseAdapter).insert(TrackerImportConflict.builder().build())
         FileResourceStoreImpl(databaseAdapter).insert(FileResource.builder().uid("uid").build())
@@ -119,13 +119,13 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
             KeyValuePair.builder()
                 .key("key1")
                 .value("value1")
-                .build()
+                .build(),
         )
         LocalDataStoreStoreImpl(databaseAdapter).insert(
             KeyValuePair.builder()
                 .key("key2")
                 .value("value2")
-                .build()
+                .build(),
         )
         ProgramTempOwnerStoreImpl(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
 
@@ -134,11 +134,11 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
         StockUseCaseStoreImpl(databaseAdapter).insert(
             InternalStockUseCaseSamples.get()
-                .toBuilder().uid("lxAQ7Zs9VYR").build()
+                .toBuilder().uid("lxAQ7Zs9VYR").build(),
         )
         StockUseCaseTransactionLinkStoreImpl(databaseAdapter).insert(
             InternalStockUseCaseTransactionSamples.get()
-                .toBuilder().programUid("lxAQ7Zs9VYR").build()
+                .toBuilder().programUid("lxAQ7Zs9VYR").build(),
         )
 
         MapLayerStoreImpl(databaseAdapter).insert(MapLayerSamples.get())

@@ -37,12 +37,13 @@ import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 internal class OptionGroupHandler(
     optionStore: OptionGroupStore,
     private val optionGroupOptionLinkHandler: LinkHandler<ObjectWithUid, OptionGroupOptionLink>,
-    private val collectionCleaner: OptionGroupCollectionCleaner
+    private val collectionCleaner: OptionGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<OptionGroup>(optionStore) {
 
     override fun afterObjectHandled(o: OptionGroup, action: HandleAction) {
         optionGroupOptionLinkHandler.handleMany(
-            o.uid(), o.options()
+            o.uid(),
+            o.options(),
         ) { option: ObjectWithUid ->
             OptionGroupOptionLink.builder().optionGroup(o.uid()).option(option.uid()).build()
         }

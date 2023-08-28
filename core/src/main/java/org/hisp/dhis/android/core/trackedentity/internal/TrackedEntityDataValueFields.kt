@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import java.util.*
 
 internal object TrackedEntityDataValueFields {
     private val fh = FieldsHelper<TrackedEntityDataValue>()
@@ -43,6 +43,6 @@ internal object TrackedEntityDataValueFields {
             fh.field<String>(TrackedEntityDataValueTableInfo.Columns.VALUE),
             fh.field<Date>(TrackedEntityDataValueTableInfo.Columns.CREATED),
             fh.field<Date>(TrackedEntityDataValueTableInfo.Columns.LAST_UPDATED),
-            fh.field<Boolean>(TrackedEntityDataValueTableInfo.Columns.PROVIDED_ELSEWHERE)
+            fh.field<Boolean>(TrackedEntityDataValueTableInfo.Columns.PROVIDED_ELSEWHERE),
         ).build()
 }

@@ -28,18 +28,16 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import javax.inject.Inject
 
 @Reusable
 internal class PasswordAndCookieAuthenticator @Inject constructor(
     private val userIdHelper: UserIdAuthenticatorHelper,
-    private val cookieHelper: CookieAuthenticatorHelper
+    private val cookieHelper: CookieAuthenticatorHelper,
 ) {
 
     companion object {
@@ -73,11 +71,9 @@ internal class PasswordAndCookieAuthenticator @Inject constructor(
     }
 
     private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
-        return builder.addHeader(AUTHORIZATION_KEY, getAuthorizationForPassword(credentials))
-    }
-
-    private fun getAuthorizationForPassword(credentials: Credentials): String {
-        val base64Credentials = UserHelper.base64(credentials.username, credentials.password)
-        return "Basic $base64Credentials"
+        return builder.addHeader(
+            UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
+            UserIdAuthenticatorHelper.basic(credentials),
+        )
     }
 }

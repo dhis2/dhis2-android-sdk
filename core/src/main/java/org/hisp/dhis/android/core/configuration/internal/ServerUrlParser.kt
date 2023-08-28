@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -44,7 +45,7 @@ internal object ServerUrlParser {
                 .build()
         }
         val urlWithSlashAndAPI = appendSlashAndAPI(url)
-        val httpUrl = HttpUrl.parse(appendSlashAndAPI(urlWithSlashAndAPI))
+        val httpUrl = appendSlashAndAPI(urlWithSlashAndAPI).toHttpUrlOrNull()
 
         return httpUrl
             ?: throw D2Error.builder()

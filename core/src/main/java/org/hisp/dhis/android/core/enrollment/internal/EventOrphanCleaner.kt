@@ -28,20 +28,20 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class EventOrphanCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataOrphanCleaner<Enrollment, Event>(
     tableName = EventTableInfo.TABLE_INFO.name(),
     parentColumn = EventTableInfo.Columns.ENROLLMENT,
     stateColumn = DataColumns.SYNC_STATE,
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

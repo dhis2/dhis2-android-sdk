@@ -47,7 +47,7 @@ internal class OrganisationUnitHandler constructor(
     private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
     private val dataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler,
     private val organisationUnitGroupHandler: OrganisationUnitGroupHandler,
-    private val organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler
+    private val organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler,
 ) : IdentifiableHandlerImpl<OrganisationUnit>(organisationUnitStore) {
     private var user: User? = null
     private var scope: OrganisationUnit.Scope? = null
@@ -74,7 +74,7 @@ internal class OrganisationUnitHandler constructor(
         } else {
             Log.i(
                 this.javaClass.simpleName,
-                "OrganisationUnit " + o.uid() + " has invalid geometryValue"
+                "OrganisationUnit " + o.uid() + " has invalid geometryValue",
             )
             o.toBuilder().geometry(null).build()
         }
@@ -95,7 +95,8 @@ internal class OrganisationUnitHandler constructor(
         val orgUnitPrograms = organisationUnit.programs()
         if (orgUnitPrograms != null) {
             organisationUnitProgramLinkHandler.handleMany(
-                organisationUnit.uid(), orgUnitPrograms
+                organisationUnit.uid(),
+                orgUnitPrograms,
             ) { program ->
                 OrganisationUnitProgramLink.builder()
                     .organisationUnit(organisationUnit.uid())
@@ -109,7 +110,8 @@ internal class OrganisationUnitHandler constructor(
         val orgUnitDataSets = organisationUnit.dataSets()
         if (orgUnitDataSets != null) {
             dataSetOrganisationUnitLinkHandler.handleMany(
-                organisationUnit.uid(), orgUnitDataSets
+                organisationUnit.uid(),
+                orgUnitDataSets,
             ) { dataSet ->
                 DataSetOrganisationUnitLink.builder()
                     .dataSet(dataSet.uid())
@@ -122,7 +124,8 @@ internal class OrganisationUnitHandler constructor(
     private fun addOrganisationUnitOrganisationUnitGroupLink(organisationUnit: OrganisationUnit) {
         organisationUnit.organisationUnitGroups()?.let { orgunitGroups ->
             organisationUnitGroupLinkHandler.handleMany(
-                organisationUnit.uid(), orgunitGroups
+                organisationUnit.uid(),
+                orgunitGroups,
             ) { organisationUnitGroup ->
                 OrganisationUnitOrganisationUnitGroupLink.builder()
                     .organisationUnit(organisationUnit.uid())
@@ -140,7 +143,8 @@ internal class OrganisationUnitHandler constructor(
         // TODO MasterUid set to "" to avoid cleaning link table. Orgunits are paged, so the whole orguntit list is
         //  not available in the handler. Maybe the store should not be a linkStore.
         userOrganisationUnitLinkHandler.handleMany(
-            "", organisationUnits
+            "",
+            organisationUnits,
         ) { orgUnit: OrganisationUnit ->
             builder
                 .organisationUnit(orgUnit.uid())

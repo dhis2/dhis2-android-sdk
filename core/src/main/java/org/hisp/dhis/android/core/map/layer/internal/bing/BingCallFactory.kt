@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import dagger.Reusable
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
@@ -44,6 +42,8 @@ import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @Reusable
 internal class BingCallFactory @Inject constructor(
@@ -51,7 +51,7 @@ internal class BingCallFactory @Inject constructor(
     private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
     private val settingsService: SettingService,
-    private val bingService: BingService
+    private val bingService: BingService,
 ) {
 
     @Suppress("TooGenericExceptionCaught")
@@ -79,7 +79,7 @@ internal class BingCallFactory @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun downloadBingBasemaps(
-        bingKey: String
+        bingKey: String,
     ): List<MapLayer> {
         return try {
             BingBasemaps.list.map { b ->
@@ -101,7 +101,7 @@ internal class BingCallFactory @Inject constructor(
 
     private suspend fun downloadBasemap(
         bingkey: String,
-        basemap: BingBasemap
+        basemap: BingBasemap,
     ): List<MapLayer> {
         val bingResponseResult = coroutineAPICallExecutor.wrap(storeError = false) {
             bingService.getBaseMap(getUrl(basemap.style, bingkey))
@@ -132,12 +132,12 @@ internal class BingCallFactory @Inject constructor(
                                                 .zoomMax(ca.zoomMax)
                                                 .zoomMin(ca.zoomMin)
                                                 .build()
-                                        }
+                                        },
                                     )
                                     .build()
-                            }
+                            },
                         )
-                        .build()
+                        .build(),
                 )
             }
         }.getOrNull() ?: emptyList()

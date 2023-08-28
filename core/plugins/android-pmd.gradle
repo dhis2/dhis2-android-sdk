@@ -24,8 +24,8 @@ afterEvaluate {
             ignoreFailures = false
 
             reports {
-                html.enabled = true
-                xml.enabled = true
+                xml.required.set(true)
+                html.required.set(true)
             }
 
             ruleSetFiles = project.files(

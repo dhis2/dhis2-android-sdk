@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo
 
 @Suppress("MagicNumber")
 internal class ValidationRuleStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ValidationRuleStore,
     IdentifiableObjectStoreImpl<ValidationRule>(
         databaseAdapter,
         ValidationRuleTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ValidationRule.create(cursor) }
+        { cursor: Cursor -> ValidationRule.create(cursor) },
     ) {
 
     companion object {

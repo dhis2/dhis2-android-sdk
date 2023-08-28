@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 
 internal class DataSetElementChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<DataSet, DataSetElement>
+    private val childStore: SingleParentChildStore<DataSet, DataSetElement>,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
         val builder = m.toBuilder()
@@ -49,15 +49,15 @@ internal class DataSetElementChildrenAppender private constructor(
     companion object {
         private val CHILD_PROJECTION = SingleParentChildProjection(
             DataSetElementLinkTableInfo.TABLE_INFO,
-            DataSetElementLinkTableInfo.Columns.DATA_SET
+            DataSetElementLinkTableInfo.Columns.DATA_SET,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
             return DataSetElementChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> DataSetElement.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> DataSetElement.create(cursor) },
             )
         }
     }

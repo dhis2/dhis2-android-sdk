@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 
 @Suppress("MagicNumber")
 internal class AttributeValueFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<AttributeValueFilter>(
         databaseAdapter,
@@ -48,7 +48,7 @@ internal class AttributeValueFilterStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { AttributeValueFilter.create(it) }
+        { AttributeValueFilter.create(it) },
     ) {
 
     companion object {
@@ -75,7 +75,7 @@ internal class AttributeValueFilterStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER
+            ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
         )
     }
 }

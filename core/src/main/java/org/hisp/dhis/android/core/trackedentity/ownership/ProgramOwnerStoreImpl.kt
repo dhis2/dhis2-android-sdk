@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 
 @Suppress("MagicNumber")
 internal class ProgramOwnerStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramOwnerStore,
     ObjectWithoutUidStoreImpl<ProgramOwner>(
         databaseAdapter,
@@ -42,7 +42,7 @@ internal class ProgramOwnerStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { ProgramOwner.create(it) }
+        { ProgramOwner.create(it) },
     ) {
 
     companion object {

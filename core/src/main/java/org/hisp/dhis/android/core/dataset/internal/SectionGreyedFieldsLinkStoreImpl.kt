@@ -36,13 +36,14 @@ import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 
 internal class SectionGreyedFieldsLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SectionGreyedFieldsLinkStore,
     LinkStoreImpl<SectionGreyedFieldsLink>(
-        databaseAdapter, SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
+        databaseAdapter,
+        SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
         SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
         BINDER,
-        { cursor: Cursor -> SectionGreyedFieldsLink.create(cursor) }
+        { cursor: Cursor -> SectionGreyedFieldsLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: SectionGreyedFieldsLink, w: StatementWrapper ->

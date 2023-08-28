@@ -69,25 +69,39 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191102,
         )
         val event1 = generator.generate()
         helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191102,
         )
         val event2 = generator.generate()
         helper.createTrackerEvent(
-            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20201202
+            event2,
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20201202,
         )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
@@ -97,8 +111,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
             evaluateProgramIndicator(
                 expression = de(programStage1.uid(), dataElement1.uid()),
                 analyticsType = AnalyticsType.EVENT,
-                periods = listOf(period201912)
-            )
+                periods = listOf(period201912),
+            ),
         ).isEqualTo("10")
 
         assertThat(
@@ -110,9 +124,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget("EVENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("20")
 
         assertThat(
@@ -128,9 +142,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget("ENROLLMENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("30")
 
         assertThat(
@@ -147,9 +161,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget("EVENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("1")
     }
 
@@ -158,18 +172,29 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191102,
         )
         val event1 = generator.generate()
         helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         val event2 = generator.generate()
         helper.createTrackerEvent(
-            event2, enrollment1, program.uid(), programStage2.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            event2,
+            enrollment1,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "2020-12-03")
@@ -189,9 +214,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("1")
 
         assertThat(
@@ -208,9 +233,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("1")
     }
 
@@ -219,16 +244,27 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191102,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage2.uid(), orgunitChild1.uid(),
-            eventDate = day20191110
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191110,
         )
 
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "2020-12-03")
@@ -247,9 +283,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("2")
 
         assertThat(
@@ -266,9 +302,9 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                     AnalyticsPeriodBoundary.builder()
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         ).isEqualTo("1")
     }
 
@@ -277,31 +313,53 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191101
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191101,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20201202
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20201202,
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191102
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191102,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage2.uid(), orgunitChild1.uid(),
-            eventDate = day20191110
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191110,
         )
 
         val boundaries = listOf(
@@ -312,7 +370,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
             AnalyticsPeriodBoundary.builder()
                 .boundaryTarget(psEventDate(programStage1.uid()))
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                .build()
+                .build(),
         )
 
         assertThat(
@@ -321,8 +379,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.COUNT,
                 periods = listOf(period201911),
-                boundaries = boundaries
-            )
+                boundaries = boundaries,
+            ),
         ).isEqualTo("0")
 
         assertThat(
@@ -331,8 +389,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.COUNT,
                 periods = listOf(period201912),
-                boundaries = boundaries
-            )
+                boundaries = boundaries,
+            ),
         ).isEqualTo("2")
 
         assertThat(
@@ -341,8 +399,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.COUNT,
                 periods = listOf(period202001),
-                boundaries = boundaries
-            )
+                boundaries = boundaries,
+            ),
         ).isEqualTo("0")
 
         assertThat(
@@ -351,8 +409,8 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.COUNT,
                 periods = listOf(period202012),
-                boundaries = boundaries
-            )
+                boundaries = boundaries,
+            ),
         ).isEqualTo("1")
     }
 
@@ -361,31 +419,53 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
-            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191101
+            trackedEntity1.uid(),
+            enrollment1,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191101,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20201202
+            generator.generate(),
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20201202,
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(
-            trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = day20191201
+            trackedEntity2.uid(),
+            enrollment2,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191201
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191201,
         )
         helper.createTrackerEvent(
-            generator.generate(), enrollment2, program.uid(), programStage2.uid(), orgunitChild1.uid(),
-            eventDate = day20191110
+            generator.generate(),
+            enrollment2,
+            program.uid(),
+            programStage2.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191110,
         )
 
         // Test moving a period backwards
@@ -394,22 +474,22 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         assertThat(
             evaluateEventCount(
                 periods = listOf(period201911),
-                boundaries = previousMonthEventBoundaries
-            )
+                boundaries = previousMonthEventBoundaries,
+            ),
         ).isEqualTo("0")
 
         assertThat(
             evaluateEventCount(
                 periods = listOf(period201912),
-                boundaries = previousMonthEventBoundaries
-            )
+                boundaries = previousMonthEventBoundaries,
+            ),
         ).isEqualTo("1")
 
         assertThat(
             evaluateEventCount(
                 periods = listOf(period202001),
-                boundaries = previousMonthEventBoundaries
-            )
+                boundaries = previousMonthEventBoundaries,
+            ),
         ).isEqualTo("2")
 
         // Test moving a period backwards
@@ -417,22 +497,22 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         assertThat(
             evaluateTeiCount(
                 periods = listOf(period201911),
-                boundaries = previousMonthEnrollmentBoundaries
-            )
+                boundaries = previousMonthEnrollmentBoundaries,
+            ),
         ).isEqualTo("0")
 
         assertThat(
             evaluateTeiCount(
                 periods = listOf(period201912),
-                boundaries = previousMonthEnrollmentBoundaries
-            )
+                boundaries = previousMonthEnrollmentBoundaries,
+            ),
         ).isEqualTo("1")
 
         assertThat(
             evaluateTeiCount(
                 periods = listOf(period202001),
-                boundaries = previousMonthEnrollmentBoundaries
-            )
+                boundaries = previousMonthEnrollmentBoundaries,
+            ),
         ).isEqualTo("1")
 
         // Test adding periods before the start and after the end
@@ -448,14 +528,14 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .offsetPeriods(15)
                 .offsetPeriodType(PeriodType.Monthly)
-                .build()
+                .build(),
         )
 
         assertThat(
             evaluateEventCount(
                 periods = listOf(period201912),
-                boundaries = wideRangeBoundaries
-            )
+                boundaries = wideRangeBoundaries,
+            ),
         ).isEqualTo("4")
     }
 
@@ -472,7 +552,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .offsetPeriods(-1)
                 .offsetPeriodType(PeriodType.Monthly)
-                .build()
+                .build(),
         )
     }
 }

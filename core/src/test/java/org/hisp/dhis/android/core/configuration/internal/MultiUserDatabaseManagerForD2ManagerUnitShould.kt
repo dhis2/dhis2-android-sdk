@@ -67,7 +67,10 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = MultiUserDatabaseManagerForD2Manager(
-            databaseAdapter, migration, databaseAdapterFactory, databaseConfigurationStore
+            databaseAdapter,
+            migration,
+            databaseAdapterFactory,
+            databaseConfigurationStore,
         )
         whenever(databaseConfigurationStore.get()).doReturn(databasesConfiguration)
     }

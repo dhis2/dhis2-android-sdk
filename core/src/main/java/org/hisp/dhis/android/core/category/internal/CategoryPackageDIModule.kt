@@ -42,8 +42,8 @@ import retrofit2.Retrofit
         CategoryOptionEntityDIModule::class,
         CategoryOptionOrganisationUnitEntityDIModule::class,
         CategoryOptionComboEntityDIModule::class,
-        CategoryOptionComboCategoryOptionEntityDIModule::class
-    ]
+        CategoryOptionComboCategoryOptionEntityDIModule::class,
+    ],
 )
 internal class CategoryPackageDIModule {
 

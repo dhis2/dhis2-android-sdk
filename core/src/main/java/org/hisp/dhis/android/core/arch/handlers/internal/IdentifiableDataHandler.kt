@@ -36,6 +36,6 @@ interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWi
     fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     )
 }

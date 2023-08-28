@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 
 internal class ProgramRuleActionHandler(
-    store: ProgramRuleActionStore
+    store: ProgramRuleActionStore,
 ) : IdentifiableHandlerImpl<ProgramRuleAction>(store)

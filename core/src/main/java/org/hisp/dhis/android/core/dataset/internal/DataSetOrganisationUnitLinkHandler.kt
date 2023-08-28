@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 
 internal class DataSetOrganisationUnitLinkHandler(
-    store: DataSetOrganisationUnitLinkStore
+    store: DataSetOrganisationUnitLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, DataSetOrganisationUnitLink>(store)

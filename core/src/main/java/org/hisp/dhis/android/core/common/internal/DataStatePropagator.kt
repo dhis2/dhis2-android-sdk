@@ -71,6 +71,6 @@ internal interface DataStatePropagator {
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
         eventUids: List<String>,
-        relationshipUids: List<String>
+        relationshipUids: List<String>,
     ): DataStateUidHolder
 }

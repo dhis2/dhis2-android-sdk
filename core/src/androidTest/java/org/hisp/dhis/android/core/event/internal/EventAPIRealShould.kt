@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
@@ -40,12 +39,13 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Assert
 import org.junit.Before
+import java.util.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class EventAPIRealShould internal constructor(
     // API version dependant parameters
     private val serverUrl: String,
-    private val strategy: String
+    private val strategy: String,
 ) : BaseRealIntegrationTest() {
     private val ouMode = OrganisationUnitMode.ACCESSIBLE.name
     private lateinit var apiCallExecutor: CoroutineAPICallExecutor
@@ -125,7 +125,7 @@ abstract class EventAPIRealShould internal constructor(
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
-                    ouMode
+                    ouMode,
                 )
             }.getOrThrow()
             Assert.fail("Should not reach that line")
@@ -167,7 +167,7 @@ abstract class EventAPIRealShould internal constructor(
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
-                    ouMode
+                    ouMode,
                 )
             }.getOrThrow()
             Assert.fail("Should not reach that line")
@@ -243,7 +243,7 @@ abstract class EventAPIRealShould internal constructor(
                 eventService.getEvent(
                     invalidEvent.uid(),
                     EventFields.allFields,
-                    ouMode
+                    ouMode,
                 )
             }.getOrThrow()
             Assert.fail("Should not reach that line")
@@ -277,14 +277,16 @@ abstract class EventAPIRealShould internal constructor(
         val serverValidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 validEvent.uid(),
-                EventFields.allFields, ouMode
+                EventFields.allFields,
+                ouMode,
             )
         }.getOrThrow()
 
         val serverInvalidEvent = apiCallExecutor.wrap {
             eventService.getEvent(
                 invalidEvent.uid(),
-                EventFields.allFields, ouMode
+                EventFields.allFields,
+                ouMode,
             )
         }.getOrThrow()
 
@@ -298,7 +300,7 @@ abstract class EventAPIRealShould internal constructor(
         return apiCallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
-            errorClass = EventWebResponse::class.java
+            errorClass = EventWebResponse::class.java,
         ) {
             eventService.postEvents(payload, strategy)
         }

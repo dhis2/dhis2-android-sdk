@@ -38,14 +38,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetL
 
 @Suppress("MagicNumber")
 internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeLegendSetLinkStore,
     LinkStoreImpl<TrackedEntityAttributeLegendSetLink>(
         databaseAdapter,
         TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
         TrackedEntityAttributeLegendSetLinkTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
         BINDER,
-        { cursor: Cursor -> TrackedEntityAttributeLegendSetLink.create(cursor) }
+        { cursor: Cursor -> TrackedEntityAttributeLegendSetLink.create(cursor) },
     ) {
 
     companion object {

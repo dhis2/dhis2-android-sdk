@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOption
 
 internal class CategoryOptionHandler constructor(
-    categoryOptionStore: IdentifiableObjectStore<CategoryOption>
+    categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
 ) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore)

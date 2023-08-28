@@ -43,7 +43,7 @@ internal class DataElementHandler constructor(
     dataElementStore: DataElementStore,
     private val attributeHandler: AttributeHandler,
     private val dataElementAttributeLinkHandler: LinkHandler<Attribute, DataElementAttributeValueLink>,
-    private val dataElementLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink>
+    private val dataElementLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink>,
 ) : IdentifiableHandlerImpl<DataElement>(dataElementStore) {
 
     override fun afterObjectHandled(o: DataElement, action: HandleAction) {
@@ -51,7 +51,8 @@ internal class DataElementHandler constructor(
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             attributeHandler.handleMany(attributes)
             dataElementAttributeLinkHandler.handleMany(
-                o.uid(), attributes
+                o.uid(),
+                attributes,
             ) { attribute: Attribute ->
                 DataElementAttributeValueLink.builder()
                     .dataElement(o.uid())
@@ -62,7 +63,8 @@ internal class DataElementHandler constructor(
         }
         if (o.legendSets() != null) {
             dataElementLegendSetLinkHandler.handleMany(
-                o.uid(), o.legendSets()
+                o.uid(),
+                o.legendSets(),
             ) { legendSet: ObjectWithUid, sortOrder: Int? ->
                 DataElementLegendSetLink.builder()
                     .dataElement(o.uid())

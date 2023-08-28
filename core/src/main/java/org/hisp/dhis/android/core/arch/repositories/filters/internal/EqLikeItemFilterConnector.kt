@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 
 class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
 ) {
     fun eq(value: String): R {
         val item = RepositoryScopeFilterItem.builder()

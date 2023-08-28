@@ -46,10 +46,10 @@ internal class RelationshipEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        itemChildrenAppender: RelationshipItemChildrenAppender
+        itemChildrenAppender: RelationshipItemChildrenAppender,
     ): Map<String, ChildrenAppender<Relationship>> {
         return mapOf(
-            RelationshipFields.ITEMS to itemChildrenAppender
+            RelationshipFields.ITEMS to itemChildrenAppender,
         )
     }
 }

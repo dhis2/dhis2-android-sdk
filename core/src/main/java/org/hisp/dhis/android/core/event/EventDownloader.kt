@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,14 +38,15 @@ import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
+import javax.inject.Inject
 
 @Reusable
 class EventDownloader @Inject internal constructor(
     scope: RepositoryScope,
-    private val callFactory: EventDownloadCall
+    private val callFactory: EventDownloadCall,
 ) : BaseRepositoryImpl<EventDownloader>(
     scope,
-    FilterConnectorFactory(scope) { s: RepositoryScope -> EventDownloader(s, callFactory) }
+    FilterConnectorFactory(scope) { s: RepositoryScope -> EventDownloader(s, callFactory) },
 ) {
 
     /**

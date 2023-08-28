@@ -42,6 +42,6 @@ internal interface OptionService {
         @Query("filter") optionSetUidsFilterString: String,
         @Query("paging") paging: Boolean,
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int
+        @Query("pageSize") pageSize: Int,
     ): Single<Payload<Option>>
 }

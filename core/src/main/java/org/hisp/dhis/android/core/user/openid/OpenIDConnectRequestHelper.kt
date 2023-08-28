@@ -61,25 +61,25 @@ internal class OpenIDConnectRequestHelper(private val config: OpenIDConnectConfi
     private fun loadAuthConfig(): Single<AuthorizationServiceConfiguration> {
         return if (config.authorizationUri == null || config.tokenUrl == null) {
             Single.error<AuthorizationServiceConfiguration>(
-                RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined")
+                RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined"),
             )
         } else {
             Single.just(
                 AuthorizationServiceConfiguration(
                     Uri.parse(config.authorizationUri),
-                    Uri.parse(config.tokenUrl)
-                )
+                    Uri.parse(config.tokenUrl),
+                ),
             )
         }
     }
 
     private fun buildRequest(
-        authServiceConfiguration: AuthorizationServiceConfiguration
+        authServiceConfiguration: AuthorizationServiceConfiguration,
     ): AuthorizationRequest = AuthorizationRequest.Builder(
         authServiceConfiguration,
         config.clientId,
         ResponseTypeValues.CODE,
-        config.redirectUri
+        config.redirectUri,
     ).apply {
         setScope("openid email profile")
     }.build()

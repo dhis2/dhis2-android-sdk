@@ -40,7 +40,7 @@ internal class IndicatorSQLEvaluatorIntegrationShould : IndicatorEvaluatorIntegr
     private val indicatorEngine = IndicatorSQLEngine(
         indicatorTypeStore,
         analyticExpressionEngineFactory,
-        databaseAdapter
+        databaseAdapter,
     )
 
     override val indicatorEvaluator = IndicatorSQLEvaluator(indicatorEngine)

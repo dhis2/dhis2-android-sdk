@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import java.util.Date
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import java.util.Date
 
 internal interface TrackedEntityAttributeReservedValueStore :
     ObjectWithoutUidStore<TrackedEntityAttributeReservedValue> {

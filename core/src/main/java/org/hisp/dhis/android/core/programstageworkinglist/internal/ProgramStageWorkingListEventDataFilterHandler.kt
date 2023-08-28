@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
 internal class ProgramStageWorkingListEventDataFilterHandler(
-    store: ProgramStageWorkingListEventDataFilterStore
+    store: ProgramStageWorkingListEventDataFilterStore,
 ) : ObjectWithoutUidHandlerImpl<ProgramStageWorkingListEventDataFilter>(store)

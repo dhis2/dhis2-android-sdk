@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class E1006Interpreter internal constructor(
     private val interpreterHelper: InterpreterHelper,
-    override val regex: Regex
+    override val regex: Regex,
 ) : ErrorCodeInterpreter {
     // "Attribute: `Kv4fmHVAzwX`, does not exist."
     override val unformattedDescription = R.string.E1006

@@ -53,7 +53,7 @@ internal class OrganisationUnitEntityDIModule {
         organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
         dataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler,
         organisationUnitGroupHandler: OrganisationUnitGroupHandler,
-        organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler
+        organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler,
     ): OrganisationUnitHandler {
         return OrganisationUnitHandler(
             organisationUnitStore,
@@ -61,7 +61,7 @@ internal class OrganisationUnitEntityDIModule {
             organisationUnitProgramLinkHandler,
             dataSetOrganisationUnitLinkHandler,
             organisationUnitGroupHandler,
-            organisationUnitGroupLinkHandler
+            organisationUnitGroupLinkHandler,
         )
     }
 
@@ -78,7 +78,7 @@ internal class OrganisationUnitEntityDIModule {
             OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
-                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter)
+                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter),
         )
     }
 }

@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.settings
 enum class WHONutritionChartType {
     WFA,
     WFH,
-    HFA
+    HFA,
 }

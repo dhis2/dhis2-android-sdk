@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.usecase.stock.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransaction
+import javax.inject.Inject
 
 @Reusable
 internal class StockUseCaseTransformer @Inject constructor() : TwoWayTransformer<InternalStockUseCase, StockUseCase> {
@@ -44,7 +44,7 @@ internal class StockUseCaseTransformer @Inject constructor() : TwoWayTransformer
             o.programType(),
             o.description(),
             o.stockOnHand(),
-            o.transactions()?.map { StockUseCaseTransaction.transformFrom(it) } ?: emptyList()
+            o.transactions()?.map { StockUseCaseTransaction.transformFrom(it) } ?: emptyList(),
         )
     }
 

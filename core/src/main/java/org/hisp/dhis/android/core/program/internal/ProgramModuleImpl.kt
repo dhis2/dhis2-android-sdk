@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.*
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList", "TooManyFunctions")
@@ -47,7 +47,7 @@ internal class ProgramModuleImpl @Inject constructor(
     private val programStageDataElements: ProgramStageDataElementCollectionRepository,
     private val programTrackedEntityAttributes: ProgramTrackedEntityAttributeCollectionRepository,
     private val programIndicatorEngine: ProgramIndicatorEngine,
-    private val programStageWorkingLists: ProgramStageWorkingListCollectionRepository
+    private val programStageWorkingLists: ProgramStageWorkingListCollectionRepository,
 ) : ProgramModule {
     override fun programs(): ProgramCollectionRepository {
         return programs

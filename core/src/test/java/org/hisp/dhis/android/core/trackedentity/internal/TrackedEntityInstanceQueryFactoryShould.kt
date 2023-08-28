@@ -67,11 +67,12 @@ class TrackedEntityInstanceQueryFactoryShould {
     private val links = listOf(
         OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p1).build(),
         OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p2).build(),
-        OrganisationUnitProgramLink.builder().organisationUnit(ou2).program(p2).build()
+        OrganisationUnitProgramLink.builder().organisationUnit(ou2).program(p2).build(),
     )
 
     // Object to test
     private lateinit var queryFactory: TrackerQueryBundleFactory
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -81,15 +82,19 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any()))
             .thenReturn(links)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(
-            listOf(p1, p2, p3)
+            listOf(p1, p2, p3),
         )
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+            userOrganisationUnitLinkStore,
+            organisationUnitProgramLinkLinkStore,
         )
         queryFactory = TrackerQueryBundleFactory(
-            programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper
+            programStore,
+            programSettingsObjectRepository,
+            lastUpdatedManager,
+            commonHelper,
         )
     }
 

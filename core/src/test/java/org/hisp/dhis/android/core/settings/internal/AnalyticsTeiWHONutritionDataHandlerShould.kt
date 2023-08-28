@@ -51,8 +51,9 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
         whenever(whoData.teiSetting()) doReturn "tei_setting"
 
         analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
-            store, teiDataElementHandler,
-            teiIndicatorHandler
+            store,
+            teiDataElementHandler,
+            teiIndicatorHandler,
         )
     }
 

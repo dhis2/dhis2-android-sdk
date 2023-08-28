@@ -37,5 +37,5 @@ internal data class DataSetCompleteRegistrationQuery(
 ) : BaseQueryKt(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
-    paging = false
+    paging = false,
 )

@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTab
 
 @Suppress("MagicNumber")
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionOrganisationUnitLinkStore,
     LinkStoreImpl<CategoryOptionOrganisationUnitLink>(
         databaseAdapter,
         CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
         CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
         BINDER,
-        { cursor: Cursor -> CategoryOptionOrganisationUnitLink.create(cursor) }
+        { cursor: Cursor -> CategoryOptionOrganisationUnitLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: CategoryOptionOrganisationUnitLink, w: StatementWrapper ->

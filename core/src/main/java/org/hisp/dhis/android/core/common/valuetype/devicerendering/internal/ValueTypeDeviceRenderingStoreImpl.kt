@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
 
 internal class ValueTypeDeviceRenderingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ValueTypeDeviceRenderingStore,
     ObjectWithoutUidStoreImpl<ValueTypeDeviceRendering>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class ValueTypeDeviceRenderingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> ValueTypeDeviceRendering.create(cursor) }
+        { cursor: Cursor -> ValueTypeDeviceRendering.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: ValueTypeDeviceRendering, w: StatementWrapper ->

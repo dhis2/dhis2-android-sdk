@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
-import java.text.ParseException
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
@@ -45,6 +43,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import java.text.ParseException
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
@@ -52,7 +52,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private val eventService: EventService,
     private val mapper: SearchGridMapper,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
     suspend fun getCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
         return queryTrackedEntityInstances(query)
@@ -67,21 +67,21 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
             if (events.isEmpty()) {
                 TrackerQueryResult(
                     trackedEntities = emptyList(),
-                    exhausted = true
+                    exhausted = true,
                 )
             } else {
                 val teiQuery = getPostEventTeiQuery(query, events)
                 val instances = getTrackedEntityQuery(teiQuery)
                 TrackerQueryResult(
                     trackedEntities = instances,
-                    exhausted = events.size < query.pageSize
+                    exhausted = events.size < query.pageSize,
                 )
             }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
-                exhausted = instances.size < query.pageSize
+                exhausted = instances.size < query.pageSize,
             )
         }
     }
@@ -98,7 +98,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
 
     private suspend fun getEventQueryForOrgunit(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?
+        orgunit: String?,
     ): List<Event> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
@@ -122,7 +122,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 page = query.page,
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-                includeDeleted = query.includeDeleted
+                includeDeleted = query.includeDeleted,
             )
         }.getOrThrow().items()
     }
@@ -130,39 +130,37 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         val uidsStr = query.uids?.joinToString(";")
 
-        val searchGridCall = trackedEntityService.query(
-            trackedEntityInstance = uidsStr,
-            orgUnit = getOrgunits(query.orgUnits),
-            orgUnitMode = query.orgUnitMode?.toString(),
-            program = query.program,
-            programStage = query.programStage,
-            programStartDate = query.programStartDate.simpleDateFormat(),
-            programEndDate = query.programEndDate.simpleDateFormat(),
-            enrollmentStatus = query.enrollmentStatus?.toString(),
-            programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
-            programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
-            followUp = query.followUp,
-            eventStartDate = query.eventStartDate.simpleDateFormat(),
-            eventEndDate = query.eventEndDate.simpleDateFormat(),
-            eventStatus = getEventStatus(query),
-            trackedEntityType = query.trackedEntityType,
-            query = query.query,
-            filter = toAPIFilterFormat(query.attributeFilter, upper = true),
-            assignedUserMode = query.assignedUserMode?.toString(),
-            lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
-            lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-            order = query.order,
-            paging = query.paging,
-            pageSize = query.pageSize,
-            page = query.page,
-        )
-
         return try {
             coroutineAPICallExecutor.wrap(
                 storeError = false,
-                errorCatcher = TrackedEntityInstanceQueryErrorCatcher()
+                errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
             ) {
-                searchGridCall
+                trackedEntityService.query(
+                    trackedEntityInstance = uidsStr,
+                    orgUnit = getOrgunits(query.orgUnits),
+                    orgUnitMode = query.orgUnitMode?.toString(),
+                    program = query.program,
+                    programStage = query.programStage,
+                    programStartDate = query.programStartDate.simpleDateFormat(),
+                    programEndDate = query.programEndDate.simpleDateFormat(),
+                    enrollmentStatus = query.enrollmentStatus?.toString(),
+                    programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
+                    programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
+                    followUp = query.followUp,
+                    eventStartDate = query.eventStartDate.simpleDateFormat(),
+                    eventEndDate = query.eventEndDate.simpleDateFormat(),
+                    eventStatus = getEventStatus(query),
+                    trackedEntityType = query.trackedEntityType,
+                    query = query.query,
+                    filter = toAPIFilterFormat(query.attributeFilter, upper = true),
+                    assignedUserMode = query.assignedUserMode?.toString(),
+                    lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
+                    lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
+                    order = query.order,
+                    paging = query.paging,
+                    pageSize = query.pageSize,
+                    page = query.page,
+                )
             }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
             throw D2Error.builder()
@@ -185,14 +183,17 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
     }
 
     private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) null
-        else orgUnits.joinToString(";")
+        return if (orgUnits.isEmpty()) {
+            null
+        } else {
+            orgUnits.joinToString(";")
+        }
     }
 
     companion object {
         internal fun getPostEventTeiQuery(
             query: TrackedEntityInstanceQueryOnline,
-            events: List<Event>
+            events: List<Event>,
         ): TrackedEntityInstanceQueryOnline {
             return query.copy(
                 uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),

@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.user.internal
 import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Reusable
-import java.lang.Exception
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
+import java.lang.Exception
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class UserAuthenticateCallErrorCatcher @Inject constructor(private val objectMapper: ObjectMapper) :

@@ -28,20 +28,20 @@
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageWorkingListHandler @Inject constructor(
     store: ProgramStageWorkingListStore,
     private val eventDataFilterHandler: ProgramStageWorkingListEventDataFilterHandler,
-    private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler
+    private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler,
 ) : IdentifiableHandlerImpl<ProgramStageWorkingList>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<ProgramStageWorkingList>
+        oCollection: Collection<ProgramStageWorkingList>,
     ): Collection<ProgramStageWorkingList> {
         store.delete()
         return super.beforeCollectionHandled(oCollection)
@@ -51,10 +51,10 @@ internal class ProgramStageWorkingListHandler @Inject constructor(
         if (action !== HandleAction.Delete && o.programStageQueryCriteria() != null) {
             o.programStageQueryCriteria()?.let { criteria ->
                 eventDataFilterHandler.handleMany(
-                    criteria.dataFilters()
+                    criteria.dataFilters(),
                 ) { edf -> edf.toBuilder().programStageWorkingList(o.uid()).build() }
                 attributeValueFilterHandler.handleMany(
-                    criteria.attributeValueFilters()
+                    criteria.attributeValueFilters(),
                 ) { avf -> avf.toBuilder().programStageWorkingList(o.uid()).build() }
             }
         }

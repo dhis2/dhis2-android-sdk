@@ -57,7 +57,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
             period = dataSetCompleteRegistration.period(),
             organisationUnit = dataSetCompleteRegistration.organisationUnit(),
             dataSet = dataSetCompleteRegistration.dataSet(),
-            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo()
+            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo(),
         ).blockingSet()
 
         val toPostRepository = d2.dataSetModule()
@@ -98,7 +98,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
             period = dataSetCompleteRegistration.period(),
             organisationUnit = dataSetCompleteRegistration.organisationUnit(),
             dataSet = dataSetCompleteRegistration.dataSet(),
-            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo()
+            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo(),
         )
 
         dhis2MockServer.enqueueMockResponse(200, "imports/data_value_import_summary_web_response.json")
@@ -116,7 +116,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
             period = dataSetCompleteRegistration.period(),
             organisationUnit = dataSetCompleteRegistration.organisationUnit(),
             dataSet = dataSetCompleteRegistration.dataSet(),
-            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo()
+            attributeOptionCombo = dataSetCompleteRegistration.attributeOptionCombo(),
         )
         dObject.blockingDelete()
         assertEquals(toUpdateRepository.blockingGet().size, 1)

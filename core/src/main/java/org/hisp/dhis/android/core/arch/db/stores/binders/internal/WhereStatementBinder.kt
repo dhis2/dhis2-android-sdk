@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.binders.internal
 
-package org.hisp.dhis.android.core.arch.helpers;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class UserHelperShould {
-
-    @Test
-    public void md5_evaluate_same_string() {
-        String md5s1 = UserHelper.md5("user1","password1");
-        String md5s2 = UserHelper.md5("user1","password1");
-
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isTrue();
-    }
-
-    @Test
-    public void md5_evaluate_different_string() {
-        String md5s1 = UserHelper.md5("user2", "password2");
-        String md5s2 = UserHelper.md5("user3", "password3");
-
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isFalse();
-    }
-
+internal fun interface WhereStatementBinder<M> {
+    fun bindWhereStatement(m: M, w: StatementWrapper)
 }

@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.option.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class OptionSubCollectionCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SubCollectionCleanerImpl<Option>(
     tableName = OptionTableInfo.TABLE_INFO.name(),
     parentColumn = OptionTableInfo.Columns.OPTION_SET,
@@ -46,5 +46,5 @@ internal class OptionSubCollectionCleaner @Inject constructor(
         override fun transform(o: Option): String {
             return o.optionSet()!!.uid()
         }
-    }
+    },
 )

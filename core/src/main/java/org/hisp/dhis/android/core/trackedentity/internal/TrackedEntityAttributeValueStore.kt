@@ -35,18 +35,18 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
     fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue>
     fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
-        trackedEntityAttributeUids: List<String>
+        trackedEntityAttributeUids: List<String>,
     )
     fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
-        program: String
+        program: String,
     )
     fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         teiType: String,
-        programs: List<String>
+        programs: List<String>,
     )
 
     fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)

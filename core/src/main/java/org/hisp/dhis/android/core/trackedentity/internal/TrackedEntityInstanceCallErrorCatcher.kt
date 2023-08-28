@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import java.io.IOException
-import kotlin.Throws
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
+import java.io.IOException
+import kotlin.Throws
 
 internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {

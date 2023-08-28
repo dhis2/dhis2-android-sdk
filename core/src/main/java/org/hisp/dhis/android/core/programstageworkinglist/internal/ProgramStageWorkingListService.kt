@@ -43,6 +43,6 @@ internal interface ProgramStageWorkingListService {
         @Query("filter") @Where uids: Filter<ProgramStageWorkingList, String>,
         @Query("filter") accessDataReadFilter: String,
         @Query("fields") @Which fields: Fields<ProgramStageWorkingList>,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<ProgramStageWorkingList>>
 }

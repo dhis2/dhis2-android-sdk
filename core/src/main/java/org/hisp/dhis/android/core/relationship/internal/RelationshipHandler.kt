@@ -28,32 +28,32 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import javax.inject.Inject
 
 @Reusable
 internal class RelationshipHandler @Inject constructor(
     relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
     private val relationshipItemHandler: RelationshipItemHandler,
-    private val storeSelector: RelationshipItemElementStoreSelector
+    private val storeSelector: RelationshipItemElementStoreSelector,
 ) : IdentifiableHandlerImpl<Relationship>(relationshipStore) {
 
     override fun afterObjectHandled(o: Relationship, action: HandleAction) {
         relationshipItemHandler.handle(
             o.from()!!.toBuilder()
                 .relationship(ObjectWithUid.create(o.uid()))
-                .relationshipItemType(RelationshipConstraintType.FROM).build()
+                .relationshipItemType(RelationshipConstraintType.FROM).build(),
         )
         relationshipItemHandler.handle(
             o.to()!!.toBuilder()
                 .relationship(ObjectWithUid.create(o.uid()))
-                .relationshipItemType(RelationshipConstraintType.TO).build()
+                .relationshipItemType(RelationshipConstraintType.TO).build(),
         )
     }
 
@@ -74,7 +74,8 @@ internal class RelationshipHandler @Inject constructor(
 
     private fun getExistingRelationshipUid(relationship: Relationship): String? {
         val existingRelationshipUidsForPair = relationshipItemStore.getRelationshipUidsForItems(
-            relationship.from()!!, relationship.to()!!
+            relationship.from()!!,
+            relationship.to()!!,
         )
         for (existingRelationshipUid in existingRelationshipUidsForPair) {
             val existingRelationship = store.selectByUid(existingRelationshipUid)

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -47,6 +46,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.util.*
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,8 +70,11 @@ class SystemInfoCallShould {
     @Before
     fun setUp() {
         systemInfoSyncCall = SystemInfoCall(
-            systemInfoHandler, systemInfoService, resourceHandler, versionManager,
-            coroutineAPICallExecutor
+            systemInfoHandler,
+            systemInfoService,
+            resourceHandler,
+            versionManager,
+            coroutineAPICallExecutor,
         )
 
         whenever(systemInfo.version()).thenReturn("2.29")
@@ -110,7 +113,7 @@ class SystemInfoCallShould {
         }
 
         verifyThrowD2Error(
-            block = { systemInfoSyncCall.download(true) }
+            block = { systemInfoSyncCall.download(true) },
         )
 
         verifyNoMoreInteractions(systemInfoHandler)
@@ -130,7 +133,7 @@ class SystemInfoCallShould {
         whenever(systemInfo.version()).thenReturn("2.28")
 
         verifyThrowD2Error(
-            block = { systemInfoSyncCall.download(true) }
+            block = { systemInfoSyncCall.download(true) },
         )
     }
 
@@ -140,7 +143,7 @@ class SystemInfoCallShould {
 
         verifyThrowD2Error(
             block = { systemInfoSyncCall.download(true) },
-            code = D2ErrorCode.INVALID_DHIS_VERSION
+            code = D2ErrorCode.INVALID_DHIS_VERSION,
         )
 
         verify(systemInfoHandler, never()).handle(systemInfo)

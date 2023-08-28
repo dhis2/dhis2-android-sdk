@@ -55,7 +55,7 @@ object MapLayerTableInfo {
                     STYLE,
                     IMAGE_URL,
                     SUBDOMAINS,
-                    SUBDOMAIN_PLACEHOLDER
+                    SUBDOMAIN_PLACEHOLDER,
                 )
         }
 

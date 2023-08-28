@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
 
 @Suppress("MagicNumber")
 internal class StockUseCaseStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseStore,
     IdentifiableObjectStoreImpl<InternalStockUseCase>(
         databaseAdapter,
         StockUseCaseTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> InternalStockUseCase.create(cursor) }
+        { cursor: Cursor -> InternalStockUseCase.create(cursor) },
     ) {
 
     companion object {

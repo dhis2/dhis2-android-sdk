@@ -81,7 +81,7 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
             ExpressionParser.V_VALUE_COUNT to VValueCount(),
             ExpressionParser.V_ZERO_POS_VALUE_COUNT to VZeroPosValueCount(),
             ExpressionParser.V_PROGRAM_STAGE_ID to VProgramStageId(),
-            ExpressionParser.V_PROGRAM_STAGE_NAME to VProgramStageName()
+            ExpressionParser.V_PROGRAM_STAGE_NAME to VProgramStageName(),
         )
     }
 }

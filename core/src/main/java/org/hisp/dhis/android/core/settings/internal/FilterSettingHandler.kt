@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.FilterSetting
+import javax.inject.Inject
 
 @Reusable
 internal class FilterSettingHandler @Inject constructor(
-    store: FilterSettingStore
+    store: FilterSettingStore,
 ) : ObjectWithoutUidHandlerImpl<FilterSetting>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<FilterSetting>): Collection<FilterSetting> {

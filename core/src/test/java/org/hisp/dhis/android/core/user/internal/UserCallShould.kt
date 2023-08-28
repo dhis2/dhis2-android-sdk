@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -41,6 +40,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Call
+import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
@@ -69,7 +69,6 @@ class UserCallShould : BaseCallShould() {
             userSyncCall.call()
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
-
             // verify that handlers was not touched
             verify(databaseAdapter, never()).beginNewTransaction()
             verify(transaction, never()).setSuccessful()

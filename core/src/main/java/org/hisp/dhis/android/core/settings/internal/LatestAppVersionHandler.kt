@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import javax.inject.Inject
 
 @Reusable
 internal class LatestAppVersionHandler @Inject constructor(store: LatestAppVersionStore) :

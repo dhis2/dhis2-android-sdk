@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageDataElementHandler @Inject constructor(
     programStageDataElementStore: ProgramStageDataElementStore,
     private val dataElementHandler: DataElementHandler,
-    private val valueTypeRenderingHandler: ValueTypeRenderingHandler
+    private val valueTypeRenderingHandler: ValueTypeRenderingHandler,
 ) : IdentifiableHandlerImpl<ProgramStageDataElement>(programStageDataElementStore) {
 
     override fun afterObjectHandled(o: ProgramStageDataElement, action: HandleAction) {
@@ -48,8 +48,9 @@ internal class ProgramStageDataElementHandler @Inject constructor(
             dataElementHandler.handle(o.dataElement()!!)
         }
         valueTypeRenderingHandler.handle(
-            o.renderType(), o.uid(),
-            ProgramStageDataElementTableInfo.TABLE_INFO.name()
+            o.renderType(),
+            o.uid(),
+            ProgramStageDataElementTableInfo.TABLE_INFO.name(),
         )
     }
 }

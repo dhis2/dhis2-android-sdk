@@ -49,7 +49,7 @@ object IndicatorTypeTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 NUMBER,
-                FACTOR
+                FACTOR,
             )
         }
 

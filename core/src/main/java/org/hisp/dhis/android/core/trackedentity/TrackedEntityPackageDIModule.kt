@@ -68,8 +68,8 @@ import retrofit2.Retrofit
         TrackedEntityInstanceSyncEntityDIModule::class,
         TrackedEntityTypeEntityDIModule::class,
         TrackedEntityTypeAttributeEntityDIModule::class,
-        AttributeValueFilterEntityDIModule::class
-    ]
+        AttributeValueFilterEntityDIModule::class,
+    ],
 )
 internal class TrackedEntityPackageDIModule {
     @Provides
@@ -87,7 +87,7 @@ internal class TrackedEntityPackageDIModule {
     @Provides
     @Reusable
     fun dataValueCallFactory(
-        impl: TrackedEntityAttributeReservedValueEndpointCallFactory
+        impl: TrackedEntityAttributeReservedValueEndpointCallFactory,
     ): QueryCallFactory<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery> {
         return impl
     }

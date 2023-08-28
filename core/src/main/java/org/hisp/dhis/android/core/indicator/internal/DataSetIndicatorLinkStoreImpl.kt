@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 
 internal class DataSetIndicatorLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetIndicatorLinkStore,
     LinkStoreImpl<DataSetIndicatorLink>(
         databaseAdapter,
         DataSetIndicatorLinkTableInfo.TABLE_INFO,
         DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
         BINDER,
-        { cursor: Cursor -> DataSetIndicatorLink.create(cursor) }
+        { cursor: Cursor -> DataSetIndicatorLink.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: DataSetIndicatorLink, w: StatementWrapper ->

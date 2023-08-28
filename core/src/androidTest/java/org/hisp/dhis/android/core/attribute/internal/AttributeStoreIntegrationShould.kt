@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class AttributeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Attribute>(
     AttributeStoreImpl(TestDatabaseAdapterFactory.get()),
     AttributeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): Attribute {
         return AttributeSamples.getAttribute()

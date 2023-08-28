@@ -55,7 +55,7 @@ internal class EnrollmentHandler constructor(
     private val eventOrphanCleaner: EventOrphanCleaner,
     private val noteHandler: Handler<Note>,
     private val noteUniquenessManager: NoteUniquenessManager,
-    private val relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner
+    private val relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Enrollment>(enrollmentStore, relationshipVersionManager, relationshipHandler) {
 
     override fun addRelationshipState(o: Enrollment): Enrollment {
@@ -72,7 +72,7 @@ internal class EnrollmentHandler constructor(
         } else {
             Log.i(
                 this.javaClass.simpleName,
-                "Enrollment " + o.uid() + " has invalid geometry value"
+                "Enrollment " + o.uid() + " has invalid geometry value",
             )
             o.toBuilder().geometry(null).build()
         }
@@ -82,7 +82,7 @@ internal class EnrollmentHandler constructor(
         o: Enrollment,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (action !== HandleAction.Delete) {
             val events = EnrollmentInternalAccessor.accessEvents(o)
@@ -90,7 +90,7 @@ internal class EnrollmentHandler constructor(
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
                     overwrite = params.overwrite,
-                    asRelationship = false
+                    asRelationship = false,
                 )
                 eventHandler.handleMany(events, thisParams, relatives)
                 eventOrphanCleaner.deleteOrphan(o, events)
@@ -101,7 +101,9 @@ internal class EnrollmentHandler constructor(
                     noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, o.uid(), note)
                 }
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                    transformed, Note.NoteType.ENROLLMENT_NOTE, o.uid()
+                    transformed,
+                    Note.NoteType.ENROLLMENT_NOTE,
+                    o.uid(),
                 )
                 noteHandler.handleMany(notesToSync)
             }

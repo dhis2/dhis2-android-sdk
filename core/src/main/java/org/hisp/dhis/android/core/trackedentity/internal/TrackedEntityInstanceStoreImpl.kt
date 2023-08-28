@@ -42,13 +42,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class TrackedEntityInstanceStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceStore,
     IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance>(
         databaseAdapter,
         TrackedEntityInstanceTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> TrackedEntityInstance.create(cursor) }
+        { cursor: Cursor -> TrackedEntityInstance.create(cursor) },
     ) {
     override fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance> {
         val uploadableStatesString = uploadableStatesIncludingError().map { it.name }

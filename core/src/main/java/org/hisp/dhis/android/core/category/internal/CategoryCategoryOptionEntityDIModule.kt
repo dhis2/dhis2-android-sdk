@@ -43,7 +43,7 @@ internal class CategoryCategoryOptionEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: CategoryCategoryOptionLinkStore
+        store: CategoryCategoryOptionLinkStore,
     ): CategoryCategoryOptionLinkHandler {
         return CategoryCategoryOptionLinkHandler(store)
     }

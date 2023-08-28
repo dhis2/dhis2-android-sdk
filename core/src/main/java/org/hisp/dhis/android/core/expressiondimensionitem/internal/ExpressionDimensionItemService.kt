@@ -42,6 +42,6 @@ internal interface ExpressionDimensionItemService {
     fun getExpressionDimensionItems(
         @Query("filter") @Where uids: Filter<ExpressionDimensionItem, String>,
         @Query("fields") @Which fields: Fields<ExpressionDimensionItem>,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<ExpressionDimensionItem>>
 }

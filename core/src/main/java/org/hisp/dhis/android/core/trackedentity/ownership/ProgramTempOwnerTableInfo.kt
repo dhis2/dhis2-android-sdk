@@ -51,7 +51,7 @@ internal object ProgramTempOwnerTableInfo {
                 TRACKED_ENTITY_INSTANCE,
                 CREATED,
                 VALID_UNTIL,
-                REASON
+                REASON,
             )
         }
 
@@ -60,7 +60,7 @@ internal object ProgramTempOwnerTableInfo {
                 super.all(),
                 PROGRAM,
                 TRACKED_ENTITY_INSTANCE,
-                CREATED
+                CREATED,
             )
         }
 

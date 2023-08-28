@@ -56,7 +56,7 @@ internal object D2Factory {
     private fun forNewDatabaseInternal(
         secureStore: SecureStore,
         insecureStore: InsecureStore,
-        isRealIntegration: Boolean
+        isRealIntegration: Boolean,
     ): D2 {
         val context = InstrumentationRegistry.getInstrumentation().context
         val d2Configuration = d2Configuration(context)

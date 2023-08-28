@@ -45,10 +45,10 @@ internal class ProgramStageDataElementEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        valueTypeRenderingChildrenAppender: DataElementValueTypeRenderingChildrenAppender
+        valueTypeRenderingChildrenAppender: DataElementValueTypeRenderingChildrenAppender,
     ): Map<String, ChildrenAppender<ProgramStageDataElement>> {
         return mapOf(
-            ProgramStageDataElementFields.RENDER_TYPE to valueTypeRenderingChildrenAppender
+            ProgramStageDataElementFields.RENDER_TYPE to valueTypeRenderingChildrenAppender,
         )
     }
 }

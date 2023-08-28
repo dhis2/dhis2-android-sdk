@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.parser.internal.service.dataobject
 internal data class DataElementOperandObject(
     val dataElement: String,
     val categoryOptionCombo: String?,
-    val attributeOptionCombo: String? = null
+    val attributeOptionCombo: String? = null,
 ) : DimensionalItemObject {
     override val dimensionItem: String
         get() {

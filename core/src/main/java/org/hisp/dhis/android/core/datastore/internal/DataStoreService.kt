@@ -36,7 +36,7 @@ internal interface DataStoreService {
 
     @GET("$DATA_STORE/{$NAMESPACE}")
     suspend fun getNamespaceKeys(
-        @Path(NAMESPACE) namespace: String
+        @Path(NAMESPACE) namespace: String,
     ): List<String>
 
     @GET("$DATA_STORE/{$NAMESPACE}")
@@ -44,33 +44,33 @@ internal interface DataStoreService {
         @Path(NAMESPACE) namespace: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
-        @Query("fields") fields: String = "."
+        @Query("fields") fields: String = ".",
     ): DataStorePagedEntry
 
     @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun getNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String
+        @Path(KEY) key: String,
     ): Any
 
     @POST("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun postNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
         @Path(KEY) key: String,
-        @Body value: Any?
+        @Body value: Any?,
     ): HttpMessageResponse
 
     @PUT("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun putNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
         @Path(KEY) key: String,
-        @Body value: Any?
+        @Body value: Any?,
     ): HttpMessageResponse
 
     @DELETE("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun deleteNamespaceKeyValue(
         @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String
+        @Path(KEY) key: String,
     ): HttpMessageResponse
 
     companion object {

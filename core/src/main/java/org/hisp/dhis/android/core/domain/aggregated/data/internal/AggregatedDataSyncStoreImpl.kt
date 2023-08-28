@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 
 @Suppress("MagicNumber")
 internal class AggregatedDataSyncStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AggregatedDataSyncStore,
     ObjectWithoutUidStoreImpl<AggregatedDataSync>(
         databaseAdapter,
@@ -44,7 +44,7 @@ internal class AggregatedDataSyncStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         DELETE_UPDATE_BINDER,
-        { cursor: Cursor -> AggregatedDataSync.create(cursor) }
+        { cursor: Cursor -> AggregatedDataSync.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: AggregatedDataSync, w: StatementWrapper ->

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.settings.GeneralSettings
 
 @Suppress("MagicNumber")
 internal class GeneralSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : GeneralSettingStore,
     ObjectWithoutUidStoreImpl<GeneralSettings>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class GeneralSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> GeneralSettings.create(cursor) }
+        { cursor: Cursor -> GeneralSettings.create(cursor) },
     ) {
 
     companion object {

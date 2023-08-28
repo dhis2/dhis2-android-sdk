@@ -43,9 +43,12 @@ internal open class ReadOnlyNameableCollectionRepositoryImpl<M, R : ReadOnlyColl
     store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>
+    cf: FilterConnectorFactory<R>,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<M, R>(
-    store, childrenAppenders, scope, cf
+    store,
+    childrenAppenders,
+    scope,
+    cf,
 ),
     ReadOnlyNameableCollectionRepository<M, R> where M : CoreObject, M : NameableObject {
     override fun byShortName(): StringFilterConnector<R> {

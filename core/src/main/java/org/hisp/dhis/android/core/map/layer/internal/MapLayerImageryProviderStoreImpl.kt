@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
 
 @Suppress("MagicNumber")
 internal class MapLayerImageryProviderStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : MapLayerImageryProviderStore,
     LinkStoreImpl<MapLayerImageryProvider>(
         databaseAdapter,
         MapLayerImageryProviderTableInfo.TABLE_INFO,
         MapLayerImageryProviderTableInfo.Columns.MAP_LAYER,
         BINDER,
-        { cursor -> MapLayerImageryProvider.create(cursor) }
+        { cursor -> MapLayerImageryProvider.create(cursor) },
     ) {
 
     companion object {

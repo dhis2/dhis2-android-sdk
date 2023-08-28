@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 
 internal class RelationshipConstraintHandler(
-    store: RelationshipConstraintStore
+    store: RelationshipConstraintStore,
 ) : ObjectWithoutUidHandlerImpl<RelationshipConstraint>(store)

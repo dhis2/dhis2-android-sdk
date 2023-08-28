@@ -46,10 +46,10 @@ internal class ProgramEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        trackedEntityTypeChildrenAppender: ProgramTrackedEntityTypeChildrenAppender
+        trackedEntityTypeChildrenAppender: ProgramTrackedEntityTypeChildrenAppender,
     ): Map<String, ChildrenAppender<Program>> {
         return mapOf(
-            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender
+            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender,
         )
     }
 }

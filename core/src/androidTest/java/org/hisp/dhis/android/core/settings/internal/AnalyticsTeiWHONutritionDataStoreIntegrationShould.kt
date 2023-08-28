@@ -40,7 +40,7 @@ class AnalyticsTeiWHONutritionDataStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<AnalyticsTeiWHONutritionData>(
         AnalyticsTeiWHONutritionDataStoreImpl(TestDatabaseAdapterFactory.get()),
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsTeiWHONutritionData {
         return AnalyticsSettingsSamples.analyticsTeiWHONutritionData

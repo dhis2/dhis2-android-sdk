@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
@@ -51,6 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
 class AnalyticsServiceMetadataHelperShould {
@@ -88,7 +88,7 @@ class AnalyticsServiceMetadataHelperShould {
         programIndicatorRepository,
         analyticsOrganisationUnitHelper,
         parentPeriodGenerator,
-        periodHelper
+        periodHelper,
     )
 
     @Test
@@ -100,8 +100,8 @@ class AnalyticsServiceMetadataHelperShould {
         val evaluationItems = listOf(
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(s.categoryItem1_1, s.categoryItem1_2),
-                filters = listOf()
-            )
+                filters = listOf(),
+            ),
         )
 
         val metadataMap = helper.getMetadata(evaluationItems)
@@ -109,7 +109,7 @@ class AnalyticsServiceMetadataHelperShould {
         assertThat(metadataMap.keys).containsExactly(
             s.categoryItem1_1.uid,
             s.categoryItem1_1.categoryOption,
-            s.categoryItem1_2.categoryOption
+            s.categoryItem1_2.categoryOption,
         )
     }
 }

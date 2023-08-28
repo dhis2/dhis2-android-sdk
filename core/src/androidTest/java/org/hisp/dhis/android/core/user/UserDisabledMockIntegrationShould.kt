@@ -84,7 +84,7 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
             "DiszpKrYNg8",
             "Ok9OQpitjQr",
             "DwrQJzeChWp",
-            "DwrQJzeChWp"
+            "DwrQJzeChWp",
         ).blockingSet("30")
     }
 }

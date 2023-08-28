@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.ArrayList
 
 @Suppress("MagicNumber")
 internal class PeriodAfterLatestOpenFutureConflict(
-    private val dataElementStore: IdentifiableObjectStore<DataElement>
+    private val dataElementStore: IdentifiableObjectStore<DataElement>,
 ) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
@@ -53,8 +53,8 @@ internal class PeriodAfterLatestOpenFutureConflict(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict, period, dataValue.dataElement())
-                    ).build()
+                        displayDescription = getDisplayDescription(conflict, period, dataValue.dataElement()),
+                    ).build(),
                 )
             }
         }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
 
 internal class DataApprovalStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataApprovalStore,
     ObjectWithoutUidStoreImpl<DataApproval>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class DataApprovalStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> DataApproval.create(cursor) }
+        { cursor: Cursor -> DataApproval.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { dataApproval: DataApproval, w: StatementWrapper ->

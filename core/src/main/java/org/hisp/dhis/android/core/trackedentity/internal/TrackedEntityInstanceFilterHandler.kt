@@ -28,22 +28,22 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceFilterHandler @Inject constructor(
     trackedEntityInstanceFilterStore: TrackedEntityInstanceFilterStore,
     private val trackedEntityInstanceEventFilterHandler: TrackedEntityInstanceEventFilterHandler,
-    private val attributeValueFilterHandler: AttributeValueFilterHandler
+    private val attributeValueFilterHandler: AttributeValueFilterHandler,
 ) : IdentifiableHandlerImpl<TrackedEntityInstanceFilter>(trackedEntityInstanceFilterStore) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<TrackedEntityInstanceFilter>
+        oCollection: Collection<TrackedEntityInstanceFilter>,
     ): Collection<TrackedEntityInstanceFilter> {
         store.delete()
         return super.beforeCollectionHandled(oCollection)

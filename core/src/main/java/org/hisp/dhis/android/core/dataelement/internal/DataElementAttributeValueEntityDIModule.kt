@@ -46,7 +46,7 @@ internal class DataElementAttributeValueEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: DataElementAttributeValueLinkStore
+        store: DataElementAttributeValueLinkStore,
     ): DataElementAttributeValueLinkHandler {
         return DataElementAttributeValueLinkHandler(store)
     }

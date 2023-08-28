@@ -35,9 +35,9 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
-internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private
-constructor(private val childStore: LinkStore<AnalyticsPeriodBoundary>) :
-    ChildrenAppender<ProgramIndicator>() {
+internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private constructor(
+    private val childStore: LinkStore<AnalyticsPeriodBoundary>,
+) : ChildrenAppender<ProgramIndicator>() {
     override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
         return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
     }
@@ -52,7 +52,7 @@ constructor(private val childStore: LinkStore<AnalyticsPeriodBoundary>) :
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
             return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
-                AnalyticsPeriodBoundaryStoreImpl(databaseAdapter)
+                AnalyticsPeriodBoundaryStoreImpl(databaseAdapter),
             )
         }
     }

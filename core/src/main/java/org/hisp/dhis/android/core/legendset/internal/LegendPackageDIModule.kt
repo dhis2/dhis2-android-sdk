@@ -37,8 +37,8 @@ import retrofit2.Retrofit
     includes = [
         LegendEntityDIModule::class,
         LegendSetEntityDIModule::class,
-        IndicatorLegendSetEntityDIModule::class
-    ]
+        IndicatorLegendSetEntityDIModule::class,
+    ],
 )
 internal class LegendPackageDIModule {
     @Provides

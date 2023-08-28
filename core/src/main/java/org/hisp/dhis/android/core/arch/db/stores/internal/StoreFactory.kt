@@ -43,13 +43,13 @@ internal object StoreFactory {
         databaseAdapter: DatabaseAdapter,
         linkTableInfo: TableInfo,
         linkTableChildProjection: LinkTableChildProjection,
-        childFactory: (Cursor) -> C
+        childFactory: (Cursor) -> C,
     ): LinkChildStore<P, C> {
         return LinkChildStoreImpl(
             linkTableChildProjection,
             databaseAdapter,
             SQLStatementBuilderImpl(linkTableInfo),
-            CursorExecutorImpl(childFactory)
+            CursorExecutorImpl(childFactory),
         )
     }
 
@@ -57,13 +57,13 @@ internal object StoreFactory {
     fun <P : ObjectWithUidInterface, C> singleParentChildStore(
         databaseAdapter: DatabaseAdapter,
         childProjection: SingleParentChildProjection,
-        childFactory: (Cursor) -> C
+        childFactory: (Cursor) -> C,
     ): SingleParentChildStore<P, C> {
         return SingleParentChildStoreImpl(
             childProjection,
             databaseAdapter,
             SQLStatementBuilderImpl(childProjection.childTableInfo),
-            CursorExecutorImpl(childFactory)
+            CursorExecutorImpl(childFactory),
         )
     }
 
@@ -71,12 +71,12 @@ internal object StoreFactory {
     fun <P : ObjectWithUidInterface> objectWithUidChildStore(
         databaseAdapter: DatabaseAdapter,
         linkTableInfo: TableInfo,
-        childProjection: LinkTableChildProjection
+        childProjection: LinkTableChildProjection,
     ): ObjectWithUidChildStore<P> {
         return ObjectWithUidChildStoreImpl(
             childProjection,
             databaseAdapter,
-            SQLStatementBuilderImpl(linkTableInfo)
+            SQLStatementBuilderImpl(linkTableInfo),
         )
     }
 }

@@ -116,7 +116,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .url("http://dhis2.org/api/programs/uid")
                     .errorDescription("Different server offline")
                     .httpErrorCode(402)
-                    .build()
+                    .build(),
             )
         }
 
@@ -127,7 +127,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .trackedEntityInstance(null)
                     .enrollment(null)
                     .event(null)
-                    .build()
+                    .build(),
             )
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
@@ -139,7 +139,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .tableReference("table_reference_2")
                     .errorCode("error_code_2")
                     .status(ImportStatus.ERROR)
-                    .build()
+                    .build(),
             )
 
             val dataValueConflictStore = DataValueConflictStoreImpl(databaseAdapter)
@@ -152,7 +152,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .dataElement("bx6fsa0t90x")
                     .categoryOptionCombo("bRowv6yZOF2")
                     .status(ImportStatus.WARNING)
-                    .build()
+                    .build(),
             )
             dataValueConflictStore.insert(
                 DataValueConflictSamples.get().toBuilder()
@@ -161,7 +161,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .period("202201")
                     .orgUnit("YuQRtpLP10I")
                     .displayDescription("display_description_other")
-                    .build()
+                    .build(),
             )
         }
 
@@ -172,13 +172,13 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                 KeyValuePair.builder()
                     .key("key1")
                     .value("value1")
-                    .build()
+                    .build(),
             )
             dataStore.insert(
                 KeyValuePair.builder()
                     .key("key2")
                     .value("value2")
-                    .build()
+                    .build(),
             )
         }
     }

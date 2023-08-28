@@ -53,7 +53,7 @@ class DateUtilsShould {
             OffsetCase(1, PeriodType.SixMonthly, "2022-09-08T12:34:00.000"),
             OffsetCase(-1, PeriodType.SixMonthly, "2021-09-08T12:34:00.000"),
             OffsetCase(1, PeriodType.Yearly, "2023-03-08T12:34:00.000"),
-            OffsetCase(-1, PeriodType.Yearly, "2021-03-08T12:34:00.000")
+            OffsetCase(-1, PeriodType.Yearly, "2021-03-08T12:34:00.000"),
         ).forEach {
             val result = DateUtils.dateWithOffset(refDate, it.periods, it.type)
             assertThat(DateUtils.DATE_FORMAT.format(result)).isEqualTo(it.expected)

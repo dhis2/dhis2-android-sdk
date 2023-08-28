@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 
 internal class DataApprovalHandler(
-    dataApprovalStore: DataApprovalStore
+    dataApprovalStore: DataApprovalStore,
 ) : ObjectWithoutUidHandlerImpl<DataApproval>(dataApprovalStore)

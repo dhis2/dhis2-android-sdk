@@ -46,11 +46,11 @@ internal class OptionEntityDIModule {
     @Reusable
     fun handler(
         optionStore: OptionStore,
-        optionCleaner: OptionSubCollectionCleaner
+        optionCleaner: OptionSubCollectionCleaner,
     ): OptionHandler {
         return OptionHandler(
             optionStore,
-            optionCleaner
+            optionCleaner,
         )
     }
 

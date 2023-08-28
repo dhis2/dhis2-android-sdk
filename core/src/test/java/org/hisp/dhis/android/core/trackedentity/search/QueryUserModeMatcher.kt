@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.mockito.ArgumentMatcher
 
 internal class QueryUserModeMatcher(
-    private val assignedUserMode: AssignedUserMode
+    private val assignedUserMode: AssignedUserMode,
 ) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
 
     override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {

@@ -45,6 +45,6 @@ internal object NewNoteFields {
             fh.field<String>(UID),
             fh.field<String>(VALUE),
             fh.field<String>(STORED_AT),
-            fh.field<String>(STORED_BY)
+            fh.field<String>(STORED_BY),
         ).build()
 }

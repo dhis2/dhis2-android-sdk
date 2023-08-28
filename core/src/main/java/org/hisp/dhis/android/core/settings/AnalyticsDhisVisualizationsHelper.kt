@@ -33,9 +33,8 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
 
 fun generateGroups(
-    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>
+    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>,
 ): AnalyticsDhisVisualizationsSetting {
-
     val visualizationsByScope: Map<AnalyticsDhisVisualizationScope?, List<AnalyticsDhisVisualization>> =
         analyticsDhisVisualizations.groupBy { it.scope() }
 

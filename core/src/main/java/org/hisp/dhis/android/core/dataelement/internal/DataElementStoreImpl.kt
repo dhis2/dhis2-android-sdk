@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 
 @Suppress("MagicNumber")
 internal class DataElementStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataElementStore,
     IdentifiableObjectStoreImpl<DataElement>(
         databaseAdapter,
         DataElementTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> DataElement.create(cursor) }
+        { cursor: Cursor -> DataElement.create(cursor) },
     ) {
 
     companion object {

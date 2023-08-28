@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
 
 @Suppress("MagicNumber")
 internal class TrackedEntityTypeStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityTypeStore,
     IdentifiableObjectStoreImpl<TrackedEntityType>(
         databaseAdapter,
         TrackedEntityTypeTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> TrackedEntityType.create(cursor) }
+        { cursor: Cursor -> TrackedEntityType.create(cursor) },
     ) {
 
     companion object {

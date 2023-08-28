@@ -45,7 +45,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
 
@@ -53,12 +53,12 @@ internal open class IdentifiableObjectStoreImpl<O>(
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf()),
         binder,
-        objectFactory
+        objectFactory,
     )
 
     private var updateStatement: StatementWrapper? = null

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.datavalue
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operat
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @Reusable
@@ -52,14 +52,14 @@ class DataValueCollectionRepository @Inject internal constructor(
     private val store: DataValueStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataValue>>,
     scope: RepositoryScope,
-    private val postCall: DataValuePostCall
+    private val postCall: DataValuePostCall,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         DataValueCollectionRepository(store, childrenAppenders, s, postCall)
-    }
+    },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
 
@@ -78,7 +78,7 @@ class DataValueCollectionRepository @Inject internal constructor(
         organisationUnit: String,
         dataElement: String,
         categoryOptionCombo: String,
-        attributeOptionCombo: String
+        attributeOptionCombo: String,
     ): DataValueObjectRepository {
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
@@ -86,8 +86,14 @@ class DataValueCollectionRepository @Inject internal constructor(
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataValueObjectRepository(
-            store, childrenAppenders, updatedScope, period, organisationUnit,
-            dataElement, categoryOptionCombo, attributeOptionCombo
+            store,
+            childrenAppenders,
+            updatedScope,
+            period,
+            organisationUnit,
+            dataElement,
+            categoryOptionCombo,
+            attributeOptionCombo,
         )
     }
 
@@ -119,7 +125,7 @@ class DataValueCollectionRepository @Inject internal constructor(
         return cf.subQuery(dataValueKey)
             .rawSubQuery(
                 operator,
-                whereClause(dataSetUid!!)
+                whereClause(dataSetUid!!),
             )!!
     }
 

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
 
 internal class SectionDataElementChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<Section, DataElement>
+    private val linkChildStore: LinkChildStore<Section, DataElement>,
 ) : ChildrenAppender<Section>() {
     override fun appendChildren(m: Section): Section {
         val builder = m.toBuilder()
@@ -51,7 +51,7 @@ internal class SectionDataElementChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             DataElementTableInfo.TABLE_INFO,
             SectionDataElementLinkTableInfo.Columns.SECTION,
-            SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT
+            SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
@@ -59,8 +59,8 @@ internal class SectionDataElementChildrenAppender private constructor(
                 linkChildStore(
                     databaseAdapter,
                     SectionDataElementLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> DataElement.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> DataElement.create(cursor) },
             )
         }
     }

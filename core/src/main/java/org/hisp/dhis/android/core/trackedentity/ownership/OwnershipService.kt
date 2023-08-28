@@ -38,14 +38,14 @@ internal interface OwnershipService {
     suspend fun breakGlass(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String
+        @Query(REASON) reason: String,
     ): HttpMessageResponse
 
     @PUT("$OWNERSHIP_URL/transfer")
     suspend fun transfer(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(PROGRAM) program: String,
-        @Query(ORG_UNIT) ou: String
+        @Query(ORG_UNIT) ou: String,
     ): HttpMessageResponse
 
     companion object {

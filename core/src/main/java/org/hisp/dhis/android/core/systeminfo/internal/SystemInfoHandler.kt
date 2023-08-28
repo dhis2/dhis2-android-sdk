@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import javax.inject.Inject
 
 @Reusable
 internal class SystemInfoHandler @Inject constructor(
-    store: SystemInfoStore
+    store: SystemInfoStore,
 ) : ObjectWithoutUidHandlerImpl<SystemInfo>(store)

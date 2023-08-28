@@ -49,15 +49,15 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     private val store: ReadableStore<M>,
     @JvmField internal val childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>
+    cf: FilterConnectorFactory<R>,
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
     protected fun blockingGetWithoutChildren(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey()
-            )
+                scope.pagingKey(),
+            ),
         )
     }
 
@@ -80,7 +80,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return ChildrenAppenderExecutor.appendInObjectCollection(
             blockingGetWithoutChildren(),
             childrenAppenders,
-            scope.children()
+            scope.children(),
         )
     }
 

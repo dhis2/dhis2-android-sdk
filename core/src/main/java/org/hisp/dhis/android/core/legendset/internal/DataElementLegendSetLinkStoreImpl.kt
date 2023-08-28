@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 
 internal class DataElementLegendSetLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataElementLegendSetLinkStore,
     LinkStoreImpl<DataElementLegendSetLink>(
         databaseAdapter,
         DataElementLegendSetLinkTableInfo.TABLE_INFO,
         DataElementLegendSetLinkTableInfo.Columns.DATA_ELEMENT,
         BINDER,
-        { cursor: Cursor -> DataElementLegendSetLink.create(cursor) }
+        { cursor: Cursor -> DataElementLegendSetLink.create(cursor) },
     ) {
 
     companion object {

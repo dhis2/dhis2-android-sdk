@@ -40,7 +40,8 @@ enum class DHISVersion(internal val prefix: String) {
     V2_38("2.38"),
     V2_39("2.39"),
     V2_40("2.40"),
-    V2_41("2.41");
+    V2_41("2.41"),
+    ;
 
     companion object {
         @JvmStatic

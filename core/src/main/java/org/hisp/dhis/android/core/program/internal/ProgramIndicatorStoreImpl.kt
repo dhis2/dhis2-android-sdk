@@ -40,23 +40,24 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramIndicatorStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramIndicatorStore,
     IdentifiableObjectStoreImpl<ProgramIndicator>(
         databaseAdapter,
         ProgramIndicatorTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramIndicator.create(cursor) }
+        { cursor: Cursor -> ProgramIndicator.create(cursor) },
     ) {
 
     companion object {
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO, ProgramIndicatorTableInfo.Columns.PROGRAM
+            ProgramIndicatorTableInfo.TABLE_INFO,
+            ProgramIndicatorTableInfo.Columns.PROGRAM,
         )
         private val BINDER: StatementBinder<ProgramIndicator> = object : NameableStatementBinder<ProgramIndicator>() {
             override fun bindToStatement(
                 o: ProgramIndicator,
-                w: StatementWrapper
+                w: StatementWrapper,
             ) {
                 super.bindToStatement(o, w)
                 w.bind(11, o.displayInForm())

@@ -28,24 +28,24 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramRuleHandler @Inject constructor(
     programRuleStore: ProgramRuleStore,
     private val programRuleActionHandler: ProgramRuleActionHandler,
     private val programRuleCleaner: ProgramRuleSubCollectionCleaner,
-    private val programRuleActionCleaner: ProgramRuleActionOrphanCleaner
+    private val programRuleActionCleaner: ProgramRuleActionOrphanCleaner,
 ) : IdentifiableHandlerImpl<ProgramRule>(programRuleStore) {
 
     override fun afterObjectHandled(o: ProgramRule, action: HandleAction) {
         programRuleActionHandler.handleMany(
-            o.programRuleActions()
+            o.programRuleActions(),
         ) { pra: ProgramRuleAction ->
             pra.toBuilder().programRule(ObjectWithUid.create(o.uid())).build()
         }

@@ -74,7 +74,7 @@ class DataElementHandlerShould {
             dataElementStore,
             attributeHandler,
             dataElementAttributeValueLinkHandler,
-            dataElementLegendSetLinkHandler
+            dataElementLegendSetLinkHandler,
         )
         dataElements = listOf(dataElement)
         legendSets = listOf(legendSet)
@@ -134,7 +134,7 @@ class DataElementHandlerShould {
         Mockito.verify(dataElementAttributeValueLinkHandler).handleMany(
             eq(dataElement.uid()),
             eq(listOf(attribute) as Collection<Attribute>),
-            any()
+            any(),
         )
     }
 

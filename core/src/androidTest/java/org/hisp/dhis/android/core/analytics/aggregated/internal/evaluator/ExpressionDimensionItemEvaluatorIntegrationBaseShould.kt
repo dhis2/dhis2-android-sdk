@@ -56,7 +56,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     fun setup() {
         val engine = ExpressionDimensionItemEngine(
             AnalyticExpressionEngineFactoryHelper.getFactory(d2),
-            expressionService
+            expressionService,
         )
 
         evaluator = ExpressionDimensionItemEvaluator(engine)
@@ -125,7 +125,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     private fun createExpression(
-        item: String
+        item: String,
     ): ExpressionDimensionItem {
         val expressionDimensionItem = ExpressionDimensionItem.builder()
             .uid(generator.generate())
@@ -142,17 +142,17 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.ExpressionDimensionItem(expressionDimensionItem.uid()),
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
             ),
             filters = listOf(
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         return evaluator.evaluate(
             evaluationItem,
             metadata +
-                (expressionDimensionItem.uid() to MetadataItem.ExpressionDimensionItemItem(expressionDimensionItem))
+                (expressionDimensionItem.uid() to MetadataItem.ExpressionDimensionItemItem(expressionDimensionItem)),
         )
     }
 }

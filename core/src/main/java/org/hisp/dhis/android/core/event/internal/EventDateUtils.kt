@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @Reusable
 class EventDateUtils @Inject constructor(
-    private val periodHelper: PeriodHelper
+    private val periodHelper: PeriodHelper,
 ) {
 
     /**
@@ -71,7 +71,7 @@ class EventDateUtils @Inject constructor(
         event: Event,
         completeExpiryDays: Int,
         programPeriodType: PeriodType?,
-        expiryDays: Int
+        expiryDays: Int,
     ): Boolean {
         if (event.status() == EventStatus.COMPLETED && event.completedDate() == null) return false
 

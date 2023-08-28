@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.concurrent.TimeUnit
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
+import java.util.concurrent.TimeUnit
 
 @Module
 internal class TrackedEntityInstanceQueryEntityDIModule {

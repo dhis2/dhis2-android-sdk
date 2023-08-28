@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.testapp.user
 
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -41,6 +40,7 @@ import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @RunWith(D2JunitRunner::class)
 class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {

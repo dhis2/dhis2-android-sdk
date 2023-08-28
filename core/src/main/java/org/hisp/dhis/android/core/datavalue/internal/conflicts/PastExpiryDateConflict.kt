@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.ArrayList
 
 internal class PastExpiryDateConflict(
     private val dataValueStore: DataValueStore,
-    private val dataSetStore: IdentifiableObjectStore<DataSet>
+    private val dataSetStore: IdentifiableObjectStore<DataSet>,
 ) : LegacyDataValueImportConflictItem {
 
     override val regex: Regex
@@ -56,8 +56,8 @@ internal class PastExpiryDateConflict(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid)
-                    ).build()
+                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid),
+                    ).build(),
                 )
             }
         }

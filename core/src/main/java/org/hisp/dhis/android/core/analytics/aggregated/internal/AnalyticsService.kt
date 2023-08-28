@@ -29,18 +29,18 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import android.database.sqlite.SQLiteException
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.antlr.ParserException
+import javax.inject.Inject
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
     private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper,
-    private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper
+    private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper,
 ) {
 
     fun evaluate(params: AnalyticsRepositoryParams): Result<DimensionalResponse, AnalyticsException> {
@@ -80,8 +80,8 @@ internal class AnalyticsService @Inject constructor(
                     dimensions = queryDimensions,
                     dimensionItems = dimensionItemsMap,
                     filters = params.filters.map { it.id },
-                    values = values
-                )
+                    values = values,
+                ),
             )
         } catch (e: AnalyticsException) {
             Result.Failure(e)

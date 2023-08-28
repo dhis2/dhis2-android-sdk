@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore.internal
 import com.fasterxml.jackson.databind.JsonNode
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import javax.inject.Inject
 
 @Reusable
 @Suppress("MagicNumber")
@@ -50,7 +50,7 @@ internal class DataStorePostCall @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
     private val dataStoreEntryImportHandler: DataStoreImportHandler,
-    private val store: DataStoreEntryStore
+    private val store: DataStoreEntryStore,
 ) {
     fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Observable<D2Progress> {
         return Observable.defer {
@@ -84,14 +84,14 @@ internal class DataStorePostCall @Inject constructor(
         val result = coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(404),
-            errorClass = HttpMessageResponse::class.java
+            errorClass = HttpMessageResponse::class.java,
         ) {
             dataStoreEntryService.deleteNamespaceKeyValue(entry.namespace(), entry.key())
         }
 
         result.fold(
             onSuccess = { r -> dataStoreEntryImportHandler.handleDelete(entry, r) },
-            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) }
+            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
         )
     }
 
@@ -115,7 +115,7 @@ internal class DataStorePostCall @Inject constructor(
 
         result.fold(
             onSuccess = { r -> dataStoreEntryImportHandler.handleUpdateOrCreate(entry, r) },
-            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) }
+            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
         )
     }
 
@@ -123,7 +123,7 @@ internal class DataStorePostCall @Inject constructor(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
-            errorClass = HttpMessageResponse::class.java
+            errorClass = HttpMessageResponse::class.java,
         ) {
             dataStoreEntryService.postNamespaceKeyValue(entry.namespace(), entry.key(), readValue(entry))
         }
@@ -133,7 +133,7 @@ internal class DataStorePostCall @Inject constructor(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(404),
-            errorClass = HttpMessageResponse::class.java
+            errorClass = HttpMessageResponse::class.java,
         ) {
             dataStoreEntryService.putNamespaceKeyValue(entry.namespace(), entry.key(), readValue(entry))
         }

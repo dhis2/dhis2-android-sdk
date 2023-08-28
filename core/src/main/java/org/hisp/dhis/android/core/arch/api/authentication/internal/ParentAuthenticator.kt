@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import dagger.Reusable
-import java.io.IOException
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import java.io.IOException
+import javax.inject.Inject
 
 @Reusable
 internal class ParentAuthenticator @Inject constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
     private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
-    private val cookieHelper: CookieAuthenticatorHelper
+    private val cookieHelper: CookieAuthenticatorHelper,
 ) :
     Interceptor {
 

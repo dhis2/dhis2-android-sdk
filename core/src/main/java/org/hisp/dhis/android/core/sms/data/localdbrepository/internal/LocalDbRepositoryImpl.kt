@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
@@ -59,6 +58,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.smscompression.models.SMSMetadata
+import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
 internal class LocalDbRepositoryImpl @Inject constructor(
@@ -77,7 +77,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
     private val metadataIdsStore: MetadataIdsStore,
     private val smsConfigStore: SMSConfigStore,
     private val ongoingSubmissionsStore: OngoingSubmissionsStore,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
 ) : LocalDbRepository {
 
     override fun getUserName(): Single<String> {
@@ -214,7 +214,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
                     relationship.toBuilder()
                         .from(fromItem)
                         .to(toItem)
-                        .build()
+                        .build(),
                 )
             }
         }
@@ -271,7 +271,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
         dataset: String,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<SMSDataValueSet> {
         return dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
             .map { values: List<DataValue?>? ->
@@ -287,7 +287,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
         dataset: String,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dataset)
@@ -295,7 +295,7 @@ internal class LocalDbRepositoryImpl @Inject constructor(
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, period)
             .appendKeyStringValue(
                 DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                attributeOptionComboUid
+                attributeOptionComboUid,
             )
             .appendKeyNumberValue(DataSetCompleteRegistrationTableInfo.Columns.DELETED, 0)
             .build()
@@ -307,15 +307,23 @@ internal class LocalDbRepositoryImpl @Inject constructor(
         orgUnit: String,
         period: String,
         attributeOptionComboUid: String,
-        state: State
+        state: State,
     ): Completable {
         return Completable.mergeArray(
             dataSetsStore.updateDataSetValuesState(
-                dataSetId, orgUnit, period, attributeOptionComboUid, state
+                dataSetId,
+                orgUnit,
+                period,
+                attributeOptionComboUid,
+                state,
             ),
             dataSetsStore.updateDataSetCompleteRegistrationState(
-                dataSetId, orgUnit, period, attributeOptionComboUid, state
-            )
+                dataSetId,
+                orgUnit,
+                period,
+                attributeOptionComboUid,
+                state,
+            ),
         )
     }
 

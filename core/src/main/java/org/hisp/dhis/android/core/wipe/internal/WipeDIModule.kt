@@ -39,7 +39,7 @@ internal class WipeDIModule {
     @Reusable
     fun wipeModule(
         d2CallExecutor: D2CallExecutor,
-        moduleWipers: D2ModuleWipers
+        moduleWipers: D2ModuleWipers,
     ): WipeModule {
         return WipeModuleImpl(d2CallExecutor, moduleWipers.wipers)
     }

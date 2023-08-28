@@ -46,7 +46,7 @@ import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class CommonExpressionVisitor constructor(
-    val scope: CommonExpressionVisitorScope
+    val scope: CommonExpressionVisitorScope,
 ) : AntlrExpressionVisitor() {
 
     /**
@@ -118,7 +118,7 @@ internal class CommonExpressionVisitor constructor(
         if (ctx.it != null) {
             val item = itemMap[ctx.it.type]
                 ?: throw ParserExceptionWithoutContext(
-                    "Item " + ctx.it.text + " not supported for this type of expression"
+                    "Item " + ctx.it.text + " not supported for this type of expression",
                 )
             return itemMethod.apply(item, ctx, this)
         }

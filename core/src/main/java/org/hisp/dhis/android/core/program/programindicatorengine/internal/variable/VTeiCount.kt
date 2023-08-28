@@ -47,7 +47,7 @@ internal class VTeiCount : ExpressionItem {
         val teiSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
-                    column = EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+                    column = EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 )
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}"

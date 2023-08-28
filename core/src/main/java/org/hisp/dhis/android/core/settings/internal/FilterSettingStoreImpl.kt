@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
 
 @Suppress("MagicNumber")
 internal class FilterSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : FilterSettingStore,
     ObjectWithoutUidStoreImpl<FilterSetting>(
         databaseAdapter,
@@ -47,7 +47,7 @@ internal class FilterSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> FilterSetting.create(cursor) }
+        { cursor: Cursor -> FilterSetting.create(cursor) },
     ) {
 
     companion object {

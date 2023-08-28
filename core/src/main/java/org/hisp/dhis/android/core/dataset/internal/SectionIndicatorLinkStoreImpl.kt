@@ -34,14 +34,14 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 
 internal class SectionIndicatorLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SectionIndicatorLinkStore,
     LinkStoreImpl<SectionIndicatorLink>(
         databaseAdapter,
         SectionIndicatorLinkTableInfo.TABLE_INFO,
         SectionIndicatorLinkTableInfo.Columns.SECTION,
         BINDER,
-        { SectionIndicatorLink.create(it) }
+        { SectionIndicatorLink.create(it) },
     ) {
 
     companion object {

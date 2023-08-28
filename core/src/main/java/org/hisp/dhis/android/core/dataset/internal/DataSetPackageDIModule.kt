@@ -47,8 +47,8 @@ import retrofit2.Retrofit
         SectionEntityDIModule::class,
         SectionIndicatorEntityDIModule::class,
         SectionDataElementEntityDIModule::class,
-        SectionGreyedFieldsEntityDIModule::class
-    ]
+        SectionGreyedFieldsEntityDIModule::class,
+    ],
 )
 internal class DataSetPackageDIModule {
     @Provides

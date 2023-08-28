@@ -40,13 +40,13 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 
 @Suppress("MagicNumber")
 internal class CategoryOptionComboStoreImpl constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionComboStore,
     IdentifiableObjectStoreImpl<CategoryOptionCombo>(
         databaseAdapter,
         CategoryOptionComboTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> CategoryOptionCombo.create(cursor) }
+        { cursor: Cursor -> CategoryOptionCombo.create(cursor) },
     ) {
 
     override fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {

@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInf
 
 @Suppress("MagicNumber")
 internal class OrganisationUnitLevelStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitLevelStore,
     IdentifiableObjectStoreImpl<OrganisationUnitLevel>(
         databaseAdapter,
         OrganisationUnitLevelTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> OrganisationUnitLevel.create(cursor) }
+        { cursor: Cursor -> OrganisationUnitLevel.create(cursor) },
     ) {
 
     companion object {
@@ -52,7 +52,7 @@ internal class OrganisationUnitLevelStoreImpl(
             object : IdentifiableStatementBinder<OrganisationUnitLevel>() {
                 override fun bindToStatement(
                     organisationUnitLevel: OrganisationUnitLevel,
-                    w: StatementWrapper
+                    w: StatementWrapper,
                 ) {
                     super.bindToStatement(organisationUnitLevel, w)
                     w.bind(7, organisationUnitLevel.level())

@@ -66,7 +66,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
             listOf(State.TO_POST, State.ERROR) to State.ERROR,
             listOf(State.ERROR, State.TO_UPDATE) to State.ERROR,
             listOf(State.UPLOADING, State.TO_POST) to State.UPLOADING,
-            listOf(State.UPLOADING, State.ERROR) to State.ERROR
+            listOf(State.UPLOADING, State.ERROR) to State.ERROR,
         ).forEach { (valueStates, aggregated) ->
             insertDataValuesWithStates(valueStates[0], valueStates[1])
             checkSyncState(aggregated)
@@ -109,7 +109,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
                 .dataElement(dataElements[0]?.dataElement()?.uid()!!)
                 .categoryOptionCombo(categoryOption1.uid())
                 .syncState(state1)
-                .build()
+                .build(),
         )
 
         dataValueStore.updateOrInsertWhere(
@@ -117,7 +117,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
                 .dataElement(dataElements[1]?.dataElement()?.uid()!!)
                 .categoryOptionCombo(categoryOption2.uid())
                 .syncState(state2)
-                .build()
+                .build(),
         )
     }
 

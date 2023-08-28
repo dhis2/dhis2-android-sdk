@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 
 internal class ProgramStageSectionDataElementLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageSectionDataElementLinkStore,
     LinkStoreImpl<ProgramStageSectionDataElementLink>(
         databaseAdapter,
         ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
         ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
         BINDER,
-        { cursor: Cursor -> ProgramStageSectionDataElementLink.create(cursor) }
+        { cursor: Cursor -> ProgramStageSectionDataElementLink.create(cursor) },
     ) {
 
     companion object {

@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.dataset.DataSetElement
 
 internal class DataSetElementHandler(
-    store: DataSetElementStore
+    store: DataSetElementStore,
 ) : LinkHandlerImpl<DataSetElement, DataSetElement>(store)

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 
 internal class EventSyncStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : EventSyncStore,
     ObjectWithoutUidStoreImpl<EventSync>(
         databaseAdapter,
@@ -43,7 +43,7 @@ internal class EventSyncStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         DELETE_UPDATE_BINDER,
-        { cursor: Cursor -> EventSync.create(cursor) }
+        { cursor: Cursor -> EventSync.create(cursor) },
     ) {
 
     companion object {

@@ -41,7 +41,8 @@ import org.junit.runner.RunWith
 class StockUseCaseTransactionLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<InternalStockUseCaseTransaction>(
         StockUseCaseTransactionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-        StockUseCaseTransactionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+        StockUseCaseTransactionTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun addMasterUid(): String {
         return InternalStockUseCaseTransactionSamples.get().programUid()!!

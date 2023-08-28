@@ -29,19 +29,19 @@ package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import javax.inject.Inject
 
 @Reusable
 internal class CategoryOptionCall @Inject constructor(
     private val handler: CategoryOptionHandler,
     private val service: CategoryOptionService,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
 ) : UidsCall<CategoryOption> {
 
     companion object {
@@ -57,13 +57,13 @@ internal class CategoryOptionCall @Inject constructor(
         return apiDownloader.downloadPartitioned(
             uids,
             UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-            handler
+            handler,
         ) { partitionUids: Set<String> ->
             service.getCategoryOptions(
                 CategoryOptionFields.allFields,
                 "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
                 accessDataReadFilter,
-                paging = false
+                paging = false,
             )
         }
     }

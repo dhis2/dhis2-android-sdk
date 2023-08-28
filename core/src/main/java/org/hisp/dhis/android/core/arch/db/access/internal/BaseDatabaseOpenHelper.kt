@@ -59,6 +59,6 @@ internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
     }
 
     companion object {
-        const val VERSION = 148
+        const val VERSION = 149
     }
 }

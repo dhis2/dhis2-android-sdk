@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.relationship.*
 
 internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R : BaseRelationship>(
     private val relationshipStore: RelationshipStore,
-    private val relationshipRepository: RelationshipCollectionRepository
+    private val relationshipRepository: RelationshipCollectionRepository,
 ) : OrphanCleaner<O, R> {
     abstract fun getItem(uid: String): RelationshipItem
     abstract fun relationships(relationships: Collection<R>): Collection<Relationship>
@@ -61,7 +61,7 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
 
     private fun isInRelationshipList(
         target: Relationship,
-        list: Collection<Relationship>
+        list: Collection<Relationship>,
     ): Boolean {
         return list.any { relationship ->
             target.from() != null && target.to() != null && relationship.from() != null && relationship.to() != null &&

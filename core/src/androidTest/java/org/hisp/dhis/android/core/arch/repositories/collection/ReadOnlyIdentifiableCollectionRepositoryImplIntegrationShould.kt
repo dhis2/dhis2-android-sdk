@@ -49,7 +49,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
 
         RelationshipTypeAsserts.assertTypesWithoutConstraints(
             relationshipType!!,
-            RelationshipTypeSamples.RELATIONSHIP_TYPE_1
+            RelationshipTypeSamples.RELATIONSHIP_TYPE_1,
         )
     }
 
@@ -58,7 +58,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
         val relationshipType = relationshipTypeCollectionRepository
             .byConstraint(
                 RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-                RelationshipTypeSamples.TET_FOR_RELATIONSHIP_3_UID
+                RelationshipTypeSamples.TET_FOR_RELATIONSHIP_3_UID,
             )
             .withConstraints()
             .blockingGet()
@@ -72,7 +72,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
             .byConstraint(
                 RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
                 RelationshipTypeSamples.TET_FOR_RELATIONSHIP_3_UID,
-                RelationshipConstraintType.FROM
+                RelationshipConstraintType.FROM,
             )
             .withConstraints()
             .blockingGet()
@@ -92,7 +92,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
 
         RelationshipTypeAsserts.assertTypesWithoutConstraints(
             relationshipType!!,
-            RelationshipTypeSamples.RELATIONSHIP_TYPE_2
+            RelationshipTypeSamples.RELATIONSHIP_TYPE_2,
         )
     }
 
@@ -105,7 +105,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
 
         RelationshipTypeAsserts.assertTypeWithConstraints(
             relationshipType!!,
-            RelationshipTypeSamples.RELATIONSHIP_TYPE_1
+            RelationshipTypeSamples.RELATIONSHIP_TYPE_1,
         )
     }
 
@@ -118,7 +118,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
 
         RelationshipTypeAsserts.assertTypeWithConstraints(
             relationshipType,
-            RelationshipTypeSamples.RELATIONSHIP_TYPE_2
+            RelationshipTypeSamples.RELATIONSHIP_TYPE_2,
         )
     }
 

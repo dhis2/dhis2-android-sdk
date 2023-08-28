@@ -54,13 +54,17 @@ public class ProgramConfigurationSettingTableInfo {
         public static final String UID = IdentifiableColumns.UID;
         public static final String COMPLETION_SPINNER = "completionSpinner";
         public static final String OPTIONAL_SEARCH = "optionalSearch";
+        public static final String DISABLE_REFERRALS = "disableReferrals";
+        public static final String COLLAPSIBLE_SECTIONS = "collapsibleSections";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     UID,
                     COMPLETION_SPINNER,
-                    OPTIONAL_SEARCH
+                    OPTIONAL_SEARCH,
+                    DISABLE_REFERRALS,
+                    COLLAPSIBLE_SECTIONS
             );
         }
     }

@@ -35,9 +35,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : AbstractFilterConnector<R, V>(
-    repositoryFactory, scope, key
+    repositoryFactory,
+    scope,
+    key,
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
@@ -68,7 +70,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
     fun `in`(values: Collection<V>?): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(" + getCommaSeparatedValues(values) + ")"
+            "(" + getCommaSeparatedValues(values) + ")",
         )
     }
 
@@ -92,7 +94,7 @@ abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal const
     fun notIn(values: Collection<V>?): R {
         return newWithUnwrappedScope(
             FilterItemOperator.NOT_IN,
-            "(" + getCommaSeparatedValues(values) + ")"
+            "(" + getCommaSeparatedValues(values) + ")",
         )
     }
 

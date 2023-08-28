@@ -50,7 +50,7 @@ internal object RepositoryScopeHelper {
 
     fun withComplexFilterItem(
         scope: RepositoryScope,
-        item: RepositoryScopeComplexFilterItem
+        item: RepositoryScopeComplexFilterItem,
     ): RepositoryScope {
         return scope.toBuilder()
             .complexFilters(scope.complexFilters() + item)

@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 abstract class AbstractFilterConnector<R : BaseRepository, V> internal constructor(
     private val repositoryFactory: BaseRepositoryFactory<R>,
     protected val scope: RepositoryScope,
-    val key: String
+    val key: String,
 ) {
     abstract fun wrapValue(value: V?): String?
     fun updatedUnwrappedScope(operator: FilterItemOperator, valueStr: String?): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
             scope,
-            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build()
+            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build(),
         )
     }
 
@@ -56,11 +56,11 @@ abstract class AbstractFilterConnector<R : BaseRepository, V> internal construct
     fun updatePassedScope(
         operator: FilterItemOperator,
         valueStr: String?,
-        scope: RepositoryScope
+        scope: RepositoryScope,
     ): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
             scope,
-            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build()
+            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build(),
         )
     }
 
@@ -71,7 +71,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V> internal construct
     private fun updatedUnwrappedScope(whereClause: String): RepositoryScope {
         return RepositoryScopeHelper.withComplexFilterItem(
             scope,
-            RepositoryScopeComplexFilterItem.builder().whereQuery(whereClause).build()
+            RepositoryScopeComplexFilterItem.builder().whereQuery(whereClause).build(),
         )
     }
 

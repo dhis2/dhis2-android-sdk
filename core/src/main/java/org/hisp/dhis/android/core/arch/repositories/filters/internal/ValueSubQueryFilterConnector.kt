@@ -42,7 +42,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
     linkParent: String,
     private val linkChild: String,
     private val dataElementColumn: String,
-    private val dataElementId: String
+    private val dataElementId: String,
 ) : BaseSubQueryFilterConnector<R>(repositoryFactory, scope, key, linkTable, linkParent) {
     override fun wrapValue(value: String?): String {
         return "'" + escapeQuotes(value) + "'"

@@ -35,9 +35,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : AbstractFilterConnector<R, String>(
-    repositoryFactory, scope, key
+    repositoryFactory,
+    scope,
+    key,
 ) {
     override fun wrapValue(value: String?): String? {
         return value
@@ -50,7 +52,7 @@ class UnwrappedEqInFilterConnector<R : BaseRepository> internal constructor(
     fun `in`(values: Collection<String>?): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(" + getCommaSeparatedValues(values) + ")"
+            "(" + getCommaSeparatedValues(values) + ")",
         )
     }
 

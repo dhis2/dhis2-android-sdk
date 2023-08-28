@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 class BooleanFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : BaseAbstractFilterConnector<R, Boolean?>(
-    repositoryFactory, scope, key
+    repositoryFactory,
+    scope,
+    key,
 ) {
     val isTrue: R
         /**

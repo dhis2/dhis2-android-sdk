@@ -37,10 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 
 @SuppressWarnings("TooManyFunctions")
-
 class FilterConnectorFactory<R : BaseRepository> internal constructor(
     private val scope: RepositoryScope,
-    private val repositoryFactory: BaseRepositoryFactory<R>
+    private val repositoryFactory: BaseRepositoryFactory<R>,
 ) {
     fun string(key: String): StringFilterConnector<R> {
         return StringFilterConnector(repositoryFactory, scope, key)
@@ -97,10 +96,17 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
         linkParent: String,
         linkChild: String,
         dataElementColumn: String,
-        dataElementId: String
+        dataElementId: String,
     ): ValueSubQueryFilterConnector<R> {
         return ValueSubQueryFilterConnector(
-            repositoryFactory, scope, key, linkTable, linkParent, linkChild, dataElementColumn, dataElementId
+            repositoryFactory,
+            scope,
+            key,
+            linkTable,
+            linkParent,
+            linkChild,
+            dataElementColumn,
+            dataElementId,
         )
     }
 
@@ -121,7 +127,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
         externalLink: String,
         ownLink: String,
         direction: OrderByDirection,
-        additionalWhereClause: String? = null
+        additionalWhereClause: String? = null,
     ): R {
         val connectedAdditionalWhere = if (additionalWhereClause == null) "" else " AND $additionalWhereClause"
         val column = String.format(
@@ -130,7 +136,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             externalTable,
             externalLink,
             ownLink,
-            connectedAdditionalWhere
+            connectedAdditionalWhere,
         )
         val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
             val ownLinkKey = contentValues.getAsString(ownLink)
@@ -140,7 +146,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
                 externalTable,
                 externalLink,
                 ownLinkKey,
-                connectedAdditionalWhere
+                connectedAdditionalWhere,
             )
         }
         val item =
@@ -153,17 +159,25 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
         condition: String?,
         ifTrueColumn: String?,
         ifFalseColumn: String?,
-        direction: OrderByDirection?
+        direction: OrderByDirection?,
     ): R {
         val column = String.format(
-            "(CASE WHEN %s %s THEN %s ELSE %s END)", conditionalColumn, condition, ifTrueColumn, ifFalseColumn
+            "(CASE WHEN %s %s THEN %s ELSE %s END)",
+            conditionalColumn,
+            condition,
+            ifTrueColumn,
+            ifFalseColumn,
         )
         val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
             val conditionalValue = contentValues.getAsString(conditionalColumn)
             val ifTrueValue = contentValues.getAsString(ifTrueColumn)
             val ifFalseValue = contentValues.getAsString(ifFalseColumn)
             String.format(
-                "(CASE WHEN '%s' %s THEN '%s' ELSE '%s' END)", conditionalValue, condition, ifTrueValue, ifFalseValue
+                "(CASE WHEN '%s' %s THEN '%s' ELSE '%s' END)",
+                conditionalValue,
+                condition,
+                ifTrueValue,
+                ifFalseValue,
             )
         }
         val item =

@@ -35,9 +35,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 class LongFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : BaseAbstractFilterConnector<R, Long>(
-    repositoryFactory, scope, key
+    repositoryFactory,
+    scope,
+    key,
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.

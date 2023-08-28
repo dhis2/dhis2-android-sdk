@@ -38,12 +38,12 @@ abstract class BaseSubQueryFilterConnector<R : BaseRepository> internal construc
     scope: RepositoryScope,
     key: String,
     private val linkTable: String,
-    private val linkParent: String
+    private val linkParent: String,
 ) : AbstractFilterConnector<R, String>(repositoryFactory, scope, key) {
     protected fun inTableWhere(clauseBuilder: WhereClauseBuilder): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${clauseBuilder.build()})"
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${clauseBuilder.build()})",
         )
     }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.OrganisationUnitFilter
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 
 class OrganisationUnitFilterConnector<R : BaseRepository> internal constructor(
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<OrganisationUnitFilter>>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<OrganisationUnitFilter>>,
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.

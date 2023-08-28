@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 class EnumFilterConnector<R : BaseRepository, E : Enum<E>> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : BaseAbstractFilterConnector<R, E>(
-    repositoryFactory, scope, key
+    repositoryFactory,
+    scope,
+    key,
 ) {
     override fun wrapValue(value: E?): String? {
         return value?.let { "'" + it.name + "'" }

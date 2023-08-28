@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
 class BoolFilterConnector<R : BaseRepository> internal constructor(
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, Boolean>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, Boolean>,
 ) {
     val isTrue: R
         /**

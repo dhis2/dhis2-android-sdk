@@ -40,16 +40,16 @@ import org.hisp.dhis.android.core.common.CoreObject
 class RepositoryDataSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
     private val scope: RepositoryScope,
-    private val childrenAppenders: Map<String, ChildrenAppender<M>>
+    private val childrenAppenders: Map<String, ChildrenAppender<M>>,
 ) : ItemKeyedDataSource<M, M>() {
     override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<M>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
-            scope
+            scope,
         )
         val withoutChildren = store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize
+            params.requestedLoadSize,
         )
         callback.onResult(appendChildren(withoutChildren))
     }
@@ -65,16 +65,19 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
     private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
         val whereClauseBuilder = WhereClauseBuilder()
         OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder, scope.orderBy(),
-            params.key.toContentValues(), reversed, scope.pagingKey()
+            whereClauseBuilder,
+            scope.orderBy(),
+            params.key.toContentValues(),
+            reversed,
+            scope.pagingKey(),
         )
         val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
-            scope
+            scope,
         )
         val withoutChildren = store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize
+            params.requestedLoadSize,
         )
         callback.onResult(appendChildren(withoutChildren))
     }

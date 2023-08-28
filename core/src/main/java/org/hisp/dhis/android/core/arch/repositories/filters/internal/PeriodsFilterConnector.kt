@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.Date
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.DatePeriod
 import org.hisp.dhis.android.core.period.Period
+import java.util.Date
 
 class PeriodsFilterConnector<R : BaseRepository> internal constructor(
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>>,
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
@@ -73,7 +73,7 @@ class PeriodsFilterConnector<R : BaseRepository> internal constructor(
             filters.add(
                 DateFilterPeriod.builder()
                     .startDate(period.startDate()).endDate(period.endDate())
-                    .type(DatePeriodType.ABSOLUTE).build()
+                    .type(DatePeriodType.ABSOLUTE).build(),
             )
         }
         return repositoryFactory.updated(filters)
@@ -91,7 +91,7 @@ class PeriodsFilterConnector<R : BaseRepository> internal constructor(
             filters.add(
                 DateFilterPeriod.builder()
                     .startDate(period.startDate()).endDate(period.endDate())
-                    .type(DatePeriodType.ABSOLUTE).build()
+                    .type(DatePeriodType.ABSOLUTE).build(),
             )
         }
         return repositoryFactory.updated(filters)
@@ -108,7 +108,7 @@ class PeriodsFilterConnector<R : BaseRepository> internal constructor(
         val filters: MutableList<DateFilterPeriod> = ArrayList()
         for (relative in relativePeriods) {
             filters.add(
-                DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build()
+                DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build(),
             )
         }
         return repositoryFactory.updated(filters)

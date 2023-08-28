@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.Date
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.DatePeriod
 import org.hisp.dhis.android.core.period.Period
+import java.util.Date
 
 class PeriodFilterConnector<R : BaseRepository> internal constructor(
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, DateFilterPeriod>
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, DateFilterPeriod>,
 ) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.

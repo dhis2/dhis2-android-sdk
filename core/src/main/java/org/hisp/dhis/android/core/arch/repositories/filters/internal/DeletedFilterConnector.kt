@@ -28,22 +28,34 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
-    private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
+class DeletedFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String,
+) : BaseAbstractFilterConnector<R, String>(
+    repositoryFactory,
+    scope,
+    key,
 ) {
-    fun eq(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.EQ).value(value).build()
-        return repositoryFactory.updated(item)
-    }
+    val isFalse: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isFalse filter checks if the given field has a value distinct of null.
+         * @return the new repository
+         */
+        get() = isNotNull
+    val isTrue: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isTrue filter checks if the given field has a null value.
+         * @return the new repository
+         */
+        get() = isNull
 
-    fun like(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
-        return repositoryFactory.updated(item)
+    override fun wrapValue(value: String?): String? {
+        return value?.let { "'" + escapeQuotes(it) + "'" }
     }
 }

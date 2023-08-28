@@ -93,7 +93,7 @@ internal class FileResourceRoutine @Inject constructor(
             add(Calendar.HOUR_OF_DAY, -2)
         }
         val fileResources = fileResourceCollectionRepository
-            .byUid().notIn(fileResourceUids)
+            .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().eq(FileResourceDomain.DATA_VALUE)
             .byLastUpdated().before(after ?: calendar.time)
             .blockingGet()

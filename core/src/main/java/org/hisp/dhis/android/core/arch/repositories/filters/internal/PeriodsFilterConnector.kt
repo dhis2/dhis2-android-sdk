@@ -27,33 +27,17 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.DatePeriod
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
-import java.util.*
+import java.util.Date
 
-abstract class DateFilterConnector<R : BaseRepository> internal constructor(
-    repositoryFactory: BaseRepositoryFactory<R>,
-    scope: RepositoryScope,
-    key: String,
-    val formatter: SafeDateFormat,
-) : BaseAbstractFilterConnector<R, Date>(repositoryFactory, scope, key) {
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before to the one provided.
-     * @param value value to compare with the target field
-     * @return the new repository
-     */
-    fun before(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LT, value)
-    }
-
+class PeriodsFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, List<DateFilterPeriod>>,
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The before filter checks if the given field has a date value which is before or equal to the one provided.
@@ -61,17 +45,8 @@ abstract class DateFilterConnector<R : BaseRepository> internal constructor(
      * @return the new repository
      */
     fun beforeOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LE, value)
-    }
-
-    /**
-     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after to the one provided.
-     * @param value value to compare with the target field
-     * @return the new repository
-     */
-    fun after(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GT, value)
+        val filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
@@ -81,36 +56,61 @@ abstract class DateFilterConnector<R : BaseRepository> internal constructor(
      * @return the new repository
      */
     fun afterOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GE, value)
+        val filter =
+            DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build()
+        return repositoryFactory.updated(listOf(filter))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * DatePeriods.
-     * @param datePeriods date periods to compare with the target field
+     * The inDatePeriod filter checks if the given field has a date value which is within any DatePeriod provided.
+     * @param datePeriods date period to compare with the target field
      * @return the new repository
      */
-    fun inDatePeriods(datePeriods: List<DatePeriod>): R {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods, formatter))
+    fun inDatePeriods(vararg datePeriods: DatePeriod): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
+        for (period in datePeriods) {
+            filters.add(
+                DateFilterPeriod.builder()
+                    .startDate(period.startDate()).endDate(period.endDate())
+                    .type(DatePeriodType.ABSOLUTE).build(),
+            )
+        }
+        return repositoryFactory.updated(filters)
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * Periods.
+     * The inPeriod filter checks if the given field has a date value which is within any period provided.
      * @param periods periods to compare with the target field
      * @return the new repository
      */
-    fun inPeriods(periods: List<Period>): R {
-        val datePeriods: MutableList<DatePeriod> = ArrayList()
+    fun inPeriods(vararg periods: Period): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
         for (period in periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build())
+            filters.add(
+                DateFilterPeriod.builder()
+                    .startDate(period.startDate()).endDate(period.endDate())
+                    .type(DatePeriodType.ABSOLUTE).build(),
+            )
         }
-        return inDatePeriods(datePeriods)
+        return repositoryFactory.updated(filters)
     }
 
-    override fun wrapValue(value: Date?): String? {
-        return value?.let { "'${formatter.format(it)}'" }
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The inPeriods filter checks if the given field has a date value which is within any of the relative
+     * periods provided.
+     * @param relativePeriods relative periods to compare with the target field
+     * @return the new repository
+     */
+    fun inPeriods(vararg relativePeriods: RelativePeriod): R {
+        val filters: MutableList<DateFilterPeriod> = ArrayList()
+        for (relative in relativePeriods) {
+            filters.add(
+                DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build(),
+            )
+        }
+        return repositoryFactory.updated(filters)
     }
 }

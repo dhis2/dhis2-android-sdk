@@ -27,90 +27,107 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.period.DatePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
-import java.util.*
 
-abstract class DateFilterConnector<R : BaseRepository> internal constructor(
+abstract class BaseAbstractFilterConnector<R : BaseRepository, V> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
     key: String,
-    val formatter: SafeDateFormat,
-) : BaseAbstractFilterConnector<R, Date>(repositoryFactory, scope, key) {
-
+) : AbstractFilterConnector<R, V>(
+    repositoryFactory,
+    scope,
+    key,
+) {
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before to the one provided.
+     * The eq filter checks if the given field has a value which is equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun before(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LT, value)
+    fun eq(value: V?): R {
+        return newWithWrappedScope(FilterItemOperator.EQ, value)
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before or equal to the one provided.
+     * The neq filter checks if the given field has a value which is not equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun beforeOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LE, value)
+    fun neq(value: V?): R {
+        return newWithWrappedScope(FilterItemOperator.NOT_EQ, value)
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after to the one provided.
-     * @param value value to compare with the target field
+     * The in filter checks if the given field has a value which is equal to one of the provided values.
+     * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun after(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GT, value)
+    fun `in`(values: Collection<V>?): R {
+        return newWithUnwrappedScope(
+            FilterItemOperator.IN,
+            "(" + getCommaSeparatedValues(values) + ")",
+        )
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after or equal to the one provided.
-     * @param value value to compare with the target field
+     * The in filter checks if the given field has a value which is equal to one of the provided values.
+     * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun afterOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GE, value)
+    @SafeVarargs
+    fun `in`(vararg values: V): R {
+        return `in`(listOf(*values))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * DatePeriods.
-     * @param datePeriods date periods to compare with the target field
+     * The notIn filter checks if the given field has a value which is not equal to any of the provided values.
+     * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun inDatePeriods(datePeriods: List<DatePeriod>): R {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods, formatter))
+    fun notIn(values: Collection<V>?): R {
+        return newWithUnwrappedScope(
+            FilterItemOperator.NOT_IN,
+            "(" + getCommaSeparatedValues(values) + ")",
+        )
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * Periods.
-     * @param periods periods to compare with the target field
+     * The notIn filter checks if the given field has a value which is not equal to any of the provided values.
+     * @param values list of values to compare with the target field
      * @return the new repository
      */
-    fun inPeriods(periods: List<Period>): R {
-        val datePeriods: MutableList<DatePeriod> = ArrayList()
-        for (period in periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build())
+    @SafeVarargs
+    fun notIn(vararg values: V): R {
+        return notIn(listOf(*values))
+    }
+
+    val isNull: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isNull filter checks if the given field has a null value.
+         * @return the new repository
+         */
+        get() = newWithUnwrappedScope(FilterItemOperator.VOID, "IS NULL")
+    val isNotNull: R
+        /**
+         * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+         * The isNotNull filter checks if the given field has a non-null value.
+         * @return the new repository
+         */
+        get() = newWithUnwrappedScope(FilterItemOperator.VOID, "IS NOT NULL")
+
+    companion object {
+        @JvmStatic
+        fun escapeQuotes(value: String?): String? {
+            return value?.replace("'".toRegex(), "''")
         }
-        return inDatePeriods(datePeriods)
-    }
-
-    override fun wrapValue(value: Date?): String? {
-        return value?.let { "'${formatter.format(it)}'" }
     }
 }

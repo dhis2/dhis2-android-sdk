@@ -28,22 +28,31 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 
-class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
-    private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
+class StringFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String,
+) : BaseAbstractFilterConnector<R, String>(
+    repositoryFactory,
+    scope,
+    key,
 ) {
-    fun eq(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.EQ).value(value).build()
-        return repositoryFactory.updated(item)
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The like filter checks if the given field has a value which contains the value provided. The comparison
+     * is case insensitive.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    fun like(value: String?): R {
+        return newWithWrappedScope(FilterItemOperator.LIKE, "%$value%")
     }
 
-    fun like(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
-        return repositoryFactory.updated(item)
+    override fun wrapValue(value: String?): String {
+        return "'" + escapeQuotes(value) + "'"
     }
 }

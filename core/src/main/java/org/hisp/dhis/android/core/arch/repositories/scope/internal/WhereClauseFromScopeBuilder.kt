@@ -25,25 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.filters.internal
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
-    private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
-) {
-    fun eq(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.EQ).value(value).build()
-        return repositoryFactory.updated(item)
-    }
-
-    fun like(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
-        return repositoryFactory.updated(item)
+class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuilder) {
+    fun getWhereClause(scope: RepositoryScope): String {
+        if (!scope.hasFilters() && builder.isEmpty) {
+            return "1"
+        }
+        for (item in scope.filters()) {
+            builder.appendKeyOperatorValue(item.key(), item.operator().sqlOperator, item.value())
+        }
+        for (item in scope.complexFilters()) {
+            builder.appendComplexQuery(item.whereQuery())
+        }
+        return builder.build()
     }
 }

@@ -61,7 +61,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
         scope.dataFilters().forEach { filter -> repository = applyDataFilter(repository, filter) }
         if (!scope.events().isNullOrEmpty()) {
-            repository = repository.byUid().`in`(scope.events())
+            repository = repository.byUid().`in`(scope.events()!!)
         }
         scope.eventStatus()?.let { repository = repository.byStatus().`in`(it) }
         scope.eventDate()?.let { period ->
@@ -112,7 +112,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             filter.lt()?.let { filterRepo = filterRepo.byDataValue(deId).lt(it) }
             filter.like()?.let { filterRepo = filterRepo.byDataValue(deId).like(it) }
             if (!filter.`in`().isNullOrEmpty()) {
-                filterRepo = filterRepo.byDataValue(deId).`in`(filter.`in`())
+                filterRepo = filterRepo.byDataValue(deId).`in`(filter.`in`()!!)
             }
             filter.dateFilter()?.let { period ->
                 datePeriodHelper.getStartDate(period)?.let {

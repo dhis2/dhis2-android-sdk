@@ -28,22 +28,20 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 
-class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
-    private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
+class BoolFilterConnector<R : BaseRepository> internal constructor(
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, Boolean>,
 ) {
-    fun eq(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.EQ).value(value).build()
-        return repositoryFactory.updated(item)
-    }
-
-    fun like(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
-        return repositoryFactory.updated(item)
-    }
+    val isTrue: R
+        /**
+         * Returns a new repository whose scope that checks if the given field has a true value.
+         * @return the new repository
+         */
+        get() = repositoryFactory.updated(true)
+    val isFalse: R
+        /**
+         * Returns a new repository whose scope that checks if the given field has a false value.
+         * @return the new repository
+         */
+        get() = repositoryFactory.updated(false)
 }

@@ -27,90 +27,102 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BaseAbstractFilterConnector.Companion.escapeQuotes
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.period.DatePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
-import java.util.*
 
-abstract class DateFilterConnector<R : BaseRepository> internal constructor(
+class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
     key: String,
-    val formatter: SafeDateFormat,
-) : BaseAbstractFilterConnector<R, Date>(repositoryFactory, scope, key) {
+    linkTable: String,
+    linkParent: String,
+    private val linkChild: String,
+    private val dataElementColumn: String,
+    private val dataElementId: String,
+) : BaseSubQueryFilterConnector<R>(repositoryFactory, scope, key, linkTable, linkParent) {
+    override fun wrapValue(value: String?): String {
+        return "'" + escapeQuotes(value) + "'"
+    }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before to the one provided.
+     * The like filter checks if the given field has a value equal to the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun before(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LT, value)
+    fun eq(value: String): R {
+        return inLinkTable(FilterItemOperator.EQ, wrapValue(value))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before or equal to the one provided.
+     * The like filter checks if the given field has a value lower or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun beforeOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.LE, value)
+    fun le(value: String): R {
+        return inLinkTable(FilterItemOperator.LE, wrapValue(value))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after to the one provided.
+     * The like filter checks if the given field has a value strictly lower than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun after(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GT, value)
+    fun lt(value: String): R {
+        return inLinkTable(FilterItemOperator.LT, wrapValue(value))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after or equal to the one provided.
+     * The like filter checks if the given field has a value strictly greater or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    fun afterOrEqual(value: Date): R {
-        return newWithWrappedScope(FilterItemOperator.GE, value)
+    fun ge(value: String): R {
+        return inLinkTable(FilterItemOperator.GE, wrapValue(value))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * DatePeriods.
-     * @param datePeriods date periods to compare with the target field
+     * The like filter checks if the given field has a value strictly greater than the value provided.
+     * @param value value to compare with the target field
      * @return the new repository
      */
-    fun inDatePeriods(datePeriods: List<DatePeriod>): R {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods, formatter))
+    fun gt(value: String): R {
+        return inLinkTable(FilterItemOperator.GT, wrapValue(value))
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * Periods.
-     * @param periods periods to compare with the target field
+     * The like filter checks if the given field has a value included in the list provided.
+     * @param values value list to compare with the target field
      * @return the new repository
      */
-    fun inPeriods(periods: List<Period>): R {
-        val datePeriods: MutableList<DatePeriod> = ArrayList()
-        for (period in periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build())
-        }
-        return inDatePeriods(datePeriods)
+    fun `in`(values: Collection<String>): R {
+        return inLinkTable(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")")
     }
 
-    override fun wrapValue(value: Date?): String? {
-        return value?.let { "'${formatter.format(it)}'" }
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The like filter checks if the given field has a value which contains the value provided. The comparison
+     * is case insensitive.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    fun like(value: String): R {
+        return inLinkTable(FilterItemOperator.LIKE, wrapValue("%$value%"))
+    }
+
+    private fun inLinkTable(operator: FilterItemOperator, value: String?): R {
+        val clauseBuilder = WhereClauseBuilder()
+            .appendKeyOperatorValue(linkChild, operator.sqlOperator, value)
+            .appendKeyStringValue(dataElementColumn, dataElementId)
+        return inTableWhere(clauseBuilder)
     }
 }

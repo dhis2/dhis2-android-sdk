@@ -25,77 +25,71 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import okio.ByteString
 
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import okio.ByteString;
-
-public final class UserHelper {
-
-    private UserHelper() {
-        // no instances
-    }
-
+object UserHelper {
     /**
-     * Encode the given username and password to a base 64 {@link String}.
+     * Encode the given username and password to a base 64 [String].
      *
      * @param username The username of the user account.
      * @param password The password of the user account.
-     * @return An encoded base 64 {@link String}.
+     * @return An encoded base 64 [String].
      */
-    public static String base64(String username, String password) {
-        return base64(username + ":" + password);
+    fun base64(username: String, password: String): String {
+        return base64(usernameAndPassword(username, password))
     }
 
     /**
-     * Encode the given string to a base 64 {@link String}.
+     * Encode the given string to a base 64 [String].
      *
      * @param value The value to encode
-     * @return An encoded base 64 {@link String}.
+     * @return An encoded base 64 [String].
      */
-    public static String base64(String value) {
-        byte[] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
-        return ByteString.of(bytes).base64();
+    @Suppress("SpreadOperator")
+    fun base64(value: String): String {
+        val bytes = value.toByteArray(StandardCharsets.UTF_8)
+        return ByteString.of(*bytes).base64()
     }
 
     /**
-     * Encode the given username and password to a MD5 {@link String}.
+     * Encode the given username and password to a MD5 [String].
      *
      * @param username The username of the user account.
      * @param password The password of the user account.
-     * @return An encoded MD5 {@link String}.
+     * @return An encoded MD5 [String].
      */
-    @SuppressWarnings({"PMD.UseLocaleWithCaseConversions"})
-    public static String md5(String username, String password) {
-        try {
-            String credentials = usernameAndPassword(username, password);
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.reset();
-            md.update(credentials.getBytes(StandardCharsets.ISO_8859_1));
-            return bytesToHex(md.digest()).toLowerCase();
-        } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+    fun md5(username: String, password: String): String {
+        return try {
+            val credentials = usernameAndPassword(username, password)
+            val md = MessageDigest.getInstance("MD5")
+            md.reset()
+            md.update(credentials.toByteArray(StandardCharsets.UTF_8))
+            bytesToHex(md.digest()).lowercase()
+        } catch (noSuchAlgorithmException: NoSuchAlgorithmException) {
             // noop. Every implementation of Java is required to support MD5
-            throw new AssertionError(noSuchAlgorithmException);
+            throw AssertionError(noSuchAlgorithmException)
         }
     }
 
-    private static String bytesToHex(byte[] bytes) {
-        char[] hexArray = "0123456789ABCDEF".toCharArray();
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    @Suppress("MagicNumber")
+    private fun bytesToHex(bytes: ByteArray): String {
+        val hexArray = "0123456789ABCDEF".toCharArray()
+        val hexChars = CharArray(bytes.size * 2)
+
+        for (j in bytes.indices) {
+            val v = bytes[j].toInt() and 0xFF
+            hexChars[j * 2] = hexArray[v ushr 4]
+            hexChars[j * 2 + 1] = hexArray[v and 0x0F]
         }
-        return new String(hexChars);
+        return String(hexChars)
     }
 
-    private static String usernameAndPassword(String username, String password) {
-        return username + ":" + password;
+    private fun usernameAndPassword(username: String, password: String): String {
+        return "$username:$password"
     }
 }

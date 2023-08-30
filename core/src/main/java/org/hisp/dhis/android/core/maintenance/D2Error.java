@@ -85,7 +85,9 @@ public abstract class D2Error extends Exception implements CoreObject {
     public abstract Builder toBuilder();
 
     public boolean isOffline() {
-        return errorCode() == D2ErrorCode.SOCKET_TIMEOUT || errorCode() == D2ErrorCode.UNKNOWN_HOST;
+        return errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                errorCode() == D2ErrorCode.UNKNOWN_HOST ||
+                errorCode() == D2ErrorCode.SERVER_CONNECTION_ERROR;
     }
 
     @AutoValue.Builder
@@ -106,9 +108,15 @@ public abstract class D2Error extends Exception implements CoreObject {
         public abstract Builder created(Date created);
 
         abstract D2Error autoBuild();
+        abstract D2ErrorCode errorCode();
 
         public D2Error build() {
             this.created(new Date());
+            try {
+                errorCode();
+            } catch (IllegalStateException e) {
+                errorCode(D2ErrorCode.UNEXPECTED);
+            }
             return autoBuild();
         }
     }

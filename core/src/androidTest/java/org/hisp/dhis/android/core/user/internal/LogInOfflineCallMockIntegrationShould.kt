@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.arch.helpers;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMethodScopedEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Assert.fail
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class UserHelperShould {
-
-    @Test
-    public void md5_evaluate_same_string() {
-        String md5s1 = UserHelper.md5("user1","password1");
-        String md5s2 = UserHelper.md5("user1","password1");
-
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
-
-        assertThat(md5s1.equals(md5s2)).isTrue();
-    }
+@RunWith(D2JunitRunner::class)
+class LogInOfflineCallMockIntegrationShould : BaseMockIntegrationTestMethodScopedEmptyEnqueable() {
 
     @Test
-    public void md5_evaluate_different_string() {
-        String md5s1 = UserHelper.md5("user2", "password2");
-        String md5s2 = UserHelper.md5("user3", "password3");
+    fun login_offline_on_connection_error() {
+        dhis2MockServer.enqueueLoginResponses()
 
-        assertThat(md5s1.length()).isEqualTo(32);
-        assertThat(md5s2.length()).isEqualTo(32);
+        login()
+        assertThat(getUser()).isNotNull()
 
-        assertThat(md5s1.equals(md5s2)).isFalse();
+        logout()
+        assertThrowsException { getUser() }
+
+        dhis2MockServer.shutdown()
+
+        login()
+        assertThat(d2.userModule().user().blockingGet()).isNotNull()
     }
 
+    private fun login(): User {
+        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.baseEndpoint)
+    }
+
+    private fun logout() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+    }
+
+    private fun getUser(): User? {
+        return d2.userModule().user().blockingGet()
+    }
+
+    private fun assertThrowsException(block: () -> Any?) {
+        try {
+            block()
+            fail("Get user should fail after logout")
+        } catch (_: RuntimeException) {
+            //
+        }
+    }
 }

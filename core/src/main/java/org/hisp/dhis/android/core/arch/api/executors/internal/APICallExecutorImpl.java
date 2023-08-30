@@ -107,7 +107,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 } else if (errorCatcher != null) {
                     this.catchAndThrow(errorCatcher, errorBuilder(call), response, errorBody);
                 }
-                throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response, errorBody));
+                throw storeAndReturn(errorMapper.responseException(errorBuilder(call), response, null, errorBody));
             }
         } catch (D2Error d2Error) {
             throw d2Error;
@@ -136,7 +136,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
         if (emptyBodyExpected) {
             return null;
         } else if (response.body() == null) {
-            throw storeAndReturn(errorMapper.responseException(errorBuilder, response, null));
+            throw storeAndReturn(errorMapper.responseException(errorBuilder, response, null, null));
         } else {
             return response.body();
         }

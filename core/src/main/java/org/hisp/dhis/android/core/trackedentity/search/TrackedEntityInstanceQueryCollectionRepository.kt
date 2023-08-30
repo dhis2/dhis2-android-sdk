@@ -76,7 +76,7 @@ import javax.inject.Inject
 class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
-    private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
+    private val childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
     val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     private val versionManager: DHISVersionManager,

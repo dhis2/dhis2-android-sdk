@@ -86,12 +86,11 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     ): Flow<D2Progress> = flow {
         val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
 
-        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true))
         emitAll(relationshipPostCall.deleteRelationships(partitionedRelationships.first))
         emitAll(postTrackedEntityInstances(payload.trackedEntityInstances))
         emitAll(postEvents(payload.events))
         emitAll(relationshipPostCall.postRelationships(partitionedRelationships.second))
-        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false))
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners))
     }
 
     @Suppress("TooGenericExceptionCaught")

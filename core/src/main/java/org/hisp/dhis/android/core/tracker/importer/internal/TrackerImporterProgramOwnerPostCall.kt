@@ -50,22 +50,20 @@ internal class TrackerImporterProgramOwnerPostCall @Inject constructor(
 
     fun uploadProgramOwners(
         programOwners: Map<String, List<ProgramOwner>>,
-        onlyExistingTeis: Boolean = false,
     ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
-        programOwners.forEach { (tei, programOwners) ->
-            programOwners
-                .filter {
-                    val unsyncedOwner by lazy { selectWhere(it)?.syncState() != State.SYNCED }
-                    val existingTei by lazy {
-                        trackedEntityInstanceStore.selectByUid(tei)?.syncState() != State.TO_POST
-                    }
+        programOwners.forEach { (tei, teiProgramOwners) ->
+            val teiSyncState = trackedEntityInstanceStore.selectByUid(tei)?.aggregatedSyncState()
+            val uploadableTei = teiSyncState != null && teiSyncState != State.ERROR && teiSyncState != State.WARNING
 
-                    unsyncedOwner && (!onlyExistingTeis || existingTei)
-                }.forEach {
-                    programOwnerPostCall.uploadProgramOwner(it)
+            if (uploadableTei) {
+                teiProgramOwners.forEach {
+                    if (selectWhere(it)?.syncState() != State.SYNCED) {
+                        programOwnerPostCall.uploadProgramOwner(it)
+                    }
                 }
+            }
         }
 
         emit(progressManager.increaseProgress(ProgramOwner::class.java, false))

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 
 internal class DataElementLegendSetChildrenAppender private constructor(
-    private val linkChildStore: ObjectWithUidChildStore<DataElement>
+    private val linkChildStore: ObjectWithUidChildStore<DataElement>,
 ) : ChildrenAppender<DataElement>() {
     override fun appendChildren(m: DataElement): DataElement {
         return m.toBuilder()
@@ -49,8 +49,8 @@ internal class DataElementLegendSetChildrenAppender private constructor(
                 objectWithUidChildStore(
                     databaseAdapter,
                     DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
+                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
+                ),
             )
         }
     }

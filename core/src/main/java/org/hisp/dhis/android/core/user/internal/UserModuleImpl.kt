@@ -31,7 +31,6 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
@@ -48,7 +47,7 @@ internal class UserModuleImpl @Inject constructor(
     private val userCredentials: UserCredentialsObjectRepository,
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
-    private val openIDConnectHandler: OpenIDConnectHandlerImpl
+    private val openIDConnectHandler: OpenIDConnectHandlerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {

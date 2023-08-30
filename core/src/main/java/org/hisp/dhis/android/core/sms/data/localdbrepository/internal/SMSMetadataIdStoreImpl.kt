@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 
 @Suppress("MagicNumber")
 internal class SMSMetadataIdStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SMSMetadataIdStore,
     ObjectWithoutUidStoreImpl<SMSMetadataId>(
         databaseAdapter,
@@ -44,7 +44,7 @@ internal class SMSMetadataIdStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> SMSMetadataId.create(cursor) }
+        { cursor: Cursor -> SMSMetadataId.create(cursor) },
     ) {
 
     companion object {

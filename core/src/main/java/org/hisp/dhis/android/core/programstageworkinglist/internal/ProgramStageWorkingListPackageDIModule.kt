@@ -33,7 +33,7 @@ import dagger.Module
     includes = [
         ProgramStageWorkingListEntityDIModule::class,
         ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
+        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class,
+    ],
 )
 internal class ProgramStageWorkingListPackageDIModule

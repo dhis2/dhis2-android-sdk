@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.database.Cursor
-import java.util.Date
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -39,10 +38,11 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
+import java.util.Date
 
 @Suppress("MagicNumber")
 internal class TrackedEntityAttributeReservedValueStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeReservedValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>(
         databaseAdapter,
@@ -50,7 +50,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> TrackedEntityAttributeReservedValue.create(cursor) }
+        { cursor: Cursor -> TrackedEntityAttributeReservedValue.create(cursor) },
     ) {
 
     override fun deleteExpired(serverDate: Date) {
@@ -58,7 +58,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         super.deleteWhere(
             "${Columns.EXPIRY_DATE} < $serverDateStr OR " +
                 "( ${Columns.TEMPORAL_VALIDITY_DATE} < $serverDateStr AND " +
-                "${Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL );"
+                "${Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL );",
         )
     }
 
@@ -81,7 +81,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
     private fun where(
         ownerUid: String,
         organisationUnit: String?,
-        pattern: String?
+        pattern: String?,
     ): String {
         val builder = WhereClauseBuilder()
             .appendKeyStringValue(Columns.OWNER_UID, ownerUid)

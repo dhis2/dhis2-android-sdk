@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 
 @Suppress("MagicNumber")
 internal class SMSOngoingSubmissionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SMSOngoingSubmissionStore,
     ObjectWithoutUidStoreImpl<SMSOngoingSubmission>(
         databaseAdapter,
@@ -43,7 +43,7 @@ internal class SMSOngoingSubmissionStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor -> SMSOngoingSubmission.create(cursor) }
+        { cursor -> SMSOngoingSubmission.create(cursor) },
     ) {
 
     companion object {

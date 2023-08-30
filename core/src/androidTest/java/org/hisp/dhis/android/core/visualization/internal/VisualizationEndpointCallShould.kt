@@ -50,8 +50,8 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
             BaseMockIntegrationTestEmptyEnqueable.setUpClass()
             visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
                 HashSet(
-                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")
-                )
+                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe"),
+                ),
             )
         }
     }

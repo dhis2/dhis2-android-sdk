@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
 
 @Suppress("MagicNumber")
 internal class LegendSetStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : LegendSetStore,
     IdentifiableObjectStoreImpl<LegendSet>(
         databaseAdapter,
         LegendSetTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> LegendSet.create(cursor) }
+        { cursor: Cursor -> LegendSet.create(cursor) },
     ) {
 
     companion object {

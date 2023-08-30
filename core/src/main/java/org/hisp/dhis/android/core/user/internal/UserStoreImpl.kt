@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.user.UserTableInfo
 
 @Suppress("MagicNumber")
 internal class UserStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : UserStore,
     IdentifiableObjectStoreImpl<User>(
         databaseAdapter,
         UserTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> User.create(cursor) }
+        { cursor: Cursor -> User.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<User> = object : IdentifiableStatementBinder<User>() {

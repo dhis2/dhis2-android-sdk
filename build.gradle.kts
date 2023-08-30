@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    val kotlinVersion = "1.7.21"
+    val kotlinVersion = "1.9.0"
 
     repositories {
         google()
@@ -11,10 +11,10 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.1")
+        classpath("com.android.tools.build:gradle:8.1.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
-        classpath("org.jacoco:org.jacoco.core:0.8.8")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:11.5.1")
+        classpath("org.jacoco:org.jacoco.core:0.8.10")
     }
 }
 
@@ -66,7 +66,7 @@ subprojects {
     //version = VERSION_NAME
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("0.45.2")
+        version.set("0.50.0")
         android.set(true)
         outputColorName.set("RED")
         reporters {

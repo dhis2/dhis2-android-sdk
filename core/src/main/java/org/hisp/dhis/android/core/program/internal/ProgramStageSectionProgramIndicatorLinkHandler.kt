@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
 
 internal class ProgramStageSectionProgramIndicatorLinkHandler(
-    store: ProgramStageSectionProgramIndicatorLinkStore
+    store: ProgramStageSectionProgramIndicatorLinkStore,
 ) : LinkHandlerImpl<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>(store)

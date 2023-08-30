@@ -61,7 +61,7 @@ class AppearanceSettingsCallShould {
             programConfigurationHandler,
             service,
             apiCallExecutor,
-            appVersionManager
+            appVersionManager,
         )
     }
 

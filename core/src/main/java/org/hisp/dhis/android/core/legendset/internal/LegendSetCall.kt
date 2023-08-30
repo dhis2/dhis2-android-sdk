@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.legendset.LegendSet
+import javax.inject.Inject
 
 @Reusable
 internal class LegendSetCall @Inject constructor(

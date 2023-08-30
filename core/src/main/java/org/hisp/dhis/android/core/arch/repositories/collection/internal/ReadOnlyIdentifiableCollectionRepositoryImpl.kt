@@ -45,7 +45,7 @@ open class ReadOnlyIdentifiableCollectionRepositoryImpl<M, R : ReadOnlyCollectio
     store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    cf: FilterConnectorFactory<R>
+    cf: FilterConnectorFactory<R>,
 ) : ReadOnlyWithUidCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
     ReadOnlyIdentifiableCollectionRepository<M, R> where M : CoreObject, M : IdentifiableObject {
     override fun byUid(): StringFilterConnector<R> {

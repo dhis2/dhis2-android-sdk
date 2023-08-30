@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 
 internal class ForeignKeyViolationStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ForeignKeyViolationStore,
     ObjectStoreImpl<ForeignKeyViolation>(
         databaseAdapter,
         ForeignKeyViolationTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ForeignKeyViolation.create(cursor) }
+        { cursor: Cursor -> ForeignKeyViolation.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: ForeignKeyViolation, w: StatementWrapper ->

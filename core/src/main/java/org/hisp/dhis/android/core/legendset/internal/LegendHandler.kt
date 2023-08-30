@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.legendset.Legend
 
 internal class LegendHandler(
-    store: LegendStore
+    store: LegendStore,
 ) : IdentifiableHandlerImpl<Legend>(store)

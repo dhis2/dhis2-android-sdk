@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @Reusable
 class CategoryOptionComboService @Inject constructor(
-    private val categoryOptionRepository: CategoryOptionCollectionRepository
+    private val categoryOptionRepository: CategoryOptionCollectionRepository,
 ) {
 
     fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
@@ -55,7 +55,7 @@ class CategoryOptionComboService @Inject constructor(
 
     fun blockingIsAssignedToOrgUnit(
         categoryOptionComboUid: String,
-        orgUnitUid: String?
+        orgUnitUid: String?,
     ): Boolean {
         return orgUnitUid?.let {
             val categoryOptions = categoryOptionRepository

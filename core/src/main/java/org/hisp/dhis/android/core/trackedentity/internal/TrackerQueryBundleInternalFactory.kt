@@ -35,23 +35,29 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 internal class TrackerQueryBundleInternalFactory constructor(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
-    programSettings: ProgramSettings?
+    programSettings: ProgramSettings?,
 ) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
     override fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>
+        orgUnitByLimitExtractor: () -> List<String>,
     ): List<TrackerQueryBundle> {
         val limit = commonHelper.getLimit(
-            params, programSettings, programUid
+            params,
+            programSettings,
+            programUid,
         ) { it?.teiDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
-            params, programSettings, programs,
-            programUid, limit, orgUnitByLimitExtractor
+            params,
+            programSettings,
+            programs,
+            programUid,
+            limit,
+            orgUnitByLimitExtractor,
         ) { it?.enrollmentDateDownload() }
 
         val programStatus = getProgramStatus(params, programSettings, programUid)
@@ -62,7 +68,7 @@ internal class TrackerQueryBundleInternalFactory constructor(
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
-            commonParams.hasLimitByOrgUnit
+            commonParams.hasLimitByOrgUnit,
         ) { builder.orgUnits(it).build() }
     }
 
@@ -70,7 +76,7 @@ internal class TrackerQueryBundleInternalFactory constructor(
     private fun getProgramStatus(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
     ): EnrollmentStatus? {
         if (params.programStatus() != null &&
             (commonHelper.isGlobal(params, programUid) || commonHelper.isUserDefinedProgram(params, programUid))

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.realservertests
 
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
@@ -41,7 +41,7 @@ class OutsideRetrofitFactory {
     companion object {
         fun retrofit(baseUrl: String, okHttpClient: OkHttpClient): Retrofit {
             return Retrofit.Builder()
-                .baseUrl(HttpUrl.parse(baseUrl)!!)
+                .baseUrl(baseUrl.toHttpUrlOrNull()!!)
                 .client(okHttpClient)
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper()))
                 .addConverterFactory(FilterConverterFactory.create())

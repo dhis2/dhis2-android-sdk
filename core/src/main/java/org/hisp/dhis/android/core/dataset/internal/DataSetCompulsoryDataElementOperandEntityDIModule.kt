@@ -43,7 +43,7 @@ internal class DataSetCompulsoryDataElementOperandEntityDIModule {
     @Provides
     @Reusable
     fun handler(
-        store: DataSetCompulsoryDataElementOperandLinkStore
+        store: DataSetCompulsoryDataElementOperandLinkStore,
     ): DataSetCompulsoryDataElementOperandHandler {
         return DataSetCompulsoryDataElementOperandHandler(store)
     }

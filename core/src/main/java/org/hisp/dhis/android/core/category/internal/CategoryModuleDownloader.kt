@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 class CategoryModuleDownloader @Inject internal constructor(
@@ -41,7 +41,7 @@ class CategoryModuleDownloader @Inject internal constructor(
     private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
-    private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker
+    private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

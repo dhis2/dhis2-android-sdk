@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 
 internal class NoteStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : NoteStore,
     IdentifiableObjectStoreImpl<Note>(
         databaseAdapter,
         NoteTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Note.create(cursor) }
+        { cursor: Cursor -> Note.create(cursor) },
     ) {
 
     companion object {
@@ -59,10 +59,12 @@ internal class NoteStoreImpl(
             w.bind(9, o.deleted())
         }
         val ENROLLMENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT
+            NoteTableInfo.TABLE_INFO,
+            NoteTableInfo.Columns.ENROLLMENT,
         )
         val EVENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.EVENT
+            NoteTableInfo.TABLE_INFO,
+            NoteTableInfo.Columns.EVENT,
         )
     }
 }

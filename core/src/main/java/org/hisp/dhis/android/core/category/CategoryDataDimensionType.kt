@@ -29,5 +29,5 @@ package org.hisp.dhis.android.core.category
 
 enum class CategoryDataDimensionType {
     ATTRIBUTE,
-    DISAGGREGATION
+    DISAGGREGATION,
 }

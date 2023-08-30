@@ -42,14 +42,15 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     private val store: ReadableStore<M>,
     private val scope: RepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
-    private val transformer: TwoWayTransformer<M, T>
+    private val transformer: TwoWayTransformer<M, T>,
 ) : ItemKeyedDataSource<M, T>() {
 
     override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<T>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()), params.requestedLoadSize
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            params.requestedLoadSize,
         )
         callback.onResult(appendChildren(withoutChildren))
     }
@@ -65,14 +66,17 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     private fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
         val whereClauseBuilder = WhereClauseBuilder()
         OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder, scope.orderBy(),
-            params.key.toContentValues(), reversed, scope.pagingKey()
+            whereClauseBuilder,
+            scope.orderBy(),
+            params.key.toContentValues(),
+            reversed,
+            scope.pagingKey(),
         )
         val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize
+            params.requestedLoadSize,
         )
         callback.onResult(appendChildren(withoutChildren))
     }
@@ -83,7 +87,9 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
 
     private fun appendChildren(withoutChildren: List<M>): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren, childrenAppenders, scope.children()
+            withoutChildren,
+            childrenAppenders,
+            scope.children(),
         ).map { transformer.transform(it) }
     }
 }

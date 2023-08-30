@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl
 import org.hisp.dhis.android.core.dataset.DataSetInstanceSummary
 
 internal class DataSetInstanceSummaryStoreImpl constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataSetInstanceSummaryStore,
     ReadableStoreImpl<DataSetInstanceSummary>(
         databaseAdapter,
         DataSetInstanceSummarySQLStatementBuilder(),
-        { cursor: Cursor -> DataSetInstanceSummary.create(cursor) }
+        { cursor: Cursor -> DataSetInstanceSummary.create(cursor) },
     )

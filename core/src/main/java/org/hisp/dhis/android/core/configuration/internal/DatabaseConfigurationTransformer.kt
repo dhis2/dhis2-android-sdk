@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import java.util.Date
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import java.util.Date
 
 internal object DatabaseConfigurationTransformer {
     fun transform(serverUrl: String, databaseName: String, username: String): DatabasesConfiguration {
@@ -41,8 +41,8 @@ internal object DatabaseConfigurationTransformer {
                         .databaseName(databaseName)
                         .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(Date()))
                         .encrypted(false)
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .build()
     }

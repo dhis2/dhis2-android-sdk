@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
 import org.hisp.dhis.android.core.common.ValueTypeRendering
 
 internal abstract class ValueTypeRenderingChildrenAppender<M : ObjectWithUidInterface>(
-    private val store: ObjectWithoutUidStore<ValueTypeDeviceRendering>
+    private val store: ObjectWithoutUidStore<ValueTypeDeviceRendering>,
 ) : ChildrenAppender<M>() {
     fun getValueTypeDeviceRendering(model: M): ValueTypeRendering {
         val desktopWhereClause = WhereClauseBuilder()

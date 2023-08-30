@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramOwnerHandler @Inject constructor(
-    store: ProgramOwnerStore
+    store: ProgramOwnerStore,
 ) : ObjectWithoutUidHandlerImpl<ProgramOwner>(store)

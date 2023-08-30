@@ -29,14 +29,14 @@
 package org.hisp.dhis.android.core.indicator
 
 import com.google.common.truth.Truth
-import java.io.IOException
-import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
 class IndicatorShould : BaseObjectShould("indicators/indicator.json"), ObjectShould {
     @Test
@@ -45,24 +45,24 @@ class IndicatorShould : BaseObjectShould("indicators/indicator.json"), ObjectSho
         val indicator = objectMapper.readValue(jsonStream, Indicator::class.java)
         Truth.assertThat(indicator.code()).isEqualTo("IN_52462")
         Truth.assertThat(indicator.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-21T11:17:44.926")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-21T11:17:44.926"),
         )
         Truth.assertThat(indicator.uid()).isEqualTo("ReUHfIn0pTQ")
         Truth.assertThat(indicator.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-05T09:16:29.054")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-05T09:16:29.054"),
         )
         Truth.assertThat(indicator.name()).isEqualTo("ANC 1-3 Dropout Rate")
         Truth.assertThat(indicator.shortName()).isEqualTo("ANC 1-3 Dropout Rate")
         Truth.assertThat(indicator.description()).isEqualTo(
             "Indicates the percentage of clients dropping" +
                 " out between the 1st and the 3rd ANC visit. Calculated as the difference between" +
-                " ANC1 and ANC3 by the ANC 1 visits."
+                " ANC1 and ANC3 by the ANC 1 visits.",
         )
         Truth.assertThat(indicator.deleted()).isNull()
         Truth.assertThat(indicator.annualized()).isFalse()
         Truth.assertThat(indicator.numerator()).isEqualTo(
             "#{fbfJHSPpUQD.pq2XI5kz2BY}+#" +
-                "{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}"
+                "{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
         )
         Truth.assertThat(indicator.numeratorDescription()).isEqualTo("ANC1-ANC3")
         Truth.assertThat(indicator.denominator())

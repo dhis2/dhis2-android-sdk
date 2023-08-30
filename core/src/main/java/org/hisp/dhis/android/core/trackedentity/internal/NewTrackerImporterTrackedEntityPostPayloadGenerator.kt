@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor.accessEvents
@@ -42,30 +41,31 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityT
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
     private val programTrackedEntityAttributeStore: ProgramTrackedEntityAttributeStore,
     private val trackedEntityTypeAttributeStore: TrackedEntityTypeAttributeStore,
-    private val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator
+    private val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
 ) {
 
     fun getTrackedEntityPayload(
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): NewTrackerImporterPayloadWrapper {
         val oldPayload = oldTrackerImporterPayloadGenerator.getTrackedEntityInstancePayload(instances)
         return transformPayload(oldPayload)
     }
 
     fun getEventPayload(
-        events: List<Event>
+        events: List<Event>,
     ): NewTrackerImporterPayloadWrapper {
         val oldPayload = oldTrackerImporterPayloadGenerator.getEventPayload(events)
         return transformPayload(oldPayload)
     }
 
     private fun transformPayload(
-        oldPayload: OldTrackerImporterPayload
+        oldPayload: OldTrackerImporterPayload,
     ): NewTrackerImporterPayloadWrapper {
         val wrapper = NewTrackerImporterPayloadWrapper(programOwners = oldPayload.programOwners)
 
@@ -98,7 +98,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     private fun addTrackedEntityToWrapper(
         wrapper: NewTrackerImporterPayloadWrapper,
         instance: TrackedEntityInstance,
-        tetAttributeMap: Map<String, List<String>>
+        tetAttributeMap: Map<String, List<String>>,
     ) {
         if (instance.syncState() != State.SYNCED) {
             val transformed = NewTrackerImporterTrackedEntityTransformer.transform(instance, tetAttributeMap)
@@ -116,7 +116,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         wrapper: NewTrackerImporterPayloadWrapper,
         enrollment: Enrollment,
         attributes: List<TrackedEntityAttributeValue>?,
-        programAttributeMap: Map<String, List<String>>
+        programAttributeMap: Map<String, List<String>>,
     ) {
         if (enrollment.syncState() != State.SYNCED) {
             val transformed =
@@ -133,7 +133,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
 
     private fun addEventToWrapper(
         wrapper: NewTrackerImporterPayloadWrapper,
-        event: Event
+        event: Event,
     ) {
         if (event.syncState() != State.SYNCED) {
             val transformed = NewTrackerImporterEventTransformer.transform(event)
@@ -149,7 +149,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
 
     private fun addRelationshipToWrapper(
         wrapper: NewTrackerImporterPayloadWrapper,
-        relationship: Relationship
+        relationship: Relationship,
     ) {
         val transformed = NewTrackerImporterRelationshipTransformer.transform(relationship)
 

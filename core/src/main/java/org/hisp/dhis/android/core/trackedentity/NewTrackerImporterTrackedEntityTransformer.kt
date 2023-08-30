@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProg
 internal object NewTrackerImporterTrackedEntityTransformer {
     fun transform(
         o: TrackedEntityInstance,
-        tetAttributeMap: Map<String, List<String>>
+        tetAttributeMap: Map<String, List<String>>,
     ): NewTrackerImporterTrackedEntity {
         val teiAttributes = o.trackedEntityAttributeValues() ?: emptyList()
         val typeAttributes = tetAttributeMap[o.trackedEntityType()] ?: emptyList()
@@ -62,7 +62,7 @@ internal object NewTrackerImporterTrackedEntityTransformer {
     }
 
     fun deTransform(
-        o: NewTrackerImporterTrackedEntity
+        o: NewTrackerImporterTrackedEntity,
     ): TrackedEntityInstance {
         val enrollments = o.enrollments()?.map {
             NewTrackerImporterEnrollmentTransformer.deTransform(it)

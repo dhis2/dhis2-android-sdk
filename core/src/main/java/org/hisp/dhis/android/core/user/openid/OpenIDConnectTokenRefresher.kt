@@ -31,15 +31,15 @@ package org.hisp.dhis.android.core.user.openid
 import android.content.Context
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
+import javax.inject.Inject
 
 @Reusable
 internal class OpenIDConnectTokenRefresher @Inject constructor(
     private val context: Context,
-    private val logoutHandler: OpenIDConnectLogoutHandler
+    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
     fun blockingGetFreshToken(authState: AuthState): String {

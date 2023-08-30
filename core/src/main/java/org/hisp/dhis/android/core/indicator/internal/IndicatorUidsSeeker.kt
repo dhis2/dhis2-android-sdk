@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
@@ -36,16 +35,17 @@ import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.visualization.DimensionItemType
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class IndicatorUidsSeeker @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
     fun seekUids(): Set<String> {
         val tableNames = listOf(
             DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
-            SectionIndicatorLinkTableInfo.TABLE_INFO.name()
+            SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
         )
         val tablesQuery = MultipleTableQueryBuilder()
             .generateQuery(DataSetIndicatorLinkTableInfo.Columns.INDICATOR, tableNames).build()

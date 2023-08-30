@@ -43,7 +43,7 @@ internal interface VisualizationService {
         @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
         @Query("filter") accessFilter: String,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Visualization>
 
     @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
@@ -51,7 +51,7 @@ internal interface VisualizationService {
         @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
         @Query("filter") accessFilter: String,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<VisualizationAPI36>
 
     companion object {

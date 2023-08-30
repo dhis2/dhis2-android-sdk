@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationCall @Inject constructor(
     private val service: DataSetCompleteRegistrationService,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
-    private val processor: DataSetCompleteRegistrationCallProcessor
+    private val processor: DataSetCompleteRegistrationCallProcessor,
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
@@ -58,7 +58,7 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
             QUERY_WITHOUT_UIDS_LENGTH,
             query.dataSetUids,
             query.periodIds,
-            query.rootOrgUnitUids
+            query.rootOrgUnitUids,
         )
 
         return partitions.flatMap { part ->
@@ -69,7 +69,7 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
                 periodIds = commaSeparatedCollectionValues(part[1]),
                 organisationUnitIds = commaSeparatedCollectionValues(part[2]),
                 children = true,
-                paging = false
+                paging = false,
             ).dataSetCompleteRegistrations
         }
     }

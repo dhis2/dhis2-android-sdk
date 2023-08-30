@@ -114,7 +114,7 @@ object D2Manager {
                     testingServerUrl!!,
                     testingDatabaseName!!,
                     false,
-                    testingUsername!!
+                    testingUsername!!,
                 )
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials)
@@ -179,6 +179,7 @@ object D2Manager {
             throw NoSuchFieldException("No testing Server Url")
         }
         d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!, password, null))
+        d2DIComponent.userIdInMemoryStore().set(username)
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {

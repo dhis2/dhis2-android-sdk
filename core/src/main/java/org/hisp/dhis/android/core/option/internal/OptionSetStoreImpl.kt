@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.option.OptionSetTableInfo
 
 @Suppress("MagicNumber")
 internal class OptionSetStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : OptionSetStore,
     IdentifiableObjectStoreImpl<OptionSet>(
         databaseAdapter,
         OptionSetTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> OptionSet.create(cursor) }
+        { cursor: Cursor -> OptionSet.create(cursor) },
     ) {
 
     companion object {

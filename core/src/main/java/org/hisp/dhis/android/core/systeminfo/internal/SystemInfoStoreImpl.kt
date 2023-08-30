@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
 
 internal class SystemInfoStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : SystemInfoStore,
     ObjectWithoutUidStoreImpl<SystemInfo>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class SystemInfoStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> SystemInfo.create(cursor) }
+        { cursor: Cursor -> SystemInfo.create(cursor) },
     ) {
 
     companion object {

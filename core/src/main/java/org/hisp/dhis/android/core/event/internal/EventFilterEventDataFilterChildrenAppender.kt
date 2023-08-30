@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 
 internal class EventFilterEventDataFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<EventFilter, EventDataFilter>
+    private val childStore: SingleParentChildStore<EventFilter, EventDataFilter>,
 ) : ChildrenAppender<EventFilter>() {
     override fun appendChildren(m: EventFilter): EventFilter {
         return if (m.eventQueryCriteria() != null) {
@@ -53,8 +53,8 @@ internal class EventFilterEventDataFilterChildrenAppender private constructor(
             return EventFilterEventDataFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    EventDataFilterStoreImpl.CHILD_PROJECTION
-                ) { cursor: Cursor -> EventDataFilter.create(cursor) }
+                    EventDataFilterStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> EventDataFilter.create(cursor) },
             )
         }
     }

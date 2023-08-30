@@ -49,11 +49,11 @@ internal object AnalyticExpressionEngineFactoryHelper {
             ConstantStoreImpl(databaseAdapter),
             DataElementStoreImpl(databaseAdapter),
             TrackedEntityAttributeStoreImpl(databaseAdapter),
-            databaseAdapter
+            databaseAdapter,
         )
 
         val programIndicatorEvaluator = ProgramIndicatorSQLEvaluator(
-            programIndicatorExecutor
+            programIndicatorExecutor,
         )
 
         val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)

@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
 
 internal class DataInputPeriodChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<DataSet, DataInputPeriod>
+    private val childStore: SingleParentChildStore<DataSet, DataInputPeriod>,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class DataInputPeriodChildrenAppender private constructor(
             return DataInputPeriodChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    DataInputPeriodStoreImpl.CHILD_PROJECTION
-                ) { cursor: Cursor? -> DataInputPeriod.create(cursor) }
+                    DataInputPeriodStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor? -> DataInputPeriod.create(cursor) },
             )
         }
     }

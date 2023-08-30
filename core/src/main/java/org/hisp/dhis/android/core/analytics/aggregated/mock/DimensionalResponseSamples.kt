@@ -50,69 +50,69 @@ object DimensionalResponseSamples {
             period1.periodId()!! to MetadataItem.PeriodItem(period1),
             period2.periodId()!! to MetadataItem.PeriodItem(period2),
             orgunit1.uid() to MetadataItem.OrganisationUnitItem(orgunit1),
-            orgunit2.uid() to MetadataItem.OrganisationUnitItem(orgunit2)
+            orgunit2.uid() to MetadataItem.OrganisationUnitItem(orgunit2),
         ),
         dimensions = listOf(Dimension.Data, Dimension.Category(cc1.uid()), Dimension.Period),
         dimensionItems = mapOf(
             Dimension.Data to listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.DataItem.DataElementItem(dataElement2.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid()),
             ),
             Dimension.Category(cc1.uid()) to listOf(
                 DimensionItem.CategoryItem(cc1.uid(), co11.uid()),
-                DimensionItem.CategoryItem(cc1.uid(), co12.uid())
+                DimensionItem.CategoryItem(cc1.uid(), co12.uid()),
             ),
             Dimension.Period to listOf(
                 DimensionItem.PeriodItem.Absolute(period1.periodId()!!),
-                DimensionItem.PeriodItem.Absolute(period2.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period2.periodId()!!),
             ),
             Dimension.OrganisationUnit to listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunit1.uid()),
-                DimensionItem.OrganisationUnitItem.Absolute(orgunit2.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunit2.uid()),
+            ),
         ),
         filters = listOf(orgunit1.uid(), orgunit2.uid()),
         values = listOf(
             DimensionalValue(
                 listOf(dataElement1.uid(), co11.uid(), period1.periodId()!!),
                 "34.5",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co12.uid(), period1.periodId()!!),
                 "10.0",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co11.uid(), period1.periodId()!!),
                 "13",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co12.uid(), period1.periodId()!!),
                 "15",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co11.uid(), period2.periodId()!!),
                 "34.5",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement1.uid(), co12.uid(), period2.periodId()!!),
                 "10.0",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co11.uid(), period2.periodId()!!),
                 "13",
-                null
+                null,
             ),
             DimensionalValue(
                 listOf(dataElement2.uid(), co12.uid(), period2.periodId()!!),
                 "15",
-                null
-            )
-        )
+                null,
+            ),
+        ),
     )
 }

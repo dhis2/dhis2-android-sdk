@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import okhttp3.Request
 import okhttp3.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class CookieAuthenticatorHelper @Inject constructor() {

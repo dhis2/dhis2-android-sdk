@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.configuration.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
+import java.util.Date
 
 @Module
 internal class ConfigurationPackageDIModule {

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -45,18 +44,19 @@ import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.datastore.internal.DataStorePostCall
+import javax.inject.Inject
 
 @Reusable
 class DataStoreCollectionRepository @Inject internal constructor(
     private val store: DataStoreEntryStore,
     private val call: DataStorePostCall,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataStoreEntry, DataStoreCollectionRepository>(
     store,
     childrenAppenders,
     scope,
-    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, childrenAppenders, s) }
+    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, childrenAppenders, s) },
 ),
     ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
     override fun upload(): Observable<D2Progress> {

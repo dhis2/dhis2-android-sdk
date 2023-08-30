@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 
 @Suppress("MagicNumber")
 internal class TrackerJobObjectStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackerJobObjectStore,
     ObjectWithoutUidStoreImpl<TrackerJobObject>(
         databaseAdapter,
@@ -44,7 +44,7 @@ internal class TrackerJobObjectStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         DELETE_UPDATE_BINDER,
-        { TrackerJobObject.create(it) }
+        { TrackerJobObject.create(it) },
     ) {
 
     companion object {

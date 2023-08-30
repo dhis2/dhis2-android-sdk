@@ -94,7 +94,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
         executor.executeD2CallTransactionally<Any?> {
             ProgramRuleStoreImpl(d2.databaseAdapter()).insert(
                 ProgramRule.builder()
-                    .uid(PROGRAM_RULE_UID).name("Rule").program(program).build()
+                    .uid(PROGRAM_RULE_UID).name("Rule").program(program).build(),
             )
             val programRuleAction = ProgramRuleAction.builder()
                 .uid("action_uid")

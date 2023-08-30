@@ -40,7 +40,7 @@ internal interface TrackedEntityInstanceService {
     @POST(TRACKED_ENTITY_INSTANCES)
     suspend fun postTrackedEntityInstances(
         @Body trackedEntityInstances: TrackedEntityInstancePayload?,
-        @Query(STRATEGY) strategy: String?
+        @Query(STRATEGY) strategy: String?,
     ): TEIWebResponse
 
     @GET(TRACKED_ENTITY_INSTANCES)
@@ -49,7 +49,7 @@ internal interface TrackedEntityInstanceService {
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): Payload<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
@@ -61,7 +61,7 @@ internal interface TrackedEntityInstanceService {
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): TrackedEntityInstance
 
     @GET(TRACKED_ENTITY_INSTANCES)
@@ -79,7 +79,7 @@ internal interface TrackedEntityInstanceService {
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): Payload<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/query")
@@ -107,7 +107,7 @@ internal interface TrackedEntityInstanceService {
         @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int
+        @Query(PAGE_SIZE) pageSize: Int,
     ): SearchGrid
 
     companion object {

@@ -51,7 +51,7 @@ internal object ProgramOwnerTableInfo {
                 PROGRAM,
                 TRACKED_ENTITY_INSTANCE,
                 OWNER_ORGUNIT,
-                SYNC_STATE
+                SYNC_STATE,
             )
         }
 
@@ -59,7 +59,7 @@ internal object ProgramOwnerTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 PROGRAM,
-                TRACKED_ENTITY_INSTANCE
+                TRACKED_ENTITY_INSTANCE,
             )
         }
 

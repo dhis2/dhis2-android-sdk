@@ -34,13 +34,13 @@ import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo
 
 internal class ReservedValueSettingStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ReservedValueSettingStore,
     IdentifiableObjectStoreImpl<ReservedValueSetting>(
         databaseAdapter,
         ReservedValueSettingTableInfo.TABLE_INFO,
         BINDER,
-        { ReservedValueSetting.create(it) }
+        { ReservedValueSetting.create(it) },
     ) {
 
     companion object {

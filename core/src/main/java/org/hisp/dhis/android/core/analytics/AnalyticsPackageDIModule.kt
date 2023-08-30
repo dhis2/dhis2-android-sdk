@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.analytics.linelist.LineListEntityDIModule
 @Module(
     includes = [
         AggregatedEntityDIModule::class,
-        LineListEntityDIModule::class
-    ]
+        LineListEntityDIModule::class,
+    ],
 )
 internal class AnalyticsPackageDIModule {
 

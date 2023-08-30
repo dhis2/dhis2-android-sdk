@@ -42,7 +42,7 @@ import org.junit.runner.RunWith
 class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem>(
     RelationshipItemStoreImpl(TestDatabaseAdapterFactory.get()),
     RelationshipItemTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
 
     private val relationshipItemStore = store as RelationshipItemStore

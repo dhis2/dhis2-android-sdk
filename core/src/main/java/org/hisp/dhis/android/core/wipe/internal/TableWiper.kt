@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.wipe.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import javax.inject.Inject
 
 @Reusable
 class TableWiper @Inject constructor(private val databaseAdapter: DatabaseAdapter) {

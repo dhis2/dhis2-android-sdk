@@ -37,7 +37,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class SectionIndicatorLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<SectionIndicatorLink>(
     SectionIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    SectionIndicatorLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    SectionIndicatorLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
 
     override fun addMasterUid(): String {

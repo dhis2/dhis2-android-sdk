@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDele
 import org.hisp.dhis.android.core.fileresource.FileResource
 
 internal class FileResourceHandler(
-    store: FileResourceStore
+    store: FileResourceStore,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<FileResource>(store)

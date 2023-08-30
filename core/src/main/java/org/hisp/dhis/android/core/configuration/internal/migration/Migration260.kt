@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import android.content.Context
-import java.io.File
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
@@ -38,11 +37,12 @@ import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
+import java.io.File
 
 internal class Migration260(
     private val context: Context,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
-    private val databaseAdapterFactory: DatabaseAdapterFactory
+    private val databaseAdapterFactory: DatabaseAdapterFactory,
 ) {
     fun apply() {
         val configuration = databaseConfigurationStore.get()
@@ -76,7 +76,7 @@ internal class Migration260(
         fileResources.forEach {
             val newPath = it.path()?.replace(
                 oldValue = FileResourceDirectoryHelper.FilesDir,
-                newValue = FileResourceDirectoryHelper.FilesDir + "/" + accountSubFolder
+                newValue = FileResourceDirectoryHelper.FilesDir + "/" + accountSubFolder,
             ) ?: ""
             val newFileResource = it.toBuilder().path(newPath).build()
             fileResourcesStore.updateOrInsert(newFileResource)

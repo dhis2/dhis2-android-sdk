@@ -38,6 +38,6 @@ internal interface RelationshipStore : IdentifiableDeletableDataObjectStore<Rela
 
     fun getRelationshipsByItem(
         relationshipItem: RelationshipItem,
-        type: RelationshipConstraintType?
+        type: RelationshipConstraintType?,
     ): List<Relationship>
 }

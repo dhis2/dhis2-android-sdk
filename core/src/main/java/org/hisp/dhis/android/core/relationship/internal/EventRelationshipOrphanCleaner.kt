@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import javax.inject.Inject
 
 @Reusable
 internal class EventRelationshipOrphanCleaner @Inject internal constructor(
     relationshipStore: RelationshipStore,
-    relationshipRepository: RelationshipCollectionRepository
+    relationshipRepository: RelationshipCollectionRepository,
 ) : RelationshipOrphanCleaner<Event, Relationship>(relationshipStore, relationshipRepository) {
     override fun getItem(uid: String): RelationshipItem {
         return RelationshipHelper.eventItem(uid)

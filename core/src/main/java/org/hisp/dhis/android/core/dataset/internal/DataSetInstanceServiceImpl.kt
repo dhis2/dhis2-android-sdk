@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
@@ -45,6 +43,8 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -61,14 +61,14 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<DataSetEditableStatus> {
         return Single.fromCallable {
             blockingGetEditableStatus(
                 dataSetUid = dataSetUid,
                 periodId = periodId,
                 organisationUnitUid = organisationUnitUid,
-                attributeOptionComboUid = attributeOptionComboUid
+                attributeOptionComboUid = attributeOptionComboUid,
             )
         }
     }
@@ -78,7 +78,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): DataSetEditableStatus {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet()
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
@@ -122,11 +122,11 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
 
     fun blockingIsAttributeOptionComboAssignToOrgUnit(
         categoryOptionComboUid: String,
-        orgUnitUid: String
+        orgUnitUid: String,
     ): Boolean {
         return categoryOptionComboService.blockingIsAssignedToOrgUnit(
             categoryOptionComboUid = categoryOptionComboUid,
-            orgUnitUid = orgUnitUid
+            orgUnitUid = orgUnitUid,
         )
     }
 
@@ -136,7 +136,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
             periodGenerator.generatePeriod(
                 periodType = PeriodType.Daily,
                 date = endDate,
-                offset = expiryDays - 1
+                offset = expiryDays - 1,
             )
         }
         return Date().after(generatedPeriod?.endDate())
@@ -148,7 +148,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         val generatedPeriod = periodGenerator.generatePeriod(
             periodType = periodType,
             date = Date(),
-            offset = openFuturePeriods - 1
+            offset = openFuturePeriods - 1,
         )
         return period.endDate()?.before(generatedPeriod?.endDate()) ?: true
     }

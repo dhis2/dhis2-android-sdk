@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramTrackedEntityTypeChildrenAppender @Inject constructor(
-    private val store: TrackedEntityTypeStore
+    private val store: TrackedEntityTypeStore,
 ) : ChildrenAppender<Program>() {
     override fun appendChildren(m: Program): Program {
         val builder = m.toBuilder()

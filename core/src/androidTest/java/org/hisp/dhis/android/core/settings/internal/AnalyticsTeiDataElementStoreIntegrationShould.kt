@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 class AnalyticsTeiDataElementStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiDataElement>(
     AnalyticsTeiDataElementStoreImpl(TestDatabaseAdapterFactory.get()),
     AnalyticsTeiDataElementTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): AnalyticsTeiDataElement {
         return AnalyticsSettingsSamples.analyticsTeiDataElementSample

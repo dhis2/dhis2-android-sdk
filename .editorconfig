@@ -1,3 +1,5 @@
 [*.{kt,kts}]
 max_line_length = 120
-disabled_rules=no-wildcard-imports,no-unit-return
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_package-name = disabled
+ktlint_standard_no-unit-return = disabled

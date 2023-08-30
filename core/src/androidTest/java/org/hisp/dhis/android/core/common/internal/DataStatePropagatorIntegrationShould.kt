@@ -29,9 +29,6 @@ package org.hisp.dhis.android.core.common.internal
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import java.util.*
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -55,6 +52,9 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
+import java.text.ParseException
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
@@ -81,8 +81,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         programOwnerStore = ProgramOwnerStoreImpl(d2.databaseAdapter())
 
         propagator = DataStatePropagatorImpl(
-            trackedEntityInstanceStore, enrollmentStore, eventStore,
-            relationshipStore, relationshipItemStore, relationshipTypeStore, programOwnerStore
+            trackedEntityInstanceStore,
+            enrollmentStore,
+            eventStore,
+            relationshipStore,
+            relationshipItemStore,
+            relationshipTypeStore,
+            programOwnerStore,
         )
     }
 
@@ -228,12 +233,12 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.teiItem(teiUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
-                    .build()
+                    .build(),
             )
 
             assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(
-                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState(),
             ).isEqualTo(State.TO_UPDATE)
 
             val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
@@ -262,12 +267,12 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.enrollmentItem(enrollmentUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
-                    .build()
+                    .build(),
             )
 
             assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(
-                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState(),
             ).isEqualTo(State.TO_UPDATE)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
@@ -299,12 +304,12 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.eventItem(eventUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
-                    .build()
+                    .build(),
             )
 
             assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(
-                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState(),
             ).isEqualTo(State.TO_UPDATE)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
@@ -460,8 +465,11 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     private fun sampleEventProjection(enrollmentUid: String?): EventCreateProjection {
         return EventCreateProjection.create(
-            enrollmentUid, "lxAQ7Zs9VYR", "dBwrot7S420",
-            "DiszpKrYNg8", "bRowv6yZOF2"
+            enrollmentUid,
+            "lxAQ7Zs9VYR",
+            "dBwrot7S420",
+            "DiszpKrYNg8",
+            "bRowv6yZOF2",
         )
     }
 }

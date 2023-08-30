@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.data.event
 
-import java.text.ParseException
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
@@ -38,6 +36,8 @@ import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import java.text.ParseException
+import java.util.*
 
 internal object EventFilterSamples {
     @JvmStatic
@@ -69,28 +69,28 @@ internal object EventFilterSamples {
                             .startDate(getSimpleDate("2014-05-01"))
                             .endDate(getSimpleDate("2014-05-01"))
                             .type(DatePeriodType.ABSOLUTE)
-                            .build()
+                            .build(),
                     )
                     .dueDate(
                         DateFilterPeriod.builder()
                             .period(RelativePeriod.LAST_2_SIXMONTHS)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .lastUpdatedDate(
                         DateFilterPeriod.builder()
                             .startBuffer(-5)
                             .endBuffer(5)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .completedDate(
                         DateFilterPeriod.builder()
                             .period(RelativePeriod.TODAY)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
-                    .build()
+                    .build(),
             )
             .build()
     }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.UserSettingsTableInfo
 
 internal class UserSettingsStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : UserSettingsStore,
     ObjectWithoutUidStoreImpl<UserSettings>(
         databaseAdapter,
@@ -45,7 +45,7 @@ internal class UserSettingsStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> UserSettings.create(cursor) }
+        { cursor: Cursor -> UserSettings.create(cursor) },
     ) {
 
     companion object {

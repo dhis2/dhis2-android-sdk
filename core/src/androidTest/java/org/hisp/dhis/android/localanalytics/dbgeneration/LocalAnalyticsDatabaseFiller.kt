@@ -60,7 +60,7 @@ internal data class MetadataForDataFilling(
     val trackerDataElements: List<DataElement>,
     val programs: List<Program>,
     val programStages: List<ProgramStage>,
-    val trackedEntityAttributes: List<TrackedEntityAttribute>
+    val trackedEntityAttributes: List<TrackedEntityAttribute>,
 )
 
 internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
@@ -105,8 +105,14 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Daily).blockingGet()
 
         return MetadataForDataFilling(
-            organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
-            trackerDataElements, programs, programStages, trackedEntityAttributes
+            organisationUnits,
+            periods,
+            categoryOptionCombos,
+            aggregatedDataElements,
+            trackerDataElements,
+            programs,
+            programStages,
+            trackedEntityAttributes,
         )
     }
 
@@ -127,11 +133,11 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         EventStoreImpl(da).insert(events)
 
         TrackedEntityAttributeValueStoreImpl(da).insert(
-            generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis)
+            generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis),
         )
 
         TrackedEntityDataValueStoreImpl(da).insert(
-            generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events)
+            generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events),
         )
     }
 }

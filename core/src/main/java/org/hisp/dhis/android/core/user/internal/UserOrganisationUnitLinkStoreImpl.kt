@@ -38,14 +38,14 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 
 internal class UserOrganisationUnitLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : UserOrganisationUnitLinkStore,
     LinkStoreImpl<UserOrganisationUnitLink>(
         databaseAdapter,
         UserOrganisationUnitLinkTableInfo.TABLE_INFO,
         UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
         BINDER,
-        { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) }
+        { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) },
     ) {
 
     @Throws(RuntimeException::class)
@@ -56,8 +56,8 @@ internal class UserOrganisationUnitLinkStoreImpl(
                 .appendKeyNumberValue(UserOrganisationUnitLinkTableInfo.Columns.ROOT, 1)
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
-                ).build()
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
+                ).build(),
         )
     }
 
@@ -67,8 +67,8 @@ internal class UserOrganisationUnitLinkStoreImpl(
             WhereClauseBuilder()
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    scope.name
-                ).build()
+                    scope.name,
+                ).build(),
         )
     }
 
@@ -79,8 +79,8 @@ internal class UserOrganisationUnitLinkStoreImpl(
                 .appendKeyNumberValue(UserOrganisationUnitLinkTableInfo.Columns.USER_ASSIGNED, 1)
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    scope.name
-                ).build()
+                    scope.name,
+                ).build(),
         )
     }
 
@@ -89,7 +89,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
             .appendKeyStringValue(UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, organisationUnit)
             .appendKeyStringValue(
                 UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
             )
             .build()
 

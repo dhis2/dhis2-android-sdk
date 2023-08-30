@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramCollectionCleaner @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CollectionCleanerImpl<Program>(
     tableName = ProgramTableInfo.TABLE_INFO.name(),
-    databaseAdapter = databaseAdapter
+    databaseAdapter = databaseAdapter,
 )

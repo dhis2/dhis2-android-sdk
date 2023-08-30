@@ -53,8 +53,8 @@ import retrofit2.Retrofit
         ProgramStageSectionProgramIndicatorEntityDIModule::class,
         ProgramStageEntityDIModule::class,
         ProgramTrackedEntityAttributeEntityDIModule::class,
-        ProgramAttributeValueEntityDIModule::class
-    ]
+        ProgramAttributeValueEntityDIModule::class,
+    ],
 )
 internal class ProgramPackageDIModule {
     @Provides

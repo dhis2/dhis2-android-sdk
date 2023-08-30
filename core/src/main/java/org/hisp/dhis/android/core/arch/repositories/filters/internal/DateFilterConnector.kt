@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
@@ -36,12 +35,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.period.DatePeriod
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
+import java.util.*
 
 abstract class DateFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
     key: String,
-    val formatter: SafeDateFormat
+    val formatter: SafeDateFormat,
 ) : BaseAbstractFilterConnector<R, Date>(repositoryFactory, scope, key) {
 
     /**
@@ -110,7 +110,7 @@ abstract class DateFilterConnector<R : BaseRepository> internal constructor(
         return inDatePeriods(datePeriods)
     }
 
-    override fun wrapValue(value: Date): String {
-        return "'${formatter.format(value)}'"
+    override fun wrapValue(value: Date?): String? {
+        return value?.let { "'${formatter.format(it)}'" }
     }
 }

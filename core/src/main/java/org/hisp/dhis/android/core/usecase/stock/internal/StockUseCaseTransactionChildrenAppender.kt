@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
 internal class StockUseCaseTransactionChildrenAppender(
-    private val transactionLinkStore: StockUseCaseTransactionLinkStore
+    private val transactionLinkStore: StockUseCaseTransactionLinkStore,
 ) : ChildrenAppender<InternalStockUseCase>() {
 
     override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {

@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager
+import javax.inject.Inject
 
 @Reusable
 internal class EventLastUpdatedManager @Inject constructor(
     store: EventSyncStore,
-    private val resourceHandler: ResourceHandler
+    private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
     fun update(bundle: EventQueryBundle) {

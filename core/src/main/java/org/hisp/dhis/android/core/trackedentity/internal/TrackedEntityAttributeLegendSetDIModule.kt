@@ -48,7 +48,7 @@ internal class TrackedEntityAttributeLegendSetDIModule {
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityAttribute>> {
         return mapOf(
             TrackedEntityAttributeFields.LEGEND_SETS to
-                TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter)
+                TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter),
         )
     }
 }

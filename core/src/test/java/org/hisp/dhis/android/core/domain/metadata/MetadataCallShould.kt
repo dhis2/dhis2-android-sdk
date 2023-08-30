@@ -111,17 +111,17 @@ class MetadataCallShould : BaseCallShould() {
         whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata()).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(dataSetDownloader.downloadMetadata()).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
-            Single.just(emptyList())
+            Single.just(emptyList()),
         )
         whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())

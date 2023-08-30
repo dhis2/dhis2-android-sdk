@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 
 @Suppress("MagicNumber")
 internal class CategoryOptionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionStore,
     IdentifiableObjectStoreImpl<CategoryOption>(
         databaseAdapter,
         CategoryOptionTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> CategoryOption.create(cursor) }
+        { cursor: Cursor -> CategoryOption.create(cursor) },
     ) {
 
     companion object {

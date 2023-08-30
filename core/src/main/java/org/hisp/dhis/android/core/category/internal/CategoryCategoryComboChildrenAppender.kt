@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryTableInfo
 
 internal class CategoryCategoryComboChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<CategoryCombo, Category>
+    private val linkChildStore: LinkChildStore<CategoryCombo, Category>,
 ) : ChildrenAppender<CategoryCombo>() {
     override fun appendChildren(categoryCombo: CategoryCombo): CategoryCombo {
         val builder = categoryCombo.toBuilder()
@@ -51,7 +51,7 @@ internal class CategoryCategoryComboChildrenAppender private constructor(
         private val CHILD_PROJECTION = LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryCombo> {
@@ -59,8 +59,8 @@ internal class CategoryCategoryComboChildrenAppender private constructor(
                 linkChildStore(
                     databaseAdapter,
                     CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> Category.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> Category.create(cursor) },
             )
         }
     }

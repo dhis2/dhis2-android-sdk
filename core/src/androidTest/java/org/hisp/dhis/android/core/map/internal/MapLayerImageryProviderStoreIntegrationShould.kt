@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class MapLayerImageryProviderStoreIntegrationShould : LinkStoreAbstractIntegrationShould<MapLayerImageryProvider>(
     MapLayerImageryProviderStoreImpl(TestDatabaseAdapterFactory.get()),
     MapLayerImageryProviderTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
 
     override fun addMasterUid(): String {

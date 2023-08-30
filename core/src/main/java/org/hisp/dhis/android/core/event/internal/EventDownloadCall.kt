@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactor
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 @Reusable
 internal class EventDownloadCall @Inject internal constructor(
@@ -53,12 +53,12 @@ internal class EventDownloadCall @Inject internal constructor(
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
-    private val lastUpdatedManager: EventLastUpdatedManager
+    private val lastUpdatedManager: EventLastUpdatedManager,
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory,
-    coroutineAPICallExecutor
+    coroutineAPICallExecutor,
 ) {
 
     override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
@@ -74,7 +74,7 @@ internal class EventDownloadCall @Inject internal constructor(
     override fun persistItems(
         items: List<Event>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ) {
         persistenceCallFactory.persistEvents(items, relatives).blockingAwait()
     }
@@ -86,16 +86,16 @@ internal class EventDownloadCall @Inject internal constructor(
     override suspend fun queryByUids(
         bundle: EventQueryBundle,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val eventQuery = TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = bundle.commonParams().program,
-                limit = bundle.commonParams().uids.size
+                limit = bundle.commonParams().uids.size,
             ),
-            uids = bundle.commonParams().uids
+            uids = bundle.commonParams().uids,
         )
 
         try {
@@ -106,7 +106,7 @@ internal class EventDownloadCall @Inject internal constructor(
                 hasAllAttributes = true,
                 overwrite = overwrite,
                 asRelationship = false,
-                program = eventQuery.commonParams.program
+                program = eventQuery.commonParams.program,
             )
 
             persistItems(items, params = persistParams, relatives)
@@ -126,16 +126,16 @@ internal class EventDownloadCall @Inject internal constructor(
         bundle: EventQueryBundle,
         program: String?,
         orgunitUid: String?,
-        limit: Int
+        limit: Int,
     ): TrackerAPIQuery {
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
-                limit = limit
+                limit = limit,
             ),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
             orgUnit = orgunitUid,
-            uids = bundle.commonParams().uids
+            uids = bundle.commonParams().uids,
         )
     }
 }

@@ -31,7 +31,6 @@ import androidx.annotation.VisibleForTesting
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import javax.inject.Inject
 
 @Reusable
 @VisibleForTesting
@@ -49,13 +49,13 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
     ): Single<List<P>> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
             handler,
-            pageDownloader
+            pageDownloader,
         ) { it }
     }
 
@@ -64,14 +64,14 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
-        transform: (O) -> P
+        transform: (O) -> P,
     ): Single<List<P>> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
             handler,
             pageDownloader,
-            transform
+            transform,
         )
     }
 
@@ -84,7 +84,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             uids = uids,
             pageSize = pageSize,
             pageDownloader = pageDownloader,
-            transform = { it }
+            transform = { it },
         )
     }
 
@@ -92,7 +92,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         uids: Set<String>,
         pageSize: Int,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
-        transform: (O) -> P
+        transform: (O) -> P,
     ): Single<List<P>> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
         return Observable.fromIterable(partitions)
@@ -111,13 +111,13 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
-        transform: (O) -> P
+        transform: (O) -> P,
     ): Single<List<P>> {
         return downloadPartitionedWithoutHandling(
             uids = uids,
             pageSize = pageSize,
             pageDownloader = pageDownloader,
-            transform = transform
+            transform = transform,
         ).doOnSuccess { oCollection: List<P> ->
             handler.handleMany(oCollection)
         }
@@ -127,13 +127,13 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         uids: Set<String>,
         pageSize: Int,
         handler: (Map<K, V>) -> Any,
-        pageDownloader: (Set<String>) -> Single<out Map<K, V>>
+        pageDownloader: (Set<String>) -> Single<out Map<K, V>>,
     ): Single<Map<K, V>> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
         return Observable.fromIterable(partitions)
             .flatMapSingle(pageDownloader)
             .reduce(
-                mapOf()
+                mapOf(),
             ) { items: Map<K, V>, items2: Map<K, V> ->
                 items + items2
             }
@@ -144,7 +144,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         masterUid: String,
         handler: LinkHandler<P, O>,
         downloader: (String) -> Single<Payload<P>>,
-        transform: (P) -> O
+        transform: (P) -> O,
     ): Single<List<P>> {
         return Single.just(masterUid)
             .flatMap(downloader)
@@ -155,11 +155,11 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
     override fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: (String?) -> Single<Payload<P>>
+        downloader: (String?) -> Single<Payload<P>>,
     ): Single<List<P>> {
         return Single.defer {
             downloader(
-                resourceHandler.getLastUpdated(resourceType)
+                resourceHandler.getLastUpdated(resourceType),
             )
         }
             .map { obj: Payload<P> -> obj.items() }
@@ -192,7 +192,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
 
     override fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>
+        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,
     ): Single<Payload<P>> {
         var page = 1
         return Single.defer { downloader(page++, pageSize) }

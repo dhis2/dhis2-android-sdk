@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
 
 @Suppress("MagicNumber")
 internal class LocalDataStoreStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : LocalDataStoreStore,
     ObjectWithoutUidStoreImpl<KeyValuePair>(
         databaseAdapter,
@@ -46,7 +46,7 @@ internal class LocalDataStoreStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> KeyValuePair.create(cursor) }
+        { cursor: Cursor -> KeyValuePair.create(cursor) },
     ) {
 
     companion object {

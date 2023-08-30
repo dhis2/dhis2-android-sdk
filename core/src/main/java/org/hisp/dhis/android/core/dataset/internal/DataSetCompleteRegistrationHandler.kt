@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 internal class DataSetCompleteRegistrationHandler(
-    store: DataSetCompleteRegistrationStore
+    store: DataSetCompleteRegistrationStore,
 ) : ObjectWithoutUidHandlerImpl<DataSetCompleteRegistration>(store)

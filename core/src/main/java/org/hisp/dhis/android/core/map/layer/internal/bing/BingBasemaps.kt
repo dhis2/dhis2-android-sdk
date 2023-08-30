@@ -33,22 +33,22 @@ internal object BingBasemaps {
         BingBasemap(
             id = "ql5jVkAL1iy",
             name = "Bing Road",
-            style = "CanvasLight"
+            style = "CanvasLight",
         ),
         BingBasemap(
             id = "PwJ1fQoTthh",
             name = "Bing Dark",
-            style = "CanvasDark"
+            style = "CanvasDark",
         ),
         BingBasemap(
             id = "kKJNmY2yYtM",
             name = "Bing Aerial",
-            style = "Aerial"
+            style = "Aerial",
         ),
         BingBasemap(
             id = "TfK2zM71AHJ",
             name = "Bing Aerial Labels",
-            style = "AerialWithLabelsOnDemand"
-        )
+            style = "AerialWithLabelsOnDemand",
+        ),
     )
 }

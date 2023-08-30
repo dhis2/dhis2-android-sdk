@@ -40,20 +40,20 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
 
 internal class RelationshipStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : RelationshipStore,
     IdentifiableDeletableDataObjectStoreImpl<Relationship>(
         databaseAdapter,
         RelationshipTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Relationship.create(cursor) }
+        { cursor: Cursor -> Relationship.create(cursor) },
     ) {
 
     override fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 "RelationshipItem." + relationshipItem.elementType(),
-                relationshipItem.elementUid()
+                relationshipItem.elementUid(),
             )
             .build()
 
@@ -69,7 +69,7 @@ internal class RelationshipStoreImpl(
 
     override fun getRelationshipsByItem(
         relationshipItem: RelationshipItem,
-        type: RelationshipConstraintType?
+        type: RelationshipConstraintType?,
     ): List<Relationship> {
         val relationshipTable = RelationshipTableInfo.TABLE_INFO.name()
         val itemTable = RelationshipItemTableInfo.TABLE_INFO.name()
@@ -77,7 +77,7 @@ internal class RelationshipStoreImpl(
         val builder = WhereClauseBuilder()
             .appendKeyStringValue(
                 "$itemTable.${relationshipItem.elementType()}",
-                relationshipItem.elementUid()
+                relationshipItem.elementUid(),
             )
 
         val whereClause =
@@ -86,7 +86,7 @@ internal class RelationshipStoreImpl(
             } else {
                 builder.appendKeyStringValue(
                     "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE}",
-                    type.name
+                    type.name,
                 ).build()
             }
 

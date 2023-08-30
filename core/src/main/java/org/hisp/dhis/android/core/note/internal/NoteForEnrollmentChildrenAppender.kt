@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.note.Note
 
 internal class NoteForEnrollmentChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<Enrollment, Note>
+    private val childStore: SingleParentChildStore<Enrollment, Note>,
 ) : ChildrenAppender<Enrollment>() {
     override fun appendChildren(m: Enrollment): Enrollment {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class NoteForEnrollmentChildrenAppender private constructor(
             return NoteForEnrollmentChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    NoteStoreImpl.ENROLLMENT_CHILD_PROJECTION
-                ) { cursor: Cursor -> Note.create(cursor) }
+                    NoteStoreImpl.ENROLLMENT_CHILD_PROJECTION,
+                ) { cursor: Cursor -> Note.create(cursor) },
             )
         }
     }

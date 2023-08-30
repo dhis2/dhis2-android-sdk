@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.indicator.Indicator
 
 internal class SectionIndicatorLinkHandler(
-    store: SectionIndicatorLinkStore
+    store: SectionIndicatorLinkStore,
 ) : LinkHandlerImpl<Indicator, SectionIndicatorLink>(store)

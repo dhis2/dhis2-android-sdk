@@ -59,8 +59,13 @@ class SynchronizationSettingCallShould {
         whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
         whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         synchronizationSettingCall = SynchronizationSettingCall(
-            handler, service, apiCallExecutor,
-            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager
+            handler,
+            service,
+            apiCallExecutor,
+            generalSettingCall,
+            dataSetSettingCall,
+            programSettingCall,
+            appVersionManager,
         )
     }
 

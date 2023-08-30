@@ -31,9 +31,9 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 
 internal data class DataValueQuery(
-    val bundle: AggregatedDataCallBundle
+    val bundle: AggregatedDataCallBundle,
 ) : BaseQueryKt(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
-    paging = false
+    paging = false,
 )

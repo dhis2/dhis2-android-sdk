@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import javax.inject.Inject
 
 @Reusable
 internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
@@ -46,7 +46,7 @@ internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
     private val teiPersistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val enrollmentPersistenceCallFactory: EnrollmentPersistenceCallFactory,
     private val eventPersistenceCallFactory: EventPersistenceCallFactory,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     suspend fun downloadAndPersist(relatives: RelationshipItemRelatives) {
         downloadRelativeEvents(relatives)
@@ -63,7 +63,7 @@ internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
                 trackerParentCallFactory.getEventCall().getRelationshipEntityCall(uid)
             }.fold(
                 onSuccess = { eventPayload -> events.addAll(eventPayload.items()) },
-                onFailure = { failedEvents.add(uid) }
+                onFailure = { failedEvents.add(uid) },
             )
         }
 
@@ -85,7 +85,7 @@ internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
                 trackerParentCallFactory.getEnrollmentCall().getRelationshipEntityCall(uid)
             }.fold(
                 onSuccess = { enrollment -> enrollments.add(enrollment) },
-                onFailure = { failedEnrollments.add(uid) }
+                onFailure = { failedEnrollments.add(uid) },
             )
         }
 
@@ -107,7 +107,7 @@ internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
                 trackerParentCallFactory.getTrackedEntityCall().getRelationshipEntityCall(uid)
             }.fold(
                 onSuccess = { teiPayload -> teis.addAll(teiPayload.items()) },
-                onFailure = { failedTeis.add(uid) }
+                onFailure = { failedTeis.add(uid) },
             )
         }
 
@@ -122,16 +122,16 @@ internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
             val builder = RelationshipItem.builder()
             when (elementType) {
                 RelationshipItemTableInfo.Columns.EVENT -> builder.event(
-                    RelationshipItemEvent.builder().event(uid).build()
+                    RelationshipItemEvent.builder().event(uid).build(),
                 )
 
                 RelationshipItemTableInfo.Columns.ENROLLMENT -> builder.enrollment(
-                    RelationshipItemEnrollment.builder().enrollment(uid).build()
+                    RelationshipItemEnrollment.builder().enrollment(uid).build(),
                 )
 
                 RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE -> builder.trackedEntityInstance(
                     RelationshipItemTrackedEntityInstance.builder()
-                        .trackedEntityInstance(uid).build()
+                        .trackedEntityInstance(uid).build(),
                 )
 
                 else -> {}

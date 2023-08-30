@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -40,32 +39,31 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterProgramOwnerPostCall @Inject constructor(
     private val programOwnerPostCall: ProgramOwnerPostCall,
     private val programOwnerStore: ProgramOwnerStore,
-    private val trackedEntityInstanceStore: TrackedEntityInstanceStore
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
 ) {
 
     fun uploadProgramOwners(
         programOwners: Map<String, List<ProgramOwner>>,
-        onlyExistingTeis: Boolean = false
     ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
-        programOwners.forEach { (tei, programOwners) ->
-            programOwners
-                .filter {
-                    val unsyncedOwner by lazy { selectWhere(it)?.syncState() != State.SYNCED }
-                    val existingTei by lazy {
-                        trackedEntityInstanceStore.selectByUid(tei)?.syncState() != State.TO_POST
-                    }
+        programOwners.forEach { (tei, teiProgramOwners) ->
+            val teiSyncState = trackedEntityInstanceStore.selectByUid(tei)?.aggregatedSyncState()
+            val uploadableTei = teiSyncState != null && teiSyncState != State.ERROR && teiSyncState != State.WARNING
 
-                    unsyncedOwner && (!onlyExistingTeis || existingTei)
-                }.forEach {
-                    programOwnerPostCall.uploadProgramOwner(it)
+            if (uploadableTei) {
+                teiProgramOwners.forEach {
+                    if (selectWhere(it)?.syncState() != State.SYNCED) {
+                        programOwnerPostCall.uploadProgramOwner(it)
+                    }
                 }
+            }
         }
 
         emit(progressManager.increaseProgress(ProgramOwner::class.java, false))

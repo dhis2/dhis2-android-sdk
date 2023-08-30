@@ -54,12 +54,12 @@ internal class RelationshipItemEntityDIModule {
     fun storeSelector(
         trackedEntityInstanceStore: TrackedEntityInstanceStore,
         enrollmentStore: EnrollmentStore,
-        eventStore: EventStore
+        eventStore: EventStore,
     ): RelationshipItemElementStoreSelector {
         return RelationshipItemElementStoreSelectorImpl(
             trackedEntityInstanceStore,
             enrollmentStore,
-            eventStore
+            eventStore,
         )
     }
 }

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -51,6 +50,7 @@ import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -64,7 +64,7 @@ internal class AggregatedDataCall @Inject constructor(
     private val aggregatedDataSyncStore: AggregatedDataSyncStore,
     private val aggregatedDataCallBundleFactory: AggregatedDataCallBundleFactory,
     private val resourceHandler: ResourceHandler,
-    private val hashHelper: AggregatedDataSyncHashHelper
+    private val hashHelper: AggregatedDataSyncHashHelper,
 ) {
     fun download(): Flow<AggregatedD2Progress> = flow {
         val progressManager = AggregatedD2ProgressManager(null)
@@ -73,7 +73,7 @@ internal class AggregatedDataCall @Inject constructor(
     }
 
     private fun selectDataSetsAndDownload(
-        progressManager: AggregatedD2ProgressManager
+        progressManager: AggregatedD2ProgressManager,
     ): Flow<AggregatedD2Progress> {
         return flow {
             val bundles = aggregatedDataCallBundleFactory.bundles
@@ -98,7 +98,7 @@ internal class AggregatedDataCall @Inject constructor(
     }
 
     private suspend fun downloadBundle(
-        bundle: AggregatedDataCallBundle
+        bundle: AggregatedDataCallBundle,
     ) {
         return try {
             coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
@@ -112,27 +112,27 @@ internal class AggregatedDataCall @Inject constructor(
     }
 
     private suspend fun downloadDataValues(
-        bundle: AggregatedDataCallBundle
+        bundle: AggregatedDataCallBundle,
     ): List<DataValue> {
         val dataValueQuery = DataValueQuery(bundle)
         return dataValueCall.download(dataValueQuery)
     }
 
     private suspend fun downloadCompleteRegistration(
-        bundle: AggregatedDataCallBundle
+        bundle: AggregatedDataCallBundle,
     ): List<DataSetCompleteRegistration> {
         val completeRegistrationQuery = DataSetCompleteRegistrationQuery(
             dataSetUids = getUids(bundle.dataSets),
             periodIds = bundle.periodIds,
             rootOrgUnitUids = bundle.rootOrganisationUnitUids,
-            lastUpdatedStr = bundle.key.lastUpdatedStr()
+            lastUpdatedStr = bundle.key.lastUpdatedStr(),
         )
 
         return dsCompleteRegistrationCall.download(completeRegistrationQuery)
     }
 
     private fun updateAggregatedDataSync(
-        bundle: AggregatedDataCallBundle
+        bundle: AggregatedDataCallBundle,
     ) {
         for (dataSet in bundle.dataSets) {
             aggregatedDataSyncStore.updateOrInsertWhere(
@@ -144,13 +144,13 @@ internal class AggregatedDataCall @Inject constructor(
                     .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                     .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
                     .lastUpdated(resourceHandler.serverDate)
-                    .build()
+                    .build(),
             )
         }
     }
 
     private suspend fun downloadApproval(
-        bundle: AggregatedDataCallBundle
+        bundle: AggregatedDataCallBundle,
     ): List<DataApproval> {
         val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
         val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }
@@ -164,7 +164,7 @@ internal class AggregatedDataCall @Inject constructor(
                 organisationUnistUids = bundle.allOrganisationUnitUidsSet,
                 periodIds = bundle.periodIds,
                 attributeOptionCombosUids = attributeOptionComboUids,
-                lastUpdatedStr = bundle.key.lastUpdatedStr()
+                lastUpdatedStr = bundle.key.lastUpdatedStr(),
             )
             dataApprovalCall.download(dataApprovalQuery)
         }
@@ -176,7 +176,7 @@ internal class AggregatedDataCall @Inject constructor(
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO,
-                categoryComboUids
+                categoryComboUids,
             ).build()
 
         return categoryOptionComboStore.selectWhere(whereClause).map { it.uid() }.toSet()

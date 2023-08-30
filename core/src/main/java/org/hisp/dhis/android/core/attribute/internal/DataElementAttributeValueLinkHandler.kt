@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 
 internal class DataElementAttributeValueLinkHandler(
-    store: DataElementAttributeValueLinkStore
+    store: DataElementAttributeValueLinkStore,
 ) : LinkHandlerImpl<Attribute, DataElementAttributeValueLink>(store)

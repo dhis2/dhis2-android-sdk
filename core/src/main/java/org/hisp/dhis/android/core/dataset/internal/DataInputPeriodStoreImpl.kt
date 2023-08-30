@@ -38,14 +38,14 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
 
 internal class DataInputPeriodStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataInputPeriodStore,
     LinkStoreImpl<DataInputPeriod>(
         databaseAdapter,
         DataInputPeriodTableInfo.TABLE_INFO,
         DataInputPeriodTableInfo.Columns.DATA_SET,
         BINDER,
-        { cursor: Cursor -> DataInputPeriod.create(cursor) }
+        { cursor: Cursor -> DataInputPeriod.create(cursor) },
     ) {
     companion object {
         private val BINDER = StatementBinder { dataInputPeriod: DataInputPeriod, w: StatementWrapper ->
@@ -55,7 +55,8 @@ internal class DataInputPeriodStoreImpl(
             w.bind(4, dataInputPeriod.closingDate())
         }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET
+            DataInputPeriodTableInfo.TABLE_INFO,
+            DataInputPeriodTableInfo.Columns.DATA_SET,
         )
     }
 }

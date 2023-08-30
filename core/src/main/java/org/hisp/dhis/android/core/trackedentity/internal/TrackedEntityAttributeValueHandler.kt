@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityAttributeValueHandler @Inject constructor(
-    store: TrackedEntityAttributeValueStore
+    store: TrackedEntityAttributeValueStore,
 ) : ObjectWithoutUidHandlerImpl<TrackedEntityAttributeValue>(store)

@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.settings.internal
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import dagger.Reusable
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class SettingsAppInfoCall @Inject constructor(
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val apiCallExecutor: RxAPICallExecutor,
 ) {
     companion object {
         const val unknown = "unknown"
@@ -67,7 +67,8 @@ internal class SettingsAppInfoCall @Inject constructor(
 
     private fun fetchV1GeneralSettings(storeError: Boolean): Single<SettingsAppVersion> {
         return apiCallExecutor.wrapSingle(
-            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1), storeError
+            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1),
+            storeError,
         )
             .map<SettingsAppVersion> {
                 SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)

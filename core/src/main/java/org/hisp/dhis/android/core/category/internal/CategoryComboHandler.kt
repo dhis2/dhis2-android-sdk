@@ -41,19 +41,20 @@ internal class CategoryComboHandler constructor(
     store: CategoryComboStore,
     private val optionComboHandler: CategoryOptionComboHandler,
     private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
-    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner
+    private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner,
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
     override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
         optionComboHandler.handleMany(
-            CategoryComboInternalAccessor.accessCategoryOptionCombos(o)
+            CategoryComboInternalAccessor.accessCategoryOptionCombos(o),
         ) { optionCombo: CategoryOptionCombo ->
             optionCombo.toBuilder()
                 .categoryCombo(ObjectWithUid.create(o.uid()))
                 .build()
         }
         categoryCategoryComboLinkHandler.handleMany(
-            o.uid(), o.categories()
+            o.uid(),
+            o.categories(),
         ) { category: Category, sortOrder: Int? ->
             CategoryCategoryComboLink.builder()
                 .categoryCombo(o.uid())

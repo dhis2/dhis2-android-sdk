@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import javax.net.ssl.HttpsURLConnection
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Response
+import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryErrorCatcherShould {

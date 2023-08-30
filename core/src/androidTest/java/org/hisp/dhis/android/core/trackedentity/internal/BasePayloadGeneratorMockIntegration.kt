@@ -150,7 +150,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .build()
 
         val tei = TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            TrackedEntityInstance.builder(), listOf(enrollment1, enrollment2, enrollment3)
+            TrackedEntityInstance.builder(),
+            listOf(enrollment1, enrollment2, enrollment3),
         )
             .uid(teiId)
             .trackedEntityType(teiType.uid())
@@ -195,7 +196,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
                 .organisationUnit(orgUnit!!.uid())
                 .syncState(state)
                 .aggregatedSyncState(state)
-                .build()
+                .build(),
         )
     }
 
@@ -203,7 +204,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     protected fun storeRelationship(
         relationshipUid: String,
         from: String,
-        to: String
+        to: String,
     ) {
         storeRelationship(relationshipUid, RelationshipHelper.teiItem(from), RelationshipHelper.teiItem(to))
     }
@@ -212,7 +213,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     protected fun storeRelationship(
         relationshipUid: String,
         from: RelationshipItem,
-        to: RelationshipItem
+        to: RelationshipItem,
     ) {
         val relationshipType = RelationshipTypeStoreImpl(databaseAdapter).selectFirst()
         val executor = D2CallExecutor.create(databaseAdapter)
@@ -221,19 +222,19 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
                 RelationshipSamples.get230(relationshipUid, from, to).toBuilder()
                     .relationshipType(relationshipType!!.uid())
                     .syncState(State.TO_POST)
-                    .build()
+                    .build(),
             )
             RelationshipItemStoreImpl(databaseAdapter).insert(
                 from.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.FROM)
-                    .build()
+                    .build(),
             )
             RelationshipItemStoreImpl(databaseAdapter).insert(
                 to.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.TO)
-                    .build()
+                    .build(),
             )
             ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
             null

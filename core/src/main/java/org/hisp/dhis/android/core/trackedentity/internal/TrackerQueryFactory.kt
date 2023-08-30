@@ -42,8 +42,8 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
     private val programType: ProgramType,
     private val internalFactoryCreator: (
         params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?
-    ) -> TrackerQueryInternalFactory<T>
+        programSettings: ProgramSettings?,
+    ) -> TrackerQueryInternalFactory<T>,
 ) {
 
     @Suppress("NestedBlockDepth")

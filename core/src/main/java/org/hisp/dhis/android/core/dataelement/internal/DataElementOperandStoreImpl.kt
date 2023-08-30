@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
 
 internal class DataElementOperandStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : DataElementOperandStore,
     IdentifiableObjectStoreImpl<DataElementOperand>(
         databaseAdapter,
         DataElementOperandTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> DataElementOperand.create(cursor) }
+        { cursor: Cursor -> DataElementOperand.create(cursor) },
     ) {
 
     companion object {

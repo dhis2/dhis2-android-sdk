@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
+import javax.inject.Inject
 
 @Reusable
 internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
-    private val categoryCategoryOptionLinkHandler: CategoryCategoryOptionLinkHandler
+    private val categoryCategoryOptionLinkHandler: CategoryCategoryOptionLinkHandler,
 ) {
 
     fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
@@ -50,7 +50,7 @@ internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
 
         categoryCategoryOptionLinkHandler.handleMany(
             category.uid(),
-            categoryOptionsWithAccess
+            categoryOptionsWithAccess,
         ) { categoryOption: CategoryOption, sortOrder: Int ->
             CategoryCategoryOptionLink.builder()
                 .category(category.uid())

@@ -28,21 +28,21 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import java.util.*
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.core.category.CategoryDataDimensionType
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
+import java.util.*
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
@@ -67,7 +67,7 @@ internal object AnalyticsEvaluatorHelper {
         columnName: String,
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         val innerClause = WhereClauseBuilder().apply {
             items.map { i ->
@@ -97,7 +97,7 @@ internal object AnalyticsEvaluatorHelper {
     fun getReportingPeriods(
         items: List<DimensionItem>,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods?
+        queryMods: QueryMods?,
     ): List<Period> {
         val periods = mutableListOf<Period>().apply {
             items.forEach { i ->
@@ -133,13 +133,14 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getReportingPeriodsForAggregationType(
         periods: List<Period>,
-        aggregationType: AggregationType
+        aggregationType: AggregationType,
     ): List<Period> {
         return when (aggregationType) {
             AggregationType.FIRST,
             AggregationType.FIRST_AVERAGE_ORG_UNIT,
             AggregationType.LAST,
-            AggregationType.LAST_AVERAGE_ORG_UNIT -> {
+            AggregationType.LAST_AVERAGE_ORG_UNIT,
+            -> {
                 val startDate = DateUtils.getStartDate(periods)
                 val endDate = DateUtils.getEndDate(periods)
                 startDate?.let {
@@ -153,7 +154,7 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getStartDate(
         items: List<DimensionItem>,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): Date? {
         return items.map { it as DimensionItem.PeriodItem }
             .map { metadata[it.id] as MetadataItem.PeriodItem }
@@ -163,7 +164,7 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getEndDate(
         items: List<DimensionItem>,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): Date? {
         return items.map { it as DimensionItem.PeriodItem }
             .map { metadata[it.id] as MetadataItem.PeriodItem }
@@ -175,15 +176,15 @@ internal object AnalyticsEvaluatorHelper {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
             "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
             "WHERE ${
-            periods.joinToString(" OR ") {
-                "(${
-                getPeriodWhereClause(
-                    PeriodTableInfo.Columns.START_DATE,
-                    PeriodTableInfo.Columns.END_DATE,
-                    it
-                )
-                })"
-            }
+                periods.joinToString(" OR ") {
+                    "(${
+                        getPeriodWhereClause(
+                            PeriodTableInfo.Columns.START_DATE,
+                            PeriodTableInfo.Columns.END_DATE,
+                            it,
+                        )
+                    })"
+                }
             }"
     }
 
@@ -224,7 +225,7 @@ internal object AnalyticsEvaluatorHelper {
         disaggregationColumnName: String?,
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         val innerClause = WhereClauseBuilder().apply {
             items.map { it as DimensionItem.CategoryItem }.map { item ->

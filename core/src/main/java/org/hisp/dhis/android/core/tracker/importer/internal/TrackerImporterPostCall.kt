@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import java.util.Date
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -50,6 +48,8 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.TRACKED_ENTITY
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterPostCall @Inject internal constructor(
@@ -61,34 +61,33 @@ internal class TrackerImporterPostCall @Inject internal constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val jobQueryCall: JobQueryCall,
     private val jobObjectHandler: TrackerJobObjectHandler,
-    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
     fun uploadTrackedEntityInstances(
-        filteredTrackedEntityInstances: List<TrackedEntityInstance>
+        filteredTrackedEntityInstances: List<TrackedEntityInstance>,
     ): Flow<D2Progress> {
         return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
     }
 
     fun uploadEvents(
-        filteredEvents: List<Event>
+        filteredEvents: List<Event>,
     ): Flow<D2Progress> {
         return postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
     }
 
     private fun postPayloadWrapper(
-        payloadWrapper: NewTrackerImporterPayloadWrapper
+        payloadWrapper: NewTrackerImporterPayloadWrapper,
     ): Flow<D2Progress> = flow {
         val payload = fileResourcesPostCall.uploadFileResources(payloadWrapper)
 
-        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = true))
         emitAll(doPostCall(payload.deleted, IMPORT_STRATEGY_DELETE))
         emitAll(doPostCall(payload.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE))
-        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners, onlyExistingTeis = false))
+        emitAll(programOwnerPostCall.uploadProgramOwners(payload.programOwners))
     }
 
     private fun doPostCall(
         payload: NewTrackerImporterPayload,
-        importStrategy: String
+        importStrategy: String,
     ): Flow<D2Progress> = flow {
         if (payload.isEmpty()) {
             emit(D2ProgressManager(null).increaseProgress(NewTrackerImporterPayload::class.java, true))
@@ -106,7 +105,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
 
     private fun doPost(
         payload: NewTrackerImporterPayload,
-        importStrategy: String
+        importStrategy: String,
     ): Flow<D2Progress> = flow {
         stateManager.setStates(payload, State.UPLOADING)
 
@@ -117,13 +116,13 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             onFailure = {
                 stateManager.restoreStates(payload)
                 throw it
-            }
+            },
         )
     }
 
     private suspend fun doPostCallInternal(
         payload: NewTrackerImporterPayload,
-        importStrategy: String
+        importStrategy: String,
     ): Result<String, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
             service.postTrackerPayload(payload, ATOMIC_MODE_OBJECT, importStrategy)
@@ -136,7 +135,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
 
     private fun generateJobObjects(
         payload: NewTrackerImporterPayload,
-        jobUid: String
+        jobUid: String,
     ): List<TrackerJobObject> {
         val builder = TrackerJobObject
             .builder()
@@ -156,7 +155,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
         builder: TrackerJobObject.Builder,
         objectType: TrackerImporterObjectType,
         objects: List<ObjectWithUidInterface>,
-        fileResourcesMap: Map<String, List<String>>
+        fileResourcesMap: Map<String, List<String>>,
     ): List<TrackerJobObject> {
         return objects.map {
             builder

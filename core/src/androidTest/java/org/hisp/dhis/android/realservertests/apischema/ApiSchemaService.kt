@@ -38,6 +38,6 @@ import retrofit2.http.Query
 internal interface ApiSchemaService {
     @GET("schemas")
     fun getSchema(
-        @Query("fields") @Which fields: Fields<ApiSchema>
+        @Query("fields") @Which fields: Fields<ApiSchema>,
     ): Single<Payload<ApiSchema>>
 }

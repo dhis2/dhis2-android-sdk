@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
     protected val scope: RepositoryScope,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyObjectRepository<M> {
     @JvmField protected val cf: FilterConnectorFactory<R> = FilterConnectorFactory(scope, repositoryFactory)
 
@@ -58,8 +58,9 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
      */
     override fun blockingGet(): M? {
         return ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(), childrenAppenders,
-            scope.children()
+            blockingGetWithoutChildren(),
+            childrenAppenders,
+            scope.children(),
         )
     }
 

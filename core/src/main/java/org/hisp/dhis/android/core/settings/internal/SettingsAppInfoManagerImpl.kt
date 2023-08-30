@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class SettingsAppInfoManagerImpl @Inject constructor(
-    private val settingsAppInfoCall: SettingsAppInfoCall
+    private val settingsAppInfoCall: SettingsAppInfoCall,
 ) : SettingsAppInfoManager {
 
     private var settingsAppVersion: SettingsAppVersion? = null

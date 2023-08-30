@@ -75,7 +75,7 @@ internal object VisualizationSamples {
                 .showKey(false)
                 .strategy(LegendStrategy.FIXED)
                 .style(LegendStyle.FILL)
-                .build()
+                .build(),
         )
         .displayDensity(DisplayDensity.NORMAL)
         .digitGroupSeparator(DigitGroupSeparator.COMMA)
@@ -92,8 +92,8 @@ internal object VisualizationSamples {
                             VisualizationDimensionItem.builder()
                                 .dimensionItem("cYeuwXTCPkU")
                                 .dimensionItemType(DataDimensionItemType.DATA_ELEMENT.name)
-                                .build()
-                        )
+                                .build(),
+                        ),
                     )
                     .build(),
                 VisualizationDimension.builder()
@@ -107,11 +107,11 @@ internal object VisualizationSamples {
                             VisualizationDimensionItem.builder()
                                 .dimensionItem("wbrDrL2aYEc")
                                 .dimensionItemType("CATEGORY_OPTION")
-                                .build()
-                        )
+                                .build(),
+                        ),
                     )
-                    .build()
-            )
+                    .build(),
+            ),
         )
         .rows(
             listOf(
@@ -134,11 +134,11 @@ internal object VisualizationSamples {
                             VisualizationDimensionItem.builder()
                                 .dimensionItem(RelativePeriod.LAST_12_MONTHS.name)
                                 .dimensionItemType("PERIOD")
-                                .build()
-                        )
+                                .build(),
+                        ),
                     )
-                    .build()
-            )
+                    .build(),
+            ),
         )
         .filters(
             listOf(
@@ -152,11 +152,11 @@ internal object VisualizationSamples {
                                 .build(),
                             VisualizationDimensionItem.builder()
                                 .dimensionItem("USER_ORGUNIT")
-                                .build()
-                        )
+                                .build(),
+                        ),
                     )
-                    .build()
-            )
+                    .build(),
+            ),
         )
         .aggregationType(AggregationType.SUM)
         .build()

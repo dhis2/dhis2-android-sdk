@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.settings
 data class SystemSettings(
     val keyFlag: String?,
     val keyStyle: String?,
-    val keyBingMapsApiKey: String?
+    val keyBingMapsApiKey: String?,
 )

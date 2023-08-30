@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.option.OptionSet
 
 internal class OptionSetHandler(
-    store: OptionSetStore
+    store: OptionSetStore,
 ) : IdentifiableHandlerImpl<OptionSet>(store)

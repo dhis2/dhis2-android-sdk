@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
+import io.reactivex.observers.TestObserver
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
@@ -56,9 +55,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.*
-import org.mockito.stubbing.Answer
+import org.mockito.stubbing.OngoingStubbing
+import retrofit2.Call
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
     private val userService: UserService = mock()
@@ -117,7 +116,7 @@ class LogInCallUnitShould : BaseCallShould() {
             coroutineAPICallExecutor, userService, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager
+            LogInExceptions(credentialsSecureStore), accountManager, versionManager,
         ).logIn(username, password, serverUrl)
     }
 
@@ -163,7 +162,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
             userService.authenticate(
-                credentialsCaptor.capture(), filterCaptor.capture()
+                credentialsCaptor.capture(), filterCaptor.capture(),
             )
         ).thenReturn(apiUser)
         login()

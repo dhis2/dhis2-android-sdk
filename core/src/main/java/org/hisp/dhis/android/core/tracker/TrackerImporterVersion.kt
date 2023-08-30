@@ -33,5 +33,5 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
 enum class TrackerImporterVersion {
     @JsonEnumDefaultValue
     V1,
-    V2
+    V2,
 }

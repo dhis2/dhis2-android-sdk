@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.usecase.stock
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransformer
+import javax.inject.Inject
 
 @Reusable
 class StockUseCaseCollectionRepository @Inject internal constructor(
@@ -44,15 +44,18 @@ class StockUseCaseCollectionRepository @Inject internal constructor(
     scope: RepositoryScope,
     transformer: StockUseCaseTransformer,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
-ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
-    StockUseCaseCollectionRepository>(
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
+    InternalStockUseCase,
+    StockUseCase,
+    StockUseCaseCollectionRepository,
+    >(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
     },
-    transformer
+    transformer,
 ) {
     private val cf: FilterConnectorFactory<StockUseCaseCollectionRepository> =
         FilterConnectorFactory(scope) { s: RepositoryScope ->

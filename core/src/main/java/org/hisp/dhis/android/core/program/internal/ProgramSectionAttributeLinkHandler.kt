@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 internal class ProgramSectionAttributeLinkHandler(
-    store: ProgramSectionAttributeLinkStore
+    store: ProgramSectionAttributeLinkStore,
 ) : OrderedLinkHandlerImpl<TrackedEntityAttribute, ProgramSectionAttributeLink>(store)

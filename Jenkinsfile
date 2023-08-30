@@ -4,6 +4,15 @@ pipeline {
     }
 
     stages{
+        stage('Change to JAVA 17') {
+            steps {
+                script {
+                    echo 'Changing JAVA version to 17'
+                    sh 'sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java'
+                    env.JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+                }
+            }
+        }
         stage('Checks') {
             steps {
                 script {

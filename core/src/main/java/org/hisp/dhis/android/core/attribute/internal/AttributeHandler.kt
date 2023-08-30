@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
 
 internal class AttributeHandler(
-    store: IdentifiableObjectStore<Attribute>
+    store: IdentifiableObjectStore<Attribute>,
 ) : IdentifiableHandlerImpl<Attribute>(store)

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 
 @Suppress("MagicNumber")
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListAttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListAttributeValueFilter>(
         databaseAdapter,
@@ -48,7 +48,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { ProgramStageWorkingListAttributeValueFilter.create(it) }
+        { ProgramStageWorkingListAttributeValueFilter.create(it) },
     ) {
     companion object {
         private val BINDER = StatementBinder { o: ProgramStageWorkingListAttributeValueFilter, w: StatementWrapper ->
@@ -74,7 +74,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
 
         val CHILD_PROJECTION = SingleParentChildProjection(
             ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
+            ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
         )
     }
 }

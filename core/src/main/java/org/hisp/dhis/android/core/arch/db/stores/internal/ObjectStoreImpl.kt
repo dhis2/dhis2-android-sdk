@@ -44,19 +44,19 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     databaseAdapter: DatabaseAdapter,
     override val builder: SQLStatementBuilder,
     protected val binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : ReadableStoreImpl<O>(databaseAdapter, builder, objectFactory), ObjectStore<O> {
 
     constructor(
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: (Cursor) -> O
+        objectFactory: (Cursor) -> O,
     ) : this(
         databaseAdapter,
         SQLStatementBuilderImpl(tableInfo),
         binder,
-        objectFactory
+        objectFactory,
     )
 
     private var insertStatement: StatementWrapper? = null

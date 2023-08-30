@@ -50,14 +50,14 @@ internal object SMSOngoingSubmissionTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 SUBMISSION_ID,
-                TYPE
+                TYPE,
             )
         }
 
         override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                SUBMISSION_ID
+                SUBMISSION_ID,
             )
         }
 

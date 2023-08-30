@@ -40,8 +40,8 @@ import retrofit2.Retrofit
         DataElementEntityDIModule::class,
         DataElementOperandEntityDIModule::class,
         DataElementAttributeValueEntityDIModule::class,
-        DataElementLegendSetEntityDIModule::class
-    ]
+        DataElementLegendSetEntityDIModule::class,
+    ],
 )
 internal class DataElementPackageDIModule {
     @Provides

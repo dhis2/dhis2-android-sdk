@@ -52,6 +52,12 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     @Nullable
     public abstract  Boolean optionalSearch();
 
+    @Nullable
+    public abstract  Boolean disableReferrals();
+
+    @Nullable
+    public abstract  Boolean collapsibleSections();
+
     public static ProgramConfigurationSetting create(Cursor cursor) {
         return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
     }
@@ -73,6 +79,10 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
         public abstract Builder completionSpinner(Boolean completionSpinner);
 
         public abstract Builder optionalSearch(Boolean optionalSearch);
+
+        public abstract Builder disableReferrals(Boolean disableReferrals);
+
+        public abstract Builder collapsibleSections(Boolean collapsibleSections);
 
         public abstract ProgramConfigurationSetting build();
     }

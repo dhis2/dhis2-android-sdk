@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
+import javax.inject.Inject
 
 @Reusable
 class DataStoreObjectRepository @Inject internal constructor(
@@ -45,14 +45,14 @@ class DataStoreObjectRepository @Inject internal constructor(
     childrenAppenders: Map<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope,
     private val namespace: String,
-    private val key: String
+    private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s ->
         DataStoreObjectRepository(store, childrenAppenders, s, namespace, key)
-    }
+    },
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {
     override fun set(value: String?): Completable {

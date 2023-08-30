@@ -46,11 +46,11 @@ internal class EventFilterEntityDIModule {
     @Reusable
     fun handler(
         eventFilterStore: EventFilterStore,
-        eventDataFilterHandler: EventDataFilterHandler
+        eventDataFilterHandler: EventDataFilterHandler,
     ): EventFilterHandler {
         return EventFilterHandler(
             eventFilterStore,
-            eventDataFilterHandler
+            eventDataFilterHandler,
         )
     }
 
@@ -58,7 +58,7 @@ internal class EventFilterEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<EventFilter>> {
         return mapOf(
-            EventQueryCriteriaFields.DATA_FILTERS to EventFilterEventDataFilterChildrenAppender.create(databaseAdapter)
+            EventQueryCriteriaFields.DATA_FILTERS to EventFilterEventDataFilterChildrenAppender.create(databaseAdapter),
         )
     }
 }

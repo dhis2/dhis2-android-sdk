@@ -37,7 +37,7 @@ internal interface DataSetCompleteRegistrationStore : ObjectWithoutUidStore<Data
     fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
-        rootOrgunitUid: String
+        rootOrgunitUid: String,
     ): Boolean
 
     fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean

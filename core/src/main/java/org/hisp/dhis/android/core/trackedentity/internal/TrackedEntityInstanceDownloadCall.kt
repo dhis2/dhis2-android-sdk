@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceDownloadCall @Inject constructor(
@@ -52,12 +52,12 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory,
-    coroutineCallExecutor
+    coroutineCallExecutor,
 ) {
     override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
@@ -72,7 +72,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     override fun persistItems(
         items: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ) {
         persistenceCallFactory.persistTEIs(items, params, relatives).blockingAwait()
     }
@@ -84,13 +84,13 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     override suspend fun queryByUids(
         bundle: TrackerQueryBundle,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val teiQuery = TrackerAPIQuery(
             commonParams = bundle.commonParams(),
-            programStatus = bundle.programStatus()
+            programStatus = bundle.programStatus(),
         )
 
         for (uid in bundle.commonParams().uids) {
@@ -104,7 +104,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                         hasAllAttributes = !useEntityEndpoint,
                         overwrite = overwrite,
                         asRelationship = false,
-                        program = teiQuery.commonParams.program
+                        program = teiQuery.commonParams.program,
                     )
 
                     persistItems(listOf(tei), persistParams, relatives)
@@ -124,12 +124,12 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private suspend fun querySingleTei(
         uid: String,
         useEntityEndpoint: Boolean,
-        query: TrackerAPIQuery
+        query: TrackerAPIQuery,
     ): Result<TrackedEntityInstance?, D2Error> {
         return if (useEntityEndpoint) {
             coroutineCallExecutor.wrap(
                 storeError = true,
-                errorCatcher = TrackedEntityInstanceCallErrorCatcher()
+                errorCatcher = TrackedEntityInstanceCallErrorCatcher(),
             ) {
                 trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
             }
@@ -145,16 +145,16 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         bundle: TrackerQueryBundle,
         program: String?,
         orgunitUid: String?,
-        limit: Int
+        limit: Int,
     ): TrackerAPIQuery {
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
-                limit = limit
+                limit = limit,
             ),
             programStatus = bundle.programStatus(),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid
+            orgUnit = orgunitUid,
         )
     }
 }

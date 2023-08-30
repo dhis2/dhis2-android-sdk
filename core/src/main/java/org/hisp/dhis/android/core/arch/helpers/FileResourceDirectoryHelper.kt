@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
-import java.io.File
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import java.io.File
 
 object FileResourceDirectoryHelper {
 
@@ -57,9 +57,10 @@ object FileResourceDirectoryHelper {
     internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
         val childPath = subfolder?.let { "$FilesDir/$it" } ?: FilesDir
         val file = File(context.filesDir, childPath)
-        return if (!file.exists() && file.mkdirs()) {
-            file
-        } else file
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
     }
 
     internal fun deleteRootFileResourceDirectory(context: Context) {
@@ -90,9 +91,10 @@ object FileResourceDirectoryHelper {
     private fun getFileCacheResourceDirectory(context: Context, subfolder: String?): File {
         val childPath = subfolder?.let { "$CacheDir/$it" } ?: CacheDir
         val file = File(context.cacheDir, childPath)
-        return if (!file.exists() && file.mkdirs()) {
-            file
-        } else file
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
     }
 
     internal fun getSubfolderName(databaseName: String): String {

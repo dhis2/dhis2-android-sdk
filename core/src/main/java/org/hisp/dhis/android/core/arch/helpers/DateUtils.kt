@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import java.util.*
 
 object DateUtils {
 
@@ -57,19 +57,22 @@ object DateUtils {
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
             PeriodType.WeeklyThursday,
-            PeriodType.WeeklyWednesday -> calendar.add(Calendar.WEEK_OF_YEAR, periods)
+            PeriodType.WeeklyWednesday,
+            -> calendar.add(Calendar.WEEK_OF_YEAR, periods)
             PeriodType.BiWeekly -> calendar.add(Calendar.WEEK_OF_YEAR, 2 * periods)
             PeriodType.Monthly -> calendar.add(Calendar.MONTH, periods)
             PeriodType.BiMonthly -> calendar.add(Calendar.MONTH, 2 * periods)
             PeriodType.Quarterly -> calendar.add(Calendar.MONTH, 3 * periods)
             PeriodType.SixMonthly,
             PeriodType.SixMonthlyApril,
-            PeriodType.SixMonthlyNov -> calendar.add(Calendar.MONTH, 6 * periods)
+            PeriodType.SixMonthlyNov,
+            -> calendar.add(Calendar.MONTH, 6 * periods)
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialOct,
-            PeriodType.FinancialNov -> calendar.add(Calendar.YEAR, periods)
+            PeriodType.FinancialNov,
+            -> calendar.add(Calendar.YEAR, periods)
         }
 
         return calendar.time

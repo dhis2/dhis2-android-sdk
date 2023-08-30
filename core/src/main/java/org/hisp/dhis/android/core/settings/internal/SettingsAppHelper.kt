@@ -60,7 +60,6 @@ internal object SettingsAppHelper {
     }
 
     private fun getDataSetFilters(dataSetScope: DataSetFilters): List<FilterSetting> {
-
         val globalFilters = dataSetScope.globalSettings().map { entry ->
             entry.value.toBuilder()
                 .scope(DataSetFilter::class.simpleName)
@@ -82,7 +81,6 @@ internal object SettingsAppHelper {
     }
 
     private fun getProgramFilters(programScope: ProgramFilters): List<FilterSetting> {
-
         val globalFilters = programScope.globalSettings().map { entry ->
             entry.value.toBuilder()
                 .scope(ProgramFilter::class.simpleName)
@@ -104,7 +102,7 @@ internal object SettingsAppHelper {
     }
 
     fun getProgramConfigurationSettingList(
-        appearanceSettings: AppearanceSettings
+        appearanceSettings: AppearanceSettings,
     ): List<ProgramConfigurationSetting> {
         val list = mutableListOf<ProgramConfigurationSetting>()
         appearanceSettings.programConfiguration()?.let { settings ->
@@ -116,7 +114,7 @@ internal object SettingsAppHelper {
                     entry.value.toBuilder()
                         .uid(entry.key)
                         .build()
-                } ?: emptyList()
+                } ?: emptyList(),
             )
         }
         return list
@@ -182,7 +180,7 @@ internal object SettingsAppHelper {
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
         teiAttributes: List<AnalyticsTeiAttribute>,
-        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>
+        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>,
     ): List<AnalyticsTeiSetting> {
         return teiSettings.map {
             buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes, teiWhoNutritionData)
@@ -195,7 +193,7 @@ internal object SettingsAppHelper {
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
         teiAttributes: List<AnalyticsTeiAttribute>,
-        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>
+        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>,
     ): AnalyticsTeiSetting {
         return when (teiSetting.type()) {
             ChartType.WHO_NUTRITION -> {
@@ -223,18 +221,18 @@ internal object SettingsAppHelper {
         teiSetting: AnalyticsTeiSetting,
         whoComponent: WHONutritionComponent,
         teiDataElements: List<AnalyticsTeiDataElement>,
-        teiIndicators: List<AnalyticsTeiIndicator>
+        teiIndicators: List<AnalyticsTeiIndicator>,
     ): AnalyticsTeiWHONutritionItem {
         return AnalyticsTeiWHONutritionItem.builder()
             .dataElements(
                 teiDataElements.filter {
                     it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
-                }
+                },
             )
             .indicators(
                 teiIndicators.filter {
                     it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
-                }
+                },
             )
             .build()
     }

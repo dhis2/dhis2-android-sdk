@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInf
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 
 internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<OrganisationUnit, OrganisationUnitGroup>
+    private val linkChildStore: LinkChildStore<OrganisationUnit, OrganisationUnitGroup>,
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         val builder = m.toBuilder()
@@ -51,7 +51,7 @@ internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender priv
         private val CHILD_PROJECTION = LinkTableChildProjection(
             OrganisationUnitGroupTableInfo.TABLE_INFO,
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
@@ -59,8 +59,8 @@ internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender priv
                 linkChildStore(
                     databaseAdapter,
                     OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> OrganisationUnitGroup.create(cursor) }
+                    CHILD_PROJECTION,
+                ) { cursor: Cursor -> OrganisationUnitGroup.create(cursor) },
             )
         }
     }

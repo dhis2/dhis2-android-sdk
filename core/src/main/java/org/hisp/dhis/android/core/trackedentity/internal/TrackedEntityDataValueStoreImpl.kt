@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityDataValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityDataValue>(
         databaseAdapter,
@@ -53,12 +53,12 @@ internal class TrackedEntityDataValueStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> TrackedEntityDataValue.create(cursor) }
+        { cursor: Cursor -> TrackedEntityDataValue.create(cursor) },
     ) {
 
     override fun deleteByEventAndNotInDataElements(
         eventUid: String,
-        dataElementUids: List<String>
+        dataElementUids: List<String>,
     ): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
@@ -101,7 +101,7 @@ internal class TrackedEntityDataValueStoreImpl(
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .appendNotInSubQuery(
                 TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
-                getInProgramStageDataElementsSubQuery(eventUid)
+                getInProgramStageDataElementsSubQuery(eventUid),
             ).build()
 
         deleteWhere(queryStatement)
@@ -110,8 +110,8 @@ internal class TrackedEntityDataValueStoreImpl(
     private fun eventInUploadableState(): String {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
             CollectionsHelper.withSingleQuotationMarksArray(
-                uploadableStatesIncludingError().map { it.name }
-            )
+                uploadableStatesIncludingError().map { it.name },
+            ),
         )
         return "(Event." + EventTableInfo.Columns.AGGREGATED_SYNC_STATE + " IN (" + states + "))"
     }
@@ -129,7 +129,7 @@ internal class TrackedEntityDataValueStoreImpl(
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .appendInSubQuery(
                 TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
-                getInProgramStageDataElementsSubQuery(eventUid)
+                getInProgramStageDataElementsSubQuery(eventUid),
             ).build()
 
         return selectWhere(queryStatement)
@@ -175,7 +175,8 @@ internal class TrackedEntityDataValueStoreImpl(
             w.bind(2, o.dataElement())
         }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackedEntityDataValueTableInfo.TABLE_INFO, TrackedEntityDataValueTableInfo.Columns.EVENT
+            TrackedEntityDataValueTableInfo.TABLE_INFO,
+            TrackedEntityDataValueTableInfo.Columns.EVENT,
         )
     }
 }

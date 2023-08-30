@@ -40,8 +40,8 @@ import retrofit2.Retrofit
         EventFilterEntityDIModule::class,
         EventDataFilterEntityDIModule::class,
         EventSyncEntityDIModule::class,
-        EventQueryEntityDIModule::class
-    ]
+        EventQueryEntityDIModule::class,
+    ],
 )
 internal class EventPackageDIModule {
     @Provides

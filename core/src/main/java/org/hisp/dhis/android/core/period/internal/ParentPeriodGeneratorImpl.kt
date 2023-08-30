@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.period.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
+import java.util.*
 
 internal class ParentPeriodGeneratorImpl(
     private val daily: PeriodGenerator,
@@ -38,7 +38,7 @@ internal class ParentPeriodGeneratorImpl(
     private val biWeekly: PeriodGenerator,
     private val monthly: PeriodGenerator,
     private val nMonthly: NMonthlyPeriodGenerators,
-    private val yearly: YearlyPeriodGenerators
+    private val yearly: YearlyPeriodGenerators,
 ) : ParentPeriodGenerator {
 
     override fun generatePeriods(): List<Period> {
@@ -112,7 +112,7 @@ internal class ParentPeriodGeneratorImpl(
                 BiWeeklyPeriodGenerator(calendar),
                 MonthlyPeriodGenerator(calendar),
                 NMonthlyPeriodGenerators.create(calendar),
-                YearlyPeriodGenerators.create(calendar)
+                YearlyPeriodGenerators.create(calendar),
             )
         }
     }

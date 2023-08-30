@@ -40,12 +40,13 @@ import org.hisp.dhis.android.core.legendset.LegendTableInfo
 
 @Suppress("MagicNumber")
 internal class LegendStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : LegendStore,
     IdentifiableObjectStoreImpl<Legend>(
-        databaseAdapter, LegendTableInfo.TABLE_INFO,
+        databaseAdapter,
+        LegendTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> Legend.create(cursor) }
+        { cursor: Cursor -> Legend.create(cursor) },
     ) {
 
     companion object {
@@ -60,7 +61,8 @@ internal class LegendStoreImpl(
         }
 
         val CHILD_PROJECTION = SingleParentChildProjection(
-            LegendTableInfo.TABLE_INFO, LegendTableInfo.Columns.LEGEND_SET
+            LegendTableInfo.TABLE_INFO,
+            LegendTableInfo.Columns.LEGEND_SET,
         )
     }
 }

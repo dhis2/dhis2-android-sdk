@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportRelationshipHandler @Inject internal constructor(
-    relationshipStore: RelationshipStore
+    relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {

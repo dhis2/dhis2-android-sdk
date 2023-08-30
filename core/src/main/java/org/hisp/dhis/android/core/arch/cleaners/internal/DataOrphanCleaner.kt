@@ -37,7 +37,7 @@ internal open class DataOrphanCleaner<P : ObjectWithUidInterface, C : ObjectWith
     private val tableName: String,
     private val parentColumn: String,
     private val stateColumn: String,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrphanCleaner<P, C> {
 
     override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {

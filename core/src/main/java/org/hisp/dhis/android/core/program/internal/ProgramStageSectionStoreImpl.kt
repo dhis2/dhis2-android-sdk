@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramStageSectionStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageSectionStore,
     IdentifiableObjectStoreImpl<ProgramStageSection>(
         databaseAdapter,
         ProgramStageSectionTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramStageSection.create(cursor) }
+        { cursor: Cursor -> ProgramStageSection.create(cursor) },
     ) {
 
     companion object {

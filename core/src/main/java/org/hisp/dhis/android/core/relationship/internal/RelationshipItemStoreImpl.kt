@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -39,9 +38,10 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import java.util.*
 
 internal class RelationshipItemStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : RelationshipItemStore,
     ObjectWithoutUidStoreImpl<RelationshipItem>(
         databaseAdapter,
@@ -49,7 +49,7 @@ internal class RelationshipItemStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> RelationshipItem.create(cursor) }
+        { cursor: Cursor -> RelationshipItem.create(cursor) },
     ) {
 
     @Suppress("NestedBlockDepth")
@@ -74,7 +74,7 @@ internal class RelationshipItemStoreImpl(
 
     override fun getForRelationshipUidAndConstraintType(
         uid: String,
-        constraintType: RelationshipConstraintType
+        constraintType: RelationshipConstraintType,
     ): RelationshipItem? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, uid)
@@ -94,11 +94,11 @@ internal class RelationshipItemStoreImpl(
         val whereFromClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUids
+                trackedEntityInstanceUids,
             )
             .appendKeyStringValue(
                 RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
-                RelationshipConstraintType.FROM
+                RelationshipConstraintType.FROM,
             )
             .build()
 
@@ -109,7 +109,7 @@ internal class RelationshipItemStoreImpl(
             .appendInKeyStringValues(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUids)
             .appendKeyStringValue(
                 RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
-                RelationshipConstraintType.TO
+                RelationshipConstraintType.TO,
             )
             .appendIsNotNullValue(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
             .build()
@@ -158,8 +158,12 @@ internal class RelationshipItemStoreImpl(
 
     companion object {
         private val BINDER = StatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            val trackedEntityInstance = if (o.trackedEntityInstance() == null) null else o.trackedEntityInstance()!!
-                .trackedEntityInstance()
+            val trackedEntityInstance = if (o.trackedEntityInstance() == null) {
+                null
+            } else {
+                o.trackedEntityInstance()!!
+                    .trackedEntityInstance()
+            }
             val enrollment = if (o.enrollment() == null) null else o.enrollment()!!.enrollment()
             val event = if (o.event() == null) null else o.event()!!.event()
             w.bind(1, getUidOrNull(o.relationship()))

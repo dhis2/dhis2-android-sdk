@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 
 internal class ProgramRuleActionChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<ProgramRule, ProgramRuleAction>
+    private val childStore: SingleParentChildStore<ProgramRule, ProgramRuleAction>,
 ) : ChildrenAppender<ProgramRule>() {
     override fun appendChildren(m: ProgramRule): ProgramRule {
         val builder = m.toBuilder()
@@ -49,8 +49,8 @@ internal class ProgramRuleActionChildrenAppender private constructor(
             return ProgramRuleActionChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    ProgramRuleActionStoreImpl.CHILD_PROJECTION
-                ) { cursor: Cursor -> ProgramRuleAction.create(cursor) }
+                    ProgramRuleActionStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> ProgramRuleAction.create(cursor) },
             )
         }
     }

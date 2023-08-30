@@ -47,22 +47,27 @@ object ApiPagingEngine {
         if (floor(numberOfCallsDone) != numberOfCallsDone) {
             pagingList.add(
                 calculateFirstPagination(
-                    currentPageSize, numberOfFullCallsDone, requiredItemsCount, itemsSkippedCount
-                )
+                    currentPageSize,
+                    numberOfFullCallsDone,
+                    requiredItemsCount,
+                    itemsSkippedCount,
+                ),
             )
         }
 
         for (call in numberOfFullCallsDone + pagingList.size + 1 until numberOfCalls) {
             pagingList.add(
-                Paging.create(call, currentPageSize, 0, 0, false)
+                Paging.create(call, currentPageSize, 0, 0, false),
             )
         }
 
         if (numberOfFullCallsDone + pagingList.size + 1 == numberOfCalls) {
             pagingList.add(
                 calculateLastPagination(
-                    currentPageSize, requiredItemsCount + itemsSkippedCount, numberOfCalls
-                )
+                    currentPageSize,
+                    requiredItemsCount + itemsSkippedCount,
+                    numberOfCalls,
+                ),
             )
         }
 
@@ -75,9 +80,8 @@ object ApiPagingEngine {
         maxPageSize: Int,
         numberOfFullCallsDone: Int,
         requiredItemsCount: Int,
-        itemsSkippedCount: Int
+        itemsSkippedCount: Int,
     ): Paging {
-
         val upperLimit = minOf(itemsSkippedCount + requiredItemsCount, (numberOfFullCallsDone + 1) * maxPageSize)
         val minimumPageSize = upperLimit - itemsSkippedCount
 
@@ -91,7 +95,7 @@ object ApiPagingEngine {
                     pageSize,
                     previousItemsToSkipCount,
                     posteriorItemsToSkipCount,
-                    false
+                    false,
                 )
             }
         }
@@ -105,14 +109,18 @@ object ApiPagingEngine {
         val itemsToRequest = requiredItemsCount - requestedItems
         for (pageSize in itemsToRequest..currentPageSize) {
             for (
-                page in floor(requiredItemsCount.toDouble() / pageSize)
-                    .toInt()..floor(requestedItems.toDouble() / pageSize).toInt() + 1
+            page in floor(requiredItemsCount.toDouble() / pageSize)
+                .toInt()..floor(requestedItems.toDouble() / pageSize).toInt() + 1
             ) {
                 val previousItemsToSkipCount = requestedItems - pageSize * (page - 1)
                 val posteriorItemsToSkipCount = pageSize * page - requiredItemsCount
                 if (previousItemsToSkipCount >= 0 && posteriorItemsToSkipCount >= 0) {
                     return Paging.create(
-                        page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount, true
+                        page,
+                        pageSize,
+                        previousItemsToSkipCount,
+                        posteriorItemsToSkipCount,
+                        true,
                     )
                 }
             }

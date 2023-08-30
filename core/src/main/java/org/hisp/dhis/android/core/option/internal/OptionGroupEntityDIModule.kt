@@ -47,12 +47,12 @@ internal class OptionGroupEntityDIModule {
     fun handler(
         optionStore: OptionGroupStore,
         optionGroupOptionLinkHandler: OptionGroupOptionLinkHandler,
-        collectionCleaner: OptionGroupCollectionCleaner
+        collectionCleaner: OptionGroupCollectionCleaner,
     ): OptionGroupHandler {
         return OptionGroupHandler(
             optionStore,
             optionGroupOptionLinkHandler,
-            collectionCleaner
+            collectionCleaner,
         )
     }
 
@@ -60,7 +60,7 @@ internal class OptionGroupEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<OptionGroup>> {
         return mapOf(
-            OptionGroupFields.OPTIONS to OptionGroupOptionChildrenAppender.create(databaseAdapter)
+            OptionGroupFields.OPTIONS to OptionGroupOptionChildrenAppender.create(databaseAdapter),
         )
     }
 }

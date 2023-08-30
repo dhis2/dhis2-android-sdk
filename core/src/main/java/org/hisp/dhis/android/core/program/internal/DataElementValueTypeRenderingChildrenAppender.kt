@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import javax.inject.Inject
 
 @Reusable
 internal class DataElementValueTypeRenderingChildrenAppender @Inject constructor(
-    store: ValueTypeDeviceRenderingStore
+    store: ValueTypeDeviceRenderingStore,
 ) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(store) {
     override fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
         val valueTypeRendering = getValueTypeDeviceRendering(m)

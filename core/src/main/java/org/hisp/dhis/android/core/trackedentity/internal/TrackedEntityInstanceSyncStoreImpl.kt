@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 
 internal class TrackedEntityInstanceSyncStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceSyncStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceSync>(
         databaseAdapter,
@@ -43,7 +43,7 @@ internal class TrackedEntityInstanceSyncStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         DELETE_UPDATE_BINDER,
-        { cursor: Cursor -> TrackedEntityInstanceSync.create(cursor) }
+        { cursor: Cursor -> TrackedEntityInstanceSync.create(cursor) },
     ) {
 
     companion object {

@@ -40,13 +40,13 @@ import org.hisp.dhis.android.core.program.ProgramStageTableInfo
 
 @Suppress("MagicNumber")
 internal class ProgramStageStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ProgramStageStore,
     IdentifiableObjectStoreImpl<ProgramStage>(
         databaseAdapter,
         ProgramStageTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> ProgramStage.create(cursor) }
+        { cursor: Cursor -> ProgramStage.create(cursor) },
     ) {
     companion object {
         private val BINDER: StatementBinder<ProgramStage> =
@@ -81,7 +81,8 @@ internal class ProgramStageStoreImpl(
                 }
             }
         val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramStageTableInfo.TABLE_INFO, ProgramStageTableInfo.Columns.PROGRAM
+            ProgramStageTableInfo.TABLE_INFO,
+            ProgramStageTableInfo.Columns.PROGRAM,
         )
     }
 }

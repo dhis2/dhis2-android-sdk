@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 internal open class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrphanCleaner<P, C> {
 
     override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {

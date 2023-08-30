@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsTeiDataElementStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiDataElementStore,
     LinkStoreImpl<AnalyticsTeiDataElement>(
         databaseAdapter,
         AnalyticsTeiDataElementTableInfo.TABLE_INFO,
         AnalyticsTeiDataElementTableInfo.Columns.TEI_SETTING,
         BINDER,
-        { cursor: Cursor -> AnalyticsTeiDataElement.create(cursor) }
+        { cursor: Cursor -> AnalyticsTeiDataElement.create(cursor) },
     ) {
 
     companion object {

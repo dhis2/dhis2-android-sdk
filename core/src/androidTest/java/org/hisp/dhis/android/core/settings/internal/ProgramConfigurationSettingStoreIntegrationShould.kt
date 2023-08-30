@@ -40,7 +40,7 @@ class ProgramConfigurationSettingStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramConfigurationSetting>(
         ProgramConfigurationSettingStoreImpl(TestDatabaseAdapterFactory.get()),
         ProgramConfigurationSettingTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): ProgramConfigurationSetting {
         return ProgramConfigurationSettingSamples.get()

@@ -46,13 +46,13 @@ internal class TrackedEntityInstanceFilterEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter
+        databaseAdapter: DatabaseAdapter,
     ): Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> {
         return mapOf(
             TrackedEntityInstanceFilterFields.EVENT_FILTERS to
                 TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter),
             EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender.create(databaseAdapter)
+                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender.create(databaseAdapter),
         )
     }
 }

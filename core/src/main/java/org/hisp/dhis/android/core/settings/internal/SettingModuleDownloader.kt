@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.settings.internal
 import android.annotation.SuppressLint
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import javax.inject.Inject
 
 @Reusable
 internal class SettingModuleDownloader @Inject constructor(
@@ -41,7 +41,7 @@ internal class SettingModuleDownloader @Inject constructor(
     private val analyticsSettingCall: AnalyticsSettingCall,
     private val userSettingsCall: UserSettingsCall,
     private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall
+    private val latestAppVersionCall: LatestAppVersionCall,
 ) : UntypedModuleDownloader {
 
     @SuppressLint("CheckResult")

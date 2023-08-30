@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 internal abstract class JobReportTypeHandler constructor(
-    protected val relationshipStore: RelationshipStore
+    protected val relationshipStore: RelationshipStore,
 ) {
 
     fun handleSuccess(jo: TrackerJobObject) {

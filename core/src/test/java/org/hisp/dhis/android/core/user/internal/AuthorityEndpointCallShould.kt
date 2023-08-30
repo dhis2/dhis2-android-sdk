@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -41,6 +40,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Call
 import retrofit2.Response
+import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class AuthorityEndpointCallShould : BaseCallShould() {
@@ -57,8 +57,10 @@ class AuthorityEndpointCallShould : BaseCallShould() {
         super.setUp()
         val apiCallExecutor = APICallExecutorImpl.create(databaseAdapter, userAccountDisabledErrorCatcher)
         endpointCall = AuthorityEndpointCallFactory(
-            genericCallData, apiCallExecutor, handler,
-            retrofit.create(AuthorityService::class.java)
+            genericCallData,
+            apiCallExecutor,
+            handler,
+            retrofit.create(AuthorityService::class.java),
         ).create()
         whenever(retrofitCall.execute()).thenReturn(Response.success(payload))
         whenever(authorityService.authorities).thenReturn(retrofitCall)

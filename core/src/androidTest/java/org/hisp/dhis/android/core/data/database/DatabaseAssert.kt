@@ -70,7 +70,7 @@ class DatabaseAssert private constructor(var databaseAdapter: DatabaseAdapter) {
 
         val cursor = databaseAdapter.rawQuery(
             " SELECT name FROM sqlite_master WHERE type='table' and " +
-                excludedTables.joinToString(" and ") { "name != '$it'" }
+                excludedTables.joinToString(" and ") { "name != '$it'" },
         )
 
         val tablesCount = ArrayList<TableCount>()

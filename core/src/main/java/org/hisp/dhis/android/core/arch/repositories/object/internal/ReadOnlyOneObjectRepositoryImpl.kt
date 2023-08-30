@@ -38,7 +38,7 @@ open class ReadOnlyOneObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> i
     private val store: ReadableStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
-    repositoryFactory: ObjectRepositoryFactory<R>
+    repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyObjectRepositoryImpl<M, R>(childrenAppenders, scope, repositoryFactory) {
 
     override fun blockingGetWithoutChildren(): M? {

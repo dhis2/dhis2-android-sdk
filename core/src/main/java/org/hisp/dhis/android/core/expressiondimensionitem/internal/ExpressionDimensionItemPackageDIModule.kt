@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionIte
 
 @Module(
     includes = [
-        ExpressionDimensionItemEntityDIModule::class
-    ]
+        ExpressionDimensionItemEntityDIModule::class,
+    ],
 )
 internal class ExpressionDimensionItemPackageDIModule {
 

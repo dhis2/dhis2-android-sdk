@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentEndpointCallFactory
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentEndpointCallFactory
 import org.hisp.dhis.android.core.enrollment.internal.OldEnrollmentEndpointCallFactory
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.event.internal.EventEndpointCallFactory
 import org.hisp.dhis.android.core.event.internal.NewEventEndpointCallFactory
 import org.hisp.dhis.android.core.event.internal.OldEventEndpointCallFactory
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerParentCallFactory @Inject constructor(
@@ -45,7 +45,7 @@ internal class TrackerParentCallFactory @Inject constructor(
     private val newEnrollmentEndpointCallFactory: NewEnrollmentEndpointCallFactory,
     private val oldEventEndpointCallFactory: OldEventEndpointCallFactory,
     private val newEventEndpointCallFactory: NewEventEndpointCallFactory,
-    private val trackerParentCallHelper: TrackerPostParentCallHelper
+    private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
     fun getTrackedEntityCall(): TrackedEntityEndpointCallFactory {

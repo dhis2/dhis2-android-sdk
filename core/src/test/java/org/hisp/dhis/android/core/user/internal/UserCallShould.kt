@@ -31,9 +31,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.nhaarman.mockitokotlin2.*
 import java.util.concurrent.Callable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -44,6 +42,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import retrofit2.Call
 
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {

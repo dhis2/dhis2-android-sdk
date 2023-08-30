@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityDataValueHandler @Inject constructor(
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
 ) : ObjectWithoutUidHandlerImpl<TrackedEntityDataValue>(trackedEntityDataValueStore) {
     fun removeEventDataValues(eventUid: String?) {
         trackedEntityDataValueStore.deleteByEvent(eventUid!!)

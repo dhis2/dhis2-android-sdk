@@ -69,11 +69,11 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period201912.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201912.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -89,11 +89,11 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period2019Q4.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period2019Q4.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -108,13 +108,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
                 DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -129,13 +129,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
             ),
             filters = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
                 DimensionItem.DataItem.DataElementItem(dataElement2.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -150,12 +150,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement2.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -171,12 +171,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.CategoryItem(category.uid(), categoryOption.uid())
+                DimensionItem.CategoryItem(category.uid(), categoryOption.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -192,12 +192,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.CategoryItem(attribute.uid(), attributeOption.uid())
+                DimensionItem.CategoryItem(attribute.uid(), attributeOption.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -212,12 +212,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.CategoryItem(category.uid(), categoryOption = "non-existing-co")
+                DimensionItem.CategoryItem(category.uid(), categoryOption = "non-existing-co"),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -231,12 +231,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementOperandItem(dataElement1.uid(), categoryOptionCombo.uid())
+                DimensionItem.DataItem.DataElementOperandItem(dataElement1.uid(), categoryOptionCombo.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -251,12 +251,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -271,12 +271,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
-            )
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -292,11 +292,11 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Level(level1.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Level(level1.uid()),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -312,11 +312,11 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Group(organisationUnitGroup.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Group(organisationUnitGroup.uid()),
+            ),
         )
 
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
@@ -333,92 +333,92 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT
-            )
+                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT,
+            ),
         ).isEqualTo("12")
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.FIRST
-            )
+                aggregator = AggregationType.FIRST,
+            ),
         ).isEqualTo("11")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.FIRST
-            )
+                aggregator = AggregationType.FIRST,
+            ),
         ).isEqualTo("11")
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo("5.5")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo("5.5")
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.LAST
-            )
+                aggregator = AggregationType.LAST,
+            ),
         ).isEqualTo("13")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.LAST
-            )
+                aggregator = AggregationType.LAST,
+            ),
         ).isEqualTo("13")
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo("6.5")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.LAST_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo("6.5")
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.LAST_IN_PERIOD
-            )
+                aggregator = AggregationType.LAST_IN_PERIOD,
+            ),
         ).isEqualTo("13")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.LAST_IN_PERIOD
-            )
+                aggregator = AggregationType.LAST_IN_PERIOD,
+            ),
         ).isEqualTo(null)
 
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
-                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo("6.5")
 
         assertThat(
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
-                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT
-            )
+                aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            ),
         ).isEqualTo(null)
     }
 
@@ -430,11 +430,11 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val defaultEvaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+            ),
         )
 
         assertThat(dataElementEvaluator.evaluate(defaultEvaluationItem, metadata)).isEqualTo("11")
@@ -442,12 +442,12 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         val overrideEvaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(period201911.periodId()!!),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
             ),
-            aggregationType = AggregationType.AVERAGE
+            aggregationType = AggregationType.AVERAGE,
         )
 
         assertThat(dataElementEvaluator.evaluate(overrideEvaluationItem, metadata)).isEqualTo("5.5")
@@ -455,16 +455,16 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     private fun evaluateAggregation(
         periodId: String,
-        aggregator: AggregationType
+        aggregator: AggregationType,
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.PeriodItem.Absolute(periodId)
+                DimensionItem.PeriodItem.Absolute(periodId),
             ),
             filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
-            )
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+            ),
         )
 
         val updatedDataElement = dataElement1.toBuilder().aggregationType(aggregator.name).build()

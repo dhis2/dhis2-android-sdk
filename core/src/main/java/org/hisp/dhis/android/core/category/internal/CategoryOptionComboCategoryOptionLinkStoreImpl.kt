@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
 @Suppress("MagicNumber")
 internal class CategoryOptionComboCategoryOptionLinkStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionComboCategoryOptionLinkStore,
     LinkStoreImpl<CategoryOptionComboCategoryOptionLink>(
         databaseAdapter,
         CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
         CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
         BINDER,
-        { cursor: Cursor -> CategoryOptionComboCategoryOptionLink.create(cursor) }
+        { cursor: Cursor -> CategoryOptionComboCategoryOptionLink.create(cursor) },
     ) {
 
     companion object {

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(
@@ -44,7 +44,7 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val fileResourceStore: FileResourceStore,
-    private val h: StatePersistorHelper
+    private val h: StatePersistorHelper,
 ) {
 
     fun restoreStates(payload: NewTrackerImporterPayload) {

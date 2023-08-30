@@ -28,19 +28,19 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import javax.inject.Inject
 
 @Reusable
 internal class VisualizationHandler @Inject constructor(
     store: VisualizationStore,
     private val visualizationCollectionCleaner: VisualizationCollectionCleaner,
-    private val itemHandler: VisualizationDimensionItemHandler
+    private val itemHandler: VisualizationDimensionItemHandler,
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
@@ -60,7 +60,7 @@ internal class VisualizationHandler @Inject constructor(
 
     private fun toItems(
         dimensions: List<VisualizationDimension>?,
-        position: LayoutPosition
+        position: LayoutPosition,
     ): List<VisualizationDimensionItem> {
         return dimensions?.map { dimension ->
             if (dimension.items().isNullOrEmpty()) {
@@ -68,7 +68,7 @@ internal class VisualizationHandler @Inject constructor(
                     VisualizationDimensionItem.builder()
                         .position(position)
                         .dimension(dimension.id())
-                        .build()
+                        .build(),
                 )
             } else {
                 dimension.items()!!.map { item ->

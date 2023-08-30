@@ -31,11 +31,11 @@ plugins {
     kotlin("android")
 }
 
-apply(from = project.file("../core/plugins/jacoco.gradle"))
+apply(from = project.file("../core/plugins/jacoco.gradle.kts"))
 
 android {
     compileSdk = 33
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "33.0.1"
 
     defaultConfig {
         applicationId = "org.hisp.dhis.android.instrumentedTestApp"
@@ -43,6 +43,11 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {

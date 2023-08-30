@@ -58,7 +58,7 @@ internal class DataSetEntityDIModule {
         dataSetElementLinkHandler: DataSetElementHandler,
         dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
         collectionCleaner: DataSetCollectionCleaner,
-        linkCleaner: DataSetOrganisationUnitLinkCleaner
+        linkCleaner: DataSetOrganisationUnitLinkCleaner,
     ): DataSetHandler {
         return DataSetHandler(
             dataSetStore,
@@ -70,7 +70,7 @@ internal class DataSetEntityDIModule {
             dataSetElementLinkHandler,
             dataSetIndicatorLinkHandler,
             collectionCleaner,
-            linkCleaner
+            linkCleaner,
         )
     }
 
@@ -83,7 +83,7 @@ internal class DataSetEntityDIModule {
 
             DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender.create(databaseAdapter),
             DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender.create(databaseAdapter),
-            DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender.create(databaseAdapter)
+            DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender.create(databaseAdapter),
         )
     }
 }

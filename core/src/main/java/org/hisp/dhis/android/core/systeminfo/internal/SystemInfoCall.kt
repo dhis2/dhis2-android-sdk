@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.allowedVersionsAsStr
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.isAllowedVersion
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import javax.inject.Inject
 
 @Reusable
 class SystemInfoCall @Inject internal constructor(
@@ -47,7 +47,7 @@ class SystemInfoCall @Inject internal constructor(
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
     override suspend fun download(storeError: Boolean) {
@@ -65,13 +65,13 @@ class SystemInfoCall @Inject internal constructor(
                         .errorDescription(
                             "Server DHIS version (" + version + ") not valid. " +
                                 "Allowed versions: " +
-                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
+                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
                         )
                         .build()
                 }
                 insertOrUpdateSystemInfo(systemInfo)
             },
-            onFailure = { throw it }
+            onFailure = { throw it },
         )
     }
 

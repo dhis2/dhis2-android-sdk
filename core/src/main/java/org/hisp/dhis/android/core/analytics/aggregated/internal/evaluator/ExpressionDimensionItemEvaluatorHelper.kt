@@ -37,7 +37,7 @@ internal object ExpressionDimensionItemEvaluatorHelper {
 
     fun getItem(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): ExpressionDimensionItem {
         val expressionDimensionItem = evaluationItem.allDimensionItems
             .find { it is DimensionItem.DataItem.ExpressionDimensionItem }
@@ -48,12 +48,12 @@ internal object ExpressionDimensionItemEvaluatorHelper {
 
     fun getContextEvaluationItem(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        item: ExpressionDimensionItem
+        item: ExpressionDimensionItem,
     ): AnalyticsServiceEvaluationItem {
         return AnalyticsServiceEvaluationItem(
             dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != item.uid() },
             filters = evaluationItem.filters.filter { it.id != item.uid() },
-            aggregationType = evaluationItem.aggregationType
+            aggregationType = evaluationItem.aggregationType,
         )
     }
 }

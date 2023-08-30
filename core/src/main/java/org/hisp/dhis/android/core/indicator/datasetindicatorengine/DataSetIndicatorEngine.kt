@@ -36,7 +36,7 @@ interface DataSetIndicatorEngine {
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<Double>
 
     fun blockingEvaluate(
@@ -44,6 +44,6 @@ interface DataSetIndicatorEngine {
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Double
 }

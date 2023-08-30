@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 internal class RelationshipItemElementStoreSelectorImpl(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
-    private val eventStore: EventStore
+    private val eventStore: EventStore,
 ) : RelationshipItemElementStoreSelector {
     override fun getElementStore(item: RelationshipItem?): StoreWithState<*> {
         return if (item!!.hasTrackedEntityInstance()) {

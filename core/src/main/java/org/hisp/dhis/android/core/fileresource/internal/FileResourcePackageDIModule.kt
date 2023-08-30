@@ -35,8 +35,8 @@ import retrofit2.Retrofit
 
 @Module(
     includes = [
-        FileResourceEntityDIModule::class
-    ]
+        FileResourceEntityDIModule::class,
+    ],
 )
 internal class FileResourcePackageDIModule {
 

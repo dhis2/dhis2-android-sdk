@@ -43,6 +43,6 @@ internal interface LegendSetService {
     fun getLegendSets(
         @Query("fields") @Which fields: Fields<LegendSet>,
         @Query("filter") @Where uids: Filter<LegendSet, String>,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<LegendSet>>
 }

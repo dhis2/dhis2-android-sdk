@@ -49,7 +49,7 @@ internal class ProgramStageSectionEntityDIModule {
             ProgramStageSectionFields.PROGRAM_INDICATORS to
                 ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter),
             ProgramStageSectionFields.DATA_ELEMENTS to
-                ProgramStageSectionDataElementChildrenAppender.create(databaseAdapter)
+                ProgramStageSectionDataElementChildrenAppender.create(databaseAdapter),
         )
     }
 }

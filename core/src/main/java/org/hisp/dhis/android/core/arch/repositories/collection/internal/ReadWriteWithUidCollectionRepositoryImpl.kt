@@ -47,9 +47,12 @@ internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadO
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     @JvmField protected val transformer: Transformer<P, M>,
-    cf: FilterConnectorFactory<R>
+    cf: FilterConnectorFactory<R>,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
-    store, childrenAppenders, scope, cf
+    store,
+    childrenAppenders,
+    scope,
+    cf,
 ),
     ReadWriteWithUidCollectionRepository<M, P> where M : CoreObject, M : ObjectWithUidInterface {
     /**

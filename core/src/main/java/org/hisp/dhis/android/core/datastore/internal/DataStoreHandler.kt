@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 
 internal class DataStoreHandler constructor(
-    private val store: DataStoreEntryStore
+    private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
     override fun handleMany(
         masterUid: String,
         slaves: Collection<DataStoreEntry>?,
-        transformer: (DataStoreEntry) -> DataStoreEntry
+        transformer: (DataStoreEntry) -> DataStoreEntry,
     ) {
         val entriesToHandle = filterUnsycnedEntries(masterUid, slaves)
         handleMany(entriesToHandle)
@@ -61,14 +61,14 @@ internal class DataStoreHandler constructor(
 
     private fun filterUnsycnedEntries(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?
+        slaves: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {
         return slaves?.let {
             val whereClause = WhereClauseBuilder().run {
                 appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
                 appendNotInKeyStringValues(
                     DataColumns.SYNC_STATE,
-                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
                 )
                 build()
             }
@@ -82,7 +82,7 @@ internal class DataStoreHandler constructor(
 
     private fun cleanOrphan(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?
+        slaves: Collection<DataStoreEntry>?,
     ) {
         val notInSlaves = WhereClauseBuilder().run {
             appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)

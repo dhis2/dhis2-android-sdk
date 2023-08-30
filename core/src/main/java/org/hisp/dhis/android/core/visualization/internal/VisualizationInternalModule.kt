@@ -33,5 +33,5 @@ import javax.inject.Inject
 
 @Reusable
 internal class VisualizationInternalModule @Inject internal constructor(
-    @field:VisibleForTesting val visualizationCall: VisualizationCall
+    @field:VisibleForTesting val visualizationCall: VisualizationCall,
 )

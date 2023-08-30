@@ -75,7 +75,7 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byNumerator()
             .eq(
                 "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}" +
-                    "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}"
+                    "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
             )
             .blockingGet()
         Truth.assertThat(indicators.size).isEqualTo(1)

@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class MapLayerStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<MapLayer>(
     MapLayerStoreImpl(TestDatabaseAdapterFactory.get()),
     MapLayerTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): MapLayer {
         return MapLayerSamples.get()

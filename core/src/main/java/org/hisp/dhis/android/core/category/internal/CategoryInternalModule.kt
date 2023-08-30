@@ -33,5 +33,5 @@ import javax.inject.Inject
 @Reusable
 internal class CategoryInternalModule @Inject constructor(
     val categoryCall: CategoryCall,
-    val categoryComboCall: CategoryComboCall
+    val categoryComboCall: CategoryComboCall,
 )

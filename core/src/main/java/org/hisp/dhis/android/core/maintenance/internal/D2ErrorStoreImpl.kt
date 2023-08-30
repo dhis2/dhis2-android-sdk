@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo
 
 internal class D2ErrorStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : D2ErrorStore,
     ObjectStoreImpl<D2Error>(
         databaseAdapter,
         D2ErrorTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> D2Error.create(cursor) }
+        { cursor: Cursor -> D2Error.create(cursor) },
     ) {
 
     companion object {

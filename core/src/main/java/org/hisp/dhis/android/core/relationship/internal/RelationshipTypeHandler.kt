@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 
 internal class RelationshipTypeHandler constructor(
     relationshipTypeStore: RelationshipTypeStore,
-    private val relationshipConstraintHandler: RelationshipConstraintHandler
+    private val relationshipConstraintHandler: RelationshipConstraintHandler,
 ) : IdentifiableHandlerImpl<RelationshipType>(relationshipTypeStore) {
 
     override fun afterObjectHandled(o: RelationshipType, action: HandleAction) {
@@ -47,7 +47,7 @@ internal class RelationshipTypeHandler constructor(
     private fun handleConstraint(
         relationshipType: RelationshipType,
         downloadedConstraint: RelationshipConstraint?,
-        type: RelationshipConstraintType
+        type: RelationshipConstraintType,
     ) {
         if (downloadedConstraint != null) {
             val fromConstraintToHanldle = downloadedConstraint.toBuilder()

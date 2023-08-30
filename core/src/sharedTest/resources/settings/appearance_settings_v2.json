@@ -129,16 +129,22 @@
   },
   "programConfiguration": {
     "globalSettings": {
-      "completionSpinner": "true"
+      "completionSpinner": "true",
+      "disableReferrals": "true",
+      "collapsibleSections": "false"
     },
     "specificSettings": {
       "IpHINAT79UW": {
         "completionSpinner": "true",
-        "optionalSearch": "true"
+        "optionalSearch": "true",
+        "disableReferrals": "true",
+        "collapsibleSections": "false"
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",
-        "optionalSearch": "true"
+        "optionalSearch": "true",
+        "disableReferrals": "false",
+        "collapsibleSections": "true"
       }
     }
   }

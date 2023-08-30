@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
 internal class CategoryOptionComboCategoryOptionHandler(
-    store: CategoryOptionComboCategoryOptionLinkStore
+    store: CategoryOptionComboCategoryOptionLinkStore,
 ) : LinkHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLink>(store)

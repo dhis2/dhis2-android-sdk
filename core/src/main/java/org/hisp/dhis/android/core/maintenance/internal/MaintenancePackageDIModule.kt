@@ -36,15 +36,15 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule
 @Module(
     includes = [
         D2ErrorEntityDIModule::class,
-        ForeignKeyViolationEntityDIModule::class
-    ]
+        ForeignKeyViolationEntityDIModule::class,
+    ],
 )
 internal class MaintenancePackageDIModule {
     @Provides
     @Reusable
     fun cleaner(
         databaseAdapter: DatabaseAdapter,
-        foreignKeyViolationStore: ForeignKeyViolationStore
+        foreignKeyViolationStore: ForeignKeyViolationStore,
     ): ForeignKeyCleaner {
         return ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore)
     }

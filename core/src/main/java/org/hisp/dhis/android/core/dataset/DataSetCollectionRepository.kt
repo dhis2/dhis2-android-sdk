@@ -25,155 +25,154 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
-
-import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.dataset.internal.DataSetFields;
-import org.hisp.dhis.android.core.dataset.internal.DataSetStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.dataset.internal.DataSetFields
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import javax.inject.Inject
 
 @Reusable
-public class DataSetCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
-
-    @Inject
-    DataSetCollectionRepository(final DataSetStore store,
-                                final Map<String, ChildrenAppender<DataSet>> childrenAppenders,
-                                final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new DataSetCollectionRepository(store, childrenAppenders, s)));
+class DataSetCollectionRepository @Inject internal constructor(
+    store: DataSetStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<DataSet>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        DataSetCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byPeriodType(): EnumFilterConnector<DataSetCollectionRepository, PeriodType> {
+        return cf.enumC(DataSetTableInfo.Columns.PERIOD_TYPE)
     }
 
-    public EnumFilterConnector<DataSetCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(Columns.PERIOD_TYPE);
+    fun byCategoryComboUid(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.CATEGORY_COMBO)
     }
 
-    public StringFilterConnector<DataSetCollectionRepository> byCategoryComboUid() {
-        return cf.string(Columns.CATEGORY_COMBO);
+    fun byMobile(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.MOBILE)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byMobile() {
-        return cf.bool(Columns.MOBILE);
+    fun byVersion(): IntegerFilterConnector<DataSetCollectionRepository> {
+        return cf.integer(DataSetTableInfo.Columns.VERSION)
     }
 
-    public IntegerFilterConnector<DataSetCollectionRepository> byVersion() {
-        return cf.integer(Columns.VERSION);
+    fun byExpiryDays(): IntegerFilterConnector<DataSetCollectionRepository> {
+        return cf.integer(DataSetTableInfo.Columns.EXPIRY_DAYS)
     }
 
-    public IntegerFilterConnector<DataSetCollectionRepository> byExpiryDays() {
-        return cf.integer(Columns.EXPIRY_DAYS);
+    fun byTimelyDays(): IntegerFilterConnector<DataSetCollectionRepository> {
+        return cf.integer(DataSetTableInfo.Columns.TIMELY_DAYS)
     }
 
-    public IntegerFilterConnector<DataSetCollectionRepository> byTimelyDays() {
-        return cf.integer(Columns.TIMELY_DAYS);
+    fun byNotifyCompletingUser(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.NOTIFY_COMPLETING_USER)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byNotifyCompletingUser() {
-        return cf.bool(Columns.NOTIFY_COMPLETING_USER);
+    fun byOpenFuturePeriods(): IntegerFilterConnector<DataSetCollectionRepository> {
+        return cf.integer(DataSetTableInfo.Columns.OPEN_FUTURE_PERIODS)
     }
 
-    public IntegerFilterConnector<DataSetCollectionRepository> byOpenFuturePeriods() {
-        return cf.integer(Columns.OPEN_FUTURE_PERIODS);
+    fun byFieldCombinationRequired(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.FIELD_COMBINATION_REQUIRED)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byFieldCombinationRequired() {
-        return cf.bool(Columns.FIELD_COMBINATION_REQUIRED);
+    fun byValidCompleteOnly(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.VALID_COMPLETE_ONLY)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byValidCompleteOnly() {
-        return cf.bool(Columns.VALID_COMPLETE_ONLY);
+    fun byNoValueRequiresComment(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.NO_VALUE_REQUIRES_COMMENT)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byNoValueRequiresComment() {
-        return cf.bool(Columns.NO_VALUE_REQUIRES_COMMENT);
+    fun bySkipOffline(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.SKIP_OFFLINE)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> bySkipOffline() {
-        return cf.bool(Columns.SKIP_OFFLINE);
+    fun byDataElementDecoration(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.DATA_ELEMENT_DECORATION)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byDataElementDecoration() {
-        return cf.bool(Columns.DATA_ELEMENT_DECORATION);
+    fun byRenderAsTabs(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.RENDER_AS_TABS)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byRenderAsTabs() {
-        return cf.bool(Columns.RENDER_AS_TABS);
+    fun byRenderHorizontally(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.RENDER_HORIZONTALLY)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byRenderHorizontally() {
-        return cf.bool(Columns.RENDER_HORIZONTALLY);
+    fun byAccessDataWrite(): BooleanFilterConnector<DataSetCollectionRepository> {
+        return cf.bool(DataSetTableInfo.Columns.ACCESS_DATA_WRITE)
     }
 
-    public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
-        return cf.bool(Columns.ACCESS_DATA_WRITE);
+    fun byColor(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<DataSetCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<DataSetCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
+    fun byOrganisationUnitUid(uid: String): DataSetCollectionRepository {
+        return byOrganisationUnitList(listOf(uid))
     }
 
-    public DataSetCollectionRepository byOrganisationUnitUid(String uid) {
-        return byOrganisationUnitList(Collections.singletonList(uid));
-    }
-
-    public DataSetCollectionRepository byOrganisationUnitList(List<String> uids) {
+    fun byOrganisationUnitList(uids: List<String>): DataSetCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
-                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                uids);
+            DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+            DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+            DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+            uids,
+        )
     }
 
-    public DataSetCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
+    fun byOrganisationUnitScope(scope: OrganisationUnit.Scope): DataSetCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inTwoLinkTable(
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
-                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                Collections.singletonList(scope.name())
-        );
+            DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+            DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+            DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            listOf(scope.name),
+        )
     }
 
-    public DataSetCollectionRepository withCompulsoryDataElementOperands() {
-        return cf.withChild(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS);
+    fun withCompulsoryDataElementOperands(): DataSetCollectionRepository {
+        return cf.withChild(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS)
     }
 
-    public DataSetCollectionRepository withDataInputPeriods() {
-        return cf.withChild(DataSetFields.DATA_INPUT_PERIODS);
+    fun withDataInputPeriods(): DataSetCollectionRepository {
+        return cf.withChild(DataSetFields.DATA_INPUT_PERIODS)
     }
 
-    public DataSetCollectionRepository withDataSetElements() {
-        return cf.withChild(DataSetFields.DATA_SET_ELEMENTS);
+    fun withDataSetElements(): DataSetCollectionRepository {
+        return cf.withChild(DataSetFields.DATA_SET_ELEMENTS)
     }
 
-    public DataSetCollectionRepository withIndicators() {
-        return cf.withChild(DataSetFields.INDICATORS);
+    fun withIndicators(): DataSetCollectionRepository {
+        return cf.withChild(DataSetFields.INDICATORS)
     }
 }

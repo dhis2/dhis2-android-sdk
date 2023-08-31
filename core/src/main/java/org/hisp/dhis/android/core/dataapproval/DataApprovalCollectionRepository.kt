@@ -25,55 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval
 
-package org.hisp.dhis.android.core.dataapproval;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore
+import javax.inject.Inject
 
 @Reusable
-public class DataApprovalCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataApproval,
-        DataApprovalCollectionRepository> {
-
-
-    @Inject
-    DataApprovalCollectionRepository(final DataApprovalStore dataApprovalStore,
-                                     final Map<String, ChildrenAppender<DataApproval>> childrenAppenders,
-                                     final RepositoryScope repositoryScope) {
-
-        super(dataApprovalStore, childrenAppenders, repositoryScope, new FilterConnectorFactory<>(repositoryScope,
-                s -> new DataApprovalCollectionRepository(dataApprovalStore, childrenAppenders, s)));
+class DataApprovalCollectionRepository @Inject internal constructor(
+    dataApprovalStore: DataApprovalStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<DataApproval>>,
+    repositoryScope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<DataApproval, DataApprovalCollectionRepository>(
+    dataApprovalStore,
+    childrenAppenders,
+    repositoryScope,
+    FilterConnectorFactory(
+        repositoryScope,
+    ) { s: RepositoryScope ->
+        DataApprovalCollectionRepository(
+            dataApprovalStore,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byWorkflowUid(): StringFilterConnector<DataApprovalCollectionRepository> {
+        return cf.string(DataApprovalTableInfo.Columns.WORKFLOW)
     }
 
-    public StringFilterConnector<DataApprovalCollectionRepository> byWorkflowUid() {
-        return cf.string(DataApprovalTableInfo.Columns.WORKFLOW);
+    fun byOrganisationUnitUid(): StringFilterConnector<DataApprovalCollectionRepository> {
+        return cf.string(DataApprovalTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<DataApprovalCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(DataApprovalTableInfo.Columns.ORGANISATION_UNIT);
+    fun byPeriodId(): StringFilterConnector<DataApprovalCollectionRepository> {
+        return cf.string(DataApprovalTableInfo.Columns.PERIOD)
     }
 
-    public StringFilterConnector<DataApprovalCollectionRepository> byPeriodId() {
-        return cf.string(DataApprovalTableInfo.Columns.PERIOD);
+    fun byAttributeOptionComboUid(): StringFilterConnector<DataApprovalCollectionRepository> {
+        return cf.string(DataApprovalTableInfo.Columns.ATTRIBUTE_OPTION_COMBO)
     }
 
-    public StringFilterConnector<DataApprovalCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(DataApprovalTableInfo.Columns.ATTRIBUTE_OPTION_COMBO);
+    fun byState(): EnumFilterConnector<DataApprovalCollectionRepository, DataApprovalState> {
+        return cf.enumC(DataApprovalTableInfo.Columns.STATE)
     }
-
-    public EnumFilterConnector<DataApprovalCollectionRepository, DataApprovalState> byState() {
-        return cf.enumC(DataApprovalTableInfo.Columns.STATE);
-    }
-
 }

@@ -25,52 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import javax.inject.Inject
 
 @Reusable
-public final class CategoryOptionComboCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo,
-                CategoryOptionComboCollectionRepository> {
-
-    @Inject
-    CategoryOptionComboCollectionRepository(
-            final CategoryOptionComboStore store,
-            final Map<String, ChildrenAppender<CategoryOptionCombo>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new CategoryOptionComboCollectionRepository(store, childrenAppenders, s)));
+class CategoryOptionComboCollectionRepository @Inject internal constructor(
+    store: CategoryOptionComboStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryOptionCombo>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo, CategoryOptionComboCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        CategoryOptionComboCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byCategoryComboUid(): StringFilterConnector<CategoryOptionComboCollectionRepository> {
+        return cf.string(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO)
     }
 
-    public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
-        return cf.string(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO);
-    }
-
-    public CategoryOptionComboCollectionRepository byCategoryOptions(List<String> categoryOptionUids) {
+    fun byCategoryOptions(categoryOptionUids: List<String>): CategoryOptionComboCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).withThoseChildrenExactly(
-                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
-                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
-                categoryOptionUids);
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+            categoryOptionUids,
+        )
     }
 
-    public CategoryOptionComboCollectionRepository withCategoryOptions() {
-        return cf.withChild(CategoryOptionComboFields.CATEGORY_OPTIONS);
+    fun withCategoryOptions(): CategoryOptionComboCollectionRepository {
+        return cf.withChild(CategoryOptionComboFields.CATEGORY_OPTIONS)
     }
 }

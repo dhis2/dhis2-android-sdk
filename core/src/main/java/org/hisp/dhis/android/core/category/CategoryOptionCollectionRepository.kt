@@ -25,72 +25,69 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionFields;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionStore;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-
-import java.util.Collections;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryOptionFields
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import javax.inject.Inject
 
 @Reusable
-public final class CategoryOptionCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
-
-    @Inject
-    CategoryOptionCollectionRepository(final CategoryOptionStore store,
-                                       final Map<String, ChildrenAppender<CategoryOption>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new CategoryOptionCollectionRepository(store, childrenAppenders, s)));
+class CategoryOptionCollectionRepository @Inject internal constructor(
+    store: CategoryOptionStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryOption>>,
+    scope: RepositoryScope
+) : ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository>(
+    store, childrenAppenders, scope, FilterConnectorFactory(
+        scope
+    ) { s: RepositoryScope ->
+        CategoryOptionCollectionRepository(
+            store,
+            childrenAppenders,
+            s
+        )
+    }
+) {
+    fun byStartDate(): DateFilterConnector<CategoryOptionCollectionRepository> {
+        return cf.date(CategoryOptionTableInfo.Columns.START_DATE)
     }
 
-    public DateFilterConnector<CategoryOptionCollectionRepository> byStartDate() {
-        return cf.date(CategoryOptionTableInfo.Columns.START_DATE);
+    fun byEndDate(): DateFilterConnector<CategoryOptionCollectionRepository> {
+        return cf.date(CategoryOptionTableInfo.Columns.END_DATE)
     }
 
-    public DateFilterConnector<CategoryOptionCollectionRepository> byEndDate() {
-        return cf.date(CategoryOptionTableInfo.Columns.END_DATE);
+    fun byAccessDataWrite(): BooleanFilterConnector<CategoryOptionCollectionRepository> {
+        return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE)
     }
 
-    public BooleanFilterConnector<CategoryOptionCollectionRepository> byAccessDataWrite() {
-        return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE);
-    }
-
-    public CategoryOptionCollectionRepository byCategoryUid(String categoryUid) {
+    fun byCategoryUid(categoryUid: String): CategoryOptionCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
-                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
-                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
-                Collections.singletonList(categoryUid)
-        );
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY, listOf(categoryUid)
+        )
     }
 
-    public CategoryOptionCollectionRepository byCategoryOptionComboUid(String categoryOptionComboUid) {
+    fun byCategoryOptionComboUid(categoryOptionComboUid: String): CategoryOptionCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
-                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
-                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                Collections.singletonList(categoryOptionComboUid)
-        );
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO, listOf(categoryOptionComboUid)
+        )
     }
 
     /**
      * This method only return results in versions greater or equal to 2.37.
      * @return Collection repository
      */
-    public CategoryOptionCollectionRepository withOrganisationUnits() {
-        return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS);
+    fun withOrganisationUnits(): CategoryOptionCollectionRepository {
+        return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS)
     }
 }

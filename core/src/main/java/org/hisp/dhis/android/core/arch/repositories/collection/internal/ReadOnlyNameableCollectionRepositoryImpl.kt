@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.NameableColumns
 import org.hisp.dhis.android.core.common.NameableObject
 
-internal open class ReadOnlyNameableCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>>(
+open class ReadOnlyNameableCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,

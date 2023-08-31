@@ -25,41 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import static org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.category.internal.CategoryComboFields;
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryComboFields
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
+import javax.inject.Inject
 
 @Reusable
-public final class CategoryComboCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository> {
-
-    @Inject
-    CategoryComboCollectionRepository(final CategoryComboStore store,
-                                      final Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                      final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new CategoryComboCollectionRepository(store, childrenAppenders, s)));
+class CategoryComboCollectionRepository @Inject internal constructor(
+    store: CategoryComboStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryCombo>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        CategoryComboCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byIsDefault(): BooleanFilterConnector<CategoryComboCollectionRepository> {
+        return cf.bool(CategoryComboTableInfo.Columns.IS_DEFAULT)
     }
 
-    public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
-        return cf.bool(Columns.IS_DEFAULT);
-    }
-
-    public CategoryComboCollectionRepository withCategories() {
-        return cf.withChild(CategoryComboFields.CATEGORIES);
+    fun withCategories(): CategoryComboCollectionRepository {
+        return cf.withChild(CategoryComboFields.CATEGORIES)
     }
 }

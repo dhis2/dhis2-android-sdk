@@ -29,13 +29,14 @@ package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
 import dagger.Reusable
-import java.util.concurrent.Callable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
+import java.util.concurrent.Callable
+import javax.inject.Inject
 
 @Reusable
 internal class UserCall @Inject constructor(
@@ -48,11 +49,10 @@ internal class UserCall @Inject constructor(
 
     @Throws(D2Error::class)
     override fun call(): User {
-
         val user = runBlocking {
             coroutineAPICallExecutor.wrap {
                 userService.getUser(
-                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion())
+                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
                 )
             }.getOrThrow()
         }

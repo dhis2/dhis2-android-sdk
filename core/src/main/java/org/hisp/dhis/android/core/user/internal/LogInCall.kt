@@ -28,11 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -47,11 +43,11 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
 internal class LogInCall @Inject internal constructor(
-    private val apiCallExecutor: APICallExecutor,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: CredentialsSecureStore,
@@ -60,7 +56,6 @@ internal class LogInCall @Inject internal constructor(
     private val authenticatedUserStore: AuthenticatedUserStore,
     private val systemInfoCall: SystemInfoCall,
     private val userStore: UserStore,
-    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
@@ -81,18 +76,13 @@ internal class LogInCall @Inject internal constructor(
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val authenticateCall = userService.authenticate(
-            UserIdAuthenticatorHelper.basic(username!!, password!!),
-            UserFields.allFieldsWithoutOrgUnit(null),
-        )
-
-        val credentials = Credentials(username, trimmedServerUrl!!, password, null)
+        val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
 
         return try {
             val user = coroutineAPICallExecutor.wrap {
                 userService.authenticate(
                     okhttp3.Credentials.basic(username, password!!),
-                    UserFields.allFieldsWithoutOrgUnit(null)
+                    UserFields.allFieldsWithoutOrgUnit(null),
                 )
             }.getOrThrow()
             loginOnline(user, credentials)

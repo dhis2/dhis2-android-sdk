@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
-import io.reactivex.observers.TestObserver
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
@@ -55,8 +55,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.*
-import org.mockito.stubbing.OngoingStubbing
-import retrofit2.Call
+import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
@@ -148,7 +147,7 @@ class LogInCallUnitShould : BaseCallShould() {
 
     private suspend fun <P> assertD2Error(
         errorCode: D2ErrorCode? = null,
-        block: suspend () -> P
+        block: suspend () -> P,
     ) {
         try {
             block.invoke()
@@ -162,8 +161,9 @@ class LogInCallUnitShould : BaseCallShould() {
     fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
             userService.authenticate(
-                credentialsCaptor.capture(), filterCaptor.capture(),
-            )
+                credentialsCaptor.capture(),
+                filterCaptor.capture(),
+            ),
         ).thenReturn(apiUser)
         login()
         assertThat(okhttp3.Credentials.basic(USERNAME, PASSWORD)).isEqualTo(credentialsCaptor.firstValue)

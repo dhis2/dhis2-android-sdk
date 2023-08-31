@@ -25,13 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-@file:OptIn(ExperimentalCoroutinesApi::class)
 
 package org.hisp.dhis.android.core.user.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -42,16 +43,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import retrofit2.Call
-
+import org.mockito.stubbing.Answer
+import java.util.concurrent.Callable
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
     private val userService: UserService = mock()
     private val userHandler: UserHandler = mock()
     private val userCall: User = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = mock()
-
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val user: User = mock()
 
     private lateinit var userSyncCall: Callable<User>
@@ -59,17 +60,22 @@ class UserCallShould : BaseCallShould() {
     @Before
     override fun setUp() {
         super.setUp()
+        whenAPICall { userCall }
+
         userSyncCall = UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager)
-        userService.stub {
-            onBlocking { getUser(any()) }.doReturn(userCall)
-        }
 
         whenever(dhisVersionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
 
+    private fun whenAPICall(answer: Answer<User>) {
+        userService.stub {
+            onBlocking { getUser(any()) }.doAnswer(answer)
+        }
+    }
+
     @Test
     fun not_invoke_stores_on_call_io_exception() = runTest {
-        whenever(coroutineAPICallExecutor.wrap { userCall }.getOrThrow()).thenThrow(d2Error)
+        whenAPICall { throw d2Error }
 
         try {
             userSyncCall.call()
@@ -85,7 +91,7 @@ class UserCallShould : BaseCallShould() {
 
     @Test
     fun not_invoke_handler_after_call_failure() = runTest {
-        whenever(coroutineAPICallExecutor.wrap { userCall }.getOrThrow()).thenThrow(d2Error)
+        whenAPICall { throw d2Error }
         try {
             userSyncCall.call()
             Assert.fail("Call should't succeed")
@@ -100,7 +106,7 @@ class UserCallShould : BaseCallShould() {
 
     @Test
     fun invoke_handlers_on_success() = runTest {
-        whenever(coroutineAPICallExecutor.wrap { userCall }.getOrThrow()).thenReturn(user)
+        whenAPICall { user }
         userSyncCall.call()
         verify(userHandler).handle(eq(user))
     }

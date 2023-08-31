@@ -34,10 +34,11 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import javax.inject.Inject
 
 private const val RC_AUTH = 2021
 
@@ -45,7 +46,7 @@ private const val RC_AUTH = 2021
 internal class OpenIDConnectHandlerImpl @Inject constructor(
     private val context: Context,
     private val logInCall: LogInCall,
-    private val logoutHandler: OpenIDConnectLogoutHandler
+    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {

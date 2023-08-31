@@ -58,7 +58,7 @@ public final class EventFilterCall implements UidsCall<EventFilter> {
 
     @Inject
     EventFilterCall(EventFilterService service,
-                    Handler<EventFilter> handler,
+                    EventFilterHandler handler,
                     APIDownloader apiDownloader,
                     DHISVersionManager versionManager) {
         this.service = service;

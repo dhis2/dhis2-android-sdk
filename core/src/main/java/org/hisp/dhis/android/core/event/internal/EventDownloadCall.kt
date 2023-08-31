@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -43,38 +42,39 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactor
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 @Reusable
 internal class EventDownloadCall @Inject internal constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
-    private val lastUpdatedManager: EventLastUpdatedManager
+    private val lastUpdatedManager: EventLastUpdatedManager,
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
-    rxCallExecutor,
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory
+    relationshipDownloadAndPersistCallFactory,
+    coroutineAPICallExecutor,
 ) {
 
     override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
         return eventQueryBundleFactory.getQueries(params)
     }
 
-    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<Event>> {
-        return rxCallExecutor.wrapSingle(
-            trackerParentCallFactory.getEventCall().getCollectionCall(query), true
-        )
+    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<Event>, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = true) {
+            trackerParentCallFactory.getEventCall().getCollectionCall(query)
+        }
     }
 
     override fun persistItems(
         items: List<Event>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ) {
         persistenceCallFactory.persistEvents(items, relatives).blockingAwait()
     }
@@ -83,19 +83,19 @@ internal class EventDownloadCall @Inject internal constructor(
         lastUpdatedManager.update(bundle)
     }
 
-    override fun queryByUids(
+    override suspend fun queryByUids(
         bundle: EventQueryBundle,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val eventQuery = TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = bundle.commonParams().program,
-                limit = bundle.commonParams().uids.size
+                limit = bundle.commonParams().uids.size,
             ),
-            uids = bundle.commonParams().uids
+            uids = bundle.commonParams().uids,
         )
 
         try {
@@ -106,7 +106,7 @@ internal class EventDownloadCall @Inject internal constructor(
                 hasAllAttributes = true,
                 overwrite = overwrite,
                 asRelationship = false,
-                program = eventQuery.commonParams.program
+                program = eventQuery.commonParams.program,
             )
 
             persistItems(items, params = persistParams, relatives)
@@ -126,16 +126,16 @@ internal class EventDownloadCall @Inject internal constructor(
         bundle: EventQueryBundle,
         program: String?,
         orgunitUid: String?,
-        limit: Int
+        limit: Int,
     ): TrackerAPIQuery {
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
-                limit = limit
+                limit = limit,
             ),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
             orgUnit = orgunitUid,
-            uids = bundle.commonParams().uids
+            uids = bundle.commonParams().uids,
         )
     }
 }

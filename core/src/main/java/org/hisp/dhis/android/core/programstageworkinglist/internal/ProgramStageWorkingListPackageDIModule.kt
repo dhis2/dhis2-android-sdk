@@ -28,23 +28,12 @@
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 
 @Module(
     includes = [
         ProgramStageWorkingListEntityDIModule::class,
         ProgramStageWorkingListEventDataFilterEntityDIModule::class,
-        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class
-    ]
+        ProgramStageWorkingListAttributeValueFilterEntityDIModule::class,
+    ],
 )
-internal class ProgramStageWorkingListPackageDIModule {
-
-    @Reusable
-    @Provides
-    fun call(impl: ProgramStageWorkingListCall): UidsCall<ProgramStageWorkingList> {
-        return impl
-    }
-}
+internal class ProgramStageWorkingListPackageDIModule

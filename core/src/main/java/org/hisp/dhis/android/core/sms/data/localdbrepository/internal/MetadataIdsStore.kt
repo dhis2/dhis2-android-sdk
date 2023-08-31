@@ -30,16 +30,15 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
+import javax.inject.Inject
 
 @Reusable
 internal class MetadataIdsStore @Inject constructor(
-    private val smsMetadataIdsStore: ObjectWithoutUidStore<SMSMetadataId>,
-    private val smsConfigStore: SMSConfigStore
+    private val smsMetadataIdsStore: SMSMetadataIdStore,
+    private val smsConfigStore: SMSConfigStore,
 ) {
     fun getMetadataIds(): Single<SMSMetadata> {
         return Single.fromCallable {
@@ -73,7 +72,7 @@ internal class MetadataIdsStore @Inject constructor(
 
     private fun getIds(
         map: Map<SMSConsts.MetadataType, List<SMSMetadata.ID>>,
-        type: SMSConsts.MetadataType
+        type: SMSConsts.MetadataType,
     ): List<SMSMetadata.ID> {
         return map[type] ?: emptyList()
     }

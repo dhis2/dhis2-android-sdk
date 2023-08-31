@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
@@ -47,6 +46,4 @@ public interface APICallExecutor {
                                                   Class<P> errorClass) throws D2Error;
 
     <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher) throws D2Error;
-
-    Unit executeObjectCallWithEmptyResponse(Call<Unit> call) throws D2Error;
 }

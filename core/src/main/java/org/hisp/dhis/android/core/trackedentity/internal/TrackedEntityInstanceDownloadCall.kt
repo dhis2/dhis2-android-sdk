@@ -28,13 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
@@ -44,38 +41,38 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val rxCallExecutor: RxAPICallExecutor,
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
-    rxCallExecutor,
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory
+    relationshipDownloadAndPersistCallFactory,
+    coroutineCallExecutor,
 ) {
     override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
     }
 
-    override fun getItemsAsSingle(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
-        return rxCallExecutor.wrapSingle(
-            trackerCallFactory.getTrackedEntityCall().getCollectionCall(query), true
-        )
+    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<TrackedEntityInstance>, D2Error> {
+        return coroutineCallExecutor.wrap(storeError = true) {
+            trackerCallFactory.getTrackedEntityCall().getCollectionCall(query)
+        }
     }
 
     override fun persistItems(
         items: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ) {
         persistenceCallFactory.persistTEIs(items, params, relatives).blockingAwait()
     }
@@ -84,30 +81,30 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         lastUpdatedManager.update(bundle)
     }
 
-    override fun queryByUids(
+    override suspend fun queryByUids(
         bundle: TrackerQueryBundle,
         overwrite: Boolean,
-        relatives: RelationshipItemRelatives
+        relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val teiQuery = TrackerAPIQuery(
             commonParams = bundle.commonParams(),
-            programStatus = bundle.programStatus()
+            programStatus = bundle.programStatus(),
         )
 
         for (uid in bundle.commonParams().uids) {
             try {
                 val useEntityEndpoint = teiQuery.commonParams.program != null
 
-                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery)
+                val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
                     val persistParams = IdentifiableDataHandlerParams(
                         hasAllAttributes = !useEntityEndpoint,
                         overwrite = overwrite,
                         asRelationship = false,
-                        program = teiQuery.commonParams.program
+                        program = teiQuery.commonParams.program,
                     )
 
                     persistItems(listOf(tei), persistParams, relatives)
@@ -124,25 +121,23 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         return result
     }
 
-    private fun querySingleTei(
+    private suspend fun querySingleTei(
         uid: String,
         useEntityEndpoint: Boolean,
-        query: TrackerAPIQuery
-    ): TrackedEntityInstance? {
+        query: TrackerAPIQuery,
+    ): Result<TrackedEntityInstance?, D2Error> {
         return if (useEntityEndpoint) {
-            runBlocking {
-                coroutineCallExecutor.wrap(
-                    storeError = true,
-                    errorCatcher = TrackedEntityInstanceCallErrorCatcher()
-                ) {
-                    trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
-                }
-            }.getOrThrow()
+            coroutineCallExecutor.wrap(
+                storeError = true,
+                errorCatcher = TrackedEntityInstanceCallErrorCatcher(),
+            ) {
+                trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
+            }
         } else {
             val collectionQuery = query.copy(uids = listOf(uid))
-            rxCallExecutor.wrapSingle(
-                trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery), true
-            ).blockingGet().items().firstOrNull()
+            coroutineCallExecutor.wrap(storeError = true) {
+                trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery)
+            }.map { it.items().firstOrNull() }
         }
     }
 
@@ -150,16 +145,16 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         bundle: TrackerQueryBundle,
         program: String?,
         orgunitUid: String?,
-        limit: Int
+        limit: Int,
     ): TrackerAPIQuery {
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
-                limit = limit
+                limit = limit,
             ),
             programStatus = bundle.programStatus(),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid
+            orgUnit = orgunitUid,
         )
     }
 }

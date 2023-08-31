@@ -34,12 +34,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 
+@Suppress("TooManyFunctions")
 internal interface APIDownloader {
     fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
     ): Single<List<P>>
 
     fun <P, O> downloadPartitioned(
@@ -47,7 +48,7 @@ internal interface APIDownloader {
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
-        transform: (O) -> P
+        transform: (O) -> P,
     ): Single<List<P>>
 
     fun <P> downloadPartitioned(
@@ -60,28 +61,31 @@ internal interface APIDownloader {
         uids: Set<String>,
         pageSize: Int,
         handler: (Map<K, V>) -> Any,
-        pageDownloader: (Set<String>) -> Single<out Map<K, V>>
+        pageDownloader: (Set<String>) -> Single<out Map<K, V>>,
     ): Single<Map<K, V>>
 
     fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,
         downloader: (String) -> Single<Payload<P>>,
-        transform: ((P) -> O)
+        transform: ((P) -> O),
     ): Single<List<P>>
 
     fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: (String?) -> Single<Payload<P>>
+        downloader: (String?) -> Single<Payload<P>>,
     ): Single<List<P>>
 
     fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
     fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
+
+    suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P>
+
     fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P>
 
     fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>
+        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,
     ): Single<Payload<P>>
 }

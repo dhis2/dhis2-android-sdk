@@ -33,8 +33,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.util.*
-import kotlin.time.Duration.Companion.days
 import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOption
@@ -50,6 +48,8 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import java.util.*
+import kotlin.time.Duration.Companion.days
 
 class DataSetInstanceServiceShould {
 
@@ -89,7 +89,7 @@ class DataSetInstanceServiceShould {
         periodHelper = periodHelper,
         categoryOptionComboService = categoryOptionComboService,
         periodGenerator = periodGenerator,
-        categoryOptionRepository = categoryOptionRepository
+        categoryOptionRepository = categoryOptionRepository,
     )
 
     @Before
@@ -125,7 +125,7 @@ class DataSetInstanceServiceShould {
 
         val isPeriodInOrgUnitRange = dataSetInstanceService.blockingIsPeriodInOrgUnitRange(
             period = firstPeriod,
-            orgUnitUid = orgUnitUid
+            orgUnitUid = orgUnitUid,
         )
         assertThat(isPeriodInOrgUnitRange).isTrue()
     }
@@ -141,7 +141,7 @@ class DataSetInstanceServiceShould {
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.startDate())) doReturn true
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.endDate())) doReturn true
         assertThat(
-            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid)
+            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid),
         ).isTrue()
     }
 
@@ -149,7 +149,7 @@ class DataSetInstanceServiceShould {
     fun `Should return true if attributeOptionCombo Assign To OrgUnit`() {
         whenever(categoryOptionComboService.blockingIsAssignedToOrgUnit(attOptionComboUid, orgUnitUid)).doReturn(true)
         assertThat(
-            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid)
+            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid),
         ).isTrue()
     }
 

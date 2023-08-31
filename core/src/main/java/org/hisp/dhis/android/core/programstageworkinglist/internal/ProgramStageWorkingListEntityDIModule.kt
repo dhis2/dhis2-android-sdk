@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import retrofit2.Retrofit
@@ -42,14 +40,8 @@ internal class ProgramStageWorkingListEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramStageWorkingList> {
-        return ProgramStageWorkingListStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(impl: ProgramStageWorkingListHandler): Handler<ProgramStageWorkingList> {
-        return impl
+    fun store(databaseAdapter: DatabaseAdapter): ProgramStageWorkingListStore {
+        return ProgramStageWorkingListStoreImpl(databaseAdapter)
     }
 
     @Reusable
@@ -61,13 +53,13 @@ internal class ProgramStageWorkingListEntityDIModule {
     @Provides
     @Reusable
     fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter
+        databaseAdapter: DatabaseAdapter,
     ): Map<String, ChildrenAppender<ProgramStageWorkingList>> {
         return mapOf(
             ProgramStageQueryCriteriaFields.DATA_FILTERS to
                 ProgramStageWorkingListDataFilterChildrenAppender.create(databaseAdapter),
             ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter)
+                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter),
         )
     }
 }

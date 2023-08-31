@@ -29,21 +29,20 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramStageWorkingListCall @Inject internal constructor(
     private val service: ProgramStageWorkingListService,
-    private val handler: Handler<ProgramStageWorkingList>,
+    private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
 ) : UidsCall<ProgramStageWorkingList> {
     override fun download(uids: Set<String>): Single<List<ProgramStageWorkingList>> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
@@ -52,13 +51,13 @@ internal class ProgramStageWorkingListCall @Inject internal constructor(
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
-                handler
+                handler,
             ) { partitionUids: Set<String> ->
                 service.getProgramStageWorkingLists(
                     ProgramStageWorkingListFields.programUid.`in`(partitionUids),
                     accessDataReadFilter,
                     ProgramStageWorkingListFields.allFields,
-                    false
+                    false,
                 )
             }
         } else {

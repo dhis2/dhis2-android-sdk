@@ -28,10 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.database.Cursor
-import java.lang.RuntimeException
-import kotlin.Throws
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -40,19 +37,16 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 
-internal class UserOrganisationUnitLinkStoreImpl private constructor(
+internal class UserOrganisationUnitLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    masterColumn: String,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<UserOrganisationUnitLink>
-) : LinkStoreImpl<UserOrganisationUnitLink>(
-    databaseAdapter,
-    builder,
-    masterColumn,
-    binder,
-    { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) }
-),
-    UserOrganisationUnitLinkStore {
+) : UserOrganisationUnitLinkStore,
+    LinkStoreImpl<UserOrganisationUnitLink>(
+        databaseAdapter,
+        UserOrganisationUnitLinkTableInfo.TABLE_INFO,
+        UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+        BINDER,
+        { cursor: Cursor -> UserOrganisationUnitLink.create(cursor) },
+    ) {
 
     @Throws(RuntimeException::class)
     override fun queryRootCaptureOrganisationUnitUids(): List<String> {
@@ -62,8 +56,8 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
                 .appendKeyNumberValue(UserOrganisationUnitLinkTableInfo.Columns.ROOT, 1)
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
-                ).build()
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
+                ).build(),
         )
     }
 
@@ -73,8 +67,8 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
             WhereClauseBuilder()
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    scope.name
-                ).build()
+                    scope.name,
+                ).build(),
         )
     }
 
@@ -85,8 +79,8 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
                 .appendKeyNumberValue(UserOrganisationUnitLinkTableInfo.Columns.USER_ASSIGNED, 1)
                 .appendKeyStringValue(
                     UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                    scope.name
-                ).build()
+                    scope.name,
+                ).build(),
         )
     }
 
@@ -95,7 +89,7 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
             .appendKeyStringValue(UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, organisationUnit)
             .appendKeyStringValue(
                 UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
             )
             .build()
 
@@ -111,16 +105,5 @@ internal class UserOrganisationUnitLinkStoreImpl private constructor(
                 w.bind(4, o.root())
                 w.bind(5, o.userAssigned())
             }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): UserOrganisationUnitLinkStore {
-            val statementBuilder = SQLStatementBuilderImpl(UserOrganisationUnitLinkTableInfo.TABLE_INFO)
-            return UserOrganisationUnitLinkStoreImpl(
-                databaseAdapter,
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                statementBuilder,
-                BINDER
-            )
-        }
     }
 }

@@ -29,18 +29,19 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
+import javax.inject.Inject
 
 @Reusable
 internal class EventPostParentCall @Inject internal constructor(
     private val oldTrackerImporterCall: OldTrackerImporterPostCall,
     private val trackerImporterCall: TrackerImporterPostCall,
-    private val trackerParentCallHelper: TrackerPostParentCallHelper
+    private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
     fun uploadEvents(events: List<Event>): Observable<D2Progress> {
@@ -48,9 +49,9 @@ internal class EventPostParentCall @Inject internal constructor(
             Observable.empty()
         } else {
             if (trackerParentCallHelper.useNewTrackerImporter()) {
-                trackerImporterCall.uploadEvents(events)
+                trackerImporterCall.uploadEvents(events).asObservable()
             } else {
-                oldTrackerImporterCall.uploadEvents(events)
+                oldTrackerImporterCall.uploadEvents(events).asObservable()
             }
         }
     }

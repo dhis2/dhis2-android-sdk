@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
@@ -42,54 +40,49 @@ import org.hisp.dhis.android.core.imports.internal.ItemsWithFileResources
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 internal class OldTrackerImporterFileResourcesPostCall @Inject internal constructor(
     private val fileResourcePostCall: FileResourcePostCall,
-    private val fileResourceHelper: FileResourceHelper
+    private val fileResourceHelper: FileResourceHelper,
 ) {
 
-    fun uploadTrackedEntityFileResources(
-        trackedEntityInstances: List<TrackedEntityInstance>
-    ): Single<ItemsWithFileResources<TrackedEntityInstance>> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    suspend fun uploadTrackedEntityFileResources(
+        trackedEntityInstances: List<TrackedEntityInstance>,
+    ): ItemsWithFileResources<TrackedEntityInstance> {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(ItemsWithFileResources(trackedEntityInstances, emptyList()))
-            } else {
-                val successfulTeis = trackedEntityInstances.mapNotNull {
-                    catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
-                }
-                emitter.onSuccess(
-                    ItemsWithFileResources(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second })
-                )
+        return if (fileResources.isEmpty()) {
+            ItemsWithFileResources(trackedEntityInstances, emptyList())
+        } else {
+            val successfulTeis = trackedEntityInstances.mapNotNull {
+                catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
             }
+
+            ItemsWithFileResources(successfulTeis.map { it.first }, successfulTeis.flatMap { it.second })
         }
     }
 
-    fun uploadEventsFileResources(
-        events: List<Event>
-    ): Single<ItemsWithFileResources<Event>> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    suspend fun uploadEventsFileResources(
+        events: List<Event>,
+    ): ItemsWithFileResources<Event> {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(ItemsWithFileResources(events, emptyList()))
-            } else {
-                val successfulEvents = events.mapNotNull {
-                    catchErrorToNull { uploadEvent(it, fileResources) }
-                }
-                emitter.onSuccess(
-                    ItemsWithFileResources(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second })
-                )
+        return if (fileResources.isEmpty()) {
+            ItemsWithFileResources(events, emptyList())
+        } else {
+            val successfulEvents = events.mapNotNull {
+                catchErrorToNull { uploadEvent(it, fileResources) }
             }
+
+            ItemsWithFileResources(successfulEvents.map { it.first }, successfulEvents.flatMap { it.second })
         }
     }
 
-    private fun uploadTrackedEntityInstance(
+    private suspend fun uploadTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<TrackedEntityInstance, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
@@ -114,13 +107,13 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
                 .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
                 .trackedEntityAttributeValues(updatedAttributes)
                 .build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 
-    private fun uploadEnrollment(
+    private suspend fun uploadEnrollment(
         enrollment: Enrollment,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<Enrollment, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
@@ -132,13 +125,13 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
         return Pair(
             EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), updatedEvents).build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 
-    private fun uploadEvent(
+    private suspend fun uploadEvent(
         event: Event,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<Event, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
@@ -153,7 +146,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
 
         return Pair(
             event.toBuilder().trackedEntityDataValues(updatedDataValues).build(),
-            uploadedFileResources
+            uploadedFileResources,
         )
     }
 
@@ -162,7 +155,7 @@ internal class OldTrackerImporterFileResourcesPostCall @Inject internal construc
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun <T> catchErrorToNull(f: () -> T): T? {
+    private suspend fun <T> catchErrorToNull(f: suspend () -> T): T? {
         return try {
             f()
         } catch (e: java.lang.RuntimeException) {

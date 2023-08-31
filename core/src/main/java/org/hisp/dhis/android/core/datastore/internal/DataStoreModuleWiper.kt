@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import javax.inject.Inject
 
 @Reusable
 class DataStoreModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
@@ -43,7 +43,7 @@ class DataStoreModuleWiper @Inject internal constructor(private val tableWiper: 
     override fun wipeData() {
         tableWiper.wipeTables(
             LocalDataStoreTableInfo.TABLE_INFO,
-            DataStoreEntryTableInfo.TABLE_INFO
+            DataStoreEntryTableInfo.TABLE_INFO,
         )
     }
 }

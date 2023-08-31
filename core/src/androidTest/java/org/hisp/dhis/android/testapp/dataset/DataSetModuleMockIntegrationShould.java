@@ -49,7 +49,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
     @Test
     public void allow_access_to_all_data_sets_without_children() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets().blockingGet();
-        assertThat(dataSets.size()).isEqualTo(2);
+        assertThat(dataSets.size()).isEqualTo(3);
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.dataSetElements() == null).isTrue();
         }
@@ -64,7 +64,7 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
     @Test
     public void allow_access_to_all_data_sets_with_children() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets().withDataSetElements().blockingGet();
-        assertThat(dataSets.size()).isEqualTo(2);
+        assertThat(dataSets.size()).isEqualTo(3);
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.dataSetElements() == null).isFalse();
         }

@@ -30,23 +30,20 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class AppearanceSettingCall @Inject constructor(
-    private val filterSettingHandler: Handler<FilterSetting>,
-    private val programConfigurationSettingHandler: Handler<ProgramConfigurationSetting>,
+    private val filterSettingHandler: FilterSettingHandler,
+    private val programConfigurationSettingHandler: ProgramConfigurationSettingHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppInfoManager
+    private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AppearanceSettings>() {
 
     override fun fetch(storeError: Boolean): Single<AppearanceSettings> {
@@ -58,7 +55,7 @@ internal class AppearanceSettingCall @Inject constructor(
                             .errorDescription("Appearance settings not found")
                             .errorCode(D2ErrorCode.URL_NOT_FOUND)
                             .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                            .build()
+                            .build(),
                     )
                 }
                 SettingsAppDataStoreVersion.V2_0 -> {
@@ -69,7 +66,6 @@ internal class AppearanceSettingCall @Inject constructor(
     }
 
     override fun process(item: AppearanceSettings?) {
-
         val filterSettingsList = item?.let {
             SettingsAppHelper.getFilterSettingsList(it)
         } ?: emptyList()

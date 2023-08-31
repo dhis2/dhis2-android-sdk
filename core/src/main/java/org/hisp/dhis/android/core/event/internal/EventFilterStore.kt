@@ -25,45 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo
 
-@Suppress("MagicNumber")
-internal object EventFilterStore {
-    private val BINDER = object : IdentifiableStatementBinder<EventFilter>() {
-        override fun bindToStatement(o: EventFilter, w: StatementWrapper) {
-            super.bindToStatement(o, w)
-            w.bind(7, o.program())
-            w.bind(8, o.programStage())
-            w.bind(9, o.description())
-            w.bind(10, o.eventQueryCriteria()?.followUp())
-            w.bind(11, o.eventQueryCriteria()?.organisationUnit())
-            w.bind(12, o.eventQueryCriteria()?.ouMode())
-            w.bind(13, o.eventQueryCriteria()?.assignedUserMode())
-            w.bind(14, o.eventQueryCriteria()?.order())
-            w.bind(15, StringListColumnAdapter.serialize(o.eventQueryCriteria()?.displayColumnOrder()))
-            w.bind(16, StringListColumnAdapter.serialize(o.eventQueryCriteria()?.events()))
-            w.bind(17, o.eventQueryCriteria()?.eventStatus())
-            w.bind(18, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.eventDate()))
-            w.bind(19, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.dueDate()))
-            w.bind(20, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.lastUpdatedDate()))
-            w.bind(21, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.completedDate()))
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<EventFilter> {
-        return objectWithUidStore(
-            databaseAdapter, EventFilterTableInfo.TABLE_INFO, BINDER
-        ) { EventFilter.create(it) }
-    }
-}
+internal interface EventFilterStore : IdentifiableObjectStore<EventFilter>

@@ -29,25 +29,24 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields.allFields
+import javax.inject.Inject
 
 @Reusable
 internal class SystemSettingCall @Inject constructor(
     private val apiDownloader: APIDownloader,
-    private val handler: Handler<SystemSetting>,
+    private val handler: SystemSettingHandler,
     private val service: SettingService,
-    private val settingsSplitter: SystemSettingsSplitter
+    private val settingsSplitter: SystemSettingsSplitter,
 ) : ListCall<SystemSetting> {
 
     override fun download(): Single<List<SystemSetting>> {
         return apiDownloader.downloadList(
             handler = handler,
-            downloader = service.getSystemSettingsSingle(allFields).map(settingsSplitter::splitSettings)
+            downloader = service.getSystemSettingsSingle(allFields).map(settingsSplitter::splitSettings),
         )
     }
 }

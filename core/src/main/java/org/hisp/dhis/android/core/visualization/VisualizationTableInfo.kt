@@ -79,7 +79,7 @@ object VisualizationTableInfo {
                 LEGEND_STYLE,
                 LEGEND_SET_ID,
                 LEGEND_STRATEGY,
-                AGGREGATION_TYPE
+                AGGREGATION_TYPE,
             )
         }
 

@@ -41,7 +41,7 @@ public class SectionGreyedFieldsLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
 
     public SectionGreyedFieldsLinkStoreIntegrationShould() {
-        super(SectionGreyedFieldsLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new SectionGreyedFieldsLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 SectionGreyedFieldsLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

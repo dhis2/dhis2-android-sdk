@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.imports
 
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import javax.inject.Inject
 
 class TrackerJobManager @Inject internal constructor(
-    private val jobQueryCall: JobQueryCall
+    private val jobQueryCall: JobQueryCall,
 ) {
     fun resumePendingJobs(): Observable<D2Progress> {
         return jobQueryCall.queryPendingJobs()

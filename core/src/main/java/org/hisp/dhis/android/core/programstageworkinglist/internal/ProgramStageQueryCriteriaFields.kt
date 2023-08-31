@@ -59,6 +59,6 @@ internal object ProgramStageQueryCriteriaFields {
             fh.nestedField<ProgramStageWorkingListEventDataFilter>(DATA_FILTERS)
                 .with(ProgramStageWorkingListEventDataFilterFields.allFields),
             fh.nestedField<ProgramStageWorkingListAttributeValueFilter>(ATTRIBUTE_VALUE_FILTER)
-                .with(ProgramStageWorkingListAttributeValueFilterFields.allFields)
+                .with(ProgramStageWorkingListAttributeValueFilterFields.allFields),
         ).build()
 }

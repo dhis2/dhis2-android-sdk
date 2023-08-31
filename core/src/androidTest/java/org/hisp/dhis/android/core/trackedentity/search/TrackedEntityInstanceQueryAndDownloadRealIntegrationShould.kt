@@ -39,7 +39,7 @@ class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealInteg
         d2.metadataModule().blockingDownload()
 
         val orgUnit = d2.organisationUnitModule().organisationUnits()
-            .one().blockingGet().uid()
+            .one().blockingGet()!!.uid()
         val queriedTeis = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .byOrgUnits().`in`(listOf(orgUnit))
             .byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE)

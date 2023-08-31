@@ -50,7 +50,7 @@ object LatestAppVersionTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 VERSION,
-                DOWNLOAD_URL
+                DOWNLOAD_URL,
             )
         }
 

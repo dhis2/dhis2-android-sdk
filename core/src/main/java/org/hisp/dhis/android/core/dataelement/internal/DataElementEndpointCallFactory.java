@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -53,13 +52,13 @@ final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataEleme
     private static final int MAX_UID_LIST_SIZE = 100;
 
     private final DataElementService service;
-    private final Handler<DataElement> handler;
+    private final DataElementHandler handler;
 
     @Inject
     DataElementEndpointCallFactory(GenericCallData data,
                                    APICallExecutor apiCallExecutor,
                                    DataElementService service,
-                                   Handler<DataElement> handler) {
+                                   DataElementHandler handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

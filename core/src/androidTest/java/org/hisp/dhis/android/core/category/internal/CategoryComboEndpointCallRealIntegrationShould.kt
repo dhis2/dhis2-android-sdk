@@ -43,7 +43,7 @@ class CategoryComboEndpointCallRealIntegrationShould : BaseRealIntegrationTest()
         assertThat(categoryCategoryComboLinks.isEmpty()).isTrue()
 
         val categoryComboEndpointCall = getD2DIComponent(d2).internalModules().category.categoryComboCall.download(
-            setOf("bjDvmb4bfuf")
+            setOf("bjDvmb4bfuf"),
         )
         val categoryCombos = categoryComboEndpointCall.blockingGet()
         assertThat(categoryCombos.isEmpty()).isFalse()
@@ -61,37 +61,37 @@ class CategoryComboEndpointCallRealIntegrationShould : BaseRealIntegrationTest()
 
     private fun downloadCategories() {
         getD2DIComponent(d2).internalModules().category.categoryCall.download(
-            setOf("GLevLNI9wkl")
+            setOf("GLevLNI9wkl"),
         ).blockingGet()
     }
 
     private fun assertNotCombosInDB() {
-        val categoryComboStore = CategoryComboStore.create(d2.databaseAdapter())
+        val categoryComboStore = CategoryComboStoreImpl(d2.databaseAdapter())
         val categoryCombos = categoryComboStore.selectAll()
         assertThat(categoryCombos.isEmpty()).isTrue()
     }
 
     private fun assertThereAreCombosInDB() {
-        val categoryComboStore = CategoryComboStore.create(d2.databaseAdapter())
+        val categoryComboStore = CategoryComboStoreImpl(d2.databaseAdapter())
         val categoryCombos = categoryComboStore.selectAll()
         assertThat(categoryCombos.isNotEmpty()).isTrue()
     }
 
     private val categoryCategoryComboLinks: List<CategoryCategoryComboLink>
         get() {
-            val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(d2.databaseAdapter())
+            val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStoreImpl(d2.databaseAdapter())
             return categoryCategoryComboLinkStore.selectAll()
         }
 
     private fun assertThereAreCategoryOptionCombosInDB() {
         val categoryOptionComboStore: IdentifiableObjectStore<CategoryOptionCombo> =
-            CategoryOptionComboStoreImpl.create(d2.databaseAdapter())
+            CategoryOptionComboStoreImpl(d2.databaseAdapter())
         val categoryOptionCombos = categoryOptionComboStore.selectAll()
         assertThat(categoryOptionCombos.isNotEmpty()).isTrue()
     }
 
     private fun assertThereAreCategoriesInDB() {
-        val categoryOptionStore = CategoryOptionStore.create(d2.databaseAdapter())
+        val categoryOptionStore = CategoryOptionStoreImpl(d2.databaseAdapter())
         val categoryOptionUids = categoryOptionStore.selectUids()
         assertThat(categoryOptionUids.isNotEmpty()).isTrue()
     }

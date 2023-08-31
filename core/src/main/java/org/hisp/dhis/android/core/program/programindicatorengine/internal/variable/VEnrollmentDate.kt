@@ -48,7 +48,7 @@ internal class VEnrollmentDate : ExpressionItem {
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
-                    column = EnrollmentTableInfo.Columns.ENROLLMENT_DATE
+                    column = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
                 )
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}"

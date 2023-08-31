@@ -58,7 +58,7 @@ internal class VProgramStageName : ProgramExpressionItem() {
                         "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} ps " +
                         "WHERE ps.${IdentifiableColumns.UID} = " +
                         EventTableInfo.Columns.PROGRAM_STAGE +
-                        ")"
+                        ")",
                 )
         }
     }

@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
+import java.util.*
 
 data class AggregatedDataCallBundleKey(
     val periodType: PeriodType,
     val pastPeriods: Int,
     val futurePeriods: Int,
-    val lastUpdated: Date?
+    val lastUpdated: Date?,
 ) {
     fun lastUpdatedStr(): String? {
         return lastUpdated?.let { DateUtils.DATE_FORMAT.format(it) }

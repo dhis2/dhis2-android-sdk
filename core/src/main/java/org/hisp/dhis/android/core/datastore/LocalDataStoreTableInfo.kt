@@ -50,14 +50,14 @@ object LocalDataStoreTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 KEY,
-                VALUE
+                VALUE,
             )
         }
 
         override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                KEY
+                KEY,
             )
         }
 

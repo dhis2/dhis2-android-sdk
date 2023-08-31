@@ -28,16 +28,14 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper.getValueMap
@@ -48,6 +46,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
 import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
+import javax.inject.Inject
 
 internal class ValidationEngineImpl @Inject constructor(
     private val validationExecutor: ValidationExecutor,
@@ -56,13 +55,13 @@ internal class ValidationEngineImpl @Inject constructor(
     private val constantRepository: ConstantCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val periodHelper: PeriodHelper,
-    private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>
+    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore,
 ) : ValidationEngine {
     override fun validate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<ValidationResult> {
         return Single.fromCallable { blockingValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
     }
@@ -71,15 +70,17 @@ internal class ValidationEngineImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): ValidationResult {
         val rules = getValidationRulesForDataSetValidation(dataSetUid)
 
         val violations = if (rules.isNotEmpty()) {
             val constantMap = constantMap
             val valueMap = getValueMap(
-                dataSetUid, attributeOptionComboUid,
-                orgUnitUid, periodId
+                dataSetUid,
+                attributeOptionComboUid,
+                orgUnitUid,
+                periodId,
             )
             val orgunitGroupMap = orgunitGroupMap
             val organisationUnit = getOrganisationUnit(orgUnitUid)
@@ -112,7 +113,7 @@ internal class ValidationEngineImpl @Inject constructor(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,
-        periodId: String
+        periodId: String,
     ): Map<DimensionalItemObject, Double> {
         val dataValues = dataValueRepository
             .byDataSetUid(dataSetUid)
@@ -136,7 +137,7 @@ internal class ValidationEngineImpl @Inject constructor(
 
     private val orgunitGroupMap: Map<String, Int>
         get() = orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )
 
     private fun getPeriod(periodId: String): Period {

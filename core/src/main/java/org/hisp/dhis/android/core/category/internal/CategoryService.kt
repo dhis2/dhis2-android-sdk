@@ -42,6 +42,6 @@ internal interface CategoryService {
     fun getCategories(
         @Query("fields") @Which fields: Fields<Category>,
         @Query("filter") @Where uids: Filter<Category, String>,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<Category>>
 }

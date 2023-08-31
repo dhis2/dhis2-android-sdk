@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 class UserObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_user() {
-        val user = d2.userModule().user().blockingGet()
+        val user = d2.userModule().user().blockingGet()!!
 
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
         assertThat(user.firstName()).isEqualTo("John")
@@ -47,7 +47,7 @@ class UserObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDis
     fun with_user_roles() {
         val user = d2.userModule().user()
             .withUserRoles()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(user.userRoles()!!.size).isEqualTo(1)
         assertThat(user.userRoles()!![0].name()).isEqualTo("Superuser")

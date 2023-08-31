@@ -28,12 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -43,19 +39,22 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.allowedVersionsAsStr
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.isAllowedVersion
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import javax.inject.Inject
 
 @Reusable
 class SystemInfoCall @Inject internal constructor(
-    private val databaseAdapter: DatabaseAdapter,
-    private val systemInfoHandler: Handler<SystemInfo>,
+    private val systemInfoHandler: SystemInfoHandler,
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
-    private val apiCallExecutor: RxAPICallExecutor
-) : CompletableProvider {
-    override fun getCompletable(storeError: Boolean): Completable {
-        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields), storeError)
-            .doOnSuccess { systemInfo: SystemInfo ->
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : DownloadProvider {
+
+    override suspend fun download(storeError: Boolean) {
+        coroutineAPICallExecutor.wrap(storeError) {
+            systemInfoService.getSystemInfo(SystemInfoFields.allFields)
+        }.fold(
+            onSuccess = { systemInfo ->
                 val version = systemInfo.version()
                 if (version != null && isAllowedVersion(version)) {
                     versionManager.setVersion(version)
@@ -66,23 +65,19 @@ class SystemInfoCall @Inject internal constructor(
                         .errorDescription(
                             "Server DHIS version (" + version + ") not valid. " +
                                 "Allowed versions: " +
-                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr())
+                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
                         )
                         .build()
                 }
                 insertOrUpdateSystemInfo(systemInfo)
-            }.ignoreElement()
+            },
+            onFailure = { throw it },
+        )
     }
 
     private fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            systemInfoHandler.handle(systemInfo)
-            resourceHandler.serverDate = systemInfo.serverDate()
-            resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+        systemInfoHandler.handle(systemInfo)
+        resourceHandler.serverDate = systemInfo.serverDate()
+        resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
     }
 }

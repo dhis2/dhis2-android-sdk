@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.visualization
 enum class LayoutPosition {
     COLUMN,
     ROW,
-    FILTER
+    FILTER,
 }

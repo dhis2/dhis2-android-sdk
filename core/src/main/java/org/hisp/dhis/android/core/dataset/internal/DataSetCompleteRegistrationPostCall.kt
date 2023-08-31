@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import java.net.HttpURLConnection
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
@@ -47,52 +47,40 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationPostCall @Inject constructor(
     private val dataSetCompleteRegistrationService: DataSetCompleteRegistrationService,
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
-    private val apiCallExecutor: APICallExecutor,
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val versionManager: DHISVersionManager
+    private val versionManager: DHISVersionManager,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataSetCompleteRegistrations(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            if (dataSetCompleteRegistrations.isEmpty()) {
-                return@defer Observable.empty<D2Progress>()
-            } else {
-                val toPostDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
-                val toDeleteDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
-                for (dscr in dataSetCompleteRegistrations) {
-                    if (dscr.deleted()!!) {
-                        toDeleteDataSetCompleteRegistrations.add(dscr)
-                    } else {
-                        toPostDataSetCompleteRegistrations.add(dscr)
-                    }
-                }
-                val progressManager = D2ProgressManager(1)
-                return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                    uploadInternal(
-                        progressManager,
-                        emitter,
-                        toPostDataSetCompleteRegistrations,
-                        toDeleteDataSetCompleteRegistrations
-                    )
-                }
-            }
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
+    ): Flow<D2Progress> {
+        if (dataSetCompleteRegistrations.isEmpty()) {
+            return emptyFlow()
         }
+        val toPostDataSetCompleteRegistrations = dataSetCompleteRegistrations.filterNot { it.deleted() == true }
+        val toDeleteDataSetCompleteRegistrations = dataSetCompleteRegistrations.filter { it.deleted() == true }
+        val progressManager = D2ProgressManager(1)
+        return uploadInternal(
+            progressManager,
+            toPostDataSetCompleteRegistrations,
+            toDeleteDataSetCompleteRegistrations,
+        )
     }
 
     @Throws(D2Error::class)
     private fun uploadInternal(
         progressManager: D2ProgressManager,
-        emitter: ObservableEmitter<D2Progress>,
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-        toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>
-    ) {
+        toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
+    ) = flow {
         val payload = DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations)
         val dataValueImportSummary: DataValueImportSummary =
             if (toPostDataSetCompleteRegistrations.isEmpty()) {
@@ -100,7 +88,7 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
             } else {
                 markObjectsAs(toPostDataSetCompleteRegistrations, State.UPLOADING)
                 try {
-                    postCompleteRegistrations(payload)!!
+                    postCompleteRegistrations(payload).getOrThrow()
                 } catch (e: D2Error) {
                     markObjectsAs(toPostDataSetCompleteRegistrations, errorIfOnline(e))
                     throw e
@@ -110,52 +98,63 @@ internal class DataSetCompleteRegistrationPostCall @Inject constructor(
         val deletedDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         val withErrorDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         for (dataSetCompleteRegistration in toDeleteDataSetCompleteRegistrations) {
-            try {
-                val coc = categoryOptionComboCollectionRepository
-                    .withCategoryOptions()
-                    .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                    .blockingGet()
-                markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
-                apiCallExecutor.executeObjectCallWithEmptyResponse(
-                    dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
-                        dataSetCompleteRegistration.dataSet(),
-                        dataSetCompleteRegistration.period(),
-                        dataSetCompleteRegistration.organisationUnit(),
-                        coc.categoryCombo()!!.uid(),
-                        CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                        false
-                    )
+            val coc = categoryOptionComboCollectionRepository
+                .withCategoryOptions()
+                .uid(dataSetCompleteRegistration.attributeOptionCombo())
+                .blockingGet()
+            markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
+            coroutineAPICallExecutor.wrap {
+                dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
+                    dataSetCompleteRegistration.dataSet(),
+                    dataSetCompleteRegistration.period(),
+                    dataSetCompleteRegistration.organisationUnit(),
+                    coc!!.categoryCombo()!!.uid(),
+                    CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
+                    false,
                 )
-                deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
-            } catch (d2Error: D2Error) {
-                withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
-            }
+            }.fold(
+                onSuccess = { result ->
+                    if (result.isSuccessful) {
+                        deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    } else {
+                        withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    }
+                },
+
+                onFailure = {
+                    withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                },
+            )
         }
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-            payload, dataValueImportSummary, deletedDataSetCompleteRegistrations,
-            withErrorDataSetCompleteRegistrations
+            payload,
+            dataValueImportSummary,
+            deletedDataSetCompleteRegistrations,
+            withErrorDataSetCompleteRegistrations,
         )
-        emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration::class.java, true))
-        emitter.onComplete()
+        emit(progressManager.increaseProgress(DataSetCompleteRegistration::class.java, true))
     }
 
-    private fun postCompleteRegistrations(payload: DataSetCompleteRegistrationPayload): DataValueImportSummary? {
+    private suspend fun postCompleteRegistrations(
+        payload: DataSetCompleteRegistrationPayload,
+    ): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload),
-                listOf(HttpURLConnection.HTTP_CONFLICT),
-                DataValueImportSummaryWebResponse::class.java
-            ).response()
+            coroutineAPICallExecutor.wrap(
+                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
+                errorClass = DataValueImportSummaryWebResponse::class.java,
+            ) {
+                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload)
+            }.map { it.response }
         } else {
-            apiCallExecutor.executeObjectCall(
+            coroutineAPICallExecutor.wrap {
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(payload)
-            )
+            }
         }
     }
 
     private fun markObjectsAs(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
-        forcedState: State?
+        forcedState: State?,
     ) {
         for (dscr in dataSetCompleteRegistrations) {
             dataSetCompleteRegistrationStore.setState(dscr, forcedOrOwn(dscr, forcedState))

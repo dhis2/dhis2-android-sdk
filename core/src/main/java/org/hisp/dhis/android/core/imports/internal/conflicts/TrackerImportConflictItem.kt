@@ -40,6 +40,6 @@ internal interface TrackerImportConflictItem {
     fun getFileResource(conflict: ImportConflict): String? { return null }
     fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String
 }

@@ -30,33 +30,39 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 
 @Module
-internal class OrganisationUnitEntityDIModule : IdentifiableStoreProvider<OrganisationUnit> {
+internal class OrganisationUnitEntityDIModule {
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnit> {
-        return OrganisationUnitStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): OrganisationUnitStore {
+        return OrganisationUnitStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(impl: OrganisationUnitHandlerImpl): OrganisationUnitHandler {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<OrganisationUnit> {
-        return CollectionCleanerImpl(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter)
+    @Suppress("LongParameterList")
+    fun handler(
+        organisationUnitStore: OrganisationUnitStore,
+        userOrganisationUnitLinkHandler: UserOrganisationUnitLinkHandler,
+        organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
+        dataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler,
+        organisationUnitGroupHandler: OrganisationUnitGroupHandler,
+        organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler,
+    ): OrganisationUnitHandler {
+        return OrganisationUnitHandler(
+            organisationUnitStore,
+            userOrganisationUnitLinkHandler,
+            organisationUnitProgramLinkHandler,
+            dataSetOrganisationUnitLinkHandler,
+            organisationUnitGroupHandler,
+            organisationUnitGroupLinkHandler,
+        )
     }
 
     @Provides
@@ -67,12 +73,12 @@ internal class OrganisationUnitEntityDIModule : IdentifiableStoreProvider<Organi
 
     @Provides
     @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter?): Map<String, ChildrenAppender<OrganisationUnit>> {
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<OrganisationUnit>> {
         return mapOf(
             OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender.create(databaseAdapter),
             OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
-                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter)
+                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter),
         )
     }
 }

@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.visualization.internal
 import androidx.annotation.VisibleForTesting
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
 internal class VisualizationInternalModule @Inject internal constructor(
-    @field:VisibleForTesting val visualizationCall: UidsCall<Visualization>
+    @field:VisibleForTesting val visualizationCall: VisualizationCall,
 )

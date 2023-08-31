@@ -38,9 +38,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class ProgramConfigurationSettingStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramConfigurationSetting>(
-        ProgramConfigurationSettingStore.create(TestDatabaseAdapterFactory.get()),
+        ProgramConfigurationSettingStoreImpl(TestDatabaseAdapterFactory.get()),
         ProgramConfigurationSettingTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): ProgramConfigurationSetting {
         return ProgramConfigurationSettingSamples.get()

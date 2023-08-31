@@ -42,6 +42,6 @@ internal interface CategoryComboService {
     fun getCategoryCombos(
         @Query("fields") @Which fields: Fields<CategoryCombo>,
         @Query("filter") @Where uids: Filter<CategoryCombo, String>,
-        @Query("paging") paging: Boolean?
+        @Query("paging") paging: Boolean?,
     ): Single<Payload<CategoryCombo>>
 }

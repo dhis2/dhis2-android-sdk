@@ -29,9 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -45,20 +43,25 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludi
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
+import java.util.*
 
 @Suppress("TooManyFunctions")
-internal class EventStoreImpl private constructor(
+internal class EventStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<Event>,
-    objectFactory: Function1<Cursor, Event>
-) : IdentifiableDeletableDataObjectStoreImpl<Event>(databaseAdapter, builder, binder, objectFactory), EventStore {
+) : EventStore,
+    IdentifiableDeletableDataObjectStoreImpl<Event>(
+        databaseAdapter,
+        EventTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> Event.create(cursor) },
+    ) {
 
     override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStatesIncludingError().toList())
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE,
+                asStringList(uploadableStatesIncludingError().toList()),
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
 
@@ -67,7 +70,7 @@ internal class EventStoreImpl private constructor(
 
     override fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList()))
+            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList())),
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
             " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
@@ -81,7 +84,7 @@ internal class EventStoreImpl private constructor(
     override fun queryOrderedForEnrollmentAndProgramStage(
         enrollmentUid: String,
         programStageUid: String,
-        includeDeleted: Boolean
+        includeDeleted: Boolean,
     ): List<Event> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
@@ -172,19 +175,6 @@ internal class EventStoreImpl private constructor(
             w.bind(19, o.deleted())
             w.bind(20, o.assignedUser())
             w.bind(21, o.completedBy())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): EventStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                EventTableInfo.TABLE_INFO.name(),
-                EventTableInfo.TABLE_INFO.columns()
-            )
-            return EventStoreImpl(
-                databaseAdapter,
-                statementBuilder,
-                BINDER
-            ) { cursor: Cursor? -> Event.create(cursor) }
         }
     }
 }

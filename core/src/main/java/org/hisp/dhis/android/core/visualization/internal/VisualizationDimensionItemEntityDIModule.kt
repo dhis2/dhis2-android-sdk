@@ -31,24 +31,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 @Module
 internal class VisualizationDimensionItemEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationDimensionItem> {
-        return VisualizationDimensionItemStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(store: LinkStore<VisualizationDimensionItem>):
-        LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem> {
-        return LinkHandlerImpl(store)
+    fun store(databaseAdapter: DatabaseAdapter): VisualizationDimensionItemStore {
+        return VisualizationDimensionItemStoreImpl(databaseAdapter)
     }
 }

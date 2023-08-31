@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.common.internal.DataStateUidHolder
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.*
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportHandler @Inject internal constructor(
@@ -39,7 +39,7 @@ internal class JobReportHandler @Inject internal constructor(
     private val enrollmentHandler: JobReportEnrollmentHandler,
     private val trackedEntityHandler: JobReportTrackedEntityHandler,
     private val relationshipHandler: JobReportRelationshipHandler,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
 ) {
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
@@ -55,7 +55,7 @@ internal class JobReportHandler @Inject internal constructor(
 
     private fun handleErrors(
         o: JobReport,
-        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>
+        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
         o.validationReport.errorReports.forEach { errorReport ->
             jobObjectsMap[Pair(errorReport.trackerType, errorReport.uid)]?.let {
@@ -66,7 +66,7 @@ internal class JobReportHandler @Inject internal constructor(
 
     private fun handleSuccesses(
         o: JobReport,
-        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>
+        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
         if (o.bundleReport != null) {
             val typeMap = o.bundleReport.typeReportMap
@@ -79,9 +79,11 @@ internal class JobReportHandler @Inject internal constructor(
 
     private fun handleNotPresent(
         o: JobReport,
-        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>
+        jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
-        val presentSuccesses = if (o.bundleReport == null) emptySet<Pair<TrackerImporterObjectType, String>>() else {
+        val presentSuccesses = if (o.bundleReport == null) {
+            emptySet<Pair<TrackerImporterObjectType, String>>()
+        } else {
             val tm = o.bundleReport.typeReportMap
             setOf(tm.event, tm.trackedEntity, tm.enrollment, tm.relationship).flatMap {
                 it.objectReports
@@ -104,7 +106,7 @@ internal class JobReportHandler @Inject internal constructor(
     private fun applySuccess(
         typeReport: JobTypeReport,
         jobObjects: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
-        typeHandler: JobReportTypeHandler
+        typeHandler: JobReportTypeHandler,
     ) {
         typeReport.objectReports
             .mapNotNull { jobObjects[Pair(it.trackerType, it.uid)] }
@@ -116,7 +118,7 @@ internal class JobReportHandler @Inject internal constructor(
             jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == EVENT }.map { it.objectUid() },
-            jobObjects.filter { it.trackerType() == RELATIONSHIP }.map { it.objectUid() }
+            jobObjects.filter { it.trackerType() == RELATIONSHIP }.map { it.objectUid() },
         )
     }
 

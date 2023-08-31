@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.call.queries.internal;
 
+import kotlin.Deprecated;
+
+@Deprecated(message = "Use BaseQueryKt instead")
 public abstract class BaseQuery {
     public static final int DEFAULT_PAGE_SIZE = 50;
 

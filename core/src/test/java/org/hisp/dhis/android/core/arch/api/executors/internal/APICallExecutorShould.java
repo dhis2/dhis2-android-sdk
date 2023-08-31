@@ -35,9 +35,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher;
 import org.junit.Before;
@@ -57,7 +57,7 @@ import retrofit2.Response;
 public class APICallExecutorShould {
 
     @Mock
-    private ObjectStore<D2Error> errorStore;
+    private D2ErrorStore errorStore;
 
     @Mock
     private User user;

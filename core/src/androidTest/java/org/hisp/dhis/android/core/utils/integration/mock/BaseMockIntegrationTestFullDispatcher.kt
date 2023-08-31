@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStoreImpl
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -107,7 +107,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         }
 
         private fun storeSomeD2Errors() {
-            val d2ErrorStore = D2ErrorStore.create(databaseAdapter)
+            val d2ErrorStore = D2ErrorStoreImpl(databaseAdapter)
             d2ErrorStore.insert(D2ErrorSamples.get())
             d2ErrorStore.insert(
                 D2Error.builder()
@@ -116,18 +116,18 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .url("http://dhis2.org/api/programs/uid")
                     .errorDescription("Different server offline")
                     .httpErrorCode(402)
-                    .build()
+                    .build(),
             )
         }
 
         private fun storeSomeConflicts() {
-            val trackerImportConflictStore = TrackerImportConflictStoreImpl.create(databaseAdapter)
+            val trackerImportConflictStore = TrackerImportConflictStoreImpl(databaseAdapter)
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
                     .trackedEntityInstance(null)
                     .enrollment(null)
                     .event(null)
-                    .build()
+                    .build(),
             )
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
@@ -139,10 +139,10 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .tableReference("table_reference_2")
                     .errorCode("error_code_2")
                     .status(ImportStatus.ERROR)
-                    .build()
+                    .build(),
             )
 
-            val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
+            val dataValueConflictStore = DataValueConflictStoreImpl(databaseAdapter)
 
             dataValueConflictStore.insert(DataValueConflictSamples.get())
             dataValueConflictStore.insert(
@@ -152,7 +152,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .dataElement("bx6fsa0t90x")
                     .categoryOptionCombo("bRowv6yZOF2")
                     .status(ImportStatus.WARNING)
-                    .build()
+                    .build(),
             )
             dataValueConflictStore.insert(
                 DataValueConflictSamples.get().toBuilder()
@@ -161,25 +161,24 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .period("202201")
                     .orgUnit("YuQRtpLP10I")
                     .displayDescription("display_description_other")
-                    .build()
+                    .build(),
             )
         }
 
         private fun storeSomeKeyValuesInLocalDataStore() {
-            val dataStore = create(
-                databaseAdapter
-            )
+            val dataStore = LocalDataStoreStoreImpl(databaseAdapter)
+
             dataStore.insert(
                 KeyValuePair.builder()
                     .key("key1")
                     .value("value1")
-                    .build()
+                    .build(),
             )
             dataStore.insert(
                 KeyValuePair.builder()
                     .key("key2")
                     .value("value2")
-                    .build()
+                    .build(),
             )
         }
     }

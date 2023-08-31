@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.junit.Before
 import org.junit.Test
+import java.util.*
 
 class AggregatedDataSyncLastUpdatedCalculatorShould {
     private val dataSet: DataSet = DataSetSamples.dataSet
@@ -75,7 +75,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods,
             dataSet.openFuturePeriods()!!,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
@@ -96,7 +96,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods,
             dataSet.openFuturePeriods()!!,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat(lastUpdated).isNull()
     }
@@ -108,7 +108,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods,
             dataSet.openFuturePeriods()!! + 1,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat(lastUpdated).isNull()
     }
@@ -120,7 +120,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods,
             dataSet.openFuturePeriods()!! - 1,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
@@ -132,7 +132,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods + 1,
             dataSet.openFuturePeriods()!!,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat<Date>(lastUpdated).isNull()
     }
@@ -144,7 +144,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet,
             pastPeriods - 1,
             dataSet.openFuturePeriods()!!,
-            organisationUnitsHash
+            organisationUnitsHash,
         )
         assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }

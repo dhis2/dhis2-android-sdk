@@ -31,7 +31,6 @@ import android.content.Context
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Before
@@ -43,7 +42,7 @@ import org.junit.runners.JUnit4
 class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
     private val context: Context = mock()
-    private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration> = mock()
+    private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseExport: DatabaseExport = mock()
     private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
@@ -85,8 +84,12 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = MultiUserDatabaseManager(
-            context, databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-            databaseAdapterFactory, databaseExport
+            context,
+            databaseAdapter,
+            databaseConfigurationSecureStore,
+            configurationHelper,
+            databaseAdapterFactory,
+            databaseExport,
         )
     }
 
@@ -141,8 +144,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
                     buildUserConfiguration("user1", "2021-06-01T00:01:04.000"),
                     buildUserConfiguration("user2", "2021-09-02T00:01:04.000"),
                     buildUserConfiguration("user3", "2020-08-05T00:01:04.000"),
-                    buildUserConfiguration("user4", "2020-08-09T00:01:04.000")
-                )
+                    buildUserConfiguration("user4", "2020-08-09T00:01:04.000"),
+                ),
             )
             .build()
 

@@ -30,43 +30,37 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.event.internal.EventFilterCall
+import org.hisp.dhis.android.core.option.internal.OptionCall
+import org.hisp.dhis.android.core.option.internal.OptionGroupCall
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
 internal class ProgramModuleDownloader @Inject constructor(
-    private val programCall: UidsCall<Program>,
-    private val programStageCall: UidsCall<ProgramStage>,
-    private val programRuleCall: UidsCall<ProgramRule>,
-    private val trackedEntityTypeCall: UidsCall<TrackedEntityType>,
-    private val trackedEntityAttributeCall: UidsCall<TrackedEntityAttribute>,
-    private val trackedEntityInstanceFilterCall: UidsCall<TrackedEntityInstanceFilter>,
-    private val eventFilterCall: UidsCall<EventFilter>,
-    private val programStageWorkingListCall: UidsCall<ProgramStageWorkingList>,
-    private val relationshipTypeCall: ListCall<RelationshipType>,
-    private val optionSetCall: UidsCall<OptionSet>,
-    private val optionCall: UidsCall<Option>,
-    private val optionGroupCall: UidsCall<OptionGroup>,
-    private val programOrganisationUnitLinkStore: LinkStore<OrganisationUnitProgramLink>
+    private val programCall: ProgramCall,
+    private val programStageCall: ProgramStageCall,
+    private val programRuleCall: ProgramRuleCall,
+    private val trackedEntityTypeCall: TrackedEntityTypeCall,
+    private val trackedEntityAttributeCall: TrackedEntityAttributeCall,
+    private val trackedEntityInstanceFilterCall: TrackedEntityInstanceFilterCall,
+    private val eventFilterCall: EventFilterCall,
+    private val programStageWorkingListCall: ProgramStageWorkingListCall,
+    private val relationshipTypeCall: RelationshipTypeCall,
+    private val optionSetCall: OptionSetCall,
+    private val optionCall: OptionCall,
+    private val optionGroupCall: OptionGroupCall,
+    private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
@@ -83,12 +77,13 @@ internal class ProgramModuleDownloader @Inject constructor(
                             .flatMap { trackedEntityTypes ->
                                 trackedEntityAttributeCall.download(
                                     ProgramParentUidsHelper
-                                        .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes)
+                                        .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes),
                                 )
                             }
                             .flatMapCompletable { attributes ->
                                 val optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
-                                    attributes, programStages
+                                    attributes,
+                                    programStages,
                                 )
                                 Single.merge(
                                     listOf(
@@ -96,8 +91,8 @@ internal class ProgramModuleDownloader @Inject constructor(
                                         relationshipTypeCall.download(),
                                         optionSetCall.download(optionSetUids),
                                         optionCall.download(optionSetUids),
-                                        optionGroupCall.download(optionSetUids)
-                                    )
+                                        optionGroupCall.download(optionSetUids),
+                                    ),
                                 ).ignoreElements()
                             }
                             .concatWith(downloadFiltersAndWorkingLists(programUids))
@@ -111,8 +106,8 @@ internal class ProgramModuleDownloader @Inject constructor(
             listOf(
                 trackedEntityInstanceFilterCall.download(programUids),
                 eventFilterCall.download(programUids),
-                programStageWorkingListCall.download(programUids)
-            )
+                programStageWorkingListCall.download(programUids),
+            ),
         ).ignoreElements()
     }
 }

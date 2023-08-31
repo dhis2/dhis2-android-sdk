@@ -31,15 +31,16 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.maps.MapLayerSamples
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class MapLayerStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<MapLayer>(
-    MapLayerStore.create(TestDatabaseAdapterFactory.get()),
-    MapLayerTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    MapLayerStoreImpl(TestDatabaseAdapterFactory.get()),
+    MapLayerTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): MapLayer {
         return MapLayerSamples.get()

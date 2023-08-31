@@ -29,56 +29,57 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 internal const val ATTEMPTS_AFTER_UPLOAD = 90
 internal const val ATTEMPTS_WHEN_QUERYING = 1
-internal const val ATTEMPTS_INITIAL_DELAY = 1L
-internal const val ATTEMPTS_INTERVAL = 2L
+internal val ATTEMPTS_INITIAL_DELAY = 1.seconds
+internal val ATTEMPTS_INTERVAL = 2.seconds
 
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
-    private val apiCallExecutor: APICallExecutor,
-    private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val trackerJobObjectStore: TrackerJobObjectStore,
     private val handler: JobReportHandler,
     private val fileResourceHandler: JobReportFileResourceHandler,
-    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
 ) {
 
-    fun queryPendingJobs(): Observable<D2Progress> {
-        return Observable.just(true)
-            .flatMapIterable {
-                val pendingJobs = trackerJobObjectStore.selectAll()
-                    .sortedBy { it.lastUpdated() }
-                    .groupBy { it.jobUid() }
-                    .toList()
+    fun queryPendingJobs(): Observable<D2Progress> = flow {
+        val pendingJobs = trackerJobObjectStore.selectAll()
+            .sortedBy { it.lastUpdated() }
+            .groupBy { it.jobUid() }
+            .toList()
 
-                pendingJobs.withIndex().map {
-                    Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
-                }
-            }
-            .flatMap {
-                queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING)
-                    .flatMap { _ -> updateFileResourceStates(it.second) }
-            }
-    }
+        pendingJobs.withIndex().map {
+            Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
+        }.forEach {
+            emitAll(queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING))
+            updateFileResourceStates(it.second)
+        }
+    }.asObservable()
 
-    fun queryJob(jobId: String): Observable<D2Progress> {
+    fun queryJob(jobId: String): Flow<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
         return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>): Observable<D2Progress> {
+    private fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
         return fileResourceHandler.updateFileResourceStates(jobObjects)
     }
 
@@ -86,40 +87,47 @@ internal class JobQueryCall @Inject internal constructor(
         jobId: String,
         jobObjects: List<TrackerJobObject>,
         isLastJob: Boolean,
-        attempts: Int
-    ): Observable<D2Progress> {
+        attempts: Int,
+    ): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
-        @Suppress("TooGenericExceptionCaught")
-        return Observable.interval(ATTEMPTS_INITIAL_DELAY, ATTEMPTS_INTERVAL, TimeUnit.SECONDS)
-            .map {
-                try {
-                    downloadAndHandle(jobId, jobObjects)
+
+        delay(ATTEMPTS_INITIAL_DELAY)
+
+        @Suppress("TooGenericExceptionCaught", "UnusedPrivateMember")
+        for (i in 0..attempts) {
+            val isComplete = try {
+                downloadAndHandle(jobId, jobObjects)
+                true
+            } catch (e: Throwable) {
+                if (e is D2Error && e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
+                    false
+                } else {
+                    handlerError(jobId, jobObjects)
                     true
-                } catch (e: Throwable) {
-                    if (e is D2Error && e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
-                        false
-                    } else {
-                        handlerError(jobId, jobObjects)
-                        true
-                    }
                 }
             }
-            .takeUntil { it }
-            .take(attempts.toLong())
-            .map {
-                progressManager.increaseProgress(
-                    JobReport::class.java,
-                    it && isLastJob
-                )
+
+            emit(progressManager.increaseProgress(JobReport::class.java, isComplete && isLastJob))
+
+            if (isComplete) {
+                break
             }
-            .flatMap { updateFileResourceStates(jobObjects) }
+
+            delay(ATTEMPTS_INTERVAL)
+        }
+
+        updateFileResourceStates(jobObjects)
+        emit(progressManager.increaseProgress(FileResource::class.java, isLastJob))
     }
 
-    private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
-        val jobReport = apiCallExecutor.executeObjectCallWithErrorCatcher(
-            service.getJobReport(jobId),
-            JobQueryErrorCatcher()
-        )
+    private suspend fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
+        val jobReport = coroutineAPICallExecutor.wrap(
+            storeError = false,
+            errorCatcher = JobQueryErrorCatcher(),
+        ) {
+            service.getJobReport(jobId)
+        }.getOrThrow()
+
         trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
         handler.handle(jobReport, jobObjects)
     }

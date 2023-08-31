@@ -42,16 +42,19 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
-<M, T, R : ReadOnlyCollectionRepository<T>> internal constructor(
+internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
+    M,
+    T,
+    R : ReadOnlyCollectionRepository<T>,
+    > internal constructor(
     private val store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-    override val transformer: TwoWayTransformer<M, T>
+    override val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
     ReadOnlyWithUidCollectionRepository<T>
-        where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
+    where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
     /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
      *
@@ -71,8 +74,9 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
-                scope.orderBy(), scope.pagingKey()
-            )
+                scope.orderBy(),
+                scope.pagingKey(),
+            ),
         )
     }
 
@@ -82,7 +86,7 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
      * @param uid to compare
      * @return the ReadOnlyObjectRepository
      */
-    override fun uid(uid: String): ReadOnlyObjectRepository<T> {
+    override fun uid(uid: String?): ReadOnlyObjectRepository<T> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
         return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, updatedScope, transformer)
     }

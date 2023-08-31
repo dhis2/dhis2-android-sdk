@@ -36,7 +36,8 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<ProgramStageWorkingList, ProgramStageWorkingListAttributeValueFilter>
+    private val childStore:
+    SingleParentChildStore<ProgramStageWorkingList, ProgramStageWorkingListAttributeValueFilter>,
 ) : ChildrenAppender<ProgramStageWorkingList>() {
 
     override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
@@ -53,8 +54,8 @@ internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender priva
             return ProgramStageWorkingListAttributeValueFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    ProgramStageWorkingListAttributeValueFilterStore.CHILD_PROJECTION
-                ) { cursor: Cursor -> ProgramStageWorkingListAttributeValueFilter.create(cursor) }
+                    ProgramStageWorkingListAttributeValueFilterStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> ProgramStageWorkingListAttributeValueFilter.create(cursor) },
             )
         }
     }

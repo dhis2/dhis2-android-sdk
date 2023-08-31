@@ -31,15 +31,13 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorModuleDownloader @Inject constructor(
-    private val programIndicatorCall: UidsCall<ProgramIndicator>,
-    private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker
+    private val programIndicatorCall: ProgramIndicatorCall,
+    private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

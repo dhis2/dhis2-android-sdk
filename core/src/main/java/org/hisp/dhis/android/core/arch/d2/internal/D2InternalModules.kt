@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.arch.d2.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.internal.CategoryInternalModule
 import org.hisp.dhis.android.core.user.internal.UserInternalModule
 import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule
+import javax.inject.Inject
 
 @Reusable
 internal class D2InternalModules @Inject constructor(
     val category: CategoryInternalModule,
     val visualization: VisualizationInternalModule,
-    val user: UserInternalModule
+    val user: UserInternalModule,
 )

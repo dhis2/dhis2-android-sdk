@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.D2Configuration
 
 @Module
 internal class AppContextDIModule(
-    private val d2Configuration: D2Configuration
+    private val d2Configuration: D2Configuration,
 ) {
 
     @Provides

@@ -30,25 +30,24 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
+import javax.inject.Inject
 
 @Reusable
 internal class DatabaseConfigurationMigration @Inject constructor(
     private val context: Context,
-    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
     private val credentialsStore: CredentialsSecureStore,
     private val insecureStore: InsecureStore,
     private val nameGenerator: DatabaseNameGenerator,
     private val renamer: DatabaseRenamer,
-    private val databaseAdapterFactory: DatabaseAdapterFactory
+    private val databaseAdapterFactory: DatabaseAdapterFactory,
 ) {
     @Suppress("TooGenericExceptionCaught")
     fun apply() {
@@ -61,7 +60,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
             databaseAdapterFactory.createOrOpenDatabase(
                 databaseAdapter,
                 OLD_DBNAME,
-                false
+                false,
             )
             val username = getUsernameForOldDatabase(databaseAdapter)
             val serverUrl = getServerUrl(databaseAdapter)
@@ -149,7 +148,7 @@ internal class DatabaseConfigurationMigration @Inject constructor(
     }
 
     private fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
-        val store = ConfigurationStore.create(databaseAdapter)
+        val store = ConfigurationStoreImpl(databaseAdapter)
         return store.selectFirst()?.serverUrl()
     }
 

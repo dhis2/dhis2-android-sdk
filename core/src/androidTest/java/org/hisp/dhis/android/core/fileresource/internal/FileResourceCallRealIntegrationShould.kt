@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.util.*
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -37,6 +35,8 @@ import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import java.io.File
+import java.util.*
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -69,7 +69,9 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         val valueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
         val trackedEntityAttribute =
-            d2.trackedEntityModule().trackedEntityAttributes().byValueType().eq(ValueType.IMAGE).one().blockingGet()
+            d2.trackedEntityModule().trackedEntityAttributes()
+                .byValueType().eq(ValueType.IMAGE)
+                .one().blockingGet()!!
         val trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances().blockingGet()[0]
         d2.trackedEntityModule().trackedEntityAttributeValues()
             .value(trackedEntityAttribute.uid(), trackedEntityInstance.uid()).blockingSet(valueUid)
@@ -99,9 +101,13 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(file.exists()).isTrue()
 
         val valueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
-        val dataElement = d2.dataElementModule().dataElements().byValueType().eq(ValueType.IMAGE).one().blockingGet()
+        val dataElement = d2.dataElementModule().dataElements()
+            .byValueType().eq(ValueType.IMAGE)
+            .one().blockingGet()!!
         val event = d2.eventModule().events().blockingGet()[0]
-        d2.trackedEntityModule().trackedEntityDataValues().value(event.uid(), dataElement.uid()).blockingSet(valueUid)
+        d2.trackedEntityModule().trackedEntityDataValues()
+            .value(event.uid(), dataElement.uid())
+            .blockingSet(valueUid)
         d2.eventModule().events().blockingUpload()
 
         val fileResources2 = d2.fileResourceModule().fileResources().blockingGet()
@@ -128,13 +134,16 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
             .byValue().eq(fileResource.uid())
             .one().blockingGet()!!
 
-        val existingEvent = d2.eventModule().events().uid(existingValue.event()).blockingGet()
+        val existingEvent = d2.eventModule().events().uid(existingValue.event()).blockingGet()!!
 
         val newEventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
-                existingEvent.enrollment(), existingEvent.program(),
-                existingEvent.programStage(), existingEvent.organisationUnit(), existingEvent.attributeOptionCombo()
-            )
+                existingEvent.enrollment(),
+                existingEvent.program(),
+                existingEvent.programStage(),
+                existingEvent.organisationUnit(),
+                existingEvent.attributeOptionCombo(),
+            ),
         )
         d2.eventModule().events().uid(newEventUid).setEventDate(Date())
 
@@ -191,8 +200,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         d2.dataValueModule().dataValues()
             .value(
-                nextPeriod.periodId()!!, dataValue.organisationUnit(), dataValue.dataElement(),
-                dataValue.categoryOptionCombo(), dataValue.attributeOptionCombo()
+                nextPeriod.periodId()!!,
+                dataValue.organisationUnit()!!,
+                dataValue.dataElement()!!,
+                dataValue.categoryOptionCombo()!!,
+                dataValue.attributeOptionCombo()!!,
             )
             .blockingSet(uid)
 

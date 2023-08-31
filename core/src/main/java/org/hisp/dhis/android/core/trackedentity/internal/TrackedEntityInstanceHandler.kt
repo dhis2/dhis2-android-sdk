@@ -29,20 +29,21 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.util.Log
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
-import org.hisp.dhis.android.core.arch.handlers.internal.*
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerHandler
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceHandler @Inject constructor(
@@ -50,26 +51,26 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
     relationshipHandler: RelationshipHandler,
     trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val trackedEntityAttributeValueHandler: HandlerWithTransformer<TrackedEntityAttributeValue>,
-    private val enrollmentHandler: IdentifiableDataHandler<Enrollment>,
-    private val programOwnerHandler: HandlerWithTransformer<ProgramOwner>,
+    private val trackedEntityAttributeValueHandler: TrackedEntityAttributeValueHandler,
+    private val enrollmentHandler: EnrollmentHandler,
+    private val programOwnerHandler: ProgramOwnerHandler,
     private val enrollmentOrphanCleaner: TrackedEntityEnrollmentOrphanCleaner,
-    private val relationshipOrphanCleaner: OrphanCleaner<TrackedEntityInstance, Relationship>
+    private val relationshipOrphanCleaner: TEIRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<TrackedEntityInstance>(
     trackedEntityInstanceStore,
     relationshipVersionManager,
-    relationshipHandler
+    relationshipHandler,
 ) {
     override fun beforeObjectHandled(
         o: TrackedEntityInstance,
-        params: IdentifiableDataHandlerParams
+        params: IdentifiableDataHandlerParams,
     ): TrackedEntityInstance {
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
             Log.i(
                 this.javaClass.simpleName,
-                "TrackedEntityInstance " + o.uid() + " has invalid geometry value"
+                "TrackedEntityInstance " + o.uid() + " has invalid geometry value",
             )
             o.toBuilder().geometry(null).build()
         }
@@ -79,11 +80,11 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
         o: TrackedEntityInstance,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (action !== HandleAction.Delete) {
             trackedEntityAttributeValueHandler.handleMany(
-                o.trackedEntityAttributeValues()
+                o.trackedEntityAttributeValues(),
             ) { value: TrackedEntityAttributeValue ->
                 value.toBuilder().trackedEntityInstance(o.uid()).build()
             }
@@ -99,7 +100,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
                     params.overwrite,
-                    asRelationship = false
+                    asRelationship = false,
                 )
                 enrollmentHandler.handleMany(enrollments, thisParams, relatives)
                 enrollmentOrphanCleaner.deleteOrphan(o, enrollments, params.program)
@@ -133,7 +134,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
                     trackedEntityAttributeValueStore.deleteByInstanceAndNotInProgramAttributes(
                         tei.uid(),
                         attributeUids,
-                        params.program
+                        params.program,
                     )
                 }
                 else -> {
@@ -144,7 +145,7 @@ internal class TrackedEntityInstanceHandler @Inject constructor(
                         trackedEntityInstanceUid = tei.uid(),
                         trackedEntityAttributeUids = attributeUids,
                         teiType = tei.trackedEntityType()!!,
-                        programs = programs
+                        programs = programs,
                     )
                 }
             }

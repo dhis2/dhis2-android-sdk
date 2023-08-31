@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 
 class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
@@ -39,46 +39,45 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     // @Test
     @Throws(Exception::class)
-    fun download_number_of_events_according_to_default_limit() {
+    fun download_number_of_events_according_to_default_limit() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         val eventEndpointCall = create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())
-        val events = eventEndpointCall.blockingGet().items()
+        val events = eventEndpointCall.items()
 
         assertThat(events.isEmpty()).isFalse()
 
         // TODO: we should create dependant server data verifications in other test suite
         /* verifyNumberOfDownloadedEvents(49);
         verifyNumberOfDownloadedTrackedEntityDataValue(335);
-        */
+         */
     }
 
     // @Test
     @Throws(Exception::class)
-    fun download_event_with_category_combo_option() {
+    fun download_event_with_category_combo_option() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
-        val eventEndpointCall = create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())
-        eventEndpointCall.blockingGet()
+        create(d2.retrofit(), "DiszpKrYNg8", 0, emptyList())
 
         assertThat(verifyAtLeastOneEventWithOptionCombo()).isTrue()
     }
 
     private fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
-        val eventStore = create(d2.databaseAdapter())
+        val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
         return downloadedEvents.any { it.attributeOptionCombo() != null }
     }
 
     private fun verifyNumberOfDownloadedEvents(numEvents: Int) {
-        val eventStore = create(d2.databaseAdapter())
+        val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
 
         assertThat(downloadedEvents.size).isEqualTo(numEvents)
     }
 
     private fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
-        val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter())
+        val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
         val numPersisted = trackedEntityDataValueStore.selectAll().size
 
         assertThat(numPersisted).isEqualTo(num)

@@ -29,10 +29,8 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.IndexedDataValueConflict
@@ -43,27 +41,28 @@ import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatest
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
 
 @Reusable
 internal class DataValueConflictParser @Inject constructor(
-    dataElementStore: IdentifiableObjectStore<DataElement>,
+    dataElementStore: DataElementStore,
     dataValueStore: DataValueStore,
-    dataSetStore: IdentifiableObjectStore<DataSet>,
-    val versionManager: DHISVersionManager
+    dataSetStore: DataSetStore,
+    val versionManager: DHISVersionManager,
 ) {
 
     private val conflicts = listOf(
         InvalidDataElementTypeConflict(dataElementStore),
         InvalidDataElementType37Conflict(dataElementStore),
         PastExpiryDateConflict(dataValueStore, dataSetStore),
-        PeriodAfterLatestOpenFutureConflict(dataElementStore)
+        PeriodAfterLatestOpenFutureConflict(dataElementStore),
     )
 
     private val indexedDataValueConflict = IndexedDataValueConflict()
 
     fun getDataValueConflicts(
         conflict: ImportConflict,
-        dataValues: List<DataValue>
+        dataValues: List<DataValue>,
     ): List<DataValueConflict> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
             indexedDataValueConflict.getDataValues(conflict, dataValues)

@@ -31,42 +31,20 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
-import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 
 @Module
 internal class StockUseCaseEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<InternalStockUseCase> {
-        return StockUseCaseStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): StockUseCaseStore {
+        return StockUseCaseStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(
-        store: IdentifiableObjectStore<InternalStockUseCase>,
-        linkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>
-    ): HandlerWithTransformer<InternalStockUseCase> {
-        return StockUseCaseHandler(store, linkHandler)
-    }
-
-    @Provides
-    @Reusable
-    fun transformer(): TwoWayTransformer<InternalStockUseCase, StockUseCase> {
-        return StockUseCaseTransformer()
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(linkStore: LinkStore<InternalStockUseCaseTransaction>):
+    fun childrenAppenders(linkStore: StockUseCaseTransactionLinkStore):
         Map<String, ChildrenAppender<InternalStockUseCase>> {
         val childrenAppender: ChildrenAppender<InternalStockUseCase> =
             StockUseCaseTransactionChildrenAppender(linkStore)

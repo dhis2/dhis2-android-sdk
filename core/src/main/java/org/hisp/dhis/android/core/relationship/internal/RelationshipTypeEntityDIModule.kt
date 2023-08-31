@@ -30,10 +30,7 @@ package org.hisp.dhis.android.core.relationship.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.RelationshipType
 
@@ -42,22 +39,29 @@ internal class RelationshipTypeEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<RelationshipType> {
-        return RelationshipTypeStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): RelationshipTypeStore {
+        return RelationshipTypeStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    fun handler(impl: RelationshipTypeHandler): Handler<RelationshipType> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): MutableMap<String, ChildrenAppender<RelationshipType>> {
-        val childrenAppender: ChildrenAppender<RelationshipType> = RelationshipConstraintChildrenAppender(
-            RelationshipConstraintStore.create(databaseAdapter)
+    fun handler(
+        relationshipTypeStore: RelationshipTypeStore,
+        relationshipConstraintHandler: RelationshipConstraintHandler,
+    ): RelationshipTypeHandler {
+        return RelationshipTypeHandler(
+            relationshipTypeStore,
+            relationshipConstraintHandler,
         )
-        return Collections.singletonMap(RelationshipTypeFields.CONSTRAINTS, childrenAppender)
+    }
+
+    @Provides
+    @Reusable
+    fun childrenAppenders(
+        constraintStore: RelationshipConstraintStore,
+    ): Map<String, ChildrenAppender<RelationshipType>> {
+        return mapOf(
+            RelationshipTypeFields.CONSTRAINTS to RelationshipConstraintChildrenAppender(constraintStore),
+        )
     }
 }

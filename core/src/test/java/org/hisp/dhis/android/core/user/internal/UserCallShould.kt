@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.nhaarman.mockitokotlin2.*
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -42,12 +40,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Call
+import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
     private val userService: UserService = mock()
     private val apiCallExecutor: APICallExecutor = mock()
-    private val userHandler: Handler<User> = mock()
+    private val userHandler: UserHandler = mock()
     private val userCall: Call<User> = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
 
@@ -70,7 +69,6 @@ class UserCallShould : BaseCallShould() {
             userSyncCall.call()
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
-
             // verify that handlers was not touched
             verify(databaseAdapter, never()).beginNewTransaction()
             verify(transaction, never()).setSuccessful()

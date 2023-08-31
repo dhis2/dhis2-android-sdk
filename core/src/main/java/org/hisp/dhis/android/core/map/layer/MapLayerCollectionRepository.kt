@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.map.layer
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -37,19 +35,21 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import javax.inject.Inject
 
 @Reusable
 class MapLayerCollectionRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<MapLayer>,
+    store: MapLayerStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<MapLayer>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyWithUidCollectionRepositoryImpl<MapLayer, MapLayerCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
-        scope
-    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, childrenAppenders, s) }
+        scope,
+    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, childrenAppenders, s) },
 ) {
 
     fun byUid(): StringFilterConnector<MapLayerCollectionRepository> {

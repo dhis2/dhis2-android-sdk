@@ -31,5 +31,5 @@ enum class DisplayDensity {
     COMFORTABLE,
     NORMAL,
     COMPACT,
-    NONE
+    NONE,
 }

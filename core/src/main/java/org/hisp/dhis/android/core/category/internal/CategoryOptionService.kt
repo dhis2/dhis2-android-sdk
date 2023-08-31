@@ -43,11 +43,11 @@ internal interface CategoryOptionService {
         @Query("fields") @Which fields: Fields<CategoryOption>,
         @Query("filter") categoryUidsFilterString: String,
         @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Single<Payload<CategoryOption>>
 
     @GET("categoryOptions/orgUnits")
     fun getCategoryOptionOrgUnits(
-        @Query("categoryOptions") categoryOptions: String
+        @Query("categoryOptions") categoryOptions: String,
     ): Single<CategoryOptionOrganisationUnits>
 }

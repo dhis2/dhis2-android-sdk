@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.Geometry
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import java.util.*
 
 internal object TrackedEntityInstanceFields {
     const val UID = "trackedEntityInstance"
@@ -58,7 +58,7 @@ internal object TrackedEntityInstanceFields {
                 .with(RelationshipFields.allFields),
             fh.nestedField<Enrollment>(ENROLLMENTS)
                 .with(EnrollmentFields.allFields),
-            fh.nestedField<ProgramOwner>(PROGRAM_OWNERS)
+            fh.nestedField<ProgramOwner>(PROGRAM_OWNERS),
         ).build()
 
     val asRelationshipFields: Fields<TrackedEntityInstance> = commonFields().build()
@@ -76,7 +76,7 @@ internal object TrackedEntityInstanceFields {
             fh.field<Geometry>(GEOMETRY),
             fh.field<Boolean>(DELETED),
             fh.nestedField<TrackedEntityAttributeValue>(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                .with(TrackedEntityAttributeValueFields.allFields)
+                .with(TrackedEntityAttributeValueFields.allFields),
         )
     }
 }

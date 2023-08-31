@@ -30,19 +30,38 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : IdentifiableDataObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDeletableDataObjectStore<O> where O : ObjectWithUidInterface, O : DeletableDataObject {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
+        objectFactory: (Cursor) -> O,
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(tableInfo),
+        binder,
+        objectFactory,
+    )
 
     private var setDeletedStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null

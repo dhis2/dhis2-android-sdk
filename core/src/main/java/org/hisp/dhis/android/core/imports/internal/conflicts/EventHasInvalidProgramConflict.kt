@@ -46,7 +46,7 @@ internal object EventHasInvalidProgramConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getEvent(conflict)?.let { eventUid ->
             description(eventUid)

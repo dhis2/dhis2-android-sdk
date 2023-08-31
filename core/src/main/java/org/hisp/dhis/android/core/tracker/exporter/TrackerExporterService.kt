@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
@@ -39,13 +38,13 @@ import retrofit2.http.*
 @Suppress("LongParameterList")
 internal interface TrackerExporterService {
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstance(
+    suspend fun getTrackedEntityInstance(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<NTIPayload<NewTrackerImporterTrackedEntity>>
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
+    ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
@@ -56,7 +55,7 @@ internal interface TrackerExporterService {
         @Query(PROGRAM_STATUS) programStatus: String?,
         @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): NewTrackerImporterTrackedEntity
 
     @GET(TRACKED_ENTITY_INSTANCES)
@@ -87,17 +86,17 @@ internal interface TrackerExporterService {
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean = false
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
     ): NTIPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$ENROLLMENTS/{$ENROLLMENT}")
-    fun getEnrollmentSingle(
+    suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT) enrollmentUid: String,
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>
-    ): Single<NewTrackerImporterEnrollment>
+        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>,
+    ): NewTrackerImporterEnrollment
 
     @GET(EVENTS)
-    fun getEvents(
+    suspend fun getEvents(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -124,15 +123,15 @@ internal interface TrackerExporterService {
         @Query(UPDATED_AFTER) updatedAfter: String?,
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null
-    ): Single<NTIPayload<NewTrackerImporterEvent>>
+        @Query(EVENT) eventUid: String? = null,
+    ): NTIPayload<NewTrackerImporterEvent>
 
     @GET(EVENTS)
-    fun getEventSingle(
+    suspend fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(EVENT) eventUid: String,
-        @Query(OU_MODE) orgUnitMode: String
-    ): Single<NTIPayload<NewTrackerImporterEvent>>
+        @Query(OU_MODE) orgUnitMode: String,
+    ): NTIPayload<NewTrackerImporterEvent>
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "tracker/trackedEntities"

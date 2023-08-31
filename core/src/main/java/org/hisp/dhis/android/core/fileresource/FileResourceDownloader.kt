@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.fileresource
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
@@ -37,11 +37,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
+import javax.inject.Inject
 
 @Reusable
 class FileResourceDownloader @Inject internal constructor(
     private val call: FileResourceDownloadCall,
-    private val params: FileResourceDownloadParams
+    private val params: FileResourceDownloadParams,
 ) : BaseRepository {
 
     private val connectorFactory: ScopedFilterConnectorFactory<FileResourceDownloader, FileResourceDownloadParams> =
@@ -56,7 +57,7 @@ class FileResourceDownloader @Inject internal constructor(
      * @return -
      */
     fun download(): Observable<D2Progress> {
-        return call.download(params)
+        return call.download(params).asObservable()
     }
 
     fun blockingDownload() {

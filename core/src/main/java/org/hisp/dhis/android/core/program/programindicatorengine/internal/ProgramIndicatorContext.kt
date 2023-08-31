@@ -36,5 +36,5 @@ data class ProgramIndicatorContext(
     val programIndicator: ProgramIndicator,
     val enrollment: Enrollment? = null,
     val attributeValues: Map<String, TrackedEntityAttributeValue> = mapOf(),
-    val events: Map<String, List<Event>> = mapOf()
+    val events: Map<String, List<Event>> = mapOf(),
 )

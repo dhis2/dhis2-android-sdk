@@ -39,9 +39,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class AnalyticsDhisVisualizationStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<AnalyticsDhisVisualization>(
-        AnalyticsDhisVisualizationStore.create(TestDatabaseAdapterFactory.get()),
+        AnalyticsDhisVisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
         AnalyticsDhisVisualizationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsDhisVisualization {
         return AnalyticsSettingsSamples.analyticsDhisVisualization

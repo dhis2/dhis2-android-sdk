@@ -32,7 +32,7 @@ import android.content.Context
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class DefaultInterpreter internal constructor(
-    override val regex: Regex
+    override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = 0
     override fun displayDescription(context: Context, error: JobValidationError): String {

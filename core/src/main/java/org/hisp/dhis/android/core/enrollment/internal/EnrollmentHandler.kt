@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import android.util.Log
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -44,22 +41,21 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
-@Reusable
-internal class EnrollmentHandler @Inject constructor(
+internal class EnrollmentHandler constructor(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     private val noteVersionManager: NoteDHISVersionManager,
     enrollmentStore: EnrollmentStore,
     private val eventHandler: IdentifiableDataHandler<Event>,
-    private val eventOrphanCleaner: OrphanCleaner<Enrollment, Event>,
+    private val eventOrphanCleaner: EventOrphanCleaner,
     private val noteHandler: Handler<Note>,
     private val noteUniquenessManager: NoteUniquenessManager,
-    private val relationshipOrphanCleaner: OrphanCleaner<Enrollment, Relationship>
+    private val relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Enrollment>(enrollmentStore, relationshipVersionManager, relationshipHandler) {
 
     override fun addRelationshipState(o: Enrollment): Enrollment {
@@ -76,7 +72,7 @@ internal class EnrollmentHandler @Inject constructor(
         } else {
             Log.i(
                 this.javaClass.simpleName,
-                "Enrollment " + o.uid() + " has invalid geometry value"
+                "Enrollment " + o.uid() + " has invalid geometry value",
             )
             o.toBuilder().geometry(null).build()
         }
@@ -86,7 +82,7 @@ internal class EnrollmentHandler @Inject constructor(
         o: Enrollment,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (action !== HandleAction.Delete) {
             val events = EnrollmentInternalAccessor.accessEvents(o)
@@ -94,7 +90,7 @@ internal class EnrollmentHandler @Inject constructor(
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
                     overwrite = params.overwrite,
-                    asRelationship = false
+                    asRelationship = false,
                 )
                 eventHandler.handleMany(events, thisParams, relatives)
                 eventOrphanCleaner.deleteOrphan(o, events)
@@ -105,7 +101,9 @@ internal class EnrollmentHandler @Inject constructor(
                     noteVersionManager.transform(Note.NoteType.ENROLLMENT_NOTE, o.uid(), note)
                 }
                 val notesToSync = noteUniquenessManager.buildUniqueCollection(
-                    transformed, Note.NoteType.ENROLLMENT_NOTE, o.uid()
+                    transformed,
+                    Note.NoteType.ENROLLMENT_NOTE,
+                    o.uid(),
                 )
                 noteHandler.handleMany(notesToSync)
             }

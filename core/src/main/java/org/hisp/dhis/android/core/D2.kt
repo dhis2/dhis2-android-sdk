@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -76,6 +77,11 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
         return d2DIComponent.retrofit()
     }
 
+    @VisibleForTesting
+    internal fun coroutineAPICallExecutor(): CoroutineAPICallExecutor {
+        return d2DIComponent.coroutineApiCallExecutor()
+    }
+
     fun databaseAdapter(): DatabaseAdapter {
         return d2DIComponent.databaseAdapter()
     }
@@ -99,8 +105,8 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     @Deprecated(
         "Use settingModule() instead.",
         replaceWith = ReplaceWith(
-            expression = "settingModule()"
-        )
+            expression = "settingModule()",
+        ),
     )
     fun systemSettingModule(): SettingModule {
         return modules.settingModule

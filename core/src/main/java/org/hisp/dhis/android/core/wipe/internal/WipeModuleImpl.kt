@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal class WipeModuleImpl(
     private val d2CallExecutor: D2CallExecutor,
-    private val moduleWipers: List<ModuleWiper>
+    private val moduleWipers: List<ModuleWiper>,
 ) : WipeModule {
     @Throws(D2Error::class)
     override fun wipeEverything() {

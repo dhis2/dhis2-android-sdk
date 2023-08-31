@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import java.util.ArrayList
-import java.util.Arrays
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -37,10 +35,11 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import java.util.Arrays
 
-internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : ObjectWithoutUidHandlerImpl<DataValue>(
-    store
-) {
+internal class DataValueHandler(
+    store: ObjectWithoutUidStore<DataValue>,
+) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
     override fun deleteOrPersist(o: DataValue): HandleAction {
         return if (CollectionsHelper.isDeleted(o)) {
             store.deleteWhereIfExists(o)
@@ -86,7 +85,7 @@ internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : Objec
             val whereClause = WhereClauseBuilder()
                 .appendNotInKeyStringValues(
                     DataValueTableInfo.Columns.SYNC_STATE,
-                    Arrays.asList(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+                    Arrays.asList(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
                 )
                 .build()
             return store.selectWhere(whereClause)

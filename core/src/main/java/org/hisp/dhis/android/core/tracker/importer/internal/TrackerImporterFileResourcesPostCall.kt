@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -41,35 +39,32 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
     private val fileResourcePostCall: FileResourcePostCall,
-    private val fileResourceHelper: FileResourceHelper
+    private val fileResourceHelper: FileResourceHelper,
 ) {
 
-    fun uploadFileResources(
-        payloadWrapper: NewTrackerImporterPayloadWrapper
-    ): Single<NewTrackerImporterPayloadWrapper> {
-        return Single.create { emitter ->
-            val fileResources = fileResourceHelper.getUploadableFileResources()
+    suspend fun uploadFileResources(
+        payloadWrapper: NewTrackerImporterPayloadWrapper,
+    ): NewTrackerImporterPayloadWrapper {
+        val fileResources = fileResourceHelper.getUploadableFileResources()
 
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(payloadWrapper)
-            } else {
-                emitter.onSuccess(
-                    payloadWrapper.copy(
-                        deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
-                        updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources)
-                    )
-                )
-            }
+        return if (fileResources.isEmpty()) {
+            payloadWrapper
+        } else {
+            payloadWrapper.copy(
+                deleted = uploadPayloadFileResources(payloadWrapper.deleted, fileResources),
+                updated = uploadPayloadFileResources(payloadWrapper.updated, fileResources),
+            )
         }
     }
 
-    private fun uploadPayloadFileResources(
+    private suspend fun uploadPayloadFileResources(
         payload: NewTrackerImporterPayload,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): NewTrackerImporterPayload {
         val uploadedAttributes = uploadAttributes(payload.trackedEntities, payload.enrollments, fileResources)
         val uploadedDataValues = uploadDataValues(payload.events, fileResources)
@@ -78,14 +73,14 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
             trackedEntities = uploadedAttributes.first.toMutableList(),
             enrollments = uploadedAttributes.second.toMutableList(),
             events = uploadedDataValues.first.toMutableList(),
-            fileResourcesMap = uploadedAttributes.third + uploadedDataValues.second
+            fileResourcesMap = uploadedAttributes.third + uploadedDataValues.second,
         )
     }
 
-    private fun uploadAttributes(
+    private suspend fun uploadAttributes(
         entities: List<NewTrackerImporterTrackedEntity>,
         enrollments: List<NewTrackerImporterEnrollment>,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Triple<List<NewTrackerImporterTrackedEntity>, List<NewTrackerImporterEnrollment>, Map<String, List<String>>> {
         // Map from original uid to new uid (the uid from the server)
         val uploadedFileResourcesMap = mutableMapOf<String, FileResource>()
@@ -100,7 +95,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
                     attributeValues = entity.trackedEntityAttributeValues(),
                     fileResources = fileResources,
                     uploadedFileResources = uploadedFileResourcesMap,
-                    fileResourcesByEntity = fileResourcesByEntity
+                    fileResourcesByEntity = fileResourcesByEntity,
                 )
                 entity.toBuilder().trackedEntityAttributeValues(updatedAttributes).build()
             }
@@ -113,7 +108,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
                     attributeValues = enrollment.attributes(),
                     fileResources = fileResources,
                     uploadedFileResources = uploadedFileResourcesMap,
-                    fileResourcesByEntity = fileResourcesByEntity
+                    fileResourcesByEntity = fileResourcesByEntity,
                 )
                 enrollment.toBuilder().attributes(updatedAttributes).build()
             }
@@ -122,12 +117,12 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         return Triple(successfulEntities, successfulEnrollments, fileResourcesByEntity)
     }
 
-    private fun getUpdatedAttributes(
+    private suspend fun getUpdatedAttributes(
         entityUid: String,
         attributeValues: List<NewTrackerImporterTrackedEntityAttributeValue>?,
         fileResources: List<FileResource>,
         uploadedFileResources: MutableMap<String, FileResource>,
-        fileResourcesByEntity: MutableMap<String, List<String>>
+        fileResourcesByEntity: MutableMap<String, List<String>>,
     ): List<NewTrackerImporterTrackedEntityAttributeValue>? {
         val entityFileResources = mutableListOf<String>()
         val updatedAttributes = attributeValues?.map { attributeValue ->
@@ -154,9 +149,9 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
         return updatedAttributes
     }
 
-    private fun uploadDataValues(
+    private suspend fun uploadDataValues(
         events: List<NewTrackerImporterEvent>,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): Pair<List<NewTrackerImporterEvent>, Map<String, List<String>>> {
         val uploadedFileResources = mutableMapOf<String, List<String>>()
 
@@ -183,7 +178,7 @@ internal class TrackerImporterFileResourcesPostCall @Inject internal constructor
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun <T> catchErrorToNull(f: () -> T): T? {
+    private suspend fun <T> catchErrorToNull(f: suspend () -> T): T? {
         return try {
             f()
         } catch (e: java.lang.RuntimeException) {

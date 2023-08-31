@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.datastore.internal
 import android.content.ContentValues
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -45,18 +43,13 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 @Suppress("MagicNumber")
 internal class DataStoreEntryStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilder,
-    binder: StatementBinder<DataStoreEntry>,
-    whereUpdateBinder: WhereStatementBinder<DataStoreEntry>,
-    whereDeleteBinder: WhereStatementBinder<DataStoreEntry>,
-    objectFactory: (Cursor) -> DataStoreEntry
 ) : ObjectWithoutUidStoreImpl<DataStoreEntry>(
     databaseAdapter,
-    builder,
-    binder,
-    whereUpdateBinder,
-    whereDeleteBinder,
-    objectFactory
+    DataStoreEntryTableInfo.TABLE_INFO,
+    BINDER,
+    WHERE_UPDATE_BINDER,
+    WHERE_DELETE_BINDER,
+    { cursor: Cursor -> DataStoreEntry.create(cursor) },
 ),
     DataStoreEntryStore {
 
@@ -100,22 +93,6 @@ internal class DataStoreEntryStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { o: DataStoreEntry, w: StatementWrapper ->
             w.bind(1, o.namespace())
             w.bind(2, o.key())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): DataStoreEntryStore {
-            val tableInfo = DataStoreEntryTableInfo.TABLE_INFO
-            val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
-                tableInfo.name(), tableInfo.columns().all(),
-                tableInfo.columns().whereUpdate()
-            )
-            return DataStoreEntryStoreImpl(
-                databaseAdapter,
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                WHERE_DELETE_BINDER
-            ) { cursor: Cursor -> DataStoreEntry.create(cursor) }
         }
     }
 }

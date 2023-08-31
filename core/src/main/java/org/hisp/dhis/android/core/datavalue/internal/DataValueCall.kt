@@ -28,36 +28,33 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
 import org.hisp.dhis.android.core.datavalue.DataValue
+import javax.inject.Inject
 
 @Reusable
 internal class DataValueCall @Inject constructor(
     private val service: DataValueService,
-    private val handler: Handler<DataValue>,
-    private val apiDownloader: APIDownloader
+    private val handler: DataValueHandler,
+    private val apiDownloader: APIDownloader,
 ) : QueryCall<DataValue, DataValueQuery> {
 
-    override fun download(query: DataValueQuery): Single<List<DataValue>> {
-        val b = query.bundle()
-        return apiDownloader.downloadList(
-            handler,
+    override suspend fun download(query: DataValueQuery): List<DataValue> {
+        val b = query.bundle
+        return apiDownloader.downloadListAsCoroutine(handler) {
             service.getDataValues(
-                DataValueFields.allFields,
-                b.key.lastUpdatedStr(),
-                commaSeparatedUids(b.dataSets),
-                commaSeparatedCollectionValues(b.periodIds),
-                commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
-                true,
-                false,
-                true
-            ).map { it.dataValues }
-        )
+                fields = DataValueFields.allFields,
+                lastUpdated = b.key.lastUpdatedStr(),
+                dataSetUids = commaSeparatedUids(b.dataSets),
+                periodIds = commaSeparatedCollectionValues(b.periodIds),
+                orgUnitUids = commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
+                children = true,
+                paging = false,
+                includeDeleted = true,
+            ).dataValues
+        }
     }
 }

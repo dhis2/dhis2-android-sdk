@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @Reusable
 class OrganisationUnitService @Inject constructor(
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository,
 ) {
 
     fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {

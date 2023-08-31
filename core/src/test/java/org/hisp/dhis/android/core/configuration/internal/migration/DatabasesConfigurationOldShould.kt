@@ -56,7 +56,7 @@ class DatabasesConfigurationOldShould :
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
         val configuration = deserialize(
-            DatabasesConfigurationOld::class.java
+            DatabasesConfigurationOld::class.java,
         )
         val serialized = serialize(configuration)
         val deserialized = deserialize(serialized, DatabasesConfigurationOld::class.java)

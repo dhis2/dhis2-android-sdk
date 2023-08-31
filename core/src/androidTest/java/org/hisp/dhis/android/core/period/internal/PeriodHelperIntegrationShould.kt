@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.period.internal
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @RunWith(D2JunitRunner::class)
 class PeriodHelperIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
@@ -58,6 +58,6 @@ class PeriodHelperIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
         assertThat(periods.size).isEqualTo(1)
 
-        PeriodStoreImpl.create(databaseAdapter).delete()
+        PeriodStoreImpl(databaseAdapter).delete()
     }
 }

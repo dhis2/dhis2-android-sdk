@@ -31,26 +31,20 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore.create
 
 @Module
 internal class CategoryCategoryOptionEntityDIModule {
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryOptionLink> {
-        return create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): CategoryCategoryOptionLinkStore {
+        return CategoryCategoryOptionLinkStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun handler(
-        store: LinkStore<CategoryCategoryOptionLink>
-    ): OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink> {
-        return OrderedLinkHandlerImpl(store)
+        store: CategoryCategoryOptionLinkStore,
+    ): CategoryCategoryOptionLinkHandler {
+        return CategoryCategoryOptionLinkHandler(store)
     }
 }

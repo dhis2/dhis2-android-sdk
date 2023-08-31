@@ -30,17 +30,11 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
 public final class DatabaseEncryptionPasswordManager {
 
     private final SecureStore secureStore;
     private final DatabaseEncryptionPasswordGenerator passwordGenerator;
 
-    @Inject
     DatabaseEncryptionPasswordManager(SecureStore secureStore,
                                       DatabaseEncryptionPasswordGenerator passwordGenerator) {
         this.secureStore = secureStore;

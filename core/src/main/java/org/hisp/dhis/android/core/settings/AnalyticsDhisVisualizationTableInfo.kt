@@ -56,7 +56,7 @@ object AnalyticsDhisVisualizationTableInfo {
                 GROUP_UID,
                 GROUP_NAME,
                 NAME,
-                TIME_STAMP
+                TIME_STAMP,
             )
         }
 

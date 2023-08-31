@@ -37,24 +37,24 @@ import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjec
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStoreImpl
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStoreImpl
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStoreImpl
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerStoreImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStoreImpl
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStoreImpl
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStoreImpl
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -105,43 +105,43 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
     }
 
     private fun givenOthersInDatabase() {
-        D2ErrorStore.create(databaseAdapter).insert(
+        D2ErrorStoreImpl(databaseAdapter).insert(
             D2Error.builder()
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("Sample error")
-                .build()
+                .build(),
         )
-        TrackerImportConflictStoreImpl.create(databaseAdapter).insert(TrackerImportConflict.builder().build())
-        FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build())
-        TrackerJobObjectStore.create(databaseAdapter).insert(TrackerJobObjectSamples.get1())
-        DataValueConflictStore.create(databaseAdapter).insert(DataValueConflict.builder().build())
-        LocalDataStoreStore.create(databaseAdapter).insert(
+        TrackerImportConflictStoreImpl(databaseAdapter).insert(TrackerImportConflict.builder().build())
+        FileResourceStoreImpl(databaseAdapter).insert(FileResource.builder().uid("uid").build())
+        TrackerJobObjectStoreImpl(databaseAdapter).insert(TrackerJobObjectSamples.get1())
+        DataValueConflictStoreImpl(databaseAdapter).insert(DataValueConflict.builder().build())
+        LocalDataStoreStoreImpl(databaseAdapter).insert(
             KeyValuePair.builder()
                 .key("key1")
                 .value("value1")
-                .build()
+                .build(),
         )
-        LocalDataStoreStore.create(databaseAdapter).insert(
+        LocalDataStoreStoreImpl(databaseAdapter).insert(
             KeyValuePair.builder()
                 .key("key2")
                 .value("value2")
-                .build()
+                .build(),
         )
-        ProgramTempOwnerStore.create(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
+        ProgramTempOwnerStoreImpl(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
 
-        SMSConfigStoreImpl.create(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
-        SMSOngoingSubmissionStore.create(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
+        SMSConfigStoreImpl(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
+        SMSOngoingSubmissionStoreImpl(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
 
-        StockUseCaseStore.create(databaseAdapter).insert(
+        StockUseCaseStoreImpl(databaseAdapter).insert(
             InternalStockUseCaseSamples.get()
-                .toBuilder().uid("lxAQ7Zs9VYR").build()
+                .toBuilder().uid("lxAQ7Zs9VYR").build(),
         )
-        StockUseCaseTransactionLinkStore.create(databaseAdapter).insert(
+        StockUseCaseTransactionLinkStoreImpl(databaseAdapter).insert(
             InternalStockUseCaseTransactionSamples.get()
-                .toBuilder().programUid("lxAQ7Zs9VYR").build()
+                .toBuilder().programUid("lxAQ7Zs9VYR").build(),
         )
 
-        MapLayerStore.create(databaseAdapter).insert(MapLayerSamples.get())
-        MapLayerImageryProviderStore.create(databaseAdapter).insert(MapLayerImageryProviderSamples.get())
+        MapLayerStoreImpl(databaseAdapter).insert(MapLayerSamples.get())
+        MapLayerImageryProviderStoreImpl(databaseAdapter).insert(MapLayerImageryProviderSamples.get())
     }
 }

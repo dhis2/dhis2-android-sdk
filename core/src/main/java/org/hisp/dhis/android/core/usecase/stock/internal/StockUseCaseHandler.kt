@@ -27,21 +27,20 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
+import javax.inject.Inject
 
+@Reusable
 internal class StockUseCaseHandler @Inject constructor(
-    store: IdentifiableObjectStore<InternalStockUseCase>,
-    private val transactionLinkHandler: LinkHandler<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>,
+    store: StockUseCaseStore,
+    private val transactionLinkHandler: StockUseCaseTransactionLinkHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<InternalStockUseCase>
+        oCollection: Collection<InternalStockUseCase>,
     ): Collection<InternalStockUseCase> {
         store.delete()
         transactionLinkHandler.resetAllLinks()

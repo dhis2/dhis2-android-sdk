@@ -27,42 +27,42 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCollectionRepository
-import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import java.util.*
+import javax.inject.Inject
 
 internal class ProgramIndicatorEngineImpl @Inject constructor(
-    private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    private val programIndicatorStore: ProgramIndicatorStore,
+    private val dataElementStore: DataElementStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventRepository: EventCollectionRepository,
     private val programRepository: ProgramStageCollectionRepository,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val constantStore: IdentifiableObjectStore<Constant>,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>
+    private val constantStore: ConstantStore,
+    private val programStageStore: ProgramStageStore,
 ) : ProgramIndicatorEngine {
 
     @Deprecated("Deprecated in Java")
     override fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
-        programIndicatorUid: String
+        programIndicatorUid: String,
     ): String? {
         return when {
             eventUid != null -> getEventProgramIndicatorValue(eventUid, programIndicatorUid)
@@ -81,7 +81,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             programIndicator = programIndicator,
             attributeValues = getAttributeValues(enrollment),
             enrollment = enrollment,
-            events = getEnrollmentEvents(enrollment)
+            events = getEnrollmentEvents(enrollment),
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
@@ -104,7 +104,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             programIndicator = programIndicator,
             attributeValues = getAttributeValues(enrollment),
             enrollment = enrollment,
-            events = mapOf(event.programStage()!! to listOf(event))
+            events = mapOf(event.programStage()!! to listOf(event)),
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
@@ -116,7 +116,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             context,
             dataElementStore,
             trackedEntityAttributeStore,
-            programStageStore
+            programStageStore,
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

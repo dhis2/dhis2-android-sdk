@@ -27,19 +27,14 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 
-@Reusable
-internal class EventFilterHandler @Inject constructor(
-    eventFilterStore: IdentifiableObjectStore<EventFilter>,
-    private val eventDataFilterHandler: HandlerWithTransformer<EventDataFilter>
+internal class EventFilterHandler constructor(
+    eventFilterStore: EventFilterStore,
+    private val eventDataFilterHandler: EventDataFilterHandler,
 ) : IdentifiableHandlerImpl<EventFilter>(eventFilterStore) {
 
     override fun beforeCollectionHandled(oCollection: Collection<EventFilter>): Collection<EventFilter> {
@@ -50,7 +45,7 @@ internal class EventFilterHandler @Inject constructor(
     override fun afterObjectHandled(o: EventFilter, action: HandleAction) {
         if (action !== HandleAction.Delete && o.eventQueryCriteria() != null) {
             eventDataFilterHandler.handleMany(
-                o.eventQueryCriteria()!!.dataFilters()
+                o.eventQueryCriteria()!!.dataFilters(),
             ) { edf: EventDataFilter -> edf.toBuilder().eventFilter(o.uid()).build() }
         }
     }

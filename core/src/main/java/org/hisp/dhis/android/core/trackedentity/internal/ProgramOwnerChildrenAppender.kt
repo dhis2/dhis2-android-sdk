@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 internal class ProgramOwnerChildrenAppender constructor(
-    private val childStore: ObjectWithoutUidStore<ProgramOwner>
+    private val childStore: ObjectWithoutUidStore<ProgramOwner>,
 ) : ChildrenAppender<TrackedEntityInstance>() {
 
     override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
@@ -43,7 +43,7 @@ internal class ProgramOwnerChildrenAppender constructor(
         val programOwners = childStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
-                .build()
+                .build(),
         )
         return builder.programOwners(programOwners).build()
     }

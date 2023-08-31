@@ -32,5 +32,5 @@ enum class ChartType {
     LINE,
     TABLE,
     WHO_NUTRITION,
-    SINGLE_VALUE
+    SINGLE_VALUE,
 }

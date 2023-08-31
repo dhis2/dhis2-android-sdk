@@ -53,7 +53,7 @@ object StockUseCaseTableInfo {
                 ITEM_DESCRIPTION,
                 PROGRAM_TYPE,
                 DESCRIPTION,
-                STOCK_ON_HAND
+                STOCK_ON_HAND,
             )
         }
 

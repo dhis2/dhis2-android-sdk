@@ -32,11 +32,11 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl;
 
 import java.util.concurrent.Callable;
 
@@ -53,10 +53,10 @@ public final class D2CallExecutor {
             .errorComponent(D2ErrorComponent.SDK);
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectStore<D2Error> errorStore;
+    private final D2ErrorStore errorStore;
 
     @Inject
-    public D2CallExecutor(DatabaseAdapter databaseAdapter, ObjectStore<D2Error> errorStore) {
+    public D2CallExecutor(DatabaseAdapter databaseAdapter, D2ErrorStore errorStore) {
         this.databaseAdapter = databaseAdapter;
         this.errorStore = errorStore;
     }
@@ -103,6 +103,6 @@ public final class D2CallExecutor {
     }
 
     public static D2CallExecutor create(DatabaseAdapter databaseAdapter) {
-        return new D2CallExecutor(databaseAdapter, D2ErrorStore.create(databaseAdapter));
+        return new D2CallExecutor(databaseAdapter, new D2ErrorStoreImpl(databaseAdapter));
     }
 }

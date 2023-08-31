@@ -33,15 +33,14 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import java.io.IOException
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import java.io.IOException
 
 class AnalyticsTEIIndicatorDeserializer @JvmOverloads constructor(
-    vc: Class<*>? = null
+    vc: Class<*>? = null,
 ) : StdDeserializer<AnalyticsTeiIndicator>(vc) {
 
     @Throws(IOException::class, JsonProcessingException::class)
-
     override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): AnalyticsTeiIndicator {
         val node = jp.codec.readTree<JsonNode>(jp)
         val programIndicator = node.textValue()

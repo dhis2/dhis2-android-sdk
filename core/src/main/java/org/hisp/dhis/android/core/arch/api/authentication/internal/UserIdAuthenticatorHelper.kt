@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import javax.inject.Inject
 
 @Reusable
 internal class UserIdAuthenticatorHelper @Inject constructor(
-    private val userIdStore: UserIdInMemoryStore
+    private val userIdStore: UserIdInMemoryStore,
 ) {
 
     companion object {

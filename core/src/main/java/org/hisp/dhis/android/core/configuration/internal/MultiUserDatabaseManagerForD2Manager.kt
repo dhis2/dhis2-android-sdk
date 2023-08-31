@@ -28,28 +28,29 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val migration: DatabaseConfigurationMigration,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
     fun loadIfLogged(credentials: Credentials?) {
         val databaseConfiguration = databaseConfigurationStore.get()
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(credentials.serverUrl)
             val account = DatabaseConfigurationHelper.getLoggedAccount(
-                databaseConfiguration, credentials.username, credentials.serverUrl
+                databaseConfiguration,
+                credentials.username,
+                credentials.serverUrl,
             )
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
         }

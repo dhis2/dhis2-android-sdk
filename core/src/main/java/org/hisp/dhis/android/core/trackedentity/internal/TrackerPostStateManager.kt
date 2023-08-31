@@ -28,18 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerPostStateManager @Inject internal constructor(
@@ -47,15 +46,15 @@ internal class TrackerPostStateManager @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val h: StatePersistorHelper
+    private val fileResourceStore: FileResourceStore,
+    private val h: StatePersistorHelper,
 ) {
 
     fun restorePayloadStates(
         trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
         events: List<Event> = emptyList(),
         relationships: List<Relationship> = emptyList(),
-        fileResources: List<String> = emptyList()
+        fileResources: List<String> = emptyList(),
     ) {
         setPayloadStates(trackedEntityInstances, events, relationships, fileResources, null)
     }
@@ -66,7 +65,7 @@ internal class TrackerPostStateManager @Inject internal constructor(
         events: List<Event> = emptyList(),
         relationships: List<Relationship> = emptyList(),
         fileResources: List<String> = emptyList(),
-        forcedState: State?
+        forcedState: State?,
     ) {
         val teiMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()

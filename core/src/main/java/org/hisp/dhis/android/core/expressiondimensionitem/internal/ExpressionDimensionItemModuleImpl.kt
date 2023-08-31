@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemCollectionRepository
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
+import javax.inject.Inject
 
 @Reusable
 internal class ExpressionDimensionItemModuleImpl @Inject internal constructor(
-    private val expressionDimensionItems: ExpressionDimensionItemCollectionRepository
+    private val expressionDimensionItems: ExpressionDimensionItemCollectionRepository,
 ) : ExpressionDimensionItemModule {
 
     override fun expressionDimensionItems(): ExpressionDimensionItemCollectionRepository = expressionDimensionItems

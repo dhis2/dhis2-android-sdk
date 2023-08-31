@@ -29,61 +29,57 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @Reusable
 internal class BingCallFactory @Inject constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val mapLayerHandler: Handler<MapLayer>,
+    private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
     private val settingsService: SettingService,
-    private val bingService: BingService
+    private val bingService: BingService,
 ) {
 
     @Suppress("TooGenericExceptionCaught")
-    fun download(): Single<List<MapLayer>> {
-        return rxSingle {
-            if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
-                try {
-                    val settings = coroutineAPICallExecutor.wrap(storeError = true) {
-                        settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
-                    }
-
-                    val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
-                        ?.let { key -> downloadBingBasemaps(key) }
-                        ?: emptyList()
-
-                    mapLayers.also {
-                        mapLayerHandler.handleMany(it)
-                    }
-                } catch (e: Exception) {
-                    emptyList()
+    suspend fun download(): List<MapLayer> {
+        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
+            try {
+                val settings = coroutineAPICallExecutor.wrap(storeError = true) {
+                    settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
                 }
-            } else {
+
+                val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
+                    ?.let { key -> downloadBingBasemaps(key) }
+                    ?: emptyList()
+
+                mapLayers.also {
+                    mapLayerHandler.handleMany(it)
+                }
+            } catch (e: Exception) {
                 emptyList()
             }
+        } else {
+            emptyList()
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun downloadBingBasemaps(
-        bingKey: String
+        bingKey: String,
     ): List<MapLayer> {
         return try {
             BingBasemaps.list.map { b ->
@@ -105,7 +101,7 @@ internal class BingCallFactory @Inject constructor(
 
     private suspend fun downloadBasemap(
         bingkey: String,
-        basemap: BingBasemap
+        basemap: BingBasemap,
     ): List<MapLayer> {
         val bingResponseResult = coroutineAPICallExecutor.wrap(storeError = false) {
             bingService.getBaseMap(getUrl(basemap.style, bingkey))
@@ -136,12 +132,12 @@ internal class BingCallFactory @Inject constructor(
                                                 .zoomMax(ca.zoomMax)
                                                 .zoomMin(ca.zoomMin)
                                                 .build()
-                                        }
+                                        },
                                     )
                                     .build()
-                            }
+                            },
                         )
-                        .build()
+                        .build(),
                 )
             }
         }.getOrNull() ?: emptyList()

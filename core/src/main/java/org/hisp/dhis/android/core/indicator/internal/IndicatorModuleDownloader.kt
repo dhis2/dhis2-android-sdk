@@ -29,17 +29,17 @@ package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
+import javax.inject.Inject
 
 @Reusable
 class IndicatorModuleDownloader @Inject internal constructor(
     private val indicatorCallFactory: UidsCallFactory<Indicator>,
     private val indicatorTypeCallFactory: UidsCallFactory<IndicatorType>,
-    private val indicatorUidsSeeker: IndicatorUidsSeeker
+    private val indicatorUidsSeeker: IndicatorUidsSeeker,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {

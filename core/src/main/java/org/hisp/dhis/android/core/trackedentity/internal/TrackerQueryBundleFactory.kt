@@ -28,25 +28,28 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerQueryBundleFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
+    programStore: ProgramStore,
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper
+    commonHelper: TrackerQueryFactoryCommonHelper,
 ) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
-    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    programStore,
+    programSettingsObjectRepository,
+    lastUpdatedManager,
     commonHelper,
     ProgramType.WITH_REGISTRATION,
     { params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings? ->
+            programSettings: ProgramSettings?,
+        ->
         TrackerQueryBundleInternalFactory(commonHelper, params, programSettings)
-    }
+    },
 )

@@ -29,23 +29,22 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class SynchronizationSettingCall @Inject constructor(
-    private val synchronizationSettingHandler: Handler<SynchronizationSettings>,
+    private val synchronizationSettingHandler: SynchronizationSettingHandler,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,
     private val dataSetSettingCall: DataSetSettingCall,
     private val programSettingCall: ProgramSettingCall,
-    private val appVersionManager: SettingsAppInfoManager
+    private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<SynchronizationSettings>() {
 
     override fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
@@ -62,7 +61,7 @@ internal class SynchronizationSettingCall @Inject constructor(
                                 .errorDescription("Synchronization settings not found")
                                 .errorCode(D2ErrorCode.URL_NOT_FOUND)
                                 .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                                .build()
+                                .build(),
                         )
                     } else {
                         Single.just(
@@ -71,7 +70,7 @@ internal class SynchronizationSettingCall @Inject constructor(
                                 .metadataSync(generalSettings?.metadataSync())
                                 .dataSetSettings(dataSetSettings)
                                 .programSettings(programSettings)
-                                .build()
+                                .build(),
                         )
                     }
                 }

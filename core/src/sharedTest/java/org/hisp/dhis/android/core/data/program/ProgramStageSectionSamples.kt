@@ -45,12 +45,12 @@ object ProgramStageSectionSamples {
                 renderType(
                     SectionRendering.create(
                         SectionDeviceRendering.create(
-                            SectionRenderingType.SEQUENTIAL
+                            SectionRenderingType.SEQUENTIAL,
                         ),
                         SectionDeviceRendering.create(
-                            SectionRenderingType.LISTING
-                        )
-                    )
+                            SectionRenderingType.LISTING,
+                        ),
+                    ),
                 )
                 programStage(ObjectWithUid.create("program_stage_uid"))
             }.build()

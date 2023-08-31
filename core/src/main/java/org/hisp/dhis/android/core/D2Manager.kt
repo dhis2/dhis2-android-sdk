@@ -114,7 +114,7 @@ object D2Manager {
                     testingServerUrl!!,
                     testingDatabaseName!!,
                     false,
-                    testingUsername!!
+                    testingUsername!!,
                 )
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials)
@@ -123,8 +123,9 @@ object D2Manager {
             d2 = D2(d2DIComponent)
 
             if (credentials != null) {
-                val uid = d2!!.userModule().user().blockingGet().uid()
-                d2DIComponent.userIdInMemoryStore().set(uid)
+                d2!!.userModule().user().blockingGet()?.uid()?.let { uid ->
+                    d2DIComponent.userIdInMemoryStore().set(uid)
+                }
             }
 
             val setUpTime = System.currentTimeMillis() - startTime
@@ -178,6 +179,7 @@ object D2Manager {
             throw NoSuchFieldException("No testing Server Url")
         }
         d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!, password, null))
+        d2DIComponent.userIdInMemoryStore().set(username)
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {

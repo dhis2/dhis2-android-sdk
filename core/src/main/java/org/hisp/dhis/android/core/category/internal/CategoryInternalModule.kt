@@ -29,12 +29,9 @@ package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCombo
 
 @Reusable
 internal class CategoryInternalModule @Inject constructor(
-    val categoryCall: UidsCall<Category>,
-    val categoryComboCall: UidsCall<CategoryCombo>
+    val categoryCall: CategoryCall,
+    val categoryComboCall: CategoryComboCall,
 )

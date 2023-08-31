@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList", "TooManyFunctions")
@@ -50,7 +50,7 @@ internal class EventServiceImpl @Inject constructor(
     private val enrollmentService: EnrollmentServiceImpl,
     private val organisationUnitService: OrganisationUnitService,
     private val categoryOptionComboService: CategoryOptionComboService,
-    private val eventDateUtils: EventDateUtils
+    private val eventDateUtils: EventDateUtils,
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -95,19 +95,19 @@ internal class EventServiceImpl @Inject constructor(
 
     @Suppress("ComplexMethod")
     override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
-        val event = eventRepository.uid(eventUid).blockingGet()
+        val event = eventRepository.uid(eventUid).blockingGet()!!
         val program = programRepository.uid(event.program()).blockingGet()
         val programStage = programStageRepository.uid(event.programStage()).blockingGet()
 
         return when {
-            event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() == true ->
+            event.status() == EventStatus.COMPLETED && programStage?.blockEntryForm() == true ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.BLOCKED_BY_COMPLETION)
 
             eventDateUtils.isEventExpired(
                 event = event,
-                completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
-                programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
-                expiryDays = program.expiryDays() ?: 0
+                completeExpiryDays = program?.completeEventsExpiryDays() ?: 0,
+                programPeriodType = programStage?.periodType() ?: program?.expiryPeriodType(),
+                expiryDays = program?.expiryDays() ?: 0,
             ) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.EXPIRED)
 
@@ -146,8 +146,11 @@ internal class EventServiceImpl @Inject constructor(
         val isActiveEnrollment = enrollment.status() == EnrollmentStatus.ACTIVE
 
         val acceptMoreEvents =
-            if (programStage.repeatable() == true) true
-            else getEventCount(enrollmentUid, programStageUid) == 0
+            if (programStage.repeatable() == true) {
+                true
+            } else {
+                getEventCount(enrollmentUid, programStageUid) == 0
+            }
 
         return isActiveEnrollment && acceptMoreEvents
     }

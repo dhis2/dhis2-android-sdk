@@ -25,45 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-@Suppress("MagicNumber")
-internal object ProgramTempOwnerStore {
-    private val BINDER = StatementBinder<ProgramTempOwner> { o: ProgramTempOwner, w: StatementWrapper ->
-        w.bind(1, o.program())
-        w.bind(2, o.trackedEntityInstance())
-        w.bind(3, o.created())
-        w.bind(4, o.validUntil())
-        w.bind(5, o.reason())
-    }
-
-    private val WHERE_UPDATE_BINDER =
-        WhereStatementBinder<ProgramTempOwner> { o: ProgramTempOwner, w: StatementWrapper ->
-            w.bind(6, o.program())
-            w.bind(7, o.trackedEntityInstance())
-            w.bind(8, o.created())
-        }
-
-    private val WHERE_DELETE_BINDER =
-        WhereStatementBinder<ProgramTempOwner> { o: ProgramTempOwner, w: StatementWrapper ->
-            w.bind(1, o.program())
-            w.bind(2, o.trackedEntityInstance())
-            w.bind(3, o.created())
-        }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramTempOwner> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            ProgramTempOwnerTableInfo.TABLE_INFO,
-            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { ProgramTempOwner.create(it) }
-    }
-}
+internal interface ProgramTempOwnerStore : ObjectWithoutUidStore<ProgramTempOwner>

@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import java.net.HttpURLConnection.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
@@ -42,6 +40,8 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
+import java.net.HttpURLConnection.*
+import javax.inject.Inject
 
 @Reusable
 internal class RelationshipPostCall @Inject internal constructor(
@@ -50,65 +50,79 @@ internal class RelationshipPostCall @Inject internal constructor(
     private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val trackerStateManager: TrackerPostStateManager,
-    private val apiCallExecutor: APICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
-    fun deleteRelationships(relationships: List<Relationship>): Observable<D2Progress> {
-        return Observable.create { emitter: ObservableEmitter<D2Progress> ->
-            for (relationship in relationships) {
-                val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                    relationshipService.deleteRelationship(relationship.uid()!!),
-                    listOf(HTTP_NOT_FOUND),
-                    RelationshipDeleteWebResponse::class.java
-                )
-                val status = httpResponse.response()?.status()
-
-                if ((httpResponse.httpStatusCode() == HTTP_OK && ImportStatus.SUCCESS == status) ||
-                    httpResponse.httpStatusCode() == HTTP_NOT_FOUND
-                ) {
-                    relationshipStore.delete(relationship.uid()!!)
-                } else {
-                    // TODO Implement better handling
-                    // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
-                    relationshipStore.setSyncState(relationship.uid()!!, State.ERROR)
-                }
-                dataStatePropagator.propagateRelationshipUpdate(relationship)
+    fun deleteRelationships(relationships: List<Relationship>): Flow<D2Progress> = flow {
+        val progressManager = D2ProgressManager(null)
+        for (relationship in relationships) {
+            val response = coroutineAPICallExecutor.wrap(
+                storeError = true,
+                acceptedErrorCodes = listOf(HTTP_NOT_FOUND),
+                errorClass = RelationshipDeleteWebResponse::class.java,
+            ) {
+                relationshipService.deleteRelationship(relationship.uid()!!)
             }
-            emitter.onComplete()
+
+            response.fold(
+                onSuccess = { webResponse ->
+                    val httpCode = webResponse.httpStatusCode()
+                    val status = webResponse.response()?.status()
+
+                    if ((httpCode == HTTP_OK && status == ImportStatus.SUCCESS) || httpCode == HTTP_NOT_FOUND) {
+                        relationshipStore.delete(relationship.uid()!!)
+                    } else {
+                        handleDeleteRelationshipError(relationship.uid()!!)
+                    }
+                },
+                onFailure = {
+                    handleDeleteRelationshipError(relationship.uid()!!)
+                },
+            )
+
+            dataStatePropagator.propagateRelationshipUpdate(relationship)
         }
+
+        emit(progressManager.increaseProgress(Relationship::class.java, false))
     }
 
     @Suppress("TooGenericExceptionCaught")
-    fun postRelationships(relationships: List<Relationship>): Observable<D2Progress> {
+    fun postRelationships(relationships: List<Relationship>): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
 
-        return if (relationships.isEmpty()) {
-            Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
+        if (relationships.isEmpty()) {
+            emit(progressManager.increaseProgress(Relationship::class.java, false))
         } else {
-            Observable.defer {
-                try {
-                    val payload = RelationshipPayload.builder().relationships(relationships).build()
-                    trackerStateManager.setPayloadStates(
-                        relationships = relationships,
-                        forcedState = State.UPLOADING
-                    )
-                    val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        relationshipService.postRelationship(payload),
-                        listOf(HTTP_CONFLICT),
-                        RelationshipWebResponse::class.java
-                    )
+            try {
+                val payload = RelationshipPayload.builder().relationships(relationships).build()
+                trackerStateManager.setPayloadStates(
+                    relationships = relationships,
+                    forcedState = State.UPLOADING,
+                )
+                val httpResponse = coroutineAPICallExecutor.wrap(
+                    storeError = true,
+                    acceptedErrorCodes = listOf(HTTP_CONFLICT),
+                    errorClass = RelationshipWebResponse::class.java,
+                ) {
+                    relationshipService.postRelationship(payload)
+                }.getOrThrow()
 
-                    relationshipImportHandler.handleRelationshipImportSummaries(
-                        importSummaries = httpResponse.response()?.importSummaries(),
-                        relationships = relationships
-                    )
-                    Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
-                } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(relationships = relationships)
-                    relationships.forEach { dataStatePropagator.propagateRelationshipUpdate(it) }
-                    Observable.error<D2Progress>(e)
-                }
+                relationshipImportHandler.handleRelationshipImportSummaries(
+                    importSummaries = httpResponse.response()?.importSummaries(),
+                    relationships = relationships,
+                )
+                emit(progressManager.increaseProgress(Relationship::class.java, false))
+            } catch (e: Exception) {
+                trackerStateManager.restorePayloadStates(relationships = relationships)
+                relationships.forEach { dataStatePropagator.propagateRelationshipUpdate(it) }
+                throw e
             }
         }
+    }
+
+    private fun handleDeleteRelationshipError(relationshipUid: String) {
+        // TODO Implement better handling
+        // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
+        relationshipStore.setSyncState(relationshipUid, State.ERROR)
     }
 }

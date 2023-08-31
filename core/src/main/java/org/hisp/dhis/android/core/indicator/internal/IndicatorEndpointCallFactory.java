@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Set;
@@ -50,15 +49,15 @@ import dagger.Reusable;
 final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> {
 
     private final IndicatorService service;
-    private final Handler<Indicator> handler;
+    private final IndicatorHandler handler;
 
     private static final int MAX_UID_LIST_SIZE = 100;
 
     @Inject
     IndicatorEndpointCallFactory(GenericCallData data,
-                                        APICallExecutor apiCallExecutor,
-                                        IndicatorService service,
-                                        Handler<Indicator> handler) {
+                                 APICallExecutor apiCallExecutor,
+                                 IndicatorService service,
+                                 IndicatorHandler handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;

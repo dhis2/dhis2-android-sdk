@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
@@ -38,21 +37,22 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
+import javax.inject.Inject
 
 @Reusable
 class DataStoreObjectRepository @Inject internal constructor(
     store: ObjectWithoutUidStore<DataStoreEntry>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
+    childrenAppenders: Map<String, ChildrenAppender<DataStoreEntry>>,
     scope: RepositoryScope,
     private val namespace: String,
-    private val key: String
+    private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s ->
         DataStoreObjectRepository(store, childrenAppenders, s, namespace, key)
-    }
+    },
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {
     override fun set(value: String?): Completable {
@@ -69,17 +69,19 @@ class DataStoreObjectRepository @Inject internal constructor(
     }
 
     override fun blockingDelete() {
-        val entry = blockingGetWithoutChildren()
-        if (entry.syncState() == State.TO_POST) {
-            super.blockingDelete()
-        } else {
-            setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+        blockingGetWithoutChildren()?.let { entry ->
+            if (entry.syncState() == State.TO_POST) {
+                super.blockingDelete()
+            } else {
+                setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+            }
         }
     }
 
     private fun setBuilder(): DataStoreEntry.Builder {
-        return if (blockingExists()) {
-            val entry = blockingGetWithoutChildren()
+        val entry = blockingGetWithoutChildren()
+
+        return if (entry != null) {
             entry.toBuilder()
                 .syncState(if (entry.syncState() == State.TO_POST) State.TO_POST else State.TO_UPDATE)
         } else {

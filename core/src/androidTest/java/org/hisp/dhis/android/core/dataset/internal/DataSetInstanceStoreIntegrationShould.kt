@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before
@@ -39,13 +40,13 @@ import org.junit.Test
 
 class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
-    private lateinit var dataSetInstanceStore: DataSetInstanceStore
+    private lateinit var dataSetInstanceStore: DataSetInstanceStoreImpl
     private lateinit var dataValueStore: DataValueStore
 
     @Before
     fun setUp() {
-        dataSetInstanceStore = DataSetInstanceStore.create(databaseAdapter)
-        dataValueStore = DataValueStore.create(databaseAdapter)
+        dataSetInstanceStore = DataSetInstanceStoreImpl(databaseAdapter)
+        dataValueStore = DataValueStoreImpl(databaseAdapter)
 
         dataValueStore.delete()
     }
@@ -65,7 +66,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
             listOf(State.TO_POST, State.ERROR) to State.ERROR,
             listOf(State.ERROR, State.TO_UPDATE) to State.ERROR,
             listOf(State.UPLOADING, State.TO_POST) to State.UPLOADING,
-            listOf(State.UPLOADING, State.ERROR) to State.ERROR
+            listOf(State.UPLOADING, State.ERROR) to State.ERROR,
         ).forEach { (valueStates, aggregated) ->
             insertDataValuesWithStates(valueStates[0], valueStates[1])
             checkSyncState(aggregated)
@@ -77,7 +78,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
             .byUid().eq("lyLU2wR22tC")
             .withDataSetElements()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         val dataElements = dataset.dataSetElements()!!
 
@@ -87,15 +88,15 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
         val categoryOption1 = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataElements[0]?.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val categoryOption2 = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataElements[1]?.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val attributeOption = d2.categoryModule().categoryOptionCombos()
             .byCategoryComboUid().eq(dataset.categoryCombo()?.uid())
-            .one().blockingGet()
+            .one().blockingGet()!!
 
         val baseBuilder = DataValue.builder()
             .value("")
@@ -108,7 +109,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
                 .dataElement(dataElements[0]?.dataElement()?.uid()!!)
                 .categoryOptionCombo(categoryOption1.uid())
                 .syncState(state1)
-                .build()
+                .build(),
         )
 
         dataValueStore.updateOrInsertWhere(
@@ -116,7 +117,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
                 .dataElement(dataElements[1]?.dataElement()?.uid()!!)
                 .categoryOptionCombo(categoryOption2.uid())
                 .syncState(state2)
-                .build()
+                .build(),
         )
     }
 

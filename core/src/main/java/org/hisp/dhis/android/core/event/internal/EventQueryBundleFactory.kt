@@ -28,27 +28,30 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
+import javax.inject.Inject
 
 @Reusable
 internal class EventQueryBundleFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
+    programStore: ProgramStore,
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: EventLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper
+    commonHelper: TrackerQueryFactoryCommonHelper,
 ) : TrackerQueryFactory<EventQueryBundle, EventSync>(
-    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    programStore,
+    programSettingsObjectRepository,
+    lastUpdatedManager,
     commonHelper,
     ProgramType.WITHOUT_REGISTRATION,
     { params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings? ->
+            programSettings: ProgramSettings?,
+        ->
         EventQueryBundleInternalFactory(commonHelper, params, programSettings)
-    }
+    },
 )

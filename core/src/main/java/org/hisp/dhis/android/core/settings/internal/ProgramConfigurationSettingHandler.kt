@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import javax.inject.Inject
 
-internal class ProgramConfigurationSettingHandler(store: ObjectWithoutUidStore<ProgramConfigurationSetting>) :
-    ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
+@Reusable
+internal class ProgramConfigurationSettingHandler @Inject constructor(
+    store: ProgramConfigurationSettingStore,
+) : ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<ProgramConfigurationSetting>
+        oCollection: Collection<ProgramConfigurationSetting>,
     ): Collection<ProgramConfigurationSetting> {
         store.delete()
         return oCollection

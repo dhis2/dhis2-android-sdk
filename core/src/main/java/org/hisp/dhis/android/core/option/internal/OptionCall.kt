@@ -29,24 +29,23 @@ package org.hisp.dhis.android.core.option.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
+import javax.inject.Inject
 
 @Reusable
 class OptionCall @Inject internal constructor(
     private val service: OptionService,
-    private val handler: Handler<Option>,
-    private val apiDownloader: APIDownloader
+    private val handler: OptionHandler,
+    private val apiDownloader: APIDownloader,
 ) : UidsCall<Option> {
     override fun download(uids: Set<String>): Single<List<Option>> {
         return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,
-            handler
+            handler,
         ) { partitionUids: Set<String> ->
             val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
 

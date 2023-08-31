@@ -28,13 +28,9 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,10 +39,9 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class VisualizationHandlerShould {
 
-    private val visualizationStore: IdentifiableObjectStore<Visualization> = mock()
-    private val visualizationCollectionCleaner: CollectionCleaner<Visualization> = mock()
-    private val visualizationDimensionItemHandler:
-        LinkHandler<VisualizationDimensionItem, VisualizationDimensionItem> = mock()
+    private val visualizationStore: VisualizationStore = mock()
+    private val visualizationCollectionCleaner: VisualizationCollectionCleaner = mock()
+    private val visualizationDimensionItemHandler: VisualizationDimensionItemHandler = mock()
     private val visualizationDimension: VisualizationDimension = mock()
     private val visualization: Visualization = mock()
 
@@ -58,7 +53,7 @@ class VisualizationHandlerShould {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,
-            visualizationDimensionItemHandler
+            visualizationDimensionItemHandler,
         )
 
         whenever(visualization.columns()).doReturn(listOf(visualizationDimension))

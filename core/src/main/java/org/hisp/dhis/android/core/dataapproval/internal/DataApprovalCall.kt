@@ -28,23 +28,19 @@
 package org.hisp.dhis.android.core.dataapproval.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.Single
-import java.util.ArrayList
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import javax.inject.Inject
 
 @Reusable
 internal class DataApprovalCall @Inject constructor(
     private val service: DataApprovalService,
-    private val handler: Handler<DataApproval>,
+    private val handler: DataApprovalHandler,
     private val apiDownloader: APIDownloader,
-    private val multiDimensionalPartitioner: MultiDimensionalPartitioner
+    private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
 ) : QueryCall<DataApproval, DataApprovalQuery> {
 
     companion object {
@@ -54,26 +50,25 @@ internal class DataApprovalCall @Inject constructor(
     }
 
     @Suppress("MagicNumber")
-    override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
+    override suspend fun download(query: DataApprovalQuery): List<DataApproval> {
         val partitions = multiDimensionalPartitioner.partitionForSize(
             QUERY_WITHOUT_UIDS_LENGTH,
-            query.workflowsUids(),
-            query.periodIds(),
-            query.organisationUnistUids(),
-            query.attributeOptionCombosUids()
+            query.workflowsUids,
+            query.periodIds,
+            query.organisationUnistUids,
+            query.attributeOptionCombosUids,
         )
-        return Observable.fromIterable(partitions).flatMapSingle { part ->
-            apiDownloader.downloadList(
-                handler,
+        return partitions.flatMap { part ->
+            apiDownloader.downloadListAsCoroutine(handler) {
                 service.getDataApprovals(
-                    DataApprovalFields.allFields,
-                    query.lastUpdatedStr(),
-                    commaSeparatedCollectionValues(part[0]),
-                    commaSeparatedCollectionValues(part[1]),
-                    commaSeparatedCollectionValues(part[2]),
-                    commaSeparatedCollectionValues(part[3])
+                    fields = DataApprovalFields.allFields,
+                    lastUpdated = query.lastUpdatedStr,
+                    workflow = commaSeparatedCollectionValues(part[0]),
+                    periods = commaSeparatedCollectionValues(part[1]),
+                    organisationUnit = commaSeparatedCollectionValues(part[2]),
+                    attributeOptionCombo = commaSeparatedCollectionValues(part[3]),
                 )
-            )
-        }.reduce(ArrayList(), { t1, t2 -> t1 + t2 })
+            }
+        }
     }
 }

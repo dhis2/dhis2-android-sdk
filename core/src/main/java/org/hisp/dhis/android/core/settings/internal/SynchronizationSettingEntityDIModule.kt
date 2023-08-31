@@ -31,28 +31,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 @Module
 internal class SynchronizationSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
-        return SynchronizationSettingStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(
-        store: ObjectWithoutUidStore<SynchronizationSettings>,
-        dataSetSettingHandler: Handler<DataSetSetting>,
-        programSettingHandler: Handler<ProgramSetting>
-    ): Handler<SynchronizationSettings> {
-        return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
+    fun store(databaseAdapter: DatabaseAdapter): SynchronizationSettingStore {
+        return SynchronizationSettingStoreImpl(databaseAdapter)
     }
 }

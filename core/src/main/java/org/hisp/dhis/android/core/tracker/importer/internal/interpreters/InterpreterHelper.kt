@@ -29,26 +29,25 @@
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import javax.inject.Inject
 
 @Reusable
 internal class InterpreterHelper @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val eventStore: EventStore,
-    private val programStore: ProgramStoreInterface,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
-    private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
+    private val programStore: ProgramStore,
+    private val programStageStore: ProgramStageStore,
+    private val organisationUnitStore: OrganisationUnitStore,
+    private val trackedEntityTypeStore: TrackedEntityTypeStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
 ) {
 
     fun trackedEntityInstance(teiUid: String): TrackedEntityInstance {

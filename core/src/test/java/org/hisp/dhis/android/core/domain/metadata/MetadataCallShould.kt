@@ -27,13 +27,15 @@
  */
 package org.hisp.dhis.android.core.domain.metadata
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.call.BaseD2Progress
-import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDim
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
@@ -57,17 +60,16 @@ import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.AdditionalAnswers
-import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
 class MetadataCallShould : BaseCallShould() {
     private val user: User = mock()
-    private val rxAPICallExecutor: RxAPICallExecutor = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
     private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
@@ -88,6 +90,11 @@ class MetadataCallShould : BaseCallShould() {
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
     private val expressionDimensIndicatorModuleDownloader: ExpressionDimensionItemModuleDownloader = mock()
 
+    private val networkError: D2Error = D2Error.builder()
+        .errorCode(D2ErrorCode.UNKNOWN_HOST)
+        .errorDescription("Unknown host")
+        .build()
+
     // object to test
     private lateinit var metadataCall: MetadataCall
 
@@ -97,23 +104,24 @@ class MetadataCallShould : BaseCallShould() {
         super.setUp()
 
         // Calls
-        whenever(systemInfoDownloader.downloadWithProgressManager(any()))
-            .thenReturn(Observable.just(BaseD2Progress.empty(10)))
+        systemInfoDownloader.stub {
+            onBlocking { downloadWithProgressManager(any()) }.doReturn(BaseD2Progress.empty(10))
+        }
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata()).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(dataSetDownloader.downloadMetadata()).thenReturn(
-            Completable.complete()
+            Completable.complete(),
         )
         whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(visualizationDownloader.downloadMetadata()).thenReturn(
-            Single.just(emptyList())
+            Single.just(emptyList()),
         )
         whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
@@ -123,16 +131,10 @@ class MetadataCallShould : BaseCallShould() {
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
         whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
-        Mockito.`when`<Observable<D2Progress>>(
-            rxAPICallExecutor.wrapObservableTransactionally(
-                any(),
-                any()
-            )
-        ).then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
         metadataCall = MetadataCall(
-            rxAPICallExecutor,
+            coroutineAPICallExecutor,
             systemInfoDownloader,
             systemSettingDownloader,
             useCaseModuleDownloader,
@@ -162,76 +164,72 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_system_info_call_fail() {
-        whenever(systemInfoDownloader.downloadWithProgressManager(any())).thenReturn(Observable.error(d2Error))
+        systemInfoDownloader.stub {
+            onBlocking { downloadWithProgressManager(any()) }.doAnswer { throw networkError }
+        }
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_system_setting_call_fail() {
-        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
         downloadAndAssertError()
-    }
-
-    private fun downloadAndAssertError() {
-        val testObserver = metadataCall.download().test()
-        testObserver.assertError(D2Error::class.java)
-        testObserver.dispose()
     }
 
     @Test
     fun fail_when_user_call_fail() {
-        whenever(userDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
+        whenever(userDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_category_download_call_fail() {
-        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_visualization_download_call_fail() {
-        whenever(visualizationDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
+        whenever(visualizationDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(programDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_organisation_unit_call_fail() {
-        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Completable.error(d2Error))
+        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Completable.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_dataset_parent_call_fail() {
-        whenever(dataSetDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(dataSetDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_constant_call_fail() {
-        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
+        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
         downloadAndAssertError()
-    }
-
-    @Test
-    fun call_wrapObservableTransactionally() {
-        metadataCall.blockingDownload()
-        verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
-            any(),
-            eq(true)
-        )
     }
 
     @Test
     fun delete_foreign_key_violations_before_calls() {
         metadataCall.blockingDownload()
         verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+    }
+
+    private fun downloadAndAssertError() = runBlocking {
+        try {
+            metadataCall.download().collect()
+            fail("It should throw exception")
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(D2Error::class.java)
+        }
     }
 }

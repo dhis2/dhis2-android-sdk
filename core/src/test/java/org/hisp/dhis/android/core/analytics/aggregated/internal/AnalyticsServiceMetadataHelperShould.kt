@@ -31,43 +31,42 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
+import org.hisp.dhis.android.core.category.internal.CategoryStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.core.legendset.internal.LegendStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
 class AnalyticsServiceMetadataHelperShould {
 
-    private val categoryStore: IdentifiableObjectStore<Category> = mock()
-    private val categoryOptionStore: IdentifiableObjectStore<CategoryOption> = mock()
-    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+    private val categoryStore: CategoryStore = mock()
+    private val categoryOptionStore: CategoryOptionStore = mock()
+    private val dataElementStore: DataElementStore = mock()
     private val categoryOptionComboStore: CategoryOptionComboStore = mock()
-    private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
-    private val expressionDimensionItemStore: IdentifiableObjectStore<ExpressionDimensionItem> = mock()
-    private val legendStore: IdentifiableObjectStore<Legend> = mock()
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
-    private val programStore: ProgramStoreInterface = mock()
-    private val trackedEntityAttribute: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
+    private val indicatorStore: IndicatorStore = mock()
+    private val expressionDimensionItemStore: ExpressionDimensionItemStore = mock()
+    private val legendStore: LegendStore = mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore = mock()
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore = mock()
+    private val programStore: ProgramStore = mock()
+    private val trackedEntityAttribute: TrackedEntityAttributeStore = mock()
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository = mock()
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
     private val parentPeriodGenerator: ParentPeriodGenerator = mock()
@@ -89,7 +88,7 @@ class AnalyticsServiceMetadataHelperShould {
         programIndicatorRepository,
         analyticsOrganisationUnitHelper,
         parentPeriodGenerator,
-        periodHelper
+        periodHelper,
     )
 
     @Test
@@ -101,8 +100,8 @@ class AnalyticsServiceMetadataHelperShould {
         val evaluationItems = listOf(
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(s.categoryItem1_1, s.categoryItem1_2),
-                filters = listOf()
-            )
+                filters = listOf(),
+            ),
         )
 
         val metadataMap = helper.getMetadata(evaluationItems)
@@ -110,7 +109,7 @@ class AnalyticsServiceMetadataHelperShould {
         assertThat(metadataMap.keys).containsExactly(
             s.categoryItem1_1.uid,
             s.categoryItem1_1.categoryOption,
-            s.categoryItem1_2.categoryOption
+            s.categoryItem1_2.categoryOption,
         )
     }
 }

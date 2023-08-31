@@ -30,42 +30,24 @@ package org.hisp.dhis.android.core.visualization.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Module
-internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualization> {
+internal class VisualizationEntityDIModule {
 
     @Provides
     @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Visualization> {
-        return VisualizationStore.create(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(impl: VisualizationHandler): Handler<Visualization> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<Visualization> {
-        return CollectionCleanerImpl(VisualizationTableInfo.TABLE_INFO.name(), databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): VisualizationStore {
+        return VisualizationStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
         return mapOf(
-            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter)
+            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter),
         )
     }
 }

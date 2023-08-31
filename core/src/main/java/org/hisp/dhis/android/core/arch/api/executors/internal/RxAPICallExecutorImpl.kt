@@ -31,21 +31,21 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
+import javax.inject.Inject
 
 @Reusable
 internal class RxAPICallExecutorImpl @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
-    private val errorStore: ObjectStore<D2Error>,
+    private val errorStore: D2ErrorStore,
     private val errorMapper: APIErrorMapper,
     private val foreignKeyCleaner: ForeignKeyCleaner,
-    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher
+    private val userAccountDisabledErrorCatcher: UserAccountDisabledErrorCatcher,
 ) : RxAPICallExecutor {
 
     override fun <P> wrapSingle(single: Single<P>, storeError: Boolean): Single<P> {
@@ -54,7 +54,7 @@ internal class RxAPICallExecutorImpl @Inject constructor(
 
     override fun <P> wrapObservableTransactionally(
         observable: Observable<P>,
-        cleanForeignKeys: Boolean
+        cleanForeignKeys: Boolean,
     ): Observable<P> {
         return Observable.fromCallable { databaseAdapter.beginNewTransaction() }
             .flatMap { transaction: Transaction ->
@@ -89,8 +89,11 @@ internal class RxAPICallExecutorImpl @Inject constructor(
 
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {
         var d2Error =
-            if (throwable is D2Error) throwable
-            else errorMapper.mapRetrofitException(throwable, errorMapper.getBaseErrorBuilder())
+            if (throwable is D2Error) {
+                throwable
+            } else {
+                errorMapper.mapRetrofitException(throwable, errorMapper.getBaseErrorBuilder())
+            }
         if (userAccountDisabledErrorCatcher.isUserAccountLocked(throwable)) {
             val errorCode = userAccountDisabledErrorCatcher.catchError(throwable)
             d2Error = d2Error.toBuilder().errorCode(errorCode).build()

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
@@ -37,10 +36,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
+import javax.inject.Inject
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
     private val params: AnalyticsRepositoryParams,
-    private val analyticsService: AnalyticsService
+    private val analyticsService: AnalyticsService,
 ) : AnalyticsRepository {
 
     override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
@@ -68,7 +68,7 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
     }
 
     private fun updateParams(
-        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
+        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams,
     ): AnalyticsRepositoryImpl {
         return AnalyticsRepositoryImpl(func(params), analyticsService)
     }

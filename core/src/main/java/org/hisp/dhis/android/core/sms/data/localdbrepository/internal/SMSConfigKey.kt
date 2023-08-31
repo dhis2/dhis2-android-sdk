@@ -35,5 +35,5 @@ internal enum class SMSConfigKey {
     METADATA_CONFIG,
     MODULE_ENABLED,
     WAIT_FOR_RESULT,
-    LAST_SUBMISSION_ID
+    LAST_SUBMISSION_ID,
 }

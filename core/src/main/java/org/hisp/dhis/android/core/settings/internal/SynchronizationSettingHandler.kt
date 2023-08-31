@@ -27,22 +27,21 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import javax.inject.Inject
 
-internal class SynchronizationSettingHandler(
-    store: ObjectWithoutUidStore<SynchronizationSettings>,
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val programSettingHandler: Handler<ProgramSetting>
+@Reusable
+internal class SynchronizationSettingHandler @Inject constructor(
+    store: SynchronizationSettingStore,
+    private val dataSetSettingHandler: DataSetSettingHandler,
+    private val programSettingHandler: ProgramSettingHandler,
 ) : ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<SynchronizationSettings>
+        oCollection: Collection<SynchronizationSettings>,
     ): Collection<SynchronizationSettings> {
         removeExistingValue()
         return oCollection

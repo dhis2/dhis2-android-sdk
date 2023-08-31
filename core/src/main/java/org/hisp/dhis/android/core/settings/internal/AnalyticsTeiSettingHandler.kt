@@ -28,24 +28,22 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiSettingHandler @Inject constructor(
-    store: ObjectWithoutUidStore<AnalyticsTeiSetting>,
-    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement>,
-    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>,
-    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute>,
-    private val whoNutritionDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
+    store: AnalyticsTeiSettingStore,
+    private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
+    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,
+    private val teiAttributeHandler: AnalyticsTeiAttributeHandler,
+    private val whoNutritionDataHandler: AnalyticsTeiWHONutritionDataHandler,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<AnalyticsTeiSetting>
+        oCollection: Collection<AnalyticsTeiSetting>,
     ): Collection<AnalyticsTeiSetting> {
         store.delete()
         return oCollection

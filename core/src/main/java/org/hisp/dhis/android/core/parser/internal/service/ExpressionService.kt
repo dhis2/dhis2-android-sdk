@@ -27,14 +27,12 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service
 
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser.visit
@@ -48,16 +46,17 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_RE
 import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateLiteral
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
-import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.antlr.ParserException
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
+import javax.inject.Inject
 
 internal class ExpressionService @Inject constructor(
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val dataElementStore: DataElementStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore,
+    private val programStageStore: ProgramStageStore,
 ) {
     private val validationRuleExpressionItems: Map<Int, ExpressionItem> = getValidationRuleExpressionItems()
 
@@ -105,19 +104,21 @@ internal class ExpressionService @Inject constructor(
 
     fun getExpressionValue(expression: String?): Any? {
         return getExpressionValue(
-            expression, ExpressionServiceContext(), MissingValueStrategy.NEVER_SKIP
+            expression,
+            ExpressionServiceContext(),
+            MissingValueStrategy.NEVER_SKIP,
         )
     }
 
     fun getExpressionValue(
         expression: String?,
         context: ExpressionServiceContext,
-        missingValueStrategy: MissingValueStrategy
+        missingValueStrategy: MissingValueStrategy,
     ): Any? {
         return expression?.let {
             val visitor = newVisitor(
                 ITEM_EVALUATE,
-                context.constantMap
+                context.constantMap,
             )
             val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
 
@@ -156,14 +157,14 @@ internal class ExpressionService @Inject constructor(
 
     fun regenerateExpression(
         expression: String?,
-        context: ExpressionServiceContext
+        context: ExpressionServiceContext,
     ): String {
         return if (expression == null) {
             ""
         } else {
             val visitor = newVisitor(
                 ITEM_REGENERATE,
-                context.constantMap
+                context.constantMap,
             )
 
             val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
@@ -195,7 +196,7 @@ internal class ExpressionService @Inject constructor(
         // ParseType parseType,
         itemMethod: ExpressionItemMethod,
         // List<Period> samplePeriods,
-        constantMap: Map<String, Constant>
+        constantMap: Map<String, Constant>,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.Expression(
@@ -205,8 +206,8 @@ internal class ExpressionService @Inject constructor(
                 dataElementStore = dataElementStore,
                 categoryOptionComboStore = categoryOptionComboStore,
                 organisationUnitGroupStore = organisationUnitGroupStore,
-                programStageStore = programStageStore
-            )
+                programStageStore = programStageStore,
+            ),
         )
     }
 }

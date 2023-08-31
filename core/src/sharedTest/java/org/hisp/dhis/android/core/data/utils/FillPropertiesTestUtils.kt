@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.data.utils
 
-import java.text.ParseException
-import java.util.*
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseNameableObject
+import java.text.ParseException
+import java.util.*
 
 /**
  * A collection of convenience functions/abstractions to be used by the tests.
@@ -41,9 +41,11 @@ object FillPropertiesTestUtils {
     const val NAME = "test_name"
     const val DISPLAY_NAME = "test_display_name"
     private const val CREATED_STR = "2012-10-20T18:20:27.132"
+
     @JvmField
     val CREATED = parseDate(CREATED_STR)
     const val LAST_UPDATED_STR = "2017-12-20T15:08:27.882"
+
     @JvmField
     val LAST_UPDATED = parseDate(LAST_UPDATED_STR)
     private const val SHORT_NAME = "test_short_name"
@@ -52,6 +54,7 @@ object FillPropertiesTestUtils {
     private const val DISPLAY_DESCRIPTION = "test_display_description"
     const val TABLE = "test_table"
     private const val FUTURE_DATE_STR = "3000-12-20T15:08:27.882"
+
     @JvmField
     val FUTURE_DATE = parseDate(FUTURE_DATE_STR)
 

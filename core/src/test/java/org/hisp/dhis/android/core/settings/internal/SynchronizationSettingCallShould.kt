@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
@@ -42,7 +41,7 @@ import org.mockito.Mockito
 @RunWith(JUnit4::class)
 class SynchronizationSettingCallShould {
 
-    private val handler: Handler<SynchronizationSettings> = mock()
+    private val handler: SynchronizationSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -60,8 +59,13 @@ class SynchronizationSettingCallShould {
         whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
         whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         synchronizationSettingCall = SynchronizationSettingCall(
-            handler, service, apiCallExecutor,
-            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager
+            handler,
+            service,
+            apiCallExecutor,
+            generalSettingCall,
+            dataSetSettingCall,
+            programSettingCall,
+            appVersionManager,
         )
     }
 

@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class StatePersistorHelper @Inject internal constructor() {
@@ -41,7 +41,7 @@ internal class StatePersistorHelper @Inject internal constructor() {
     fun <O> addState(
         stateMap: MutableMap<State, MutableList<String>>,
         o: O,
-        forcedState: State?
+        forcedState: State?,
     ) where O : DataObject, O : ObjectWithUidInterface {
         val s = getStateToSet(o, forcedState)
         if (!stateMap.containsKey(s)) {

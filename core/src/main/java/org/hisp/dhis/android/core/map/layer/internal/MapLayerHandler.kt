@@ -28,19 +28,13 @@
 
 package org.hisp.dhis.android.core.map.layer.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
-@Reusable
-internal class MapLayerHandler @Inject constructor(
-    store: IdentifiableObjectStore<MapLayer>,
-    private val imagerProviderHandler: LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider>
+internal class MapLayerHandler constructor(
+    store: MapLayerStore,
+    private val imagerProviderHandler: MapLayerImageryProviderHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<MapLayer>(store) {
 
     override fun afterObjectHandled(o: MapLayer, action: HandleAction) {

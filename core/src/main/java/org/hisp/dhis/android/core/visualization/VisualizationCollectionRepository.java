@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo.Columns;
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields;
+import org.hisp.dhis.android.core.visualization.internal.VisualizationStore;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class VisualizationCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Visualization, VisualizationCollectionRepository> {
 
     @Inject
-    VisualizationCollectionRepository(final IdentifiableObjectStore<Visualization> store,
+    VisualizationCollectionRepository(final VisualizationStore store,
                                       final Map<String, ChildrenAppender<Visualization>> childrenAppenders,
                                       final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

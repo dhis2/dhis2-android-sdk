@@ -31,11 +31,8 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +41,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class AppearanceSettingsCallShould {
 
-    private val filterSettingHandler: Handler<FilterSetting> = mock()
-    private val programConfigurationHandler: Handler<ProgramConfigurationSetting> = mock()
+    private val filterSettingHandler: FilterSettingHandler = mock()
+    private val programConfigurationHandler: ProgramConfigurationSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
@@ -64,7 +61,7 @@ class AppearanceSettingsCallShould {
             programConfigurationHandler,
             service,
             apiCallExecutor,
-            appVersionManager
+            appVersionManager,
         )
     }
 

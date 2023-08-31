@@ -70,7 +70,7 @@ internal object NewEventFields {
             fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.all),
             fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
             fh.nestedField<NewTrackerImporterTrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES)
-                .with(NewTrackedEntityDataValueFields.allFields)
+                .with(NewTrackedEntityDataValueFields.allFields),
         ).build()
 
     val asRelationshipFields: Fields<NewTrackerImporterEvent> = commonFields().build()
@@ -98,7 +98,7 @@ internal object NewEventFields {
             fh.field<Boolean>(DELETED),
             fh.field<String>(ATTRIBUTE_OPTION_COMBO),
             fh.field<String>(ASSIGNED_USER),
-            fh.field<String>(COMPLETED_BY)
+            fh.field<String>(COMPLETED_BY),
         )
     }
 }

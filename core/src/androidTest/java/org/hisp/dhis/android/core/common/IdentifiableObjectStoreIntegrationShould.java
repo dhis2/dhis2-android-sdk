@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.internal.OptionSetStore;
+import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class IdentifiableObjectStoreIntegrationShould extends BaseIntegrationTes
         super.setUp();
         this.optionSet = StoreMocks.generateOptionSet();
         this.updatedOptionSet = StoreMocks.generateUpdatedOptionSet();
-        this.store = OptionSetStore.create(databaseAdapter());
+        this.store = new OptionSetStoreImpl(databaseAdapter());
     }
 
     private Cursor getCursor() {

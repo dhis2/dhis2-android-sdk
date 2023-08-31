@@ -250,7 +250,7 @@ class CategoryComboCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val categoryCombo = d2.categoryModule().categoryCombos()
             .withCategories()
             .uid("m2jTvAj5kkm")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryCombo.categories()!!.size).isEqualTo(2)
     }

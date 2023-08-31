@@ -57,7 +57,7 @@ class ChunkedSecureStoreShould {
                 "otherKey_[1]_",
                 "sampleKey_[3]",
                 "OTHER_CONFIG",
-            )
+            ),
         )
 
         chunkedSecureStore.removeData("sampleKey")

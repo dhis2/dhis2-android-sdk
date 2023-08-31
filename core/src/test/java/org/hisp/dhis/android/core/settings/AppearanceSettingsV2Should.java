@@ -81,12 +81,17 @@ public class AppearanceSettingsV2Should extends BaseObjectShould implements Obje
 
         ProgramConfigurationSettings programConfiguration = appearanceSettings.programConfiguration();
         assertThat(programConfiguration.globalSettings().uid()).isNull();
+        assertThat(programConfiguration.globalSettings().completionSpinner()).isEqualTo(true);
+        assertThat(programConfiguration.globalSettings().disableReferrals()).isEqualTo(true);
+        assertThat(programConfiguration.globalSettings().collapsibleSections()).isEqualTo(false);
 
         Map<String, ProgramConfigurationSetting> speficicProgramConfiguration = programConfiguration.specificSettings();
         ProgramConfigurationSetting specificProgramConfiguration = speficicProgramConfiguration.get("IpHINAT79UW");
         assertThat(specificProgramConfiguration.uid()).isNull();
         assertThat(specificProgramConfiguration.completionSpinner()).isEqualTo(true);
         assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true);
+        assertThat(specificProgramConfiguration.disableReferrals()).isEqualTo(true);
+        assertThat(specificProgramConfiguration.collapsibleSections()).isEqualTo(false);
 
         // Compatibility backwards
         CompletionSpinnerSetting completionSpinnerSetting = appearanceSettings.completionSpinner();

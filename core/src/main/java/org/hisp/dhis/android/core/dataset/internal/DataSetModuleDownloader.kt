@@ -29,32 +29,29 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionCall
+import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
-import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCall
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetModuleDownloader @Inject internal constructor(
     private val dataSetCallFactory: UidsCallFactory<DataSet>,
     private val dataElementCallFactory: UidsCallFactory<DataElement>,
-    private val optionSetCall: UidsCall<OptionSet>,
-    private val optionCall: UidsCall<Option>,
-    private val validationRuleCall: UidsCall<ValidationRule>,
+    private val optionSetCall: OptionSetCall,
+    private val optionCall: OptionCall,
+    private val validationRuleCall: ValidationRuleCall,
     private val validationRuleUidsCall: ValidationRuleUidsCall,
     private val periodHandler: PeriodHandler,
-    private val dataSetOrganisationUnitLinkStore: LinkStore<DataSetOrganisationUnitLink>
+    private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore,
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
@@ -64,7 +61,7 @@ internal class DataSetModuleDownloader @Inject internal constructor(
             val dataSets = dataSetCallFactory.create(orgUnitDataSetUids).call()
 
             val dataElements = dataElementCallFactory.create(
-                DataSetParentUidsHelper.getDataElementUids(dataSets)
+                DataSetParentUidsHelper.getDataElementUids(dataSets),
             ).call()
 
             val optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements)

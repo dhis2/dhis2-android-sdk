@@ -31,39 +31,34 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 
 @Module
 internal class MapLayerEntityDIModule {
 
     @Provides
     @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<MapLayer> {
-        return MapLayerStore.create(databaseAdapter)
+    fun store(databaseAdapter: DatabaseAdapter): MapLayerStore {
+        return MapLayerStoreImpl(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun handler(
-        store: IdentifiableObjectStore<MapLayer>,
-        imageryProviderHandler: LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider>
-    ): Handler<MapLayer> {
+        store: MapLayerStore,
+        imageryProviderHandler: MapLayerImageryProviderHandler,
+    ): MapLayerHandler {
         return MapLayerHandler(store, imageryProviderHandler)
     }
 
     @Provides
     @Reusable
     fun childrenAppenders(
-        store: LinkStore<MapLayerImageryProvider>
+        store: MapLayerImageryProviderStore,
     ): Map<String, ChildrenAppender<MapLayer>> {
         return mapOf(
-            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store)
+            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store),
         )
     }
 }

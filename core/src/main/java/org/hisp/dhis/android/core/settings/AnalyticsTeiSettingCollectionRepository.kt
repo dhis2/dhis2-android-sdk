@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
@@ -26,65 +25,64 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import static org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender.KEY;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender
+import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore
+import javax.inject.Inject
 
 @Reusable
-public class AnalyticsTeiSettingCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository> {
-
-    @Inject
-    AnalyticsTeiSettingCollectionRepository(AnalyticsTeiSettingStore store,
-                                            RepositoryScope scope,
-                                            Map<String, ChildrenAppender<AnalyticsTeiSetting>> childrenAppenders) {
-        super(store,
-                childrenAppenders,
-                scope.toBuilder().children(scope.children().withChild(KEY)).build(),
-                new FilterConnectorFactory<>(scope,
-                        s -> new AnalyticsTeiSettingCollectionRepository(store, s, childrenAppenders)));
+class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
+    store: AnalyticsTeiSettingStore,
+    scope: RepositoryScope,
+    childrenAppenders: MutableMap<String, ChildrenAppender<AnalyticsTeiSetting>>,
+) : ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope.toBuilder().children(scope.children().withChild(AnalyticsTeiDataChildrenAppender.KEY)).build(),
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        AnalyticsTeiSettingCollectionRepository(
+            store,
+            s,
+            childrenAppenders,
+        )
+    },
+) {
+    fun byUid(): StringFilterConnector<AnalyticsTeiSettingCollectionRepository> {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.UID)
     }
 
-    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byUid() {
-        return cf.string(AnalyticsTeiSettingTableInfo.Columns.UID);
+    fun byName(): StringFilterConnector<AnalyticsTeiSettingCollectionRepository> {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.NAME)
     }
 
-    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byName() {
-        return cf.string(AnalyticsTeiSettingTableInfo.Columns.NAME);
+    fun byShortName(): StringFilterConnector<AnalyticsTeiSettingCollectionRepository> {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.SHORT_NAME)
     }
 
-    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byShortName() {
-        return cf.string(AnalyticsTeiSettingTableInfo.Columns.SHORT_NAME);
+    fun byProgram(): StringFilterConnector<AnalyticsTeiSettingCollectionRepository> {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byProgram() {
-        return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM);
+    fun byProgramStage(): StringFilterConnector<AnalyticsTeiSettingCollectionRepository> {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byProgramStage() {
-        return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM_STAGE);
+    fun byPeriod(): EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, PeriodType> {
+        return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.PERIOD)
     }
 
-    public EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, PeriodType> byPeriod() {
-        return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.PERIOD);
-    }
-
-    public EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, ChartType> byType() {
-        return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.TYPE);
+    fun byType(): EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, ChartType> {
+        return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.TYPE)
     }
 }

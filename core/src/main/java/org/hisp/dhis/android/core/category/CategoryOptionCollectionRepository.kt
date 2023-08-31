@@ -43,17 +43,20 @@ import javax.inject.Inject
 class CategoryOptionCollectionRepository @Inject internal constructor(
     store: CategoryOptionStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<CategoryOption>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository>(
-    store, childrenAppenders, scope, FilterConnectorFactory(
-        scope
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
     ) { s: RepositoryScope ->
         CategoryOptionCollectionRepository(
             store,
             childrenAppenders,
-            s
+            s,
         )
-    }
+    },
 ) {
     fun byStartDate(): DateFilterConnector<CategoryOptionCollectionRepository> {
         return cf.date(CategoryOptionTableInfo.Columns.START_DATE)
@@ -71,7 +74,8 @@ class CategoryOptionCollectionRepository @Inject internal constructor(
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
-            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY, listOf(categoryUid)
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+            listOf(categoryUid),
         )
     }
 
@@ -79,7 +83,8 @@ class CategoryOptionCollectionRepository @Inject internal constructor(
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
-            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO, listOf(categoryOptionComboUid)
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            listOf(categoryOptionComboUid),
         )
     }
 

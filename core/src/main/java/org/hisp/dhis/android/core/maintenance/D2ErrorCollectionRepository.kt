@@ -25,58 +25,60 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.maintenance;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import javax.inject.Inject
 
 @Reusable
-public final class D2ErrorCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<D2Error, D2ErrorCollectionRepository> {
-
-    @Inject
-    D2ErrorCollectionRepository(final D2ErrorStore store,
-                                final Map<String, ChildrenAppender<D2Error>> childrenAppenders,
-                                final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new D2ErrorCollectionRepository(store, childrenAppenders, s)));
+class D2ErrorCollectionRepository @Inject internal constructor(
+    store: D2ErrorStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<D2Error>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<D2Error, D2ErrorCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        D2ErrorCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byUrl(): StringFilterConnector<D2ErrorCollectionRepository> {
+        return cf.string(D2ErrorTableInfo.Columns.URL)
     }
 
-    public StringFilterConnector<D2ErrorCollectionRepository> byUrl() {
-        return cf.string(D2ErrorTableInfo.Columns.URL);
+    fun byD2ErrorComponent(): EnumFilterConnector<D2ErrorCollectionRepository, D2ErrorComponent> {
+        return cf.enumC(D2ErrorTableInfo.Columns.ERROR_COMPONENT)
     }
 
-    public EnumFilterConnector<D2ErrorCollectionRepository, D2ErrorComponent> byD2ErrorComponent() {
-        return cf.enumC(D2ErrorTableInfo.Columns.ERROR_COMPONENT);
+    fun byD2ErrorCode(): EnumFilterConnector<D2ErrorCollectionRepository, D2ErrorCode> {
+        return cf.enumC(D2ErrorTableInfo.Columns.ERROR_CODE)
     }
 
-    public EnumFilterConnector<D2ErrorCollectionRepository, D2ErrorCode> byD2ErrorCode() {
-        return cf.enumC(D2ErrorTableInfo.Columns.ERROR_CODE);
+    fun byErrorDescription(): StringFilterConnector<D2ErrorCollectionRepository> {
+        return cf.string(D2ErrorTableInfo.Columns.ERROR_DESCRIPTION)
     }
 
-    public StringFilterConnector<D2ErrorCollectionRepository> byErrorDescription() {
-        return cf.string(D2ErrorTableInfo.Columns.ERROR_DESCRIPTION);
+    fun byHttpErrorCode(): IntegerFilterConnector<D2ErrorCollectionRepository> {
+        return cf.integer(D2ErrorTableInfo.Columns.HTTP_ERROR_CODE)
     }
 
-    public IntegerFilterConnector<D2ErrorCollectionRepository> byHttpErrorCode() {
-        return cf.integer(D2ErrorTableInfo.Columns.HTTP_ERROR_CODE);
-    }
-
-    public DateFilterConnector<D2ErrorCollectionRepository> byCreated() {
-        return cf.date(D2ErrorTableInfo.Columns.CREATED);
+    fun byCreated(): DateFilterConnector<D2ErrorCollectionRepository> {
+        return cf.date(D2ErrorTableInfo.Columns.CREATED)
     }
 }

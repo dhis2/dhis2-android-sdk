@@ -73,6 +73,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions", "LongParameterList")
 class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -581,6 +582,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
             localQueryHelper,
         )
 
+    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntityInstance> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             val sqlQuery = localQueryHelper.getSqlQuery(scope, scope.excludedUids(), -1)
@@ -597,8 +599,8 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         } else {
             try {
                 onlineHelper.queryOnlineBlocking(trackerParentCallFactory, scope)
-            } catch (e: D2Error) {
-                throw RuntimeException(e)
+            } catch (d2error: D2Error) {
+                throw RuntimeException(d2error)
             } catch (e: Exception) {
                 emptyList()
             }

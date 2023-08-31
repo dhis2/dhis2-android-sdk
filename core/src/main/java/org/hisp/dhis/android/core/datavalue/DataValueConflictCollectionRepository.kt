@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class DataValueConflictCollectionRepository @Inject internal constructor(
     store: DataValueConflictStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataValueConflict>>,

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class DataElementCollectionRepository @Inject internal constructor(
     store: DataElementStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<DataElement>>,

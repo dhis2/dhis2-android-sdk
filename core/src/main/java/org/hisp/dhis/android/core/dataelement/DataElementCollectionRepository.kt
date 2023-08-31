@@ -25,82 +25,85 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import javax.inject.Inject
 
 @Reusable
-public final class DataElementCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
-
-    @Inject
-    DataElementCollectionRepository(final DataElementStore store,
-                                    final Map<String, ChildrenAppender<DataElement>> childrenAppenders,
-                                    final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new DataElementCollectionRepository(store, childrenAppenders, s)));
+class DataElementCollectionRepository @Inject internal constructor(
+    store: DataElementStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<DataElement>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        DataElementCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byValueType(): EnumFilterConnector<DataElementCollectionRepository, ValueType> {
+        return cf.enumC(DataElementTableInfo.Columns.VALUE_TYPE)
     }
 
-    public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {
-        return cf.enumC(DataElementTableInfo.Columns.VALUE_TYPE);
+    fun byZeroIsSignificant(): BooleanFilterConnector<DataElementCollectionRepository> {
+        return cf.bool(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT)
     }
 
-    public BooleanFilterConnector<DataElementCollectionRepository> byZeroIsSignificant() {
-        return cf.bool(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT);
+    fun byAggregationType(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.AGGREGATION_TYPE)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byAggregationType() {
-        return cf.string(DataElementTableInfo.Columns.AGGREGATION_TYPE);
+    fun byFormName(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.FORM_NAME)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byFormName() {
-        return cf.string(DataElementTableInfo.Columns.FORM_NAME);
+    fun byDomainType(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.DOMAIN_TYPE)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byDomainType() {
-        return cf.string(DataElementTableInfo.Columns.DOMAIN_TYPE);
+    fun byDisplayFormName(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.DISPLAY_FORM_NAME)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byDisplayFormName() {
-        return cf.string(DataElementTableInfo.Columns.DISPLAY_FORM_NAME);
+    fun byOptionSetUid(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.OPTION_SET)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byOptionSetUid() {
-        return cf.string(DataElementTableInfo.Columns.OPTION_SET);
+    fun byCategoryComboUid(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.CATEGORY_COMBO)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
-        return cf.string(DataElementTableInfo.Columns.CATEGORY_COMBO);
+    fun byFieldMask(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.FIELD_MASK)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byFieldMask() {
-        return cf.string(DataElementTableInfo.Columns.FIELD_MASK);
+    fun byColor(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byColor() {
-        return cf.string(DataElementTableInfo.Columns.COLOR);
+    fun byIcon(): StringFilterConnector<DataElementCollectionRepository> {
+        return cf.string(DataElementTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byIcon() {
-        return cf.string(DataElementTableInfo.Columns.ICON);
-    }
-
-    public DataElementCollectionRepository withLegendSets() {
-        return cf.withChild(DataElementFields.LEGEND_SETS);
+    fun withLegendSets(): DataElementCollectionRepository {
+        return cf.withChild(DataElementFields.LEGEND_SETS)
     }
 }

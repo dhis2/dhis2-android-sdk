@@ -28,32 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 internal class TrackedEntityInstanceQueryDataSource constructor(
-    store: TrackedEntityInstanceStore,
-    trackerParentCallFactory: TrackerParentCallFactory,
-    scope: TrackedEntityInstanceQueryRepositoryScope,
-    childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
-    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
-    onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
-    localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
+    private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
 ) : ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance>() {
-
-    private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
-        store,
-        trackerParentCallFactory,
-        scope,
-        childrenAppenders,
-        onlineCache,
-        onlineHelper,
-        localQueryHelper,
-    )
 
     override fun loadInitial(
         params: LoadInitialParams<TrackedEntityInstance>,

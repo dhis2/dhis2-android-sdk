@@ -43,8 +43,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor.appendInObjectCollection
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
@@ -71,7 +69,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import java.util.Date
@@ -575,15 +572,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
     }
 
     val dataSource: DataSource<TrackedEntityInstance, TrackedEntityInstance>
-        get() = TrackedEntityInstanceQueryDataSource(
-            store,
-            trackerParentCallFactory,
-            scope,
-            childrenAppenders,
-            onlineCache,
-            onlineHelper,
-            localQueryHelper,
-        )
+        get() = TrackedEntityInstanceQueryDataSource(getDataFetcher())
 
     val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
         get() = TrackeEntityInstanceQueryPagingSource(
@@ -598,37 +587,22 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
 
     @Deprecated("use getPagingdata")
     val resultDataSource: DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
-        get() = TrackedEntityInstanceQueryDataSourceResult(
-            store,
-            trackerParentCallFactory,
-            scope,
-            childrenAppenders,
-            onlineCache,
-            onlineHelper,
-            localQueryHelper,
-        )
+        get() = TrackedEntityInstanceQueryDataSourceResult(getDataFetcher())
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntityInstance> {
-        return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
-            val sqlQuery = localQueryHelper.getSqlQuery(scope, scope.excludedUids(), -1)
-            val instances = store.selectRawQuery(sqlQuery)
-            appendInObjectCollection(
-                instances,
-                childrenAppenders,
-                ChildrenSelection(
-                    setOf(
-                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
-                    ),
-                ),
-            )
-        } else {
-            try {
-                onlineHelper.queryOnlineBlocking(trackerParentCallFactory, scope)
-            } catch (d2error: D2Error) {
-                throw RuntimeException(d2error)
-            } catch (e: Exception) {
-                emptyList()
+        val dataFetcher = getDataFetcher()
+        val searchResult =
+            if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
+                dataFetcher.queryAllOffline()
+            } else {
+                dataFetcher.queryAllOnline()
+            }
+
+        return searchResult.map {
+            when (it) {
+                is Result.Success -> it.value
+                is Result.Failure -> throw it.failure
             }
         }
     }
@@ -672,6 +646,18 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         }
     }
 
+    private fun getDataFetcher(): TrackedEntityInstanceQueryDataFetcher {
+        return TrackedEntityInstanceQueryDataFetcher(
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper
+        )
+    }
+
     override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntityInstance> {
         return objectRepository(
             object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
@@ -688,10 +674,9 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
 
     override fun blockingGetUids(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
-            val sqlQuery = localQueryHelper.getUidsWhereClause(scope, scope.excludedUids(), -1)
-            store.selectUidsWhere(sqlQuery)
+            getDataFetcher().queryAllOfflineUids()
         } else {
-            ArrayList<String>(getUids(blockingGet()))
+            getUids(blockingGet()).toList()
         }
     }
 

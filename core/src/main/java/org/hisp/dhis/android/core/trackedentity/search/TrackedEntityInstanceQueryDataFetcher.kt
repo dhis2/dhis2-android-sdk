@@ -95,6 +95,19 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return result
     }
 
+    fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
+        return queryOffline(-1)
+    }
+
+    fun queryAllOfflineUids(): List<String> {
+        val sqlQuery = localQueryHelper.getUidsWhereClause(scope, scope.excludedUids(), -1)
+        return store.selectUidsWhere(sqlQuery)
+    }
+
+    fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
+        return queryOnlineRecursive(-1)
+    }
+
     private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
             scope,
@@ -105,7 +118,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedUidsOffline.addAll(instances.map { it.uid() })
 
         return appendAttributes(instances).map {
-            Result.Success<TrackedEntityInstance, D2Error>(it)
+            Result.Success(it)
         }
     }
 
@@ -117,7 +130,12 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 val queryResult = getOnlineQueryResults(baseOnlineQuery, requestLoadSize)
                 result.addAll(queryResult)
             }
-        } while (result.all { it.succeeded } && result.size < requestLoadSize && !areAllOnlineQueriesExhausted())
+        } while (
+            result.all { it.succeeded } &&
+            requestLoadSize > 0 &&
+            result.size < requestLoadSize &&
+            !areAllOnlineQueriesExhausted()
+        )
 
         return result
     }
@@ -132,11 +150,17 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         }
 
         val page = (status.requestedItems / requestLoadSize) + 1
-        val onlineQuery = baseOnlineQuery.copy(
-            page = page,
-            pageSize = requestLoadSize,
-            paging = true,
-        )
+        val onlineQuery = if (requestLoadSize > 0) {
+            baseOnlineQuery.copy(
+                page = page,
+                pageSize = requestLoadSize,
+                paging = true,
+            )
+        } else {
+            baseOnlineQuery.copy(
+                paging = false
+            )
+        }
         val queryInstances = queryOnline(onlineQuery)
 
         status.requestedItems += requestLoadSize

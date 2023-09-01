@@ -52,7 +52,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class EnrollmentCollectionRepository @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
-    childrenAppenders: Map<String, ChildrenAppender<Enrollment>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Enrollment>>,
     scope: RepositoryScope,
     transformer: EnrollmentProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,

@@ -40,7 +40,7 @@ import javax.inject.Inject
 @Reusable
 class IndicatorTypeCollectionRepository @Inject internal constructor(
     store: IndicatorTypeStore,
-    childrenAppenders: Map<String, ChildrenAppender<IndicatorType>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<IndicatorType>>,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository>(
     store,

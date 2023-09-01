@@ -64,7 +64,7 @@ import javax.inject.Inject
 class EventCollectionRepository @Inject internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
-    childrenAppenders: Map<String, ChildrenAppender<Event>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Event>>,
     scope: RepositoryScope,
     private val postCall: EventPostParentCall,
     transformer: EventProjectionTransformer,

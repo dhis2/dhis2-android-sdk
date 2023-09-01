@@ -58,7 +58,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class FileResourceCollectionRepository @Inject internal constructor(
     private val fileResourceStore: FileResourceStore,
-    childrenAppenders: Map<String, ChildrenAppender<FileResource>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<FileResource>>,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,

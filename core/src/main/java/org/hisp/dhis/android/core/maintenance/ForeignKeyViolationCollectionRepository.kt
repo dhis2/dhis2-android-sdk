@@ -40,7 +40,7 @@ import javax.inject.Inject
 @Reusable
 class ForeignKeyViolationCollectionRepository @Inject internal constructor(
     store: ForeignKeyViolationStore,
-    childrenAppenders: Map<String, ChildrenAppender<ForeignKeyViolation>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ForeignKeyViolation>>,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository>(
     store,

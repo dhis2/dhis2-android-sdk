@@ -45,7 +45,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class EventFilterCollectionRepository @Inject internal constructor(
     store: EventFilterStore,
-    childrenAppenders: Map<String, ChildrenAppender<EventFilter>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<EventFilter>>,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository>(
     store,

@@ -25,64 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.maintenance;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
+import javax.inject.Inject
 
 @Reusable
-public final class ForeignKeyViolationCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository> {
-
-    @Inject
-    ForeignKeyViolationCollectionRepository(final ForeignKeyViolationStore store,
-                                            final Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
-                                            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, s)));
+class ForeignKeyViolationCollectionRepository @Inject internal constructor(
+    store: ForeignKeyViolationStore,
+    childrenAppenders: Map<String, ChildrenAppender<ForeignKeyViolation>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ForeignKeyViolationCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byFromTable(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_TABLE)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromTable() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_TABLE);
+    fun byFromColumn(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_COLUMN)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromColumn() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_COLUMN);
+    fun byToTable(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_TABLE)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byToTable() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_TABLE);
+    fun byToColumn(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_COLUMN)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byToColumn() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_COLUMN);
+    fun byNotFoundValue(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.NOT_FOUND_VALUE)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byNotFoundValue() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.NOT_FOUND_VALUE);
+    fun byFromObjectUid(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_UID)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromObjectUid() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_UID);
+    fun byFromObjectRow(): StringFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_ROW)
     }
 
-    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromObjectRow() {
-        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_ROW);
-    }
-
-    public DateFilterConnector<ForeignKeyViolationCollectionRepository> byCreated() {
-        return cf.date(ForeignKeyViolationTableInfo.Columns.CREATED);
+    fun byCreated(): DateFilterConnector<ForeignKeyViolationCollectionRepository> {
+        return cf.date(ForeignKeyViolationTableInfo.Columns.CREATED)
     }
 }

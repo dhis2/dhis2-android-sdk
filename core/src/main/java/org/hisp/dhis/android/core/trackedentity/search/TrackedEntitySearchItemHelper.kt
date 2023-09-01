@@ -25,47 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.search
 
-import androidx.paging.ItemKeyedDataSource
-import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-internal class TrackedEntityInstanceQueryDataSource constructor(
-    private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
-) : ItemKeyedDataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
-
-    override fun loadInitial(
-        params: LoadInitialParams<TrackedEntitySearchItem>,
-        callback: LoadInitialCallback<TrackedEntitySearchItem>,
-    ) {
-        dataFetcher.refresh()
-        callback.onResult(loadPages(params.requestedLoadSize))
+object TrackedEntitySearchItemHelper {
+    fun from(i: TrackedEntityInstance): TrackedEntitySearchItem {
+        return TrackedEntitySearchItem.builder()
+            .uid(i.uid())
+            .created(i.created())
+            .lastUpdated(i.lastUpdated())
+            .createdAtClient(i.createdAtClient())
+            .lastUpdatedAtClient(i.lastUpdatedAtClient())
+            .organisationUnit(i.organisationUnit())
+            .trackedEntityType(i.trackedEntityType())
+            .geometry(i.geometry())
+            .trackedEntityAttributeValues(i.trackedEntityAttributeValues())
+            .syncState(i.syncState())
+            .aggregatedSyncState(i.aggregatedSyncState())
+            .build()
     }
 
-    override fun loadAfter(
-        params: LoadParams<TrackedEntitySearchItem>,
-        callback: LoadCallback<TrackedEntitySearchItem>,
-    ) {
-        callback.onResult(loadPages(params.requestedLoadSize))
-    }
-
-    override fun loadBefore(
-        params: LoadParams<TrackedEntitySearchItem>,
-        callback: LoadCallback<TrackedEntitySearchItem>,
-    ) {
-        // do nothing
-    }
-
-    override fun getKey(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
-        return item
-    }
-
-    private fun loadPages(requestedLoadSize: Int): List<TrackedEntitySearchItem> {
-        return dataFetcher.loadPages(requestedLoadSize).mapNotNull {
-            when (it) {
-                is Result.Success -> it.value
-                is Result.Failure -> null
-            }
-        }
+    fun toTrackedEntityInstance(i: TrackedEntitySearchItem): TrackedEntityInstance {
+        return TrackedEntityInstance.builder()
+            .uid(i.uid())
+            .created(i.created())
+            .lastUpdated(i.lastUpdated())
+            .createdAtClient(i.createdAtClient())
+            .lastUpdatedAtClient(i.lastUpdatedAtClient())
+            .organisationUnit(i.organisationUnit())
+            .trackedEntityType(i.trackedEntityType())
+            .geometry(i.geometry())
+            .trackedEntityAttributeValues(i.trackedEntityAttributeValues())
+            .syncState(i.syncState())
+            .aggregatedSyncState(i.aggregatedSyncState())
+            .build()
     }
 }

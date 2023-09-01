@@ -71,8 +71,8 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedErrorCodes = HashSet()
     }
 
-    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
-        val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
+    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+        val result: MutableList<Result<TrackedEntitySearchItem, D2Error>> = ArrayList()
 
         if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             if (!isExhaustedOffline) {
@@ -81,11 +81,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 isExhaustedOffline = instances.size < requestedLoadSize
             }
             if (result.size < requestedLoadSize && scope.mode() == RepositoryMode.OFFLINE_FIRST) {
-                val onlineInstances = queryOnlineRecursive(requestedLoadSize)
+                val onlineInstances = queryOnline(requestedLoadSize)
                 result.addAll(onlineInstances)
             }
         } else {
-            val instances = queryOnlineRecursive(requestedLoadSize)
+            val instances = queryOnline(requestedLoadSize)
             result.addAll(instances)
             if (result.size < requestedLoadSize && scope.mode() == RepositoryMode.ONLINE_FIRST) {
                 val onlineInstances = queryOffline(requestedLoadSize)
@@ -95,7 +95,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return result
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
+    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return queryOffline(-1)
     }
 
@@ -104,11 +104,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return store.selectUidsWhere(sqlQuery)
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
-        return queryOnlineRecursive(-1)
+    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+        return queryOnline(-1)
     }
 
-    private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
             scope,
             returnedUidsOffline,
@@ -118,11 +118,12 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedUidsOffline.addAll(instances.map { it.uid() })
 
         return appendAttributes(instances).map {
-            Result.Success(it)
+            val instance = TrackedEntitySearchItemHelper.from(it)
+            Result.Success(instance)
         }
     }
 
-    private fun queryOnlineRecursive(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         do {
@@ -137,7 +138,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             !areAllOnlineQueriesExhausted()
         )
 
-        return result
+        return result.map { r ->  r.map { TrackedEntitySearchItemHelper.from(it) } }
     }
 
     private fun getOnlineQueryResults(

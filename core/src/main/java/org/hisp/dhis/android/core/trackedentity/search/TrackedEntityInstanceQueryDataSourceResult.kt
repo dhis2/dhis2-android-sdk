@@ -30,15 +30,14 @@ package org.hisp.dhis.android.core.trackedentity.search
 import androidx.paging.PageKeyedDataSource
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
-) : PageKeyedDataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>() {
+) : PageKeyedDataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>() {
 
     override fun loadInitial(
-        params: LoadInitialParams<TrackedEntityInstance>,
-        callback: LoadInitialCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
+        params: LoadInitialParams<TrackedEntitySearchItem>,
+        callback: LoadInitialCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
     ) {
         dataFetcher.refresh()
         val result = loadPages(params.requestedLoadSize)
@@ -46,25 +45,25 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     }
 
     override fun loadAfter(
-        params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
     ) {
         val result = loadPages(params.requestedLoadSize)
         callback.onResult(result, getKey(result))
     }
 
     override fun loadBefore(
-        params: LoadParams<TrackedEntityInstance>,
-        callback: LoadCallback<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>,
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
     ) {
         // do nothing
     }
 
-    private fun getKey(result: List<Result<TrackedEntityInstance, D2Error>>): TrackedEntityInstance? {
-        return result.filterIsInstance<Result.Success<TrackedEntityInstance, D2Error>>().lastOrNull()?.value
+    private fun getKey(result: List<Result<TrackedEntitySearchItem, D2Error>>): TrackedEntitySearchItem? {
+        return result.filterIsInstance<Result.Success<TrackedEntitySearchItem, D2Error>>().lastOrNull()?.value
     }
 
-    private fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    private fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
         return dataFetcher.loadPages(requestedLoadSize)
     }
 }

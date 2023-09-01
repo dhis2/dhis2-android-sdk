@@ -25,155 +25,146 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource
 
-package org.hisp.dhis.android.core.fileresource;
-
-import static org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Columns;
-
-import android.content.Context;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.LongFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-
-import java.io.File;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import android.content.Context
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.LongFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFile
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import java.io.File
+import javax.inject.Inject
 
 @Reusable
-public final class FileResourceCollectionRepository
-        extends ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>
-        implements ReadWriteWithUidCollectionRepository<FileResource, File> {
-
-    private final IdentifiableDataObjectStore<FileResource> store;
-    private final Context context;
-
-    @Inject
-    FileResourceCollectionRepository(final FileResourceStore store,
-                                     final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
-                                     final RepositoryScope scope,
-                                     final FileResourceProjectionTransformer transformer,
-                                     final DataStatePropagator dataStatePropagator,
-                                     final Context context) {
-        super(store, childrenAppenders, scope, transformer,
-                new FilterConnectorFactory<>(scope, s -> new FileResourceCollectionRepository(
-                        store, childrenAppenders, s, transformer, dataStatePropagator, context)));
-        this.store = store;
-        this.context = context;
-    }
+@Suppress("TooManyFunctions")
+class FileResourceCollectionRepository @Inject internal constructor(
+    private val fileResourceStore: FileResourceStore,
+    childrenAppenders: Map<String, ChildrenAppender<FileResource>>,
+    scope: RepositoryScope,
+    transformer: FileResourceProjectionTransformer,
+    dataStatePropagator: DataStatePropagator,
+    private val context: Context,
+) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
+    fileResourceStore,
+    childrenAppenders,
+    scope,
+    transformer,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        FileResourceCollectionRepository(
+            fileResourceStore,
+            childrenAppenders,
+            s,
+            transformer,
+            dataStatePropagator,
+            context,
+        )
+    },
+),
+    ReadWriteWithUidCollectionRepository<FileResource, File> {
 
     /**
-     * @deprecated FileResources are automatically uploaded when the parent object is uploaded. There is no need to
-     * manually upload the fileResources. Actually, it is risky to upload the fileResources independently: if the
-     * parent objects are not uploaded within two hours, the server will remove the orphan fileResources.
      * @return Progress
      */
-    @Deprecated
-    public Observable<D2Progress> upload() {
-        return Observable.empty();
+    @Deprecated(
+        """FileResources are automatically uploaded when the parent object is uploaded. There is no need to
+      manually upload the fileResources. Actually, it is risky to upload the fileResources independently: if the
+      parent objects are not uploaded within two hours, the server will remove the orphan fileResources.
+      """,
+    )
+    fun upload(): Observable<D2Progress> {
+        return Observable.empty()
     }
 
-    /**
-     * @deprecated Check {@link #upload()}.
-     */
-    @Deprecated
-    public void blockingUpload() {
-        upload().blockingSubscribe();
+    @Deprecated("Check {@link #upload()}.")
+    fun blockingUpload() {
+        upload().blockingSubscribe()
     }
 
-    @Override
-    public Single<String> add(File file) {
-        return Single.fromCallable(() -> blockingAdd(file));
+    override fun add(o: File): Single<String> {
+        return Single.fromCallable { blockingAdd(o) }
     }
 
-    @SuppressWarnings({"PMD.PreserveStackTrace"})
-    @Override
-    public String blockingAdd(File file) throws D2Error {
-        try {
-            String generatedUid = new UidGeneratorImpl().generate();
-            File dstFile = FileResourceUtil.saveFile(file, generatedUid, context);
-            FileResource fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).build();
-            store.insert(fileResource);
-            return fileResource.uid();
-        } catch (Exception e) {
+    @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    override fun blockingAdd(o: File): String {
+        return try {
+            val generatedUid = UidGeneratorImpl().generate()
+            val dstFile = saveFile(o, generatedUid, context)
+            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).build()
+            store.insert(fileResource)
+            fileResource.uid()!!
+        } catch (e: Exception) {
             throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected exception adding file")
-                    .originalException(e)
-                    .build();
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .errorDescription("Unexpected exception adding file")
+                .originalException(e)
+                .build()
         }
     }
 
-    @Override
-    public FileResourceObjectRepository uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new FileResourceObjectRepository(store, uid, childrenAppenders, updatedScope);
+    override fun uid(uid: String?): FileResourceObjectRepository {
+        val updatedScope = withUidFilterItem(scope, uid)
+        return FileResourceObjectRepository(fileResourceStore, uid, childrenAppenders, updatedScope)
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byUid() {
-        return cf.string(Columns.UID);
+    fun byUid(): StringFilterConnector<FileResourceCollectionRepository> {
+        return cf.string(FileResourceTableInfo.Columns.UID)
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byName() {
-        return cf.string(Columns.NAME);
+    fun byName(): StringFilterConnector<FileResourceCollectionRepository> {
+        return cf.string(FileResourceTableInfo.Columns.NAME)
     }
 
-    public DateFilterConnector<FileResourceCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byLastUpdated(): DateFilterConnector<FileResourceCollectionRepository> {
+        return cf.date(FileResourceTableInfo.Columns.LAST_UPDATED)
     }
 
-    public EnumFilterConnector<FileResourceCollectionRepository, FileResourceDomain> byDomain() {
-        return cf.enumC(Columns.DOMAIN);
+    fun byDomain(): EnumFilterConnector<FileResourceCollectionRepository, FileResourceDomain> {
+        return cf.enumC(FileResourceTableInfo.Columns.DOMAIN)
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byContentType() {
-        return cf.string(Columns.CONTENT_TYPE);
+    fun byContentType(): StringFilterConnector<FileResourceCollectionRepository> {
+        return cf.string(FileResourceTableInfo.Columns.CONTENT_TYPE)
     }
 
-    public LongFilterConnector<FileResourceCollectionRepository> byContentLength() {
-        return cf.longC(Columns.CONTENT_LENGTH);
+    fun byContentLength(): LongFilterConnector<FileResourceCollectionRepository> {
+        return cf.longC(FileResourceTableInfo.Columns.CONTENT_LENGTH)
     }
 
-    public StringFilterConnector<FileResourceCollectionRepository> byPath() {
-        return cf.string(Columns.PATH);
+    fun byPath(): StringFilterConnector<FileResourceCollectionRepository> {
+        return cf.string(FileResourceTableInfo.Columns.PATH)
     }
 
     /**
-     * @deprecated Use {@link #bySyncState()} instead.
-     *
      * @return
      */
-    @Deprecated
-    public EnumFilterConnector<FileResourceCollectionRepository, State> byState() {
-        return bySyncState();
+    @Deprecated("Use {@link #bySyncState()} instead.", ReplaceWith("bySyncState()"))
+    fun byState(): EnumFilterConnector<FileResourceCollectionRepository, State> {
+        return bySyncState()
     }
 
-    public EnumFilterConnector<FileResourceCollectionRepository, State> bySyncState() {
-        return cf.enumC(Columns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<FileResourceCollectionRepository, State> {
+        return cf.enumC(FileResourceTableInfo.Columns.SYNC_STATE)
     }
 }

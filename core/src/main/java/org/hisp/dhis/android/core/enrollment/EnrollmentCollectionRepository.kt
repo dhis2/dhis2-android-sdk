@@ -25,169 +25,161 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment
 
-package org.hisp.dhis.android.core.enrollment;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import javax.inject.Inject
 
 @Reusable
-public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollectionRepositoryImpl
-        <Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository> {
-
-    private final EnrollmentStore store;
-    private final TrackerDataManager trackerDataManager;
-
-    @Inject
-    EnrollmentCollectionRepository(
-            final EnrollmentStore store,
-            final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
-            final RepositoryScope scope,
-            final EnrollmentProjectionTransformer transformer,
-            final TrackerDataManager trackerDataManager) {
-        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new EnrollmentCollectionRepository(store, childrenAppenders, s, transformer, trackerDataManager)));
-        this.store = store;
-        this.trackerDataManager = trackerDataManager;
+class EnrollmentCollectionRepository @Inject internal constructor(
+    private val enrollmentStore: EnrollmentStore,
+    childrenAppenders: Map<String, ChildrenAppender<Enrollment>>,
+    scope: RepositoryScope,
+    transformer: EnrollmentProjectionTransformer,
+    private val trackerDataManager: TrackerDataManager,
+) : ReadWriteWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository>(
+    enrollmentStore,
+    childrenAppenders,
+    scope,
+    transformer,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        EnrollmentCollectionRepository(
+            enrollmentStore,
+            childrenAppenders,
+            s,
+            transformer,
+            trackerDataManager,
+        )
+    },
+) {
+    override fun propagateState(m: Enrollment, action: HandleAction?) {
+        trackerDataManager.propagateEnrollmentUpdate(m, action!!)
     }
 
-    @Override
-    protected void propagateState(Enrollment enrollment, HandleAction action) {
-        trackerDataManager.propagateEnrollmentUpdate(enrollment, action);
+    override fun uid(uid: String?): EnrollmentObjectRepository {
+        val updatedScope = withUidFilterItem(scope, uid)
+        return EnrollmentObjectRepository(enrollmentStore, uid, childrenAppenders, updatedScope, trackerDataManager)
     }
 
-    @NonNull
-    @Override
-    public EnrollmentObjectRepository uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
+    fun byUid(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.UID)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byUid() {
-        return cf.string(EnrollmentTableInfo.Columns.UID);
+    fun byCreated(): DateFilterConnector<EnrollmentCollectionRepository> {
+        return cf.date(EnrollmentTableInfo.Columns.CREATED)
     }
 
-    public DateFilterConnector<EnrollmentCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byLastUpdated(): DateFilterConnector<EnrollmentCollectionRepository> {
+        return cf.date(EnrollmentTableInfo.Columns.LAST_UPDATED)
     }
 
-    public DateFilterConnector<EnrollmentCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byCreatedAtClient(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byCreatedAtClient() {
-        return cf.string(Columns.CREATED_AT_CLIENT);
+    fun byLastUpdatedAtClient(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
+    fun byOrganisationUnit(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byOrganisationUnit() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byProgram(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byProgram() {
-        return cf.string(Columns.PROGRAM);
+    fun byEnrollmentDate(): DateFilterConnector<EnrollmentCollectionRepository> {
+        return cf.simpleDate(EnrollmentTableInfo.Columns.ENROLLMENT_DATE)
     }
 
-    public DateFilterConnector<EnrollmentCollectionRepository> byEnrollmentDate() {
-        return cf.simpleDate(Columns.ENROLLMENT_DATE);
+    fun byIncidentDate(): DateFilterConnector<EnrollmentCollectionRepository> {
+        return cf.simpleDate(EnrollmentTableInfo.Columns.INCIDENT_DATE)
     }
 
-    public DateFilterConnector<EnrollmentCollectionRepository> byIncidentDate() {
-        return cf.simpleDate(Columns.INCIDENT_DATE);
+    fun byFollowUp(): BooleanFilterConnector<EnrollmentCollectionRepository> {
+        return cf.bool(EnrollmentTableInfo.Columns.FOLLOW_UP)
     }
 
-    public BooleanFilterConnector<EnrollmentCollectionRepository> byFollowUp() {
-        return cf.bool(Columns.FOLLOW_UP);
+    fun byStatus(): EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> {
+        return cf.enumC(EnrollmentTableInfo.Columns.STATUS)
     }
 
-    public EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> byStatus() {
-        return cf.enumC(Columns.STATUS);
+    fun byTrackedEntityInstance(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byTrackedEntityInstance() {
-        return cf.string(Columns.TRACKED_ENTITY_INSTANCE);
+    fun byGeometryType(): EnumFilterConnector<EnrollmentCollectionRepository, FeatureType> {
+        return cf.enumC(EnrollmentTableInfo.Columns.GEOMETRY_TYPE)
     }
 
-    public EnumFilterConnector<EnrollmentCollectionRepository, FeatureType> byGeometryType() {
-        return cf.enumC(EnrollmentTableInfo.Columns.GEOMETRY_TYPE);
+    fun byGeometryCoordinates(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES)
     }
 
-    public StringFilterConnector<EnrollmentCollectionRepository> byGeometryCoordinates() {
-        return cf.string(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES);
-    }
-
-    public EnumFilterConnector<EnrollmentCollectionRepository, State> byAggregatedSyncState() {
-        return cf.enumC(DataColumns.AGGREGATED_SYNC_STATE);
+    fun byAggregatedSyncState(): EnumFilterConnector<EnrollmentCollectionRepository, State> {
+        return cf.enumC(DataColumns.AGGREGATED_SYNC_STATE)
     }
 
     /**
-     * Use {@link #byAggregatedSyncState()} instead.
+     * Use [.byAggregatedSyncState] instead.
      */
-    @Deprecated
-    public EnumFilterConnector<EnrollmentCollectionRepository, State> byState() {
-        return byAggregatedSyncState();
+    @Deprecated("", ReplaceWith("byAggregatedSyncState()"))
+    fun byState(): EnumFilterConnector<EnrollmentCollectionRepository, State> {
+        return byAggregatedSyncState()
     }
 
-    public EnumFilterConnector<EnrollmentCollectionRepository, State> bySyncState() {
-        return cf.enumC(DataColumns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<EnrollmentCollectionRepository, State> {
+        return cf.enumC(DataColumns.SYNC_STATE)
     }
 
-    public BooleanFilterConnector<EnrollmentCollectionRepository> byDeleted() {
-        return cf.bool(EnrollmentTableInfo.Columns.DELETED);
+    fun byDeleted(): BooleanFilterConnector<EnrollmentCollectionRepository> {
+        return cf.bool(EnrollmentTableInfo.Columns.DELETED)
     }
 
-    public EnrollmentCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED, direction);
+    fun orderByCreated(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.CREATED, direction)
     }
 
-    public EnrollmentCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    fun orderByLastUpdated(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.LAST_UPDATED, direction)
     }
 
-    public EnrollmentCollectionRepository orderByCreatedAtClient(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    fun orderByCreatedAtClient(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT, direction)
     }
 
-    public EnrollmentCollectionRepository orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    fun orderByLastUpdatedAtClient(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT, direction)
     }
 
-    public EnrollmentCollectionRepository orderByEnrollmentDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.ENROLLMENT_DATE, direction);
+    fun orderByEnrollmentDate(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.ENROLLMENT_DATE, direction)
     }
 
-    public EnrollmentCollectionRepository orderByIncidentDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.INCIDENT_DATE, direction);
+    fun orderByIncidentDate(direction: OrderByDirection?): EnrollmentCollectionRepository {
+        return cf.withOrderBy(EnrollmentTableInfo.Columns.INCIDENT_DATE, direction)
     }
 
-    public EnrollmentCollectionRepository withNotes() {
-        return cf.withChild(EnrollmentFields.NOTES);
+    fun withNotes(): EnrollmentCollectionRepository {
+        return cf.withChild(EnrollmentFields.NOTES)
     }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.maintenance.D2Error
 
-interface ReadWriteWithUidCollectionRepository<M, C> :
+interface ReadWriteWithUidCollectionRepository<M, O> :
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
     /**
      * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
@@ -42,7 +42,7 @@ interface ReadWriteWithUidCollectionRepository<M, C> :
      * @param c the CreateProjection of the object to add
      * @return the Single with the UID
      */
-    fun add(c: C): Single<String>
+    fun add(o: O): Single<String>
 
     /**
      * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
@@ -54,5 +54,5 @@ interface ReadWriteWithUidCollectionRepository<M, C> :
      * @return the UID
      */
     @Throws(D2Error::class)
-    fun blockingAdd(c: C): String
+    fun blockingAdd(o: O): String
 }

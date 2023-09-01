@@ -63,8 +63,8 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
      * @param projection the CreateProjection of the object to add
      * @return the Single with the UID
      */
-    override fun add(projection: P): Single<String> {
-        return Single.fromCallable { blockingAdd(projection) }
+    override fun add(o: P): Single<String> {
+        return Single.fromCallable { blockingAdd(o) }
     }
 
     /**
@@ -78,8 +78,8 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
      */
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun blockingAdd(c: P): String {
-        val obj = transformer.transform(c)
+    override fun blockingAdd(o: P): String {
+        val obj = transformer.transform(o)
         return try {
             store.insert(obj)
             propagateState(obj, HandleAction.Insert)

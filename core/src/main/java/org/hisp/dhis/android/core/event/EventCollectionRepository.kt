@@ -25,293 +25,286 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event
 
-import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
+import dagger.Reusable
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ValueSubQueryFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.internal.EventFields
+import org.hisp.dhis.android.core.event.internal.EventPostParentCall
+import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import org.hisp.dhis.android.core.user.internal.UserStore
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.ValueSubQueryFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
-import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
-import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
-import org.hisp.dhis.android.core.user.internal.UserStore;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-
-@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
-public final class EventCollectionRepository
-        extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>
-        implements ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
-
-    private final EventPostParentCall postCall;
-
-    private final EventStore store;
-    private final UserStore userStore;
-    private final TrackerDataManager trackerDataManager;
-    private final JobQueryCall jobQueryCall;
-
-    @Inject
-    EventCollectionRepository(final EventStore store,
-                              final UserStore userStore,
-                              final Map<String, ChildrenAppender<Event>> childrenAppenders,
-                              final RepositoryScope scope,
-                              final EventPostParentCall postCall,
-                              final EventProjectionTransformer transformer,
-                              final TrackerDataManager trackerDataManager,
-                              final JobQueryCall jobQueryCall) {
-        super(store, childrenAppenders, scope, transformer,
-                new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(store, userStore,
-                        childrenAppenders, s, postCall, transformer, trackerDataManager, jobQueryCall)));
-        this.store = store;
-        this.userStore = userStore;
-        this.postCall = postCall;
-        this.trackerDataManager = trackerDataManager;
-        this.jobQueryCall = jobQueryCall;
-    }
-
-    @Override
-    public Observable<D2Progress> upload() {
+class EventCollectionRepository @Inject internal constructor(
+    private val eventStore: EventStore,
+    private val userStore: UserStore,
+    childrenAppenders: Map<String, ChildrenAppender<Event>>,
+    scope: RepositoryScope,
+    private val postCall: EventPostParentCall,
+    transformer: EventProjectionTransformer,
+    private val trackerDataManager: TrackerDataManager,
+    private val jobQueryCall: JobQueryCall,
+) : ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>(
+    eventStore,
+    childrenAppenders,
+    scope,
+    transformer,
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
+        EventCollectionRepository(
+            eventStore,
+            userStore,
+            childrenAppenders,
+            s,
+            postCall,
+            transformer,
+            trackerDataManager,
+            jobQueryCall,
+        )
+    },
+),
+    ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
+    override fun upload(): Observable<D2Progress> {
         return Observable.concat(
-                jobQueryCall.queryPendingJobs(),
-                Observable.fromCallable(() -> byAggregatedSyncState().in(State.uploadableStatesIncludingError())
-                        .byEnrollmentUid().isNull()
-                        .blockingGetWithoutChildren())
-                        .flatMap(postCall::uploadEvents)
-        );
+            jobQueryCall.queryPendingJobs(),
+            Observable.fromCallable {
+                byAggregatedSyncState().`in`(*uploadableStatesIncludingError())
+                    .byEnrollmentUid().isNull
+                    .blockingGetWithoutChildren()
+            }
+                .flatMap { events: List<Event> -> postCall.uploadEvents(events) },
+        )
     }
 
-    @Override
-    public void blockingUpload() {
-        upload().blockingSubscribe();
+    override fun blockingUpload() {
+        upload().blockingSubscribe()
     }
 
-    @Override
-    protected void propagateState(Event event, HandleAction action) {
-        trackerDataManager.propagateEventUpdate(event, action);
+    override fun propagateState(m: Event, action: HandleAction?) {
+        trackerDataManager.propagateEventUpdate(m, action!!)
     }
 
-    @Override
-    public EventObjectRepository uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new EventObjectRepository(store, userStore, uid, childrenAppenders, updatedScope, trackerDataManager);
+    override fun uid(uid: String?): EventObjectRepository {
+        val updatedScope = withUidFilterItem(scope, uid)
+        return EventObjectRepository(eventStore, userStore, uid, childrenAppenders, updatedScope, trackerDataManager)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byUid() {
-        return cf.string(Columns.UID);
+    fun byUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.UID)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byEnrollmentUid() {
-        return cf.string(Columns.ENROLLMENT);
+    fun byEnrollmentUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.ENROLLMENT)
     }
 
-    public DateFilterConnector<EventCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byCreated(): DateFilterConnector<EventCollectionRepository> {
+        return cf.date(EventTableInfo.Columns.CREATED)
     }
 
-    public DateFilterConnector<EventCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byLastUpdated(): DateFilterConnector<EventCollectionRepository> {
+        return cf.date(EventTableInfo.Columns.LAST_UPDATED)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byCreatedAtClient() {
-        return cf.string(Columns.CREATED_AT_CLIENT);
+    fun byCreatedAtClient(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.CREATED_AT_CLIENT)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
+    fun byLastUpdatedAtClient(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT)
     }
 
-    public EnumFilterConnector<EventCollectionRepository, EventStatus> byStatus() {
-        return cf.enumC(Columns.STATUS);
+    fun byStatus(): EnumFilterConnector<EventCollectionRepository, EventStatus> {
+        return cf.enumC(EventTableInfo.Columns.STATUS)
     }
 
-    public EnumFilterConnector<EventCollectionRepository, FeatureType> byGeometryType() {
-        return cf.enumC(Columns.GEOMETRY_TYPE);
+    fun byGeometryType(): EnumFilterConnector<EventCollectionRepository, FeatureType> {
+        return cf.enumC(EventTableInfo.Columns.GEOMETRY_TYPE)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byGeometryCoordinates() {
-        return cf.string(Columns.GEOMETRY_COORDINATES);
+    fun byGeometryCoordinates(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.GEOMETRY_COORDINATES)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    fun byProgramUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byProgramStageUid() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byProgramStageUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byOrganisationUnitUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public DateFilterConnector<EventCollectionRepository> byEventDate() {
-        return cf.simpleDate(Columns.EVENT_DATE);
+    fun byEventDate(): DateFilterConnector<EventCollectionRepository> {
+        return cf.simpleDate(EventTableInfo.Columns.EVENT_DATE)
     }
 
-    public DateFilterConnector<EventCollectionRepository> byCompleteDate() {
-        return cf.simpleDate(Columns.COMPLETE_DATE);
+    fun byCompleteDate(): DateFilterConnector<EventCollectionRepository> {
+        return cf.simpleDate(EventTableInfo.Columns.COMPLETE_DATE)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byCompletedBy() {
-        return cf.string(Columns.COMPLETED_BY);
+    fun byCompletedBy(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.COMPLETED_BY)
     }
 
-    public DateFilterConnector<EventCollectionRepository> byDueDate() {
-        return cf.simpleDate(Columns.DUE_DATE);
+    fun byDueDate(): DateFilterConnector<EventCollectionRepository> {
+        return cf.simpleDate(EventTableInfo.Columns.DUE_DATE)
     }
 
     /**
-     * @deprecated Use {@link #bySyncState()} instead.
-     *
      * @return
      */
-    @Deprecated
-    public EnumFilterConnector<EventCollectionRepository, State> byState() {
-        return bySyncState();
+    @Deprecated("Use {@link #bySyncState()} instead.", ReplaceWith("bySyncState()"))
+    fun byState(): EnumFilterConnector<EventCollectionRepository, State> {
+        return bySyncState()
     }
 
-    public EnumFilterConnector<EventCollectionRepository, State> bySyncState() {
-        return cf.enumC(Columns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<EventCollectionRepository, State> {
+        return cf.enumC(EventTableInfo.Columns.SYNC_STATE)
     }
 
-    public EnumFilterConnector<EventCollectionRepository, State> byAggregatedSyncState() {
-        return cf.enumC(Columns.AGGREGATED_SYNC_STATE);
+    fun byAggregatedSyncState(): EnumFilterConnector<EventCollectionRepository, State> {
+        return cf.enumC(EventTableInfo.Columns.AGGREGATED_SYNC_STATE)
     }
 
-    public StringFilterConnector<EventCollectionRepository> byAttributeOptionComboUid() {
-        return cf.string(Columns.ATTRIBUTE_OPTION_COMBO);
+    fun byAttributeOptionComboUid(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO)
     }
 
-    public BooleanFilterConnector<EventCollectionRepository> byDeleted() {
-        return cf.bool(Columns.DELETED);
+    fun byDeleted(): BooleanFilterConnector<EventCollectionRepository> {
+        return cf.bool(EventTableInfo.Columns.DELETED)
     }
 
-    public EventCollectionRepository byTrackedEntityInstanceUids(List<String> uids) {
-        return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
-                EnrollmentTableInfo.TABLE_INFO.name(),
-                IdentifiableColumns.UID,
-                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                uids
-        );
+    fun byTrackedEntityInstanceUids(uids: List<String>): EventCollectionRepository {
+        return cf.subQuery(EventTableInfo.Columns.ENROLLMENT).inLinkTable(
+            EnrollmentTableInfo.TABLE_INFO.name(),
+            IdentifiableColumns.UID,
+            EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+            uids,
+        )
     }
 
-    public ValueSubQueryFilterConnector<EventCollectionRepository> byDataValue(String dataElementId) {
+    fun byDataValue(dataElementId: String): ValueSubQueryFilterConnector<EventCollectionRepository> {
         return cf.valueSubQuery(
-                IdentifiableColumns.UID,
-                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                TrackedEntityDataValueTableInfo.Columns.EVENT,
-                TrackedEntityDataValueTableInfo.Columns.VALUE,
-                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
-                dataElementId);
+            IdentifiableColumns.UID,
+            TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+            TrackedEntityDataValueTableInfo.Columns.EVENT,
+            TrackedEntityDataValueTableInfo.Columns.VALUE,
+            TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+            dataElementId,
+        )
     }
 
-    public EventCollectionRepository byFollowUp(Boolean followUp) {
-        return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
-                EnrollmentTableInfo.TABLE_INFO.name(),
-                IdentifiableColumns.UID,
-                EnrollmentTableInfo.Columns.FOLLOW_UP,
-                Collections.singletonList(followUp ? "1" : "0")
-        );    }
-
-    public StringFilterConnector<EventCollectionRepository> byAssignedUser() {
-        return cf.string(Columns.ASSIGNED_USER);
+    fun byFollowUp(followUp: Boolean): EventCollectionRepository {
+        return cf.subQuery(EventTableInfo.Columns.ENROLLMENT).inLinkTable(
+            EnrollmentTableInfo.TABLE_INFO.name(),
+            IdentifiableColumns.UID,
+            EnrollmentTableInfo.Columns.FOLLOW_UP,
+            listOf(if (followUp) "1" else "0"),
+        )
     }
 
-    public EventCollectionRepository withTrackedEntityDataValues() {
-        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
+    fun byAssignedUser(): StringFilterConnector<EventCollectionRepository> {
+        return cf.string(EventTableInfo.Columns.ASSIGNED_USER)
     }
 
-    public EventCollectionRepository withNotes() {
-        return cf.withChild(EventFields.NOTES);
+    fun withTrackedEntityDataValues(): EventCollectionRepository {
+        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES)
     }
 
-    public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.EVENT_DATE, direction);
+    fun withNotes(): EventCollectionRepository {
+        return cf.withChild(EventFields.NOTES)
     }
 
-    public EventCollectionRepository orderByDueDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.DUE_DATE, direction);
+    fun orderByEventDate(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.EVENT_DATE, direction)
     }
 
-    public EventCollectionRepository orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.COMPLETE_DATE, direction);
+    fun orderByDueDate(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.DUE_DATE, direction)
     }
 
-    public EventCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED, direction);
+    fun orderByCompleteDate(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.COMPLETE_DATE, direction)
     }
 
-    public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    fun orderByCreated(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.CREATED, direction)
     }
 
-    public EventCollectionRepository orderByCreatedAtClient(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    fun orderByLastUpdated(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.LAST_UPDATED, direction)
     }
 
-    public EventCollectionRepository orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    fun orderByCreatedAtClient(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.CREATED_AT_CLIENT, direction)
     }
 
-    public EventCollectionRepository orderByOrganisationUnitName(RepositoryScope.OrderByDirection direction) {
+    fun orderByLastUpdatedAtClient(direction: OrderByDirection?): EventCollectionRepository {
+        return cf.withOrderBy(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT, direction)
+    }
+
+    fun orderByOrganisationUnitName(direction: OrderByDirection?): EventCollectionRepository {
         return cf.withExternalOrderBy(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                IdentifiableColumns.NAME,
-                IdentifiableColumns.UID,
-                Columns.ORGANISATION_UNIT,
-                direction);
+            OrganisationUnitTableInfo.TABLE_INFO.name(),
+            IdentifiableColumns.NAME,
+            IdentifiableColumns.UID,
+            EventTableInfo.Columns.ORGANISATION_UNIT,
+            direction!!,
+        )
     }
 
-    public EventCollectionRepository orderByTimeline(RepositoryScope.OrderByDirection direction) {
+    fun orderByTimeline(direction: OrderByDirection?): EventCollectionRepository {
         return cf.withConditionalOrderBy(
-                Columns.STATUS,
-                String.format("IN ('%s', '%s', '%s')", EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED),
-                Columns.EVENT_DATE,
-                Columns.DUE_DATE,
-                direction
-        );
+            EventTableInfo.Columns.STATUS,
+            String.format("IN ('%s', '%s', '%s')", EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED),
+            EventTableInfo.Columns.EVENT_DATE,
+            EventTableInfo.Columns.DUE_DATE,
+            direction,
+        )
     }
 
-    public EventCollectionRepository orderByDataElement(RepositoryScope.OrderByDirection direction,
-                                                        String dataElement) {
+    fun orderByDataElement(
+        direction: OrderByDirection,
+        dataElement: String,
+    ): EventCollectionRepository {
         return cf.withExternalOrderBy(
-                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                TrackedEntityDataValueTableInfo.Columns.VALUE,
-                TrackedEntityDataValueTableInfo.Columns.EVENT,
-                Columns.UID,
-                direction,
-                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT + " = '" + dataElement + "'");
+            TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+            TrackedEntityDataValueTableInfo.Columns.VALUE,
+            TrackedEntityDataValueTableInfo.Columns.EVENT,
+            EventTableInfo.Columns.UID,
+            direction,
+            TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT + " = '" + dataElement + "'",
+        )
     }
 
-    public int countTrackedEntityInstances() {
-        return store.countTeisWhereEvents(getWhereClause());
+    fun countTrackedEntityInstances(): Int {
+        return eventStore.countTeisWhereEvents(whereClause)
     }
 }

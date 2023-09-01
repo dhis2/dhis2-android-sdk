@@ -25,40 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
+import javax.inject.Inject
 
 @Reusable
-public final class IndicatorTypeCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository> {
-
-    @Inject
-    IndicatorTypeCollectionRepository(final IndicatorTypeStore store,
-                                      final Map<String, ChildrenAppender<IndicatorType>> childrenAppenders,
-                                      final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new IndicatorTypeCollectionRepository(store, childrenAppenders, s)));
+class IndicatorTypeCollectionRepository @Inject internal constructor(
+    store: IndicatorTypeStore,
+    childrenAppenders: Map<String, ChildrenAppender<IndicatorType>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        IndicatorTypeCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byNumber(): BooleanFilterConnector<IndicatorTypeCollectionRepository> {
+        return cf.bool(IndicatorTypeTableInfo.Columns.NUMBER)
     }
 
-    public BooleanFilterConnector<IndicatorTypeCollectionRepository> byNumber() {
-        return cf.bool(Columns.NUMBER);
-    }
-
-    public IntegerFilterConnector<IndicatorTypeCollectionRepository> byFactor() {
-        return cf.integer(Columns.FACTOR);
+    fun byFactor(): IntegerFilterConnector<IndicatorTypeCollectionRepository> {
+        return cf.integer(IndicatorTypeTableInfo.Columns.FACTOR)
     }
 }

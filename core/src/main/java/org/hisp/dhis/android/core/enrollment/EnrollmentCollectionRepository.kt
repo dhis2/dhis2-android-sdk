@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class EnrollmentCollectionRepository @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     childrenAppenders: Map<String, ChildrenAppender<Enrollment>>,

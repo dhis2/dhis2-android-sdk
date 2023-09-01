@@ -392,7 +392,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
     fun byAssignedUserMode(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, AssignedUserMode> {
         return connectorFactory.eqConnector { mode: AssignedUserMode? ->
             return@eqConnector if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-               scope.toBuilder().assignedUserMode(mode).build()
+                scope.toBuilder().assignedUserMode(mode).build()
             } else {
                 scope
             }

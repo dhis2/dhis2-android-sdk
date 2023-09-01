@@ -25,39 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.category.internal.CategoryFields;
-import org.hisp.dhis.android.core.category.internal.CategoryStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.AuthorityStore
+import javax.inject.Inject
 
 @Reusable
-public final class CategoryCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
-
-    @Inject
-    CategoryCollectionRepository(final CategoryStore store,
-                                 final Map<String, ChildrenAppender<Category>> childrenAppenders,
-                                 final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new CategoryCollectionRepository(store, childrenAppenders, s)));
-    }
-
-    public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {
-        return cf.string(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE);
-    }
-
-    public CategoryCollectionRepository withCategoryOptions() {
-        return cf.withChild(CategoryFields.CATEGORY_OPTIONS);
+class AuthorityCollectionRepository @Inject internal constructor(
+    store: AuthorityStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Authority>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<Authority, AuthorityCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        AuthorityCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byName(): StringFilterConnector<AuthorityCollectionRepository> {
+        return cf.string(AuthorityTableInfo.Columns.NAME)
     }
 }

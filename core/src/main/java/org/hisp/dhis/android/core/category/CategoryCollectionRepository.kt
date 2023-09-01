@@ -25,36 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.constant.internal.ConstantStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryFields
+import org.hisp.dhis.android.core.category.internal.CategoryStore
+import javax.inject.Inject
 
 @Reusable
-public final class ConstantCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
-        Constant, ConstantCollectionRepository> {
-
-    @Inject
-    ConstantCollectionRepository(
-            final ConstantStore store,
-            final Map<String, ChildrenAppender<Constant>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ConstantCollectionRepository(store, childrenAppenders, s)));
+class CategoryCollectionRepository @Inject internal constructor(
+    store: CategoryStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Category>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        CategoryCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDataDimensionType(): StringFilterConnector<CategoryCollectionRepository> {
+        return cf.string(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
     }
 
-    public DoubleFilterConnector<ConstantCollectionRepository> byValue() {
-        return cf.doubleC(ConstantTableInfo.Columns.VALUE);
+    fun withCategoryOptions(): CategoryCollectionRepository {
+        return cf.withChild(CategoryFields.CATEGORY_OPTIONS)
     }
-
 }

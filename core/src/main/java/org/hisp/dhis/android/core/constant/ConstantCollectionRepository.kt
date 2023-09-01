@@ -25,35 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant
 
-package org.hisp.dhis.android.core.user;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.user.internal.AuthorityStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import javax.inject.Inject
 
 @Reusable
-public final class AuthorityCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<Authority, AuthorityCollectionRepository> {
-
-    @Inject
-    AuthorityCollectionRepository(final AuthorityStore store,
-                                  final Map<String, ChildrenAppender<Authority>> childrenAppenders,
-                                  final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new AuthorityCollectionRepository(store, childrenAppenders, s)));
-    }
-
-    public StringFilterConnector<AuthorityCollectionRepository> byName() {
-        return cf.string(AuthorityTableInfo.Columns.NAME);
+class ConstantCollectionRepository @Inject internal constructor(
+    store: ConstantStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Constant>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Constant, ConstantCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ConstantCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byValue(): DoubleFilterConnector<ConstantCollectionRepository> {
+        return cf.doubleC(ConstantTableInfo.Columns.VALUE)
     }
 }

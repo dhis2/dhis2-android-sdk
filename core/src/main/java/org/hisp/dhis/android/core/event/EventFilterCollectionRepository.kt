@@ -25,102 +25,103 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.event;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.internal.EventFilterStore;
-import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.internal.EventFilterStore
+import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import javax.inject.Inject
 
 @Reusable
-public final class EventFilterCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository> {
-
-    @Inject
-    EventFilterCollectionRepository(
-            final EventFilterStore store,
-            final Map<String, ChildrenAppender<EventFilter>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new EventFilterCollectionRepository(store, childrenAppenders, s)));
+@Suppress("TooManyFunctions")
+class EventFilterCollectionRepository @Inject internal constructor(
+    store: EventFilterStore,
+    childrenAppenders: Map<String, ChildrenAppender<EventFilter>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        EventFilterCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byProgram(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byProgram() {
-        return cf.string(Columns.PROGRAM);
+    fun byProgramStage(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byProgramStage() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byDescription(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+    fun byFollowUp(): BooleanFilterConnector<EventFilterCollectionRepository> {
+        return cf.bool(EventFilterTableInfo.Columns.FOLLOW_UP)
     }
 
-    public BooleanFilterConnector<EventFilterCollectionRepository> byFollowUp() {
-        return cf.bool(Columns.FOLLOW_UP);
+    fun byOrganisationUnit(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byOrganisationUnit() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byOuMode(): EnumFilterConnector<EventFilterCollectionRepository, OrganisationUnitMode> {
+        return cf.enumC(EventFilterTableInfo.Columns.OU_MODE)
     }
 
-    public EnumFilterConnector<EventFilterCollectionRepository, OrganisationUnitMode> byOuMode() {
-        return cf.enumC(Columns.OU_MODE);
+    fun byAssignedUserMode(): EnumFilterConnector<EventFilterCollectionRepository, AssignedUserMode> {
+        return cf.enumC(EventFilterTableInfo.Columns.ASSIGNED_USER_MODE)
     }
 
-    public EnumFilterConnector<EventFilterCollectionRepository, AssignedUserMode> byAssignedUserMode() {
-        return cf.enumC(Columns.ASSIGNED_USER_MODE);
+    fun byOrder(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.ORDER)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byOrder() {
-        return cf.string(Columns.ORDER);
+    fun byDisplayColumnOrder(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.DISPLAY_COLUMN_ORDER)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byDisplayColumnOrder() {
-        return cf.string(Columns.DISPLAY_COLUMN_ORDER);
+    fun byEvents(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.EVENTS)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byEvents() {
-        return cf.string(Columns.EVENTS);
+    fun byEventStatus(): EnumFilterConnector<EventFilterCollectionRepository, EventStatus> {
+        return cf.enumC(EventFilterTableInfo.Columns.EVENT_STATUS)
     }
 
-    public EnumFilterConnector<EventFilterCollectionRepository, EventStatus> byEventStatus() {
-        return cf.enumC(Columns.EVENT_STATUS);
+    fun byEventDate(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.EVENT_DATE)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byEventDate() {
-        return cf.string(Columns.EVENT_DATE);
+    fun byDueDate(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.DUE_DATE)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byDueDate() {
-        return cf.string(Columns.DUE_DATE);
+    fun byLastUpdatedDate(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.LAST_UPDATED_DATE)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byLastUpdatedDate() {
-        return cf.string(Columns.LAST_UPDATED_DATE);
+    fun byCompletedDate(): StringFilterConnector<EventFilterCollectionRepository> {
+        return cf.string(EventFilterTableInfo.Columns.COMPLETED_DATE)
     }
 
-    public StringFilterConnector<EventFilterCollectionRepository> byCompletedDate() {
-        return cf.string(Columns.COMPLETED_DATE);
-    }
-
-    public EventFilterCollectionRepository withEventDataFilters() {
-        return cf.withChild(EventQueryCriteriaFields.DATA_FILTERS);
+    fun withEventDataFilters(): EventFilterCollectionRepository {
+        return cf.withChild(EventQueryCriteriaFields.DATA_FILTERS)
     }
 }

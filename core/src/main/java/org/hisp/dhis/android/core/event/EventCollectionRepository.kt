@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.user.internal.UserStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class EventCollectionRepository @Inject internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
@@ -88,6 +89,8 @@ class EventCollectionRepository @Inject internal constructor(
     },
 ),
     ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
+
+    @Suppress("SpreadOperator")
     override fun upload(): Observable<D2Progress> {
         return Observable.concat(
             jobQueryCall.queryPendingJobs(),

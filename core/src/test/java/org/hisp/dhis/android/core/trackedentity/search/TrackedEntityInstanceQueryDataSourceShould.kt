@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -76,6 +77,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
+    private val trackerHeaderEngine: TrackerHeaderEngine = mock()
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> =
         ExpirableCache()
     private val initialLoad = 30
@@ -272,6 +274,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
             onlineCache,
             onlineHelper,
             localQueryHelper,
+            trackerHeaderEngine,
         )
     }
 

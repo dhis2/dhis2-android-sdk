@@ -79,6 +79,9 @@ public abstract class TrackedEntitySearchItem implements ObjectWithUidInterface 
     @Nullable
     public abstract Boolean deleted();
 
+    @Nullable
+    public abstract String header();
+
     public static TrackedEntitySearchItem.Builder builder() {
         return new AutoValue_TrackedEntitySearchItem.Builder();
     }
@@ -112,6 +115,8 @@ public abstract class TrackedEntitySearchItem implements ObjectWithUidInterface 
         public abstract Builder aggregatedSyncState(State state);
 
         public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder header(String header);
 
         public abstract TrackedEntitySearchItem build();
     }

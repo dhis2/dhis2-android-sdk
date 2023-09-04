@@ -295,7 +295,7 @@ class EventCollectionRepository @Inject internal constructor(
 
     fun orderByDataElement(
         direction: OrderByDirection,
-        dataElement: String,
+        dataElement: String?,
     ): EventCollectionRepository {
         return cf.withExternalOrderBy(
             TrackedEntityDataValueTableInfo.TABLE_INFO.name(),

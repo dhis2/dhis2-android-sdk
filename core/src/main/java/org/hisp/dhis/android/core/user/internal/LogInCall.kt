@@ -168,7 +168,7 @@ internal class LogInCall @Inject internal constructor(
 
         var credentials: Credentials? = null
         return try {
-            val user = coroutineAPICallExecutor.wrap {
+            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 userService.authenticate(
                     "Bearer ${openIDConnectState.idToken}",
                     UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion()),

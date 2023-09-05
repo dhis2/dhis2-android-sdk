@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
-internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollectionRepository<M>>(
+abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollectionRepository<M>>internal constructor(
     store: IdentifiableObjectStore<M>,
     childrenAppenders: Map<String, ChildrenAppender<M>>,
     scope: RepositoryScope,
@@ -63,8 +63,8 @@ internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadO
      * @param projection the CreateProjection of the object to add
      * @return the Single with the UID
      */
-    override fun add(projection: P): Single<String> {
-        return Single.fromCallable { blockingAdd(projection) }
+    override fun add(o: P): Single<String> {
+        return Single.fromCallable { blockingAdd(o) }
     }
 
     /**
@@ -78,8 +78,8 @@ internal abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadO
      */
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun blockingAdd(c: P): String {
-        val obj = transformer.transform(c)
+    override fun blockingAdd(o: P): String {
+        val obj = transformer.transform(o)
         return try {
             store.insert(obj)
             propagateState(obj, HandleAction.Insert)

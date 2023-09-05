@@ -25,34 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection
+package org.hisp.dhis.android.core.indicator
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.common.CoreObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.maintenance.D2Error
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
+import javax.inject.Inject
 
-interface ReadWriteWithUidCollectionRepository<M, O> :
-    ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
-    /**
-     * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
-     * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
-     * database. It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
-     * upload.
-     * @param c the CreateProjection of the object to add
-     * @return the Single with the UID
-     */
-    fun add(o: O): Single<String>
+@Reusable
+class IndicatorTypeCollectionRepository @Inject internal constructor(
+    store: IndicatorTypeStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<IndicatorType>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        IndicatorTypeCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byNumber(): BooleanFilterConnector<IndicatorTypeCollectionRepository> {
+        return cf.bool(IndicatorTypeTableInfo.Columns.NUMBER)
+    }
 
-    /**
-     * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
-     * It blocks the current thread and returns the generated UID.
-     * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
-     * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
-     * asynchronous version [.add].
-     * @param c the CreateProjection of the object to add
-     * @return the UID
-     */
-    @Throws(D2Error::class)
-    fun blockingAdd(o: O): String
+    fun byFactor(): IntegerFilterConnector<IndicatorTypeCollectionRepository> {
+        return cf.integer(IndicatorTypeTableInfo.Columns.FACTOR)
+    }
 }

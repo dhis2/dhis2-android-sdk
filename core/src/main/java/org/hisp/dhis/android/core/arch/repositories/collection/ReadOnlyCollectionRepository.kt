@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
+import androidx.paging.PagingData
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-interface ReadOnlyCollectionRepository<M> : BaseRepository {
+interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
     /**
      * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
      *
@@ -54,7 +54,7 @@ interface ReadOnlyCollectionRepository<M> : BaseRepository {
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
      */
-    fun getPaged(pageSize: Int): LiveData<PagedList<M>>
+    fun getPaged(pageSize: Int): Flow<PagingData<M>>
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

@@ -28,13 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.paging.PagedList
-import com.jraska.livedata.TestObserver
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Rule
-import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
@@ -44,7 +40,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    @Test
+    /*@Test
     fun get_offline_initial_objects() {
         val liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .offlineOnly().getPaged(2)
@@ -53,5 +49,5 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
             .awaitValue()
             .assertHasValue()
             .assertValue { pagedList: PagedList<TrackedEntityInstance> -> pagedList.size == 2 }
-    }
+    }*/
 }

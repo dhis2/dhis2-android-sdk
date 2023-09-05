@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -107,13 +108,17 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
      */
-    override fun getPaged(pageSize: Int): LiveData<PagedList<T>> {
+    override fun getPaged(pageSize: Int): Flow<PagingData<T>> {
         val factory: DataSource.Factory<M, T> = object : DataSource.Factory<M, T>() {
             override fun create(): DataSource<M, T> {
                 return dataSource
             }
         }
-        return LivePagedListBuilder(factory, pageSize).build()
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+        ) {
+            factory.asPagingSourceFactory().invoke()
+        }.flow
     }
 
     val dataSource: DataSource<M, T>

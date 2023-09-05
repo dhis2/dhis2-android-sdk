@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import dagger.Reusable
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -550,14 +551,18 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_STATUS)
     }
 
-    override fun getPaged(pageSize: Int): LiveData<PagedList<TrackedEntityInstance>> {
+    override fun getPaged(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
         val factory: DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> =
             object : DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance>() {
                 override fun create(): DataSource<TrackedEntityInstance, TrackedEntityInstance> {
                     return dataSource
                 }
             }
-        return LivePagedListBuilder(factory, pageSize).build()
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+        ) {
+            factory.asPagingSourceFactory().invoke()
+        }.flow
     }
 
     val dataSource: DataSource<TrackedEntityInstance, TrackedEntityInstance>

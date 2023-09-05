@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.event.search;
 
-import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
-import androidx.paging.PagedList;
+import androidx.paging.PagingData;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
@@ -59,6 +58,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Single;
+import kotlinx.coroutines.flow.Flow;
 
 @Reusable
 public final class EventQueryCollectionRepository implements ReadOnlyWithUidCollectionRepository<Event> {
@@ -267,7 +267,7 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     }
 
     @Override
-    public LiveData<PagedList<Event>> getPaged(int pageSize) {
+    public Flow<PagingData<Event>> getPaged(int pageSize) {
         return getEventCollectionRepository().getPaged(pageSize);
     }
 

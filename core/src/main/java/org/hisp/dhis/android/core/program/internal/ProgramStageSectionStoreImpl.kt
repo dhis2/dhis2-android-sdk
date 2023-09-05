@@ -57,6 +57,8 @@ internal class ProgramStageSectionStoreImpl(
                     w.bind(8, getUidOrNull(o.programStage()))
                     w.bind(9, o.renderType()?.desktop()?.type())
                     w.bind(10, o.renderType()?.mobile()?.type())
+                    w.bind(11, o.description())
+                    w.bind(12, o.displayDescription())
                 }
             }
     }

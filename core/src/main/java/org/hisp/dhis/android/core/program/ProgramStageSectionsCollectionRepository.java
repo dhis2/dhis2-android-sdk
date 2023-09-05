@@ -71,6 +71,14 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
         return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
     }
 
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDescription() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DESCRIPTION);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDisplayDescription() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION);
+    }
+
     public ProgramStageSectionsCollectionRepository withProgramIndicators() {
         return cf.withChild(ProgramStageSectionFields.PROGRAM_INDICATORS);
     }
@@ -78,4 +86,5 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
     public ProgramStageSectionsCollectionRepository withDataElements() {
         return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS);
     }
+
 }

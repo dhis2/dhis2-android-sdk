@@ -184,7 +184,9 @@
             {
               "id": "g9eOBujte1U"
             }
-          ]
+          ],
+          "description": "default description",
+          "displayDescription": "default display description"
         }
       ]
     },

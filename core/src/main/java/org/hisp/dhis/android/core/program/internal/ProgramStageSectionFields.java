@@ -48,7 +48,9 @@ public final class ProgramStageSectionFields {
                     fh.<Integer>field(Columns.SORT_ORDER),
                     fh.nestedFieldWithUid(PROGRAM_INDICATORS),
                     fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.<SectionRendering>nestedField(RENDER_TYPE)
+                    fh.<SectionRendering>nestedField(RENDER_TYPE),
+                    fh.<String>field(Columns.DESCRIPTION),
+                    fh.<Boolean>field(Columns.DISPLAY_DESCRIPTION)
             ).build();
 
     private ProgramStageSectionFields() {

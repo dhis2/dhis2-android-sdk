@@ -53,6 +53,8 @@ object ProgramStageSectionSamples {
                     ),
                 )
                 programStage(ObjectWithUid.create("program_stage_uid"))
+                description("description")
+                displayDescription("display description")
             }.build()
         }
 }

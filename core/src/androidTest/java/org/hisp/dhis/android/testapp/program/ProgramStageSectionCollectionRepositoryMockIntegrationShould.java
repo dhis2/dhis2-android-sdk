@@ -115,4 +115,25 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         assertThat(stageSections.size()).isEqualTo(1);
     }
 
+    @Test
+    public void filter_by_description() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections()
+                        .byDescription()
+                        .eq("description")
+                        .blockingGet();
+
+        assertThat(stageSections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_display_description() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections()
+                        .byDisplayDescription()
+                        .eq("display")
+                        .blockingGet();
+
+        assertThat(stageSections.size()).isEqualTo(1);
+    }
 }

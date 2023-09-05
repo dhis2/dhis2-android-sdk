@@ -60,6 +60,7 @@ internal class LogInCall @Inject internal constructor(
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
     private val versionManager: DHISVersionManager,
+    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
 ) {
     suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
         return blockingLogIn(username, password, serverUrl)
@@ -79,7 +80,7 @@ internal class LogInCall @Inject internal constructor(
         val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
 
         return try {
-            val user = coroutineAPICallExecutor.wrap {
+            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 userService.authenticate(
                     okhttp3.Credentials.basic(username, password!!),
                     UserFields.allFieldsWithoutOrgUnit(null),
@@ -165,14 +166,14 @@ internal class LogInCall @Inject internal constructor(
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val authenticateCall = userService.authenticate(
-            "Bearer ${openIDConnectState.idToken}",
-            UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion()),
-        )
-
         var credentials: Credentials? = null
         return try {
-            val user = coroutineAPICallExecutor.wrap { authenticateCall }.getOrThrow()
+            val user = coroutineAPICallExecutor.wrap {
+                userService.authenticate(
+                    "Bearer ${openIDConnectState.idToken}",
+                    UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion()),
+                )
+            }.getOrThrow()
             credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {

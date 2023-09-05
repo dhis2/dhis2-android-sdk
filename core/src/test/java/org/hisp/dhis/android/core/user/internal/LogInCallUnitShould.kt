@@ -65,6 +65,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val userIdStore: UserIdInMemoryStore = mock()
+    private val apiErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
 
     private val credentialsCaptor: KArgumentCaptor<String> = argumentCaptor()
     private val filterCaptor: KArgumentCaptor<Fields<User>> = argumentCaptor()
@@ -115,7 +116,7 @@ class LogInCallUnitShould : BaseCallShould() {
             coroutineAPICallExecutor, userService, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager,
+            LogInExceptions(credentialsSecureStore), accountManager, versionManager, apiErrorCatcher,
         ).logIn(username, password, serverUrl)
     }
 

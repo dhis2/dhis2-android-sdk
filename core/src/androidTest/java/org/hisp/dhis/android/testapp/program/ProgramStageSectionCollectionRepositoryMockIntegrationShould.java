@@ -120,7 +120,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         List<ProgramStageSection> stageSections =
                 d2.programModule().programStageSections()
                         .byDescription()
-                        .eq("description")
+                        .like("description")
                         .blockingGet();
 
         assertThat(stageSections.size()).isEqualTo(1);
@@ -131,7 +131,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         List<ProgramStageSection> stageSections =
                 d2.programModule().programStageSections()
                         .byDisplayDescription()
-                        .eq("display")
+                        .like("display")
                         .blockingGet();
 
         assertThat(stageSections.size()).isEqualTo(1);

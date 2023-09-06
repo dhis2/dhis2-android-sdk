@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -51,7 +50,6 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-    private val trackerHeaderEngine: TrackerHeaderEngine,
 ) {
     private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> = onlineHelper.fromScope(scope)
     private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> = HashMap()
@@ -73,8 +71,8 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedErrorCodes = HashSet()
     }
 
-    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
-        val result: MutableList<Result<TrackedEntitySearchItem, D2Error>> = ArrayList()
+    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+        val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             if (!isExhaustedOffline) {
@@ -97,7 +95,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return result
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
         return queryOffline(-1)
     }
 
@@ -106,11 +104,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return store.selectUidsWhere(sqlQuery)
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
         return queryOnline(-1)
     }
 
-    private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+    private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
             scope,
             returnedUidsOffline,
@@ -120,13 +118,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedUidsOffline.addAll(instances.map { it.uid() })
 
         return appendAttributes(instances).map {
-            val instance = TrackedEntitySearchItemHelper.from(it)
-            val instanceWithHeader = appendHeader(instance)
-            Result.Success(instanceWithHeader)
+            Result.Success(it)
         }
     }
 
-    private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+    private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         do {
@@ -141,12 +137,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             !areAllOnlineQueriesExhausted()
         )
 
-        return result.map { r ->
-            r.map {
-                val instance = TrackedEntitySearchItemHelper.from(it)
-                appendHeader(instance)
-            }
-        }
+        return result
     }
 
     private fun getOnlineQueryResults(
@@ -230,15 +221,6 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 ),
             ),
         )
-    }
-
-    private fun appendHeader(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
-        val header = trackerHeaderEngine.getTrackedEntityHeader(
-            expression = "d2:concatenate(A{w75KJ2mc4zz}, ' ', A{zDhUuAYrxNC}, ', ', d2:substring(A{cejWyOfXge6}, 0, 1))",
-            attributeValues = item.trackedEntityAttributeValues() ?: emptyList()
-        )
-
-        return item.toBuilder().header(header).build()
     }
 
     private fun areAllOnlineQueriesExhausted(): Boolean {

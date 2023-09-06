@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository
 import javax.inject.Inject
 
 @Reusable
@@ -47,6 +48,7 @@ internal class TrackedEntityModuleImpl @Inject constructor(
     private val reservedValueManager: TrackedEntityAttributeReservedValueManager,
     private val trackedEntityInstanceDownloader: TrackedEntityInstanceDownloader,
     private val trackedEntityInstanceQuery: TrackedEntityInstanceQueryCollectionRepository,
+    private val trackedEntitySearch: TrackedEntitySearchCollectionRepository,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val ownershipManager: OwnershipManager,
 ) : TrackedEntityModule {
@@ -81,6 +83,10 @@ internal class TrackedEntityModuleImpl @Inject constructor(
 
     override fun trackedEntityInstanceQuery(): TrackedEntityInstanceQueryCollectionRepository {
         return trackedEntityInstanceQuery
+    }
+
+    override fun trackedEntitySearch(): TrackedEntitySearchCollectionRepository {
+        return trackedEntitySearch
     }
 
     override fun reservedValueManager(): TrackedEntityAttributeReservedValueManager {

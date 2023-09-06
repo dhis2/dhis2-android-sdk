@@ -29,38 +29,39 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class TrackedEntityInstanceQueryDataSource constructor(
     private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
-) : ItemKeyedDataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
+) : ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance>() {
 
     override fun loadInitial(
-        params: LoadInitialParams<TrackedEntitySearchItem>,
-        callback: LoadInitialCallback<TrackedEntitySearchItem>,
+        params: LoadInitialParams<TrackedEntityInstance>,
+        callback: LoadInitialCallback<TrackedEntityInstance>,
     ) {
         dataFetcher.refresh()
         callback.onResult(loadPages(params.requestedLoadSize))
     }
 
     override fun loadAfter(
-        params: LoadParams<TrackedEntitySearchItem>,
-        callback: LoadCallback<TrackedEntitySearchItem>,
+        params: LoadParams<TrackedEntityInstance>,
+        callback: LoadCallback<TrackedEntityInstance>,
     ) {
         callback.onResult(loadPages(params.requestedLoadSize))
     }
 
     override fun loadBefore(
-        params: LoadParams<TrackedEntitySearchItem>,
-        callback: LoadCallback<TrackedEntitySearchItem>,
+        params: LoadParams<TrackedEntityInstance>,
+        callback: LoadCallback<TrackedEntityInstance>,
     ) {
         // do nothing
     }
 
-    override fun getKey(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
+    override fun getKey(item: TrackedEntityInstance): TrackedEntityInstance {
         return item
     }
 
-    private fun loadPages(requestedLoadSize: Int): List<TrackedEntitySearchItem> {
+    private fun loadPages(requestedLoadSize: Int): List<TrackedEntityInstance> {
         return dataFetcher.loadPages(requestedLoadSize).mapNotNull {
             when (it) {
                 is Result.Success -> it.value

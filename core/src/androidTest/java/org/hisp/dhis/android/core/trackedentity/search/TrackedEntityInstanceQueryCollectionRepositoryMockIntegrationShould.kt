@@ -28,9 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagingData
+import androidx.paging.testing.asSnapshot
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Assert.assertEquals
 import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
@@ -40,14 +48,14 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    /*@Test
-    fun get_offline_initial_objects() {
-        val liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun get_offline_initial_objects() = runTest {
+        val items: Flow<PagingData<TrackedEntityInstance>> = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .offlineOnly().getPaged(2)
 
-        TestObserver.test(liveData)
-            .awaitValue()
-            .assertHasValue()
-            .assertValue { pagedList: PagedList<TrackedEntityInstance> -> pagedList.size == 2 }
-    }*/
+        val snapshot = items.asSnapshot()
+
+        assertEquals(snapshot.size, 2)
+    }
 }

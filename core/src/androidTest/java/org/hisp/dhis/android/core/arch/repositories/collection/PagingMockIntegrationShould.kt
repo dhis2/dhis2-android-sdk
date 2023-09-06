@@ -69,11 +69,9 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     fun get_initial_objects_with_default_order_considering_prefetch_distance() = runTest {
         val items: Flow<PagingData<CategoryOption>> = d2.categoryModule().categoryOptions().getPaged(2)
 
-        val itemsSnapshot: List<CategoryOption> = items.asSnapshot {
-            scrollTo(index = 5)
-        }
+        val itemsSnapshot: List<CategoryOption> = items.asSnapshot()
 
-        assertEquals(itemsSnapshot.size, 8)
+        assertEquals(itemsSnapshot.size, 6)
         assertEquals(itemsSnapshot[0], allValues[0])
         assertEquals(itemsSnapshot[1], allValues[1])
         assertEquals(itemsSnapshot[2], allValues[2])
@@ -88,11 +86,9 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
             .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
             .getPaged(2)
 
-        val snapshot = items.asSnapshot {
-            scrollTo(index = 8)
-        }
+        val snapshot = items.asSnapshot()
 
-        assertEquals(snapshot.size, 8)
+        assertEquals(snapshot.size, 6)
         assertEquals(snapshot[0].displayName(), "At PHU")
         assertEquals(snapshot[1].displayName(), "Female")
         assertEquals(snapshot[2].displayName(), "In Community")
@@ -107,11 +103,9 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
             .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
             .getPaged(2)
 
-        val snapshot = items.asSnapshot {
-            scrollTo(index = 8)
-        }
+        val snapshot = items.asSnapshot()
 
-        assertEquals(snapshot.size, 8)
+        assertEquals(snapshot.size, 6)
         assertEquals(snapshot[0].displayName(), "default display name")
         assertEquals(snapshot[1].displayName(), "Trained TBA")
         assertEquals(snapshot[2].displayName(), "SECHN")
@@ -126,11 +120,9 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
             .orderByDescription(RepositoryScope.OrderByDirection.DESC)
             .getPaged(2)
 
-        val snapshot = items.asSnapshot {
-            scrollTo(index = 8)
-        }
+        val snapshot = items.asSnapshot()
 
-        assertEquals(snapshot.size, 8)
+        assertEquals(snapshot.size, 6)
         assertEquals(snapshot[0].displayName(), "default display name")
         assertEquals(snapshot[1].displayName(), "Female")
         assertEquals(snapshot[2].displayName(), "Male")
@@ -146,11 +138,9 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
             .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
             .getPaged(2)
 
-        val snapshot = items.asSnapshot {
-            scrollTo(index = 8)
-        }
+        val snapshot = items.asSnapshot()
 
-        assertEquals(snapshot.size, 8)
+        assertEquals(snapshot.size, 6)
         assertEquals(snapshot[0].displayName(), "default display name")
         assertEquals(snapshot[1].displayName(), "At PHU")
         assertEquals(snapshot[2].displayName(), "Female")

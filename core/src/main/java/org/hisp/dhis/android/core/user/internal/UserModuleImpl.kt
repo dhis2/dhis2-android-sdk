@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
@@ -72,7 +73,7 @@ internal class UserModuleImpl @Inject constructor(
     }
 
     override fun logIn(username: String, password: String, serverUrl: String): Single<User> {
-        return logInCall.logIn(username, password, serverUrl)
+        return rxSingle { logInCall.logIn(username, password, serverUrl) }
     }
 
     override fun blockingLogIn(username: String, password: String, serverUrl: String): User {

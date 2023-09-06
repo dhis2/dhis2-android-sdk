@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -40,7 +41,7 @@ import javax.inject.Inject
 @Reusable
 internal class UserCall @Inject constructor(
     private val genericCallData: GenericCallData,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
     private val userHandler: UserHandler,
     private val dhisVersionManager: DHISVersionManager,
@@ -48,9 +49,13 @@ internal class UserCall @Inject constructor(
 
     @Throws(D2Error::class)
     override fun call(): User {
-        val user = apiCallExecutor.executeObjectCall(
-            userService.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion())),
-        )
+        val user = runBlocking {
+            coroutineAPICallExecutor.wrap {
+                userService.getUser(
+                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
+                )
+            }.getOrThrow()
+        }
 
         val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {

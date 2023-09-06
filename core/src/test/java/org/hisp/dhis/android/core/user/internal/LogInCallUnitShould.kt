@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
-import io.reactivex.observers.TestObserver
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
@@ -55,26 +55,23 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.*
-import org.mockito.stubbing.OngoingStubbing
-import retrofit2.Call
+import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
     private val userService: UserService = mock()
-    private val apiCallExecutor: APICallExecutor = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val userHandler: UserHandler = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val userIdStore: UserIdInMemoryStore = mock()
-    private val authenticateAPICall: Call<User> = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val apiErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
 
     private val credentialsCaptor: KArgumentCaptor<String> = argumentCaptor()
     private val filterCaptor: KArgumentCaptor<Fields<User>> = argumentCaptor()
 
-    private val user: User = mock()
-    private val anotherUser: User = mock()
-    private val loggedUser: User = mock()
+    private val apiUser: User = mock()
+    private val dbUser: User = mock()
     private val systemInfoFromAPI: SystemInfo = mock()
     private val systemInfoFromDb: SystemInfo = mock()
     private val authenticatedUser: AuthenticatedUser = mock()
@@ -83,110 +80,103 @@ class LogInCallUnitShould : BaseCallShould() {
     private val systemInfoCall: SystemInfoCall = mock()
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
-    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
     private val accountManager: AccountManagerImpl = mock()
     private val versionManager: DHISVersionManager = mock()
-
-    // call we are testing
-    private lateinit var logInSingle: Single<User>
 
     @Before
     @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
-        whenever(user.uid()).thenReturn(UID)
-        whenever(loggedUser.uid()).thenReturn(UID)
+        whenever(apiUser.uid()).thenReturn(UID)
+        whenever(dbUser.uid()).thenReturn(UID)
         whenever(systemInfoFromAPI.serverDate()).thenReturn(serverDate)
-        whenever(anotherUser.uid()).thenReturn("anotherUserUid")
         whenever(credentials.username).thenReturn(USERNAME)
         whenever(credentials.password).thenReturn(PASSWORD)
         whenever(authenticatedUser.user()).thenReturn(UID)
         whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PASSWORD))
         whenever(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint)
         whenever(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint)
-        whenever<Call<*>?>(userService.authenticate(any(), any())).thenReturn(authenticateAPICall)
         systemInfoCall.stub {
             onBlocking { download(any()) }.doReturn(Unit)
         }
-        whenAPICall().thenReturn(user)
-        whenever(userStore.selectFirst()).thenReturn(loggedUser)
+        whenAPICall { apiUser }
+        whenever(userStore.selectFirst()).thenReturn(dbUser)
+        whenever(userStore.selectByUid(any())).thenReturn(dbUser)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT)
         whenever(d2Error.isOffline).thenReturn(true)
         whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
         whenever(versionManager.getVersion()).thenReturn(DHISVersion.V2_39)
-
-        logInSingle = instantiateCall(USERNAME, PASSWORD, serverUrl)
     }
 
-    private fun instantiateCall(username: String?, password: String?, serverUrl: String?): Single<User> {
+    private suspend fun login() = instantiateCall(USERNAME, PASSWORD, serverUrl)
+
+    private suspend fun instantiateCall(username: String?, password: String?, serverUrl: String?): User {
         return LogInCall(
-            apiCallExecutor, coroutineAPICallExecutor,
-            userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
-            systemInfoCall, userStore, apiCallErrorCatcher,
+            coroutineAPICallExecutor, userService, credentialsSecureStore,
+            userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager,
+            LogInExceptions(credentialsSecureStore), accountManager, versionManager, apiErrorCatcher,
         ).logIn(username, password, serverUrl)
     }
 
-    private fun whenAPICall(): OngoingStubbing<User?> {
-        return whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(same(authenticateAPICall), any()))
+    private fun whenAPICall(answer: Answer<User>) {
+        userService.stub {
+            onBlocking { authenticate(any(), any()) }.doAnswer(answer)
+        }
     }
 
     @Test
-    fun throw_d2_error_for_null_username() {
-        val testObserver = instantiateCall(null, PASSWORD, serverUrl).test()
-        assertD2Error(testObserver, D2ErrorCode.LOGIN_USERNAME_NULL)
+    fun throw_d2_error_for_null_username() = runTest {
+        assertD2Error(D2ErrorCode.LOGIN_USERNAME_NULL) { instantiateCall(null, PASSWORD, serverUrl) }
     }
 
     @Test
-    fun throw_d2_error_for_null_password() {
-        val testObserver = instantiateCall(USERNAME, null, serverUrl).test()
-        assertD2Error(testObserver, D2ErrorCode.LOGIN_PASSWORD_NULL)
+    fun throw_d2_error_for_null_password() = runTest {
+        assertD2Error(D2ErrorCode.LOGIN_PASSWORD_NULL) { instantiateCall(USERNAME, null, serverUrl) }
     }
 
     @Test
-    fun throw_d2_error_for_null_server_url() {
-        val testObserver = instantiateCall(USERNAME, PASSWORD, null).test()
-        assertD2Error(testObserver, D2ErrorCode.SERVER_URL_NULL)
+    fun throw_d2_error_for_null_server_url() = runTest {
+        assertD2Error(D2ErrorCode.SERVER_URL_NULL) { instantiateCall(USERNAME, PASSWORD, null) }
     }
 
     @Test
-    fun throw_d2_error_for_wrong_server_url() {
-        val testObserver = instantiateCall(USERNAME, PASSWORD, "this is no URL").test()
-        assertD2Error(testObserver, D2ErrorCode.SERVER_URL_MALFORMED)
+    fun throw_d2_error_for_wrong_server_url() = runTest {
+        assertD2Error(D2ErrorCode.SERVER_URL_MALFORMED) { instantiateCall(USERNAME, PASSWORD, "this is no URL") }
     }
 
-    private fun assertD2Error(testObserver: TestObserver<User>, code: D2ErrorCode) {
-        testObserver.awaitTerminalEvent()
-        val error = testObserver.errors()[0]
-        assertThat(error).isInstanceOf(D2Error::class.java)
-        assertThat((error as D2Error).errorCode()).isEqualTo(code)
-        testObserver.dispose()
+    private suspend fun <P> assertD2Error(
+        errorCode: D2ErrorCode? = null,
+        block: suspend () -> P,
+    ) {
+        try {
+            block.invoke()
+        } catch (responseError: D2Error) {
+            assertThat(responseError).isInstanceOf(D2Error::class.java)
+            if (errorCode != null) assertThat(responseError.errorCode()).isEqualTo(errorCode)
+        }
     }
 
     @Test
-    fun invoke_server_with_correct_parameters_after_call() {
+    fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
             userService.authenticate(
                 credentialsCaptor.capture(),
                 filterCaptor.capture(),
             ),
-        ).thenReturn(authenticateAPICall)
-        logInSingle.blockingGet()
+        ).thenReturn(apiUser)
+        login()
         assertThat(okhttp3.Credentials.basic(USERNAME, PASSWORD)).isEqualTo(credentialsCaptor.firstValue)
     }
 
     @Test
     @Throws(D2Error::class)
-    fun not_invoke_stores_on_exception_on_call() {
-        whenAPICall().thenThrow(d2Error)
+    fun not_invoke_stores_on_exception_on_call() = runTest {
+        whenAPICall { throw d2Error }
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED)
 
-        val testObserver = logInSingle.test()
-        testObserver.awaitTerminalEvent()
-        assertThat(testObserver.errorCount()).isEqualTo(1)
-        testObserver.dispose()
+        assertD2Error { login() }
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).updateOrInsertWhere(any())
@@ -194,71 +184,66 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     @Test
-    fun succeed_when_no_previous_user_or_system_info() {
-        logInSingle.blockingGet()
+    fun succeed_when_no_previous_user_or_system_info() = runTest {
+        login()
         verifySuccess()
     }
 
     @Test
-    fun throw_d2_error_if_user_already_signed_in() {
+    fun throw_d2_error_if_user_already_signed_in() = runTest {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
         whenever(userIdStore.get()).thenReturn("userId")
-        val testObserver = logInSingle.test()
-        assertD2Error(testObserver, D2ErrorCode.ALREADY_AUTHENTICATED)
+        assertD2Error(D2ErrorCode.ALREADY_AUTHENTICATED) { login() }
     }
 
     @Test
-    fun succeed_for_login_online_if_user_has_logged_out() {
+    fun succeed_for_login_online_if_user_has_logged_out() = runTest {
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        logInSingle.blockingGet()
+        login()
         verifySuccess()
     }
 
     // Offline support
     @Test
-    fun succeed_for_login_offline_if_database_exists_and_authenticated_user_too() {
-        whenAPICall().thenThrow(d2Error)
+    fun succeed_for_login_offline_if_database_exists_and_authenticated_user_too() = runTest {
+        whenAPICall { throw d2Error }
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        logInSingle.test().awaitTerminalEvent()
+        login()
         verifySuccessOffline()
     }
 
     @Test
     fun succeed_for_login_offline_if_server_has_a_trailing_slash() {
-        whenAPICall().thenThrow(d2Error)
+        whenAPICall { throw d2Error }
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
-        val loginCall = instantiateCall(USERNAME, PASSWORD, serverUrl + "/")
-        loginCall.test().awaitTerminalEvent()
+        runBlocking { login() }
         verifySuccessOffline()
     }
 
     @Test
-    fun throw_original_d2_error_if_no_previous_database_offline() {
-        whenAPICall().thenThrow(d2Error)
+    fun throw_original_d2_error_if_no_previous_database_offline() = runTest {
+        whenAPICall { throw d2Error }
         whenever(authenticatedUserStore.selectFirst()).thenReturn(null)
-        val testObserver = logInSingle.test()
-        assertD2Error(testObserver, d2Error.errorCode())
+        assertD2Error(d2Error.errorCode()) { login() }
     }
 
     @Test
-    fun throw_d2_error_if_no_previous_authenticated_user_offline() {
-        whenAPICall().thenThrow(d2Error)
+    fun throw_d2_error_if_no_previous_authenticated_user_offline() = runTest {
+        whenAPICall { throw d2Error }
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(null)
-        val testObserver = logInSingle.test()
-        assertD2Error(testObserver, D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
+        assertD2Error(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE) { login() }
     }
 
     @Test
-    fun throw_d2_error_if_logging_offline_with_bad_credentials() {
-        whenAPICall().thenThrow(d2Error)
+    fun throw_d2_error_if_logging_offline_with_bad_credentials() = runTest {
+        whenAPICall { throw d2Error }
         whenever(authenticatedUser.hash()).thenReturn("different_hash")
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        val testObserver = logInSingle.test()
-        assertD2Error(testObserver, D2ErrorCode.BAD_CREDENTIALS)
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) { login() }
     }
 
     private fun verifySuccess() {
@@ -267,7 +252,7 @@ class LogInCallUnitShould : BaseCallShould() {
             .hash(UserHelper.md5(USERNAME, PASSWORD))
             .build()
         verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel)
-        verify(userHandler).handle(eq(user))
+        verify(userHandler).handle(eq(apiUser))
     }
 
     private fun verifySuccessOffline() {

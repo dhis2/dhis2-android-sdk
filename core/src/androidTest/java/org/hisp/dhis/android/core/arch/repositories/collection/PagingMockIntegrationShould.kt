@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.paging.PagingData
+import androidx.paging.PagedList
 import androidx.paging.testing.asSnapshot
+import com.jraska.livedata.TestObserver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -66,8 +66,103 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_with_default_order_considering_prefetch_distance() = runTest {
-        val items: Flow<PagingData<CategoryOption>> = d2.categoryModule().categoryOptions().getPaged(2)
+    fun get_initial_objects_with_default_order_considering_prefetch_distance() {
+        val liveData = d2.categoryModule().categoryOptions().getPaged(2)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList.size == 6 }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[0] == allValues[0] }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[1] == allValues[1] }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[2] == allValues[2] }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3] == allValues[3] }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4] == allValues[4] }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5] == allValues[5] }
+    }
+
+    @Test
+    fun get_initial_objects_ordered_by_display_name_asc() {
+        val liveData = d2.categoryModule().categoryOptions()
+            .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+            .getPaged(2)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList.size == 6 }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[0]!!.displayName() == "At PHU" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[1]!!.displayName() == "Female" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[2]!!.displayName() == "In Community" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3]!!.displayName() == "MCH Aides" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4]!!.displayName() == "Male" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5]!!.displayName() == "SECHN" }
+    }
+
+    @Test
+    fun get_initial_objects_ordered_by_display_name_desc() {
+        val liveData = d2.categoryModule().categoryOptions()
+            .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
+            .getPaged(2)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList.size == 6 }
+            .assertValue { pagedList: PagedList<CategoryOption> ->
+                pagedList[0]!!.displayName() == "default display name"
+            }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[1]!!.displayName() == "Trained TBA" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[2]!!.displayName() == "SECHN" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3]!!.displayName() == "Male" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4]!!.displayName() == "MCH Aides" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5]!!.displayName() == "In Community" }
+    }
+
+    @Test
+    fun get_initial_objects_ordered_by_description_desc() {
+        val liveData = d2.categoryModule().categoryOptions()
+            .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+            .getPaged(2)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList.size == 6 }
+            .assertValue { pagedList: PagedList<CategoryOption> ->
+                pagedList[0]!!.displayName() == "default display name"
+            }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[1]!!.displayName() == "Female" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[2]!!.displayName() == "Male" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3]!!.displayName() == "In Community" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4]!!.displayName() == "At PHU" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5]!!.displayName() == "MCH Aides" }
+    }
+
+    @Test
+    fun get_initial_objects_ordered_by_description_and_display_name_desc() = runTest {
+        val liveData = d2.categoryModule().categoryOptions()
+            .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+            .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+            .getPaged(2)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList.size == 6 }
+            .assertValue { pagedList: PagedList<CategoryOption> ->
+                pagedList[0]!!.displayName() == "default display name"
+            }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[1]!!.displayName() == "At PHU" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[2]!!.displayName() == "Female" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3]!!.displayName() == "In Community" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4]!!.displayName() == "Male" }
+            .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5]!!.displayName() == "MCH Aides" }
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_with_default_order_considering_prefetch_distance() = runTest {
+        val items = d2.categoryModule().categoryOptions().getPagingData(2)
 
         val itemsSnapshot: List<CategoryOption> = items.asSnapshot()
 
@@ -81,10 +176,10 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_ordered_by_display_name_asc() = runTest {
+    fun get_pagingData_with_initial_objects_ordered_by_display_name_asc() = runTest {
         val items = d2.categoryModule().categoryOptions()
             .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
-            .getPaged(2)
+            .getPagingData(2)
 
         val snapshot = items.asSnapshot()
 
@@ -98,10 +193,10 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_ordered_by_display_name_desc() = runTest {
+    fun get_pagingData_with_initial_objects_ordered_by_display_name_desc() = runTest {
         val items = d2.categoryModule().categoryOptions()
             .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
-            .getPaged(2)
+            .getPagingData(2)
 
         val snapshot = items.asSnapshot()
 
@@ -115,10 +210,10 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_ordered_by_description_desc() = runTest {
+    fun get_pagingData_with_initial_objects_ordered_by_description_desc() = runTest {
         val items = d2.categoryModule().categoryOptions()
             .orderByDescription(RepositoryScope.OrderByDirection.DESC)
-            .getPaged(2)
+            .getPagingData(2)
 
         val snapshot = items.asSnapshot()
 
@@ -132,11 +227,11 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_ordered_by_description_and_display_name_desc() = runTest {
+    fun get_pagingData_with_initial_objects_ordered_by_description_and_display_name_desc() = runTest {
         val items = d2.categoryModule().categoryOptions()
             .orderByDescription(RepositoryScope.OrderByDirection.DESC)
             .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
-            .getPaged(2)
+            .getPagingData(2)
 
         val snapshot = items.asSnapshot()
 

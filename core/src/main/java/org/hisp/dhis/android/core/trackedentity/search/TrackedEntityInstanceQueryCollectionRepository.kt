@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import dagger.Reusable
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
@@ -551,17 +555,22 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_STATUS)
     }
 
-    override fun getPaged(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
+    override fun getPaged(pageSize: Int): LiveData<PagedList<TrackedEntityInstance>> {
         val factory: DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> =
             object : DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance>() {
                 override fun create(): DataSource<TrackedEntityInstance, TrackedEntityInstance> {
                     return dataSource
                 }
             }
+        return LivePagedListBuilder(factory, pageSize).build()
+    }
+
+    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
-            factory.asPagingSourceFactory().invoke()
+            pagingSource
         }.flow
     }
 
@@ -576,6 +585,18 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
             localQueryHelper,
         )
 
+    val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
+        get() = TrackeEntityInstanceQueryPagingSource(
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
+        )
+
+    @Deprecated("use getPagingdata")
     val resultDataSource: DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
         get() = TrackedEntityInstanceQueryDataSourceResult(
             store,

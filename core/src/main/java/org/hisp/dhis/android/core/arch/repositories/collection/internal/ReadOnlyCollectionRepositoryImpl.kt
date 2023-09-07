@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
+import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
@@ -42,6 +46,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectio
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource
+import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingSource
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
@@ -100,21 +105,30 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @param pageSize Length of the page
      * @return A LiveData object of PagedList of elements
      */
-    override fun getPaged(pageSize: Int): Flow<PagingData<M>> {
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
+    override fun getPaged(pageSize: Int): LiveData<PagedList<M>> {
         val factory: DataSource.Factory<M, M> = object : DataSource.Factory<M, M>() {
             override fun create(): DataSource<M, M> {
                 return dataSource
             }
         }
+        return LivePagedListBuilder(factory, pageSize).build()
+    }
+
+    override fun getPagingData(pageSize: Int): Flow<PagingData<M>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
-            factory.asPagingSourceFactory().invoke()
+            pagingSource
         }.flow
     }
 
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     val dataSource: DataSource<M, M>
         get() = RepositoryDataSource(store, scope, childrenAppenders)
+
+    private val pagingSource: PagingSource<M, M>
+        get() = RepositoryPagingSource(store, scope, childrenAppenders)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

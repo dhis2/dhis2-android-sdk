@@ -25,69 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import androidx.paging.ItemKeyedDataSource
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
+import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor.appendInObjectCollection
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
-class RepositoryDataSource<M : CoreObject> internal constructor(
+internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
     private val scope: RepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
-) : ItemKeyedDataSource<M, M>() {
-    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<M>) {
-        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
-            scope,
-        )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
+    private val transformer: TwoWayTransformer<M, T>,
+) : PagingSource<M, T>() {
+    override fun getRefreshKey(state: PagingState<M, T>): M? {
+        val item = state.anchorPosition?.let { state.closestItemToPosition(it) }
+        return item?.let { transformer.deTransform(it) }
     }
 
-    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, false)
-    }
-
-    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, true)
-    }
-
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
+    override suspend fun load(params: LoadParams<M>): LoadResult<M, T> {
         val whereClauseBuilder = WhereClauseBuilder()
-
         OrderByClauseBuilder.addSortingClauses(
             whereClauseBuilder,
             scope.orderBy(),
-            params.key.toContentValues(),
-            reversed,
+            params.key?.toContentValues(),
+            false,
             scope.pagingKey(),
         )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
-            scope,
-        )
+        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
+            params.loadSize,
         )
-        callback.onResult(appendChildren(withoutChildren))
-    }
+        val items = ChildrenAppenderExecutor.appendInObjectCollection(
+            withoutChildren,
+            childrenAppenders,
+            scope.children(),
+        ).map { transformer.transform(it) }
 
-    override fun getKey(item: M): M {
-        return item
-    }
-
-    private fun appendChildren(withoutChildren: List<M>): List<M> {
-        return appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
+        return LoadResult.Page(
+            data = items,
+            prevKey = null,
+            nextKey = null,
+        )
     }
 }

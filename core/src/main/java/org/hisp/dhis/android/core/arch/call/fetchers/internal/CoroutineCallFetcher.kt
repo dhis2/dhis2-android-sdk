@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
 import org.hisp.dhis.android.core.maintenance.D2Error
 
-interface CoroutineCallFetcher<P> {
+fun interface CoroutineCallFetcher<P> {
     @Throws(D2Error::class)
     suspend fun fetch(): List<P>
 }

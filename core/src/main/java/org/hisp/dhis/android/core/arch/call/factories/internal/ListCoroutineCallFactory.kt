@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-interface ListCoroutineCallFactory<P> {
+fun interface ListCoroutineCallFactory<P> {
     suspend fun create(): List<P>
 }

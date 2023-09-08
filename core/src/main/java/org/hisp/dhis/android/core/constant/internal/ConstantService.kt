@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.constant.Constant
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface ConstantService {
+internal fun interface ConstantService {
     @GET("constants")
     suspend fun constants(
         @Query("fields") @Which fields: Fields<Constant>,

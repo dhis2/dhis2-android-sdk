@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.constant.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.constant.Constant
@@ -56,7 +56,7 @@ internal class ConstantPackageDIModule {
 
     @Provides
     @Reusable
-    fun constantCallFactory(impl: ConstantCallFactory): ListCallFactory<Constant> {
+    fun constantCallFactory(impl: ConstantCoroutineCallFactory): ListCoroutineCallFactory<Constant> {
         return impl
     }
 

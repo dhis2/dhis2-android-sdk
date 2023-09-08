@@ -60,7 +60,7 @@ final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> 
 
     @Override
     protected CallFetcher<Authority> fetcher() {
-        return new AuthorityCallFetcher(apiCallExecutor) {
+        return new AuthorityCallFetcher(getApiCallExecutor()) {
             @Override
             protected retrofit2.Call<List<String>> getCall() {
                 return service.getAuthorities();
@@ -70,6 +70,7 @@ final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> 
 
     @Override
     protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(data.databaseAdapter(), handler);
+        return new AuthorityCallProcessor(getData().databaseAdapter(), handler);
     }
+
 }

@@ -25,24 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.processors.internal
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.maintenance.D2Error
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-internal class TransactionalNoResourceSyncCallProcessor<O>(
-    private val databaseAdapter: DatabaseAdapter,
-    private val handler: Handler<O>
-) : CallProcessor<O> {
-    @Throws(D2Error::class)
-    override fun process(objectList: List<O>) {
-        if (objectList.isNotEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally<Any?> {
-                handler.handleMany(objectList)
-                null
-            }
-        }
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+
+internal abstract class ListCoroutineCallFactoryImpl<P> protected constructor(
+    protected val data: GenericCallData,
+    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) : ListCoroutineCallFactory<P> {
+    override suspend fun create(): List<P> {
+        val objects: List<P> = fetcher().invoke()
+        processor().process(objects)
+        return objects
     }
+
+    protected abstract fun fetcher(): suspend () -> List<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

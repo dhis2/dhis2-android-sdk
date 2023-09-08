@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.user.User
-import javax.inject.Inject
 
 @Reusable
 internal class UserModuleDownloader @Inject internal constructor(

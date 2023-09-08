@@ -27,21 +27,22 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import java.util.concurrent.Callable
 
-internal abstract class ListCallFactoryImpl<P> protected constructor(
+internal abstract class ListCallFactoryImpl<P>(
     protected val data: GenericCallData,
     protected val apiCallExecutor: APICallExecutor
 ) : ListCallFactory<P> {
+
     override fun create(): Callable<List<P>> {
         return EndpointCall(fetcher(), processor())
     }
 
-    protected abstract fun fetcher(): CallFetcher<P>?
-    protected abstract fun processor(): CallProcessor<P>?
+    protected abstract fun fetcher(): CallFetcher<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

@@ -25,18 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.fetchers.internal
+package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.maintenance.D2Error
-import retrofit2.Call
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
+import org.hisp.dhis.android.core.constant.Constant
 
-abstract class PayloadNoResourceCallFetcher<P> protected constructor(private val apiCallExecutor: APICallExecutor) :
-    CallFetcher<P> {
-    protected abstract val call: Call<Payload<P>?>
-    @Throws(D2Error::class)
-    override fun fetch(): List<P> {
-        return apiCallExecutor.executePayloadCall(call)
+@Reusable
+internal class ConstantCoroutineCallFactory @Inject constructor(
+    data: GenericCallData,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val service: ConstantService,
+    private val handler: ConstantHandler
+) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
+    override fun fetcher(): suspend () -> List<Constant> {
+        return suspend {
+            coroutineAPICallExecutor.wrap {
+                service.constants(ConstantFields.allFields, false)
+            }.getOrThrow()?.items().orEmpty()
+        }
+    }
+
+    override fun processor(): CallProcessor<Constant> {
+        return TransactionalNoResourceSyncCallProcessor(
+            data.databaseAdapter(),
+            handler
+        )
     }
 }

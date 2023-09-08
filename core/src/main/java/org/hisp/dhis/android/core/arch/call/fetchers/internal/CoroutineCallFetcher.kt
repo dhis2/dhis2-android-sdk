@@ -25,39 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
-import org.hisp.dhis.android.core.constant.Constant
-import retrofit2.Call
-import javax.inject.Inject
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-@Reusable
-internal class ConstantCallFactory @Inject constructor(
-    data: GenericCallData,
-    apiCallExecutor: APICallExecutor,
-    private val service: ConstantService,
-    private val handler: ConstantHandler
-) : ListCallFactoryImpl<Constant>(data, apiCallExecutor) {
-    override fun fetcher(): CallFetcher<Constant> {
-        return object : PayloadNoResourceCallFetcher<Constant>(apiCallExecutor) {
-            override val call: Call<Payload<Constant>?>
-                get() = service.constants(ConstantFields.allFields, false)
-        }
-    }
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-    override fun processor(): CallProcessor<Constant> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
-            handler
-        )
-    }
+interface CoroutineCallFetcher<P> {
+    @Throws(D2Error::class)
+    suspend fun fetch(): List<P>
 }

@@ -130,7 +130,7 @@ internal class MetadataCall @Inject constructor(
         useCaseDownloader.downloadMetadata().blockingAwait()
         emit(progressManager.increaseProgress(StockUseCase::class.java, false))
 
-        constantModuleDownloader.downloadMetadata()
+        runBlocking { constantModuleDownloader.downloadMetadata() }
         emit(progressManager.increaseProgress(Constant::class.java, false))
 
         smsModule.configCase().refreshMetadataIdsCallable().blockingAwait()

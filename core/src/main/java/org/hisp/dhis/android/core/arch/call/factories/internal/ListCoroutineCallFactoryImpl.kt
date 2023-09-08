@@ -37,11 +37,11 @@ internal abstract class ListCoroutineCallFactoryImpl<P> protected constructor(
     protected val coroutineAPICallExecutor: CoroutineAPICallExecutor
 ) : ListCoroutineCallFactory<P> {
     override suspend fun create(): List<P> {
-        val objects: List<P> = fetcher().invoke()
+        val objects: List<P> = fetcher()
         processor().process(objects)
         return objects
     }
 
-    protected abstract fun fetcher(): suspend () -> List<P>
+    protected abstract suspend fun fetcher():  List<P>
     protected abstract fun processor(): CallProcessor<P>
 }

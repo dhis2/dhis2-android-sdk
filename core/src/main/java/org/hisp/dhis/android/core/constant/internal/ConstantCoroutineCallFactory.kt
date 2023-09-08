@@ -43,12 +43,10 @@ internal class ConstantCoroutineCallFactory @Inject constructor(
     private val service: ConstantService,
     private val handler: ConstantHandler
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
-    override fun fetcher(): suspend () -> List<Constant> {
-        return suspend {
-            coroutineAPICallExecutor.wrap {
+    override suspend fun fetcher():  List<Constant> {
+        return coroutineAPICallExecutor.wrap {
                 service.constants(ConstantFields.allFields, false)
-            }.getOrThrow()?.items().orEmpty()
-        }
+            }.getOrThrow().items()
     }
 
     override fun processor(): CallProcessor<Constant> {

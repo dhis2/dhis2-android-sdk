@@ -28,20 +28,16 @@
 package org.hisp.dhis.android.core.constant.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.constant.Constant
+import javax.inject.Inject
 
 @Reusable
-class ConstantModuleDownloader @Inject internal constructor(
-    private val constantCallFactory: ConstantCoroutineCallFactory
+internal class ConstantModuleDownloader @Inject internal constructor(
+    private val constantCallFactory: ConstantCoroutineCallFactory,
 ) :
     TypedModuleDownloader<List<Constant>> {
-    override fun downloadMetadata(): Single<List<Constant>> {
-        return rxSingle {
-            constantCallFactory.create()
-        }
+    override suspend fun downloadMetadata(): List<Constant> {
+        return constantCallFactory.create()
     }
 }

@@ -28,21 +28,18 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.user.User
+import javax.inject.Inject
 
 @Reusable
 internal class UserModuleDownloader @Inject internal constructor(
     private val userCall: UserCall,
-    private val authorityCallFactory: AuthorityEndpointCallFactory
+    private val authorityCallFactory: AuthorityEndpointCallFactory,
 ) : TypedModuleDownloader<User> {
-    override fun downloadMetadata(): Single<User> {
-        return Single.fromCallable {
-            val user = userCall.call()
-            authorityCallFactory.create().call()
-            user
-        }
+    override suspend fun downloadMetadata(): User {
+        val user = userCall.call()
+        authorityCallFactory.create().call()
+        return user
     }
 }

@@ -28,31 +28,31 @@
 package org.hisp.dhis.android.core.constant.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
 import org.hisp.dhis.android.core.constant.Constant
+import javax.inject.Inject
 
 @Reusable
 internal class ConstantCoroutineCallFactory @Inject constructor(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: ConstantService,
-    private val handler: ConstantHandler
+    private val handler: ConstantHandler,
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
-    override suspend fun fetcher():  List<Constant> {
+    override suspend fun fetcher(): List<Constant> {
         return coroutineAPICallExecutor.wrap {
-                service.constants(ConstantFields.allFields, false)
-            }.getOrThrow().items()
+            service.constants(ConstantFields.allFields, false)
+        }.getOrThrow().items()
     }
 
     override fun processor(): CallProcessor<Constant> {
         return TransactionalNoResourceSyncCallProcessor(
             data.databaseAdapter(),
-            handler
+            handler,
         )
     }
 }

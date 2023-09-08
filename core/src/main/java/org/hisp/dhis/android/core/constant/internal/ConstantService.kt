@@ -38,6 +38,6 @@ internal interface ConstantService {
     @GET("constants")
     suspend fun constants(
         @Query("fields") @Which fields: Fields<Constant>,
-        @Query("paging") paging: Boolean
+        @Query("paging") paging: Boolean,
     ): Payload<Constant>
 }

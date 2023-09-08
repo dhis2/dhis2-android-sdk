@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.modules.internal
 
-import io.reactivex.Single
-
 interface TypedModuleDownloader<O> {
-    fun downloadMetadata(): Single<O>
+    suspend fun downloadMetadata(): O
 }

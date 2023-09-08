@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -41,11 +40,8 @@ internal class VisualizationModuleDownloader @Inject internal constructor(
 ) :
     TypedModuleDownloader<List<Visualization>> {
 
-    override fun downloadMetadata(): Single<List<Visualization>> {
-        return Single.fromCallable {
-            analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        }.flatMap {
-            visualizationCall.download(it)
-        }
+    override suspend fun downloadMetadata(): List<Visualization> {
+        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
+        return visualizationCall.download(visualizations).blockingGet()
     }
 }

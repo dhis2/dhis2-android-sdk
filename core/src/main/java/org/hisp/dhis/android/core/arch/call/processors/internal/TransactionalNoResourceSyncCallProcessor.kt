@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal class TransactionalNoResourceSyncCallProcessor<O>(
     private val databaseAdapter: DatabaseAdapter,
-    private val handler: Handler<O>
+    private val handler: Handler<O>,
 ) : CallProcessor<O> {
     @Throws(D2Error::class)
     override fun process(objectList: List<O>) {

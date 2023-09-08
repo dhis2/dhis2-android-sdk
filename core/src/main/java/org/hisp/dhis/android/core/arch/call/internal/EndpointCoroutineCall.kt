@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 
 class EndpointCoroutineCall<P>(
     private val fetcher: CoroutineCallFetcher<P>,
-    private val processor: CallProcessor<P>
+    private val processor: CallProcessor<P>,
 ) {
 
     @Throws(Exception::class)

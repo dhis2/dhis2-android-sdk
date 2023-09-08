@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal abstract class PayloadNoResourceCoroutineCallFetcher<P> protected constructor(
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<P> {
     protected abstract val call: Payload<P>?
+
     @Throws(D2Error::class)
     override suspend fun fetch(): List<P> {
         return coroutineAPICallExecutor.wrap { call }.getOrThrow()?.items().orEmpty()

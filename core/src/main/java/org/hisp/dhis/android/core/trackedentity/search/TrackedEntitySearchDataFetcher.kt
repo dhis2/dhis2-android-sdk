@@ -92,9 +92,9 @@ internal class TrackedEntitySearchDataFetcher(
     private fun appendHeader(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
         val header = trackerHeaderEngine.getTrackedEntityHeader(
             expression = "d2:concatenate(A{w75KJ2mc4zz}, ' ', A{zDhUuAYrxNC}, ', ', d2:substring(A{cejWyOfXge6}, 0, 1))",
-            attributeValues = item.trackedEntityAttributeValues() ?: emptyList()
+            attributeValues = item.trackedEntityAttributeValues ?: emptyList()
         )
 
-        return item.toBuilder().header(header).build()
+        return item.copy(header = header)
     }
 }

@@ -28,39 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import java.util.Date
 
-object TrackedEntitySearchItemHelper {
-    fun from(i: TrackedEntityInstance): TrackedEntitySearchItem {
-        return TrackedEntitySearchItem(
-            uid = i.uid(),
-            created = i.created(),
-            lastUpdated = i.lastUpdated(),
-            createdAtClient = i.createdAtClient(),
-            lastUpdatedAtClient = i.lastUpdatedAtClient(),
-            organisationUnit = i.organisationUnit(),
-            trackedEntityType = i.trackedEntityType(),
-            geometry = i.geometry(),
-            trackedEntityAttributeValues = i.trackedEntityAttributeValues(),
-            syncState = i.syncState(),
-            aggregatedSyncState = i.aggregatedSyncState(),
-            deleted = i.deleted() ?: false
-        )
-    }
-
-    fun toTrackedEntityInstance(i: TrackedEntitySearchItem): TrackedEntityInstance {
-        return TrackedEntityInstance.builder()
-            .uid(i.uid)
-            .created(i.created)
-            .lastUpdated(i.lastUpdated)
-            .createdAtClient(i.createdAtClient)
-            .lastUpdatedAtClient(i.lastUpdatedAtClient)
-            .organisationUnit(i.organisationUnit)
-            .trackedEntityType(i.trackedEntityType)
-            .geometry(i.geometry)
-            .trackedEntityAttributeValues(i.trackedEntityAttributeValues)
-            .syncState(i.syncState)
-            .aggregatedSyncState(i.aggregatedSyncState)
-            .build()
-    }
+data class TrackedEntitySearchItem(
+    val uid: String,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val createdAtClient: Date?,
+    val lastUpdatedAtClient: Date?,
+    val organisationUnit: String?,
+    val trackedEntityType: String?,
+    val geometry: Geometry?,
+    val trackedEntityAttributeValues: List<TrackedEntityAttributeValue>?,
+    val syncState: State?,
+    val aggregatedSyncState: State?,
+    val deleted: Boolean,
+    val header: String? = null
+) : ObjectWithUidInterface {
+    override fun uid(): String = uid
 }

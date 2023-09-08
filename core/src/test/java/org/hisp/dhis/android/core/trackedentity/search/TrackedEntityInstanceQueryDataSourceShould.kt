@@ -62,17 +62,17 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val store: TrackedEntityInstanceStore = mock()
     private val trackerParentCallFactory: TrackerParentCallFactory = mock()
     private val onlineCallFactory: TrackedEntityEndpointCallFactory = mock()
-    private val trackedEntity: TrackedEntitySearchItem = mock()
+    private val trackedEntity: TrackedEntityInstance = mock()
 
     private lateinit var offlineObjects: List<TrackedEntityInstance>
     private lateinit var onlineObjects1: List<TrackedEntityInstance>
     private lateinit var onlineObjects2: List<TrackedEntityInstance>
 
-    var captureInstances: KArgumentCaptor<List<TrackedEntitySearchItem>> = argumentCaptor()
+    var captureInstances: KArgumentCaptor<List<TrackedEntityInstance>> = argumentCaptor()
 
     private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>> = mock()
 
-    private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<TrackedEntitySearchItem> = mock()
+    private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> = mock()
     private val calendarProvider = CalendarProviderFactory.calendarProvider
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
@@ -137,7 +137,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
         )
         verify(onlineCallFactory)
             .getQueryCall(argThat(QueryPageUserModeMatcher(1, initialLoad, AssignedUserMode.ANY)))
-        verify(initialCallback).onResult(onlineObjects1.map { TrackedEntitySearchItemHelper.from(it) })
+        verify(initialCallback).onResult(onlineObjects1)
         verifyNoMoreInteractions(onlineCallFactory)
     }
 
@@ -150,7 +150,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
             initialCallback,
         )
         verify(store).selectRawQuery(anyString())
-        verify(initialCallback).onResult(offlineObjects.map { TrackedEntitySearchItemHelper.from(it) })
+        verify(initialCallback).onResult(offlineObjects)
         verifyNoMoreInteractions(store)
     }
 
@@ -274,7 +274,6 @@ class TrackedEntityInstanceQueryDataSourceShould {
             onlineCache,
             onlineHelper,
             localQueryHelper,
-            trackerHeaderEngine,
         )
     }
 

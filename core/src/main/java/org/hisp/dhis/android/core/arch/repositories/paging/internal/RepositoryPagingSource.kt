@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import java.io.IOException
 
 class RepositoryPagingSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
@@ -45,34 +46,46 @@ class RepositoryPagingSource<M : CoreObject> internal constructor(
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
 ) : PagingSource<M, M>() {
 
-    private val whereClauseBuilder = WhereClauseBuilder()
-    private val whereClauseFromScopeBuilder = WhereClauseFromScopeBuilder(whereClauseBuilder)
-
     override fun getRefreshKey(state: PagingState<M, M>): M? {
-        return state.anchorPosition?.let { state.closestItemToPosition(it) }
+        return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
     override suspend fun load(params: LoadParams<M>): LoadResult<M, M> {
-        /*OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder,
-            scope.orderBy(),
-            params.key?.toContentValues(),
-            false,
-            scope.pagingKey(),
-        )*/
-        val whereClause = whereClauseFromScopeBuilder.getWhereClause(
-            scope,
-        )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.loadSize,
-        )
+        try {
+            val whereClauseBuilder = WhereClauseBuilder()
 
-        return LoadResult.Page(
-            data = appendInObjectCollection(withoutChildren, childrenAppenders, scope.children()),
-            prevKey = null,
-            nextKey = null,
-        )
+            params.key?.let { key ->
+                val reverse = when (params) {
+                    is LoadParams.Prepend -> true
+                    else -> false
+                }
+
+                OrderByClauseBuilder.addSortingClauses(
+                    whereClauseBuilder,
+                    scope.orderBy(),
+                    key.toContentValues(),
+                    reverse,
+                    scope.pagingKey(),
+                )
+            }
+
+            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
+                scope,
+            )
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                params.loadSize,
+            )
+
+            val items = appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
+            return LoadResult.Page(
+                data = items,
+                prevKey = items.firstOrNull(),
+                nextKey = items.getOrNull(params.loadSize - 1),
+            )
+        } catch (e: IOException) {
+            return LoadResult.Error(e)
+        }
     }
 }

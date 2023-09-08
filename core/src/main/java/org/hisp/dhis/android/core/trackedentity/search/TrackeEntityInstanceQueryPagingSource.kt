@@ -64,7 +64,7 @@ internal class TrackeEntityInstanceQueryPagingSource(
     override fun getRefreshKey(
         state: PagingState<TrackedEntityInstance, TrackedEntityInstance>,
     ): TrackedEntityInstance? {
-        return state.anchorPosition?.let { state.closestItemToPosition(it) }
+        return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
     override suspend fun load(
@@ -76,8 +76,8 @@ internal class TrackeEntityInstanceQueryPagingSource(
             LoadResult.Error((it as Result.Failure).failure)
         } ?: LoadResult.Page(
             data = pages.map { it.getOrThrow() },
-            prevKey = null,
-            nextKey = null,
+            prevKey = pages.firstOrNull()?.getOrThrow(),
+            nextKey = pages.getOrNull(params.loadSize - 1)?.getOrThrow(),
         )
     }
 }

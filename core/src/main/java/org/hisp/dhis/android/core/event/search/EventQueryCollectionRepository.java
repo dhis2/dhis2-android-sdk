@@ -63,6 +63,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 import kotlinx.coroutines.flow.Flow;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 public final class EventQueryCollectionRepository implements ReadOnlyWithUidCollectionRepository<Event> {
 

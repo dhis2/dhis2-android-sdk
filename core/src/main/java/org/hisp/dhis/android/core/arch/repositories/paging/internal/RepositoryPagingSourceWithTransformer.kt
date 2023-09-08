@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import java.io.IOException
 
 internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
@@ -47,35 +48,47 @@ internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> in
     private val transformer: TwoWayTransformer<M, T>,
 ) : PagingSource<M, T>() {
     override fun getRefreshKey(state: PagingState<M, T>): M? {
-        val item = state.anchorPosition?.let { state.closestItemToPosition(it) }
-        return item?.let { transformer.deTransform(it) }
+        return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
     override suspend fun load(params: LoadParams<M>): LoadResult<M, T> {
-        val whereClauseBuilder = WhereClauseBuilder()
-        OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder,
-            scope.orderBy(),
-            params.key?.toContentValues(),
-            false,
-            scope.pagingKey(),
-        )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.loadSize,
-        )
-        val items = ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren,
-            childrenAppenders,
-            scope.children(),
-        ).map { transformer.transform(it) }
+        try {
+            val whereClauseBuilder = WhereClauseBuilder()
 
-        return LoadResult.Page(
-            data = items,
-            prevKey = null,
-            nextKey = null,
-        )
+            params.key?.let { key ->
+                val reverse = when (params) {
+                    is LoadParams.Prepend -> true
+                    else -> false
+                }
+
+                OrderByClauseBuilder.addSortingClauses(
+                    whereClauseBuilder,
+                    scope.orderBy(),
+                    key.toContentValues(),
+                    reverse,
+                    scope.pagingKey(),
+                )
+            }
+
+            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                params.loadSize,
+            )
+            val items = ChildrenAppenderExecutor.appendInObjectCollection(
+                withoutChildren,
+                childrenAppenders,
+                scope.children(),
+            )
+
+            return LoadResult.Page(
+                data = items.map { transformer.transform(it) },
+                prevKey = items.firstOrNull(),
+                nextKey = items.getOrNull(params.loadSize - 1),
+            )
+        } catch (e: IOException) {
+            return LoadResult.Error(e)
+        }
     }
 }

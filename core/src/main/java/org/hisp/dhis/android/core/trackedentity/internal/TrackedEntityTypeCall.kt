@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class TrackedEntityTypeCall @Inject internal constructor(
@@ -50,7 +49,7 @@ class TrackedEntityTypeCall @Inject internal constructor(
             optionSetUids,
             MAX_UID_LIST_SIZE,
             handler,
-            { partitionUids: Set<String> ->
+            { _: Set<String> ->
                 service.getTrackedEntityTypes(
                     TrackedEntityTypeFields.allFields,
                     TrackedEntityTypeFields.uid.`in`(optionSetUids),

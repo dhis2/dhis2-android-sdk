@@ -221,7 +221,6 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         /**
          * @deprecated since 2.30, replaced by {@link #geometry(Geometry geometry)}
          */
-        @Deprecated
         abstract Builder coordinate(Coordinates coordinate);
 
         public abstract Builder geometry(Geometry geometry);

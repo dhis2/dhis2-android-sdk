@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.program.Program
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class ProgramCall @Inject internal constructor(

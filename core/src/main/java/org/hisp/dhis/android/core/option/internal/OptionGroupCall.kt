@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.option.OptionGroup
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class OptionGroupCall @Inject internal constructor(

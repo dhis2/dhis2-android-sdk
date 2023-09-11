@@ -236,7 +236,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         /**
          * @deprecated since 2.29, replaced by {@link #featureType(FeatureType featureType)}
          */
-        @Deprecated
         abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder featureType(FeatureType featureType);

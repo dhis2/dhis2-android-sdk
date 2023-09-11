@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class TrackedEntityAttributeCall @Inject internal constructor(

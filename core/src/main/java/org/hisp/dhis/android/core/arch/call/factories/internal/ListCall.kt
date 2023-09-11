@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.call.factories.internal
 
 import io.reactivex.Single
 
-interface ListCall<P> {
+fun interface ListCall<P> {
     fun download(): Single<List<P>>
 }

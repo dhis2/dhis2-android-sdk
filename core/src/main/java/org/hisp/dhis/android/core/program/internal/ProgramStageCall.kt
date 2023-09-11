@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class ProgramStageCall @Inject internal constructor(

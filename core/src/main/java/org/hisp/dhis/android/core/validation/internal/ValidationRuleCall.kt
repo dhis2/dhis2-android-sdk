@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class ValidationRuleCall @Inject internal constructor(

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
 import java.lang.Boolean
 import javax.inject.Inject
-import kotlin.String
 
 @Reusable
 class RelationshipTypeCall @Inject internal constructor(

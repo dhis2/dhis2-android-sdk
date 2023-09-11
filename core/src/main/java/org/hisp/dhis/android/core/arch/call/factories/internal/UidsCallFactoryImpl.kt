@@ -25,34 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-public abstract class UidsCallFactoryImpl<P> implements UidsCallFactory<P> {
-
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
-
-    protected UidsCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
-        this.apiCallExecutor = apiCallExecutor;
+abstract class UidsCallFactoryImpl<P> protected constructor(
+    @JvmField protected val data: GenericCallData,
+    @JvmField protected val apiCallExecutor: APICallExecutor
+) : UidsCallFactory<P> {
+    override fun create(uids: Set<String>): Callable<List<P>> {
+        return EndpointCall(fetcher(uids), processor())
     }
 
-    @Override
-    public final Callable<List<P>> create(Set<String> uids) {
-        return new EndpointCall(fetcher(uids), processor());
-    }
-
-    protected abstract CallFetcher<P> fetcher(Set<String> uids);
-    protected abstract CallProcessor<P> processor();
+    protected abstract fun fetcher(uids: Set<String>): CallFetcher<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

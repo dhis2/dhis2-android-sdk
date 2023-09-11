@@ -62,7 +62,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 
 @SuppressWarnings("MaxLineLength")
-class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
+internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var store: TrackedEntityAttributeReservedValueStore
     private val organisationUnitUid = "org_unit_uid"
     private val programUid = "program_uid"

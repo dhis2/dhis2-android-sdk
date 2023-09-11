@@ -25,45 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.ValidationRule;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.validation.ValidationRule
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class ValidationRuleCall implements UidsCall<ValidationRule> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ValidationRuleService service;
-    private final ValidationRuleHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ValidationRuleCall(ValidationRuleService service,
-                       ValidationRuleHandler handler,
-                       APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+class ValidationRuleCall @Inject internal constructor(
+    private val service: ValidationRuleService,
+    private val handler: ValidationRuleHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<ValidationRule> {
+    override fun download(validationRuleUids: Set<String>): Single<List<ValidationRule>> {
+        return apiDownloader.downloadPartitioned(
+            validationRuleUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            val uidsFilterStr = ObjectWithUid.uid.`in`(partitionUids).generateString()
+            service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE)
+        }
     }
 
-    @Override
-    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
-        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
-        });
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 64
     }
 }

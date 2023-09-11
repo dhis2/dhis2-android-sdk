@@ -25,63 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class TrackedEntityTypeCall implements UidsCall<TrackedEntityType> {
-
-    private static final int MAX_UID_LIST_SIZE = 140;
-
-    private final TrackedEntityTypeService service;
-    private final TrackedEntityTypeHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    TrackedEntityTypeCall(TrackedEntityTypeService service,
-                          TrackedEntityTypeHandler handler,
-                          APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<TrackedEntityType>> download(Set<String> optionSetUids) {
-        String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-            service.getTrackedEntityTypes(
+class TrackedEntityTypeCall @Inject internal constructor(
+    private val service: TrackedEntityTypeService,
+    private val handler: TrackedEntityTypeHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<TrackedEntityType> {
+    override fun download(optionSetUids: Set<String>): Single<List<TrackedEntityType>> {
+        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        return apiDownloader.downloadPartitioned(
+            optionSetUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+            { partitionUids: Set<String> ->
+                service.getTrackedEntityTypes(
                     TrackedEntityTypeFields.allFields,
-                    TrackedEntityTypeFields.uid.in(optionSetUids),
+                    TrackedEntityTypeFields.uid.`in`(optionSetUids),
                     accessDataReadFilter,
-                    Boolean.FALSE), this::transform);
+                    Boolean.FALSE,
+                )
+            },
+        ) { type: TrackedEntityType -> transform(type) }
     }
 
-    private TrackedEntityType transform(TrackedEntityType type) {
-        if (type.trackedEntityTypeAttributes() == null) {
-            return type;
+    private fun transform(type: TrackedEntityType): TrackedEntityType {
+        return if (type.trackedEntityTypeAttributes() == null) {
+            type
         } else {
-            List<TrackedEntityTypeAttribute> attributes = new ArrayList<>();
-            for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
+            val attributes: MutableList<TrackedEntityTypeAttribute> = ArrayList()
+            for (attribute in type.trackedEntityTypeAttributes()!!) {
                 if (attribute.trackedEntityAttribute() != null) {
-                    attributes.add(attribute);
+                    attributes.add(attribute)
                 }
             }
-            return type.toBuilder().trackedEntityTypeAttributes(attributes).build();
+            type.toBuilder().trackedEntityTypeAttributes(attributes).build()
         }
+    }
+
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 140
     }
 }

@@ -25,39 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import java.lang.Boolean
+import javax.inject.Inject
 
 @Reusable
-final class OrganisationUnitLevelEndpointCall implements ListCall<OrganisationUnitLevel> {
-
-    private final OrganisationUnitLevelService service;
-    private final OrganisationUnitLevelHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    OrganisationUnitLevelEndpointCall(OrganisationUnitLevelService service,
-                                      OrganisationUnitLevelHandler handler,
-                                      APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<OrganisationUnitLevel>> download() {
-        return apiDownloader.download(handler,
-                service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE));
+internal class OrganisationUnitLevelEndpointCall @Inject constructor(
+    private val service: OrganisationUnitLevelService,
+    private val handler: OrganisationUnitLevelHandler,
+    private val apiDownloader: APIDownloader,
+) : ListCall<OrganisationUnitLevel> {
+    override fun download(): Single<List<OrganisationUnitLevel>> {
+        return apiDownloader.download(
+            handler,
+            service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE),
+        )
     }
 }

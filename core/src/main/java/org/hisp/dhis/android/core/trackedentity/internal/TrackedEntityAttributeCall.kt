@@ -25,46 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class TrackedEntityAttributeCall implements UidsCall<TrackedEntityAttribute> {
-
-    private static final int MAX_UID_LIST_SIZE = 140;
-
-    private final TrackedEntityAttributeService service;
-    private final TrackedEntityAttributeHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    TrackedEntityAttributeCall(TrackedEntityAttributeService service,
-                               TrackedEntityAttributeHandler handler,
-                               APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+class TrackedEntityAttributeCall @Inject internal constructor(
+    private val service: TrackedEntityAttributeService,
+    private val handler: TrackedEntityAttributeHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<TrackedEntityAttribute> {
+    override fun download(uids: Set<String>): Single<List<TrackedEntityAttribute>> {
+        return apiDownloader.downloadPartitioned(
+            uids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            service.getTrackedEntityAttributes(
+                TrackedEntityAttributeFields.allFields,
+                TrackedEntityAttributeFields.uid.`in`(partitionUids),
+                Boolean.FALSE,
+            )
+        }
     }
 
-
-    @Override
-    public Single<List<TrackedEntityAttribute>> download(Set<String> uids) {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getTrackedEntityAttributes(
-                        TrackedEntityAttributeFields.allFields,
-                        TrackedEntityAttributeFields.uid.in(partitionUids),
-                        Boolean.FALSE
-                ));
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 140
     }
 }

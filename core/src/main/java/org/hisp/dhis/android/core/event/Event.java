@@ -232,6 +232,7 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         /**
          * @deprecated since 2.29, replaced by {@link #geometry(Geometry geometry)}
          */
+        @Deprecated
         abstract Builder coordinate(Coordinates coordinate);
 
         public abstract Builder geometry(Geometry geometry);

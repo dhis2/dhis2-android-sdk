@@ -25,60 +25,60 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
-
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersion;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import com.google.common.collect.Lists
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class EventFilterCall implements UidsCall<EventFilter> {
+class EventFilterCall @Inject internal constructor(
+    private val service: EventFilterService,
+    handler: EventFilterHandler,
+    apiDownloader: APIDownloader,
+    versionManager: DHISVersionManager,
+) : UidsCall<EventFilter> {
+    private val handler: Handler<EventFilter>
+    private val apiDownloader: APIDownloader
+    private val versionManager: DHISVersionManager
 
-    private static final int MAX_UID_LIST_SIZE = 50;
-
-    private final EventFilterService service;
-    private final Handler<EventFilter> handler;
-    private final APIDownloader apiDownloader;
-    private final DHISVersionManager versionManager;
-
-    @Inject
-    EventFilterCall(EventFilterService service,
-                    EventFilterHandler handler,
-                    APIDownloader apiDownloader,
-                    DHISVersionManager versionManager) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-        this.versionManager = versionManager;
+    init {
+        this.handler = handler
+        this.apiDownloader = apiDownloader
+        this.versionManager = versionManager
     }
 
-    @Override
-    public Single<List<EventFilter>> download(Set<String> programUids) {
-        if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-            String accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString();
-            return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                    service.getEventFilters(
-                            EventFilterFields.programUid.in(partitionUids),
-                            accessDataReadFilter,
-                            EventFilterFields.allFields,
-                            Boolean.FALSE));
+    override fun download(programUids: Set<String>): Single<List<EventFilter>> {
+        return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
+            val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+            apiDownloader.downloadPartitioned(
+                programUids,
+                MAX_UID_LIST_SIZE,
+                handler,
+            ) { partitionUids: Set<String> ->
+                service.getEventFilters(
+                    EventFilterFields.programUid.`in`(partitionUids),
+                    accessDataReadFilter,
+                    EventFilterFields.allFields,
+                    Boolean.FALSE,
+                )
+            }
         } else {
-            return Single.just(Lists.newArrayList());
+            Single.just(Lists.newArrayList())
         }
+    }
+
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 50
     }
 }

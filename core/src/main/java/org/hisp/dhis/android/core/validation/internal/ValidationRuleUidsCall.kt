@@ -25,11 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-public interface ValidationRuleUidsCall extends UidsCall<ObjectWithUid> {
-}
+internal interface ValidationRuleUidsCall : UidsCall<ObjectWithUid>

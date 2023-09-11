@@ -25,44 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.option.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.option.OptionGroup;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.option.OptionGroup
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class OptionGroupCall implements UidsCall<OptionGroup> {
-
-    private static final int MAX_UID_LIST_SIZE = 130;
-
-    private final OptionGroupService service;
-    private final OptionGroupHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    OptionGroupCall(OptionGroupService service,
-                    OptionGroupHandler handler,
-                    APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+class OptionGroupCall @Inject internal constructor(
+    private val service: OptionGroupService,
+    private val handler: OptionGroupHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<OptionGroup> {
+    override fun download(optionSetUids: Set<String>): Single<List<OptionGroup>> {
+        return apiDownloader.downloadPartitioned(
+            optionSetUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            val optionSetUidsFilterStr =
+                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
+            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE)
+        }
     }
 
-    @Override
-    public Single<List<OptionGroup>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.in(partitionUids).generateString();
-            return service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
-        });
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

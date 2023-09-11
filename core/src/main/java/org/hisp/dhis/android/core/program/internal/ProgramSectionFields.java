@@ -41,6 +41,7 @@ public final class ProgramSectionFields {
     /**
      * @deprecated In version 2.33 and later, use {@link #TRACKED_ENTITY_ATTRIBUTES} instead.
      */
+    @Deprecated
     public static final String ATTRIBUTES = "programTrackedEntityAttribute";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
     private static final String STYLE = "style";

@@ -25,68 +25,63 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-public final class ProgramStageCall implements UidsCall<ProgramStage> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ProgramStageService service;
-    private final ProgramStageHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ProgramStageCall(ProgramStageService service,
-                     ProgramStageHandler handler,
-                     APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<ProgramStage>> download(Set<String> uids) {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
-            String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getProgramStages(
+class ProgramStageCall @Inject internal constructor(
+    private val service: ProgramStageService,
+    private val handler: ProgramStageHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<ProgramStage> {
+    override fun download(uids: Set<String>): Single<List<ProgramStage>> {
+        return apiDownloader.downloadPartitioned(
+            uids,
+            MAX_UID_LIST_SIZE,
+            handler,
+            { partitionUids: Set<String> ->
+                val accessDataReadFilter =
+                    "access.data." + DataAccessFields.read.eq(true).generateString()
+                val programUidsFilterStr =
+                    "program." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+                service.getProgramStages(
                     ProgramStageFields.allFields,
                     programUidsFilterStr,
                     accessDataReadFilter,
-                    Boolean.FALSE);
-        }, this::transform);
+                    Boolean.FALSE,
+                )
+            },
+        ) { stage: ProgramStage -> transform(stage) }
     }
 
-    private ProgramStage transform(ProgramStage stage) {
-        if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
-            return stage;
+    private fun transform(stage: ProgramStage): ProgramStage {
+        return if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
+            stage
         } else {
-            List<ProgramStageDataElement> psdes = new ArrayList<>();
-            for (ProgramStageDataElement psde : ProgramStageInternalAccessor.accessProgramStageDataElements(stage)) {
+            val psdes: MutableList<ProgramStageDataElement> = ArrayList()
+            for (psde in ProgramStageInternalAccessor.accessProgramStageDataElements(stage)) {
                 if (psde.dataElement() != null) {
-                    psdes.add(psde);
+                    psdes.add(psde)
                 }
             }
-            return ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build();
+            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes)
+                .build()
         }
+    }
+
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 64
     }
 }

@@ -32,11 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKtJavaCompatible;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 @AutoValue
-public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQuery {
+public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQueryKtJavaCompatible {
+
     public abstract String trackedEntityAttributeUid();
 
     public abstract Integer numberToReserve();
@@ -50,7 +51,7 @@ public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQuery
                                                                   Integer numberToReserve,
                                                                   OrganisationUnit organisationUnit,
                                                                   String trackedEntityAttributePattern) {
-        return new AutoValue_TrackedEntityAttributeReservedValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
+        return new AutoValue_TrackedEntityAttributeReservedValueQuery(
                 trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern);
     }
 }

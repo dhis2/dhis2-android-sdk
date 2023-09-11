@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.arch.call.factories.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQuery> protected constructor(
+internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQueryKt> protected constructor(
     protected val data: GenericCallData,
     protected val coroutineAPICallExecutor: CoroutineAPICallExecutor
 ) : QueryCallFactory<P, Q> {

@@ -36,3 +36,9 @@ internal open class BaseQueryKt(
         const val DEFAULT_PAGE_SIZE = 50
     }
 }
+
+internal open class BaseQueryKtJavaCompatible(
+    page: Int = 1,
+    pageSize: Int = DEFAULT_PAGE_SIZE,
+    paging: Boolean = false
+) : BaseQueryKt(page, pageSize, paging)

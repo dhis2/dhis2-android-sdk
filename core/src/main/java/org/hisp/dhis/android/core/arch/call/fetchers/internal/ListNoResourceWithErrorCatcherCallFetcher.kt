@@ -25,30 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-package org.hisp.dhis.android.core.arch.call.fetchers.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+internal abstract class ListNoResourceWithErrorCatcherCallFetcher<P> protected constructor(
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val errorCatcher: APICallErrorCatcher
+) {
+    protected abstract val call: List<P>
 
-import java.util.List;
-
-public abstract class ListNoResourceWithErrorCatcherCallFetcher<P> implements CallFetcher<P> {
-
-    private final APICallExecutor apiCallExecutor;
-    private final APICallErrorCatcher errorCatcher;
-
-    protected ListNoResourceWithErrorCatcherCallFetcher(APICallExecutor apiCallExecutor,
-                                                        APICallErrorCatcher errorCatcher) {
-        this.apiCallExecutor = apiCallExecutor;
-        this.errorCatcher = errorCatcher;
-    }
-
-    protected abstract retrofit2.Call<List<P>> getCall();
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executeObjectCallWithErrorCatcher(getCall(), errorCatcher);
+    @Throws(D2Error::class)
+    suspend fun fetch(): List<P> {
+        return coroutineAPICallExecutor.wrap(errorCatcher = errorCatcher) { call }.getOrThrow()
     }
 }

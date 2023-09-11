@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -59,7 +60,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito
-import java.util.concurrent.Callable
 
 @SuppressWarnings("MaxLineLength")
 class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseRealIntegrationTest() {
@@ -79,7 +79,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
         null
 
     @Mock
-    val trackedEntityAttributeReservedValueCall: Callable<List<TrackedEntityAttributeReservedValue>>? =
+    val trackedEntityAttributeReservedValueCall: List<TrackedEntityAttributeReservedValue>? =
         null
 
     @Captor
@@ -143,14 +143,16 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
         OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(
             organisationUnitProgramLink,
         )
-        Mockito.`when`(
-            trackedEntityAttributeReservedValueQueryCallFactory!!.create(
-                ArgumentMatchers.any(
-                    TrackedEntityAttributeReservedValueQuery::class.java,
+        runBlocking {
+            Mockito.`when`(
+                trackedEntityAttributeReservedValueQueryCallFactory!!.create(
+                    ArgumentMatchers.any(
+                        TrackedEntityAttributeReservedValueQuery::class.java
+                    ),
                 ),
-            ),
-        )
-            .thenReturn(trackedEntityAttributeReservedValueCall)
+            )
+                .thenReturn(trackedEntityAttributeReservedValueCall)
+        }
         handler.handleMany(trackedEntityAttributeReservedValues)
     }
 
@@ -343,12 +345,12 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
      * This method stopped working because QueryCallFactory mock instance differs from Dagger's injected one,
      * so the code is calling .create() on Dagger's instance and .verify() is trying to catch the call from Mockito's instace.
      */
-    private fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
+    private suspend fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
         Mockito.verify(trackedEntityAttributeReservedValueQueryCallFactory)!!.create(
             trackedEntityAttributeReservedValueQueryCaptor!!.capture(),
         )
         val query = trackedEntityAttributeReservedValueQueryCaptor.value
-        Truth.assertThat(query.organisationUnit()!!.uid()).isEqualTo(organisationUnit!!.uid())
+        Truth.assertThat(query.organisationUnit()!!.uid()).isEqualTo(organisationUnit.uid())
         Truth.assertThat(query.numberToReserve())
             .isEqualTo(numberOfValuesExpected) // values expected - 3 that it had before.
         Truth.assertThat(query.trackedEntityAttributePattern()).isEqualTo(pattern)

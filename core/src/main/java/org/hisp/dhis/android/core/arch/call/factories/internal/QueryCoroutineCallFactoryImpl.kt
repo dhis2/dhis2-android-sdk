@@ -25,14 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQuery> protected constructor(
+    protected val data: GenericCallData,
+    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) : QueryCallFactory<P, Q> {
+    override suspend fun create(query: Q): MutableList<P> {
+        val objects: List<P> = fetcher(query)
+        processor(query).process(objects)
+        return objects.toMutableList()
+    }
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public interface QueryCallFactory<P, Q extends BaseQuery> {
-    Callable<List<P>> create(Q query);
+    protected abstract suspend fun fetcher(query: Q): List<P>
+    protected abstract fun processor(query: Q): CallProcessor<P>
 }

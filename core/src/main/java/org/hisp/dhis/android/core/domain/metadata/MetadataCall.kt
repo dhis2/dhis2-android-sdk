@@ -130,7 +130,7 @@ internal class MetadataCall @Inject constructor(
         useCaseDownloader.downloadMetadata().blockingAwait()
         emit(progressManager.increaseProgress(StockUseCase::class.java, false))
 
-        runBlocking { constantModuleDownloader.downloadMetadata() }
+        constantModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Constant::class.java, false))
 
         smsModule.configCase().refreshMetadataIdsCallable().blockingAwait()
@@ -138,7 +138,7 @@ internal class MetadataCall @Inject constructor(
     }
 
     private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
-        val user = runBlocking { userModuleDownloader.downloadMetadata() }
+        val user = userModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(User::class.java, false))
 
         organisationUnitModuleDownloader.downloadMetadata(user).blockingAwait()

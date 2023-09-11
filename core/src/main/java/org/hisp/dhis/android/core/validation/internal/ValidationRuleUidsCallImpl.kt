@@ -25,52 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
+import java.lang.Boolean
+import javax.inject.Inject
+import kotlin.String
 
 @Reusable
-final class ValidationRuleUidsCallImpl implements ValidationRuleUidsCall {
+internal class ValidationRuleUidsCallImpl @Inject constructor(
+    private val service: ValidationRuleService,
+    private val linkHandler: DataSetValidationRuleLinkHandler,
+    private val apiDownloader: APIDownloader,
+) : ValidationRuleUidsCall {
 
-    private final ValidationRuleService service;
-    private final DataSetValidationRuleLinkHandler linkHandler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ValidationRuleUidsCallImpl(ValidationRuleService service,
-                               DataSetValidationRuleLinkHandler linkHandler,
-                               APIDownloader apiDownloader) {
-        this.service = service;
-        this.linkHandler = linkHandler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<ObjectWithUid>> download(Set<String> dataSetUids) {
-        return Observable.fromIterable(dataSetUids)
-                .flatMapSingle(dataSetUid -> apiDownloader.downloadLink(dataSetUid, linkHandler, dataSetPartitionUids ->
-                                service.getDataSetValidationRuleUids(
-                                        dataSetUid, BaseIdentifiableObject.UID, Boolean.FALSE),
-                        validationRule -> DataSetValidationRuleLink.builder()
-                                .dataSet(dataSetUid)
-                                .validationRule(validationRule.uid()).build()))
-                .reduce(new ArrayList<>(), (items1, items2) -> {
-                    items1.addAll(items2);
-                    return items1;
-                });
+    override fun download(uids: Set<String>): Single<List<ObjectWithUid>> {
+        return Observable.fromIterable(uids)
+            .flatMapSingle { dataSetUid: String ->
+                apiDownloader.downloadLink(
+                    dataSetUid,
+                    linkHandler,
+                    { dataSetPartitionUids: String ->
+                        service.getDataSetValidationRuleUids(
+                            dataSetUid,
+                            BaseIdentifiableObject.UID,
+                            Boolean.FALSE,
+                        )
+                    },
+                ) { validationRule: ObjectWithUid ->
+                    DataSetValidationRuleLink.builder()
+                        .dataSet(dataSetUid)
+                        .validationRule(validationRule.uid()).build()
+                }
+            }
+            .reduce(ArrayList()) { items1: List<ObjectWithUid>, items2: List<ObjectWithUid> ->
+                items1 + items2 // Use the + operator to concatenate lists
+            }
     }
 }

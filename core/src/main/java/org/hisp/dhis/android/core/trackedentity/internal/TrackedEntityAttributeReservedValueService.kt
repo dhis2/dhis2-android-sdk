@@ -37,14 +37,14 @@ interface TrackedEntityAttributeReservedValueService {
     suspend fun generateAndReserve(
         @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
         @Query("numberToReserve") numberToReserve: Int?
-    ): List<TrackedEntityAttributeReservedValue?>?
+    ): List<TrackedEntityAttributeReservedValue>
 
     @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
     suspend fun generateAndReserveWithOrgUnitCode(
         @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
         @Query("numberToReserve") numberToReserve: Int?,
         @Query("ORG_UNIT_CODE") orgUnitCode: String?
-    ): List<TrackedEntityAttributeReservedValue?>?
+    ): List<TrackedEntityAttributeReservedValue>
 
     companion object {
         const val TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid"

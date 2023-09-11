@@ -49,7 +49,7 @@ public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
 
     @Override
     public final Callable<List<P>> create() {
-        return new EndpointCall<>(fetcher(), processor());
+        return new EndpointCall(fetcher(), processor());
     }
 
     protected abstract CallFetcher<P> fetcher();

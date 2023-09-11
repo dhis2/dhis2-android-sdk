@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth
-import java.util.concurrent.Callable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -77,7 +77,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
         null
 
     @Mock
-    val trackedEntityAttributeReservedValueCall: Callable<List<TrackedEntityAttributeReservedValue>>? =
+    val trackedEntityAttributeReservedValueCall: List<TrackedEntityAttributeReservedValue>? =
         null
 
     @Captor
@@ -141,14 +141,16 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
         OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(
             organisationUnitProgramLink
         )
-        Mockito.`when`(
-            trackedEntityAttributeReservedValueQueryCallFactory!!.create(
-                ArgumentMatchers.any(
-                    TrackedEntityAttributeReservedValueQuery::class.java
+        runBlocking {
+            Mockito.`when`(
+                trackedEntityAttributeReservedValueQueryCallFactory!!.create(
+                    ArgumentMatchers.any(
+                        TrackedEntityAttributeReservedValueQuery::class.java
+                    )
                 )
             )
-        )
-            .thenReturn(trackedEntityAttributeReservedValueCall)
+                .thenReturn(trackedEntityAttributeReservedValueCall)
+        }
         handler.handleMany(trackedEntityAttributeReservedValues)
     }
 
@@ -340,7 +342,7 @@ class TrackedEntityAttributeReservedValueManagerRealIntegrationShould : BaseReal
      * This method stopped working because QueryCallFactory mock instance differs from Dagger's injected one,
      * so the code is calling .create() on Dagger's instance and .verify() is trying to catch the call from Mockito's instace.
      */
-    private fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
+    private suspend fun assertQueryIsCreatedRight(numberOfValuesExpected: Int) {
         Mockito.verify(trackedEntityAttributeReservedValueQueryCallFactory)!!.create(
             trackedEntityAttributeReservedValueQueryCaptor!!.capture()
         )

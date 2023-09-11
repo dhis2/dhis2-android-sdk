@@ -50,7 +50,7 @@ public abstract class UidsCallFactoryImpl<P> implements UidsCallFactory<P> {
 
     @Override
     public final Callable<List<P>> create(Set<String> uids) {
-        return new EndpointCall<>(fetcher(uids), processor());
+        return new EndpointCall(fetcher(uids), processor());
     }
 
     protected abstract CallFetcher<P> fetcher(Set<String> uids);

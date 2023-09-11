@@ -42,7 +42,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
@@ -79,7 +78,6 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val generalSettingObjectRepository: GeneralSettingObjectRepository,
     private val reservedValueSettingStore: ReservedValueSettingStore,
-    private val executor: D2CallExecutor,
     private val reservedValueQueryCallFactory: QueryCallFactory<TrackedEntityAttributeReservedValue,
         TrackedEntityAttributeReservedValueQuery>
 ) {
@@ -112,7 +110,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
 
     private suspend fun getValueCoroutines(attributeUid: String, organisationUnitUid: String): String {
 
-        downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
+        downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null)
 
         val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
         val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
@@ -280,12 +278,12 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
 
             for (organisationUnit in organisationUnits) {
                 downloadValuesIfBelowThreshold(
-                    attribute, organisationUnit, numberOfValuesToFillUp, true
+                    attribute, organisationUnit, numberOfValuesToFillUp
                 )
                 emit(increaseProgress())
             }
         } else {
-            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
+            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp)
 
             emit(increaseProgress())
         }
@@ -295,7 +293,6 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         attribute: String,
         organisationUnit: OrganisationUnit?,
         minNumberOfValuesToHave: Int?,
-        storeError: Boolean
     ) = coroutineScope {
         // Using local date. It's not worth it to make a system info call
         store.deleteExpired(Date())
@@ -311,7 +308,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         if (remainingValues < minNumberToTryFill) {
             val numberToReserve = fillUpTo!! - remainingValues
             downloadValues(
-                attribute, organisationUnit, numberToReserve, pattern, storeError
+                attribute, organisationUnit, numberToReserve, pattern
             )
         }
     }
@@ -321,15 +318,11 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         organisationUnit: OrganisationUnit?,
         numberToReserve: Int,
         pattern: String?,
-        storeError: Boolean
     ) {
-        executor.executeD2Call(
-            reservedValueQueryCallFactory.create(
-                TrackedEntityAttributeReservedValueQuery.create(
-                    trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern
-                )
-            ),
-            storeError
+        reservedValueQueryCallFactory.create(
+            TrackedEntityAttributeReservedValueQuery.create(
+                trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern
+            )
         )
 
         if (pattern != null) {

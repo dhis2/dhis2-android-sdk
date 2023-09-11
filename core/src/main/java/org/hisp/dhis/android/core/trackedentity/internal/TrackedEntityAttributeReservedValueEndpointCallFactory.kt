@@ -28,56 +28,51 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import retrofit2.Call
-import javax.inject.Inject
 
 @Reusable
-class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject internal constructor(
-    data: GenericCallData?,
-    apiCallExecutor: APICallExecutor?,
+internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject internal constructor(
+    data: GenericCallData,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: TrackedEntityAttributeReservedValueService,
     private val handler: TrackedEntityAttributeReservedValueHandler
-) : QueryCallFactoryImpl<TrackedEntityAttributeReservedValue?, TrackedEntityAttributeReservedValueQuery?>(
+) : QueryCoroutineCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>(
     data,
-    apiCallExecutor
+    coroutineAPICallExecutor
 ) {
+    override suspend fun fetcher(query: TrackedEntityAttributeReservedValueQuery):
+        List<TrackedEntityAttributeReservedValue> {
 
-    override fun fetcher(query: TrackedEntityAttributeReservedValueQuery?): CallFetcher<TrackedEntityAttributeReservedValue?> {
-        return object: ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue?>(
-            apiCallExecutor, TrackedEntityAttributeReservedValueCallErrorCatcher()
-        ) {
-            override fun getCall(): Call<MutableList<TrackedEntityAttributeReservedValue?>>? {
-                return if (query!!.organisationUnit() == null) {
-                    service.generateAndReserve(
-                        query.trackedEntityAttributeUid(),
-                        query.numberToReserve()
-                    )
-                } else {
-                    service.generateAndReserveWithOrgUnitCode(
-                        query.trackedEntityAttributeUid(),
-                        query.numberToReserve(),
-                        query.organisationUnit()!!.code()
-                    )
-                }
+        val errorCatcher = TrackedEntityAttributeReservedValueCallErrorCatcher()
+
+        return coroutineAPICallExecutor.wrap(errorCatcher = errorCatcher) {
+            if (query.organisationUnit() == null) {
+                service.generateAndReserve(
+                    query.trackedEntityAttributeUid(),
+                    query.numberToReserve()
+                )
+            } else {
+                service.generateAndReserveWithOrgUnitCode(
+                    query.trackedEntityAttributeUid(),
+                    query.numberToReserve(),
+                    query.organisationUnit()!!.code()
+                )
             }
-        }
+        }.getOrThrow()
     }
 
-    override fun processor(query: TrackedEntityAttributeReservedValueQuery?): CallProcessor<TrackedEntityAttributeReservedValue?> {
+    override fun processor(query: TrackedEntityAttributeReservedValueQuery):
+        CallProcessor<TrackedEntityAttributeReservedValue> {
         return TrackedEntityAttributeReservedValueCallProcessor(
             data.databaseAdapter(),
             handler,
-            query!!.organisationUnit(),
+            query.organisationUnit(),
             query.trackedEntityAttributePattern()
         )
     }
-
-
 }

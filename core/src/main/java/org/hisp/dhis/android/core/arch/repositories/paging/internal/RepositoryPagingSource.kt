@@ -25,9 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import androidx.paging.ItemKeyedDataSource
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -36,58 +38,54 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import java.io.IOException
 
-class RepositoryDataSource<M : CoreObject> internal constructor(
+class RepositoryPagingSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
     private val scope: RepositoryScope,
     private val childrenAppenders: Map<String, ChildrenAppender<M>>,
-) : ItemKeyedDataSource<M, M>() {
-    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<M>) {
-        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
-            scope,
-        )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
+) : PagingSource<M, M>() {
+
+    override fun getRefreshKey(state: PagingState<M, M>): M? {
+        return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
-    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, false)
-    }
+    override suspend fun load(params: LoadParams<M>): LoadResult<M, M> {
+        try {
+            val whereClauseBuilder = WhereClauseBuilder()
 
-    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, true)
-    }
+            params.key?.let { key ->
+                val reverse = when (params) {
+                    is LoadParams.Prepend -> true
+                    else -> false
+                }
 
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
-        val whereClauseBuilder = WhereClauseBuilder()
+                OrderByClauseBuilder.addSortingClauses(
+                    whereClauseBuilder,
+                    scope.orderBy(),
+                    key.toContentValues(),
+                    reverse,
+                    scope.pagingKey(),
+                )
+            }
 
-        OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder,
-            scope.orderBy(),
-            params.key.toContentValues(),
-            reversed,
-            scope.pagingKey(),
-        )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
-            scope,
-        )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
-    }
+            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
+                scope,
+            )
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                params.loadSize,
+            )
 
-    override fun getKey(item: M): M {
-        return item
-    }
-
-    private fun appendChildren(withoutChildren: List<M>): List<M> {
-        return appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
+            val items = appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
+            return LoadResult.Page(
+                data = items,
+                prevKey = items.firstOrNull(),
+                nextKey = items.getOrNull(params.loadSize - 1),
+            )
+        } catch (e: IOException) {
+            return LoadResult.Error(e)
+        }
     }
 }

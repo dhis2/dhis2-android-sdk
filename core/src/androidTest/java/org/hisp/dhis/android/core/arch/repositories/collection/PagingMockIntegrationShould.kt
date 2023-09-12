@@ -29,19 +29,24 @@ package org.hisp.dhis.android.core.arch.repositories.collection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagedList
+import androidx.paging.testing.asSnapshot
 import com.jraska.livedata.TestObserver
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
@@ -135,7 +140,7 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     }
 
     @Test
-    fun get_initial_objects_ordered_by_description_and_display_name_desc() {
+    fun get_initial_objects_ordered_by_description_and_display_name_desc() = runTest {
         val liveData = d2.categoryModule().categoryOptions()
             .orderByDescription(RepositoryScope.OrderByDirection.DESC)
             .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
@@ -153,5 +158,89 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
             .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[3]!!.displayName() == "In Community" }
             .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[4]!!.displayName() == "Male" }
             .assertValue { pagedList: PagedList<CategoryOption> -> pagedList[5]!!.displayName() == "MCH Aides" }
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_with_default_order_considering_prefetch_distance() = runTest {
+        val items = d2.categoryModule().categoryOptions().getPagingData(2)
+
+        val itemsSnapshot: List<CategoryOption> = items.asSnapshot()
+
+        assertEquals(itemsSnapshot.size, 6)
+        assertEquals(itemsSnapshot[0], allValues[0])
+        assertEquals(itemsSnapshot[1], allValues[1])
+        assertEquals(itemsSnapshot[2], allValues[2])
+        assertEquals(itemsSnapshot[3], allValues[3])
+        assertEquals(itemsSnapshot[4], allValues[4])
+        assertEquals(itemsSnapshot[5], allValues[5])
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_ordered_by_display_name_asc() = runTest {
+        val items = d2.categoryModule().categoryOptions()
+            .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+            .getPagingData(2)
+
+        val snapshot = items.asSnapshot()
+
+        assertEquals(snapshot.size, 6)
+        assertEquals(snapshot[0].displayName(), "At PHU")
+        assertEquals(snapshot[1].displayName(), "Female")
+        assertEquals(snapshot[2].displayName(), "In Community")
+        assertEquals(snapshot[3].displayName(), "MCH Aides")
+        assertEquals(snapshot[4].displayName(), "Male")
+        assertEquals(snapshot[5].displayName(), "SECHN")
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_ordered_by_display_name_desc() = runTest {
+        val items = d2.categoryModule().categoryOptions()
+            .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
+            .getPagingData(2)
+
+        val snapshot = items.asSnapshot()
+
+        assertEquals(snapshot.size, 6)
+        assertEquals(snapshot[0].displayName(), "default display name")
+        assertEquals(snapshot[1].displayName(), "Trained TBA")
+        assertEquals(snapshot[2].displayName(), "SECHN")
+        assertEquals(snapshot[3].displayName(), "Male")
+        assertEquals(snapshot[4].displayName(), "MCH Aides")
+        assertEquals(snapshot[5].displayName(), "In Community")
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_ordered_by_description_desc() = runTest {
+        val items = d2.categoryModule().categoryOptions()
+            .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+            .getPagingData(2)
+
+        val snapshot = items.asSnapshot()
+
+        assertEquals(snapshot.size, 6)
+        assertEquals(snapshot[0].displayName(), "default display name")
+        assertEquals(snapshot[1].displayName(), "Female")
+        assertEquals(snapshot[2].displayName(), "Male")
+        assertEquals(snapshot[3].displayName(), "In Community")
+        assertEquals(snapshot[4].displayName(), "At PHU")
+        assertEquals(snapshot[5].displayName(), "MCH Aides")
+    }
+
+    @Test
+    fun get_pagingData_with_initial_objects_ordered_by_description_and_display_name_desc() = runTest {
+        val items = d2.categoryModule().categoryOptions()
+            .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+            .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+            .getPagingData(2)
+
+        val snapshot = items.asSnapshot()
+
+        assertEquals(snapshot.size, 6)
+        assertEquals(snapshot[0].displayName(), "default display name")
+        assertEquals(snapshot[1].displayName(), "At PHU")
+        assertEquals(snapshot[2].displayName(), "Female")
+        assertEquals(snapshot[3].displayName(), "In Community")
+        assertEquals(snapshot[4].displayName(), "Male")
+        assertEquals(snapshot[5].displayName(), "MCH Aides")
     }
 }

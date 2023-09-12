@@ -25,33 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant.internal
 
-package org.hisp.dhis.android.core.arch.call.processors.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.constant.Constant
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.List;
-
-public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final DatabaseAdapter databaseAdapter;
-    private final Handler<O> handler;
-
-    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
-                                                    Handler<O> handler) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                return null;
-            });
-        }
+@Reusable
+internal class ConstantModuleDownloader @Inject internal constructor(
+    private val constantCallFactory: ConstantCoroutineCallFactory,
+) :
+    TypedModuleDownloader<List<Constant>> {
+    override suspend fun downloadMetadata(): List<Constant> {
+        return constantCallFactory.create()
     }
 }

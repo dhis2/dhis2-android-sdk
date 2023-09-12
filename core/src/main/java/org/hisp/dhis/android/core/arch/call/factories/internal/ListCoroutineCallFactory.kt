@@ -26,32 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
-
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
-
-    protected ListCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    @Override
-    public final Callable<List<P>> create() {
-        return new EndpointCall<>(fetcher(), processor());
-    }
-
-    protected abstract CallFetcher<P> fetcher();
-    protected abstract CallProcessor<P> processor();
+fun interface ListCoroutineCallFactory<P> {
+    suspend fun create(): List<P>
 }

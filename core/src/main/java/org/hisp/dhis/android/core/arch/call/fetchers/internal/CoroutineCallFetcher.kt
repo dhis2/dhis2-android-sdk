@@ -25,30 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader;
-import org.hisp.dhis.android.core.constant.Constant;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-import java.util.List;
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-public class ConstantModuleDownloader implements TypedModuleDownloader<List<Constant>> {
-
-    private final ConstantCallFactory constantCallFactory;
-
-    @Inject
-    ConstantModuleDownloader(ConstantCallFactory constantCallFactory) {
-        this.constantCallFactory = constantCallFactory;
-    }
-
-    @Override
-    public Single<List<Constant>> downloadMetadata() {
-        return Single.fromCallable(constantCallFactory.create());
-    }
+fun interface CoroutineCallFetcher<P> {
+    @Throws(D2Error::class)
+    suspend fun fetch(): List<P>
 }

@@ -109,7 +109,9 @@ class MetadataCallShould : BaseCallShould() {
         }
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
+        userDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(user)
+        }
         whenever(programDownloader.downloadMetadata()).thenReturn(
             Completable.complete(),
         )
@@ -120,12 +122,14 @@ class MetadataCallShould : BaseCallShould() {
             Completable.complete(),
         )
         whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(visualizationDownloader.downloadMetadata()).thenReturn(
-            Single.just(emptyList()),
-        )
+        visualizationDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(emptyList())
+        }
         whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
+        constantDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(emptyList())
+        }
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
@@ -178,7 +182,9 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_user_call_fail() {
-        whenever(userDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
+        userDownloader.stub {
+            onBlocking { downloadMetadata() }.doAnswer { throw networkError }
+        }
         downloadAndAssertError()
     }
 
@@ -190,7 +196,9 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_visualization_download_call_fail() {
-        whenever(visualizationDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
+        visualizationDownloader.stub {
+            onBlocking { downloadMetadata() }.doAnswer { throw networkError }
+        }
         downloadAndAssertError()
     }
 
@@ -214,7 +222,9 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_constant_call_fail() {
-        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.error(networkError))
+        constantDownloader.stub {
+            onBlocking { downloadMetadata() }.doAnswer { throw networkError }
+        }
         downloadAndAssertError()
     }
 

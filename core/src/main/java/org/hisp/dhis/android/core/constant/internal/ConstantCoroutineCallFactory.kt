@@ -25,35 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader;
-import org.hisp.dhis.android.core.user.User;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
+import org.hisp.dhis.android.core.constant.Constant
+import javax.inject.Inject
 
 @Reusable
-public class UserModuleDownloader implements TypedModuleDownloader<User> {
-
-    private final UserCall userCall;
-    private final AuthorityEndpointCallFactory authorityCallFactory;
-
-    @Inject
-    UserModuleDownloader(UserCall userCall, AuthorityEndpointCallFactory authorityCallFactory) {
-        this.userCall = userCall;
-        this.authorityCallFactory = authorityCallFactory;
+internal class ConstantCoroutineCallFactory @Inject constructor(
+    data: GenericCallData,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val service: ConstantService,
+    private val handler: ConstantHandler,
+) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
+    override suspend fun fetcher(): List<Constant> {
+        return coroutineAPICallExecutor.wrap {
+            service.constants(ConstantFields.allFields, false)
+        }.getOrThrow().items()
     }
 
-    @Override
-    public Single<User> downloadMetadata() {
-        return Single.fromCallable(() -> {
-            User user = userCall.call();
-            authorityCallFactory.create().call();
-            return user;
-        });
+    override fun processor(): CallProcessor<Constant> {
+        return TransactionalNoResourceSyncCallProcessor(
+            data.databaseAdapter(),
+            handler,
+        )
     }
 }

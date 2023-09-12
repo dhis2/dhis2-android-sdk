@@ -25,23 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.constant.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
-import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
-import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.constant.Constant
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-@Reusable
-internal class VisualizationModuleDownloader @Inject internal constructor(
-    private val visualizationCall: VisualizationCall,
-    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
-) :
-    TypedModuleDownloader<List<Visualization>> {
-
-    override suspend fun downloadMetadata(): List<Visualization> {
-        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        return visualizationCall.download(visualizations).blockingGet()
-    }
+internal fun interface ConstantService {
+    @GET("constants")
+    suspend fun constants(
+        @Query("fields") @Which fields: Fields<Constant>,
+        @Query("paging") paging: Boolean,
+    ): Payload<Constant>
 }

@@ -25,23 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
-import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
-import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
-@Reusable
-internal class VisualizationModuleDownloader @Inject internal constructor(
-    private val visualizationCall: VisualizationCall,
-    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
-) :
-    TypedModuleDownloader<List<Visualization>> {
+internal abstract class ListCallFactoryImpl<P>(
+    protected val data: GenericCallData,
+    protected val apiCallExecutor: APICallExecutor,
+) : ListCallFactory<P> {
 
-    override suspend fun downloadMetadata(): List<Visualization> {
-        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        return visualizationCall.download(visualizations).blockingGet()
+    override fun create(): Callable<List<P>> {
+        return EndpointCall(fetcher(), processor())
     }
+
+    protected abstract fun fetcher(): CallFetcher<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

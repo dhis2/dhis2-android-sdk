@@ -26,10 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import io.reactivex.Single;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 
-public interface TypedModuleDownloader<O> {
-   Single<O> downloadMetadata();
+internal abstract class ListCoroutineCallFactoryImpl<P> protected constructor(
+    protected val data: GenericCallData,
+    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : ListCoroutineCallFactory<P> {
+    override suspend fun create(): List<P> {
+        val objects: List<P> = fetcher()
+        processor().process(objects)
+        return objects
+    }
+
+    protected abstract suspend fun fetcher(): List<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

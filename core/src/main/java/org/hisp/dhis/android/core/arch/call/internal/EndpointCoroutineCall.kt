@@ -25,23 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
-import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
-import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
+package org.hisp.dhis.android.core.arch.call.internal
 
-@Reusable
-internal class VisualizationModuleDownloader @Inject internal constructor(
-    private val visualizationCall: VisualizationCall,
-    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
-) :
-    TypedModuleDownloader<List<Visualization>> {
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 
-    override suspend fun downloadMetadata(): List<Visualization> {
-        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        return visualizationCall.download(visualizations).blockingGet()
+class EndpointCoroutineCall<P>(
+    private val fetcher: CoroutineCallFetcher<P>,
+    private val processor: CallProcessor<P>,
+) {
+
+    @Throws(Exception::class)
+    suspend fun call(): List<P> {
+        val objects: List<P> = fetcher.fetch()
+        processor.process(objects)
+        return objects
     }
 }

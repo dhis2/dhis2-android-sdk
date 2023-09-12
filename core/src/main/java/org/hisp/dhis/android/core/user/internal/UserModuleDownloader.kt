@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.constant.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.user.User
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.constant.Constant;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface ConstantService {
-
-    @GET("constants")
-    Call<Payload<Constant>> constants(@Query("fields") @Which Fields<Constant> fields,
-                                      @Query("paging") boolean paging);
+@Reusable
+internal class UserModuleDownloader @Inject internal constructor(
+    private val userCall: UserCall,
+    private val authorityCallFactory: AuthorityEndpointCallFactory,
+) : TypedModuleDownloader<User> {
+    override suspend fun downloadMetadata(): User {
+        val user = userCall.call()
+        authorityCallFactory.create().call()
+        return user
+    }
 }

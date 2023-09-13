@@ -31,6 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCoroutineCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
@@ -43,27 +44,32 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject in
     private val handler: TrackedEntityAttributeReservedValueHandler
 ) : QueryCoroutineCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>(
     data,
-    coroutineAPICallExecutor
+    coroutineAPICallExecutor,
 ) {
+
     override suspend fun fetcher(query: TrackedEntityAttributeReservedValueQuery):
         List<TrackedEntityAttributeReservedValue> {
-
         val errorCatcher = TrackedEntityAttributeReservedValueCallErrorCatcher()
 
-        return coroutineAPICallExecutor.wrap(errorCatcher = errorCatcher) {
-            if (query.organisationUnit() == null) {
-                service.generateAndReserve(
-                    query.trackedEntityAttributeUid(),
-                    query.numberToReserve()
-                )
-            } else {
-                service.generateAndReserveWithOrgUnitCode(
-                    query.trackedEntityAttributeUid(),
-                    query.numberToReserve(),
-                    query.organisationUnit()!!.code()
-                )
+        return object : ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue>(
+            coroutineAPICallExecutor = coroutineAPICallExecutor,
+            errorCatcher = errorCatcher
+        ) {
+            override suspend fun call(): List<TrackedEntityAttributeReservedValue> {
+                return if (query.organisationUnit() == null) {
+                    service.generateAndReserve(
+                        query.trackedEntityAttributeUid(),
+                        query.numberToReserve()
+                    )
+                } else {
+                    service.generateAndReserveWithOrgUnitCode(
+                        query.trackedEntityAttributeUid(),
+                        query.numberToReserve(),
+                        query.organisationUnit()!!.code()!!
+                    )
+                }
             }
-        }.getOrThrow()
+        }.fetch()
     }
 
     override fun processor(query: TrackedEntityAttributeReservedValueQuery):

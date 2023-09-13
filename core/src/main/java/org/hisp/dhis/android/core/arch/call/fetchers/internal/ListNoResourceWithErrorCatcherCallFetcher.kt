@@ -35,10 +35,10 @@ internal abstract class ListNoResourceWithErrorCatcherCallFetcher<P> protected c
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val errorCatcher: APICallErrorCatcher
 ) {
-    protected abstract val call: List<P>
+    protected abstract suspend fun call(): List<P>
 
     @Throws(D2Error::class)
     suspend fun fetch(): List<P> {
-        return coroutineAPICallExecutor.wrap(errorCatcher = errorCatcher) { call }.getOrThrow()
+        return coroutineAPICallExecutor.wrap(errorCatcher = errorCatcher) { call() }.getOrThrow()
     }
 }

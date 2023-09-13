@@ -110,7 +110,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
 
     private suspend fun getValueCoroutines(attributeUid: String, organisationUnitUid: String): String {
 
-        downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null)
+        downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
 
         val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
         val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
@@ -278,12 +278,12 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
 
             for (organisationUnit in organisationUnits) {
                 downloadValuesIfBelowThreshold(
-                    attribute, organisationUnit, numberOfValuesToFillUp
+                    attribute, organisationUnit, numberOfValuesToFillUp, true
                 )
                 emit(increaseProgress())
             }
         } else {
-            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp)
+            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
 
             emit(increaseProgress())
         }
@@ -293,6 +293,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         attribute: String,
         organisationUnit: OrganisationUnit?,
         minNumberOfValuesToHave: Int?,
+        storeError: Boolean,
     ) = coroutineScope {
         // Using local date. It's not worth it to make a system info call
         store.deleteExpired(Date())
@@ -308,7 +309,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         if (remainingValues < minNumberToTryFill) {
             val numberToReserve = fillUpTo!! - remainingValues
             downloadValues(
-                attribute, organisationUnit, numberToReserve, pattern
+                attribute, organisationUnit, numberToReserve, pattern, storeError
             )
         }
     }
@@ -318,11 +319,13 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         organisationUnit: OrganisationUnit?,
         numberToReserve: Int,
         pattern: String?,
+        storeError: Boolean,
     ) {
         reservedValueQueryCallFactory.create(
             TrackedEntityAttributeReservedValueQuery.create(
-                trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern
+                trackedEntityAttributeUid, numberToReserve, organisationUnit, pattern, storeError
             )
+
         )
 
         if (pattern != null) {

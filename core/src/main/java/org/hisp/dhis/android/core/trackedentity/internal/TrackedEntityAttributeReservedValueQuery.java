@@ -47,11 +47,19 @@ public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQuery
 
     public abstract String trackedEntityAttributePattern();
 
+    public abstract Boolean storeError();
+
     public static TrackedEntityAttributeReservedValueQuery create(String trackedEntityAttributeUid,
                                                                   Integer numberToReserve,
                                                                   OrganisationUnit organisationUnit,
-                                                                  String trackedEntityAttributePattern) {
+                                                                  String trackedEntityAttributePattern,
+                                                                  Boolean storeError) {
+
         return new AutoValue_TrackedEntityAttributeReservedValueQuery(
-                trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern);
+                trackedEntityAttributeUid,
+                numberToReserve,
+                organisationUnit,
+                trackedEntityAttributePattern,
+                storeError);
     }
 }

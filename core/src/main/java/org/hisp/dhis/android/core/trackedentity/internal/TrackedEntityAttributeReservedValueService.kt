@@ -33,17 +33,17 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TrackedEntityAttributeReservedValueService {
-    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
     suspend fun generateAndReserve(
-        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
-        @Query("numberToReserve") numberToReserve: Int?
+        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,
+        @Query("numberToReserve") numberToReserve: Int
     ): List<TrackedEntityAttributeReservedValue>
 
-    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
     suspend fun generateAndReserveWithOrgUnitCode(
-        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String?,
-        @Query("numberToReserve") numberToReserve: Int?,
-        @Query("ORG_UNIT_CODE") orgUnitCode: String?
+        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,
+        @Query("numberToReserve") numberToReserve: Int,
+        @Query("ORG_UNIT_CODE") orgUnitCode: String,
     ): List<TrackedEntityAttributeReservedValue>
 
     companion object {

@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
 internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQueryKt> protected constructor(
     protected val data: GenericCallData,
-    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : QueryCallFactory<P, Q> {
-    override suspend fun create(query: Q): MutableList<P> {
+    override suspend fun create(query: Q): List<P> {
         val objects: List<P> = fetcher(query)
         processor(query).process(objects)
         return objects.toMutableList()

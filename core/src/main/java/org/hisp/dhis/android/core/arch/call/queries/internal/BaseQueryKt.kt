@@ -40,5 +40,5 @@ internal open class BaseQueryKt(
 internal open class BaseQueryKtJavaCompatible(
     page: Int = 1,
     pageSize: Int = DEFAULT_PAGE_SIZE,
-    paging: Boolean = false
+    paging: Boolean = false,
 ) : BaseQueryKt(page, pageSize, paging)

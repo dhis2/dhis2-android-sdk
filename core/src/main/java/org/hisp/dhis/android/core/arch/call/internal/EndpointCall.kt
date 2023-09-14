@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.arch.call.internal
 
 import androidx.annotation.VisibleForTesting
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
 class EndpointCall<P>(
     @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val fetcher: CallFetcher<P>,
-    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val processor: CallProcessor<P>
+    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val processor: CallProcessor<P>,
 ) : Callable<List<P>> {
 
     @Throws(Exception::class)

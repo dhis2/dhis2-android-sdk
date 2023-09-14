@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal abstract class ListNoResourceWithErrorCatcherCallFetcher<P> protected constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val errorCatcher: APICallErrorCatcher
+    private val errorCatcher: APICallErrorCatcher,
 ) {
     protected abstract suspend fun call(): List<P>
 

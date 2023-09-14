@@ -147,7 +147,7 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
             Mockito.`when`(
                 trackedEntityAttributeReservedValueQueryCallFactory!!.create(
                     ArgumentMatchers.any(
-                        TrackedEntityAttributeReservedValueQuery::class.java
+                        TrackedEntityAttributeReservedValueQuery::class.java,
                     ),
                 ),
             )

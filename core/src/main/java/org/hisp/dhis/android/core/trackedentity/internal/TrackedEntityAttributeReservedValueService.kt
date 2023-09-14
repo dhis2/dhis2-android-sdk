@@ -36,7 +36,7 @@ interface TrackedEntityAttributeReservedValueService {
     @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
     suspend fun generateAndReserve(
         @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,
-        @Query("numberToReserve") numberToReserve: Int
+        @Query("numberToReserve") numberToReserve: Int,
     ): List<TrackedEntityAttributeReservedValue>
 
     @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")

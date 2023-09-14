@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
 abstract class UidsCallFactoryImpl<P> protected constructor(
     @JvmField protected val data: GenericCallData,
-    @JvmField protected val apiCallExecutor: APICallExecutor
+    @JvmField protected val apiCallExecutor: APICallExecutor,
 ) : UidsCallFactory<P> {
     override fun create(uids: Set<String>): Callable<List<P>> {
         return EndpointCall(fetcher(uids), processor())

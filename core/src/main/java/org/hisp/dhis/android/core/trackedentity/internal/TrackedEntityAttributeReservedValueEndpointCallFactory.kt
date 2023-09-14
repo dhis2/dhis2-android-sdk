@@ -28,20 +28,20 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWithErrorCatcherCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject internal constructor(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: TrackedEntityAttributeReservedValueService,
-    private val handler: TrackedEntityAttributeReservedValueHandler
+    private val handler: TrackedEntityAttributeReservedValueHandler,
 ) : QueryCoroutineCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>(
     data,
     coroutineAPICallExecutor,
@@ -53,19 +53,19 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject in
 
         return object : ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue>(
             coroutineAPICallExecutor = coroutineAPICallExecutor,
-            errorCatcher = errorCatcher
+            errorCatcher = errorCatcher,
         ) {
             override suspend fun call(): List<TrackedEntityAttributeReservedValue> {
                 return if (query.organisationUnit() == null) {
                     service.generateAndReserve(
                         query.trackedEntityAttributeUid(),
-                        query.numberToReserve()
+                        query.numberToReserve(),
                     )
                 } else {
                     service.generateAndReserveWithOrgUnitCode(
                         query.trackedEntityAttributeUid(),
                         query.numberToReserve(),
-                        query.organisationUnit()!!.code()!!
+                        query.organisationUnit()!!.code()!!,
                     )
                 }
             }
@@ -78,7 +78,7 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject in
             data.databaseAdapter(),
             handler,
             query.organisationUnit(),
-            query.trackedEntityAttributePattern()
+            query.trackedEntityAttributePattern(),
         )
     }
 }

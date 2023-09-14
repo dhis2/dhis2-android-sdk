@@ -39,7 +39,7 @@ internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQueryKt> protec
     override suspend fun create(query: Q): List<P> {
         val objects: List<P> = fetcher(query)
         processor(query).process(objects)
-        return objects.toMutableList()
+        return objects
     }
 
     protected abstract suspend fun fetcher(query: Q): List<P>

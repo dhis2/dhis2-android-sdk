@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 
+@Suppress("TooManyFunctions")
 abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constructor(
     val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
@@ -480,7 +481,6 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_STATUS)
     }
 
-
     private fun orderConnector(
         col: TrackedEntityInstanceQueryScopeOrderColumn,
     ): EqFilterConnector<R, RepositoryScope.OrderByDirection> {
@@ -489,5 +489,4 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
             scope.toBuilder().order(scope.order() + order).build()
         }
     }
-
 }

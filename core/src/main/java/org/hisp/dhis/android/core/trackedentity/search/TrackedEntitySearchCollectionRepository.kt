@@ -32,8 +32,13 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import dagger.Reusable
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -53,6 +58,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactor
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions", "LongParameterList")
 class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -72,7 +78,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
         scopeHelper,
         versionManager,
         filtersRepository,
-        workingListRepository
+        workingListRepository,
     ) {
 
     override val connectorFactory:
@@ -84,10 +90,11 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
             TrackedEntitySearchCollectionRepository(
                 store, trackerParentCallFactory, childrenAppenders,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
-                onlineHelper, localQueryHelper, trackerHeaderEngine
+                onlineHelper, localQueryHelper, trackerHeaderEngine,
             )
         }
 
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<TrackedEntitySearchItem>> {
         val factory: DataSource.Factory<TrackedEntitySearchItem, TrackedEntitySearchItem> =
             object : DataSource.Factory<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
@@ -98,8 +105,28 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
+    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntitySearchItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+        ) {
+            pagingSource
+        }.flow
+    }
+
     val dataSource: DataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
         get() = TrackedEntitySearchDataSource(getDataFetcher())
+
+    val pagingSource: PagingSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
+        get() = TrackedEntitySearchPagingSource(
+            store,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
+            trackerHeaderEngine,
+        )
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntitySearchItem> {

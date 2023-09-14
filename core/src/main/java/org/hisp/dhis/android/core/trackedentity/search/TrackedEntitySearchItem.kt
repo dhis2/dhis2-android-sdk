@@ -47,7 +47,7 @@ data class TrackedEntitySearchItem(
     val syncState: State?,
     val aggregatedSyncState: State?,
     val deleted: Boolean,
-    val header: String? = null
+    val header: String? = null,
 ) : ObjectWithUidInterface {
     override fun uid(): String = uid
 }

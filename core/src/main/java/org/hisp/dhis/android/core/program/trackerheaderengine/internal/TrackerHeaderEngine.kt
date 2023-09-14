@@ -74,7 +74,7 @@ internal class TrackerHeaderEngine @Inject constructor(
         return executor.getProgramIndicatorValue(context.programIndicator)
     }
 
-    //TODO
+    // TODO
     private val constantMap: Map<String, Constant>
         get() {
             val constants = constantStore.selectAll()

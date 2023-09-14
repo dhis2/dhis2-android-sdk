@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import kotlin.collections.HashSet
 
+@Suppress("TooManyFunctions")
 internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -122,6 +123,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         }
     }
 
+    @Suppress("ComplexCondition")
     private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
@@ -158,7 +160,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             )
         } else {
             baseOnlineQuery.copy(
-                paging = false
+                paging = false,
             )
         }
         val queryInstances = queryOnline(onlineQuery)

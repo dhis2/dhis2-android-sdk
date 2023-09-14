@@ -45,16 +45,11 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DateFilterPeriodHelper.Companion.mergeDateFilterPeriods
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -65,7 +60,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @Reusable
-@Suppress("LongParameterList")
+@Suppress("TooManyFunctions", "LongParameterList")
 class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -78,8 +73,16 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     private val onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-) : ReadOnlyWithUidCollectionRepository<TrackedEntityInstance> {
-    private val connectorFactory:
+) : ReadOnlyWithUidCollectionRepository<TrackedEntityInstance>,
+    TrackedEntitySearchOperators<TrackedEntityInstanceQueryCollectionRepository>(
+        scope,
+        scopeHelper,
+        versionManager,
+        filtersRepository,
+        workingListRepository,
+    ) {
+
+    override val connectorFactory:
         ScopedFilterConnectorFactory<
             TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope,
@@ -100,56 +103,6 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
     @Deprecated("use {@link #byProgramDate()} instead.")
     fun byProgramEndDate(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> {
         return connectorFactory.eqConnector { byProgramDate().beforeOrEqual(it!!).scope }
-    }
-
-    /**
-     * Define an enrollment date filter. It only applies if a program has been specified in [.byProgram].
-     *
-     * @return Repository connector
-     */
-    fun byProgramDate(): PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> {
-        return connectorFactory.periodConnector { filter: DateFilterPeriod ->
-            val mergedFilter = mergeDateFilterPeriods(
-                scope.programDate(),
-                filter,
-            )
-            scope.toBuilder().programDate(mergedFilter).build()
-        }
-    }
-
-    /**
-     * Define an incident date filter. It only applies if a program has been specified in [.byProgram].
-     *
-     * @return Repository connector
-     */
-    fun byIncidentDate(): PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> {
-        return connectorFactory.periodConnector { filter: DateFilterPeriod ->
-            val mergedFilter = mergeDateFilterPeriods(
-                scope.incidentDate(),
-                filter,
-            )
-            scope.toBuilder().incidentDate(mergedFilter).build()
-        }
-    }
-
-    @Deprecated("use {@link #byEnrollmentStatus()} instead.")
-    fun byProgramStatus(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> {
-        return connectorFactory.eqConnector { status: EnrollmentStatus? ->
-            scope.toBuilder().enrollmentStatus(listOf(status)).build()
-        }
-    }
-
-    /**
-     * Filter by enrollment status. It only applies if a program has been specified in [.byProgram].
-     * <br></br>**IMPORTANT:** this filter accepts a list of status, but only the first one will be used for the online
-     * query because the web API does not support querying by multiple status.
-     *
-     * @return Repository connector
-     */
-    fun byEnrollmentStatus(): ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> {
-        return connectorFactory.listConnector {
-            scope.toBuilder().enrollmentStatus(it).build()
-        }
     }
 
     @Deprecated("use {@link #byEventDate()} instead.")
@@ -195,7 +148,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         get() = TrackedEntityInstanceQueryDataSource(getDataFetcher())
 
     val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
-        get() = TrackeEntityInstanceQueryPagingSource(
+        get() = TrackedEntityInstanceQueryPagingSource(
             store,
             trackerParentCallFactory,
             scope,
@@ -265,7 +218,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
             childrenAppenders,
             onlineCache,
             onlineHelper,
-            localQueryHelper
+            localQueryHelper,
         )
     }
 

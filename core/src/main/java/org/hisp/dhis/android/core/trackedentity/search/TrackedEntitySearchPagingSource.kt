@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
-internal class TrackedEntitySearchDataFetcher(
+internal class TrackedEntitySearchPagingSource(
     store: TrackedEntityInstanceStore,
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
@@ -45,10 +46,10 @@ internal class TrackedEntitySearchDataFetcher(
     onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-    private val trackerHeaderEngine: TrackerHeaderEngine,
-) {
+    trackerHeaderEngine: TrackerHeaderEngine,
+) : PagingSource<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
 
-    private val instanceFetcher = TrackedEntityInstanceQueryDataFetcher(
+    private val dataFetcher = TrackedEntitySearchDataFetcher(
         store,
         trackerParentCallFactory,
         scope,
@@ -56,48 +57,30 @@ internal class TrackedEntitySearchDataFetcher(
         onlineCache,
         onlineHelper,
         localQueryHelper,
+        trackerHeaderEngine,
     )
 
-    private val sampleHeaderExpression =
-        "d2:concatenate(A{w75KJ2mc4zz}, ' ', A{zDhUuAYrxNC}, ', ', d2:substring(A{cejWyOfXge6}, 0, 1))"
-
-    fun refresh() {
-        instanceFetcher.refresh()
+    init {
+        dataFetcher.refresh()
     }
 
-    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return transform(instanceFetcher.loadPages(requestedLoadSize))
+    override fun getRefreshKey(
+        state: PagingState<TrackedEntitySearchItem, TrackedEntitySearchItem>,
+    ): TrackedEntitySearchItem? {
+        return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return transform(instanceFetcher.queryAllOffline())
-    }
+    override suspend fun load(
+        params: LoadParams<TrackedEntitySearchItem>,
+    ): LoadResult<TrackedEntitySearchItem, TrackedEntitySearchItem> {
+        val pages = dataFetcher.loadPages(params.loadSize)
 
-    fun queryAllOfflineUids(): List<String> {
-        return instanceFetcher.queryAllOfflineUids()
-    }
-
-    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return transform(instanceFetcher.queryAllOnline())
-    }
-
-    private fun transform(
-        list: List<Result<TrackedEntityInstance, D2Error>>,
-    ): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return list.map { item ->
-            item.map { instance ->
-                val searchItem = TrackedEntitySearchItemHelper.from(instance)
-                appendHeader(searchItem)
-            }
-        }
-    }
-
-    private fun appendHeader(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
-        val header = trackerHeaderEngine.getTrackedEntityHeader(
-            expression = sampleHeaderExpression,
-            attributeValues = item.trackedEntityAttributeValues ?: emptyList(),
+        return pages.firstOrNull { it is Result.Failure }?.let {
+            LoadResult.Error((it as Result.Failure).failure)
+        } ?: LoadResult.Page(
+            data = pages.map { it.getOrThrow() },
+            prevKey = pages.firstOrNull()?.getOrThrow(),
+            nextKey = pages.getOrNull(params.loadSize - 1)?.getOrThrow(),
         )
-
-        return item.copy(header = header)
     }
 }

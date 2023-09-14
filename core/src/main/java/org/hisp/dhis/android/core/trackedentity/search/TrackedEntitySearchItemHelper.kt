@@ -44,7 +44,7 @@ object TrackedEntitySearchItemHelper {
             trackedEntityAttributeValues = i.trackedEntityAttributeValues(),
             syncState = i.syncState(),
             aggregatedSyncState = i.aggregatedSyncState(),
-            deleted = i.deleted() ?: false
+            deleted = i.deleted() ?: false,
         )
     }
 

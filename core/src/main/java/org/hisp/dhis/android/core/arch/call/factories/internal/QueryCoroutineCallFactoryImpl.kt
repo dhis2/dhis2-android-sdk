@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
@@ -37,11 +38,11 @@ internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQueryKt> protec
     protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : QueryCallFactory<P, Q> {
     override suspend fun create(query: Q): List<P> {
-        val objects: List<P> = fetcher(query)
+        val objects: List<P> = fetcher(query).fetch()
         processor(query).process(objects)
         return objects
     }
 
-    protected abstract suspend fun fetcher(query: Q): List<P>
+    protected abstract fun fetcher(query: Q): CoroutineCallFetcher<P>
     protected abstract fun processor(query: Q): CallProcessor<P>
 }

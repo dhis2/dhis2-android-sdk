@@ -32,7 +32,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface TrackedEntityAttributeReservedValueService {
+fun interface TrackedEntityAttributeReservedValueService {
     @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
     suspend fun generateAndReserveWithOrgUnitCode(
         @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,

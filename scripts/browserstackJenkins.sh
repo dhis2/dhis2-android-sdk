@@ -67,12 +67,12 @@ test_apk_path=$(findApkPath "core")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
-upload_app_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/upload -F file=@$app_apk_path)"
+upload_app_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/v2/app -F file=@$app_apk_path)"
 app_url=$(echo "$upload_app_response" | jq .app_url)
 
 echo "Uploading test APK to Browserstack..."
-upload_test_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/test-suite -F file=@$test_apk_path)"
-test_url=$(echo "$upload_test_response" | jq .test_url)
+upload_test_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/v2/test-suite -F file=@$test_apk_path)"
+test_url=$(echo "$upload_test_response" | jq .test_suite_url)
 
 # Prepare json and run tests
 echo "Starting execution of espresso tests..."

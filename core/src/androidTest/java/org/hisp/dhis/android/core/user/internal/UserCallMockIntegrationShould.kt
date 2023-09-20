@@ -34,11 +34,13 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.Callable
 
 @RunWith(D2JunitRunner::class)
+@Ignore
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     companion object {

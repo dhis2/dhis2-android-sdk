@@ -1,6 +1,6 @@
 build_time_average=120
 polling_interval=10
-browserstack_device_list="\"Google Pixel 4-10.0\""
+browserstack_device_list="\"Google Pixel 6-12.0\""
 browserstack_video=false
 browserstack_local=false
 browserstack_deviceLogs=true
